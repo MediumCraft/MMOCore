@@ -1,0 +1,61 @@
+package net.Indyuce.mmocore.command.api;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+public abstract class CommandRoot extends CommandMap {
+	public CommandRoot(String id) {
+		super(null, id);
+	}
+
+	public void executeCommand(CommandSender sender, String[] args) {
+		CommandMap read = readCommand(args).read();
+
+		if (read.execute(sender, args) == CommandResult.THROW_USAGE)
+			read.calculateUsageList().forEach(str -> sender.sendMessage(ChatColor.YELLOW + "/" + str));
+	}
+
+	public CommandReader readCommand(String[] args) {
+		return new CommandReader(this, args);
+	}
+
+	public class CommandReader {
+		private CommandMap current;
+		private int parameter = 0;
+
+		public CommandReader(CommandRoot begin, String[] args) {
+			this.current = begin;
+
+			for (String arg : args)
+
+				/*
+				 * check if current command map has the corresponding arg, if so
+				 * let the next map handle the command.
+				 */
+				if (parameter == 0 && current.hasFloor(arg))
+					current = current.getFloor(arg);
+			
+				/*
+				 * if the plugin cannot find a command map higher, then the
+				 * current map will handle the command.
+				 */
+				else
+					parameter++;
+		}
+
+		public CommandMap read() {
+			return current;
+		}
+
+		public int extraCount() {
+			return parameter;
+		}
+
+		public List<String> readTabCompletion() {
+			return parameter < 0 ? new ArrayList<>() : current.calculateTabCompletion(Math.max(0, parameter - 1));
+		}
+	}
+}
