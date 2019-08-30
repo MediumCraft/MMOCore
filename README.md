@@ -1,3 +1,1 @@
-# MMOCore
-
-Offer your players a brand new RPG experience.
+![eclipse_SEyunr6cEZ](/uploads/4537bd2ada7d70653c7e26a0efc88565/eclipse_SEyunr6cEZ.png)
