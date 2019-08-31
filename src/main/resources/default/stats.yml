@@ -17,24 +17,34 @@ default:
     ARMOR_TOUGHNESS:
         base: 0
         per-level: 0
-    SPEED_MALUS_REDUCTION:
+    KNOCKBACK_RESISTANCE:
         base: 0
         per-level: 0
-    KNOCKBACK_RESISTANCE:
+    SPEED_MALUS_REDUCTION:
         base: 0
         per-level: 0
     HEALTH_REGENERATION:
         base: .1
         per-level: 0
+        
+    # Max Resource
     MAX_MANA:
         base: 20
         per-level: 0
-    MANA_REGENERATION:
-        base: .166
-        per-level: .03
+    MAX_STAMINA:
+        base: 20
+        per-level: 0
     MAX_STELLIUM:
         base: 20
         per-level: 0
+    
+    # Resource Regeneration
+    MANA_REGENERATION:
+        base: .166
+        per-level: .03
+    STAMINA_REGENERATION:
+        base: .166
+        per-level: .03
     STELLIUM_REGENERATION:
         base: .01
         per-level: 0
