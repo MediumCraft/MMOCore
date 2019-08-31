@@ -1,0 +1,53 @@
+
+# Display options
+name: Mining
+
+# Experience given to the main level
+# when leveling up this profession
+experience:
+    base: 20
+    per-level: 3
+
+on-mine:
+    EMERALD_ORE:
+        drop-table:
+            items:
+            - 'vanilla{type=EMERALD} 1 1-9'
+        vanilla-drops: false
+        regen:
+            time: 2000
+            temp-block: STONE
+        triggers:
+        - 'exp{profession=mining;amount=32}'
+
+    DIAMOND_ORE:
+
+        # Refer to drop-tables.yml
+        # The drop table used by the block.
+        drop-table:
+            items:
+            - 'vanilla{type=DIAMOND} 1 1-3'
+           # - 'mmoitem{type=material;id=RARE_DIAMOND} .1 1-3'
+           # - 'droptable{id=other-drop-table} .1'
+        
+        # Triggers when destroying the block, can
+        # be used to give exp to a player!
+        triggers:
+        - 'exp{profession=mining;amount=20}'
+        
+        # Set to false if you want to disable vanila drops.
+        vanilla-drops: false
+        
+        regen:
+        
+            # Ticks the block takes to appear again
+            time: 2000
+            
+            # The temporary block which shows
+            # during the block regen time.
+            #
+            # !! Warning !!
+            # When using the temp-block option, make sure you choose
+            # one temp block and don't use it anywhere else in the
+            # configuration so that block regens do not affect each other
+            temp-block: STONE

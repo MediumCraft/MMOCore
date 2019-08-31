@@ -1,0 +1,111 @@
+package net.Indyuce.mmocore.comp.placeholder;
+
+import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
+
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.AltChar;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.stats.StatType;
+
+public class RPGPlaceholders extends PlaceholderExpansion {
+	// private static final DelayFormat delayFormat = new DelayFormat();
+
+	@Override
+	public String getAuthor() {
+		return "Indyuce";
+	}
+
+	@Override
+	public String getIdentifier() {
+		return "mmocore";
+	}
+
+	@Override
+	public String getVersion() {
+		return "1.0";
+	}
+
+	@Override
+	public String onPlaceholderRequest(Player player, String identifier) {
+
+		if (identifier.equals("level"))
+			return "" + PlayerData.get(player).getLevel();
+
+		else if (identifier.equals("combat"))
+			return String.valueOf(PlayerData.get(player).isInCombat());
+
+		else if (identifier.equals("health"))
+			return MMOCore.digit2.format(player.getHealth());
+
+		else if (identifier.startsWith("attribute_"))
+			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
+
+		else if (identifier.startsWith("profession_"))
+			return "" + PlayerData.get(player).getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
+
+		else if (identifier.equals("max_health"))
+			return MMOCore.digit2.format(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+
+		else if (identifier.equals("experience"))
+			return "" + PlayerData.get(player).getExperience();
+
+		else if (identifier.equals("next_level"))
+			return "" + MMOCore.plugin.configManager.getNeededExperience(PlayerData.get(player).getLevel() + 1);
+
+		else if (identifier.equals("class_points"))
+			return "" + PlayerData.get(player).getClassPoints();
+
+		else if (identifier.equals("mana"))
+			return "" + MMOCore.digit.format(PlayerData.get(player).getMana());
+
+		else if (identifier.equals("max_mana"))
+			return "" + MMOCore.digit.format(PlayerData.get(player).getStats().getStat(StatType.MAX_MANA));
+
+		else if (identifier.equals("mana_bar")) {
+			String format = "";
+			PlayerData data = PlayerData.get(player);
+			double ratio = 20 * data.getMana() / data.getStats().getStat(StatType.MAX_MANA);
+			for (double j = 1; j < 20; j++)
+				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
+			return format;
+		}
+
+		else if (identifier.equals("stamina"))
+			return "" + MMOCore.digit.format(PlayerData.get(player).getStamina());
+
+		else if (identifier.equals("max_stamina"))
+			return "" + MMOCore.digit.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STAMINA));
+
+		else if (identifier.equals("stamina_bar")) {
+			String format = "";
+			PlayerData data = PlayerData.get(player);
+			double ratio = 20 * data.getStamina() / data.getStats().getStat(StatType.MAX_STAMINA);
+			for (double j = 1; j < 20; j++)
+				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
+			return format;
+		}
+
+		else if (identifier.equals("stellium"))
+			return "" + MMOCore.digit.format(PlayerData.get(player).getStellium());
+
+		else if (identifier.equals("max_stellium"))
+			return "" + MMOCore.digit.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STELLIUM));
+
+		else if (identifier.equals("stellium_bar")) {
+			String format = "";
+			PlayerData data = PlayerData.get(player);
+			double ratio = 20 * data.getStellium() / data.getStats().getStat(StatType.MAX_STELLIUM);
+			for (double j = 1; j < 20; j++)
+				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
+			return format;
+		}
+
+		else if (identifier.equals("class"))
+			return PlayerData.get(player).getProfess().getName();
+
+		return null;
+	}
+}

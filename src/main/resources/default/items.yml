@@ -1,0 +1,29 @@
+
+GOLD_COIN:
+    item: GOLD_NUGGET
+    name: '&6Gold Coin'
+    lore:
+    - '&eWorth: 1g'
+
+NOTE:
+    item: PAPER
+    name: '&6Note'
+    lore:
+    - '&eWorth: {worth}g'
+
+DEPOSIT_ITEM:
+    item: BOOK
+    name: '&eDeposit {worth}g'
+    lore: {}
+
+GOLD_POUCH:
+    item: LEATHER
+    name: '&fGold Pouch'
+    lore:
+    - '&7Right-Click to open.'
+
+MOB_GOLD_POUCH:
+    item: LEATHER
+    name: '&fGold Pouch'
+    lore:
+    - '&7Right-Click to open.'

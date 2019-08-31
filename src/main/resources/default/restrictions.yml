@@ -1,0 +1,40 @@
+# Mining a block in creative will NOT drop any
+# custom drops/will not apply block regen, etc.
+#
+# Any block specified in this config, wherever it
+# is located, MUST be mined using the correct tool
+# otherwise nothing will drop!
+
+# The corresponding tool. It's CASE_SENSITIVE!
+WOODEN_PICKAXE:
+
+    # What the tool can mine.
+    can-mine:
+    - COAL_ORE
+
+STONE_PICKAXE:
+    can-mine:
+    - IRON_ORE
+    
+    # The block break permissions the tool inherits.
+    # e.g a stone pickaxe can mine iron ores PLUS
+    # any block that the wooden pickaxe can mine.
+    # Used to make the config much clearer.
+    parent: WOODEN_PICKAXE
+
+IRON_PICKAXE:
+    parent: STONE_PICKAXE
+    can-mine:
+    - GOLD_ORE
+
+GOLDEN_PICKAXE:
+    parent: IRON_PICKAXE
+    can-mine:
+    - LAPIS_ORE
+
+DIAMOND_PICKAXE:
+    parent: GOLDEN_PICKAXE
+    can-mine:
+    - DIAMOND_ORE
+    - EMERALD_ORE
+    - REDSTONE_ORE
