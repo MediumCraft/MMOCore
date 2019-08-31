@@ -5,10 +5,12 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
 public class PartyInvite extends Request {
-	private PlayerData target;
-	private Party party;
+	private final PlayerData target;
+	private final Party party;
 
-	public PartyInvite(Party party, PlayerData target) {
+	public PartyInvite(Party party, PlayerData creator, PlayerData target) {
+		super(creator);
+
 		this.party = party;
 		this.target = target;
 	}
@@ -26,6 +28,7 @@ public class PartyInvite extends Request {
 	}
 
 	public void accept() {
+		party.removeLastInvite(getCreator().getPlayer());
 		party.getMembers().forEach(member -> member.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("party-joined-other", "player", target.getPlayer().getName())));
 		target.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("party-joined", "owner", party.getOwner().getPlayer().getName()));
 		party.addMember(target);

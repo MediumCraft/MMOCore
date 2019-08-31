@@ -45,6 +45,10 @@ public class Party {
 		return invites.containsKey(player.getUniqueId()) ? invites.get(player.getUniqueId()) : 0;
 	}
 
+	public void removeLastInvite(Player player) {
+		invites.remove(player.getUniqueId());
+	}
+
 	public void removeMember(PlayerData data) {
 		if (data.isOnline() && data.getPlayer().getOpenInventory() != null && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
 			InventoryManager.PARTY_CREATION.newInventory(data).open();
@@ -83,10 +87,10 @@ public class Party {
 				((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
 	}
 
-	public void sendPartyInvite(Player inviter, PlayerData target) {
+	public void sendPartyInvite(PlayerData inviter, PlayerData target) {
 		invites.put(target.getUniqueId(), System.currentTimeMillis());
-		Request request = new PartyInvite(this, target);
-		new ConfigMessage("party-invite").addPlaceholders("player", inviter.getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
+		Request request = new PartyInvite(this, inviter, target);
+		new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 
@@ -122,7 +126,7 @@ public class Party {
 			refreshAttributes();
 			refreshAttributes(player);
 		}
-		
+
 		public void forEach(Consumer<? super PlayerData> action) {
 			members.forEach(action);
 		}

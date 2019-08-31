@@ -164,7 +164,7 @@ public class EditablePartyView extends EditableInventory {
 						return;
 					}
 
-					playerData.getParty().sendPartyInvite(player, targetData);
+					playerData.getParty().sendPartyInvite(playerData, targetData);
 					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("sent-party-invite", "player", target.getName()));
 					player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 					open();

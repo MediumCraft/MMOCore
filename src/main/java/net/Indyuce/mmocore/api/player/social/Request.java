@@ -2,9 +2,20 @@ package net.Indyuce.mmocore.api.player.social;
 
 import java.util.UUID;
 
+import net.Indyuce.mmocore.api.player.PlayerData;
+
 public abstract class Request {
-	private UUID uuid = UUID.randomUUID();
-	private long date = System.currentTimeMillis();
+	private final UUID uuid = UUID.randomUUID();
+	private final long date = System.currentTimeMillis();
+	private final PlayerData creator;
+
+	public Request(PlayerData creator) {
+		this.creator = creator;
+	}
+
+	public PlayerData getCreator() {
+		return creator;
+	}
 
 	public UUID getUniqueId() {
 		return uuid;

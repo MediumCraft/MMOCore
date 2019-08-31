@@ -6,15 +6,12 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class FriendRequest extends Request {
-	private PlayerData creator, target;
+	private final PlayerData target;
 
 	public FriendRequest(PlayerData creator, PlayerData target) {
-		this.creator = creator;
-		this.target = target;
-	}
+		super(creator);
 
-	public PlayerData getCreator() {
-		return creator;
+		this.target = target;
 	}
 
 	public PlayerData getTarget() {
@@ -27,10 +24,10 @@ public class FriendRequest extends Request {
 	}
 
 	public void accept() {
-		creator.addFriend(target.getUniqueId());
-		target.addFriend(creator.getUniqueId());
-		creator.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", target.getPlayer().getName()));
-		target.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", creator.getPlayer().getName()));
+		getCreator().addFriend(target.getUniqueId());
+		target.addFriend(getCreator().getUniqueId());
+		getCreator().getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", target.getPlayer().getName()));
+		target.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", getCreator().getPlayer().getName()));
 		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
 	}
 }
