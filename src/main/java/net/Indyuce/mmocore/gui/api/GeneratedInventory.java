@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
@@ -53,7 +54,7 @@ public abstract class GeneratedInventory extends PluginInventory {
 
 	@Override
 	public Inventory getInventory() {
-		Inventory inv = Bukkit.createInventory(this, editable.getSlots(), calculateName());
+		Inventory inv = Bukkit.createInventory(this, editable.getSlots(), ChatColor.translateAlternateColorCodes('&', calculateName()));
 
 		for (InventoryItem item : editable.getItems())
 			if (item.canDisplay(this))
