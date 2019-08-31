@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -41,7 +42,7 @@ public class PlayerAttribute {
 	}
 
 	public String getName() {
-		return name;
+		return ChatColor.translateAlternateColorCodes('&', name);
 	}
 
 	public boolean hasMax() {
