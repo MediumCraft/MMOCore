@@ -24,6 +24,7 @@ public class FriendRequest extends Request {
 	}
 
 	public void accept() {
+		getCreator().setLastFriendRequest(0);
 		getCreator().addFriend(target.getUniqueId());
 		target.addFriend(getCreator().getUniqueId());
 		getCreator().getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", target.getPlayer().getName()));

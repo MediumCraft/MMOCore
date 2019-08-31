@@ -393,8 +393,12 @@ public class PlayerData {
 		MMOCore.plugin.getLogger().log(level, "[Userdata:" + player.getName() + "] " + message);
 	}
 
+	public void setLastFriendRequest(long ms) {
+		lastFriendRequest = Math.max(0, ms);
+	}
+
 	public void sendFriendRequest(PlayerData target) {
-		lastFriendRequest = System.currentTimeMillis();
+		setLastFriendRequest(System.currentTimeMillis());
 
 		FriendRequest request = new FriendRequest(this, target);
 		new ConfigMessage("friend-request").addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
