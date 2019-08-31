@@ -55,7 +55,11 @@ public class Professions {
 	}
 
 	public int getExperience(Profession profession) {
-		return exp.containsKey(profession.getId()) ? exp.get(profession.getId()) : 0;
+		return getExperience(profession.getId());
+	}
+
+	public int getExperience(String id) {
+		return exp.containsKey(id) ? exp.get(id) : 0;
 	}
 
 	public void setExperience(Profession profession, int value) {
