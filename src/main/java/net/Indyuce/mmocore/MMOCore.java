@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.codingforcookies.armorequip.ArmorListener;
 
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.debug.DebugMode;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.stats.StatType;
@@ -232,13 +233,19 @@ public class MMOCore extends JavaPlugin {
 							data.giveMana(data.calculateRegen(PlayerResource.MANA));
 
 						if (data.canRegen(PlayerResource.STAMINA))
-							data.giveMana(data.calculateRegen(PlayerResource.STAMINA));
+							data.giveStamina(data.calculateRegen(PlayerResource.STAMINA));
 					}
 			}
 		}.runTaskTimerAsynchronously(MMOCore.plugin, 100, 20);
 
 		saveDefaultConfig();
 		reloadPlugin();
+
+		/*
+		 * enable debug mode for extra debug tools.
+		 */
+		if (getConfig().getBoolean("debug"))
+			new DebugMode();
 
 		Bukkit.getPluginManager().registerEvents(new PlayerAttackEventListener(), this);
 
