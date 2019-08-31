@@ -6,7 +6,7 @@ import net.Indyuce.mmocore.comp.rpg.damage.DamageHandler;
 import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo;
 import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
 
-public class MythicMobsDamagerHandler implements DamageHandler {
+public class MythicMobsDamageHandler implements DamageHandler {
 
 	@Override
 	public DamageInfo getDamage(Entity entity) {
