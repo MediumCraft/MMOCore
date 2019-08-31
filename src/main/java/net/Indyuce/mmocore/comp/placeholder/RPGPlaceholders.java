@@ -8,6 +8,8 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.PlayerQuests;
+import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
@@ -34,6 +36,12 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		if (identifier.equals("level"))
 			return "" + PlayerData.get(player).getLevel();
 
+		else if (identifier.equals("level_percent")) {
+			PlayerData playerData = PlayerData.get(player);
+			double current = playerData.getExperience(), next = MMOCore.plugin.configManager.getNeededExperience(playerData.getLevel() + 1);
+			return MMOCore.digit.format(current / next * 100);
+		}
+
 		else if (identifier.equals("combat"))
 			return String.valueOf(PlayerData.get(player).isInCombat());
 
@@ -42,6 +50,16 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.startsWith("attribute_"))
 			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
+
+		else if (identifier.equals("class"))
+			return PlayerData.get(player).getProfess().getName();
+
+		else if (identifier.startsWith("profession_percent_")) {
+			Professions professions = PlayerData.get(player).getCollectionSkills();
+			String profession = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
+			double current = professions.getExperience(profession), next = MMOCore.plugin.configManager.getNeededExperience(professions.getLevel(profession) + 1);
+			return MMOCore.digit.format(current / next * 100);
+		}
 
 		else if (identifier.startsWith("profession_"))
 			return "" + PlayerData.get(player).getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
@@ -103,8 +121,20 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return format;
 		}
 
-		else if (identifier.equals("class"))
-			return PlayerData.get(player).getProfess().getName();
+		else if (identifier.equals("quest")) {
+			PlayerQuests data = PlayerData.get(player).getQuestData();
+			return data.hasCurrent() ? data.getCurrent().getQuest().getName() : "None";
+		}
+
+		else if (identifier.equals("quest_progress")) {
+			PlayerQuests data = PlayerData.get(player).getQuestData();
+			return data.hasCurrent() ? MMOCore.digit.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100) : "0";
+		}
+
+		else if (identifier.equals("quest_objective")) {
+			PlayerQuests data = PlayerData.get(player).getQuestData();
+			return data.hasCurrent() ? data.getCurrent().getFormattedLore() : "None";
+		}
 
 		return null;
 	}
