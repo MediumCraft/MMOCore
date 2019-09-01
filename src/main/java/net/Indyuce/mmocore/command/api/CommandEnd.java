@@ -22,6 +22,6 @@ public abstract class CommandEnd extends CommandMap {
 		String str = "";
 		for (Parameter param : parameters)
 			str += param.getKey() + " ";
-		return str;
+		return str.isEmpty() ? str : str.substring(0, str.length() - 1);
 	}
 }
