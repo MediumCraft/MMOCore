@@ -58,6 +58,9 @@ import net.Indyuce.mmocore.listener.PlayerListener;
 import net.Indyuce.mmocore.listener.SpellCast;
 import net.Indyuce.mmocore.listener.WaypointsListener;
 import net.Indyuce.mmocore.listener.event.PlayerAttackEventListener;
+import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
+import net.Indyuce.mmocore.listener.option.HealthScale;
+import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
 import net.Indyuce.mmocore.manager.AttributeManager;
@@ -246,6 +249,15 @@ public class MMOCore extends JavaPlugin {
 		 */
 		if (getConfig().getBoolean("debug"))
 			new DebugMode();
+
+		if (configManager.overrideVanillaExp = getConfig().getBoolean("override-vanilla-exp"))
+			Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), this);
+
+		if (getConfig().getBoolean("health-scale.enabled"))
+			Bukkit.getPluginManager().registerEvents(new HealthScale(), this);
+
+		if (getConfig().getBoolean("death-exp-loss.enabled"))
+			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
 
 		Bukkit.getPluginManager().registerEvents(new PlayerAttackEventListener(), this);
 

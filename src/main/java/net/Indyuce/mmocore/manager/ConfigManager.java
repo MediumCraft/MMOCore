@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -21,9 +20,6 @@ import net.Indyuce.mmocore.api.input.AnvilGUI;
 import net.Indyuce.mmocore.api.input.ChatInput;
 import net.Indyuce.mmocore.api.input.PlayerInput;
 import net.Indyuce.mmocore.api.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
-import net.Indyuce.mmocore.listener.option.HealthScale;
-import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
 
 public class ConfigManager {
 
@@ -96,15 +92,6 @@ public class ConfigManager {
 		expPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.experience");
 		regenPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.health-regen");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
-
-		if (overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp"))
-			Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), MMOCore.plugin);
-
-		if (MMOCore.plugin.getConfig().getBoolean("health-scale.enabled"))
-			Bukkit.getPluginManager().registerEvents(new HealthScale(), MMOCore.plugin);
-
-		if (MMOCore.plugin.getConfig().getBoolean("death-exp-loss.enabled"))
-			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), MMOCore.plugin);
 
 		neededExp.clear();
 		int line = 0;
