@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -7,13 +9,14 @@ import org.bukkit.entity.Player;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
+import net.Indyuce.mmocore.api.math.format.MMOCoreDecimalFormat;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.PlayerQuests;
 import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
-	// private static final DelayFormat delayFormat = new DelayFormat();
+	private static final DecimalFormat decimal = new MMOCoreDecimalFormat("0.#"), decimal2 = new MMOCoreDecimalFormat("0.##");
 
 	@Override
 	public String getAuthor() {
@@ -39,14 +42,14 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("level_percent")) {
 			PlayerData playerData = PlayerData.get(player);
 			double current = playerData.getExperience(), next = MMOCore.plugin.configManager.getNeededExperience(playerData.getLevel() + 1);
-			return MMOCore.digit.format(current / next * 100);
+			return decimal.format(current / next * 100);
 		}
 
 		else if (identifier.equals("combat"))
 			return String.valueOf(PlayerData.get(player).isInCombat());
 
 		else if (identifier.equals("health"))
-			return MMOCore.digit2.format(player.getHealth());
+			return decimal2.format(player.getHealth());
 
 		else if (identifier.startsWith("attribute_"))
 			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
@@ -58,14 +61,14 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			Professions professions = PlayerData.get(player).getCollectionSkills();
 			String profession = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
 			double current = professions.getExperience(profession), next = MMOCore.plugin.configManager.getNeededExperience(professions.getLevel(profession) + 1);
-			return MMOCore.digit.format(current / next * 100);
+			return decimal.format(current / next * 100);
 		}
 
 		else if (identifier.startsWith("profession_"))
 			return "" + PlayerData.get(player).getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
 
 		else if (identifier.equals("max_health"))
-			return MMOCore.digit2.format(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			return decimal2.format(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 
 		else if (identifier.equals("experience"))
 			return "" + PlayerData.get(player).getExperience();
@@ -86,10 +89,10 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return "" + PlayerData.get(player).getAttributeReallocationPoints();
 
 		else if (identifier.equals("mana"))
-			return "" + MMOCore.digit.format(PlayerData.get(player).getMana());
+			return "" + decimal.format(PlayerData.get(player).getMana());
 
 		else if (identifier.equals("max_mana"))
-			return "" + MMOCore.digit.format(PlayerData.get(player).getStats().getStat(StatType.MAX_MANA));
+			return "" + decimal.format(PlayerData.get(player).getStats().getStat(StatType.MAX_MANA));
 
 		else if (identifier.equals("mana_bar")) {
 			String format = "";
@@ -101,10 +104,10 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.equals("stamina"))
-			return "" + MMOCore.digit.format(PlayerData.get(player).getStamina());
+			return "" + decimal.format(PlayerData.get(player).getStamina());
 
 		else if (identifier.equals("max_stamina"))
-			return "" + MMOCore.digit.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STAMINA));
+			return "" + decimal.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STAMINA));
 
 		else if (identifier.equals("stamina_bar")) {
 			String format = "";
@@ -116,10 +119,10 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.equals("stellium"))
-			return "" + MMOCore.digit.format(PlayerData.get(player).getStellium());
+			return "" + decimal.format(PlayerData.get(player).getStellium());
 
 		else if (identifier.equals("max_stellium"))
-			return "" + MMOCore.digit.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STELLIUM));
+			return "" + decimal.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STELLIUM));
 
 		else if (identifier.equals("stellium_bar")) {
 			String format = "";
@@ -137,7 +140,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = PlayerData.get(player).getQuestData();
-			return data.hasCurrent() ? MMOCore.digit.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100) : "0";
+			return data.hasCurrent() ? decimal.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100) : "0";
 		}
 
 		else if (identifier.equals("quest_objective")) {

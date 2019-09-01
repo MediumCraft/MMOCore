@@ -55,7 +55,7 @@ public class ClassConfirmation extends EditableInventory {
 			for (int j = 0; j < 20; j++)
 				bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
 
-			holders.register("percent", MMOCore.digit.format(ratio * 100));
+			holders.register("percent", decimal.format(ratio * 100));
 			holders.register("progress", bar);
 			holders.register("class", profess.getName());
 			holders.register("unlocked_skills", info.getSkillKeys().size());

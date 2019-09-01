@@ -97,7 +97,7 @@ public class WaypointViewer extends EditableInventory {
 
 			Waypoint waypoint = generated.waypoints.get(generated.page * 27 + n);
 			holders.register("name", waypoint.getName());
-			holders.register("stellium", "" + MMOCore.digit.format(waypoint.getStelliumCost()));
+			holders.register("stellium", decimal.format(waypoint.getStelliumCost()));
 
 			return holders;
 		}
@@ -195,13 +195,13 @@ public class WaypointViewer extends EditableInventory {
 
 				double left = waypoint.getStelliumCost() - playerData.getStellium();
 				if (left > 0) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "more", MMOCore.digit.format(left)));
+					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "more", decimal.format(left)));
 					return;
 				}
 
 				double next = (double) playerData.getNextWaypointMillis() / 1000;
 				if (next < 0) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "cooldown", MMOCore.digit.format(next)));
+					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "cooldown", decimal.format(next)));
 					return;
 				}
 

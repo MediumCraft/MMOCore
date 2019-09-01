@@ -1,9 +1,6 @@
 package net.Indyuce.mmocore;
 
 import java.io.File;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -128,9 +125,6 @@ public class MMOCore extends JavaPlugin {
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public RPGUtilHandler rpgUtilHandler = new DefaultRPGUtilHandler();
 
-	public static final DecimalFormat digit = new DecimalFormat("0.#"), digit2 = new DecimalFormat("0.##"), digit3 = new DecimalFormat("0.###");
-	public static final SimpleDateFormat smoothDateFormat = new SimpleDateFormat("");
-
 	public void onLoad() {
 		plugin = this;
 		version = new ServerVersion(Bukkit.getServer().getClass());
@@ -152,15 +146,6 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public void onEnable() {
-
-		/*
-		 * decimal format
-		 */
-		DecimalFormatSymbols symbols = digit.getDecimalFormatSymbols();
-		symbols.setDecimalSeparator('.');
-		digit.setDecimalFormatSymbols(symbols);
-		digit2.setDecimalFormatSymbols(symbols);
-		digit3.setDecimalFormatSymbols(symbols);
 
 		try {
 			getLogger().log(Level.INFO, "Detected Bukkit Version: " + version.toString());

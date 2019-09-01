@@ -89,7 +89,7 @@ public class PlayerStats extends EditableInventory {
 					// holders.register("profession", type.getName());
 					holders.register("progress", bar);
 					holders.register("level", "" + inv.getPlayerData().getCollectionSkills().getLevel(profession));
-					holders.register("percent", MMOCore.digit.format(ratio * 100));
+					holders.register("percent", decimal.format(ratio * 100));
 					for (StatType stat : StatType.values())
 						if (stat.matches(profession))
 							holders.register(stat.name().toLowerCase(), stat.format(stats.getStat(stat)));
@@ -284,7 +284,7 @@ public class PlayerStats extends EditableInventory {
 			for (int j = 0; j < 20; j++)
 				bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
 
-			holders.register("percent", MMOCore.digit.format(ratio * 100));
+			holders.register("percent", decimal.format(ratio * 100));
 			holders.register("exp", "" + data.getExperience());
 			holders.register("level", "" + data.getLevel());
 			holders.register("class_points", "" + data.getClassPoints());

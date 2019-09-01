@@ -1,12 +1,16 @@
 package net.Indyuce.mmocore.api.player.stats.stat.modifier;
 
+import java.text.DecimalFormat;
+
 import org.apache.commons.lang.Validate;
 
-import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.math.format.MMOCoreDecimalFormat;
 
 public class StatModifier {
 	private final double d;
 	private final boolean relative;
+
+	private static final DecimalFormat digit = new MMOCoreDecimalFormat("0.#");
 
 	public StatModifier(double d) {
 		this(d, false);
@@ -42,6 +46,6 @@ public class StatModifier {
 
 	@Override
 	public String toString() {
-		return MMOCore.digit.format(d) + (relative ? "%" : "");
+		return digit.format(d) + (relative ? "%" : "");
 	}
 }

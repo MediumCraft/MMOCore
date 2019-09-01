@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.player;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,12 +15,15 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.api.math.format.MMOCoreDecimalFormat;
 import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 
 public class Professions {
 	private final Map<String, Integer> exp = new HashMap<>();
 	private final Map<String, Integer> level = new HashMap<>();
 	private final PlayerData playerData;
+	
+	private static final DecimalFormat decimal = new MMOCoreDecimalFormat("0.#");
 
 	public Professions(PlayerData playerData) {
 		this.playerData = playerData;
@@ -108,6 +112,6 @@ public class Professions {
 		int chars = (int) ((double) exp / needed * 20);
 		for (int j = 0; j < 20; j++)
 			bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
-		playerData.displayActionBar(MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio", MMOCore.digit.format((double) exp / needed * 100)));
+		playerData.displayActionBar(MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio", decimal.format((double) exp / needed * 100)));
 	}
 }

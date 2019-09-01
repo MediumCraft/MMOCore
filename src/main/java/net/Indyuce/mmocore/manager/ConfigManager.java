@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,6 +28,8 @@ public class ConfigManager {
 	public boolean overrideVanillaExp, hotbarSwap;
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix;
+
+	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 
 	private List<Integer> neededExp = new ArrayList<>();
 	private FileConfiguration messages;
@@ -92,6 +95,7 @@ public class ConfigManager {
 		expPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.experience");
 		regenPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.health-regen");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
+		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
 
 		neededExp.clear();
 		int line = 0;
@@ -107,6 +111,10 @@ public class ConfigManager {
 			MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not read line " + line + " from levels.txt");
 			e.printStackTrace();
 		}
+	}
+
+	private char getFirstChar(String str, char defaultChar) {
+		return str == null || str.isEmpty() ? defaultChar : str.charAt(0);
 	}
 
 	public PlayerInput newPlayerInput(Player player, InputType type, Consumer<String> output) {
