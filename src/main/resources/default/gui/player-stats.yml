@@ -202,7 +202,7 @@ items:
         - '✦ Attack Speed: &c{attack_speed} &7(&c{attack_speed_base}&7+&c{attack_speed_extra}&7)'
         - ''
         - '❤ Max Health: &c{max_health} &7(&c{max_health_base}&7+&c{max_health_extra}&7)'
-        - '❤ Health Regen: &c{attack_speed} &7(&c{attack_speed_base}&7+&c{attack_speed_extra}&7)'
+        - '❤ Health Regen: &c{health_regeneration} &7(&c{health_regeneration_base}&7+&c{health_regeneration_extra}&7)'
         - ''
         - '❖ Armor: &c{armor} &7(&c{armor_base}&7+&c{armor_extra}&7)'
         - '❖ Armor Toughness: &c{armor_toughness} &7(&c{armor_toughness_base}&7+&c{armor_toughness_extra}&7)'
