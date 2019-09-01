@@ -23,14 +23,14 @@ public class PointsCommandMap extends CommandMap {
 		this.type = type;
 		this.get = get;
 
-		addFloor(new SetCommandMap(this, "set", set));
-		addFloor(new SetCommandMap(this, "give", give));
+		addFloor(new ActionCommandMap(this, "set", set));
+		addFloor(new ActionCommandMap(this, "give", give));
 	}
 
-	public class SetCommandMap extends CommandEnd {
+	public class ActionCommandMap extends CommandEnd {
 		private final BiConsumer<PlayerData, Integer> action;
 
-		public SetCommandMap(CommandMap parent, String type, BiConsumer<PlayerData, Integer> action) {
+		public ActionCommandMap(CommandMap parent, String type, BiConsumer<PlayerData, Integer> action) {
 			super(parent, type);
 
 			this.action = action;
