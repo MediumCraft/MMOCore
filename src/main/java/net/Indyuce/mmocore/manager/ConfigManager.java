@@ -13,10 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.util.Consumer;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -25,6 +21,9 @@ import net.Indyuce.mmocore.api.input.AnvilGUI;
 import net.Indyuce.mmocore.api.input.ChatInput;
 import net.Indyuce.mmocore.api.input.PlayerInput;
 import net.Indyuce.mmocore.api.input.PlayerInput.InputType;
+import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
+import net.Indyuce.mmocore.listener.option.HealthScale;
+import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
 
 public class ConfigManager {
 
@@ -99,26 +98,13 @@ public class ConfigManager {
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
 
 		if (overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp"))
-			Bukkit.getPluginManager().registerEvents(new Listener() {
-
-				@EventHandler
-				public void a(PlayerExpChangeEvent event) {
-					if (MMOCore.plugin.configManager.overrideVanillaExp)
-						event.setAmount(0);
-				}
-			}, MMOCore.plugin);
+			Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), MMOCore.plugin);
 
 		if (MMOCore.plugin.getConfig().getBoolean("health-scale.enabled"))
-			Bukkit.getPluginManager().registerEvents(new Listener() {
-				private final double scale = MMOCore.plugin.getConfig().getDouble("health-scale.scale");
+			Bukkit.getPluginManager().registerEvents(new HealthScale(), MMOCore.plugin);
 
-				@EventHandler
-				public void a(PlayerJoinEvent event) {
-					Player player = event.getPlayer();
-					player.setHealthScaled(true);
-					player.setHealthScale(scale);
-				}
-			}, MMOCore.plugin);
+		if (MMOCore.plugin.getConfig().getBoolean("death-exp-loss.enabled"))
+			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), MMOCore.plugin);
 
 		neededExp.clear();
 		int line = 0;

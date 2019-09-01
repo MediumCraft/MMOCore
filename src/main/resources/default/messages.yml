@@ -11,6 +11,10 @@ exp-notification: '&f{profession} &e{progress} &e{ratio}%'
 exp-hologram: '&e+{exp} EXP!'
 class-select: '&eYou are now a &6{class}&e!'
 already-on-class: '&cYou are already a {class}.'
+death-exp-loss:
+- ''
+- '&7You died and lost {loss} experience.'
+- ''
 
 # General
 booster-main:

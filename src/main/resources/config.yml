@@ -53,6 +53,13 @@ party:
 # Requires a SERVER reload when changed.
 override-vanilla-exp: true
 
+# Requires a SERVER reload when changed.
+death-exp-loss:
+    enabled: false
+    
+    # Percentage of current EXP you lose when dying.
+    percent: 30
+
 # Allows to scale health up/down to a specific
 # amount so extra health does not fill up the screen.
 # Requires a SERVER reload when changed.
