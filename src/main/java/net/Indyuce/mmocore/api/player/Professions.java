@@ -70,6 +70,13 @@ public class Professions {
 		level.put(profession.getId(), value);
 	}
 
+	public void giveLevels(Profession profession, int value) {
+		int total = 0, level = getLevel(profession);
+		while (value-- > 0)
+			total += MMOCore.plugin.configManager.getNeededExperience(level + value + 1);
+		giveExperience(profession, total);
+	}
+
 	public void giveExperience(Profession profession, int value) {
 		giveExperience(profession, value, null);
 	}

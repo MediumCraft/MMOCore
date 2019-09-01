@@ -305,6 +305,13 @@ public class PlayerData {
 		getStats().updateAll();
 	}
 
+	public void giveLevels(int value) {
+		int total = 0;
+		while (value-- > 0)
+			total += MMOCore.plugin.configManager.getNeededExperience(getLevel() + value + 1);
+		giveExperience(total);	
+	}
+
 	public void setExperience(int value) {
 		experience = Math.max(0, value);
 		refreshVanillaExp(MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1));
