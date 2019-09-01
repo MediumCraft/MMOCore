@@ -18,8 +18,8 @@ public abstract class PlayerInput implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 	}
 
-	public Consumer<String> getOutput() {
-		return output;
+	public void output(String input) {
+		output.accept(input);
 	}
 
 	public Player getPlayer() {

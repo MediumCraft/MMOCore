@@ -28,7 +28,7 @@ public class ChatInput extends PlayerInput {
 		if (event.getPlayer().equals(getPlayer())) {
 			close();
 			event.setCancelled(true);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> getOutput().accept(event.getMessage()));
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> output(event.getMessage()));
 		}
 	}
 

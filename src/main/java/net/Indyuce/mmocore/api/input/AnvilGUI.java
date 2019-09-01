@@ -57,7 +57,7 @@ public class AnvilGUI extends PlayerInput {
 			if (event.getRawSlot() == 2) {
 				ItemStack clicked = inventory.getItem(event.getRawSlot());
 				if (clicked != null && clicked.getType() != Material.AIR)
-					getOutput().accept(clicked.hasItemMeta() ? clicked.getItemMeta().getDisplayName() : clicked.getType().toString());
+					output(clicked.hasItemMeta() ? clicked.getItemMeta().getDisplayName() : clicked.getType().toString());
 			}
 		}
 	}
