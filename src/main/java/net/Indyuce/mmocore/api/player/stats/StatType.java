@@ -121,7 +121,7 @@ public enum StatType {
 		FileConfiguration config = new ConfigFile("stats").getConfig();
 		for (StatType stat : values()) {
 			stat.defaultInfo = config.contains("default." + stat.name()) ? new LinearValue(config.getConfigurationSection("default." + stat.name())) : new LinearValue(0, 0);
-			stat.format = new DecimalFormat(config.contains("decimal-format." + stat.name()) ? config.getString("decimal-format." + stat.name()) : "0.#");
+			stat.format = MMOCore.plugin.configManager.newFormat(config.contains("decimal-format." + stat.name()) ? config.getString("decimal-format." + stat.name()) : "0.#");
 		}
 	}
 }

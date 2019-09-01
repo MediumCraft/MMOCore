@@ -115,6 +115,10 @@ public class ConfigManager {
 		}
 	}
 
+	public DecimalFormat newFormat(String pattern) {
+		return new DecimalFormat(pattern, formatSymbols);
+	}
+
 	private char getFirstChar(String str, char defaultChar) {
 		return str == null || str.isEmpty() ? defaultChar : str.charAt(0);
 	}
