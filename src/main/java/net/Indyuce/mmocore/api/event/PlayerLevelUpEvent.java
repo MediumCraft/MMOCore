@@ -27,6 +27,10 @@ public class PlayerLevelUpEvent extends PlayerDataEvent {
 		return level;
 	}
 
+	public int getGained() {
+		return level - getData().getLevel();
+	}
+
 	public boolean hasProfession() {
 		return profession != null;
 	}
