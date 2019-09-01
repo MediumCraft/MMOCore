@@ -49,7 +49,7 @@ triggers:
     - 'mana{operation=GIVE;amount=2-3}'
     
     level-up:
-    - 'command{format="mmocore admin skill-points %player% 1"}'
+    - 'command{format="mmocore admin skill-points give %player% 1"}'
 
 cast-particle:
     particle: REDSTONE

@@ -31,7 +31,7 @@ max-level: 100
 
 triggers:
     level-up:
-    - 'command{format="mmocore admin skill-points %player% 1"}'
+    - 'command{format="mmocore admin skill-points give %player% 1"}'
 
 mana:
     char: ■

@@ -22,10 +22,6 @@ mana:
     color: BLUE
     name: 'Mana'
 
-triggers:
-    level-up:
-    - 'command{format="mmocore admin skill-points %player% 1"}'
-
 # Experience sources for main class experience.
 main-exp-sources:
 - 'killmob{type=ZOMBIE;amount=1-3}'

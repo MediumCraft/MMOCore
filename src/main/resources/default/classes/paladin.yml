@@ -37,7 +37,7 @@ mana:
 
 triggers:
     level-up:
-    - 'command{format="mmocore admin skill-points %player% 1"}'
+    - 'command{format="mmocore admin skill-points give %player% 1"}'
     
     # Get some mana back when dealing magic damage.
     magic-damage:
