@@ -76,6 +76,15 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("class_points"))
 			return "" + PlayerData.get(player).getClassPoints();
 
+		else if (identifier.equals("skill_points"))
+			return "" + PlayerData.get(player).getSkillPoints();
+
+		else if (identifier.equals("attribute_points"))
+			return "" + PlayerData.get(player).getAttributePoints();
+
+		else if (identifier.equals("attribute_reallocation_points"))
+			return "" + PlayerData.get(player).getAttributeReallocationPoints();
+
 		else if (identifier.equals("mana"))
 			return "" + MMOCore.digit.format(PlayerData.get(player).getMana());
 
