@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,8 @@ public class ConfigManager {
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix;
 
-	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	private final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
 
 	private List<Integer> neededExp = new ArrayList<>();
 	private FileConfiguration messages;

@@ -1,15 +1,9 @@
 package net.Indyuce.mmocore.api.player.stats;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.ChatColor;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-
-import net.Indyuce.mmocore.api.math.format.MMOCoreDecimalFormat;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.stat.modifier.StatModifier;
 
@@ -21,8 +15,6 @@ public class PlayerStats {
 	 * plugins which can apply other stats onto the player.
 	 */
 	private final Map<String, StatInstance> extra = new HashMap<>();
-
-	private static final DecimalFormat decimal = new MMOCoreDecimalFormat("0.#");
 
 	public PlayerStats(PlayerData data) {
 		this.data = data;
@@ -39,23 +31,6 @@ public class PlayerStats {
 		StatInstance ins = new StatInstance(stat);
 		extra.put(stat.name(), ins);
 		return ins;
-	}
-
-	public String format(ChatColor color, Attribute attribute) {
-		AttributeInstance instance = data.getPlayer().getAttribute(attribute);
-		return format(color, instance.getBaseValue(), instance.getValue() - instance.getBaseValue(), decimal);
-	}
-
-	public String format(ChatColor color, StatType stat) {
-		return format(color, data.getProfess().calculateStat(stat, data.getLevel()), getExtraStat(stat), decimal);
-	}
-
-	public String format(ChatColor color, StatType stat, DecimalFormat format) {
-		return format(color, data.getProfess().calculateStat(stat, data.getLevel()), getExtraStat(stat), format);
-	}
-
-	public String format(ChatColor color, double base, double extra, DecimalFormat format) {
-		return "" + color + format.format(base + extra) + ChatColor.GRAY + " (" + color + decimal.format(base) + ChatColor.GRAY + "+" + color + decimal.format(extra) + ChatColor.GRAY + ")";
 	}
 
 	/*

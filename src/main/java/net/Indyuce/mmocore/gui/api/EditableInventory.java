@@ -10,7 +10,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.math.format.MMOCoreDecimalFormat;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.TriggerItem;
 
@@ -26,7 +25,7 @@ public abstract class EditableInventory {
 	 */
 	private final Set<InventoryItem> items = new LinkedHashSet<>();
 
-	protected static final DecimalFormat decimal = new MMOCoreDecimalFormat("0.#");
+	protected static final DecimalFormat decimal = MMOCore.plugin.configManager.decimal;
 
 	public EditableInventory(String id) {
 		this.id = id;
