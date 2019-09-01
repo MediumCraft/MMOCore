@@ -12,13 +12,13 @@ public class Parameter {
 	// private final ParameterType type;ParameterType type,
 	private final Consumer<List<String>> autoComplete;
 
-	public static final Parameter PROFESSION = new Parameter("<profession/main>", (list) -> {
+	public static final Parameter PROFESSION = new Parameter("<profession/main>", list -> {
 		MMOCore.plugin.professionManager.getAll().forEach(profession -> list.add(profession.getId()));
 		list.add("main");
 	});
-	public static final Parameter PLAYER = new Parameter("<player>", (list) -> Bukkit.getOnlinePlayers().forEach(online -> list.add(online.getName())));
-	public static final Parameter PLAYER_OPTIONAL = new Parameter("(player)", (list) -> Bukkit.getOnlinePlayers().forEach(online -> list.add(online.getName())));
-	public static final Parameter AMOUNT = new Parameter("<amount>", (list) -> {
+	public static final Parameter PLAYER = new Parameter("<player>", list -> Bukkit.getOnlinePlayers().forEach(online -> list.add(online.getName())));
+	public static final Parameter PLAYER_OPTIONAL = new Parameter("(player)", list -> Bukkit.getOnlinePlayers().forEach(online -> list.add(online.getName())));
+	public static final Parameter AMOUNT = new Parameter("<amount>", list -> {
 		for (int j = 0; j <= 10; j++)
 			list.add("" + j);
 	});
