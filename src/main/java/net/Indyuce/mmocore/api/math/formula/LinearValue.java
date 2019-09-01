@@ -1,14 +1,13 @@
 package net.Indyuce.mmocore.api.math.formula;
 
-import java.text.DecimalFormat;
-
 import org.bukkit.configuration.ConfigurationSection;
+
+import net.Indyuce.mmocore.MMOCore;
 
 public class LinearValue {
 	private final double base, perLevel, min, max;
 	private final boolean hasmin, hasmax;
 
-	private static final DecimalFormat format = new DecimalFormat("0.###");
 
 	/*
 	 * a number which depends on the player level. it can be used as a skill
@@ -76,7 +75,7 @@ public class LinearValue {
 	}
 
 	public String getDisplay(int level) {
-		return format.format(calculate(level));
+		return MMOCore.plugin.configManager.decimals.format(calculate(level));
 	}
 
 	public double calculate(int level) {

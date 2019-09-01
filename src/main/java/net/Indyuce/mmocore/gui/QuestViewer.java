@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.gui;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -153,7 +152,7 @@ public class QuestViewer extends EditableInventory {
 
 			if (data.getQuestData().hasCurrent(quest)) {
 				holders.register("objective", data.getQuestData().getCurrent().getFormattedLore());
-				holders.register("progress", new DecimalFormat("0").format((double) data.getQuestData().getCurrent().getObjectiveNumber() / quest.getObjectives().size() * 100));
+				holders.register("progress", (int) (double) data.getQuestData().getCurrent().getObjectiveNumber() / quest.getObjectives().size() * 100);
 			}
 
 			if (data.getQuestData().hasFinished(quest)) {
@@ -271,107 +270,4 @@ public class QuestViewer extends EditableInventory {
 			}
 		}
 	}
-
-	//
-	// @Override
-	// public Inventory getInventory() {
-	// Inventory inv = Bukkit.createInventory(this, 54, "Quests");
-	//
-
-	// for (int j = (page - 1) * 21; j < Math.min(21 * page, quests.size());
-	// j++) {
-	// Quest quest = quests.get(j);
-	//
-	// ItemStack item = new ItemStack(Material.BOOK);
-	// ItemMeta meta = item.getItemMeta();
-	// meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-	//
-	// if (quest.hasParent() &&
-	// !playerData.getQuestData().checkParentAvailability(quest)) {
-	// item.setType(Material.PAPER);
-	// meta.setDisplayName(ChatColor.RED + "Not Available");
-	// item.setItemMeta(meta);
-	//
-	// inv.setItem(slots[j % 21], item);
-	// continue;
-	// }
-	//
-	// meta.setDisplayName(ChatColor.GREEN + quest.getName());
-	// List<String> lore = new ArrayList<>();
-	// for (String line : quest.getLore())
-	// lore.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',
-	// line));
-	//
-	// boolean current;
-	// if (current = playerData.getQuestData().hasCurrent(quest)) {
-	// meta.addEnchant(Enchantment.DURABILITY, 1, true);
-	// lore.add("");
-	// lore.add(ChatColor.YELLOW + "Quest Started!");
-	// lore.add(ChatColor.GRAY + AltChar.listDash + " Progression: " +
-	// ChatColor.YELLOW + new DecimalFormat("0").format((double)
-	// playerData.getQuestData().getCurrent().getObjectiveNumber() /
-	// quest.getObjectives().size() * 100) + "%");
-	// lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + AltChar.listDash + " "
-	// + playerData.getQuestData().getCurrent().getFormattedLore());
-	// }
-	//
-	// int restrictions = quest.getLevelRestrictions().size() +
-	// (quest.getLevelRestriction(null) > 0 ? 1 : 0);
-	// int non = (playerData.getLevel() >= quest.getLevelRestriction(null) ? 1 :
-	// 0) + quest.getLevelRestrictions().stream().filter(type ->
-	// playerData.getCollectionSkills().getLevel(type) >=
-	// quest.getLevelRestriction(type)).collect(Collectors.toSet()).size();
-	//
-	// if (playerData.getQuestData().hasFinished(quest)) {
-	// lore.add("");
-	// lore.add(ChatColor.DARK_GRAY + "You've completed this quest on the " +
-	// new SimpleDateFormat("MMM d
-	// yyyy").format(playerData.getQuestData().getFinishDate(quest)));
-	// if (!quest.isRedoable())
-	// lore.add(ChatColor.DARK_GRAY + "You can't do this quest twice.");
-	// else if (!playerData.getQuestData().checkCooldownAvailability(quest))
-	// lore.add(ChatColor.DARK_GRAY + "You can start the quest in " + new
-	// DelayFormat(2).format(playerData.getQuestData().getDelayFeft(quest)));
-	// else
-	// lore.add(ChatColor.DARK_GRAY + "You can start this quest.");
-	// }
-	//
-	// if (restrictions > 0) {
-	// lore.add("");
-	// lore.add(ChatColor.GRAY + "Level Requirements (" + non + "/" +
-	// restrictions + "):");
-	// if (quest.getLevelRestriction(null) > 0)
-	// lore.add(booleanSymbol(playerData.getLevel() >=
-	// quest.getLevelRestriction(null)) + " Level: " +
-	// quest.getLevelRestriction(null));
-	// for (Profession profession : quest.getLevelRestrictions())
-	// lore.add(booleanSymbol(playerData.getCollectionSkills().getLevel(profession)
-	// >= quest.getLevelRestriction(profession)) + " " + profession.getName() +
-	// " Level: " + quest.getLevelRestriction(profession));
-	// }
-	//
-	// if (current) {
-	// lore.add("");
-	// lore.add(ChatColor.RED + AltChar.listDash + " Right click to cancel.");
-	// }
-	//
-	// meta.setLore(lore);
-	// item.setItemMeta(meta);
-	//
-	// inv.setItem(slots[j % 21], NBTItem.get(item).add(new ItemTag("questId",
-	// quest.getId())).toItem());
-	// }
-	//
-	// if (page > 1)
-	// inv.setItem(18, prev = new ConfigItem("PREVIOUS_PAGE").build());
-	// if (21 * page < quests.size())
-	// inv.setItem(26, next = new ConfigItem("NEXT_PAGE").build());
-	//
-	// return inv;
-	// }
-	//
-	// private String booleanSymbol(boolean bool) {
-	// return bool ? ChatColor.GREEN + AltChar.ok : ChatColor.RED + AltChar.no;
-	// }
-	//
 }
