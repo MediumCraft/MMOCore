@@ -82,10 +82,10 @@ public class DefaultMMOLoader implements MMOLoader {
 		if (config.getKey().equals("goto"))
 			return new GoToObjective(section, config);
 
-		if (config.getKey().equals("mine"))
+		if (config.getKey().equals("mineblock"))
 			return new MineBlockObjective(section, config);
 
-		if (config.getKey().equals("kill"))
+		if (config.getKey().equals("killmob"))
 			return new KillMobObjective(section, config);
 
 		if (config.getKey().equals("clickon"))
