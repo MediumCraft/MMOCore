@@ -11,11 +11,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.manager.CustomBlockManager.BlockInfo;
 import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
 
@@ -29,7 +32,6 @@ public class BlockListener implements Listener {
 			return;
 
 		Block block = event.getBlock();
-
 		/*
 		 * if custom mining enabled, check for item breaking restrictions
 		 */
@@ -79,7 +81,10 @@ public class BlockListener implements Listener {
 		 */
 		if (info.hasTriggers()) {
 			PlayerData playerData = PlayerData.get(player);
-			info.getTriggers().forEach(trigger -> trigger.apply(playerData));
+			info.getTriggers().forEach(trigger -> {
+				if(!block.hasMetadata("player_placed") && trigger instanceof ExperienceTrigger)
+					trigger.apply(playerData);
+			});
 			if (info.hasExperience() && MMOCore.plugin.hasHolograms())
 				MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, .5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()), player);
 		}
@@ -99,6 +104,11 @@ public class BlockListener implements Listener {
 		 */
 		if (customMine && info.hasRegen())
 			MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(event.getBlock().getLocation()));
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void b(BlockPlaceEvent event) {
+		event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 	}
 
 	private Location getSafeDropLocation(Block block, boolean self) {
