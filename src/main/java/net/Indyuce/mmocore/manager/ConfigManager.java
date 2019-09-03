@@ -29,6 +29,7 @@ public class ConfigManager {
 	public boolean overrideVanillaExp, hotbarSwap;
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix;
+	public ChatColor manaFull, manaHalf, manaEmpty, staminaFull, staminaHalf, staminaEmpty;
 
 	private final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
@@ -99,6 +100,13 @@ public class ConfigManager {
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
 		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
 
+		manaFull = getColorOrDefault("mana-whole", ChatColor.BLUE);
+		manaHalf = getColorOrDefault("mana-half", ChatColor.AQUA);
+		manaEmpty = getColorOrDefault("mana-empty", ChatColor.WHITE);
+		staminaFull = getColorOrDefault("stamina-whole", ChatColor.BLUE);
+		staminaHalf = getColorOrDefault("stamina-half", ChatColor.AQUA);
+		staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
+		
 		neededExp.clear();
 		int line = 0;
 		try {
@@ -115,6 +123,16 @@ public class ConfigManager {
 		}
 	}
 
+	private ChatColor getColorOrDefault(String configKey, ChatColor defaultColor) {
+		ChatColor newColor = ChatColor.valueOf(MMOCore.plugin.getConfig().getString("resource-bar-colors." + configKey).toUpperCase());
+
+		if(newColor != null)
+			return newColor;
+			
+		MMOCore.log(Level.WARNING, "Resource Bar color config '" + configKey + "' is invalid... Using default color!");
+		return defaultColor;
+	}
+	
 	public DecimalFormat newFormat(String pattern) {
 		return new DecimalFormat(pattern, formatSymbols);
 	}

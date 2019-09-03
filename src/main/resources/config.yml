@@ -78,3 +78,13 @@ hotbar-swap: true
 # Use this option if you're having issue with Anvil GUIs.
 # This replaces anvil inputs by chat inputs.
 use-chat-input: true
+
+# Change this to the name of the color you want for
+# the different resource bar placeholders
+resource-bar-colors:
+    mana-whole: 'BLUE'
+    mana-half: 'AQUA'
+    mana-empty: 'WHITE'
+    stamina-whole: 'LIME'
+    stamina-half: 'GREEN'
+    stamina-empty: 'WHITE'
