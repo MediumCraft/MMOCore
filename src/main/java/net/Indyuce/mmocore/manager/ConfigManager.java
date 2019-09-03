@@ -103,8 +103,8 @@ public class ConfigManager {
 		manaFull = getColorOrDefault("mana-whole", ChatColor.BLUE);
 		manaHalf = getColorOrDefault("mana-half", ChatColor.AQUA);
 		manaEmpty = getColorOrDefault("mana-empty", ChatColor.WHITE);
-		staminaFull = getColorOrDefault("stamina-whole", ChatColor.BLUE);
-		staminaHalf = getColorOrDefault("stamina-half", ChatColor.AQUA);
+		staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
+		staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
 		staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
 		
 		neededExp.clear();
@@ -124,13 +124,16 @@ public class ConfigManager {
 	}
 
 	private ChatColor getColorOrDefault(String configKey, ChatColor defaultColor) {
-		ChatColor newColor = ChatColor.valueOf(MMOCore.plugin.getConfig().getString("resource-bar-colors." + configKey).toUpperCase());
-
-		if(newColor != null)
-			return newColor;
-			
-		MMOCore.log(Level.WARNING, "Resource Bar color config '" + configKey + "' is invalid... Using default color!");
-		return defaultColor;
+		ChatColor newColor;
+		try {
+			newColor = ChatColor.valueOf(MMOCore.plugin.getConfig().getString("resource-bar-colors." + configKey).toUpperCase());
+		}
+		catch(Exception e) {
+			MMOCore.log(Level.WARNING, "Resource Bar color config '" + configKey + "' is invalid... Using default color.");
+			newColor = defaultColor;
+		}
+		
+		return newColor;
 	}
 	
 	public DecimalFormat newFormat(String pattern) {
