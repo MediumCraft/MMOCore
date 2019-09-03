@@ -85,6 +85,6 @@ resource-bar-colors:
     mana-whole: 'BLUE'
     mana-half: 'AQUA'
     mana-empty: 'WHITE'
-    stamina-whole: 'LIME'
-    stamina-half: 'GREEN'
+    stamina-whole: 'GREEN'
+    stamina-half: 'DARK_GREEN'
     stamina-empty: 'WHITE'
