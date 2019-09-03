@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.PlayerQuests;
 import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.manager.ConfigManager;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
 
@@ -95,7 +96,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			PlayerData data = PlayerData.get(player);
 			double ratio = 20 * data.getMana() / data.getStats().getStat(StatType.MAX_MANA);
 			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
+				format += (ratio >= j ? MMOCore.plugin.configManager.manaFull : ratio >= j - .5 ? MMOCore.plugin.configManager.manaHalf : MMOCore.plugin.configManager.manaEmpty) + AltChar.listSquare;
 			return format;
 		}
 
@@ -110,7 +111,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			PlayerData data = PlayerData.get(player);
 			double ratio = 20 * data.getStamina() / data.getStats().getStat(StatType.MAX_STAMINA);
 			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
+				format += (ratio >= j ? MMOCore.plugin.configManager.staminaFull : ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty) + AltChar.listSquare;
 			return format;
 		}
 
