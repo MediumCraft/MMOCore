@@ -11,7 +11,6 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.PlayerQuests;
 import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.manager.ConfigManager;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
 
