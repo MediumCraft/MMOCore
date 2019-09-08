@@ -88,14 +88,14 @@ public class EditableFriendList extends EditableInventory {
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
 
-			/*
-			 * run async to save performance
-			 */
-			if (meta instanceof SkullMeta) {
-				((SkullMeta) meta).setOwningPlayer(friend);
-				disp.setItemMeta(meta);
-			}
 
+			if (meta instanceof SkullMeta) {
+				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+					((SkullMeta) meta).setOwningPlayer(friend);
+					disp.setItemMeta(meta);
+				});
+			}
+			
 			return NBTItem.get(disp).add(new ItemTag("uuid", friend.getUniqueId().toString())).toItem();
 		}
 	}
@@ -212,6 +212,13 @@ public class EditableFriendList extends EditableInventory {
 
 					if (playerData.hasFriend(target.getUniqueId())) {
 						player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("already-friends", "player", target.getName()));
+						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+						open();
+						return;
+					}
+
+					if (playerData.getUniqueId().equals(target.getUniqueId())) {
+						player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("yourself", "player", target.getName()));
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
 						return;
