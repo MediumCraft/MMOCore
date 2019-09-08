@@ -218,7 +218,7 @@ public class EditableFriendList extends EditableInventory {
 					}
 
 					if (playerData.getUniqueId().equals(target.getUniqueId())) {
-						player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("yourself", "player", target.getName()));
+						player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("cant-request-to-yourself"));
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
 						return;

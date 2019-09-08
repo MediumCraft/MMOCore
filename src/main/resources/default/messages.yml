@@ -39,6 +39,7 @@ player-input:
     chat:
         friend-request: '&eWrite in the chat the player name.'
         party-invite: '&eWrite in the chat the player you want to invite.'
+        cancel: '&eWrite &c''cancel'' &eto cancel.'
 
 # Spell Casting
 casting:

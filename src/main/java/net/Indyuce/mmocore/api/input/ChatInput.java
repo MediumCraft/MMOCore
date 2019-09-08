@@ -16,6 +16,7 @@ public class ChatInput extends PlayerInput {
 
 		player.closeInventory();
 		player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("player-input.chat." + type.getLowerCaseName()));
+		player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("player-input.chat.cancel"));
 	}
 
 	@Override
@@ -28,7 +29,9 @@ public class ChatInput extends PlayerInput {
 		if (event.getPlayer().equals(getPlayer())) {
 			close();
 			event.setCancelled(true);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> output(event.getMessage()));
+
+			if(!event.getMessage().equals("cancel"))
+				Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> output(event.getMessage()));
 		}
 	}
 
