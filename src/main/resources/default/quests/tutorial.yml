@@ -39,7 +39,7 @@ objectives:
         - 'message{format="&aBlacksmith> &fCould you please get me 3 oak logs?"}'
         - 'sound{sound=ENTITY_EXPERIENCE_ORB_PICKUP}'
     2:
-        type: 'mine{type="OAK_LOG";amount=3}'
+        type: 'mineblock{type="OAK_LOG";amount=3}'
         lore: 'Get three oak logs!'
         triggers:
         - 'message{format="&aBlacksmith> &fGood job, now bring these logs back to me!"}'
