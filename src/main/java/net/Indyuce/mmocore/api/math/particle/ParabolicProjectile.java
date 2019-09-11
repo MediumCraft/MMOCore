@@ -29,11 +29,11 @@ public class ParabolicProjectile extends BukkitRunnable {
 	}
 
 	public ParabolicProjectile(Location source, Location target, Particle particle, Runnable end, int speed, Color color, float size) {
-		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, speed, (loc) -> loc.getWorld().spawnParticle(particle, loc, 1, new Particle.DustOptions(color, size)));
+		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, speed, (loc) -> MMOCore.plugin.version.getVersionWrapper().spawnParticle(particle, loc, size, color));
 	}
 
 	public ParabolicProjectile(Location source, Location target, Runnable end, Color color) {
-		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, 1, (loc) -> loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(color, 1)));
+		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, 1, (loc) -> MMOCore.plugin.version.getVersionWrapper().spawnParticle(Particle.REDSTONE, loc, 1, color));
 	}
 
 	public ParabolicProjectile(Location source, Location target, Particle particle) {

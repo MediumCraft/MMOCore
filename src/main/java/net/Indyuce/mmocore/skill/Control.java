@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
@@ -20,11 +19,13 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
+import net.Indyuce.mmocore.version.VersionMaterial;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Control extends Skill {
 	public Control() {
 		super();
-		setMaterial(Material.MAGENTA_DYE);
+		setMaterial(VersionMaterial.MAGENTA_DYE.toMaterial());
 		setLore("Your target is temporarily slowed for &8{duration} &7seconds.", "As soon as you left click, it gets", "pushed back where you are looking at.", "Knockback force: &f{knockback}%", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("cooldown", new LinearValue(18, -.3, 10, 20));
@@ -79,7 +80,7 @@ public class Control extends Skill {
 					entity.removePotionEffect(PotionEffectType.SLOW);
 
 				entity.getWorld().spawnParticle(Particle.SPELL_WITCH, entity.getLocation().add(0, entity.getHeight() / 2, 0), 16);
-				entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 2, 1);
+				entity.getWorld().playSound(entity.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 2, 1);
 				close();
 			}
 		}

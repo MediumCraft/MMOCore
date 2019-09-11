@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.skill;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -26,11 +25,13 @@ import net.Indyuce.mmocore.api.player.stats.TemporaryStats;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.Indyuce.mmocore.version.VersionMaterial;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Power_Mark extends Skill implements Listener {
 	public Power_Mark() {
 		super();
-		setMaterial(Material.WITHER_SKELETON_SKULL);
+		setMaterial(VersionMaterial.WITHER_SKELETON_SKULL.toMaterial());
 		setLore("Attacking an enemy applies a deadly", "magical mark which spreads accross the", "ground. This mark accumulates &6{ratio}%", "of the damage dealt to the initial", "target over &6{duration} &7seconds.", "", "After this duration, the mark bursts, dealing", "accumulated damage to nearby enemies and", "stunning them for &6{stun}+ &7seconds.", "", "The more damage, the longer the stun.", "", "&e{cooldown}s Cooldown");
 		setPassive();
 
@@ -122,7 +123,7 @@ public class Power_Mark extends Skill implements Listener {
 			}
 
 			if (j % 2 == 0 && j > 20 * (duration - 2))
-				loc.getWorld().playSound(loc, Sound.BLOCK_NOTE_BLOCK_PLING, 1, (float) (1 + (j - 20 * (duration - 2)) / 40));
+				loc.getWorld().playSound(loc, VersionSound.BLOCK_NOTE_BLOCK_PLING.toSound(), 1, (float) (1 + (j - 20 * (duration - 2)) / 40));
 
 			double a = (double) j / 16;
 			double r = Math.sqrt(Math.min(duration * 2 - (double) j / 10, 4)) * 2;

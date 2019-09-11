@@ -45,6 +45,7 @@ import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
+import net.Indyuce.mmocore.version.VersionSound;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -433,15 +434,15 @@ public class PlayerData {
 				if (t++ >= 100) {
 					player.teleport(waypoint.getLocation());
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
-					player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, .5f);
+					player.playSound(player.getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, .5f);
 					cancel();
 					return;
 				}
 
-				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, (float) (t / Math.PI * .015 + .5));
+				player.playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1, (float) (t / Math.PI * .015 + .5));
 				double r = Math.sin((double) t / 100 * Math.PI);
 				for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
-					player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 0, new Particle.DustOptions(Color.PURPLE, 1.25f));
+					MMOCore.plugin.version.getVersionWrapper().spawnParticle(Particle.REDSTONE, player.getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 1.25f, Color.PURPLE);
 			}
 		}.runTaskTimer(MMOCore.plugin, 0, 1);
 	}

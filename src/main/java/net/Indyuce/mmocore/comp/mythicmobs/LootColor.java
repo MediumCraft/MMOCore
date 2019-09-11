@@ -27,6 +27,6 @@ public class LootColor extends BukkitRunnable {
 			return;
 		}
 
-		item.getWorld().spawnParticle(Particle.REDSTONE, item.getLocation(), 0, new Particle.DustOptions(color, 1.3f));
+		MMOCore.plugin.version.getVersionWrapper().spawnParticle(Particle.REDSTONE, item.getLocation(), 1.3f, color);
 	}
 }

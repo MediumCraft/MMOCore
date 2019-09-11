@@ -5,8 +5,10 @@ import java.util.Set;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.util.BoundingBox;
 
 import net.Indyuce.mmocore.api.item.NBTItem;
 import net.minecraft.server.v1_13_R2.BlockPosition;
@@ -173,5 +175,10 @@ public class NMSHandler_1_13_R2 implements NMSHandler {
 			nms.setTag(compound);
 			return CraftItemStack.asBukkitCopy(nms);
 		}
+	}
+
+	@Override
+	public BoundingBox getBoundingBox(Entity target) {
+		return target.getBoundingBox();
 	}
 }

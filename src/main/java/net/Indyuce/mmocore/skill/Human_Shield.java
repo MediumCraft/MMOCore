@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -18,11 +17,12 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
+import net.Indyuce.mmocore.version.VersionMaterial;
 
 public class Human_Shield extends Skill {
 	public Human_Shield() {
 		super();
-		setMaterial(Material.TOTEM_OF_UNDYING);
+		setMaterial(VersionMaterial.TOTEM_OF_UNDYING.toMaterial());
 		setLore("Casts a protection charm onto target ally,", "reducing damage taken by &a{reduction}%&7.", "&a{redirect}% &7of this damage is redirected to you.", "Charm is cancelled when reaching &c{low}%&7 health.", "Lasts &a{duration} &7seconds.", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("cooldown", new LinearValue(18, -.3, 14, 18));

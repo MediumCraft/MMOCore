@@ -3,17 +3,22 @@ package net.Indyuce.mmocore.version;
 import net.Indyuce.mmocore.version.texture.CustomModelDataHandler;
 import net.Indyuce.mmocore.version.texture.TextureByDurabilityHandler;
 import net.Indyuce.mmocore.version.texture.TextureHandler;
+import net.Indyuce.mmocore.version.wrapper.DefaultVersionWrapper;
+import net.Indyuce.mmocore.version.wrapper.LegacyVersionWrapper;
+import net.Indyuce.mmocore.version.wrapper.VersionWrapper;
 
 public class ServerVersion {
 	private final String version;
 	private final int[] integers;
 	private final TextureHandler textureHandler;
+	private final VersionWrapper versionWrapper;
 
 	public ServerVersion(Class<?> clazz) {
 		this.version = clazz.getPackage().getName().replace(".", ",").split(",")[3];
 		String[] split = version.substring(1).split("\\_");
 		this.integers = new int[] { Integer.parseInt(split[0]), Integer.parseInt(split[1]) };
 
+		versionWrapper = isBelowOrEqual(1, 12) ? new LegacyVersionWrapper() : new DefaultVersionWrapper();
 		textureHandler = isBelowOrEqual(1, 13) ? new TextureByDurabilityHandler() : new CustomModelDataHandler();
 	}
 
@@ -40,6 +45,10 @@ public class ServerVersion {
 
 	public TextureHandler getTextureHandler() {
 		return textureHandler;
+	}
+
+	public VersionWrapper getVersionWrapper() {
+		return versionWrapper;
 	}
 
 	@Override

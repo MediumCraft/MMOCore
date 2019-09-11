@@ -16,6 +16,7 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
 import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Fire_Storm extends Skill {
 	public Fire_Storm() {
@@ -40,7 +41,7 @@ public class Fire_Storm extends Skill {
 		double damage = cast.getModifier("damage");
 		int ignite = (int) (20 * cast.getModifier("ignite"));
 
-		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
+		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, 1);
 		new BukkitRunnable() {
 			int j = 0;
 
@@ -55,7 +56,7 @@ public class Fire_Storm extends Skill {
 
 				data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
 				new ParabolicProjectile(data.getPlayer().getLocation().add(0, 1, 0), target.getLocation().add(0, target.getHeight() / 2, 0), randomVector(data.getPlayer()), () -> {
-					target.getWorld().playSound(target.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1, 2);
+					target.getWorld().playSound(target.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_TWINKLE.toSound(), 1, 2);
 					target.getWorld().spawnParticle(Particle.SMOKE_NORMAL, target.getLocation().add(0, target.getHeight() / 2, 0), 8, 0, 0, 0, .15);
 					MMOCore.plugin.damage.damage(data, target, damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL);
 					target.setFireTicks(ignite);

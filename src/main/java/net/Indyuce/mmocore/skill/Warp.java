@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.api.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Warp extends Skill {
 	public Warp() {
@@ -40,7 +41,7 @@ public class Warp extends Skill {
 				data.getPlayer().teleport(loc);
 				data.getPlayer().getWorld().spawnParticle(Particle.EXPLOSION_LARGE, data.getPlayer().getLocation().add(0, 1, 0), 0);
 				data.getPlayer().getWorld().spawnParticle(Particle.SPELL_INSTANT, data.getPlayer().getLocation().add(0, 1, 0), 32, 0, 0, 0, .1);
-				data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+				data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, 1);
 			}
 		}, 2, Particle.SPELL_INSTANT);
 		return cast;

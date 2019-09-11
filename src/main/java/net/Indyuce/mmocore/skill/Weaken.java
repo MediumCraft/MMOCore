@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,11 +18,12 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
+import net.Indyuce.mmocore.version.VersionMaterial;
 
 public class Weaken extends Skill {
 	public Weaken() {
 		super();
-		setMaterial(Material.MAGENTA_DYE);
+		setMaterial(VersionMaterial.MAGENTA_DYE.toMaterial());
 		setLore("The target is weakened for", "&8{duration} &7seconds and is dealt", "&7extra &8{ratio}% &7damage.", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("cooldown", new LinearValue(20, -.1, 5, 20));

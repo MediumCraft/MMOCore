@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.gui;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +21,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.version.VersionMaterial;
 
 public class PlayerStats extends EditableInventory {
 	public PlayerStats() {
@@ -262,7 +262,7 @@ public class PlayerStats extends EditableInventory {
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
 			ItemStack item = super.display(inv, n);
-			if (item.getType() == Material.PLAYER_HEAD) {
+			if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
 				SkullMeta meta = (SkullMeta) item.getItemMeta();
 				meta.setOwningPlayer(inv.getPlayer());
 				item.setItemMeta(meta);

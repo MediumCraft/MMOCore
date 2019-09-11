@@ -21,6 +21,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.version.VersionMaterial;
 import net.Indyuce.mmocore.version.nms.ItemTag;
 
 public class ConfigItem {
@@ -101,7 +102,7 @@ public class ConfigItem {
 		if (meta instanceof Damageable)
 			((Damageable) meta).setDamage(damage);
 
-		if (item.getType() == Material.PLAYER_HEAD && texture != null) {
+		if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial() && texture != null) {
 			try {
 				Field profileField = meta.getClass().getDeclaredField("profile");
 				profileField.setAccessible(true);

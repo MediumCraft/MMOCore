@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,7 +27,7 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 
 		if (config.contains("enchant"))
 			for (String key : config.getString("enchant").split("\\,"))
-				enchants.add(Enchantment.getByKey(NamespacedKey.minecraft(key.toLowerCase().replace("-", "_"))));
+				enchants.add(MMOCore.plugin.version.getVersionWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_")));
 	}
 
 	@Override

@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -28,6 +27,7 @@ import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class FishingListener implements Listener {
 	private Set<UUID> fishing = new HashSet<>();
@@ -116,7 +116,7 @@ public class FishingListener implements Listener {
 
 		@EventHandler
 		public void a(PlayerFishEvent event) {
-			if (event.getPlayer().equals(player) && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || event.getState() == State.REEL_IN)) {
+			if (event.getPlayer().equals(player) && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || (MMOCore.plugin.version.isStrictlyHigher(1, 12) ? event.getState() == State.valueOf("REEL_IN") : false))) {
 
 				/*
 				 * lose the catch if the current fish is gone!
@@ -169,7 +169,7 @@ public class FishingListener implements Listener {
 				vec.setX(vec.getX() * .08);
 				vec.setZ(vec.getZ() * .08);
 				item.setVelocity(vec);
-				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 0);
+				player.getWorld().playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_HAT.toSound(), 1, 0);
 				for (int j = 0; j < 16; j++)
 					location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (random.nextDouble() - .5), 2, 4 * (random.nextDouble() - .5), .05);
 

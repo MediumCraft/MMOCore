@@ -1,8 +1,10 @@
 package net.Indyuce.mmocore.version.nms;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 
 import net.Indyuce.mmocore.api.item.NBTItem;
 
@@ -34,4 +36,6 @@ public interface NMSHandler {
 	Inventory toBukkitInventory(Object container);
 
 	Object newContainerAnvil(Player player);
+
+	BoundingBox getBoundingBox(Entity target);
 }

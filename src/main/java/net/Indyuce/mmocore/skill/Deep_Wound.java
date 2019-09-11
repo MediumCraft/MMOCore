@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
@@ -35,7 +36,7 @@ public class Deep_Wound extends Skill {
 		LivingEntity target = cast.getTarget();
 		target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 2, 2);
 		target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, target.getHeight() / 2, 0), 32, 0, 0, 0, .7);
-		target.getWorld().spawnParticle(Particle.BLOCK_CRACK, target.getLocation().add(0, target.getHeight() / 2, 0), 32, 0, 0, 0, 2, Material.REDSTONE_BLOCK.createBlockData());
+		target.getWorld().spawnParticle(Particle.BLOCK_CRACK, target.getLocation().add(0, target.getHeight() / 2, 0), 32, 0, 0, 0, 2, new ItemStack(Material.REDSTONE_BLOCK));
 
 		double max = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		double ratio = (max - target.getHealth()) / max;

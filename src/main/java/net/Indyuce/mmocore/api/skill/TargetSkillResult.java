@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.api.skill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.RayTraceResult;
 
-import net.Indyuce.mmocore.MMOCoreUtils;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 
@@ -14,7 +14,7 @@ public class TargetSkillResult extends SkillResult {
 		super(data, skill);
 
 		if (isSuccessful()) {
-			RayTraceResult result = data.getPlayer().getWorld().rayTraceEntities(data.getPlayer().getEyeLocation(), data.getPlayer().getEyeLocation().getDirection(), range, (entity) -> MMOCoreUtils.canTarget(data.getPlayer(), entity));
+			RayTraceResult result = MMOCore.plugin.version.getVersionWrapper().rayTraceEntities(data.getPlayer(), data.getPlayer().getEyeLocation().getDirection(), range);
 			if (result == null)
 				abort(CancelReason.OTHER);
 			else

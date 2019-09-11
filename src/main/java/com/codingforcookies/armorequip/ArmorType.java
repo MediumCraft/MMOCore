@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import net.Indyuce.mmocore.version.VersionMaterial;
+
 /**
  * @author Arnah
  * @since Jul 30, 2015
@@ -46,7 +48,7 @@ public enum ArmorType {
 
 		Material type = item.getType();
 		String name = type.name();
-		if (name.endsWith("HELMET") || name.endsWith("SKULL") || name.endsWith("HEAD") || type == Material.PLAYER_HEAD || type == Material.PUMPKIN)
+		if (name.endsWith("HELMET") || name.endsWith("SKULL") || name.endsWith("HEAD") || type == VersionMaterial.PLAYER_HEAD.toMaterial() || type == Material.PUMPKIN)
 			return HELMET;
 
 		else if (name.endsWith("CHESTPLATE"))

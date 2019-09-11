@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.skill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -24,11 +23,13 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.Indyuce.mmocore.version.VersionMaterial;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Fire_Rage extends Skill {
 	public Fire_Rage() {
 		super();
-		setMaterial(Material.FIRE_CHARGE);
+		setMaterial(VersionMaterial.FIRE_CHARGE.toMaterial());
 		setLore("For {duration} seconds, you slow down and are able", "to cast up to {count} fireballs by left clicking.", "", "Fireballs deal &c{damage} &7damage upon contact", "and ignite your target for &c{ignite} &7seconds.", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("duration", new LinearValue(8, 0));
@@ -110,7 +111,7 @@ public class Fire_Rage extends Skill {
 				data.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 			}
 			
-			data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, last ? 0 : 1);
+			data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, last ? 0 : 1);
 			new BukkitRunnable() {
 				int j = 0;
 				Vector vec = data.getPlayer().getEyeLocation().getDirection();
@@ -126,9 +127,9 @@ public class Fire_Rage extends Skill {
 						loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_AMBIENT, 2, 1);
 					loc.getWorld().spawnParticle(Particle.FLAME, loc, 4, .1, .1, .1, 0);
 					loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
-
+					
 					for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-						if (target.getBoundingBox().expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
+						if (MMOCore.plugin.nms.getBoundingBox(target).expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
 							loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 							loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 							loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);

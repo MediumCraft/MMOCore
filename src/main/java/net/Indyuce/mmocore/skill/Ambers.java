@@ -80,7 +80,7 @@ public class Ambers extends Skill implements Listener {
 
 			for (int j = 0; j < 5; j++)
 				loc.getWorld().spawnParticle(Particle.SPELL_MOB, loc, 0, 1, 0.647, 0, 1);
-			loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 0, new Particle.DustOptions(Color.ORANGE, 1.3f));
+			MMOCore.plugin.version.getVersionWrapper().spawnParticle(Particle.REDSTONE, loc, 1.3f, Color.ORANGE);
 		}
 	}
 }

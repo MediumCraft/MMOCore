@@ -9,6 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 
+import net.Indyuce.mmocore.MMOCore;
+
 public class CastingParticle {
 	private final Consumer<Location> display;
 
@@ -23,7 +25,7 @@ public class CastingParticle {
 			final float size = (float) config.getDouble("size") == 0 ? 1 : (float) Math.max(config.getDouble("size"), 0);
 			Color color = Color.fromRGB(config.getInt("color.red"), config.getInt("color.green"), config.getInt("color.blue"));
 
-			display = (loc) -> loc.getWorld().spawnParticle(particle, loc, 0, new Particle.DustOptions(color, size));
+			display = (loc) -> MMOCore.plugin.version.getVersionWrapper().spawnParticle(particle, loc, size, color);
 			return;
 		}
 
@@ -32,7 +34,7 @@ public class CastingParticle {
 			Validate.notNull(format, "Could not read material name");
 			Material material = Material.valueOf(format.toUpperCase().replace("-", "_").replace(" ", "_"));
 
-			display = (loc) -> loc.getWorld().spawnParticle(particle, loc, 0, material.createBlockData());
+			display = (loc) -> MMOCore.plugin.version.getVersionWrapper().spawnParticle(particle, loc, material);
 			return;
 		}
 

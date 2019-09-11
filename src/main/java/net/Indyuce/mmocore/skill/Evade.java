@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.skill;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,6 +16,7 @@ import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Evade extends Skill {
 	public Evade() {
@@ -35,7 +35,7 @@ public class Evade extends Skill {
 		if (!cast.isSuccessful())
 			return cast;
 
-		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 2);
+		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, 2);
 		new SmallParticleEffect(data.getPlayer(), Particle.CLOUD);
 		new EvadeSkill(data, cast.getModifier("duration"));
 		return cast;

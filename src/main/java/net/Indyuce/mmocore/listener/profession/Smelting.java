@@ -12,7 +12,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -34,9 +33,9 @@ public class Smelting implements Listener {
 
 	public Smelting(ConfigurationSection config) {
 		for (Iterator<Recipe> iterator = Bukkit.recipeIterator(); iterator.hasNext();) {
-			Recipe recipe = iterator.next();
-			if (recipe instanceof FurnaceRecipe && vanillaKeys.contains(((FurnaceRecipe) recipe).getKey()))
-				iterator.remove();
+			//Recipe recipe = iterator.next();
+			//if (recipe instanceof FurnaceRecipe && vanillaKeys.contains(((FurnaceRecipe) recipe).getKey()))
+			//	iterator.remove();
 		}
 
 		Smelting.recipes.clear();
@@ -48,7 +47,7 @@ public class Smelting implements Listener {
 				recipes.add(recipe);
 				NamespacedKey vanillaKey = new NamespacedKey(MMOCore.plugin, "furnace_recipe_" + key.replace("-", "_").toLowerCase());
 				vanillaKeys.add(vanillaKey);
-				Bukkit.addRecipe(new FurnaceRecipe(vanillaKey, new ItemStack(Material.BARRIER), recipe.getIngredientMaterial(), 0, recipe.getCookingTime()));
+				Bukkit.addRecipe(MMOCore.plugin.version.getVersionWrapper().getFurnaceRecipe(vanillaKey, new ItemStack(Material.BARRIER), recipe.getIngredientMaterial(), 0, recipe.getCookingTime()));
 			}
 		}
 	}

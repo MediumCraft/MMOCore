@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.stats.StatType;
@@ -39,11 +39,8 @@ public class PlayerCollectStats implements Listener {
 				item.setAmount(item.getAmount() + a);
 		}
 
-		if (event.getBlock().getBlockData() instanceof Ageable) {
-			Ageable ageable = (Ageable) event.getBlock().getBlockData();
-			if (ageable.getAge() < ageable.getMaximumAge())
-				return;
-
+		if(MMOCore.plugin.version.getVersionWrapper().isCropFullyGrown(event.getBlock()))
+		{
 			// drop more items if fortune enchant
 			double l = event.getData().getStats().getStat(StatType.LUCK_OF_THE_FIELD);
 			if (l > 0 && random.nextDouble() < l * .045) {

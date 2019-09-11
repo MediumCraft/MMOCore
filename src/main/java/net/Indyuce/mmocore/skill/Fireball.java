@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -16,11 +15,13 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.Indyuce.mmocore.version.VersionMaterial;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Fireball extends Skill {
 	public Fireball() {
 		super();
-		setMaterial(Material.FIRE_CHARGE);
+		setMaterial(VersionMaterial.FIRE_CHARGE.toMaterial());
 		setLore("Casts a deadly fireball onto your", "target, dealing &c{damage} &7damage upon contact", "and igniting it for &c{ignite} &7seconds.", "", "Shatters into 3 blazing hot shards which stick", "to walls and explode 3 seconds later, dealing", "33% of the initial spell damage.", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("mana", new LinearValue(15, 1));
@@ -35,7 +36,7 @@ public class Fireball extends Skill {
 		if (!cast.isSuccessful())
 			return cast;
 
-		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
+		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, 1);
 		new BukkitRunnable() {
 			int j = 0;
 			Vector vec = data.getPlayer().getEyeLocation().getDirection();
@@ -58,7 +59,7 @@ public class Fireball extends Skill {
 				// loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
 
 				for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-					if (target.getBoundingBox().expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
+					if (MMOCore.plugin.nms.getBoundingBox(target).expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
 						loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 						loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 						loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);

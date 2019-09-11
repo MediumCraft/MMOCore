@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -20,6 +19,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.Indyuce.mmocore.version.VersionMaterial;
 
 public class Ice_Spikes extends Skill {
 
@@ -27,7 +27,7 @@ public class Ice_Spikes extends Skill {
 
 	public Ice_Spikes() {
 		super();
-		setMaterial(Material.SNOWBALL);
+		setMaterial(VersionMaterial.SNOWBALL.toMaterial());
 		setLore("Ice spikes summon from the ground", "and shatters, each dealing &9{damage} &7damage", "to hit enemies and slowing them down", "for &9{slow} &7seconds.", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("cooldown", new LinearValue(6, -.1, 2, 6));
@@ -84,7 +84,7 @@ public class Ice_Spikes extends Skill {
 
 		public IceSpikesCast(PlayerData data, SkillInfo skill) {
 			super(data, skill);
-			if (isSuccessful() && (loc = data.getPlayer().rayTraceBlocks(30)) == null)
+			if (isSuccessful() && (loc = MMOCore.plugin.version.getVersionWrapper().rayTrace(data.getPlayer(), 30)) == null)
 				abort();
 		}
 	}

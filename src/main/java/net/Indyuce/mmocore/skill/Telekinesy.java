@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.skill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -19,11 +18,13 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
+import net.Indyuce.mmocore.version.VersionMaterial;
+import net.Indyuce.mmocore.version.VersionSound;
 
 public class Telekinesy extends Skill {
 	public Telekinesy() {
 		super();
-		setMaterial(Material.MAGENTA_DYE);
+		setMaterial(VersionMaterial.MAGENTA_DYE.toMaterial());
 		setLore("You take the control over your target", "for &9{duration} &7seconds. Left click to throw him.", "Knockback force: &f{knockback}%", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("cooldown", new LinearValue(20, -.3, 10, 20));
@@ -68,7 +69,7 @@ public class Telekinesy extends Skill {
 		public void a(PlayerInteractEvent event) {
 			if (event.getPlayer().equals(data.getPlayer()) && event.getAction().name().contains("LEFT_CLICK")) {
 				entity.setVelocity(data.getPlayer().getEyeLocation().getDirection().multiply(1.5 * f));
-				entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 2, 1);
+				entity.getWorld().playSound(entity.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 2, 1);
 				entity.getWorld().spawnParticle(Particle.SPELL_WITCH, entity.getLocation().add(0, entity.getHeight() / 2, 0), 16);
 				close();
 			}

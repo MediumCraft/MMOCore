@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionType;
@@ -72,7 +71,7 @@ public class Profession {
 		if (config.contains("base-enchant-exp"))
 			for (String key : config.getConfigurationSection("base-enchant-exp").getKeys(false))
 				try {
-					Enchantment enchant = Enchantment.getByKey(NamespacedKey.minecraft(key.toLowerCase().replace("-", "_")));
+					Enchantment enchant = MMOCore.plugin.version.getVersionWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
 					MMOCore.plugin.enchantManager.registerBaseExperience(enchant, config.getDouble("base-enchant-exp." + key));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[Professions:" + id + "] Could not read enchant from " + key);
