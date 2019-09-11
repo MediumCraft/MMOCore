@@ -9,6 +9,6 @@ experience:
     per-level: 2
 
 exp-sources:
-- 'mineblock{type=CARROTS;amount=1-3}'
-- 'mineblock{type=POTATOES;amount=1-3}'
-- 'mineblock{type=WHEAT;amount=1-3}'
+- 'harvestcrop{type=CARROTS;amount=1-3}'
+- 'harvestcrop{type=POTATOES;amount=1-3}'
+- 'harvestcrop{type=WHEAT;amount=1-3}'

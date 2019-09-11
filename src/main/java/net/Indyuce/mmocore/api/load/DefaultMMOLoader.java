@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.BrewPotionExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.EnchantItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.FishItemExperienceSource;
+import net.Indyuce.mmocore.api.experience.source.HarvestCropExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.KillMobExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.MineBlockExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.RepairItemExperienceSource;
@@ -113,6 +114,9 @@ public class DefaultMMOLoader implements MMOLoader {
 		if (config.getKey().equals("mineblock"))
 			return new MineBlockExperienceSource(profession, config);
 
+		if (config.getKey().equals("harvestcrop"))
+			return new HarvestCropExperienceSource(profession, config);
+		
 		if (config.getKey().equals("brewpotion"))
 			return new BrewPotionExperienceSource(profession, config);
 
