@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
@@ -17,6 +18,7 @@ import net.Indyuce.mmocore.manager.profession.ExperienceManager;
 public class MineBlockExperienceSource extends SpecificExperienceSource<Material> {
 	private final Material material;
 	private final boolean silkTouch;
+	private final boolean crop;
 
 	public MineBlockExperienceSource(Profession profession, MMOLineConfig config) {
 		super(profession, config);
@@ -24,6 +26,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 		config.validate("type");
 		material = Material.valueOf(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
 		silkTouch = config.getBoolean("silk-touch", true);
+		crop = config.getBoolean("crop", false);
 	}
 
 	@Override
@@ -37,7 +40,9 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 
 				if (silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand()))
 					return;
-
+				if (crop && !MMOCore.plugin.version.getVersionWrapper().isCropFullyGrown(event.getBlock()))
+					return;
+				
 				Material broken = event.getBlock().getType();
 
 				PlayerData data = PlayerData.get(event.getPlayer());
