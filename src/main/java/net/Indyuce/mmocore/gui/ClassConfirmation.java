@@ -128,7 +128,9 @@ public class ClassConfirmation extends EditableInventory {
 					return;
 
 				playerData.giveClassPoints(-1);
-				(playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess) : new SavedClassInformation(1, 0, 0)).load(profess, playerData);
+				(playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess) : new SavedClassInformation(1, 0, 0, 0, 0)).load(profess, playerData);
+				while (playerData.hasSkillBound(0))
+					playerData.unbindSkill(0);
 				player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()));
 				player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
 				player.closeInventory();

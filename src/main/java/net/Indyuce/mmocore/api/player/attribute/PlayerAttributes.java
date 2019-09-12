@@ -158,5 +158,16 @@ public class PlayerAttributes {
 			int total = getTotal();
 			attribute.getStats().forEach(stat -> data.getStats().getInstance(stat).addModifier("attribute." + attribute.getId(), attribute.getBuff(stat).multiply(total)));
 		}
+
+		public String getId() {
+			return id;
+		}
+	}
+
+	public void setBaseAttribute(String id, int value) {
+		getAttributeInstances().forEach(ins -> {
+			if(ins.getId().equals(id))
+				ins.setBase(value);
+		});
 	}
 }

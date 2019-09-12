@@ -31,6 +31,7 @@ import net.Indyuce.mmocore.api.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerCastSkillEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass.Subclass;
@@ -103,7 +104,7 @@ public class PlayerData {
 		this.attributeReallocationPoints = config.getInt("attribute-realloc-points");
 		this.level = config.getInt("level");
 		this.experience = config.getInt("experience");
-		this.profess = config.contains("class") ? MMOCore.plugin.classManager.get(config.getString("class")) : null;
+		this.profess = config.contains("class") ? MMOCore.plugin.classManager.get(config.getString("class")) : MMOCore.plugin.classManager.getDefaultClass();
 		this.mana = getStats().getStat(StatType.MAX_MANA);
 		this.stamina = getStats().getStat(StatType.MAX_STAMINA);
 		this.stellium = getStats().getStat(StatType.MAX_STELLIUM);
@@ -178,7 +179,10 @@ public class PlayerData {
 			config.set("class-info." + key + ".level", info.getLevel());
 			config.set("class-info." + key + ".experience", info.getExperience());
 			config.set("class-info." + key + ".skill-points", info.getSkillPoints());
+			config.set("class-info." + key + ".attribute-points", info.getAttributePoints());
+			config.set("class-info." + key + ".attribute-realloc-points", info.getAttributeReallocationPoints());
 			info.getSkillKeys().forEach(skill -> config.set("class-info." + key + ".skill." + skill, info.getSkillLevel(skill)));
+			info.getAttributeKeys().forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
 		}
 	}
 
@@ -564,6 +568,25 @@ public class PlayerData {
 	public void displayMana() {
 		if (System.currentTimeMillis() > lastActionbarUpdate + 1200)
 			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getProfess().getManaDisplay().generateBar(getMana(), getStats().getStat(StatType.MAX_MANA))));
+	}
+	
+
+	public void setAttributes(PlayerAttribute attribute, int value) {
+		setAttributes(attribute.getId(), value);
+	}
+
+	public void setAttributes(String id, int value) {
+		attributes.setBaseAttribute(id, value);
+	}
+
+	public void clearAttributePoints() {
+		attributes.getAttributeInstances().forEach(ins -> ins.setBase(0));
+	}
+
+	public Map<String, Integer> mapAttributePoints() {
+		Map<String, Integer> ap = new HashMap<String, Integer>();
+		attributes.getAttributeInstances().forEach(ins -> ap.put(ins.getId(), ins.getBase()));
+		return ap;
 	}
 
 	public void setSkillLevel(Skill skill, int level) {
