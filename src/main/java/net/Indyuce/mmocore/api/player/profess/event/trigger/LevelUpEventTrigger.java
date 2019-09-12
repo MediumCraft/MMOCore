@@ -22,12 +22,20 @@ public class LevelUpEventTrigger implements EventTriggerHandler {
 
 		if (event.hasProfession())
 			for (String event1 : profess.getEventTriggers())
+			{
 				if (event1.startsWith("level-up-") && event1.substring(9).equalsIgnoreCase(event.getProfession().getId())) {
 					profess.getEventTriggers(event1).getTriggers().forEach(trigger -> trigger.apply(player));
 					break;
 				}
-
+				if (event1.startsWith("level-up-") && event1.substring(9).equalsIgnoreCase(event.getProfession().getId() + "-" + event.getNewLevel())) {
+					profess.getEventTriggers(event1).getTriggers().forEach(trigger -> trigger.apply(player));
+					break;
+				}
+			}
+		
 		if (!event.hasProfession() && profess.hasEventTriggers("level-up"))
 			profess.getEventTriggers("level-up").getTriggers().forEach(trigger -> trigger.apply(player));
+		if (!event.hasProfession() && profess.hasEventTriggers("level-up-" + event.getNewLevel()))
+			profess.getEventTriggers("level-up-" + event.getNewLevel()).getTriggers().forEach(trigger -> trigger.apply(player));
 	}
 }
