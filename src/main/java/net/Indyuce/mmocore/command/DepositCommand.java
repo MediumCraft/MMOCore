@@ -2,16 +2,23 @@ package net.Indyuce.mmocore.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.gui.eco.DepositMenu;
 
-public class DepositCommand implements CommandExecutor {
+public class DepositCommand extends BukkitCommand {
+	public DepositCommand(ConfigurationSection config) {
+		super(config.getString("main"));
+		
+		setAliases(config.getStringList("aliases"));
+		setDescription("Opens the currency deposit menu.");
+	}
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean execute(CommandSender sender, String label, String[] args) {
 		if (!sender.hasPermission("mmocore.currency"))
 			return false;
 

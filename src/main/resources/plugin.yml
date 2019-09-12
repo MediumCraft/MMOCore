@@ -7,32 +7,9 @@ loadbefore: [MMOItems]
 softdepend: [Vault,MythicMobs,PlaceholderAPI]
 api-version: 1.13
 commands:
-    player:
-        description: Show player stats.
-        aliases: [p]
-    class:
-        description: Choose a new class.
-    attributes:
-        description: Opens the attribute menu.
-    waypoints:
-        description: Open the waypoints menu.
     mmocore:
         description: Main command.
         aliases: [rpg]
-    deposit:
-        description: Opens the currency deposit menu.
-    withdraw:
-        description: Creates a withdraw request.
-    friends:
-        description: Opens the friends menu.
-        aliases: [f]
-    party:
-        description: Opens the party menu.
-        aliases: [f]
-    quests:
-        description: Opens the quests menu.
-    skills:
-        description: Opens the skills menu.
 permissions:
     mmocore.admin:
         description: Access to /rpg

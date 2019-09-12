@@ -4,17 +4,24 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.eco.Withdraw;
 
-public class WithdrawCommand implements CommandExecutor {
+public class WithdrawCommand extends BukkitCommand {
+	public WithdrawCommand(ConfigurationSection config) {
+		super(config.getString("main"));
+		
+		setAliases(config.getStringList("aliases"));
+		setDescription("Creates a withdraw request.");
+	}
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean execute(CommandSender sender, String label, String[] args) {
 		if (!sender.hasPermission("mmocore.currency"))
 			return false;
 

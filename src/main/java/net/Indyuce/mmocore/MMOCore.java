@@ -1,9 +1,12 @@
 package net.Indyuce.mmocore;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandMap;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -268,18 +271,30 @@ public class MMOCore extends JavaPlugin {
 		Bukkit.getOnlinePlayers().forEach(player -> PlayerData.setup(player).setPlayer(player));
 
 		// commands
-		getCommand("player").setExecutor(new PlayerStatsCommand());
-		getCommand("attributes").setExecutor(new AttributesCommand());
-		getCommand("class").setExecutor(new ClassCommand());
-		getCommand("waypoints").setExecutor(new WaypointsCommand());
-		getCommand("quests").setExecutor(new QuestsCommand());
-		getCommand("skills").setExecutor(new SkillsCommand());
-		getCommand("friends").setExecutor(new FriendsCommand());
-		getCommand("party").setExecutor(new PartyCommand());
+		try {
+			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+			
+			bukkitCommandMap.setAccessible(true);
+			CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+			
+			FileConfiguration config = new ConfigFile("commands").getConfig();
+			
+			commandMap.register(config.getString("player"), new PlayerStatsCommand(config.getConfigurationSection("player")));
+			commandMap.register(config.getString("attributes"), new AttributesCommand(config.getConfigurationSection("attributes")));
+			commandMap.register(config.getString("class"), new ClassCommand(config.getConfigurationSection("class")));
+			commandMap.register(config.getString("waypoints"), new WaypointsCommand(config.getConfigurationSection("waypoints")));
+			commandMap.register(config.getString("quests"), new QuestsCommand(config.getConfigurationSection("quests")));
+			commandMap.register(config.getString("skills"), new SkillsCommand(config.getConfigurationSection("skills")));
+			commandMap.register(config.getString("friends"), new FriendsCommand(config.getConfigurationSection("friends")));
+			commandMap.register(config.getString("party"), new PartyCommand(config.getConfigurationSection("party")));
 
-		if (hasEconomy() && economy.isValid()) {
-			getCommand("withdraw").setExecutor(new WithdrawCommand());
-			getCommand("deposit").setExecutor(new DepositCommand());
+			if (hasEconomy() && economy.isValid()) {
+				commandMap.register(config.getString("withdraw"), new WithdrawCommand(config.getConfigurationSection("withdraw")));
+				commandMap.register(config.getString("deposit"), new DepositCommand(config.getConfigurationSection("deposit")));
+			}
+		}
+		catch(NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
+			ex.printStackTrace();
 		}
 
 		MMOCoreCommand mmoCoreCommand = new MMOCoreCommand();

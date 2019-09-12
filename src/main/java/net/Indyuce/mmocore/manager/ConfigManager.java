@@ -86,6 +86,7 @@ public class ConfigManager {
 		loadDefaultFile("waypoints.yml");
 		loadDefaultFile("restrictions.yml");
 		loadDefaultFile("chests.yml");
+		loadDefaultFile("commands.yml");
 
 		loadOptions();
 	}
