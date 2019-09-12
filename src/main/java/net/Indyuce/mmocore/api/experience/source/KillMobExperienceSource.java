@@ -13,7 +13,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
 
 public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
-	private final EntityType type;
+	public final EntityType type;
 
 	public KillMobExperienceSource(Profession profession, MMOLineConfig config) {
 		super(profession, config);
@@ -30,6 +30,7 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
 			public void a(EntityKillEntityEvent event) {
 				if (event.getEntity() instanceof Player) {
 					PlayerData data = PlayerData.get((Player) event.getEntity());
+
 					for (KillMobExperienceSource source : getSources())
 						if (source.matches(data, event.getTarget()))
 							source.giveExperience(data);

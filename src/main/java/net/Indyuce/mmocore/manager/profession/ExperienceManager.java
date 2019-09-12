@@ -17,6 +17,8 @@ public abstract class ExperienceManager<T> implements Listener {
 
 	public void register(T source) {
 		sources.add(source);
+		
+		getSources();
 	}
 	
 	public Set<T> getSources() {

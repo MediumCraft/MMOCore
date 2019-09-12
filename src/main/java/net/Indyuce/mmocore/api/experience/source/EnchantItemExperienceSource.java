@@ -49,9 +49,9 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 					if (source.matches(player, null)) {
 						Map<Enchantment, Integer> ench = new HashMap<>(event.getEnchantsToAdd());
 
-						if (!enchants.isEmpty())
+						if (!source.enchants.isEmpty())
 							for (Iterator<Enchantment> iterator = ench.keySet().iterator(); iterator.hasNext();)
-								if (!enchants.contains(iterator.next()))
+								if (!source.enchants.contains(iterator.next()))
 									iterator.remove();
 
 						if (ench.isEmpty())

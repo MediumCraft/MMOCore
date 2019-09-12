@@ -34,7 +34,7 @@ public class ProfessionManager extends MMOManager {
 	@SuppressWarnings("unchecked")
 	public <T extends ExperienceSource<?>> void registerExpSource(T source) {
 		Class<T> path = (Class<T>) source.getClass();
-
+		
 		if (!managers.containsKey(path))
 			managers.put(path, source.newManager());
 		getManager(path).register(source);

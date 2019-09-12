@@ -16,9 +16,10 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
 
 public class MineBlockExperienceSource extends SpecificExperienceSource<Material> {
-	private final Material material;
+	public final Material material;
 	private final boolean silkTouch;
 	private final boolean crop;
+	private final boolean playerPlaced;
 
 	public MineBlockExperienceSource(Profession profession, MMOLineConfig config) {
 		super(profession, config);
@@ -27,6 +28,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 		material = Material.valueOf(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
 		silkTouch = config.getBoolean("silk-touch", true);
 		crop = config.getBoolean("crop", false);
+		playerPlaced = config.getBoolean("player-placed", false);
 	}
 
 	@Override
@@ -37,18 +39,20 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 			public void a(BlockBreakEvent event) {
 				if (event.isCancelled() || event.getPlayer().getGameMode() != GameMode.SURVIVAL)
 					return;
-
-				if (silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand()))
-					return;
-				if (crop && !MMOCore.plugin.version.getVersionWrapper().isCropFullyGrown(event.getBlock()))
-					return;
-				
-				Material broken = event.getBlock().getType();
-
 				PlayerData data = PlayerData.get(event.getPlayer());
+				
 				for (MineBlockExperienceSource source : getSources())
-					if (source.matches(data, broken))
+				{
+					if (source.silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand()))
+						continue;
+					if (source.crop && !MMOCore.plugin.version.getVersionWrapper().isCropFullyGrown(event.getBlock()))
+						continue;
+					if ((!source.playerPlaced) && event.getBlock().hasMetadata("player_placed"))
+						continue;
+
+					if (source.matches(data, event.getBlock().getType()))
 						source.giveExperience(data);
+				}
 			}
 		};
 	}
