@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
@@ -44,9 +45,16 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
 
 					ItemStack item = event.getCurrentItem();
 					PlayerData data = PlayerData.get((Player) event.getWhoClicked());
-
+					
 					for (RepairItemExperienceSource source : getSources())
 						if (source.matches(data, item)) {
+							
+							if(!(event.getInventory() instanceof AnvilInventory))
+								return;
+							
+							if(((AnvilInventory) event.getInventory()).getRepairCost() >
+									((Player) event.getWhoClicked()).getLevel()) return;
+							
 							/*
 							 * make sure the items can actually be repaired
 							 * before getting the amount of durability repaired
