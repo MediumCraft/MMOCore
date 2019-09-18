@@ -1,6 +1,7 @@
 
 package net.Indyuce.mmocore.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -14,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -99,10 +101,17 @@ public class PlayerListener implements Listener {
 	public void h(PlayerAttackEvent event) {
 		double d = 1;
 
+		if(Bukkit.getPluginManager().isPluginEnabled("MMOItems") &&
+			event.getDamageInfo().getTypes().contains(DamageType.SKILL)) {
+			event.setDamage(event.getDamage());
+			return;
+		}
+		
 		PlayerStats stats = event.getData().getStats();
 		for (DamageType type : event.getDamageInfo().getTypes())
 			d += stats.getStat(type.getStat()) / 100;
 
+		MMOCore.log("Damage: " + event.getDamage() * d);
 		event.setDamage(event.getDamage() * d);
 	}
 }
