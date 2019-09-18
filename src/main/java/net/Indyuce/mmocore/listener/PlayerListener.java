@@ -56,6 +56,7 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void d(EntityDamageByEntityEvent event) {
+		if(event.getEntity().hasMetadata("NPC")) return;
 		if (event.getEntity() instanceof Player)
 			PlayerData.get((Player) event.getEntity()).updateCombat();
 

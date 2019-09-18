@@ -47,7 +47,7 @@ public class PlayerAttackEventListener implements Listener {
 		 * check damage systems from other MMOCore plugins + from MMOCore, and
 		 * register an attack damage for easier plugin calculations
 		 */
-		if (damager instanceof Player)
+		if (damager instanceof Player && !damager.hasMetadata("NPC"))
 			Bukkit.getPluginManager().callEvent(new PlayerAttackEvent(PlayerData.get((Player) damager), event, MMOCore.plugin.damage.findInfo(event.getEntity()).merge(info)));
 
 		/*
