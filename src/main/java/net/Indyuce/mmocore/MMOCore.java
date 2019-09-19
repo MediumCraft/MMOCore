@@ -279,14 +279,14 @@ public class MMOCore extends JavaPlugin {
 			
 			FileConfiguration config = new ConfigFile("commands").getConfig();
 			
-			commandMap.register(config.getString("player.main"), new PlayerStatsCommand(config.getConfigurationSection("player")));
-			commandMap.register(config.getString("attributes.main"), new AttributesCommand(config.getConfigurationSection("attributes")));
-			commandMap.register(config.getString("class.main"), new ClassCommand(config.getConfigurationSection("class")));
-			commandMap.register(config.getString("waypoints.main"), new WaypointsCommand(config.getConfigurationSection("waypoints")));
-			commandMap.register(config.getString("quests.main"), new QuestsCommand(config.getConfigurationSection("quests")));
-			commandMap.register(config.getString("skills.main"), new SkillsCommand(config.getConfigurationSection("skills")));
-			commandMap.register(config.getString("friends.main"), new FriendsCommand(config.getConfigurationSection("friends")));
-			commandMap.register(config.getString("party.main"), new PartyCommand(config.getConfigurationSection("party")));
+			commandMap.register("mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
+			commandMap.register("mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
+			commandMap.register("mmocore", new ClassCommand(config.getConfigurationSection("class")));
+			commandMap.register("mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
+			commandMap.register("mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
+			commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
+			commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
+			commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
 
 			if (hasEconomy() && economy.isValid()) {
 				commandMap.register(config.getString("withdraw"), new WithdrawCommand(config.getConfigurationSection("withdraw")));
