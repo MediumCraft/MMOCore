@@ -28,7 +28,7 @@ public class ConfigItem {
 	private final String name, id, texture;
 	private final ItemStack item;
 	private final List<String> lore;
-	private final int damage;
+	private final int damage, modeldata;
 
 	private boolean unbreakable;
 	private Map<String, String> placeholders = new HashMap<>();
@@ -47,6 +47,7 @@ public class ConfigItem {
 		 */
 		damage = config.getInt("damage");
 		texture = config.getString("texture");
+		modeldata = config.getInt("custom-model-data");
 	}
 
 	public ConfigItem(String id) {
@@ -60,6 +61,7 @@ public class ConfigItem {
 		item = cache.item;
 		damage = cache.damage;
 		texture = cache.texture;
+		modeldata = cache.modeldata;
 	}
 
 	public ItemStack getItem(int amount) {
@@ -102,6 +104,9 @@ public class ConfigItem {
 		if (meta instanceof Damageable)
 			((Damageable) meta).setDamage(damage);
 
+		if(MMOCore.plugin.version.isStrictlyHigher(1, 13))
+			meta.setCustomModelData(modeldata);
+		
 		if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial() && texture != null) {
 			try {
 				Field profileField = meta.getClass().getDeclaredField("profile");
