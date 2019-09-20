@@ -79,7 +79,7 @@ public class PlayerClass {
 			for (String key : config.getConfigurationSection("skills").getKeys(false))
 				try {
 					Validate.isTrue(MMOCore.plugin.skillManager.has(key), "Could not find skill " + key);
-					skills.put(key, MMOCore.plugin.skillManager.get(key).newSkillInfo(config.getConfigurationSection("skills." + key)));
+					skills.put(key.toUpperCase(), MMOCore.plugin.skillManager.get(key).newSkillInfo(config.getConfigurationSection("skills." + key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load skill info '" + key + "': " + exception.getMessage());
 				}
@@ -220,7 +220,7 @@ public class PlayerClass {
 	}
 
 	public SkillInfo getSkill(String id) {
-		return skills.get(id);
+		return skills.get(id.toUpperCase());
 	}
 
 	public Set<String> getEventTriggers() {

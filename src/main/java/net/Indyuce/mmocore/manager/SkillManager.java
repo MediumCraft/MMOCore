@@ -50,7 +50,7 @@ public class SkillManager {
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			for (File file : mythicMobs.listFiles()) {
 				try {
-					register(new MythicMobSkill(file.getName().substring(0, file.getName().length() - 4), YamlConfiguration.loadConfiguration(file)));
+					register(new MythicMobSkill(file.getName().substring(0, file.getName().length() - 4).toUpperCase(), YamlConfiguration.loadConfiguration(file)));
 				} catch (Exception exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill from " + file.getName() + ": " + exception.getMessage());
 				}
@@ -88,15 +88,15 @@ public class SkillManager {
 	}
 
 	public void register(Skill skill) {
-		skills.put(skill.getId(), skill);
+		skills.put(skill.getId().toUpperCase(), skill);
 	}
 
 	public Skill get(String id) {
-		return skills.get(id);
+		return skills.get(id.toUpperCase());
 	}
 
 	public boolean has(String id) {
-		return skills.containsKey(id);
+		return skills.containsKey(id.toUpperCase());
 	}
 
 	public Collection<Skill> getAll() {

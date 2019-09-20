@@ -34,7 +34,7 @@ public class ConfigMessage {
 	}
 
 	public void send(Collection<? extends Player> players) {
-		players.forEach(player -> messages.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line))));
+		players.forEach(player -> messages.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', MMOCore.plugin.placeholderParser.parse(player, line)))));
 	}
 
 	public void sendAsJSon(Player player) {
