@@ -89,6 +89,7 @@ public class PlayerStats extends EditableInventory {
 					// holders.register("profession", type.getName());
 					holders.register("progress", bar);
 					holders.register("level", "" + inv.getPlayerData().getCollectionSkills().getLevel(profession));
+					holders.register("xp", inv.getPlayerData().getCollectionSkills().getExperience(profession));
 					holders.register("percent", decimal.format(ratio * 100));
 					for (StatType stat : StatType.values())
 						if (stat.matches(profession))
