@@ -37,8 +37,23 @@ public class BlockListener implements Listener {
 		 */
 		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player);
 		ItemStack item = player.getInventory().getItemInMainHand();
-		if (customMine) {
 
+		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block.getType());
+		if (info == null)
+			return;
+		
+		if (customMine) {
+			/*
+			 * calls the event and listen for cancel & for drops changes... also
+			 * allows to apply tool durability & enchants to drops, etc.
+			 */
+			CustomBlockMineEvent called = new CustomBlockMineEvent(PlayerData.get(player), block, info);
+			Bukkit.getPluginManager().callEvent(called);
+			if (called.isCancelled()) {
+				event.setCancelled(true);
+				return;
+			}
+			
 			BlockPermissions perms = MMOCore.plugin.restrictionManager.getPermissions(item.getType());
 			if (perms == null) {
 				event.setCancelled(true);
@@ -50,53 +65,39 @@ public class BlockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-		}
+			
 
-		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block.getType());
-		if (info == null)
-			return;
+			/*
+			 * remove vanilla drops if needed
+			 */
+			if (!info.hasVanillaDrops()) {
+				event.setCancelled(true);
+				event.getBlock().setType(Material.AIR);
+			}
 
-		/*
-		 * calls the event and listen for cancel & for drops changes... also
-		 * allows to apply tool durability & enchants to drops, etc.
-		 */
-		CustomBlockMineEvent called = new CustomBlockMineEvent(PlayerData.get(player), block, info);
-		Bukkit.getPluginManager().callEvent(called);
-		if (called.isCancelled()) {
-			event.setCancelled(true);
-			return;
-		}
-
-		/*
-		 * remove vanilla drops if needed
-		 */
-		if (!info.hasVanillaDrops()) {
-			event.setCancelled(true);
-			event.getBlock().setType(Material.AIR);
-		}
-
-		/*
-		 * apply triggers, add experience info to the event so the other events
-		 * can give exp to other TOOLS and display HOLOGRAMS
-		 */
-		if (info.hasTriggers()) {
-			PlayerData playerData = PlayerData.get(player);
-			info.getTriggers().forEach(trigger -> {
-				if(!block.hasMetadata("player_placed") && trigger instanceof ExperienceTrigger)
-						trigger.apply(playerData);
-			});
-			if(!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
-				MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, .5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()), player);
-		}
-
-		/*
-		 * apply drop tables
-		 */
-		if (info.hasDropTable()) {
-			Location dropLocation = getSafeDropLocation(block, !info.hasDropTable());
-			for (ItemStack drop : called.getDrops())
-				if (drop.getType() != Material.AIR && drop.getAmount() > 0)
-					block.getWorld().dropItemNaturally(dropLocation, drop);
+			/*
+			 * apply triggers, add experience info to the event so the other events
+			 * can give exp to other TOOLS and display HOLOGRAMS
+			 */
+			if (info.hasTriggers()) {
+				PlayerData playerData = PlayerData.get(player);
+				info.getTriggers().forEach(trigger -> {
+					if(!block.hasMetadata("player_placed") && trigger instanceof ExperienceTrigger)
+							trigger.apply(playerData);
+				});
+				if(!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
+					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, .5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()), player);
+			}
+			
+			/*
+			 * apply drop tables
+			 */
+			if (info.hasDropTable()) {
+				Location dropLocation = getSafeDropLocation(block, !info.hasDropTable());
+				for (ItemStack drop : called.getDrops())
+					if (drop.getType() != Material.AIR && drop.getAmount() > 0)
+						block.getWorld().dropItemNaturally(dropLocation, drop);
+			}
 		}
 
 		/*
