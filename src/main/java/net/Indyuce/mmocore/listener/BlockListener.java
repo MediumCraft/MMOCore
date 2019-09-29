@@ -37,12 +37,14 @@ public class BlockListener implements Listener {
 		 */
 		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player);
 		ItemStack item = player.getInventory().getItemInMainHand();
-
-		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block.getType());
-		if (info == null)
-			return;
 		
 		if (customMine) {
+
+			BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
+			if (info == null) {
+				event.setCancelled(true);
+				return;
+			}
 			/*
 			 * calls the event and listen for cancel & for drops changes... also
 			 * allows to apply tool durability & enchants to drops, etc.
@@ -98,13 +100,13 @@ public class BlockListener implements Listener {
 					if (drop.getType() != Material.AIR && drop.getAmount() > 0)
 						block.getWorld().dropItemNaturally(dropLocation, drop);
 			}
-		}
 
-		/*
-		 * enable block regen only if custom mine is enabled.
-		 */
-		if (customMine && info.hasRegen())
-			MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(event.getBlock().getLocation()));
+			/*
+			 * enable block regen.
+			 */
+			if (info.hasRegen())
+				MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(event.getBlock().getLocation()));
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

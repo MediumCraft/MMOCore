@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.version.nms;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -38,4 +39,8 @@ public interface NMSHandler {
 	Object newContainerAnvil(Player player);
 
 	BoundingBox getBoundingBox(Entity target);
+
+	String getSkullValue(Block block);
+	
+	void setSkullValue(Block block, String value);
 }

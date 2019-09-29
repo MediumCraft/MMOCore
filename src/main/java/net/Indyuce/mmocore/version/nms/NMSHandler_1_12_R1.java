@@ -1,13 +1,19 @@
 package net.Indyuce.mmocore.version.nms;
 
 import java.util.Set;
+import java.util.UUID;
 
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.util.BoundingBox;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.api.item.NBTItem;
 import net.minecraft.server.v1_12_R1.AxisAlignedBB;
@@ -27,6 +33,7 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutCloseWindow;
 import net.minecraft.server.v1_12_R1.PacketPlayOutOpenWindow;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTitle.EnumTitleAction;
+import net.minecraft.server.v1_12_R1.TileEntitySkull;
 
 public class NMSHandler_1_12_R1 implements NMSHandler {
 	@Override
@@ -181,5 +188,20 @@ public class NMSHandler_1_12_R1 implements NMSHandler {
 	public BoundingBox getBoundingBox(org.bukkit.entity.Entity target) {
 		AxisAlignedBB aabb = ((Entity) target).getBoundingBox();
 		return new BoundingBox(aabb.a, aabb.b, aabb.c, aabb.d, aabb.e, aabb.f);
+	}
+
+	@Override
+	public String getSkullValue(Block block) {
+		TileEntitySkull skullTile = (TileEntitySkull)((CraftWorld)block.getWorld()).getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+		if(skullTile.getGameProfile() == null) return "";
+		return skullTile.getGameProfile().getProperties().get("textures").iterator().next().getValue();
+	}
+
+	@Override
+	public void setSkullValue(Block block, String value) {
+		TileEntitySkull skullTile = (TileEntitySkull)((CraftWorld)block.getWorld()).getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		profile.getProperties().put("textures", new Property("textures", value));
+		skullTile.setGameProfile(profile);
 	}
 }

@@ -2,7 +2,9 @@ package net.Indyuce.mmocore.version.nms;
 
 import java.lang.reflect.Field;
 import java.util.Set;
+import java.util.UUID;
 
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
@@ -12,6 +14,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.util.BoundingBox;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.api.item.NBTItem;
 import net.minecraft.server.v1_14_R1.BlockPosition;
@@ -30,6 +35,7 @@ import net.minecraft.server.v1_14_R1.PacketPlayOutCloseWindow;
 import net.minecraft.server.v1_14_R1.PacketPlayOutOpenWindow;
 import net.minecraft.server.v1_14_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_14_R1.PacketPlayOutTitle.EnumTitleAction;
+import net.minecraft.server.v1_14_R1.TileEntitySkull;
 
 public class NMSHandler_1_14_R1 implements NMSHandler {
 	@Override
@@ -203,5 +209,20 @@ public class NMSHandler_1_14_R1 implements NMSHandler {
 	@Override
 	public BoundingBox getBoundingBox(Entity target) {
 		return target.getBoundingBox();
+	}
+
+	@Override
+	public String getSkullValue(Block block) {
+		TileEntitySkull skullTile = (TileEntitySkull)((CraftWorld)block.getWorld()).getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+		if(skullTile.gameProfile == null) return "";
+		return skullTile.gameProfile.getProperties().get("textures").iterator().next().getValue();
+	}
+
+	@Override
+	public void setSkullValue(Block block, String value) {
+		TileEntitySkull skullTile = (TileEntitySkull)((CraftWorld)block.getWorld()).getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		profile.getProperties().put("textures", new Property("textures", value));
+		skullTile.setGameProfile(profile);
 	}
 }
