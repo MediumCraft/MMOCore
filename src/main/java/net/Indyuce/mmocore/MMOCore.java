@@ -88,6 +88,7 @@ import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.Indyuce.mmocore.version.ServerVersion;
 import net.Indyuce.mmocore.version.nms.NMSHandler;
+import net.md_5.bungee.api.ChatColor;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
@@ -228,7 +229,18 @@ public class MMOCore extends JavaPlugin {
 					}
 			}
 		}.runTaskTimerAsynchronously(MMOCore.plugin, 100, 20);
-
+		
+		//For the sake of the lord, make sure they aren't using MMOItems Mana and Stamina Addon...
+		//This should prevent a couple error reports produced by people not reading the installation guide...
+		if(Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
+			new BukkitRunnable() {
+				public void run() {
+					Bukkit.broadcastMessage(ChatColor.DARK_RED + "MMOCore is not compatible with the Mana and Stamina addon of MMOItems!!!");
+					Bukkit.broadcastMessage(ChatColor.DARK_RED + "Please read the installation guide!");
+				}
+			}.runTaskTimer(MMOCore.plugin, 1200, 1200);
+		}
+		
 		saveDefaultConfig();
 		reloadPlugin();
 
