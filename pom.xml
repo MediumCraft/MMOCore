@@ -2,41 +2,63 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.Indyuce</groupId>
   <artifactId>MMOCore</artifactId>
-  <version>1.0.12</version>
+  <version>1.0.13-SNAPSHOT</version>
   <description>Offer your players a brand new RPG experience.</description>
+  
+  <properties>
+    	<build.number>SNAPSHOT</build.number>
+    	<downloadSources>false</downloadSources>
+		<downloadJavadocs>false</downloadJavadocs>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+  
+  <distributionManagement>
+		<repository>
+	    	<id>nexus</id>
+	    	<name>Lumine Releases</name>
+	        <url>http://mvn.lumine.io/repository/maven-releases/</url>
+	  	</repository>
+	  	<snapshotRepository>
+	    	<id>nexus</id>  
+	    	<name>Lumine Snapshots</name>
+	        <url>http://mvn.lumine.io/repository/maven-snapshots/</url>
+	  	</snapshotRepository>
+	</distributionManagement>
+  
   <build>
-    <finalName>MMOCore</finalName>
-    <resources>
-      <resource>
-        <filtering>true</filtering>
-        <directory>${basedir}/src/main/resources/</directory>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <junitArtifactName>junit:junit</junitArtifactName>
-          <encoding>UTF-8</encoding>
-          <inputEncoding>UTF-8</inputEncoding>
-          <outputEncoding>UTF-8</outputEncoding>
-          <argLine>-ea -Dfile.encoding=UTF-8</argLine>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <repositories>
-	<repository>
-	  <id>jitpack.io</id>
-	  <url>https://jitpack.io</url>
-	</repository>
-    <repository>
-      <id>spigot-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
+    	<finalName>${project.name}-${project.version}</finalName>
+    	<resources>
+      		<resource>
+        		<filtering>true</filtering>
+        		<directory>${basedir}/src/main/resources/</directory>
+      		</resource>
+    	</resources>
+    	<plugins>
+      		<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-compiler-plugin</artifactId>
+        		<configuration>
+		          	<source>1.8</source>
+		          	<target>1.8</target>
+		         	<junitArtifactName>junit:junit</junitArtifactName>
+		     	    <encoding>UTF-8</encoding>
+		     	    <inputEncoding>UTF-8</inputEncoding>
+		          	<outputEncoding>UTF-8</outputEncoding>
+		          	<argLine>-ea -Dfile.encoding=UTF-8</argLine>
+        		</configuration>
+      		</plugin>
+    	</plugins>
+  	</build>  
+  	<repositories>
+		<repository>
+	  		<id>jitpack.io</id>
+	  		<url>https://jitpack.io</url>
+		</repository>
+    	<repository>
+      		<id>spigot-repo</id>
+      		<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    	</repository>
     <repository>
       <id>everything</id>
       <url>https://repo.citizensnpcs.co/</url>
@@ -138,10 +160,4 @@
         <scope>provided</scope>
       </dependency>
     </dependencies>
-    <properties>
-    	<downloadSources>false</downloadSources>
-    	<downloadJavadocs>false</downloadJavadocs>
-    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
 </project>
