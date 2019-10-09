@@ -150,7 +150,6 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public void onEnable() {
-
 		try {
 			getLogger().log(Level.INFO, "Detected Bukkit Version: " + version.toString());
 			nms = (NMSHandler) Class.forName("net.Indyuce.mmocore.version.nms.NMSHandler_" + version.toString().substring(1)).newInstance();
