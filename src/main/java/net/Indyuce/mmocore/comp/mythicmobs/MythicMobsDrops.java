@@ -47,6 +47,6 @@ public class MythicMobsDrops implements Listener {
 
 	private void registerPlaceholders() {
 		MythicMobs.inst().getPlaceholderManager().register("mmocore.skill", Placeholder.meta((metadata, arg) -> String.valueOf(PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getSkillData().getCachedModifier(arg))));
-		MythicMobs.inst().getPlaceholderManager().register("mmocore.mana", Placeholder.meta((metadata, arg) -> String.valueOf(PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getMana())));
+		MythicMobs.inst().getPlaceholderManager().register("mmocore.mana", Placeholder.meta((metadata, arg) -> String.valueOf((int) PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getMana())));
 	}
 }

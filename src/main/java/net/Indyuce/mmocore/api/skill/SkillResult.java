@@ -64,7 +64,7 @@ public class SkillResult {
 		cancelReason = reason;
 	}
 
-	public double getModifier(String modifier) {
+	public int getModifier(String modifier) {
 		return skill.getModifier(modifier, level);
 	}
 

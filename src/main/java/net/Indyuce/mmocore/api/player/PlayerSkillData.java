@@ -52,7 +52,7 @@ public class PlayerSkillData {
 		ambers = 0;
 	}
 
-	public double getCachedModifier(String name) {
+	public int getCachedModifier(String name) {
 		return cache.containsKey(name) ? cache.get(name).getValue() : 0;
 	}
 
@@ -63,7 +63,7 @@ public class PlayerSkillData {
 		cacheModifier(mmSkill, "level", cast.getLevel());
 	}
 
-	public void cacheModifier(MythicMobSkill skill, String name, double value) {
+	public void cacheModifier(MythicMobSkill skill, String name, int value) {
 		cache.put(skill.getInternalName() + "." + name, new CachedModifier(value));
 	}
 
@@ -75,9 +75,9 @@ public class PlayerSkillData {
 
 	public class CachedModifier {
 		private final long date = System.currentTimeMillis();
-		private final double value;
+		private final int value;
 
-		public CachedModifier(double value) {
+		public CachedModifier(int value) {
 			this.value = value;
 		}
 
@@ -85,7 +85,7 @@ public class PlayerSkillData {
 			return date + 1000 * 60 < System.currentTimeMillis();
 		}
 
-		public double getValue() {
+		public int getValue() {
 			return value;
 		}
 	}
