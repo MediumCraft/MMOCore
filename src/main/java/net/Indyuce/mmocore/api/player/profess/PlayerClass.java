@@ -38,7 +38,7 @@ public class PlayerClass {
 	private final ItemStack icon;
 	private final Map<ClassOption, Boolean> options = new HashMap<>();
 	private final ManaDisplayOptions manaDisplay;
-	private final int maxLevel;
+	private final int maxLevel, displayOrder;
 
 	private final Map<StatType, LinearValue> stats = new HashMap<>();
 	private final Map<String, SkillInfo> skills = new LinkedHashMap<>();
@@ -66,6 +66,7 @@ public class PlayerClass {
 			attrDescription.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', string));
 		manaDisplay = new ManaDisplayOptions(config.getConfigurationSection("mana"));
 		maxLevel = config.getInt("max-level");
+		displayOrder = config.getInt("display-order");
 
 		if (config.contains("attributes"))
 			for (String key : config.getConfigurationSection("attributes").getKeys(false))
@@ -135,6 +136,7 @@ public class PlayerClass {
 		this.fileName = id;
 		manaDisplay = new ManaDisplayOptions(ChatColor.BLUE, "Mana", AltChar.listSquare.charAt(0));
 		maxLevel = 0;
+		displayOrder = 0;
 
 		this.icon = new ItemStack(material);
 		setOption(ClassOption.DISPLAY, false);
@@ -171,6 +173,10 @@ public class PlayerClass {
 		return maxLevel;
 	}
 
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+	
 	public String getFileName() {
 		return fileName;
 	}

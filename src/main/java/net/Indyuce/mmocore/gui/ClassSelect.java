@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.gui;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,7 @@ public class ClassSelect extends EditableInventory {
 	}
 
 	public class ProfessSelectionInventory extends GeneratedInventory {
-		private final List<PlayerClass> classes = MMOCore.plugin.classManager.getAll().stream().filter(c -> c.hasOption(ClassOption.DISPLAY)).collect(Collectors.toList());
+		private final List<PlayerClass> classes = MMOCore.plugin.classManager.getAll().stream().filter(c -> c.hasOption(ClassOption.DISPLAY)).sorted(Comparator.comparingInt(PlayerClass::getDisplayOrder)).collect(Collectors.toList());
 
 		public ProfessSelectionInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
