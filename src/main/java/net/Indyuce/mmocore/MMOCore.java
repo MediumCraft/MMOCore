@@ -300,8 +300,8 @@ public class MMOCore extends JavaPlugin {
 			commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
 
 			if (hasEconomy() && economy.isValid()) {
-				commandMap.register(config.getString("withdraw"), new WithdrawCommand(config.getConfigurationSection("withdraw")));
-				commandMap.register(config.getString("deposit"), new DepositCommand(config.getConfigurationSection("deposit")));
+				commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
+				commandMap.register("mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
 			}
 		}
 		catch(NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
