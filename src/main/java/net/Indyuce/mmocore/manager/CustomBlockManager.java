@@ -58,7 +58,6 @@ public class CustomBlockManager extends MMOManager {
 
 	public void register(BlockInfo regen) {
 		if(!regen.headValue.isEmpty()) {
-			MMOCore.log("Reistered Head Value: " + regen.headValue);
 			headmap.put(regen.headValue, regen);
 		}
 		else
