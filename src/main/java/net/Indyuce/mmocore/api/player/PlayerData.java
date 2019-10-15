@@ -382,7 +382,8 @@ public class PlayerData {
 	}
 
 	public void heal(double heal) {
-		getPlayer().setHealth(Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		double healAmount = Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+		if(healAmount > 0) getPlayer().setHealth(healAmount);
 	}
 
 	public void addFriend(UUID uuid) {
