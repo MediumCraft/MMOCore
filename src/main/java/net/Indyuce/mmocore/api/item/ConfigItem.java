@@ -77,6 +77,10 @@ public class ConfigItem {
 	public String getName() {
 		return name;
 	}
+	
+	public int getModelData() {
+		return modeldata;
+	}
 
 	public String getId() {
 		return id;

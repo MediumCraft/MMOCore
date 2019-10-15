@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.version.nms.ItemTag;
 
 public class CurrencyItem extends ConfigItem {
@@ -34,6 +35,9 @@ public class CurrencyItem extends ConfigItem {
 		getLore().forEach(line -> lore.add(format(line)));
 		meta.setLore(lore);
 
+		if(MMOCore.plugin.version.isStrictlyHigher(1, 13))
+			meta.setCustomModelData(getModelData());
+		
 		item.setItemMeta(meta);
 		return NBTItem.get(item).add(new ItemTag("RpgWorth", worth)).toItem();
 	}
