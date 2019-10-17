@@ -21,7 +21,7 @@ heavy-armors:
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply.
-# Set to 'custom-min-conditions: []' for no condition.
+# Set to 'custom-mine-conditions: []' for no condition.
 custom-mine-conditions:
 - 'world{name="world1,world2,world_nether,world_the_end"}'
 - 'region{name="region1,region2,__global__"}'
