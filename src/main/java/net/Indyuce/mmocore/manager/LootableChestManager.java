@@ -126,6 +126,8 @@ public class LootableChestManager {
 				loc.getWorld().playSound(loc, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
 				loc.getWorld().spawnParticle(Particle.CRIT, loc.clone().add(.5, .5, .5), 16, 0, 0, 0, .5);
 			}
+			if(loc.getBlock().getState() instanceof Chest)
+				((Chest) loc.getBlock().getState()).getBlockInventory().clear();
 			loc.getBlock().setType(Material.AIR);
 			lastDisappear = System.currentTimeMillis();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> whenSpawn(), regenTime);
