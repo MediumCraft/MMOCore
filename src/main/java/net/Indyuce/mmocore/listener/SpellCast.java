@@ -48,7 +48,9 @@ public class SpellCast implements Listener {
 	public class SkillCasting extends BukkitRunnable implements Listener {
 		private final PlayerData playerData;
 
-		private final String format = MMOCore.plugin.configManager.getSimpleMessage("casting.action-bar");
+		private final String ready = MMOCore.plugin.configManager.getSimpleMessage("casting.action-bar.ready");
+		private final String onCooldown = MMOCore.plugin.configManager.getSimpleMessage("casting.action-bar.on-cooldown");
+		private final String noMana = MMOCore.plugin.configManager.getSimpleMessage("casting.action-bar.no-mana");
 		private final String split = MMOCore.plugin.configManager.getSimpleMessage("casting.split");
 
 		private int j;
@@ -105,11 +107,20 @@ public class SpellCast implements Listener {
 		private String getFormat(PlayerData data) {
 			String str = "";
 			for (int j = 0; j < data.getBoundSkills().size(); j++)
-				str += (str.isEmpty() ? "" : split) + format.replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName());
+				str += (str.isEmpty() ? "" : split) + (onCooldown(data, j) && data.getBoundSkill(j).getSkill().hasModifier("cooldown") ? onCooldown.replace("{cooldown}", "" + ((int) data.getSkillData().getCooldown(data.getBoundSkill(j)) / 100) / 5) :
+					noMana(data, j) ? noMana : ready).replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName());
 
 			return str;
 		}
 
+		private boolean onCooldown(PlayerData data, int index) {
+			return data.getBoundSkill(index).getSkill().hasModifier("cooldown") && data.getSkillData().getCooldown(data.getBoundSkill(index)) > 0;
+		}
+
+		private boolean noMana(PlayerData data, int index) {
+			return data.getBoundSkill(index).getSkill().hasModifier("mana") && data.getBoundSkill(index).getModifier("mana", data.getSkillLevel(data.getBoundSkill(index).getSkill())) > data.getMana();
+		}
+		
 		@Override
 		public void run() {
 			if (!playerData.isOnline() || playerData.getPlayer().isDead())
