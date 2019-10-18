@@ -502,7 +502,7 @@ public class PlayerData {
 
 	public void giveMana(double amount) {
 		if (mana != (mana = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount))))
-			displayMana();
+			if(MMOCore.plugin.getConfig().getBoolean("display.mana")) displayMana();
 	}
 
 	public void giveStamina(double amount) {
