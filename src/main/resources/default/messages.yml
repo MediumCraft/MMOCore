@@ -44,7 +44,7 @@ player-input:
 # Spell Casting
 casting:
     action-bar:
-        ready:'&6[{index}] &a&l{skill}'
+        ready: '&6[{index}] &a&l{skill}'
         on-cooldown: '&6[{index}] &c&l{skill} &6(&c{cooldown}&6)'
         no-mana: '&6[{index}] &9&l{skill}'
     split: '&7 &7 - &7 '
