@@ -31,7 +31,8 @@ public abstract class PlayerInput implements Listener {
 	public enum InputType {
 		FRIEND_REQUEST,
 
-		PARTY_INVITE;
+		PARTY_INVITE,
+		GUILD_INVITE;
 
 		public String getLowerCaseName() {
 			return name().toLowerCase().replace("_", "-");

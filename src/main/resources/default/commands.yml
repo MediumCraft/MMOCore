@@ -22,6 +22,9 @@ friends:
 party:
   main: "party"
   aliases: []
+guild:
+  main: "guild"
+  aliases: []
 withdraw:
   main: "withdraw"
   aliases: ["w"]

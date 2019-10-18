@@ -39,6 +39,7 @@ import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.social.Party;
+import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.skill.Skill;
@@ -70,6 +71,7 @@ public class PlayerData {
 	private final Set<String> waypoints = new HashSet<>();
 	private List<UUID> friends;
 	private Party party;
+	private Guild guild;
 	private final List<SkillInfo> boundSkills = new ArrayList<>();
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
 
@@ -277,6 +279,10 @@ public class PlayerData {
 		return party;
 	}
 
+	public Guild getGuild() {
+		return guild;
+	}
+
 	public int getClassPoints() {
 		return classPoints;
 	}
@@ -301,6 +307,10 @@ public class PlayerData {
 		return party != null;
 	}
 
+	public boolean inGuild() {
+		return guild != null;
+	}
+	
 	public boolean isOnline() {
 		return player.isOnline();
 	}
@@ -400,6 +410,10 @@ public class PlayerData {
 
 	public void setParty(Party party) {
 		this.party = party;
+	}
+
+	public void setGuild(Guild guild) {
+		this.guild = guild;
 	}
 
 	public void log(Level level, String message) {

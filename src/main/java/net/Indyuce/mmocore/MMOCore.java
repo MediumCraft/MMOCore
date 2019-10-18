@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.command.AttributesCommand;
 import net.Indyuce.mmocore.command.ClassCommand;
 import net.Indyuce.mmocore.command.DepositCommand;
 import net.Indyuce.mmocore.command.FriendsCommand;
+import net.Indyuce.mmocore.command.GuildCommand;
 import net.Indyuce.mmocore.command.MMOCoreCommand;
 import net.Indyuce.mmocore.command.PartyCommand;
 import net.Indyuce.mmocore.command.PlayerStatsCommand;
@@ -84,6 +85,7 @@ import net.Indyuce.mmocore.manager.profession.FishingManager;
 import net.Indyuce.mmocore.manager.profession.ProfessionManager;
 import net.Indyuce.mmocore.manager.profession.SmithingManager;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
+import net.Indyuce.mmocore.manager.social.GuildManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.Indyuce.mmocore.version.ServerVersion;
@@ -104,6 +106,7 @@ public class MMOCore extends JavaPlugin {
 	public RequestManager requestManager;
 	public final AttributeManager attributeManager = new AttributeManager();
 	public final PartyManager partyManager = new PartyManager();
+	public final GuildManager guildManager = new GuildManager();
 	public final QuestManager questManager = new QuestManager();
 	public ConfigItemManager configItems;
 	public SkillManager skillManager;
@@ -298,6 +301,7 @@ public class MMOCore extends JavaPlugin {
 			commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
 			commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
 			commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
+			commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
 
 			if (hasEconomy() && economy.isValid()) {
 				commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
@@ -337,6 +341,9 @@ public class MMOCore extends JavaPlugin {
 
 		partyManager.clear();
 		partyManager.reload();
+
+		guildManager.clear();
+		guildManager.reload();
 
 		attributeManager.clear();
 		attributeManager.reload();

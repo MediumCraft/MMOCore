@@ -36,9 +36,11 @@ player-input:
     anvil:
         friend-request: 'Friend name..'
         party-invite: 'Player name..'
+        guild-invite: 'Player name..'
     chat:
         friend-request: '&eWrite in the chat the player name.'
         party-invite: '&eWrite in the chat the player you want to invite.'
+        guild-invite: '&eWrite in the chat the player you want to invite.'
         cancel: '&eWrite &c''cancel'' &eto cancel.'
 
 # Spell Casting
@@ -107,6 +109,22 @@ party-joined-other: '&6{player}&e joined your party!'
 transfer-party-ownership: '&eYou were transfered the party ownership.'
 kick-from-party: '&eYou successfully kicked &6{player}&e.'
 party-invite-cooldown: '&cPlease wait {cooldown} before inviting {player}.'
+
+# Guilds
+guild-chat: '&a[Guild] {player}: {message}'
+sent-guild-invite: '&eYou sent a guild invite to &6{player}&e.'
+already-in-guild: '&c{player} is already in your guild.'
+guild-invite:
+- '{"text":""}'
+- '{"text":"&6{player} &ehas invited you to their guild!"}'
+- '[{"text":"        ","hoverEvent":{}},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/guild accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             ","hoverEvent":{}},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/guild deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
+- '{"text":""}'
+guild-is-full: '&cSorry, your guild is full.'
+guild-joined: '&eYou successfully joined &6{owner}&e''s guild.'
+guild-joined-other: '&6{player}&e joined your guild!'
+transfer-guild-ownership: '&eYou were transfered the guild ownership.'
+kick-from-guild: '&eYou successfully kicked &6{player}&e from the guild.'
+guild-invite-cooldown: '&cPlease wait {cooldown} before inviting {player}.'
 
 # Quests
 already-on-quest: '&cYou are already on a quest.'

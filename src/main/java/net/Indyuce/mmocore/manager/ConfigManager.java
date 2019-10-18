@@ -28,7 +28,7 @@ public class ConfigManager {
 	public float speedMalus;
 	public boolean overrideVanillaExp, hotbarSwap;
 	public double expPartyBuff, regenPartyBuff;
-	public String partyChatPrefix;
+	public String partyChatPrefix, guildChatPrefix;
 	public ChatColor manaFull, manaHalf, manaEmpty, staminaFull, staminaHalf, staminaEmpty;
 
 	private final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
@@ -99,6 +99,7 @@ public class ConfigManager {
 		expPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.experience");
 		regenPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.health-regen");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
+		guildChatPrefix = MMOCore.plugin.getConfig().getString("guilds.chat-prefix");
 		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
 
 		manaFull = getColorOrDefault("mana-whole", ChatColor.BLUE);
