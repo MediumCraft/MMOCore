@@ -30,21 +30,21 @@ public class SubclassConfirmation extends EditableInventory {
 			public Placeholders getPlaceholders(PluginInventory inv, int n) {
 
 				Placeholders holders = new Placeholders();
-				holders.register("class", ((ClassConfirmationInventory) inv).profess.getName());
+				holders.register("class", ((SubclassConfirmationInventory) inv).profess.getName());
 				return holders;
 			}
 		} : new NoPlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data, PlayerClass profess, PluginInventory last) {
-		return new ClassConfirmationInventory(data, this, profess, last);
+		return new SubclassConfirmationInventory(data, this, profess, last);
 	}
 
-	public class ClassConfirmationInventory extends GeneratedInventory {
+	public class SubclassConfirmationInventory extends GeneratedInventory {
 		private final PlayerClass profess;
 		private final PluginInventory last;
 
-		public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
+		public SubclassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
 			super(playerData, editable);
 
 			this.profess = profess;

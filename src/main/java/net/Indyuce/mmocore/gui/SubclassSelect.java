@@ -122,7 +122,7 @@ public class SubclassSelect extends EditableInventory {
 					return;
 				}
 
-				InventoryManager.CLASS_CONFIRM.newInventory(playerData, MMOCore.plugin.classManager.get(tag), this).open();
+				InventoryManager.SUBCLASS_CONFIRM.newInventory(playerData, MMOCore.plugin.classManager.get(tag), this).open();
 			}
 		}
 	}
