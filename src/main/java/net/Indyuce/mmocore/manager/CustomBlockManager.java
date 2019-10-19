@@ -2,17 +2,16 @@ package net.Indyuce.mmocore.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -29,49 +28,33 @@ import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.version.VersionMaterial;
 
 public class CustomBlockManager extends MMOManager {
-	private final Map<Material, BlockInfo> map = new HashMap<>();
-	private final Map<String, BlockInfo> headmap = new HashMap<>();
-	private final Set<RegenInfo> active = new HashSet<>();
+	private final Map<String, BlockInfo> map = new HashMap<>();
+	private final Map<RegenInfo, BlockData> active = new HashMap<>();
 
-	/*
-	 * list in which both block regen and block permissions are enabled.
-	 */
+	/* list in which both block regen and block permissions are enabled. */
 	private final List<Condition> customMineConditions = new ArrayList<>();
 
 	public void loadDropTables(ConfigurationSection config) {
 		for (String key : config.getKeys(false))
 			try {
-				register(new BlockInfo(config.getConfigurationSection(key), false));
+				BlockInfo info = new BlockInfo(config.getConfigurationSection(key));
+				register(info.getBlock() == Material.PLAYER_HEAD ? info.getHeadValue() : info.getBlock().name(), info);
 			} catch (IllegalArgumentException exception) {
 				MMOCore.log(Level.WARNING, "Could not load custom block '" + key + "': " + exception.getMessage());
 			}
 	}
 
-	public void loadPHDropTables(ConfigurationSection config) {
-		for (String key : config.getKeys(false))
-			try {
-				register(new BlockInfo(config.getConfigurationSection(key), true));
-			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "Could not load custom block '" + key + "': " + exception.getMessage());
-			}
-	}
-
-	public void register(BlockInfo regen) {
-		if(!regen.headValue.isEmpty()) {
-			headmap.put(regen.headValue, regen);
-		}
-		else
-			map.put(regen.getBlock(), regen);
+	public void register(String key, BlockInfo regen) {
+		map.put(key, regen);
 	}
 
 	public BlockInfo getInfo(Block block) {
-		if(block.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
+		if(isPlayerSkull(block.getType())) {
 			String skullValue = MMOCore.plugin.nms.getSkullValue(block);
-			
-			return headmap.containsKey(skullValue) ? headmap.get(skullValue) : null;
+			return map.getOrDefault(skullValue, null);
 		}
 			
-		return map.containsKey(block.getType()) ? map.get(block.getType()) : null;
+		return map.getOrDefault(block.getType().name(), null);
 	}
 
 	/*
@@ -79,26 +62,36 @@ public class CustomBlockManager extends MMOManager {
 	 * are reset and put back in place.
 	 */
 	public void resetRemainingBlocks() {
-		active.forEach(info -> info.getLocation().getBlock().setType(info.getRegen().getBlock()));
+		active.keySet().forEach(info -> {
+			info.getLocation().getBlock().setType(info.getRegen().getBlock());
+		});
 	}
 
 	public void initialize(RegenInfo info) {
+		active.put(info, info.getLocation().getBlock().getBlockData());
 
-		active.add(info);
-		info.getLocation().getBlock().setType(info.getRegen().getTemporaryBlock());
-		if(info.getRegen().getTemporaryBlock() == Material.PLAYER_HEAD)
+		if(isPlayerSkull(info.getLocation().getBlock().getType())) {
+			if(!isPlayerSkull(info.getRegen().getTemporaryBlock())) info.getLocation().getBlock().setType(info.getRegen().getTemporaryBlock());
 			MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().regenHeadValue);
+			info.getLocation().getBlock().getState().update();
+		}
+		else info.getLocation().getBlock().setType(info.getRegen().getTemporaryBlock());
 
 		new BukkitRunnable() {
 			public void run() {
-				active.remove(info);
-				info.getLocation().getBlock().setType(info.getRegen().getBlock());
-				if(info.getRegen().getBlock() == Material.PLAYER_HEAD) {
-					MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().headValue);
-					info.getLocation().getBlock().getState().update();
-				}
+				regen(info);
 			}
 		}.runTaskLater(MMOCore.plugin, info.getRegen().getRegenTime());
+	}
+	
+	private void regen(RegenInfo info) {
+		info.getLocation().getBlock().setType(info.getRegen().getBlock());
+		
+		if(isPlayerSkull(info.getRegen().getBlock()))
+			MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().headValue);
+
+		info.getLocation().getBlock().setBlockData(active.get(info));
+		active.remove(info);
 	}
 
 	public boolean isEnabled(Entity entity) {
@@ -106,7 +99,6 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	public boolean isEnabled(Entity entity, Location loc) {
-
 		ConditionInstance conditionEntity = new ConditionInstance(entity, loc);
 		for (Condition condition : customMineConditions)
 			if (!condition.isMet(conditionEntity))
@@ -114,9 +106,13 @@ public class CustomBlockManager extends MMOManager {
 
 		return true;
 	}
+	
+	private boolean isPlayerSkull(Material block) {
+		return block == VersionMaterial.PLAYER_HEAD.toMaterial() || block == VersionMaterial.PLAYER_WALL_HEAD.toMaterial();
+	}
 
 	public class BlockInfo {
-		private final Material block;
+		private Material block;
 		private final DropTable table;
 		private final boolean vanillaDrops;
 		private final String headValue;
@@ -131,19 +127,16 @@ public class CustomBlockManager extends MMOManager {
 		private int regenTime = -1;
 		private String regenHeadValue;
 
-		public BlockInfo(ConfigurationSection config, boolean isPlayerHead) {
+		public BlockInfo(ConfigurationSection config) {
 			Validate.notNull(config, "Could not load config");
-			block = isPlayerHead ? Material.PLAYER_HEAD : Material.valueOf(config.getName().toUpperCase().replace("-", "_").replace(" ", "_"));
-			headValue = isPlayerHead ? config.getString("head-value") : "";
+			block = Material.valueOf(config.getString("material", "BOOKSHELF").toUpperCase().replace("-", "_").replace(" ", "_"));
+			headValue = config.getString("head-value", "");
 			table = config.contains("drop-table") ? MMOCore.plugin.dropTableManager.loadDropTable(config.get("drop-table")) : null;
 			vanillaDrops = config.getBoolean("vanilla-drops", true);
 
 			if (config.contains("regen")) {
-				String format = config.getString("regen.temp-block");
-				Validate.notNull(config, "Could not load temporary block");
-				temporary = isPlayerHead ? Material.PLAYER_HEAD : Material.valueOf(format.toUpperCase().replace("-", "_").replace(" ", "_"));
-				if(temporary == Material.PLAYER_HEAD)
-					regenHeadValue = config.getString("regen.head-value");
+				temporary = Material.valueOf(config.getString("regen.temp-block", "BOOKSHELF").toUpperCase().replace("-", "_").replace(" ", "_"));
+				regenHeadValue = config.getString("regen.head-value", "");
 				
 				regenTime = config.getInt("regen.time");
 			}
@@ -162,6 +155,18 @@ public class CustomBlockManager extends MMOManager {
 
 			Optional<Trigger> opt = triggers.stream().filter(trigger -> (trigger instanceof ExperienceTrigger)).findFirst();
 			experience = opt.isPresent() ? (ExperienceTrigger) opt.get() : null;
+		}
+		
+		public BlockInfo(Material block, DropTable table, boolean vanillaDrops, List<Trigger> triggers, ExperienceTrigger experience, Material temporary, int regenTime, String headValue, String regenHeadValue) {
+			this.block = block;
+			this.headValue = headValue;
+			this.table = table;
+			this.vanillaDrops = vanillaDrops;
+			this.temporary = temporary;
+			this.regenHeadValue = regenHeadValue;
+			this.regenTime = regenTime;
+			this.triggers.addAll(triggers);
+			this.experience = experience;
 		}
 
 		public String getHeadValue() {
@@ -264,6 +269,5 @@ public class CustomBlockManager extends MMOManager {
 	@Override
 	public void clear() {
 		map.clear();
-		headmap.clear();
 	}
 }

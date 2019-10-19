@@ -35,7 +35,7 @@ public class BlockListener implements Listener {
 		/*
 		 * if custom mining enabled, check for item breaking restrictions
 		 */
-		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player);
+		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player, block.getLocation());
 		ItemStack item = player.getInventory().getItemInMainHand();
 		
 		if (customMine) {
@@ -63,7 +63,7 @@ public class BlockListener implements Listener {
 			}
 
 			if (!perms.canMine(block.getType())) {
-				player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("cannot-break"));
+				MMOCore.plugin.configManager.getSimpleMessage("cannot-break").send(player);
 				event.setCancelled(true);
 				return;
 			}
@@ -88,7 +88,7 @@ public class BlockListener implements Listener {
 							trigger.apply(playerData);
 				});
 				if(!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, .5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()), player);
+					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, .5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
 			}
 			
 			/*
