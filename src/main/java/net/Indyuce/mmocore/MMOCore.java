@@ -2,6 +2,7 @@ package net.Indyuce.mmocore;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -208,7 +209,7 @@ public class MMOCore extends JavaPlugin {
 			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
 			getLogger().log(Level.INFO, "Hooked onto MythicMobs");
 		}
-
+		
 		/*
 		 * resource regeneration. must check if entity is dead otherwise regen
 		 * will make the 'respawn' button glitched plus HURT entity effect bug
@@ -246,6 +247,30 @@ public class MMOCore extends JavaPlugin {
 		saveDefaultConfig();
 		reloadPlugin();
 
+		/*
+		 * default action bar.
+		 * only ran if the action bar is enabled
+		 */
+		if(getConfig().getBoolean("action-bar.enabled")) {
+			DecimalFormat format = new DecimalFormat(getConfig().getString("action-bar.decimal"), configManager.formatSymbols);
+			
+			new BukkitRunnable() {
+				public void run() {
+					for (PlayerData data : PlayerData.getAll()) {
+						if(!data.isCasting()) {		
+							data.displayActionBar(placeholderParser.parse(data.getPlayer(), ChatColor.translateAlternateColorCodes('&', getConfig().getString("action-bar.format")
+									.replace("{health}", format.format(data.getPlayer().getHealth())).replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getStats().getStat(StatType.MAX_HEALTH)))
+									.replace("{mana}", format.format(data.getMana())).replace("{max_mana}", "" + StatType.MAX_MANA.format(data.getStats().getStat(StatType.MAX_MANA)))
+									.replace("{stamina}", format.format(data.getStamina())).replace("{max_stamina}", "" + StatType.MAX_STAMINA.format(data.getStats().getStat(StatType.MAX_STAMINA)))
+									.replace("{stellium}", format.format(data.getStellium())).replace("{max_stellium}", "" + StatType.MAX_STELLIUM.format(data.getStats().getStat(StatType.MAX_STELLIUM)))
+									.replace("{class}", data.getProfess().getName()).replace("{xp}", "" + data.getExperience()).replace("{armor}", "" + StatType.ARMOR.format(data.getStats().getStat(StatType.ARMOR)))
+									.replace("{level}", "" + data.getLevel()).replace("{name}", data.getPlayer().getDisplayName()))));
+						}
+					}
+				}
+			}.runTaskTimerAsynchronously(MMOCore.plugin, 100, getConfig().getInt("action-bar.ticks-to-update"));
+		}
+		
 		/*
 		 * enable debug mode for extra debug tools.
 		 */
@@ -293,19 +318,19 @@ public class MMOCore extends JavaPlugin {
 			
 			FileConfiguration config = new ConfigFile("commands").getConfig();
 			
-			commandMap.register("mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
-			commandMap.register("mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
-			commandMap.register("mmocore", new ClassCommand(config.getConfigurationSection("class")));
-			commandMap.register("mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
-			commandMap.register("mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
-			commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
-			commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
-			commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
-			commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
+			if(config.contains("player")) commandMap.register("mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
+			if(config.contains("attributes")) commandMap.register("mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
+			if(config.contains("class")) commandMap.register("mmocore", new ClassCommand(config.getConfigurationSection("class")));
+			if(config.contains("waypoints")) commandMap.register("mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
+			if(config.contains("quests")) commandMap.register("mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
+			if(config.contains("skills")) commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
+			if(config.contains("friends")) commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
+			if(config.contains("party")) commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
+			if(config.contains("guild")) commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
 
 			if (hasEconomy() && economy.isValid()) {
-				commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
-				commandMap.register("mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
+				if(config.contains("withdraw")) commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
+				if(config.contains("deposit")) commandMap.register("mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
 			}
 		}
 		catch(NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {

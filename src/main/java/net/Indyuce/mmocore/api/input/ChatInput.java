@@ -15,8 +15,8 @@ public class ChatInput extends PlayerInput {
 		super(player, output);
 
 		player.closeInventory();
-		player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("player-input.chat." + type.getLowerCaseName()));
-		player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("player-input.chat.cancel"));
+		MMOCore.plugin.configManager.getSimpleMessage("player-input.chat." + type.getLowerCaseName()).send(player);
+		MMOCore.plugin.configManager.getSimpleMessage("player-input.chat.cancel").send(player);
 	}
 
 	@Override

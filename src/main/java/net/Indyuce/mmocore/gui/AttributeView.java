@@ -89,13 +89,13 @@ public class AttributeView extends EditableInventory {
 			if (item.getFunction().equalsIgnoreCase("reallocation")) {
 				int spent = playerData.getAttributes().countSkillPoints();
 				if (spent < 1) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("no-attribute-points-spent"));
+					MMOCore.plugin.configManager.getSimpleMessage("no-attribute-points-spent").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
 				}
 
 				if (playerData.getAttributeReallocationPoints() < 1) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-attribute-reallocation-point"));
+					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-reallocation-point").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
 				}
@@ -103,7 +103,7 @@ public class AttributeView extends EditableInventory {
 				playerData.getAttributes().getAttributeInstances().forEach(ins -> ins.setBase(0));
 				playerData.giveAttributePoints(spent);
 				playerData.giveAttributeReallocationPoints(-1);
-				player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("attribute-points-reallocated", "points", "" + playerData.getAttributePoints()));
+				MMOCore.plugin.configManager.getSimpleMessage("attribute-points-reallocated", "points", "" + playerData.getAttributePoints()).send(player);
 				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 				open();
 			}
@@ -112,21 +112,21 @@ public class AttributeView extends EditableInventory {
 				PlayerAttribute attribute = ((AttributeItem) item).attribute;
 
 				if (playerData.getAttributePoints() < 1) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point"));
+					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
 				}
 
 				AttributeInstance ins = playerData.getAttributes().getInstance(attribute);
 				if (attribute.hasMax() && ins.getBase() >= attribute.getMax()) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("attribute-max-points-hit"));
+					MMOCore.plugin.configManager.getSimpleMessage("attribute-max-points-hit").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
 				}
 
 				ins.addBase(1);
 				playerData.giveAttributePoints(-1);
-				player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", "" + ins.getBase()));
+				MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", "" + ins.getBase()).send(player);
 				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 				open();
 			}

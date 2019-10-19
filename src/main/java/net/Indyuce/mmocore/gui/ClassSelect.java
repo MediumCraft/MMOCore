@@ -124,7 +124,7 @@ public class ClassSelect extends EditableInventory {
 				PlayerClass profess = MMOCore.plugin.classManager.get(tag);
 				if (profess.equals(playerData.getProfess())) {
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("already-on-class", "class", profess.getName()));
+					MMOCore.plugin.configManager.getSimpleMessage("already-on-class", "class", profess.getName()).send(player);
 					return;
 				}
 

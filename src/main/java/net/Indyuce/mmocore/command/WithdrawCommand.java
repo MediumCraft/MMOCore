@@ -39,7 +39,7 @@ public class WithdrawCommand extends BukkitCommand {
 			amount = Integer.parseInt(amountArgument);
 			Validate.isTrue(amount >= 0);
 		} catch (IllegalArgumentException exception) {
-			sender.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("wrong-number", "arg", "" + args[0]));
+			sender.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("wrong-number", "arg", "" + args[0]).message());
 			return true;
 		}
 
@@ -52,14 +52,14 @@ public class WithdrawCommand extends BukkitCommand {
 
 		int left = (int) MMOCore.plugin.economy.getEconomy().getBalance(player) - amount;
 		if (left < 0) {
-			player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-enough-money", "left", "" + -left));
+			MMOCore.plugin.configManager.getSimpleMessage("not-enough-money", "left", "" + -left).send(player);
 			return true;
 		}
 
 		MMOCore.plugin.economy.getEconomy().withdrawPlayer(player, amount);
 		request.withdrawAlgorythm(amount);
 		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-		player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("withdrew", "worth", "" + amount));
+		MMOCore.plugin.configManager.getSimpleMessage("withdrew", "worth", "" + amount).send(player);
 		return true;
 	}
 }

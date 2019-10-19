@@ -30,8 +30,8 @@ public class GuildInvite extends Request {
 
 	public void accept() {
 		guild.removeLastInvite(getCreator().getPlayer());
-		guild.getMembers().forEach(member -> member.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("guild-joined-other", "player", target.getPlayer().getName())));
-		target.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("guild-joined", "owner", guild.getOwner().getPlayer().getName()));
+		guild.getMembers().forEach(member -> MMOCore.plugin.configManager.getSimpleMessage("guild-joined-other", "player", target.getPlayer().getName()).send(member.getPlayer()));
+		MMOCore.plugin.configManager.getSimpleMessage("guild-joined", "owner", guild.getOwner().getPlayer().getName()).send(target.getPlayer());
 		guild.addMember(target);
 		InventoryManager.GUILD_VIEW.newInventory(target).open();
 		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());

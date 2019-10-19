@@ -437,19 +437,18 @@ public class PlayerData {
 		giveStellium(-waypoint.getStelliumCost());
 
 		new BukkitRunnable() {
-			String message = MMOCore.plugin.configManager.getSimpleMessage("warping-comencing");
 			int x = player.getLocation().getBlockX(), y = player.getLocation().getBlockY(), z = player.getLocation().getBlockZ(), t;
 
 			public void run() {
 				if (player.getLocation().getBlockX() != x || player.getLocation().getBlockY() != y || player.getLocation().getBlockZ() != z) {
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, .5f);
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("warping-canceled"));
+					MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(player);
 					giveStellium(waypoint.getStelliumCost());
 					cancel();
 					return;
 				}
-
-				displayActionBar(message.replace("{left}", "" + ((120 - t) / 20)));
+				
+				MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(player);
 				if (t++ >= 100) {
 					player.teleport(waypoint.getLocation());
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
@@ -739,10 +738,10 @@ public class PlayerData {
 		if (!cast.isSuccessful()) {
 
 			if (cast.getCancelReason() == CancelReason.MANA)
-				getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana"));
+				MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(player);
 
 			if (cast.getCancelReason() == CancelReason.COOLDOWN)
-				getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown"));
+				MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(player);
 
 			return cast;
 		}

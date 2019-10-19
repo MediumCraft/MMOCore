@@ -202,5 +202,6 @@ public class NMSHandler_1_13_R2 implements NMSHandler {
 		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 		profile.getProperties().put("textures", new Property("textures", value));
 		skullTile.setGameProfile(profile);
+		skullTile.update();
 	}
 }

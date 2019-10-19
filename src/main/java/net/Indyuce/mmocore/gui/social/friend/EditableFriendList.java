@@ -197,35 +197,35 @@ public class EditableFriendList extends EditableInventory {
 
 				long remaining = playerData.getLastFriendRequest() + 60 * 2 * 1000 - System.currentTimeMillis();
 				if (remaining > 0) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("friend-request-cooldown", "cooldown", new DelayFormat().format(remaining)));
+					MMOCore.plugin.configManager.getSimpleMessage("friend-request-cooldown", "cooldown", new DelayFormat().format(remaining)).send(player);
 					return;
 				}
 
 				MMOCore.plugin.configManager.newPlayerInput(player, InputType.FRIEND_REQUEST, (input) -> {
 					Player target = Bukkit.getPlayer(input);
 					if (target == null) {
-						player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input));
+						MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
 						return;
 					}
 
 					if (playerData.hasFriend(target.getUniqueId())) {
-						player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("already-friends", "player", target.getName()));
+						MMOCore.plugin.configManager.getSimpleMessage("already-friends", "player", target.getName()).send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
 						return;
 					}
 
 					if (playerData.getUniqueId().equals(target.getUniqueId())) {
-						player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("cant-request-to-yourself"));
+						MMOCore.plugin.configManager.getSimpleMessage("cant-request-to-yourself").send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
 						return;
 					}
 
 					playerData.sendFriendRequest(PlayerData.get(target));
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("sent-friend-request", "player", target.getName()));
+					MMOCore.plugin.configManager.getSimpleMessage("sent-friend-request", "player", target.getName()).send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 					open();
 				});

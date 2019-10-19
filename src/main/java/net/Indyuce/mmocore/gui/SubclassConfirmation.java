@@ -67,7 +67,7 @@ public class SubclassConfirmation extends EditableInventory {
 					return;
 
 				playerData.setClass(profess);
-				player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()));
+				MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
 				player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
 				player.closeInventory();
 			}

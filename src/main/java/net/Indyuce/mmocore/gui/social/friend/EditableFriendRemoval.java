@@ -55,7 +55,7 @@ public class EditableFriendRemoval extends EditableInventory {
 				playerData.removeFriend(friend.getUniqueId());
 				new OfflinePlayerData(friend.getUniqueId()).removeFriend(playerData.getUniqueId());
 				player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-				player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("no-longer-friends", "unfriend", friend.getName()));
+				MMOCore.plugin.configManager.getSimpleMessage("no-longer-friends", "unfriend", friend.getName()).send(player);
 				last.open();
 			}
 

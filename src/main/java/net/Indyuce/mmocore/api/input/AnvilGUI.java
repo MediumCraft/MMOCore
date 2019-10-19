@@ -22,7 +22,7 @@ public class AnvilGUI extends PlayerInput {
 
 		ItemStack paper = new ItemStack(Material.PAPER);
 		ItemMeta paperMeta = paper.getItemMeta();
-		paperMeta.setDisplayName(MMOCore.plugin.configManager.getSimpleMessage("player-input.anvil." + type.getLowerCaseName()));
+		paperMeta.setDisplayName(MMOCore.plugin.configManager.getSimpleMessage("player-input.anvil." + type.getLowerCaseName()).message());
 		paper.setItemMeta(paperMeta);
 
 		MMOCore.plugin.nms.handleInventoryCloseEvent(player);

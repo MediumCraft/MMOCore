@@ -51,9 +51,6 @@ public class Profession {
 
 		if (config.contains("on-mine"))
 			MMOCore.plugin.mineManager.loadDropTables(config.getConfigurationSection("on-mine"));
-		
-		if (config.contains("on-mine-playerhead"))
-			MMOCore.plugin.mineManager.loadPHDropTables(config.getConfigurationSection("on-mine-playerhead"));
 
 		if (config.contains("alchemy-experience")) {
 

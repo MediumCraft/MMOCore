@@ -22,6 +22,7 @@ import net.Indyuce.mmocore.api.input.AnvilGUI;
 import net.Indyuce.mmocore.api.input.ChatInput;
 import net.Indyuce.mmocore.api.input.PlayerInput;
 import net.Indyuce.mmocore.api.input.PlayerInput.InputType;
+import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class ConfigManager {
 
@@ -31,7 +32,7 @@ public class ConfigManager {
 	public String partyChatPrefix, guildChatPrefix;
 	public ChatColor manaFull, manaHalf, manaEmpty, staminaFull, staminaHalf, staminaEmpty;
 
-	private final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
 
 	private List<Integer> neededExp = new ArrayList<>();
@@ -176,10 +177,29 @@ public class ConfigManager {
 		return messages.getStringList(key);
 	}
 
-	public String getSimpleMessage(String key, String... placeholders) {
-		String format = messages.getString(key);
+	public SimpleMessage getSimpleMessage(String key, String... placeholders) {
+		String format = messages.getString(key, "");
 		for (int j = 0; j < placeholders.length - 1; j += 2)
 			format = format.replace("{" + placeholders[j] + "}", placeholders[j + 1]);
-		return ChatColor.translateAlternateColorCodes('&', format);
+		return new SimpleMessage(ChatColor.translateAlternateColorCodes('&', format));
+	}
+	
+	public class SimpleMessage {
+		String message;
+		
+		SimpleMessage(String m) {
+			message = m;
+		}
+		
+		public String message()
+		{ return message.startsWith("%") ? message.substring(1) : message; }
+		
+		public boolean send(Player player) {
+			if(!message.isEmpty()) {
+				if(message.startsWith("%")) PlayerData.get(player.getUniqueId()).displayActionBar(message.substring(1));
+				else player.sendMessage(message);
+			}
+			return !message.isEmpty();
+		}
 	}
 }

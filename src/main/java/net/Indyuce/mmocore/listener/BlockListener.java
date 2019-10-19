@@ -105,7 +105,7 @@ public class BlockListener implements Listener {
 			 * enable block regen.
 			 */
 			if (info.hasRegen())
-				MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(event.getBlock().getLocation()));
+				MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(event.getBlock()));
 		}
 	}
 

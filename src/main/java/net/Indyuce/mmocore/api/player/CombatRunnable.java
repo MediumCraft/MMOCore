@@ -18,7 +18,7 @@ public class CombatRunnable extends BukkitRunnable {
 
 		config = MMOCore.plugin.configManager;
 		
-		if(!config.getSimpleMessage("now-in-combat").isEmpty()) player.getPlayer().sendMessage(config.getSimpleMessage("now-in-combat"));
+		config.getSimpleMessage("now-in-combat").send(player.getPlayer());
 		Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, true));
 		runTaskTimer(MMOCore.plugin, 20, 20);
 	}
@@ -31,7 +31,7 @@ public class CombatRunnable extends BukkitRunnable {
 	public void run() {
 		if (lastHit + 10000 < System.currentTimeMillis()) {
 			Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, false));
-			if(!config.getSimpleMessage("leave-combat").isEmpty()) player.getPlayer().sendMessage(config.getSimpleMessage("leave-combat"));
+			config.getSimpleMessage("leave-combat").send(player.getPlayer());
 			close();
 		}
 	}

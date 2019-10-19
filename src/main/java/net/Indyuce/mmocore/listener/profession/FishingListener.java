@@ -51,7 +51,7 @@ public class FishingListener implements Listener {
 
 			new FishingData(player, hook, table);
 			if (MMOCore.plugin.hasHolograms())
-				MMOCore.plugin.hologramSupport.displayIndicator(hook.getLocation(), MMOCore.plugin.configManager.getSimpleMessage("caught-fish"));
+				MMOCore.plugin.hologramSupport.displayIndicator(hook.getLocation(), MMOCore.plugin.configManager.getSimpleMessage("caught-fish").message());
 		}
 	}
 
@@ -163,7 +163,7 @@ public class FishingListener implements Listener {
 				// calculate velocity
 				Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);
 				if (MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(location, MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")));
+					MMOCore.plugin.hologramSupport.displayIndicator(location, MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
 				Vector vec = player.getLocation().subtract(hook.getLocation()).toVector();
 				vec.setY(vec.getY() * .031 + vec.length() * .05);
 				vec.setX(vec.getX() * .08);

@@ -9,6 +9,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.social.GuildChatEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.manager.ConfigManager.SimpleMessage;
 
 public class GuildListener implements Listener {
 
@@ -27,13 +28,13 @@ public class GuildListener implements Listener {
 		 * running it in a delayed task is recommended
 		 */
 		Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> {
-			String format = MMOCore.plugin.configManager.getSimpleMessage("guild-chat", "player", data.getPlayer().getName(), "message", event.getMessage().substring(MMOCore.plugin.configManager.guildChatPrefix.length()));
-			GuildChatEvent called = new GuildChatEvent(data, format);
+			SimpleMessage format = MMOCore.plugin.configManager.getSimpleMessage("guild-chat", "player", data.getPlayer().getName(), "message", event.getMessage().substring(MMOCore.plugin.configManager.guildChatPrefix.length()));
+			GuildChatEvent called = new GuildChatEvent(data, format.message());
 			Bukkit.getPluginManager().callEvent(called);
 			if (!called.isCancelled()) 			; //remove
 				//data.getGuild().members.forEach(member -> {
 					//if (member.isOnline())
-					//	member.getPlayer().sendMessage(format);
+					//	format.send(member.getPlayer());
 				//});
 		});
 	}

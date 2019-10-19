@@ -74,7 +74,7 @@ public class Guild {
 		// transfer ownership
 		if (owner.equals(data)) {
 			owner = members.get(0);
-			owner.getPlayer().sendMessage(MMOCore.plugin.configManager.getSimpleMessage("transfer-guild-ownership"));
+			MMOCore.plugin.configManager.getSimpleMessage("transfer-guild-ownership").send(owner.getPlayer());
 		}
 	}
 

@@ -87,7 +87,7 @@ public class Professions {
 
 		// display hologram
 		if (loc != null && MMOCore.plugin.hologramSupport != null)
-			MMOCore.plugin.hologramSupport.displayIndicator(loc, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value), playerData.getPlayer());
+			MMOCore.plugin.hologramSupport.displayIndicator(loc, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
 
 		int needed, exp, level;
 		boolean check = false;
@@ -108,6 +108,6 @@ public class Professions {
 		int chars = (int) ((double) exp / needed * 20);
 		for (int j = 0; j < 20; j++)
 			bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
-		playerData.displayActionBar(MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio", MMOCore.plugin.configManager.decimal.format((double) exp / needed * 100)));
+		MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio", MMOCore.plugin.configManager.decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
 }

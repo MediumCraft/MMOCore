@@ -179,29 +179,29 @@ public class WaypointViewer extends EditableInventory {
 
 				Waypoint waypoint = MMOCore.plugin.waypointManager.get(tag);
 				if (!playerData.hasWaypoint(waypoint)) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-waypoint"));
+					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-waypoint").send(player);
 					return;
 				}
 
 				if (waypoint.equals(current)) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("standing-on-waypoint"));
+					MMOCore.plugin.configManager.getSimpleMessage("standing-on-waypoint").send(player);
 					return;
 				}
 
 				if (current == null && !waypoint.isDynamic()) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-dynamic-waypoint"));
+					MMOCore.plugin.configManager.getSimpleMessage("not-dynamic-waypoint").send(player);
 					return;
 				}
 
 				double left = waypoint.getStelliumCost() - playerData.getStellium();
 				if (left > 0) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "more", decimal.format(left)));
+					MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "more", decimal.format(left)).send(player);
 					return;
 				}
 
 				double next = (double) playerData.getNextWaypointMillis() / 1000;
 				if (next < 0) {
-					player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "cooldown", decimal.format(next)));
+					MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "cooldown", decimal.format(next)).send(player);
 					return;
 				}
 
