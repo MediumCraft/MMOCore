@@ -16,6 +16,7 @@ import net.Indyuce.mmocore.api.experience.source.EnchantItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.FishItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.KillMobExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.MineBlockExperienceSource;
+import net.Indyuce.mmocore.api.experience.source.PlaceBlockExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.RepairItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.SmeltItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
@@ -88,7 +89,7 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("mineblock"))
 			return new MineBlockObjective(section, config);
-
+		
 		if (config.getKey().equals("killmob"))
 			return new KillMobObjective(section, config);
 
@@ -116,6 +117,9 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("mineblock"))
 			return new MineBlockExperienceSource(profession, config);
+		
+		if (config.getKey().equals("placeblock"))
+			return new PlaceBlockExperienceSource(profession, config);
 		
 		if (config.getKey().equals("brewpotion"))
 			return new BrewPotionExperienceSource(profession, config);
