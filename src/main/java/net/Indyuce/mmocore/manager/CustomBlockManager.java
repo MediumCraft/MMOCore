@@ -64,9 +64,7 @@ public class CustomBlockManager extends MMOManager {
 	 * are reset and put back in place.
 	 */
 	public void resetRemainingBlocks() {
-		active.forEach(info -> {
-			regen(info);
-		});
+		active.forEach(info -> { regen(info); });
 	}
 
 	public void initialize(RegenInfo info) {
@@ -78,21 +76,18 @@ public class CustomBlockManager extends MMOManager {
 			MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().getRegenHeadValue());
 		}
 
-		System.out.println("Regen Time: " + info.getRegen().getRegenTime());
 		new BukkitRunnable() {
-			public void run() {
-				regen(info);
-			}
+			public void run() { regen(info); }
 		}.runTaskLater(MMOCore.plugin, info.getRegen().getRegenTime());
 	}
 	
 	private void regen(RegenInfo info) {
-		System.out.println("Material: " + info.getBlockData().getMaterial());
-		//info.getLocation().getBlock().setType(info.getRegen().getBlock());
 		info.getLocation().getBlock().setBlockData(info.getBlockData());
 		if(isPlayerSkull(info.getLocation().getBlock().getType()))
 			MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().getHeadValue());
 		active.remove(info);
+		
+		info.getLocation().getBlock().getState().update();
 	}
 
 	public boolean isEnabled(Entity entity) {
@@ -199,8 +194,8 @@ public class CustomBlockManager extends MMOManager {
 			return regenHeadValue;
 		}
 
-		public RegenInfo generateRegenInfo(Block b) {
-			return new RegenInfo(b, this);
+		public RegenInfo generateRegenInfo(BlockData data, Location loc) {
+			return new RegenInfo(data, loc, this);
 		}
 
 		public boolean hasExperience() {
@@ -221,24 +216,24 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	public class RegenInfo {
-		private final BlockData blockData;
+		private final BlockData data;
 		private final Location loc;
 		private final BlockInfo regen;
 
 		private final long date = System.currentTimeMillis();
 
-		public RegenInfo(Block block, BlockInfo regen) {
-			this.blockData = block.getBlockData().clone();
-			this.loc = block.getLocation();
+		public RegenInfo(BlockData data, Location loc, BlockInfo regen) {
+			this.data = data;
+			this.loc = loc;
 			this.regen = regen;
 		}
 
 		public boolean isTimedOut() {
 			return date + regen.getRegenTime() * 50 < System.currentTimeMillis();
 		}
-
+		
 		public BlockData getBlockData() {
-			return blockData;
+			return data;
 		}
 		
 		public Location getLocation() {

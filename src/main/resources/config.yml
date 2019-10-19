@@ -47,6 +47,10 @@ action-bar:
     # how to display the data.
     format: "&c❤ {health}/{max_health} &f| &9⭐ {mana}/{max_mana} &f| &7⛨ {armor}"
 
+# Whether or not to display the mana bar when regenerating mana
+display:
+    mana: true
+
 party:
 
     # Edit party buffs here. You may

@@ -31,6 +31,7 @@ public class BlockListener implements Listener {
 		if (player.getGameMode() == GameMode.CREATIVE || event.isCancelled())
 			return;
 
+		String savedData = event.getBlock().getBlockData().getAsString();
 		Block block = event.getBlock();
 		/*
 		 * if custom mining enabled, check for item breaking restrictions
@@ -88,7 +89,7 @@ public class BlockListener implements Listener {
 							trigger.apply(playerData);
 				});
 				if(!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, .5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
+					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
 			}
 			
 			/*
@@ -100,12 +101,12 @@ public class BlockListener implements Listener {
 					if (drop.getType() != Material.AIR && drop.getAmount() > 0)
 						block.getWorld().dropItemNaturally(dropLocation, drop);
 			}
-
+			
 			/*
 			 * enable block regen.
 			 */
 			if (info.hasRegen())
-				MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(event.getBlock()));
+				MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(Bukkit.createBlockData(savedData), block.getLocation()));
 		}
 	}
 

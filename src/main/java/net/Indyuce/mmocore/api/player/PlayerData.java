@@ -571,6 +571,8 @@ public class PlayerData {
 	}
 
 	public void displayActionBar(String message) {
+		MMOCore.plugin.pauseDefaultActionBar(uuid, 60);
+		
 		lastActionbarUpdate = System.currentTimeMillis();
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
@@ -581,6 +583,7 @@ public class PlayerData {
 	 */
 	public void displayMana() {
 		if (System.currentTimeMillis() > lastActionbarUpdate + 1200)
+			MMOCore.plugin.pauseDefaultActionBar(uuid, 60);
 			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getProfess().getManaDisplay().generateBar(getMana(), getStats().getStat(StatType.MAX_MANA))));
 	}
 	

@@ -3,9 +3,13 @@ package net.Indyuce.mmocore;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -92,6 +96,8 @@ import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.Indyuce.mmocore.version.ServerVersion;
 import net.Indyuce.mmocore.version.nms.NMSHandler;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
@@ -132,6 +138,8 @@ public class MMOCore extends JavaPlugin {
 
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public RPGUtilHandler rpgUtilHandler = new DefaultRPGUtilHandler();
+
+	private List<UUID> pausePlayers = new ArrayList<>();
 
 	public void onLoad() {
 		plugin = this;
@@ -253,22 +261,26 @@ public class MMOCore extends JavaPlugin {
 		 */
 		if(getConfig().getBoolean("action-bar.enabled")) {
 			DecimalFormat format = new DecimalFormat(getConfig().getString("action-bar.decimal"), configManager.formatSymbols);
+			int ticks = getConfig().getInt("action-bar.ticks-to-update");
 			
 			new BukkitRunnable() {
 				public void run() {
+					//System.out.println("Tick!");
+					
 					for (PlayerData data : PlayerData.getAll()) {
-						if(!data.isCasting()) {		
-							data.displayActionBar(placeholderParser.parse(data.getPlayer(), ChatColor.translateAlternateColorCodes('&', getConfig().getString("action-bar.format")
+						if(!data.isCasting() && !pausePlayers.contains(data.getUniqueId())) {	
+							//System.out.println("Display!");	
+							data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(placeholderParser.parse(data.getPlayer(), ChatColor.translateAlternateColorCodes('&', getConfig().getString("action-bar.format")
 									.replace("{health}", format.format(data.getPlayer().getHealth())).replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getStats().getStat(StatType.MAX_HEALTH)))
 									.replace("{mana}", format.format(data.getMana())).replace("{max_mana}", "" + StatType.MAX_MANA.format(data.getStats().getStat(StatType.MAX_MANA)))
 									.replace("{stamina}", format.format(data.getStamina())).replace("{max_stamina}", "" + StatType.MAX_STAMINA.format(data.getStats().getStat(StatType.MAX_STAMINA)))
 									.replace("{stellium}", format.format(data.getStellium())).replace("{max_stellium}", "" + StatType.MAX_STELLIUM.format(data.getStats().getStat(StatType.MAX_STELLIUM)))
-									.replace("{class}", data.getProfess().getName()).replace("{xp}", "" + data.getExperience()).replace("{armor}", "" + StatType.ARMOR.format(data.getStats().getStat(StatType.ARMOR)))
-									.replace("{level}", "" + data.getLevel()).replace("{name}", data.getPlayer().getDisplayName()))));
+									.replace("{class}", data.getProfess().getName()).replace("{xp}", "" + data.getExperience()).replace("{armor}", "" + StatType.ARMOR.format(data.getPlayer().getAttribute(Attribute.GENERIC_ARMOR).getValue()))
+									.replace("{level}", "" + data.getLevel()).replace("{name}", data.getPlayer().getDisplayName())))));
 						}
 					}
 				}
-			}.runTaskTimerAsynchronously(MMOCore.plugin, 100, getConfig().getInt("action-bar.ticks-to-update"));
+			}.runTaskTimerAsynchronously(MMOCore.plugin, 100, ticks);
 		}
 		
 		/*
@@ -414,5 +426,16 @@ public class MMOCore extends JavaPlugin {
 
 	public boolean hasEconomy() {
 		return economy != null && economy.isValid();
+	}
+
+	public void pauseDefaultActionBar(UUID uuid, int ticks) {
+		pausePlayers.add(uuid);
+		
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				pausePlayers.remove(uuid);
+			}
+		}.runTaskLater(MMOCore.plugin, ticks);
 	}
 }

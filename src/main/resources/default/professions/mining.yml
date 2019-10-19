@@ -9,7 +9,8 @@ experience:
     per-level: 3
 
 on-mine:
-    EMERALD_ORE:
+    emerald:
+        material: EMERALD_ORE
         drop-table:
             items:
             - 'vanilla{type=EMERALD} 1 1-9'
@@ -20,7 +21,9 @@ on-mine:
         triggers:
         - 'exp{profession=mining;amount=32}'
 
-    DIAMOND_ORE:
+    diamond:
+        #the material you need to mine
+        material: DIAMOND_ORE
 
         # Refer to drop-tables.yml
         # The drop table used by the block.
