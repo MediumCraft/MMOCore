@@ -217,7 +217,7 @@ public class MMOCore extends JavaPlugin {
 			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
 			getLogger().log(Level.INFO, "Hooked onto MythicMobs");
 		}
-		
+
 		/*
 		 * resource regeneration. must check if entity is dead otherwise regen
 		 * will make the 'respawn' button glitched plus HURT entity effect bug
@@ -240,49 +240,52 @@ public class MMOCore extends JavaPlugin {
 					}
 			}
 		}.runTaskTimerAsynchronously(MMOCore.plugin, 100, 20);
-		
-		//For the sake of the lord, make sure they aren't using MMOItems Mana and Stamina Addon...
-		//This should prevent a couple error reports produced by people not reading the installation guide...
-		if(Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
-			new BukkitRunnable() {
-				public void run() {
-					Bukkit.broadcastMessage(ChatColor.DARK_RED + "MMOCore is not compatible with the Mana and Stamina addon of MMOItems!!!");
-					Bukkit.broadcastMessage(ChatColor.DARK_RED + "Please read the installation guide!");
-				}
-			}.runTaskTimer(MMOCore.plugin, 1200, 1200);
+
+		/*
+		 * For the sake of the lord, make sure they aren't using MMOItems Mana
+		 * and Stamina Addon...This should prevent a couple error reports
+		 * produced by people not reading the installation guide...
+		 */
+		if (Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
+			getLogger().log(Level.SEVERE, "\\u001B[31mMMOCore is not meant to be used with the Mana & Stamina MMOItems!!!");
+			getLogger().log(Level.SEVERE, "\\u001B[31mPlease re-read the installation guide!");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
 		}
-		
+
 		saveDefaultConfig();
 		reloadPlugin();
 
 		/*
-		 * default action bar.
-		 * only ran if the action bar is enabled
+		 * default action bar. only ran if the action bar is enabled
 		 */
-		if(getConfig().getBoolean("action-bar.enabled")) {
+		if (getConfig().getBoolean("action-bar.enabled")) {
 			DecimalFormat format = new DecimalFormat(getConfig().getString("action-bar.decimal"), configManager.formatSymbols);
 			int ticks = getConfig().getInt("action-bar.ticks-to-update");
-			
+
 			new BukkitRunnable() {
 				public void run() {
-					//System.out.println("Tick!");
-					
+					// System.out.println("Tick!");
+
 					for (PlayerData data : PlayerData.getAll()) {
-						if(!data.isCasting() && !pausePlayers.contains(data.getUniqueId())) {	
-							//System.out.println("Display!");	
-							data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(placeholderParser.parse(data.getPlayer(), ChatColor.translateAlternateColorCodes('&', getConfig().getString("action-bar.format")
-									.replace("{health}", format.format(data.getPlayer().getHealth())).replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getStats().getStat(StatType.MAX_HEALTH)))
-									.replace("{mana}", format.format(data.getMana())).replace("{max_mana}", "" + StatType.MAX_MANA.format(data.getStats().getStat(StatType.MAX_MANA)))
-									.replace("{stamina}", format.format(data.getStamina())).replace("{max_stamina}", "" + StatType.MAX_STAMINA.format(data.getStats().getStat(StatType.MAX_STAMINA)))
-									.replace("{stellium}", format.format(data.getStellium())).replace("{max_stellium}", "" + StatType.MAX_STELLIUM.format(data.getStats().getStat(StatType.MAX_STELLIUM)))
-									.replace("{class}", data.getProfess().getName()).replace("{xp}", "" + data.getExperience()).replace("{armor}", "" + StatType.ARMOR.format(data.getPlayer().getAttribute(Attribute.GENERIC_ARMOR).getValue()))
-									.replace("{level}", "" + data.getLevel()).replace("{name}", data.getPlayer().getDisplayName())))));
+						if (!data.isCasting() && !pausePlayers.contains(data.getUniqueId())) {
+							// System.out.println("Display!");
+							data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(placeholderParser.parse(data.getPlayer(),
+									ChatColor.translateAlternateColorCodes('&', getConfig().getString("action-bar.format").replace("{health}", format.format(data.getPlayer().getHealth()))
+											.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getStats().getStat(StatType.MAX_HEALTH))).replace("{mana}", format.format(data.getMana()))
+											.replace("{max_mana}", "" + StatType.MAX_MANA.format(data.getStats().getStat(StatType.MAX_MANA))).replace("{stamina}", format.format(data.getStamina()))
+											.replace("{max_stamina}", "" + StatType.MAX_STAMINA.format(data.getStats().getStat(StatType.MAX_STAMINA)))
+											.replace("{stellium}", format.format(data.getStellium()))
+											.replace("{max_stellium}", "" + StatType.MAX_STELLIUM.format(data.getStats().getStat(StatType.MAX_STELLIUM)))
+											.replace("{class}", data.getProfess().getName()).replace("{xp}", "" + data.getExperience())
+											.replace("{armor}", "" + StatType.ARMOR.format(data.getPlayer().getAttribute(Attribute.GENERIC_ARMOR).getValue())).replace("{level}", "" + data.getLevel())
+											.replace("{name}", data.getPlayer().getDisplayName())))));
 						}
 					}
 				}
 			}.runTaskTimerAsynchronously(MMOCore.plugin, 100, ticks);
 		}
-		
+
 		/*
 		 * enable debug mode for extra debug tools.
 		 */
@@ -324,28 +327,38 @@ public class MMOCore extends JavaPlugin {
 		// commands
 		try {
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-			
+
 			bukkitCommandMap.setAccessible(true);
 			CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-			
+
 			FileConfiguration config = new ConfigFile("commands").getConfig();
-			
-			if(config.contains("player")) commandMap.register("mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
-			if(config.contains("attributes")) commandMap.register("mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
-			if(config.contains("class")) commandMap.register("mmocore", new ClassCommand(config.getConfigurationSection("class")));
-			if(config.contains("waypoints")) commandMap.register("mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
-			if(config.contains("quests")) commandMap.register("mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
-			if(config.contains("skills")) commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
-			if(config.contains("friends")) commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
-			if(config.contains("party")) commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
-			if(config.contains("guild")) commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
+
+			if (config.contains("player"))
+				commandMap.register("mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
+			if (config.contains("attributes"))
+				commandMap.register("mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
+			if (config.contains("class"))
+				commandMap.register("mmocore", new ClassCommand(config.getConfigurationSection("class")));
+			if (config.contains("waypoints"))
+				commandMap.register("mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
+			if (config.contains("quests"))
+				commandMap.register("mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
+			if (config.contains("skills"))
+				commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
+			if (config.contains("friends"))
+				commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
+			if (config.contains("party"))
+				commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
+			if (config.contains("guild"))
+				commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
 
 			if (hasEconomy() && economy.isValid()) {
-				if(config.contains("withdraw")) commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
-				if(config.contains("deposit")) commandMap.register("mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
+				if (config.contains("withdraw"))
+					commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
+				if (config.contains("deposit"))
+					commandMap.register("mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
 			}
-		}
-		catch(NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
+		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
 			ex.printStackTrace();
 		}
 
@@ -430,7 +443,7 @@ public class MMOCore extends JavaPlugin {
 
 	public void pauseDefaultActionBar(UUID uuid, int ticks) {
 		pausePlayers.add(uuid);
-		
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
