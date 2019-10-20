@@ -8,6 +8,7 @@ public class AdminCommandMap extends CommandMap {
 	public AdminCommandMap(CommandMap parent) {
 		super(parent, "admin");
 
+		addFloor(new HideActionBarCommandMap(this));
 		addFloor(new NoCooldownCommandMap(this));
 		addFloor(new ResetCommandMap(this));
 		addFloor(new InfoCommandMap(this));
