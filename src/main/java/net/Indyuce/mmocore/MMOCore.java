@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -95,7 +96,6 @@ import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.Indyuce.mmocore.version.ServerVersion;
 import net.Indyuce.mmocore.version.nms.NMSHandler;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -247,9 +247,10 @@ public class MMOCore extends JavaPlugin {
 		 * produced by people not reading the installation guide...
 		 */
 		if (Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
-			getLogger().log(Level.SEVERE, "\\u001B[31mMMOCore is not meant to be used with the Mana & Stamina MMOItems!!!");
-			getLogger().log(Level.SEVERE, "\\u001B[31mPlease re-read the installation guide!");
-			Bukkit.getPluginManager().disablePlugin(this);
+			Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with the Mana & Stamina MMOItems!!!");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
+			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with the Mana & Stamina MMOItems!!!");
+			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
 			return;
 		}
 
