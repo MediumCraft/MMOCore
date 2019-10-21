@@ -25,10 +25,10 @@ import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void a(BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		if (player.getGameMode() == GameMode.CREATIVE || event.isCancelled())
+		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
 		String savedData = event.getBlock().getBlockData().getAsString();
@@ -38,7 +38,7 @@ public class BlockListener implements Listener {
 		 */
 		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player, block.getLocation());
 		ItemStack item = player.getInventory().getItemInMainHand();
-		
+
 		if (customMine) {
 
 			BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
@@ -56,7 +56,7 @@ public class BlockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-			
+
 			BlockPermissions perms = MMOCore.plugin.restrictionManager.getPermissions(item.getType());
 			if (perms == null) {
 				event.setCancelled(true);
@@ -68,7 +68,6 @@ public class BlockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-			
 
 			/*
 			 * remove vanilla drops if needed
@@ -79,19 +78,20 @@ public class BlockListener implements Listener {
 			}
 
 			/*
-			 * apply triggers, add experience info to the event so the other events
-			 * can give exp to other TOOLS and display HOLOGRAMS
+			 * apply triggers, add experience info to the event so the other
+			 * events can give exp to other TOOLS and display HOLOGRAMS
 			 */
 			if (info.hasTriggers()) {
 				PlayerData playerData = PlayerData.get(player);
 				info.getTriggers().forEach(trigger -> {
-					if(!block.hasMetadata("player_placed") && trigger instanceof ExperienceTrigger)
-							trigger.apply(playerData);
+					if (!block.hasMetadata("player_placed") && trigger instanceof ExperienceTrigger)
+						trigger.apply(playerData);
 				});
-				if(!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
+				if (!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
+					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5),
+							MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
 			}
-			
+
 			/*
 			 * apply drop tables
 			 */
@@ -101,7 +101,7 @@ public class BlockListener implements Listener {
 					if (drop.getType() != Material.AIR && drop.getAmount() > 0)
 						block.getWorld().dropItemNaturally(dropLocation, drop);
 			}
-			
+
 			/*
 			 * enable block regen.
 			 */
