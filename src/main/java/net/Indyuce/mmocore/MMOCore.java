@@ -267,7 +267,7 @@ public class MMOCore extends JavaPlugin {
 			new BukkitRunnable() {
 				public void run() {
 					for (PlayerData data : PlayerData.getAll()) {
-						if (!data.isCasting() && !pausePlayers.contains(data.getUniqueId())) {
+						if (data.isOnline() && !data.getPlayer().isDead() && !data.isCasting() && !pausePlayers.contains(data.getUniqueId())) {
 							data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(placeholderParser.parse(data.getPlayer(),
 									ChatColor.translateAlternateColorCodes('&', getConfig().getString("action-bar.format").replace("{health}", format.format(data.getPlayer().getHealth()))
 											.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getStats().getStat(StatType.MAX_HEALTH))).replace("{mana}", format.format(data.getMana()))
