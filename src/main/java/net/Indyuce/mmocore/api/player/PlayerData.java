@@ -311,7 +311,7 @@ public class PlayerData {
 	public boolean inGuild() {
 		return guild != null;
 	}
-	
+
 	public boolean isOnline() {
 		return player.isOnline();
 	}
@@ -325,7 +325,7 @@ public class PlayerData {
 		int total = 0;
 		while (value-- > 0)
 			total += MMOCore.plugin.configManager.getNeededExperience(getLevel() + value + 1);
-		giveExperience(total);	
+		giveExperience(total);
 	}
 
 	public void setExperience(int value) {
@@ -393,8 +393,7 @@ public class PlayerData {
 	}
 
 	public void heal(double heal) {
-		getPlayer().setHealth(Math.max(0,
-				Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
+		getPlayer().setHealth(Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
 	}
 
 	public void addFriend(UUID uuid) {
@@ -448,7 +447,7 @@ public class PlayerData {
 					cancel();
 					return;
 				}
-				
+
 				MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(player);
 				if (t++ >= 100) {
 					player.teleport(waypoint.getLocation());
@@ -483,7 +482,7 @@ public class PlayerData {
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
-		
+
 		experience += event.getExperience();
 
 		int needed;
@@ -521,7 +520,8 @@ public class PlayerData {
 
 	public void giveMana(double amount) {
 		if (mana != (mana = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount))))
-			if(MMOCore.plugin.getConfig().getBoolean("display.mana")) displayMana();
+			if (MMOCore.plugin.getConfig().getBoolean("display.mana"))
+				displayMana();
 	}
 
 	public void giveStamina(double amount) {
@@ -578,7 +578,7 @@ public class PlayerData {
 
 	public void displayActionBar(String message) {
 		MMOCore.plugin.pauseDefaultActionBar(uuid, 60);
-		
+
 		lastActionbarUpdate = System.currentTimeMillis();
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
@@ -590,9 +590,8 @@ public class PlayerData {
 	public void displayMana() {
 		if (System.currentTimeMillis() > lastActionbarUpdate + 1200)
 			MMOCore.plugin.pauseDefaultActionBar(uuid, 60);
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getProfess().getManaDisplay().generateBar(getMana(), getStats().getStat(StatType.MAX_MANA))));
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getProfess().getManaDisplay().generateBar(getMana(), getStats().getStat(StatType.MAX_MANA))));
 	}
-	
 
 	public void setAttributes(PlayerAttribute attribute, int value) {
 		setAttributes(attribute.getId(), value);
@@ -756,7 +755,13 @@ public class PlayerData {
 		}
 
 		if (!nocd) {
-			skillData.setLastCast(cast.getSkill(), System.currentTimeMillis() + (long) (getStats().getStat(StatType.COOLDOWN_REDUCTION) * cast.getCooldown() * 10));
+
+			// calculate skill cooldown reduction only if stat is higher than 0
+			// to save performance
+			double red = getStats().getStat(StatType.COOLDOWN_REDUCTION) * 10;
+			red *= red > 0 ? skill.getModifier("cooldown", getSkillLevel(skill.getSkill())) : 0;
+
+			skillData.setLastCast(cast.getSkill(), System.currentTimeMillis() - (long) red);
 			giveMana(-cast.getManaCost());
 		}
 
