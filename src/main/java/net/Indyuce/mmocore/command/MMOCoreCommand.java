@@ -15,6 +15,7 @@ import net.Indyuce.mmocore.command.rpg.NoteCommandMap;
 import net.Indyuce.mmocore.command.rpg.ReloadCommandMap;
 import net.Indyuce.mmocore.command.rpg.admin.AdminCommandMap;
 import net.Indyuce.mmocore.command.rpg.booster.BoosterCommandMap;
+import net.Indyuce.mmocore.command.rpg.debug.DebugCommandMap;
 import net.Indyuce.mmocore.command.rpg.waypoint.WaypointsCommandMap;
 
 public class MMOCoreCommand extends CommandRoot implements CommandExecutor, TabCompleter {
@@ -25,6 +26,7 @@ public class MMOCoreCommand extends CommandRoot implements CommandExecutor, TabC
 		addFloor(new CoinsCommandMap(this));
 		addFloor(new NoteCommandMap(this));
 		addFloor(new AdminCommandMap(this));
+		addFloor(new DebugCommandMap(this));
 		addFloor(new BoosterCommandMap(this));
 		addFloor(new WaypointsCommandMap(this));
 	}
