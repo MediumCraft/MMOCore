@@ -29,6 +29,7 @@ import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerCastSkillEvent;
+import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
@@ -392,8 +393,8 @@ public class PlayerData {
 	}
 
 	public void heal(double heal) {
-		double healAmount = Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-		if(healAmount > 0) getPlayer().setHealth(healAmount);
+		getPlayer().setHealth(Math.max(0,
+				Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
 	}
 
 	public void addFriend(UUID uuid) {
@@ -478,7 +479,12 @@ public class PlayerData {
 		value = MMOCore.plugin.boosterManager.calculateExp(null, value);
 		value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
 
-		experience += value;
+		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			return;
+		
+		experience += event.getExperience();
 
 		int needed;
 		boolean check = false;
