@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 
 public class SpellCast implements Listener {
 	@EventHandler
@@ -106,21 +107,27 @@ public class SpellCast implements Listener {
 
 		private String getFormat(PlayerData data) {
 			String str = "";
-			for (int j = 0; j < data.getBoundSkills().size(); j++)
-				str += (str.isEmpty() ? "" : split) + (onCooldown(data, j) && data.getBoundSkill(j).getSkill().hasModifier("cooldown") ? onCooldown.replace("{cooldown}", "" + ((int) data.getSkillData().getCooldown(data.getBoundSkill(j)) / 100) / 5) :
-					noMana(data, j) ? noMana : ready).replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName());
+			for (int j = 0; j < data.getBoundSkills().size(); j++) {
+				SkillInfo skill = data.getBoundSkill(j);
+				str += (str.isEmpty() ? "" : split) + (onCooldown(data, skill) ? onCooldown.replace("{cooldown}", "" + data.getSkillData().getCooldown(skill) / 1000) : noMana(data, skill) ? noMana : ready).replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName());
+			}
 
 			return str;
 		}
 
-		private boolean onCooldown(PlayerData data, int index) {
-			return data.getBoundSkill(index).getSkill().hasModifier("cooldown") && data.getSkillData().getCooldown(data.getBoundSkill(index)) > 0;
+		/*
+		 * no longer use index as arguments because data.getBoundSkill(int) has
+		 * n-complexity, it has to iterate through a list. using skillInfo
+		 * argument uses only one iteration
+		 */
+		private boolean onCooldown(PlayerData data, SkillInfo skill) {
+			return skill.getSkill().hasModifier("cooldown") && data.getSkillData().getCooldown(skill) > 0;
 		}
 
-		private boolean noMana(PlayerData data, int index) {
-			return data.getBoundSkill(index).getSkill().hasModifier("mana") && data.getBoundSkill(index).getModifier("mana", data.getSkillLevel(data.getBoundSkill(index).getSkill())) > data.getMana();
+		private boolean noMana(PlayerData data, SkillInfo skill) {
+			return skill.getSkill().hasModifier("mana") && skill.getModifier("mana", data.getSkillLevel(skill.getSkill())) > data.getMana();
 		}
-		
+
 		@Override
 		public void run() {
 			if (!playerData.isOnline() || playerData.getPlayer().isDead())

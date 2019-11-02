@@ -185,19 +185,22 @@ public class ConfigManager {
 	}
 	
 	public class SimpleMessage {
-		String message;
-		
-		SimpleMessage(String m) {
-			message = m;
+		private final String message;
+
+		SimpleMessage(String message) {
+			this.message = message;
 		}
-		
-		public String message()
-		{ return message.startsWith("%") ? message.substring(1) : message; }
-		
+
+		public String message() {
+			return message.startsWith("%") ? message.substring(1) : message;
+		}
+
 		public boolean send(Player player) {
-			if(!message.isEmpty()) {
-				if(message.startsWith("%")) PlayerData.get(player.getUniqueId()).displayActionBar(message.substring(1));
-				else player.sendMessage(message);
+			if (!message.isEmpty()) {
+				if (message.startsWith("%"))
+					PlayerData.get(player.getUniqueId()).displayActionBar(message.substring(1));
+				else
+					player.sendMessage(message);
 			}
 			return !message.isEmpty();
 		}

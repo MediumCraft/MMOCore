@@ -28,6 +28,11 @@ public class PlayerSkillData {
 		this.data = data;
 	}
 
+	/*
+	 * any method which returns long RETURNS milliseconds (cooldowns are either
+	 * stored in double when it's the actual value or in long when it's precise
+	 * up to 3 digits)
+	 */
 	public long getCooldown(SkillInfo skill) {
 		return Math.max(0, lastCast(skill.getSkill()) + 1000 * (long) skill.getModifier("cooldown", data.getSkillLevel(skill.getSkill())) - System.currentTimeMillis());
 	}
@@ -59,7 +64,7 @@ public class PlayerSkillData {
 	public void cacheModifiers(MythicMobSkill mmSkill, SkillResult cast) {
 		for (String modifier : cast.getSkill().getModifiers())
 			cacheModifier(mmSkill, modifier, cast.getModifier(modifier));
-		
+
 		cacheModifier(mmSkill, "level", cast.getLevel());
 	}
 
