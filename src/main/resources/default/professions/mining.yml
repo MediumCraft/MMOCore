@@ -22,7 +22,7 @@ on-mine:
         - 'exp{profession=mining;amount=32}'
 
     diamond:
-        #the material you need to mine
+        # The material you need to mine
         material: DIAMOND_ORE
 
         # Refer to drop-tables.yml
