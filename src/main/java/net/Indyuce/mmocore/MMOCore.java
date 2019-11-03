@@ -270,7 +270,7 @@ public class MMOCore extends JavaPlugin {
 						if (data.isOnline() && !data.getPlayer().isDead() && !data.isCasting() && !pausePlayers.contains(data.getUniqueId())) {
 							data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(placeholderParser.parse(data.getPlayer(),
 									ChatColor.translateAlternateColorCodes('&', getConfig().getString("action-bar.format").replace("{health}", format.format(data.getPlayer().getHealth()))
-											.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getStats().getStat(StatType.MAX_HEALTH))).replace("{mana}", format.format(data.getMana()))
+											.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())).replace("{mana}", format.format(data.getMana()))
 											.replace("{max_mana}", "" + StatType.MAX_MANA.format(data.getStats().getStat(StatType.MAX_MANA))).replace("{stamina}", format.format(data.getStamina()))
 											.replace("{max_stamina}", "" + StatType.MAX_STAMINA.format(data.getStats().getStat(StatType.MAX_STAMINA)))
 											.replace("{stellium}", format.format(data.getStellium()))
