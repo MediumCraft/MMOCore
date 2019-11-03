@@ -18,7 +18,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.manager.CustomBlockManager.BlockInfo;
 import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
 
@@ -81,15 +80,11 @@ public class BlockListener implements Listener {
 			 * apply triggers, add experience info to the event so the other
 			 * events can give exp to other TOOLS and display HOLOGRAMS
 			 */
-			if (info.hasTriggers()) {
+			if (info.hasTriggers() && !block.hasMetadata("player_placed")) {
 				PlayerData playerData = PlayerData.get(player);
-				info.getTriggers().forEach(trigger -> {
-					if (!block.hasMetadata("player_placed") && trigger instanceof ExperienceTrigger)
-						trigger.apply(playerData);
-				});
+				info.getTriggers().forEach(trigger -> trigger.apply(playerData));
 				if (!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5),
-							MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
+					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
 			}
 
 			/*

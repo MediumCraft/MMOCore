@@ -7,11 +7,10 @@ import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public abstract class Trigger {
-	private long delay;
+	private final long delay;
 
 	public Trigger(MMOLineConfig config) {
-		if (config.contains("delay"))
-			delay = (long) (config.getDouble("delay") * 20);
+		delay = config.contains("delay") ? (long) (config.getDouble("delay") * 20) : 0;
 	}
 
 	public boolean hasDelay() {
