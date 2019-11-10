@@ -36,20 +36,16 @@ lootsplosion:
     offset: .2
     height: .6
 
-# settings for the default action bar
+# Settings for the default action bar
 action-bar:
     # Whether or not to use the default action bar. (This doesn't change any other action bars provided by MMOCore.)
     enabled: true
-    # the decimal format for stats (not including stat formats in stats.yml)
+    # The decimal format for stats (not including stat formats in stats.yml)
     decimal: "0.#"
     # The amount of ticks before updating the info
     ticks-to-update: 5
-    # how to display the data.
+    # How to display the data.
     format: "&c❤ {health}/{max_health} &f| &9⭐ {mana}/{max_mana} &f| &7⛨ {armor}"
-
-# Whether or not to display the mana bar when regenerating mana
-display:
-    mana: true
 
 party:
 
