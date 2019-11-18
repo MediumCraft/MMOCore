@@ -65,8 +65,8 @@ waypoint-cooldown: '&cPlease wait {cooldown} before using a waypoint again.'
 not-unlocked-waypoint: '&cYou have not unlocked that waypoint yet.'
 not-dynamic-waypoint: '&cYou many only teleport to a non-dynamic waypoint while standing on another waypoint.'
 standing-on-waypoint: '&cYou are already standing on this waypoint.'
-warping-canceled: '&cWaypoint warping canceled.'
-warping-comencing: '&cDO NOT MOVE!&e You will be warped in {left}sec.'
+warping-canceled: '%&cWaypoint warping canceled.'
+warping-comencing: '%&cDO NOT MOVE!&e You will be warped in {left}sec.'
 
 # Cash
 deposit: '&eYou successfully deposited &6{worth}g&e.'
