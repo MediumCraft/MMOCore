@@ -118,6 +118,7 @@ public class MMOCore extends JavaPlugin {
 	public ConfigItemManager configItems;
 	public SkillManager skillManager;
 	public final ProfessionManager professionManager = new ProfessionManager();
+	//public final SQLManager sqlManager = new SQLManager();
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public PlaceholderParser placeholderParser = new DefaultParser();
