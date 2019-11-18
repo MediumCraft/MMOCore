@@ -144,6 +144,11 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return data.hasCurrent() ? data.getCurrent().getFormattedLore() : "None";
 		}
 
+		else if (identifier.startsWith("stat_"))
+			return StatType.valueOf(identifier.substring(5).toUpperCase()) != null ? "" + PlayerData.get(player).getStats().getStat(StatType.valueOf(identifier.substring(5).toUpperCase())) : "Invalid stat";
+		else if (identifier.startsWith("formatted_stat_"))
+			return StatType.valueOf(identifier.substring(5).toUpperCase()) != null ? "" + StatType.valueOf(identifier.substring(5).toUpperCase()).format(PlayerData.get(player).getStats().getStat(StatType.valueOf(identifier.substring(5).toUpperCase()))) : "Invalid stat";
+			
 		return null;
 	}
 }

@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
@@ -36,8 +36,8 @@ public class HideActionBarCommandMap extends CommandEnd {
 			sender.sendMessage(ChatColor.RED + args[3] + " is not a valid number.");
 			return CommandResult.FAILURE;
 		}
-		
-		MMOCore.plugin.pauseDefaultActionBar(player.getUniqueId(), amount);
+
+		PlayerData.get(player).setActionBarTimeOut(System.currentTimeMillis() - 100 + amount * 50);
 		return CommandResult.SUCCESS;
 	}
 }

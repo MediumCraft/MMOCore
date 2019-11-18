@@ -140,7 +140,7 @@ public class SavedClassInformation {
 		player.setAttributePoints(attributePoints);
 		player.setAttributeReallocationPoints(attributeReallocationPoints);
 		skills.keySet().forEach(id -> player.setSkillLevel(id, skills.get(id)));
-		attributes.keySet().forEach(id -> player.setAttributes(id, attributes.get(id)));
+		attributes.keySet().forEach(id -> player.setAttribute(id, attributes.get(id)));
 
 		/*
 		 * unload current class information and set the new profess once

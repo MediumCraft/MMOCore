@@ -77,7 +77,7 @@ public class PlayerData {
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
 
 	private final PlayerStats playerStats = new PlayerStats(this);
-	private long lastWaypoint, lastLogin, lastFriendRequest, lastActionbarUpdate;
+	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut;
 
 	private final Map<String, Integer> skills = new HashMap<>();
 	private final PlayerSkillData skillData = new PlayerSkillData(this);
@@ -519,9 +519,7 @@ public class PlayerData {
 	}
 
 	public void giveMana(double amount) {
-		if (mana != (mana = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount))))
-			if (MMOCore.plugin.getConfig().getBoolean("display.mana"))
-				displayMana();
+		mana = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount));
 	}
 
 	public void giveStamina(double amount) {
@@ -576,28 +574,28 @@ public class PlayerData {
 		return skillCasting != null;
 	}
 
-	public void displayActionBar(String message) {
-		MMOCore.plugin.pauseDefaultActionBar(uuid, 60);
+	/*
+	 * returns if the action bar is not being used to display anything else and
+	 * if the general info action bar can be displayed
+	 */
+	public boolean canSeeActionBar() {
+		return actionBarTimeOut + 100 < System.currentTimeMillis();
+	}
+	
+	public void setActionBarTimeOut(long actionBarTimeOut) {
+		this.actionBarTimeOut = actionBarTimeOut;
+	}
 
-		lastActionbarUpdate = System.currentTimeMillis();
+	public void displayActionBar(String message) {
+		actionBarTimeOut = System.currentTimeMillis();
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
 
-	/*
-	 * 200ms timeout to prevent action bar displayed gitches when casting spells
-	 * and when using a waypoint.
-	 */
-	public void displayMana() {
-		if (System.currentTimeMillis() > lastActionbarUpdate + 1200)
-			MMOCore.plugin.pauseDefaultActionBar(uuid, 60);
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getProfess().getManaDisplay().generateBar(getMana(), getStats().getStat(StatType.MAX_MANA))));
+	public void setAttribute(PlayerAttribute attribute, int value) {
+		setAttribute(attribute.getId(), value);
 	}
 
-	public void setAttributes(PlayerAttribute attribute, int value) {
-		setAttributes(attribute.getId(), value);
-	}
-
-	public void setAttributes(String id, int value) {
+	public void setAttribute(String id, int value) {
 		attributes.setBaseAttribute(id, value);
 	}
 
