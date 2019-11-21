@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
@@ -19,6 +20,7 @@ public class ResetCommandMap extends CommandEnd {
 		addFloor(new ResetLevelsCommandMap(this));
 		addFloor(new ResetSkillsCommandMap(this));
 		addFloor(new ResetAllCommandMap(this));
+		addFloor(new ResetAttributesCommandMap(this));
 	}
 
 	@Override
@@ -54,6 +56,12 @@ public class ResetCommandMap extends CommandEnd {
 			MMOCore.plugin.classManager.getAll().forEach(profess -> data.unloadClassInfo(profess));
 			data.setClassPoints(0);
 			data.setSkillPoints(0);
+
+			data.setAttributePoints(0);
+			data.setAttributeReallocationPoints(0);
+			for(PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
+				data.setAttribute(att, 0);
+			
 			MMOCore.plugin.skillManager.getAll().forEach(skill -> data.lockSkill(skill));
 			while (data.hasSkillBound(0))
 				data.unbindSkill(0);
@@ -92,6 +100,34 @@ public class ResetCommandMap extends CommandEnd {
 	public class ResetSkillsCommandMap extends CommandEnd {
 		public ResetSkillsCommandMap(CommandMap parent) {
 			super(parent, "skills");
+
+			addParameter(Parameter.PLAYER);
+		}
+
+		@Override
+		public CommandResult execute(CommandSender sender, String[] args) {
+			if (args.length < 4)
+				return CommandResult.THROW_USAGE;
+
+			Player player = Bukkit.getPlayer(args[3]);
+			if (player == null) {
+				sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+				return CommandResult.FAILURE;
+			}
+
+			PlayerData data = PlayerData.get(player);
+			data.setAttributePoints(0);
+			data.setAttributeReallocationPoints(0);
+			for(PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
+				data.setAttribute(att, 0);
+			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute data was succesfully reset.");
+			return CommandResult.SUCCESS;
+		}
+	}
+
+	public class ResetAttributesCommandMap extends CommandEnd {
+		public ResetAttributesCommandMap(CommandMap parent) {
+			super(parent, "attributes");
 
 			addParameter(Parameter.PLAYER);
 		}
