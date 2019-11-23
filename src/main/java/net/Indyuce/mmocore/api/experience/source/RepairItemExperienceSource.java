@@ -72,7 +72,7 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
 							 * durability.
 							 */
 							double exp = MMOCore.plugin.smithingManager.getBaseExperience(item.getType()) * Math.max(0, ((Damageable) old.getItemMeta()).getDamage() - ((Damageable) item.getItemMeta()).getDamage()) / 100;
-							giveExperience(data, (int) exp);
+							giveExperience(data, (int) exp, null);
 						}
 				}
 			}

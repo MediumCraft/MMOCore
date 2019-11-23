@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.api.experience.source.type;
 
+import org.bukkit.Location;
+
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.math.formula.RandomAmount;
@@ -27,7 +29,7 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
 		return amount.calculateInt();
 	}
 
-	public void giveExperience(PlayerData player) {
-		giveExperience(player, rollAmount());
+	public void giveExperience(PlayerData player, Location loc) {
+		giveExperience(player, rollAmount(), loc);
 	}
 }

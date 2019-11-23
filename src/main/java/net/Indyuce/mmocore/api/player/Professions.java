@@ -87,7 +87,7 @@ public class Professions {
 
 		// display hologram
 		if (loc != null && MMOCore.plugin.hologramSupport != null)
-			MMOCore.plugin.hologramSupport.displayIndicator(loc, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
+			MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
 
 		int needed, exp, level;
 		boolean check = false;

@@ -169,7 +169,7 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
 			 */
 			// exp += getTotal(mapEffectDurations());
 
-			giveExperience(PlayerData.get(player), (int) exp);
+			giveExperience(PlayerData.get(player), (int) exp, null);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.api.experience.source.type;
 
+import org.bukkit.Location;
+
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -42,10 +44,10 @@ public abstract class ExperienceSource<T> {
 
 	public abstract boolean matches(PlayerData player, T obj);
 
-	public void giveExperience(PlayerData player, int amount) {
+	public void giveExperience(PlayerData player, int amount, Location location) {
 		if (hasProfession())
-			player.getCollectionSkills().giveExperience(profession, amount);
+			player.getCollectionSkills().giveExperience(profession, amount, location == null ? player.getPlayer().getLocation() : location);
 		else
-			player.giveExperience(amount);
+			player.giveExperience(amount, player.getPlayer().getLocation());
 	}
 }

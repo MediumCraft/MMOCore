@@ -114,14 +114,10 @@ public class Guild {
 
 		public void add(PlayerData player) {
 			members.add(player);
-
-			refreshAttributes();
 		}
 
 		public void remove(PlayerData player) {
 			members.remove(player);
-
-			refreshAttributes();
 		}
 
 		public void forEach(Consumer<? super PlayerData> action) {
@@ -130,10 +126,6 @@ public class Guild {
 
 		public int count() {
 			return members.size();
-		}
-
-		public void refreshAttributes() {
-			members.forEach(member -> refreshAttributes());
 		}
 	}
 }

@@ -44,7 +44,7 @@ public class SmeltItemExperienceSource extends SpecificExperienceSource<ItemStac
 					PlayerData data = PlayerData.get(player.get());
 					for (SmeltItemExperienceSource source : getSources())
 						if (source.matches(data, caught))
-							source.giveExperience(data);
+							source.giveExperience(data, event.getBlock().getLocation());
 				}
 			}
 		};

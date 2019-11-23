@@ -38,7 +38,7 @@ public class FishItemExperienceSource extends SpecificExperienceSource<ItemStack
 					PlayerData data = PlayerData.get(event.getPlayer());
 					for (FishItemExperienceSource source : getSources())
 						if (source.matches(data, caught))
-							source.giveExperience(data);
+							source.giveExperience(data, event.getHook().getLocation().add(0, 1.0f, 0));
 				}
 			}
 		};

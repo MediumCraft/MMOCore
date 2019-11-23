@@ -33,7 +33,7 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
 
 					for (KillMobExperienceSource source : getSources())
 						if (source.matches(data, event.getTarget()))
-							source.giveExperience(data);
+							source.giveExperience(data, event.getTarget().getLocation());
 				}
 			}
 		};

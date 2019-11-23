@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.player.profess;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
@@ -15,6 +17,10 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.MMOCoreUtils;
@@ -31,6 +37,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.manager.ClassManager;
+import net.Indyuce.mmocore.version.VersionMaterial;
 
 public class PlayerClass {
 	private final String name, id, fileName;
@@ -60,6 +67,26 @@ public class PlayerClass {
 
 		name = ChatColor.translateAlternateColorCodes('&', config.getString("display.name"));
 		icon = MMOCoreUtils.readIcon(config.getString("display.item"));
+		
+		if(config.contains("display.headtexture")) {
+			if(icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
+				ItemMeta meta = icon.getItemMeta();
+				try {
+					Field profileField = meta.getClass().getDeclaredField("profile");
+					profileField.setAccessible(true);
+					GameProfile gp = new GameProfile(UUID.randomUUID(), null);
+					gp.getProperties().put("textures", new Property("textures", config.getString("display.texture")));
+					profileField.set(meta, gp);
+				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException exception) {
+					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not apply playerhead texture: " + exception.getMessage());
+				}
+				icon.setItemMeta(meta);
+			}
+			else {
+				MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not add player head texture. The item is not a playerhead!");
+			}
+		}
+		
 		for (String string : config.getStringList("display.lore"))
 			description.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', string));
 		for (String string : config.getStringList("display.attribute-lore"))

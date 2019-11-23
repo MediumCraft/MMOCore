@@ -83,8 +83,8 @@ public class BlockListener implements Listener {
 			if (info.hasTriggers() && !block.hasMetadata("player_placed")) {
 				PlayerData playerData = PlayerData.get(player);
 				info.getTriggers().forEach(trigger -> trigger.apply(playerData));
-				if (!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);
+				/**if (!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
+					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);*/
 			}
 
 			/*

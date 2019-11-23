@@ -51,7 +51,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 						continue;
 
 					if (source.matches(data, event.getBlock().getType()))
-						source.giveExperience(data);
+						source.giveExperience(data, event.getBlock().getLocation());
 				}
 			}
 		};

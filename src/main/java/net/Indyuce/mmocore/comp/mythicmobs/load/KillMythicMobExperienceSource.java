@@ -32,7 +32,7 @@ public class KillMythicMobExperienceSource extends SpecificExperienceSource<Stri
 				PlayerData data = PlayerData.get((Player) event.getKiller());
 				for (KillMythicMobExperienceSource source : getSources())
 					if (source.matches(data, event.getMobType().getInternalName()))
-						source.giveExperience(data);
+						source.giveExperience(data, event.getEntity().getLocation());
 			}
 		};
 	}

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -470,10 +471,18 @@ public class PlayerData {
 	}
 
 	public void giveExperience(int value) {
+		giveExperience(value, null);
+	}
+	
+	public void giveExperience(int value, Location loc) {
 		if (profess == null || hasReachedMaxLevel()) {
 			setExperience(0);
 			return;
 		}
+		
+		// display hologram
+		if (loc != null && MMOCore.plugin.hologramSupport != null)
+			MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
 
 		value = MMOCore.plugin.boosterManager.calculateExp(null, value);
 		value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;

@@ -34,7 +34,7 @@ public class PlaceBlockExperienceSource extends SpecificExperienceSource<Materia
 				
 				for (PlaceBlockExperienceSource source : getSources()) {
 					if (source.matches(data, event.getBlock().getType()))
-						source.giveExperience(data);
+						source.giveExperience(data, event.getBlock().getLocation());
 				}
 			}
 		};
