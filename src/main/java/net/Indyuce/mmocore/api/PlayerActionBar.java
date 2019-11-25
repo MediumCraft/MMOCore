@@ -14,7 +14,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class PlayerActionBar extends BukkitRunnable {
-private final int ticks;
+	private final int ticks;
 	private final DecimalFormat digit;
 	private final String format;
 	

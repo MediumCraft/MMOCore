@@ -588,15 +588,15 @@ public class PlayerData {
 	 * if the general info action bar can be displayed
 	 */
 	public boolean canSeeActionBar() {
-		return actionBarTimeOut + 100 < System.currentTimeMillis();
+		return actionBarTimeOut < System.currentTimeMillis();
 	}
 	
-	public void setActionBarTimeOut(long actionBarTimeOut) {
-		this.actionBarTimeOut = actionBarTimeOut;
+	public void setActionBarTimeOut(long timeOut) {
+		actionBarTimeOut = System.currentTimeMillis() + (timeOut * 50);
 	}
 
 	public void displayActionBar(String message) {
-		actionBarTimeOut = System.currentTimeMillis();
+		setActionBarTimeOut(60);
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
 

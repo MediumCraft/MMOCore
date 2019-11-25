@@ -37,7 +37,7 @@ public class HideActionBarCommandMap extends CommandEnd {
 			return CommandResult.FAILURE;
 		}
 
-		PlayerData.get(player).setActionBarTimeOut(System.currentTimeMillis() - 100 + amount * 50);
+		PlayerData.get(player).setActionBarTimeOut(amount);
 		return CommandResult.SUCCESS;
 	}
 }

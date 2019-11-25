@@ -48,6 +48,6 @@ public abstract class ExperienceSource<T> {
 		if (hasProfession())
 			player.getCollectionSkills().giveExperience(profession, amount, location == null ? player.getPlayer().getLocation() : location);
 		else
-			player.giveExperience(amount, player.getPlayer().getLocation());
+			player.giveExperience(amount, location == null ? player.getPlayer().getLocation() : location);
 	}
 }
