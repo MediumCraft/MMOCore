@@ -68,7 +68,7 @@ public class PlayerClass {
 		name = ChatColor.translateAlternateColorCodes('&', config.getString("display.name"));
 		icon = MMOCoreUtils.readIcon(config.getString("display.item"));
 		
-		if(config.contains("display.headtexture")) {
+		if(config.contains("display.texture")) {
 			if(icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
 				ItemMeta meta = icon.getItemMeta();
 				try {
