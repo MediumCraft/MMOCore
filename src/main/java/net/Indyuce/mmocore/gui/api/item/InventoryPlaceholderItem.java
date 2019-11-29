@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -18,32 +17,35 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 
 public abstract class InventoryPlaceholderItem extends InventoryItem {
-	private final Material material;
+	private final ItemStack stack;
 	private final String name, texture;
 	private final List<String> lore;
+	private final int modelData;
 	private final boolean placeholders, hideFlags;
 
 	public InventoryPlaceholderItem(ConfigurationSection config) {
-		this(Material.valueOf(config.getString("item")), config);
+		this(MMOCoreUtils.readIcon(config.getString("item")), config);
 	}
 
-	public InventoryPlaceholderItem(Material material, ConfigurationSection config) {
+	public InventoryPlaceholderItem(ItemStack stack, ConfigurationSection config) {
 		super(config);
 
-		this.material = material;
+		this.stack = stack;
 		this.name = config.getString("name");
 		this.lore = config.getStringList("lore");
 		this.hideFlags = config.getBoolean("hide-flags");
 		this.texture = config.getString("texture");
 		this.placeholders = config.getBoolean("placeholders");
+		this.modelData = config.getInt("custom-model-data");
 	}
 
-	public Material getMaterial() {
-		return material;
+	public ItemStack getStack() {
+		return stack;
 	}
 
 	public boolean hideFlags() {
@@ -66,6 +68,10 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 		return lore;
 	}
 
+	public int getModelData() {
+		return modelData;
+	}
+	
 	public boolean supportPlaceholders() {
 		return placeholders;
 	}
@@ -85,7 +91,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 	public ItemStack display(GeneratedInventory inv, int n) {
 
 		Placeholders placeholders = getPlaceholders(inv, n);
-		ItemStack item = new ItemStack(getMaterial());
+		ItemStack item = getStack();
 		ItemMeta meta = item.getItemMeta();
 
 		if (texture != null && meta instanceof SkullMeta)
@@ -103,6 +109,9 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 			meta.setLore(lore);
 		}
 
+		if (MMOCore.plugin.version.isStrictlyHigher(1, 13))
+			meta.setCustomModelData(getModelData());
+		
 		item.setItemMeta(meta);
 		return item;
 	}

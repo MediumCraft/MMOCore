@@ -170,7 +170,7 @@ public class SkillList extends EditableInventory {
 			for (int j = 0; j < lore.size(); j++)
 				lore.set(j, ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', lore.get(j)));
 
-			ItemStack item = new ItemStack(getMaterial());
+			ItemStack item = new ItemStack(getStack());
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', getName().replace("{skill}", skill.getSkill().getName()).replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)));
 			meta.addItemFlags(ItemFlag.values());
@@ -195,7 +195,7 @@ public class SkillList extends EditableInventory {
 		private final int selectedSkillSlot;
 
 		public SkillItem(ConfigurationSection config) {
-			super(Material.BARRIER, config);
+			super(new ItemStack(Material.BARRIER), config);
 
 			selectedSkillSlot = config.getInt("selected-slot");
 		}
