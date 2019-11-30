@@ -29,9 +29,6 @@ public class Guild {
 	 */
 	private UUID owner;
 
-	// used to check if two parties are the same
-	// private UUID uuid = UUID.randomUUID();
-
 	public Guild(UUID owner, String name, String tag) {
 		this.owner = owner;
 		this.guildId = tag.toLowerCase();
@@ -66,23 +63,17 @@ public class Guild {
 	public void removeLastInvite(Player player) {
 		invites.remove(player.getUniqueId());
 	}
-
-	//public void disband() {
-		//for(UUID uuid : getMembers().members)
-		//	removeMember(uuid, true);
-
-		
-	//}
 	
-	//public void removeMember(UUID uuid)
-	//{ removeMember(uuid, false); }
+	public void removeMember(UUID uuid)
+	{ removeMember(uuid, false); }
 	
-	public void removeMember(UUID uuid)	{//, boolean disband) {
+	// Disband boolean is to prevent co-modification exception when disbanding a guild 
+	public void removeMember(UUID uuid, boolean disband) {
 		PlayerData data = PlayerData.get(uuid);
 		if (data != null && data.isOnline() && data.getPlayer().getOpenInventory() != null && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuildViewInventory)
 			InventoryManager.GUILD_CREATION.newInventory(data).open();
 
-		members.remove(uuid);
+		if(!disband) members.remove(uuid);
 		if(data != null) data.setGuild(null);
 		reopenInventories();
 
@@ -114,7 +105,6 @@ public class Guild {
 	}
 	
 	public void registerMember(UUID uuid) {
-		MMOCore.log("Registered Member");
 		members.add(uuid);
 	}
 
@@ -168,10 +158,6 @@ public class Guild {
 			members.forEach(action);
 		}
 
-		public int count() {
-			return members.size();
-		}
-
 		public int countOnline() {
 			int online = 0;
 			
@@ -181,5 +167,10 @@ public class Guild {
 			
 			return online;
 		}
+
+		public int count()
+		{ return members.size(); }
+		public void clear()
+		{ members.clear(); }
 	}
 }

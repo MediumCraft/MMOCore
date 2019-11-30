@@ -19,7 +19,7 @@ public class GuildListener implements Listener {
 			return;
 
 		PlayerData data = PlayerData.get(event.getPlayer());
-		if (!data.hasParty())
+		if (!data.inGuild())
 			return;
 
 		event.setCancelled(true);

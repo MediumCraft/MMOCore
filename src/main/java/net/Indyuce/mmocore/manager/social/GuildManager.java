@@ -37,7 +37,8 @@ public class GuildManager extends MMOManager {
 	}
 	
 	public void unregisterGuild(Guild guild) {
-		guild.getMembers().forEach(member -> guild.removeMember(member));
+		guild.getMembers().forEach(member -> guild.removeMember(member, true));
+		guild.getMembers().clear();
 		guilds.remove(guild.getId());
 		
 		new ConfigFile(guild).delete();
@@ -121,7 +122,7 @@ public class GuildManager extends MMOManager {
 	// Used to check if player was kicked while offline
 	public Guild stillInGuild(UUID uuid, String id) {
 		Guild guild = getGuild(id);
-		if(guild.getMembers().has(uuid))
+		if(guild != null && guild.getMembers().has(uuid))
 			return guild;
 		return null;
 	}
