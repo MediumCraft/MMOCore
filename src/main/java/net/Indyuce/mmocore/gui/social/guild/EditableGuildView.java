@@ -134,13 +134,9 @@ public class EditableGuildView extends EditableInventory {
 		public ItemStack display(GeneratedInventory invpar, int n) {
 			GuildViewInventory inv = (GuildViewInventory) invpar;
 			
-			int maxpages = (int) Math.ceil((inv.getPlayerData().getGuild().getMembers().count() + 20) / inv.getByFunction("member").getSlots().size());
-			MMOCore.log("Member Slots: " + inv.getByFunction("member").getSlots().size());
-			MMOCore.log("Member Count: " + inv.getPlayerData().getGuild().getMembers().count());
-			MMOCore.log("Max Pages: " + maxpages);
-			
-			if(function.equals("next") && inv.getPage() == maxpages)
-				return null;
+			if(function.equals("next"))
+				if(inv.getPage() == (int) Math.ceil((inv.getPlayerData().getGuild().getMembers().count() + 20) / inv.getByFunction("member").getSlots().size()))
+					return null;
 			if(function.equals("previous") && inv.getPage() == 1)
 				return null;
 			if((function.equals("disband") || function.equals("invite")) && !inv.getPlayerData()
