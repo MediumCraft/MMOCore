@@ -19,7 +19,6 @@ import net.Indyuce.mmocore.api.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.api.math.format.DelayFormat;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.PlayerData.PlayerDataOfflineValues;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
@@ -29,15 +28,14 @@ import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.version.nms.ItemTag;
 
-public class EditableGuildView extends EditableInventory {
-	public EditableGuildView() {
-		super("guild-view");
+public class EditableGuildAdmin extends EditableInventory {
+	public EditableGuildAdmin() {
+		super("guild-admin");
 	}
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equals("member") ? new MemberItem(config) : (function.equals("next") || function.equals("previous")
-			|| function.equals("disband") || function.equals("invite")) ? new ConditionalItem(function, config) : new NoPlaceholderItem(config);
+		return function.equals("member") ? new MemberItem(config) : new NoPlaceholderItem(config);
 	}
 
 	public class MemberDisplayItem extends InventoryPlaceholderItem {
@@ -47,34 +45,19 @@ public class EditableGuildView extends EditableInventory {
 
 		@Override
 		public Placeholders getPlaceholders(PluginInventory inv, int n) {
-			UUID uuid = inv.getPlayerData().getGuild().getMembers().get(n);
-			Placeholders holders = new Placeholders();
-			/**
-			* Will never be null since a players name
-			* will always be recorded if they've been in a guild
-			*/
-			holders.register("name", Bukkit.getOfflinePlayer(uuid).getName());
-			
-			if(PlayerData.get(uuid) == null) {
-				PlayerDataOfflineValues pdov = PlayerData.getOfflineValues(uuid);
-				holders.register("class", pdov.getProfess().getName());
-				holders.register("level", "" + pdov.getLevel());
-				holders.register("since", new DelayFormat(2).format(System.currentTimeMillis() - pdov.getLastLogin()));
-			}
-			else
-			{
-				PlayerData member = PlayerData.get(uuid);
-				holders.register("class", member.getProfess().getName());
-				holders.register("level", "" + member.getLevel());
-				holders.register("since", new DelayFormat(2).format(System.currentTimeMillis() - member.getLastLogin()));
-			}
+			PlayerData member = PlayerData.get(inv.getPlayerData().getGuild().getMembers().get(n));
 
+			Placeholders holders = new Placeholders();
+			holders.register("name", member.getPlayer().getName());
+			holders.register("class", member.getProfess().getName());
+			holders.register("level", "" + member.getLevel());
+			holders.register("since", new DelayFormat(2).format(System.currentTimeMillis() - member.getLastLogin()));
 			return holders;
 		}
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			UUID uuid = inv.getPlayerData().getGuild().getMembers().get(n);
+			PlayerData member = PlayerData.get(inv.getPlayerData().getGuild().getMembers().get(n));
 
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
@@ -83,11 +66,11 @@ public class EditableGuildView extends EditableInventory {
 			 * run async to save performance
 			 */
 			if (meta instanceof SkullMeta) {
-				((SkullMeta) meta).setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+				((SkullMeta) meta).setOwningPlayer(member.getPlayer());
 				disp.setItemMeta(meta);
 			}
 
-			return NBTItem.get(disp).add(new ItemTag("uuid", uuid.toString())).toItem();
+			return NBTItem.get(disp).add(new ItemTag("uuid", member.getUniqueId().toString())).toItem();
 		}
 	}
 
@@ -107,8 +90,7 @@ public class EditableGuildView extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			int index = n * ((GuildViewInventory) inv).getPage();
-			return inv.getPlayerData().getGuild().getMembers().count() > index ? member.display(inv, index) : empty.display(inv, index);
+			return inv.getPlayerData().getGuild().getMembers().count() > n ? member.display(inv, n) : empty.display(inv, n);
 		}
 
 		@Override
@@ -121,94 +103,42 @@ public class EditableGuildView extends EditableInventory {
 			return true;
 		}
 	}
-	
-	public class ConditionalItem extends NoPlaceholderItem {
-		private final String function;
-		
-		public ConditionalItem(String func, ConfigurationSection config) {
-			super(config);
-			this.function = func;
-		}
-
-		@Override
-		public ItemStack display(GeneratedInventory invpar, int n) {
-			GuildViewInventory inv = (GuildViewInventory) invpar;
-			
-			int maxpages = (int) Math.ceil((inv.getPlayerData().getGuild().getMembers().count() + 20) / inv.getByFunction("member").getSlots().size());
-			MMOCore.log("Member Slots: " + inv.getByFunction("member").getSlots().size());
-			MMOCore.log("Member Count: " + inv.getPlayerData().getGuild().getMembers().count());
-			MMOCore.log("Max Pages: " + maxpages);
-			
-			if(function.equals("next") && inv.getPage() == maxpages)
-				return null;
-			if(function.equals("previous") && inv.getPage() == 1)
-				return null;
-			if((function.equals("disband") || function.equals("invite")) && !inv.getPlayerData()
-					.getGuild().getOwner().equals(inv.getPlayer().getUniqueId()))
-				return null;
-			return super.display(inv, n);
-		}
-	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new GuildViewInventory(data, this);
 	}
 
 	public class GuildViewInventory extends GeneratedInventory {
-		private int page = 1;
-		private final int maxpages;
+		private final int max;
 
 		public GuildViewInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
 
-			maxpages = (int) Math.ceil((playerData.getGuild().getMembers().count() + 20) /
-				editable.getByFunction("member").getSlots().size());
+			max = editable.getByFunction("member").getSlots().size();
 		}
 
 		@Override
 		public String calculateName() {
-			return getName()
-				.replace("{online_players}", "" + getPlayerData().getGuild().getMembers().countOnline())
-				.replace("{page}", "" + page)
-				.replace("{maxpages}", "" + maxpages)
-				.replace("{players}", "" + getPlayerData().getGuild().getMembers().count())
-				.replace("{tag}", getPlayerData().getGuild().getTag())
-				.replace("{name}", getPlayerData().getGuild().getName());
+			return getName().replace("{max}", "" + max).replace("{players}", "" + getPlayerData().getGuild().getMembers().count());
 		}
 
 		@Override
 		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+
 			if (item.getFunction().equals("leave")) {
 				playerData.getGuild().removeMember(playerData.getUniqueId());
 				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 				player.closeInventory();
 				return;
 			}
-			
-			if (item.getFunction().equals("next") && page != maxpages)
-			{ page++; open(); return; }
 
-			if (item.getFunction().equals("previous") && page != 1)
-			{ page--; open(); return; }
-
-			if (item.getFunction().equals("disband")) {
-				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
-					return;
-				MMOCore.plugin.guildManager.unregisterGuild(playerData.getGuild());
-				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-				player.closeInventory();
-				return;
-			}
-			
 			if (item.getFunction().equals("invite")) {
-				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
-					return;
-				
-				/**if (playerData.getGuild().getMembers().count() >= max) {
+
+				if (playerData.getGuild().getMembers().count() >= max) {
 					MMOCore.plugin.configManager.getSimpleMessage("guild-is-full").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
-				}*/
+				}
 
 				MMOCore.plugin.configManager.newPlayerInput(player, InputType.GUILD_INVITE, (input) -> {
 					Player target = Bukkit.getPlayer(input);
@@ -227,7 +157,7 @@ public class EditableGuildView extends EditableInventory {
 					}
 
 					PlayerData targetData = PlayerData.get(target);
-					if (playerData.getGuild().getMembers().has(targetData.getUniqueId())) {
+					if (playerData.getGuild().getMembers().has(target.getUniqueId())) {
 						MMOCore.plugin.configManager.getSimpleMessage("already-in-guild", "player", target.getName()).send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
@@ -241,10 +171,10 @@ public class EditableGuildView extends EditableInventory {
 				});
 			}
 
-			if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF && !NBTItem.get(event.getCurrentItem()).getString("uuid").isEmpty()) {
+			if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF) {
 				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
 					return;
-				
+
 				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(NBTItem.get(event.getCurrentItem()).getString("uuid")));
 				if (target.equals(player))
 					return;
@@ -254,8 +184,5 @@ public class EditableGuildView extends EditableInventory {
 				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 			}
 		}
-		
-		public int getPage()
-		{ return page; }
 	}
 }

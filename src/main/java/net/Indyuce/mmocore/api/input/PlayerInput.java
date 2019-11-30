@@ -32,7 +32,9 @@ public abstract class PlayerInput implements Listener {
 		FRIEND_REQUEST,
 
 		PARTY_INVITE,
-		GUILD_INVITE;
+		GUILD_INVITE,
+		GUILD_CREATION_TAG,
+		GUILD_CREATION_NAME;
 
 		public String getLowerCaseName() {
 			return name().toLowerCase().replace("_", "-");

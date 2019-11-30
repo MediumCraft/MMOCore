@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -20,28 +22,37 @@ import net.Indyuce.mmocore.manager.InventoryManager;
 public class Guild {
 	private final GuildMembers members = new GuildMembers();
 	private final Map<UUID, Long> invites = new HashMap<>();
-	private String guildName;
+	private String guildId, guildName, guildTag;
 
 	/*
 	 * owner changes when the old owner leaves guild
 	 */
-	private PlayerData owner;
+	private UUID owner;
 
 	// used to check if two parties are the same
 	// private UUID uuid = UUID.randomUUID();
 
-	public Guild(PlayerData owner, String name) {
+	public Guild(UUID owner, String name, String tag) {
 		this.owner = owner;
+		this.guildId = tag.toLowerCase();
 		this.guildName = name;
-		addMember(owner);
+		this.guildTag = tag;
 	}
 
-	public PlayerData getOwner() {
+	public UUID getOwner() {
 		return owner;
 	}
 	
 	public String getName() {
 		return guildName;
+	}
+
+	public String getId() {
+		return guildId;
+	}
+	
+	public String getTag() {
+		return guildTag;
 	}
 
 	public GuildMembers getMembers() {
@@ -56,42 +67,63 @@ public class Guild {
 		invites.remove(player.getUniqueId());
 	}
 
-	public void removeMember(PlayerData data) {
-		if (data.isOnline() && data.getPlayer().getOpenInventory() != null && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuildViewInventory)
+	//public void disband() {
+		//for(UUID uuid : getMembers().members)
+		//	removeMember(uuid, true);
+
+		
+	//}
+	
+	//public void removeMember(UUID uuid)
+	//{ removeMember(uuid, false); }
+	
+	public void removeMember(UUID uuid)	{//, boolean disband) {
+		PlayerData data = PlayerData.get(uuid);
+		if (data != null && data.isOnline() && data.getPlayer().getOpenInventory() != null && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuildViewInventory)
 			InventoryManager.GUILD_CREATION.newInventory(data).open();
 
-		members.remove(data);
-		data.setGuild(null);
-
+		members.remove(uuid);
+		if(data != null) data.setGuild(null);
 		reopenInventories();
 
-		// disband the guild if no member left
-		if (members.count() < 1) {
-			MMOCore.plugin.guildManager.unregisterGuild(this);
-			return;
-		}
+		//if(!disband) {
 
-		// transfer ownership
-		if (owner.equals(data)) {
-			owner = members.get(0);
-			MMOCore.plugin.configManager.getSimpleMessage("transfer-guild-ownership").send(owner.getPlayer());
-		}
+			// disband the guild if no member left
+			if (members.count() < 1) {
+				MMOCore.plugin.guildManager.unregisterGuild(this);
+				return;
+			}
+
+			// transfer ownership
+			if (owner.equals(uuid)) {
+				owner = members.get(0);
+				MMOCore.plugin.configManager.getSimpleMessage("transfer-guild-ownership").send(Bukkit.getPlayer(owner));
+			}
+		//}
 	}
 
-	public void addMember(PlayerData data) {
+	public void addMember(UUID uuid) {
+		PlayerData data = PlayerData.get(uuid);
 		if (data.inGuild())
-			data.getGuild().removeMember(data);
+			data.getGuild().removeMember(uuid);
 
 		data.setGuild(this);
-		members.add(data);
+		members.add(uuid);
 
 		reopenInventories();
+	}
+	
+	public void registerMember(UUID uuid) {
+		MMOCore.log("Registered Member");
+		members.add(uuid);
 	}
 
 	public void reopenInventories() {
-		for (PlayerData member : members.members)
-			if (member.isOnline() && member.getPlayer().getOpenInventory() != null && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuildViewInventory)
+		for (UUID uuid : members.members) {
+			PlayerData member = PlayerData.get(uuid);
+			if (member != null && member.isOnline() && member.getPlayer().getOpenInventory() != null && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuildViewInventory)
 				((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
+		}
 	}
 
 	public void sendGuildInvite(PlayerData inviter, PlayerData target) {
@@ -101,31 +133,53 @@ public class Guild {
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 
+	public void saveInConfig(FileConfiguration config) {
+		config.set("name", guildName);
+		config.set("tag", guildTag);
+		config.set("owner", owner.toString());
+		
+		List<String> memberList = new ArrayList<>();
+		for(UUID uuid : members.members)
+			memberList.add(uuid.toString());
+			
+		config.set("members", memberList);
+	}
+	
 	public class GuildMembers {
-		private final List<PlayerData> members = new ArrayList<>();
+		private final List<UUID> members = new ArrayList<>();
 
-		public PlayerData get(int count) {
+		public UUID get(int count) {
 			return members.get(count);
 		}
 
-		public boolean has(PlayerData player) {
+		public boolean has(UUID player) {
 			return members.contains(player);
 		}
 
-		public void add(PlayerData player) {
+		public void add(UUID player) {
 			members.add(player);
 		}
 
-		public void remove(PlayerData player) {
+		public void remove(UUID player) {
 			members.remove(player);
 		}
 
-		public void forEach(Consumer<? super PlayerData> action) {
+		public void forEach(Consumer<? super UUID> action) {
 			members.forEach(action);
 		}
 
 		public int count() {
 			return members.size();
+		}
+
+		public int countOnline() {
+			int online = 0;
+			
+			for(UUID member : members)
+				if(Bukkit.getOfflinePlayer(member).isOnline())
+					online += 1;
+			
+			return online;
 		}
 	}
 }

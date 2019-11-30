@@ -112,6 +112,7 @@ public class PlayerData {
 		this.mana = getStats().getStat(StatType.MAX_MANA);
 		this.stamina = getStats().getStat(StatType.MAX_STAMINA);
 		this.stellium = getStats().getStat(StatType.MAX_STELLIUM);
+		if (config.contains("guild")) this.guild = MMOCore.plugin.guildManager.stillInGuild(getUniqueId(), config.getString("guild"));
 		if (config.contains("attribute"))
 			attributes.load(config.getConfigurationSection("attribute"));
 		if (config.contains("profession"))
@@ -157,7 +158,10 @@ public class PlayerData {
 		config.set("class", profess == null ? null : profess.getId());
 		config.set("waypoints", new ArrayList<>(waypoints));
 		config.set("friends", toStringList(friends));
-
+		config.set("last-login", lastLogin);
+		if(guild != null) config.set("guild", guild.getId());
+		else config.set("guild", null);
+		
 		config.set("skill", null);
 		skills.entrySet().forEach(entry -> config.set("skill." + entry.getKey(), entry.getValue()));
 
@@ -239,6 +243,44 @@ public class PlayerData {
 		return playerData.values();
 	}
 
+	/**
+	 * START OF EXPERIMENTAL CODE
+	 * 
+	 * This must be more simple to do than my 2AM brain could think of...
+	 * - Aria
+	 */
+	
+	private static Map<UUID, PlayerDataOfflineValues> offlineValues = new HashMap<>();
+	public static PlayerDataOfflineValues getOfflineValues(UUID uuid) {
+		if(!offlineValues.containsKey(uuid))
+			offlineValues.put(uuid, new PlayerDataOfflineValues(uuid));
+		return offlineValues.get(uuid) ;
+	}
+	
+	public static class PlayerDataOfflineValues {
+		// Values can be added as they are needed
+		private final PlayerClass profess;
+		private final int level;
+		private final long lastLogin;
+		
+		public PlayerDataOfflineValues(UUID uuid) {
+			FileConfiguration config = new ConfigFile(uuid).getConfig();
+			this.profess = MMOCore.plugin.classManager.get(config.getString("class"));
+			this.level = config.getInt("level");
+			this.lastLogin = config.getLong("last-login");
+		}
+		
+		public PlayerClass getProfess()
+		{ return profess; }
+		public int getLevel()
+		{ return level; }
+		public long getLastLogin()
+		{ return lastLogin; }
+	}
+	/**
+	 * END OF EXPERIMENTAL CODE
+	 */
+	
 	public PlayerData setPlayer(Player player) {
 		this.player = player;
 		this.lastLogin = System.currentTimeMillis();

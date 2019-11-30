@@ -55,6 +55,7 @@ import net.Indyuce.mmocore.comp.worldguard.WorldGuardMMOLoader;
 import net.Indyuce.mmocore.comp.worldguard.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.listener.BlockListener;
 import net.Indyuce.mmocore.listener.GoldPouchesListener;
+import net.Indyuce.mmocore.listener.GuildListener;
 import net.Indyuce.mmocore.listener.LootableChestsListener;
 import net.Indyuce.mmocore.listener.PartyListener;
 import net.Indyuce.mmocore.listener.PlayerListener;
@@ -107,7 +108,7 @@ public class MMOCore extends JavaPlugin {
 	public RequestManager requestManager;
 	public final AttributeManager attributeManager = new AttributeManager();
 	public final PartyManager partyManager = new PartyManager();
-	public final GuildManager guildManager = new GuildManager();
+	public GuildManager guildManager = new GuildManager();
 	public final QuestManager questManager = new QuestManager();
 	public ConfigItemManager configItems;
 	public SkillManager skillManager;
@@ -283,6 +284,7 @@ public class MMOCore extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new LootableChestsListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SpellCast(), this);
 		Bukkit.getPluginManager().registerEvents(new PartyListener(), this);
+		Bukkit.getPluginManager().registerEvents(new GuildListener(), this);
 		Bukkit.getPluginManager().registerEvents(new FishingListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerCollectStats(), this);
 
@@ -337,6 +339,21 @@ public class MMOCore extends JavaPlugin {
 		MMOCoreCommand mmoCoreCommand = new MMOCoreCommand();
 		getCommand("mmocore").setExecutor(mmoCoreCommand);
 		getCommand("mmocore").setTabCompleter(mmoCoreCommand);
+		
+		if(getConfig().getBoolean("auto-save.enabled")) {
+			int autosave = getConfig().getInt("auto-save.interval") * 20;
+			new BukkitRunnable() {
+				public void run() {
+					for (PlayerData playerData : PlayerData.getAll()) {
+						ConfigFile config = new ConfigFile(playerData.getUniqueId());
+						playerData.saveInConfig(config.getConfig());
+						config.save();
+					}
+
+					guildManager.save();
+				}
+			}.runTaskTimerAsynchronously(MMOCore.plugin, autosave, autosave);
+		}
 	}
 
 	public void onDisable() {
@@ -346,6 +363,8 @@ public class MMOCore extends JavaPlugin {
 			playerData.saveInConfig(config.getConfig());
 			config.save();
 		}
+
+		guildManager.save();
 
 		mineManager.resetRemainingBlocks();
 	}

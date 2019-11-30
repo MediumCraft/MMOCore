@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 
 public class ConfigFile {
 	private final File file;
@@ -23,6 +24,10 @@ public class ConfigFile {
 
 	public ConfigFile(UUID uuid) {
 		this(MMOCore.plugin, "/userdata", uuid.toString());
+	}
+
+	public ConfigFile(Guild guild) {
+		this(MMOCore.plugin, "/guilds", guild.getId());
 	}
 
 	public ConfigFile(String name) {
@@ -47,5 +52,11 @@ public class ConfigFile {
 		} catch (IOException e2) {
 			MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not save " + name + ".yml!");
 		}
+	}
+	
+	public void delete() {
+		if(file.exists())
+			if(!file.delete())
+				MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not delete " + name + ".yml!");
 	}
 }

@@ -1,3 +1,11 @@
+# Auto-Save feature automatically saves
+# playerdata (class, level, etc.) and
+# guild data (guild names, members, etc.)
+# at a set interval.
+auto-save:
+    enabled: true
+    # In seconds (1800 = 30 minutes)
+    interval: 1800
 
 # Wearing heavy pieces of armors reduces
 # your movement speed by a specific amount,
@@ -58,12 +66,6 @@ party:
     # Prefix you need to put in the chat
     # to talk in the party chat.
     chat-prefix: '@'
-
-guilds:
-
-    # Prefix you need to put in the chat
-    # to talk in the guild chat.
-    chat-prefix: '*'
 
 # Enable this open to override vanilla EXP and display
 # level progress on the vanilla experience bar.
