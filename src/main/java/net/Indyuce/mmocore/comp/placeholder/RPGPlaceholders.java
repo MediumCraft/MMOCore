@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import net.Indyuce.mmocore.api.player.PlayerQuests;
 import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 
-public class RPGPlaceholders extends PlaceholderExpansion {
+public class RPGPlaceholders extends PlaceholderExpansion /** implements Relational*/ {
 
 	@Override
 	public String getAuthor() {
@@ -26,12 +27,12 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 	@Override
 	public String getVersion() {
-		return "1.0";
+		return MMOCore.plugin.getDescription().getVersion();
 	}
 
 	@Override
 	public String onPlaceholderRequest(Player player, String identifier) {
-
+		
 		if (identifier.equals("level"))
 			return "" + PlayerData.get(player).getLevel();
 
@@ -147,8 +148,30 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.startsWith("stat_"))
 			return StatType.valueOf(identifier.substring(5).toUpperCase()) != null ? "" + PlayerData.get(player).getStats().getStat(StatType.valueOf(identifier.substring(5).toUpperCase())) : "Invalid stat";
 		else if (identifier.startsWith("formatted_stat_"))
-			return StatType.valueOf(identifier.substring(5).toUpperCase()) != null ? "" + StatType.valueOf(identifier.substring(5).toUpperCase()).format(PlayerData.get(player).getStats().getStat(StatType.valueOf(identifier.substring(5).toUpperCase()))) : "Invalid stat";
+			return StatType.valueOf(identifier.substring(15).toUpperCase()) != null ? "" + StatType.valueOf(identifier.substring(15).toUpperCase()).format(PlayerData.get(player).getStats().getStat(StatType.valueOf(identifier.substring(15).toUpperCase()))) : "Invalid stat";
+			
+		else if (identifier.startsWith("guild_")) {
+			String placeholder = identifier.substring(6);
+			PlayerData data = PlayerData.get(player);
+			if(data.getGuild() == null) return null;
+			
+			if (placeholder.equalsIgnoreCase("name"))
+				return data.getGuild().getName();
+			else if (placeholder.equalsIgnoreCase("tag"))
+				return data.getGuild().getTag();
+			else if (placeholder.equalsIgnoreCase("leader"))
+				return Bukkit.getOfflinePlayer(data.getGuild().getOwner()).getName();
+			else if (placeholder.equalsIgnoreCase("members"))
+				return "" + data.getGuild().getMembers().count();
+			else if (placeholder.equalsIgnoreCase("online_members"))
+				return "" + data.getGuild().getMembers().countOnline();
+		}
 			
 		return null;
 	}
+
+	/**@Override
+	public String onPlaceholderRequest(Player player1, Player player2, String identifier) {
+		return null;
+	}*/
 }
