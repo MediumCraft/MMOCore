@@ -153,7 +153,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 		else if (identifier.startsWith("guild_")) {
 			String placeholder = identifier.substring(6);
 			PlayerData data = PlayerData.get(player);
-			if(data.getGuild() == null) return null;
+			if(data.getGuild() == null) return "";
 			
 			if (placeholder.equalsIgnoreCase("name"))
 				return data.getGuild().getName();
