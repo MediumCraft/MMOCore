@@ -14,7 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import net.Indyuce.mmocore.MMOCore;
 
 public class RestrictionManager {
-	private Set<Material> breakBlackList = new HashSet<>();
+	private Set<String> breakBlackList = new HashSet<>();
 	private Map<Material, BlockPermissions> map = new HashMap<>();
 
 	public RestrictionManager(FileConfiguration config) {
@@ -41,8 +41,8 @@ public class RestrictionManager {
 		}
 	}
 
-	public boolean isBlackListed(Material material) {
-		return breakBlackList.contains(material);
+	public boolean isBlackListed(String s) {
+		return breakBlackList.contains(s);
 	}
 
 	public BlockPermissions getPermissions(Material tool) {
@@ -50,7 +50,7 @@ public class RestrictionManager {
 	}
 
 	public class BlockPermissions {
-		private final Set<Material> canMine = new HashSet<>();
+		private final Set<String> canMine = new HashSet<>();
 		private final Material tool;
 
 		private BlockPermissions parent;
@@ -80,7 +80,7 @@ public class RestrictionManager {
 			}
 
 			for (String key : loaded.getStringList("can-mine"))
-				canMine.add(Material.valueOf(key.toUpperCase().replace("-", "_")));
+				canMine.add(key.toUpperCase().replace("-", "_"));
 
 			loaded = null;
 		}
@@ -89,17 +89,17 @@ public class RestrictionManager {
 			this.parent = parent;
 		}
 
-		public void addPermission(Material material) {
-			canMine.add(material);
+		public void addPermission(String s) {
+			canMine.add(s);
 		}
 
 		// recursive function to check for parent permissions
-		public boolean canMine(Material material) {
+		public boolean canMine(String material) {
 			return canMine.contains(material) || (parent != null && parent.canMine(material));
 		}
 
-		public Set<Material> getMinable() {
-			Set<Material> total = new HashSet<>(canMine);
+		public Set<String> getMinable() {
+			Set<String> total = new HashSet<>(canMine);
 			if (parent != null)
 				total.addAll(parent.getMinable());
 			return total;

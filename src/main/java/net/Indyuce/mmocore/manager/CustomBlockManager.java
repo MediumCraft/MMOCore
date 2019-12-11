@@ -28,6 +28,8 @@ import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.version.VersionMaterial;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.CustomBlock;
 
 public class CustomBlockManager extends MMOManager {
 	private final Map<String, BlockInfo> map = new HashMap<>();
@@ -40,7 +42,7 @@ public class CustomBlockManager extends MMOManager {
 		for (String key : config.getKeys(false))
 			try {
 				BlockInfo info = new BlockInfo(config.getConfigurationSection(key));
-				register(info.getHeadValue().isEmpty() ? info.getBlock().name() : info.getHeadValue(), info);
+				register(info.getHeadValue().isEmpty() ? info.getCustomBlockID() > 0 ? "mi-custom-" + info.getCustomBlockID() : info.getBlock().name() : info.getHeadValue(), info);
 			} catch (IllegalArgumentException exception) {
 				MMOCore.log(Level.WARNING, "Could not load custom block '" + key + "': " + exception.getMessage());
 			}
@@ -55,7 +57,13 @@ public class CustomBlockManager extends MMOManager {
 			String skullValue = MMOCore.plugin.nms.getSkullValue(block);
 			return map.getOrDefault(skullValue, map.getOrDefault(block.getType().name(), null));
 		}
-			
+		if(MMOCore.plugin.isMILoaded())
+			if(MMOItems.plugin.getCustomBlocks().isMushroomBlock(block.getType())) {
+				CustomBlock cblock = CustomBlock.getFromData(block.getBlockData());
+				if(block != null)
+					return map.getOrDefault("mi-custom-" + cblock.getId(), map.getOrDefault(block.getType().name(), null));
+			}
+		
 		return map.getOrDefault(block.getType().name(), null);
 	}
 
@@ -70,7 +78,12 @@ public class CustomBlockManager extends MMOManager {
 	public void initialize(RegenInfo info) {
 		active.add(info);
 
-		info.getLocation().getBlock().setType(info.getRegen().getTemporaryBlock());
+		if(MMOCore.plugin.isMILoaded() && info.getRegen().getCustomRegenBlockID() != 0) {
+			CustomBlock block = MMOItems.plugin.getCustomBlocks().getBlock(info.getRegen().getCustomRegenBlockID());
+			info.getLocation().getBlock().setType(block.getType());
+			info.getLocation().getBlock().setBlockData(block.getBlockData());
+		}
+		else info.getLocation().getBlock().setType(info.getRegen().getTemporaryBlock());
 		if(isPlayerSkull(info.getLocation().getBlock().getType())) {
 			if(isPlayerSkull(info.getRegen().getBlock())) info.getLocation().getBlock().setBlockData(info.getBlockData());
 			MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().getRegenHeadValue());
@@ -116,23 +129,27 @@ public class CustomBlockManager extends MMOManager {
 
 		private final List<Trigger> triggers = new ArrayList<>();
 		private final ExperienceTrigger experience;
+		private final int customBlockId;
 
 		/*
 		 * options for block regen.
 		 */
 		private Material temporary;
 		private int regenTime = -1;
+		private int regenCustomBlockId;
 		private String regenHeadValue;
 
 		public BlockInfo(ConfigurationSection config) {
 			Validate.notNull(config, "Could not load config");
 			block = Material.valueOf(config.getString("material", "BOOKSHELF").toUpperCase().replace("-", "_").replace(" ", "_"));
+			customBlockId = config.getInt("mi-custom-block", 0);
 			headValue = config.getString("head-value", "");
 			table = config.contains("drop-table") ? MMOCore.plugin.dropTableManager.loadDropTable(config.get("drop-table")) : null;
 			vanillaDrops = config.getBoolean("vanilla-drops", true);
 
 			if (config.contains("regen")) {
 				temporary = Material.valueOf(config.getString("regen.temp-block", "BOOKSHELF").toUpperCase().replace("-", "_").replace(" ", "_"));
+				regenCustomBlockId = config.getInt("regen.mi-custom-block", 0);
 				regenHeadValue = config.getString("regen.head-value", "");
 				
 				regenTime = config.getInt("regen.time");
@@ -196,6 +213,14 @@ public class CustomBlockManager extends MMOManager {
 
 		public RegenInfo generateRegenInfo(BlockData data, Location loc) {
 			return new RegenInfo(data, loc, this);
+		}
+		
+		public int getCustomBlockID() {
+			return customBlockId;
+		}
+		
+		public int getCustomRegenBlockID() {
+			return regenCustomBlockId;
 		}
 
 		public boolean hasExperience() {

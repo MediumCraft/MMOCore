@@ -20,6 +20,8 @@ import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.CustomBlockManager.BlockInfo;
 import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.CustomBlock;
 
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
@@ -62,7 +64,7 @@ public class BlockListener implements Listener {
 				return;
 			}
 
-			if (!perms.canMine(block.getType())) {
+			if (!perms.canMine(getBlockName(block))) {
 				MMOCore.plugin.configManager.getSimpleMessage("cannot-break").send(player);
 				event.setCancelled(true);
 				return;
@@ -103,6 +105,17 @@ public class BlockListener implements Listener {
 			if (info.hasRegen())
 				MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(Bukkit.createBlockData(savedData), block.getLocation()));
 		}
+	}
+
+	private String getBlockName(Block block) {
+		if(MMOCore.plugin.isMILoaded())
+			if(MMOItems.plugin.getCustomBlocks().isMushroomBlock(block.getType())) {
+				CustomBlock cblock = CustomBlock.getFromData(block.getBlockData());
+				if(cblock != null)
+					return "MICUSTOM_" + cblock.getId();
+			}
+		
+		return block.getType().toString();
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
