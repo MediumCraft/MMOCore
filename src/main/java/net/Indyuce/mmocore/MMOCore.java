@@ -272,6 +272,9 @@ public class MMOCore extends JavaPlugin {
 		if (getConfig().getBoolean("health-scale.enabled"))
 			Bukkit.getPluginManager().registerEvents(new HealthScale(), this);
 
+		if (getConfig().getBoolean("prevent-spawner-xp"))
+			Bukkit.getPluginManager().registerEvents(new HealthScale(), this);
+
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
 

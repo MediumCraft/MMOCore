@@ -98,6 +98,9 @@ hotbar-swap: true
 # This replaces anvil inputs by chat inputs.
 use-chat-input: true
 
+# Prevents mobs spawned from spawners from giving XP points.
+prevent-spawner-xp: true
+
 # Change this to the name of the color you want for
 # the different resource bar placeholders
 resource-bar-colors:

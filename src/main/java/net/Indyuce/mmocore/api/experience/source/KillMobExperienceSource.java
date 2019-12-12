@@ -29,6 +29,7 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
 			@EventHandler
 			public void a(EntityKillEntityEvent event) {
 				if (event.getEntity() instanceof Player && !event.getEntity().hasMetadata("NPC")) {
+					if(event.getTarget().hasMetadata("spawner_spawned")) return;
 					PlayerData data = PlayerData.get((Player) event.getEntity());
 
 					for (KillMobExperienceSource source : getSources())
