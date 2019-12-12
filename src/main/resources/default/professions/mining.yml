@@ -8,6 +8,13 @@ experience:
     base: 20
     per-level: 3
 
+# This part of the config is ONLY for custom mining.
+# Custom Mining must be setup in config.yml and it
+# will render any block not referenced in here as unminable.
+# If you do not wish to use custom mining it is recommended
+# to follow the format in woodcutting.yml for experience and
+# configure drop tables with MMOItems.
+# Block Regen is currently only possible using custom mining.
 on-mine:
     emerald:
         material: EMERALD_ORE
