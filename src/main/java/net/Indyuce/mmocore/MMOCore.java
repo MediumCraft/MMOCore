@@ -64,6 +64,7 @@ import net.Indyuce.mmocore.listener.WaypointsListener;
 import net.Indyuce.mmocore.listener.event.PlayerAttackEventListener;
 import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
 import net.Indyuce.mmocore.listener.option.HealthScale;
+import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
 import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
@@ -273,7 +274,7 @@ public class MMOCore extends JavaPlugin {
 			Bukkit.getPluginManager().registerEvents(new HealthScale(), this);
 
 		if (getConfig().getBoolean("prevent-spawner-xp"))
-			Bukkit.getPluginManager().registerEvents(new HealthScale(), this);
+			Bukkit.getPluginManager().registerEvents(new NoSpawnerEXP(), this);
 
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
