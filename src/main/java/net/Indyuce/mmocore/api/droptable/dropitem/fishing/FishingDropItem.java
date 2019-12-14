@@ -14,9 +14,9 @@ public class FishingDropItem {
 	private final RandomAmount experience, tugs;
 	private final DropItem dropItem;
 
-	private final int minCoef, maxCoef;
+	private final int weight;
 
-	public FishingDropItem(int minCoef, String value) {
+	public FishingDropItem(String value) {
 		MMOLineConfig config = new MMOLineConfig(value);
 
 		config.validate("tugs", "experience");
@@ -24,22 +24,13 @@ public class FishingDropItem {
 		tugs = new RandomAmount(config.getString("tugs"));
 		experience = new RandomAmount(config.getString("experience"));
 
-		this.minCoef = minCoef;
-		maxCoef = minCoef + (config.contains("coef") ? Math.min(1, config.getInt("coef")) : 1);
+		weight = config.getInt("weight", 1);
 
 		dropItem = MMOCore.plugin.loadManager.loadDropItem(config);
 	}
 
-	public int getMinCoefficient() {
-		return minCoef;
-	}
-
-	public int getMaxCoefficient() {
-		return maxCoef;
-	}
-
-	public boolean matchesCoefficient(int n) {
-		return n >= minCoef && n < maxCoef;
+	public int getWeight() {
+		return weight;
 	}
 
 	public DropItem getItem() {

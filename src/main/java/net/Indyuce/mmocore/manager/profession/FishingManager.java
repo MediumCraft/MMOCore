@@ -46,11 +46,11 @@ public class FishingManager extends MMOManager {
 
 	public class FishingDropTable {
 		private final String id;
-		private final int maxCoef;
 
 		private final Set<Condition> conditions = new HashSet<>();
 		private final List<FishingDropItem> items = new ArrayList<>();
-
+		private int maxWeight = 0;
+		
 		public FishingDropTable(ConfigurationSection section) {
 			Validate.notNull(section, "Could not load config");
 			this.id = section.getName();
@@ -70,18 +70,16 @@ public class FishingManager extends MMOManager {
 			List<String> list = section.getStringList("items");
 			Validate.notNull(list, "Could not load item list");
 
-			int coef = 0;
 			for (String str : list)
 				try {
-					FishingDropItem dropItem = new FishingDropItem(coef, str);
-					coef = dropItem.getMaxCoefficient();
+					FishingDropItem dropItem = new FishingDropItem(str);
+					maxWeight += dropItem.getWeight();
 					items.add(dropItem);
 				} catch (MMOLoadException exception) {
 					exception.printConsole("FishDropTables:" + id, "drop item");
 				} catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
 					MMOCore.log(Level.WARNING, "[FishDropTables:" + id + "] Could not load item '" + str + "': " + exception.getMessage());
 				}
-			maxCoef = coef;
 
 			Validate.notEmpty(list, "The item list must not be empty.");
 		}
@@ -98,11 +96,13 @@ public class FishingManager extends MMOManager {
 		}
 
 		public FishingDropItem getRandomItem() {
-			int c = random.nextInt(maxCoef);
+			int weight = random.nextInt(maxWeight);
 
-			for (FishingDropItem item : items)
-				if (item.matchesCoefficient(c))
-					return item;
+			for (FishingDropItem item : items) {
+				weight -= item.getWeight();
+				
+				if(weight <= 0) return item;
+			}
 
 			throw new NullPointerException("Could not find item in drop table");
 		}
