@@ -1,9 +1,11 @@
 package net.Indyuce.mmocore.comp.mythicmobs.load;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
@@ -23,16 +25,20 @@ public class KillMythicMobExperienceSource extends SpecificExperienceSource<Stri
 	@Override
 	public ExperienceManager<KillMythicMobExperienceSource> newManager() {
 		return new ExperienceManager<KillMythicMobExperienceSource>() {
-
 			@EventHandler
 			public void a(MythicMobDeathEvent event) {
-				if (!(event.getKiller() instanceof Player))
-					return;
+				Bukkit.getScheduler().runTaskLater(MMOCore.plugin, new Runnable() {
+					@Override
+					public void run() {
+						if (!event.getEntity().isDead()) return;
+						if (!(event.getKiller() instanceof Player)) return;
 
-				PlayerData data = PlayerData.get((Player) event.getKiller());
-				for (KillMythicMobExperienceSource source : getSources())
-					if (source.matches(data, event.getMobType().getInternalName()))
-						source.giveExperience(data, event.getEntity().getLocation());
+						PlayerData data = PlayerData.get((Player) event.getKiller());
+						for (KillMythicMobExperienceSource source : getSources())
+							if (source.matches(data, event.getMobType().getInternalName()))
+								source.giveExperience(data, event.getEntity().getLocation());
+					}
+				}, 2);
 			}
 		};
 	}

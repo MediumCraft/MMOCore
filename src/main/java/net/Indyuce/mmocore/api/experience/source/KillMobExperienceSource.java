@@ -1,10 +1,13 @@
 package net.Indyuce.mmocore.api.experience.source;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.EntityKillEntityEvent;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
@@ -25,17 +28,22 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
 	@Override
 	public ExperienceManager<KillMobExperienceSource> newManager() {
 		return new ExperienceManager<KillMobExperienceSource>() {
-
-			@EventHandler
+			@EventHandler(priority = EventPriority.MONITOR)
 			public void a(EntityKillEntityEvent event) {
-				if (event.getEntity() instanceof Player && !event.getEntity().hasMetadata("NPC")) {
-					if(event.getTarget().hasMetadata("spawner_spawned")) return;
-					PlayerData data = PlayerData.get((Player) event.getEntity());
+				Bukkit.getScheduler().runTaskLater(MMOCore.plugin, new Runnable() {
+					@Override
+					public void run() {
+						if (!event.getTarget().isDead()) return;
+						if (event.getEntity() instanceof Player && !event.getEntity().hasMetadata("NPC")) {
+							if(event.getTarget().hasMetadata("spawner_spawned")) return;
+							PlayerData data = PlayerData.get((Player) event.getEntity());
 
-					for (KillMobExperienceSource source : getSources())
-						if (source.matches(data, event.getTarget()))
-							source.giveExperience(data, event.getTarget().getLocation());
-				}
+							for (KillMobExperienceSource source : getSources())
+								if (source.matches(data, event.getTarget()))
+									source.giveExperience(data, event.getTarget().getLocation());
+						}
+					}
+				}, 2);
 			}
 		};
 	}
