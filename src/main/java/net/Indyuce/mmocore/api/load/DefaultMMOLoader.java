@@ -132,7 +132,7 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("repairitem"))
 			return new RepairItemExperienceSource(profession, config);
-
+		
 		return null;
 	}
 }

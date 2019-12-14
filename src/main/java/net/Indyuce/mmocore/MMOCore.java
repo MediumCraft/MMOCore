@@ -40,6 +40,7 @@ import net.Indyuce.mmocore.comp.holograms.CMIPlugin;
 import net.Indyuce.mmocore.comp.holograms.HologramSupport;
 import net.Indyuce.mmocore.comp.holograms.HologramsPlugin;
 import net.Indyuce.mmocore.comp.holograms.HolographicDisplaysPlugin;
+import net.Indyuce.mmocore.comp.mmoitems.MMOItemsMMOLoader;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsDrops;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
@@ -146,6 +147,9 @@ public class MMOCore extends JavaPlugin {
 		/*
 		 * register extra objective, drop items...
 		 */
+		if (Bukkit.getPluginManager().getPlugin("MMOItems") != null)
+			loadManager.registerLoader(new MMOItemsMMOLoader());
+		
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
 			loadManager.registerLoader(new WorldGuardMMOLoader());
 

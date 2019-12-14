@@ -64,6 +64,10 @@ public class MMOLineConfig {
 		return json.get(path).getAsInt();
 	}
 
+	public int getInt(String path, int def) {
+		return json.has(path) ? getInt(path) : def;
+	}
+
 	public long getLong(String path) {
 		return json.get(path).getAsLong();
 	}
