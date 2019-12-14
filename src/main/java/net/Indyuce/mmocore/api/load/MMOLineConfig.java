@@ -82,7 +82,7 @@ public class MMOLineConfig {
 
 	public void validate(String... paths) {
 		for (String path : paths)
-			Validate.isTrue(contains(path), "Config is missing parameter '" + path+"'");
+			Validate.isTrue(contains(path), "Config is missing parameter '" + path + "'");
 	}
 
 	public void validateArgs(int count) {
