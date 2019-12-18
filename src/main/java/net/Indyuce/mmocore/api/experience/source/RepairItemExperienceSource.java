@@ -60,6 +60,7 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
 							 * before getting the amount of durability repaired
 							 */
 							ItemStack old = event.getInventory().getItem(0);
+							if (old == null || old.getType() == Material.AIR) return;
 							if (old.getType().getMaxDurability() < 30 || item.getType().getMaxDurability() < 10)
 								return;
 
