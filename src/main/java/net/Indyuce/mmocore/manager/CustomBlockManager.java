@@ -60,7 +60,7 @@ public class CustomBlockManager extends MMOManager {
 		if(MMOCore.plugin.isMILoaded())
 			if(MMOItems.plugin.getCustomBlocks().isMushroomBlock(block.getType())) {
 				CustomBlock cblock = CustomBlock.getFromData(block.getBlockData());
-				if(block != null)
+				if(cblock != null)
 					return map.getOrDefault("mi-custom-" + cblock.getId(), map.getOrDefault(block.getType().name(), null));
 			}
 		
