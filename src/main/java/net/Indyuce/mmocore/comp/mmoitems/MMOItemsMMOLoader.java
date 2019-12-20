@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.experience.source.MineBlockExperienceSource;
+import net.Indyuce.mmocore.api.experience.source.MineMIBlockExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoader;
@@ -37,7 +37,7 @@ public class MMOItemsMMOLoader implements MMOLoader {
 	@Override
 	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, Profession profession) {
 		if (config.getKey().equals("minemiblock"))
-			return new MineBlockExperienceSource(profession, config);
+			return new MineMIBlockExperienceSource(profession, config);
 		
 		return null;
 	}
