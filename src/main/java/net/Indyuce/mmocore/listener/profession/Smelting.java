@@ -19,7 +19,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class Smelting implements Listener {
 

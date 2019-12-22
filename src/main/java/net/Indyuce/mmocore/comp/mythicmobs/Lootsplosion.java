@@ -17,7 +17,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
 import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class Lootsplosion implements Listener {
 	private static final Random random = new Random();

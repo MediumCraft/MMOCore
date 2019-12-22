@@ -24,7 +24,7 @@ public class ListCommandMap extends CommandEnd {
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
 		for (Booster booster : MMOCore.plugin.boosterManager.getBoosters())
 			if (!booster.isTimedOut())
-				MMOLib.plugin.getNMS().sendJson((Player) sender, "{\"text\":\"" + ChatColor.YELLOW + "- " + ChatColor.GOLD + MMOCore.plugin.configManager.decimal.format((1 + booster.getExtra())) + "x" + ChatColor.YELLOW + " Booster - " + ChatColor.GOLD + (!booster.hasProfession() ? "Main" : booster.getProfession().getName()) + ChatColor.YELLOW + " - " + ChatColor.GOLD + new DelayFormat().format(booster.getCreationDate() + booster.getLength() - System.currentTimeMillis()) + "\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/mmocore booster remove " + booster.getUniqueId().toString() + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"Click to remove.\"}}}");
+				MMOLib.plugin.getNMS().sendJson((Player) sender, "{\"text\":\"" + ChatColor.YELLOW + "- " + ChatColor.GOLD + MMOCore.plugin.configManager.decimal.format((1 + booster.getExtra())) + "x" + ChatColor.YELLOW + " Booster - " + ChatColor.GOLD + (!booster.hasProfession() ? "ExploreAttributesCommand" : booster.getProfession().getName()) + ChatColor.YELLOW + " - " + ChatColor.GOLD + new DelayFormat().format(booster.getCreationDate() + booster.getLength() - System.currentTimeMillis()) + "\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/mmocore booster remove " + booster.getUniqueId().toString() + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"Click to remove.\"}}}");
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
 
 		return CommandResult.SUCCESS;

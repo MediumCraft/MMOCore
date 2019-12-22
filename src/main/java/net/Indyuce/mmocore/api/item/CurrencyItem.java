@@ -8,8 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.ItemTag;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.ItemTag;
+import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class CurrencyItem extends ConfigItem {
 	private final int worth, amount;

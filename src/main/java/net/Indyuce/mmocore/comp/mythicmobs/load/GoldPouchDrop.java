@@ -15,8 +15,8 @@ import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
 import net.Indyuce.mmocore.MMOCoreUtils;
 import net.Indyuce.mmocore.api.item.ConfigItem;
 import net.Indyuce.mmocore.api.item.CurrencyItem;
-import net.mmogroup.mmolib.api.ItemTag;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.ItemTag;
+import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class GoldPouchDrop extends Drop implements IMultiDrop {
 	private int min, max;

@@ -15,7 +15,7 @@ import net.Indyuce.mmocore.MMOCoreUtils;
 import net.Indyuce.mmocore.api.item.ConfigItem;
 import net.Indyuce.mmocore.api.item.SmartGive;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class DepositMenu extends PluginInventory {
 	private ItemStack depositItem;

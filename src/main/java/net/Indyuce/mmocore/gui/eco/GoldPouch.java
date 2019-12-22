@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.mmogroup.mmolib.api.ItemTag;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.ItemTag;
+import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class GoldPouch extends PluginInventory {
 	private final boolean mob;

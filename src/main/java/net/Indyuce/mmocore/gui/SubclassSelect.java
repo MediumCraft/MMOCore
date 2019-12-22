@@ -21,8 +21,8 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.mmogroup.mmolib.api.ItemTag;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.ItemTag;
+import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class SubclassSelect extends EditableInventory {
 	public SubclassSelect() {

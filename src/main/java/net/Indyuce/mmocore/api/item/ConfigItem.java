@@ -22,8 +22,8 @@ import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.ItemTag;
-import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.api.item.ItemTag;
+import net.mmogroup.mmolib.api.item.NBTItem;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class ConfigItem {
