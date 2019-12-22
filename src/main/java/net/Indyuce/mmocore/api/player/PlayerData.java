@@ -232,7 +232,7 @@ public class PlayerData {
 	public static PlayerData setup(Player player) {
 		if (!playerData.containsKey(player.getUniqueId()))
 			playerData.put(player.getUniqueId(), new PlayerData(player).load(new ConfigFile(player).getConfig()));
-		return get(player);
+		return get(player).setPlayer(player);
 	}
 
 	public static boolean isLoaded(UUID uuid) {
@@ -281,7 +281,7 @@ public class PlayerData {
 	 * END OF EXPERIMENTAL CODE
 	 */
 	
-	public PlayerData setPlayer(Player player) {
+	private PlayerData setPlayer(Player player) {
 		this.player = player;
 		this.lastLogin = System.currentTimeMillis();
 		return this;

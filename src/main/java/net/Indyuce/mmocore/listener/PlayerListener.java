@@ -32,7 +32,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void a(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerData pd = PlayerData.setup(player).setPlayer(player); pd.getStats().updateAll();
+		PlayerData.setup(player).getStats().updateAll();
 	}
 
 	/*

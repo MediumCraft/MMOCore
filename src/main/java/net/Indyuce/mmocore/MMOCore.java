@@ -305,7 +305,7 @@ public class MMOCore extends JavaPlugin {
 		 * the player datas can't recognize what profess the player has and
 		 * professes will be lost
 		 */
-		Bukkit.getOnlinePlayers().forEach(player -> PlayerData.setup(player).setPlayer(player));
+		Bukkit.getOnlinePlayers().forEach(player -> PlayerData.setup(player));
 
 		// commands
 		try {
