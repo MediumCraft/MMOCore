@@ -12,6 +12,7 @@ import net.Indyuce.mmocore.api.droptable.dropitem.NoteDropItem;
 import net.Indyuce.mmocore.api.droptable.dropitem.VanillaDropItem;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.BrewPotionExperienceSource;
+import net.Indyuce.mmocore.api.experience.source.CraftItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.EnchantItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.FishItemExperienceSource;
 import net.Indyuce.mmocore.api.experience.source.KillMobExperienceSource;
@@ -132,6 +133,9 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("repairitem"))
 			return new RepairItemExperienceSource(profession, config);
+		
+		if (config.getKey().equals("craftitem"))
+			return new CraftItemExperienceSource(profession, config);
 		
 		return null;
 	}
