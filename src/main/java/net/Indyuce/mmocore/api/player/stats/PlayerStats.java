@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.stat.modifier.StatModifier;
+import net.Indyuce.mmocore.api.player.stats.stat.modifier.TemporaryStatModifier;
 
 public class PlayerStats {
 	private final PlayerData data;
@@ -99,6 +100,10 @@ public class PlayerStats {
 
 		public void addModifier(String key, double value) {
 			addModifier(key, new StatModifier(value));
+		}
+
+		public void applyTemporaryModifier(String key, StatModifier modifier, long duration) {
+			addModifier(key, new TemporaryStatModifier(modifier.getValue(), duration, modifier.isRelative(), key, this));
 		}
 
 		public void addModifier(String key, StatModifier modifier) {

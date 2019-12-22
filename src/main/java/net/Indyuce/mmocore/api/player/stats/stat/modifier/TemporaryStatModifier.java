@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.api.player.stats.PlayerStats.StatInstance;
 
 public class TemporaryStatModifier extends StatModifier {
 	private final BukkitRunnable runnable;
-
+	
 	public TemporaryStatModifier(double d, long duration, boolean relative, String key, StatInstance ins) {
 		super(d, relative);
 

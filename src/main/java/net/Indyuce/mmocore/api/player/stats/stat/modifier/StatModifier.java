@@ -8,7 +8,6 @@ public class StatModifier {
 	private final double d;
 	private final boolean relative;
 
-
 	public StatModifier(double d) {
 		this(d, false);
 	}
@@ -32,6 +31,10 @@ public class StatModifier {
 
 	public boolean isRelative() {
 		return relative;
+	}
+	
+	public double getValue() {
+		return d;
 	}
 
 	public double apply(double in) {
