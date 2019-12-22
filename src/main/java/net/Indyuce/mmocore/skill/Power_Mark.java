@@ -24,9 +24,9 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.TemporaryStats;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
-import net.Indyuce.mmocore.version.VersionMaterial;
-import net.Indyuce.mmocore.version.VersionSound;
+import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.version.VersionMaterial;
+import net.mmogroup.mmolib.version.VersionSound;
 
 public class Power_Mark extends Skill implements Listener {
 	public Power_Mark() {

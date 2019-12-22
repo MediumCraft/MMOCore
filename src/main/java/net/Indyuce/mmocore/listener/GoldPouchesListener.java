@@ -8,8 +8,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.gui.eco.GoldPouch;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class GoldPouchesListener implements Listener {
 	@EventHandler
@@ -18,7 +18,7 @@ public class GoldPouchesListener implements Listener {
 			return;
 
 		NBTItem nbt = NBTItem.get(event.getItem());
-		if (!nbt.has("RpgPouchInventory"))
+		if (!nbt.hasTag("RpgPouchInventory"))
 			return;
 
 		// that way ppl can't open a chest when right clicking a backpack
@@ -47,7 +47,7 @@ public class GoldPouchesListener implements Listener {
 			return;
 
 		ItemStack item = event.getItem().getItemStack();
-		if (NBTItem.get(item).has("RpgPouchInventory"))
+		if (NBTItem.get(item).hasTag("RpgPouchInventory"))
 			event.setCancelled(true);
 	}
 }

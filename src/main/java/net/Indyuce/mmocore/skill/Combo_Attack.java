@@ -12,7 +12,9 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
 
 public class Combo_Attack extends Skill {
 	public Combo_Attack() {
@@ -48,7 +50,7 @@ public class Combo_Attack extends Skill {
 
 				target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, 1, 2);
 				target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, target.getHeight() / 2, 0), 24, 0, 0, 0, .7);
-				MMOCore.plugin.damage.damage(data, target, damage, DamageType.SKILL, DamageType.PHYSICAL);
+				MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PHYSICAL));
 			}
 		}.runTaskTimer(MMOCore.plugin, 0, 5);
 		return cast;

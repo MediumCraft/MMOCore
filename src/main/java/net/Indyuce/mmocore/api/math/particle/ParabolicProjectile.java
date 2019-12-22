@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.mmogroup.mmolib.MMOLib;
 
 public class ParabolicProjectile extends BukkitRunnable {
 	private final Location target;
@@ -29,11 +30,11 @@ public class ParabolicProjectile extends BukkitRunnable {
 	}
 
 	public ParabolicProjectile(Location source, Location target, Particle particle, Runnable end, int speed, Color color, float size) {
-		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, speed, (loc) -> MMOCore.plugin.version.getVersionWrapper().spawnParticle(particle, loc, size, color));
+		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, speed, (loc) -> MMOLib.plugin.getVersion().getWrapper().spawnParticle(particle, loc, size, color));
 	}
 
 	public ParabolicProjectile(Location source, Location target, Runnable end, Color color) {
-		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, 1, (loc) -> MMOCore.plugin.version.getVersionWrapper().spawnParticle(Particle.REDSTONE, loc, 1, color));
+		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, 1, (loc) -> MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE, loc, 1, color));
 	}
 
 	public ParabolicProjectile(Location source, Location target, Particle particle) {

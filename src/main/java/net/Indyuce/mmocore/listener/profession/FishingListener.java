@@ -27,7 +27,8 @@ import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
-import net.Indyuce.mmocore.version.VersionSound;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.version.VersionSound;
 
 public class FishingListener implements Listener {
 	private Set<UUID> fishing = new HashSet<>();
@@ -116,7 +117,7 @@ public class FishingListener implements Listener {
 
 		@EventHandler
 		public void a(PlayerFishEvent event) {
-			if (event.getPlayer().equals(player) && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || (MMOCore.plugin.version.isStrictlyHigher(1, 12) ? event.getState() == State.valueOf("REEL_IN") : false))) {
+			if (event.getPlayer().equals(player) && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || (MMOLib.plugin.getVersion().isStrictlyHigher(1, 12) ? event.getState() == State.valueOf("REEL_IN") : false))) {
 
 				/*
 				 * lose the catch if the current fish is gone!

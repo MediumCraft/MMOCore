@@ -15,8 +15,10 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
-import net.Indyuce.mmocore.version.VersionSound;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.version.VersionSound;
 
 public class Fire_Storm extends Skill {
 	public Fire_Storm() {
@@ -58,7 +60,7 @@ public class Fire_Storm extends Skill {
 				new ParabolicProjectile(data.getPlayer().getLocation().add(0, 1, 0), target.getLocation().add(0, target.getHeight() / 2, 0), randomVector(data.getPlayer()), () -> {
 					target.getWorld().playSound(target.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_TWINKLE.toSound(), 1, 2);
 					target.getWorld().spawnParticle(Particle.SMOKE_NORMAL, target.getLocation().add(0, target.getHeight() / 2, 0), 8, 0, 0, 0, .15);
-					MMOCore.plugin.damage.damage(data, target, damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL);
+					MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL));
 					target.setFireTicks(ignite);
 
 				}, 2, Particle.FLAME);

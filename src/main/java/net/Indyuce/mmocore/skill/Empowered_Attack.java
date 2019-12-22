@@ -18,9 +18,11 @@ import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
-import net.Indyuce.mmocore.version.VersionMaterial;
-import net.Indyuce.mmocore.version.VersionSound;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.version.VersionMaterial;
+import net.mmogroup.mmolib.version.VersionSound;
 
 public class Empowered_Attack extends Skill {
 	private static final double perb = 5;
@@ -104,7 +106,7 @@ public class Empowered_Attack extends Skill {
 				for (Entity entity : target.getNearbyEntities(rad, rad, rad))
 					if (MMOCoreUtils.canTarget(player.getPlayer(), entity)) {
 						drawVector(src, entity.getLocation().add(0, entity.getHeight() / 2, 0).subtract(src).toVector());
-						MMOCore.plugin.damage.damage(player, (LivingEntity) entity, sweep, DamageType.SKILL, DamageType.PHYSICAL);
+						MMOLib.plugin.getDamage().damage(player.getPlayer(), (LivingEntity) entity, new AttackResult(sweep, DamageType.SKILL, DamageType.PHYSICAL));
 					}
 
 				/*

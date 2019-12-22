@@ -13,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass.Subclass;
@@ -22,7 +21,8 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class SubclassSelect extends EditableInventory {
 	public SubclassSelect() {
@@ -82,7 +82,7 @@ public class SubclassSelect extends EditableInventory {
 
 			meta.setLore(lore);
 			item.setItemMeta(meta);
-			return NBTItem.get(item).add(new ItemTag("classId", profess.getId())).toItem();
+			return NBTItem.get(item).addTag(new ItemTag("classId", profess.getId())).toItem();
 		}
 
 		@Override

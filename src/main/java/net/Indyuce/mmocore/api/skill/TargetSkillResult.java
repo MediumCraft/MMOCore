@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.api.skill;
 
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.util.RayTraceResult;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.MMORayTraceResult;
 
 public class TargetSkillResult extends SkillResult {
 	private LivingEntity target;
@@ -14,11 +14,11 @@ public class TargetSkillResult extends SkillResult {
 		super(data, skill);
 
 		if (isSuccessful()) {
-			RayTraceResult result = MMOCore.plugin.version.getVersionWrapper().rayTraceEntities(data.getPlayer(), data.getPlayer().getEyeLocation().getDirection(), range);
+			MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(data.getPlayer(), data.getPlayer().getEyeLocation().getDirection(), range);
 			if (result == null)
 				abort(CancelReason.OTHER);
 			else
-				target = (LivingEntity) result.getHitEntity();
+				target = (LivingEntity) result.getHit();
 		}
 	}
 

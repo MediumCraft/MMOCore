@@ -18,7 +18,6 @@ public class MythicMobsDrops implements Listener {
 		if (MMOCore.plugin.getConfig().getBoolean("lootsplosion.enabled"))
 			Bukkit.getPluginManager().registerEvents(new Lootsplosion(), MMOCore.plugin);
 		registerPlaceholders();
-		MMOCore.plugin.damage.registerHandler(new MythicMobsDamageHandler());
 	}
 
 	@EventHandler

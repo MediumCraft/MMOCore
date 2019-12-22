@@ -27,9 +27,10 @@ import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.Indyuce.mmocore.version.VersionMaterial;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.CustomBlock;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class CustomBlockManager extends MMOManager {
 	private final Map<String, BlockInfo> map = new HashMap<>();
@@ -54,7 +55,7 @@ public class CustomBlockManager extends MMOManager {
 
 	public BlockInfo getInfo(Block block) {
 		if(isPlayerSkull(block.getType())) {
-			String skullValue = MMOCore.plugin.nms.getSkullValue(block);
+			String skullValue = MMOLib.plugin.getNMS().getSkullValue(block);
 			return map.getOrDefault(skullValue, map.getOrDefault(block.getType().name(), null));
 		}
 		if(MMOCore.plugin.isMILoaded())
@@ -86,7 +87,7 @@ public class CustomBlockManager extends MMOManager {
 		else info.getLocation().getBlock().setType(info.getRegen().getTemporaryBlock());
 		if(isPlayerSkull(info.getLocation().getBlock().getType())) {
 			if(isPlayerSkull(info.getRegen().getBlock())) info.getLocation().getBlock().setBlockData(info.getBlockData());
-			MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().getRegenHeadValue());
+			MMOLib.plugin.getNMS().setSkullValue(info.getLocation().getBlock(), info.getRegen().getRegenHeadValue());
 		}
 
 		new BukkitRunnable() {
@@ -97,7 +98,7 @@ public class CustomBlockManager extends MMOManager {
 	private void regen(RegenInfo info) {
 		info.getLocation().getBlock().setBlockData(info.getBlockData());
 		if(isPlayerSkull(info.getLocation().getBlock().getType()))
-			MMOCore.plugin.nms.setSkullValue(info.getLocation().getBlock(), info.getRegen().getHeadValue());
+			MMOLib.plugin.getNMS().setSkullValue(info.getLocation().getBlock(), info.getRegen().getHeadValue());
 		active.remove(info);
 		
 		info.getLocation().getBlock().getState().update();

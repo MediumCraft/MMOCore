@@ -14,9 +14,11 @@ import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
-import net.Indyuce.mmocore.version.VersionMaterial;
-import net.Indyuce.mmocore.version.VersionSound;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.version.VersionMaterial;
+import net.mmogroup.mmolib.version.VersionSound;
 
 public class Fireball extends Skill {
 	public Fireball() {
@@ -59,12 +61,12 @@ public class Fireball extends Skill {
 				// loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
 
 				for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-					if (MMOCore.plugin.nms.getBoundingBox(target).expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
+					if (target.getBoundingBox().expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
 						loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 						loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 						loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
 						target.setFireTicks((int) (target.getFireTicks() + cast.getModifier("ignite") * 20));
-						MMOCore.plugin.damage.damage(data, (LivingEntity) target, cast.getModifier("damage"), DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL);
+						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(cast.getModifier("damage"), DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL));
 						cancel();
 					}
 			}

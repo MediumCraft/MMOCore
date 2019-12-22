@@ -11,9 +11,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCoreUtils;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class GoldPouch extends PluginInventory {
 	private final boolean mob;
@@ -41,7 +41,7 @@ public class GoldPouch extends PluginInventory {
 
 		ItemStack item = event.getCurrentItem();
 		NBTItem nbt = NBTItem.get(item);
-		if (!nbt.has("RpgWorth")) {
+		if (!nbt.hasTag("RpgWorth")) {
 			event.setCancelled(true);
 			return;
 		}
@@ -63,7 +63,7 @@ public class GoldPouch extends PluginInventory {
 			return;
 		}
 
-		if (nbt.has("RpgPouchInventory"))
+		if (nbt.hasTag("RpgPouchInventory"))
 			event.setCancelled(true);
 	}
 
@@ -75,7 +75,7 @@ public class GoldPouch extends PluginInventory {
 			return;
 		}
 
-		ItemStack updated = NBTItem.get(player.getEquipment().getItemInMainHand()).add(new ItemTag("RpgPouchInventory", MMOCoreUtils.toBase64(event.getInventory().getContents()))).toItem();
+		ItemStack updated = NBTItem.get(player.getEquipment().getItemInMainHand()).addTag(new ItemTag("RpgPouchInventory", MMOCoreUtils.toBase64(event.getInventory().getContents()))).toItem();
 		player.getEquipment().setItemInMainHand(updated);
 	}
 

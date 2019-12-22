@@ -37,7 +37,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.manager.ClassManager;
-import net.Indyuce.mmocore.version.VersionMaterial;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class PlayerClass {
 	private final String name, id, fileName;

@@ -16,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.Quest;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
+import net.mmogroup.mmolib.MMOLib;
 
 public class PlayerQuests {
 	private final PlayerData playerData;
@@ -26,7 +27,7 @@ public class PlayerQuests {
 
 	public PlayerQuests(PlayerData playerData) {
 		this.playerData = playerData;
-		bossbar = MMOCore.plugin.version.getVersionWrapper().createBossBar(new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()), "", BarColor.PURPLE, BarStyle.SEGMENTED_20, new BarFlag[0]);
+		bossbar = MMOLib.plugin.getVersion().getWrapper().createBossBar(new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()), "", BarColor.PURPLE, BarStyle.SEGMENTED_20, new BarFlag[0]);
 		bossbar.addPlayer(playerData.getPlayer());
 	}
 

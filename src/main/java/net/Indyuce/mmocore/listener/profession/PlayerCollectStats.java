@@ -11,10 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.mmogroup.mmolib.MMOLib;
 
 public class PlayerCollectStats implements Listener {
 	private static final Random random = new Random();
@@ -39,7 +39,7 @@ public class PlayerCollectStats implements Listener {
 				item.setAmount(item.getAmount() + a);
 		}
 
-		if(MMOCore.plugin.version.getVersionWrapper().isCropFullyGrown(event.getBlock()))
+		if(MMOLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
 		{
 			// drop more items if fortune enchant
 			double l = event.getData().getStats().getStat(StatType.LUCK_OF_THE_FIELD);

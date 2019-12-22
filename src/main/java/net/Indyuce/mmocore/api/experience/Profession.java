@@ -12,6 +12,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
+import net.mmogroup.mmolib.MMOLib;
 
 public class Profession {
 	private final String id, name;
@@ -71,7 +72,7 @@ public class Profession {
 		if (config.contains("base-enchant-exp"))
 			for (String key : config.getConfigurationSection("base-enchant-exp").getKeys(false))
 				try {
-					Enchantment enchant = MMOCore.plugin.version.getVersionWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
+					Enchantment enchant = MMOLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
 					MMOCore.plugin.enchantManager.registerBaseExperience(enchant, config.getDouble("base-enchant-exp." + key));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[Professions:" + id + "] Could not read enchant from " + key);

@@ -20,6 +20,8 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import net.mmogroup.mmolib.MMOLib;
+
 public class MMOCoreUtils {
 	public static boolean pluginItem(ItemStack item) {
 		return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName();
@@ -50,7 +52,7 @@ public class MMOCoreUtils {
 			Validate.notNull(string, "String cannot be null");
 			String[] split = string.split("\\:");
 			Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
-			return split.length > 1 ? MMOCore.plugin.version.getTextureHandler().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
+			return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
 		} catch (IllegalArgumentException exception) {
 			return new ItemStack(Material.BARRIER);
 		}
@@ -60,7 +62,7 @@ public class MMOCoreUtils {
 		int t = 0;
 		for (ItemStack item : items)
 			if (item != null && item.getType() != Material.AIR)
-				t += MMOCore.plugin.nms.getNBTItem(item).getInt("RpgWorth") * item.getAmount();
+				t += MMOLib.plugin.getNMS().getNBTItem(item).getInteger("RpgWorth") * item.getAmount();
 		return t;
 	}
 

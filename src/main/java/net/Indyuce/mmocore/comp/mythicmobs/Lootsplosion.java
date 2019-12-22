@@ -14,9 +14,10 @@ import org.bukkit.util.Vector;
 
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class Lootsplosion implements Listener {
 	private static final Random random = new Random();
@@ -67,8 +68,8 @@ public class Lootsplosion implements Listener {
 
 			if (colored)
 				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-					NBTItem nbt = MMOCore.plugin.nms.getNBTItem(item.getItemStack());
-					if (nbt.has("MMOITEMS_TIER")) {
+					NBTItem nbt = MMOLib.plugin.getNMS().getNBTItem(item.getItemStack());
+					if (nbt.hasTag("MMOITEMS_TIER")) {
 						ItemTier tier = MMOItems.plugin.getTiers().get(nbt.getString("MMOITEMS_TIER"));
 						if (tier.hasColor())
 							new LootColor(item, tier.getColor().toBukkit());

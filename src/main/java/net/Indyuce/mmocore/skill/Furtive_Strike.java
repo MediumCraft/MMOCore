@@ -5,14 +5,15 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
 
 public class Furtive_Strike extends Skill {
 	public Furtive_Strike() {
@@ -46,7 +47,7 @@ public class Furtive_Strike extends Skill {
 			damage *= 1 + cast.getModifier("extra") / 100;
 		}
 
-		MMOCore.plugin.damage.damage(data, target, damage, DamageType.SKILL, DamageType.PHYSICAL);
+		MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PHYSICAL));
 		return cast;
 	}
 }

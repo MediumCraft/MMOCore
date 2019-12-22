@@ -21,8 +21,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.version.VersionMaterial;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class ConfigItem {
 	private final String name, id, texture;
@@ -108,7 +110,7 @@ public class ConfigItem {
 		if (meta instanceof Damageable)
 			((Damageable) meta).setDamage(damage);
 
-		if(MMOCore.plugin.version.isStrictlyHigher(1, 13))
+		if(MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(modeldata);
 		
 		if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial() && texture != null) {
@@ -131,7 +133,7 @@ public class ConfigItem {
 		meta.setLore(lore);
 
 		item.setItemMeta(meta);
-		return unbreakable ? NBTItem.get(item).add(new ItemTag("Unbreakable", true)).toItem() : item;
+		return unbreakable ? NBTItem.get(item).addTag(new ItemTag("Unbreakable", true)).toItem() : item;
 	}
 
 	protected String format(String string) {

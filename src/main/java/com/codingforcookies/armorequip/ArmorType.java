@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import net.Indyuce.mmocore.version.VersionMaterial;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 /**
  * @author Arnah

@@ -18,6 +18,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.mmogroup.mmolib.MMOLib;
 
 public class Ambers extends Skill implements Listener {
 	public Ambers() {
@@ -80,7 +81,7 @@ public class Ambers extends Skill implements Listener {
 
 			for (int j = 0; j < 5; j++)
 				loc.getWorld().spawnParticle(Particle.SPELL_MOB, loc, 0, 1, 0.647, 0, 1);
-			MMOCore.plugin.version.getVersionWrapper().spawnParticle(Particle.REDSTONE, loc, 1.3f, Color.ORANGE);
+			MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE, loc, 1.3f, Color.ORANGE);
 		}
 	}
 }

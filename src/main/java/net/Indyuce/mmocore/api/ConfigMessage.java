@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.mmogroup.mmolib.MMOLib;
 
 public class ConfigMessage {
 	private final List<String> messages;
@@ -38,6 +39,6 @@ public class ConfigMessage {
 	}
 
 	public void sendAsJSon(Player player) {
-		messages.forEach(line -> MMOCore.plugin.nms.sendJson(player, ChatColor.translateAlternateColorCodes('&', line)));
+		messages.forEach(line -> MMOLib.plugin.getNMS().sendJson(player, ChatColor.translateAlternateColorCodes('&', line)));
 	}
 }

@@ -74,7 +74,6 @@ import net.Indyuce.mmocore.manager.ClassManager;
 import net.Indyuce.mmocore.manager.ConfigItemManager;
 import net.Indyuce.mmocore.manager.ConfigManager;
 import net.Indyuce.mmocore.manager.CustomBlockManager;
-import net.Indyuce.mmocore.manager.DamageManager;
 import net.Indyuce.mmocore.manager.DropTableManager;
 import net.Indyuce.mmocore.manager.EntityManager;
 import net.Indyuce.mmocore.manager.InventoryManager;
@@ -93,8 +92,6 @@ import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.GuildManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
-import net.Indyuce.mmocore.version.ServerVersion;
-import net.Indyuce.mmocore.version.nms.NMSHandler;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
@@ -119,10 +116,7 @@ public class MMOCore extends JavaPlugin {
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public PlaceholderParser placeholderParser = new DefaultParser();
-	public final DamageManager damage = new DamageManager();
 	public final EntityManager entities = new EntityManager();
-	public NMSHandler nms;
-	public ServerVersion version;
 	public InventoryManager inventoryManager;
 	public RegionHandler regionHandler;
 	public PlayerActionBar actionBarManager ;
@@ -142,7 +136,6 @@ public class MMOCore extends JavaPlugin {
 
 	public void onLoad() {
 		plugin = this;
-		version = new ServerVersion(Bukkit.getServer().getClass());
 
 		/*
 		 * register extra objective, drop items...
@@ -164,14 +157,6 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public void onEnable() {
-		try {
-			getLogger().log(Level.INFO, "Detected Bukkit Version: " + version.toString());
-			nms = (NMSHandler) Class.forName("net.Indyuce.mmocore.version.nms.NMSHandler_" + version.toString().substring(1)).newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException exception) {
-			getLogger().log(Level.INFO, "Your server version is not compatible.");
-			Bukkit.getPluginManager().disablePlugin(this);
-			return;
-		}
 
 		new Metrics(this);
 
@@ -285,7 +270,6 @@ public class MMOCore extends JavaPlugin {
 
 		Bukkit.getPluginManager().registerEvents(new PlayerAttackEventListener(), this);
 
-		Bukkit.getPluginManager().registerEvents(new DamageManager(), this);
 		Bukkit.getPluginManager().registerEvents(new WaypointsListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 		Bukkit.getPluginManager().registerEvents(new GoldPouchesListener(), this);

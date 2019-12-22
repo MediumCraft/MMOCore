@@ -6,20 +6,20 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
 
 public class PlayerAttackEvent extends PlayerDataEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 
 	private final EntityDamageByEntityEvent event;
-	private final DamageInfo info;
+	private final AttackResult attack;
 
-	public PlayerAttackEvent(PlayerData data, EntityDamageByEntityEvent event, DamageInfo info) {
+	public PlayerAttackEvent(PlayerData data, EntityDamageByEntityEvent event, AttackResult attack) {
 		super(data);
 
 		this.event = event;
-		this.info = info;
+		this.attack = attack;
 	}
 
 	@Override
@@ -32,13 +32,13 @@ public class PlayerAttackEvent extends PlayerDataEvent implements Cancellable {
 		event.setCancelled(value);
 	}
 
-	public DamageInfo getDamageInfo() {
-		return info;
+	public AttackResult getAttackInfo() {
+		return attack;
 	}
 
 	// @Deprecated
 	public boolean isWeapon() {
-		return info.getTypes().contains(DamageType.WEAPON);
+		return attack.getTypes().contains(DamageType.WEAPON);
 	}
 
 	public Entity getEntity() {

@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.Waypoint;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
@@ -20,7 +19,8 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class WaypointViewer extends EditableInventory {
 	public WaypointViewer() {
@@ -82,7 +82,7 @@ public class WaypointViewer extends EditableInventory {
 			if (inv.getPlayerData().getStellium() < waypoint.getStelliumCost() || (generated.current == null && !waypoint.isDynamic()))
 				disp.setType(notReady);
 
-			return NBTItem.get(disp).add(new ItemTag("waypointId", waypoint.getId())).toItem();
+			return NBTItem.get(disp).addTag(new ItemTag("waypointId", waypoint.getId())).toItem();
 		}
 
 		@Override

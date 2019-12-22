@@ -7,13 +7,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
 
 public class Deep_Wound extends Skill {
 	public Deep_Wound() {
@@ -42,7 +43,7 @@ public class Deep_Wound extends Skill {
 		double ratio = (max - target.getHealth()) / max;
 
 		double damage = cast.getModifier("damage") * (1 + cast.getModifier("extra") * ratio / 100);
-		MMOCore.plugin.damage.damage(data, target, damage, DamageType.SKILL, DamageType.PHYSICAL);
+		MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PHYSICAL));
 		return cast;
 	}
 }

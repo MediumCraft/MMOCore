@@ -15,8 +15,8 @@ import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
 import net.Indyuce.mmocore.MMOCoreUtils;
 import net.Indyuce.mmocore.api.item.ConfigItem;
 import net.Indyuce.mmocore.api.item.CurrencyItem;
-import net.Indyuce.mmocore.api.item.NBTItem;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class GoldPouchDrop extends Drop implements IMultiDrop {
 	private int min, max;
@@ -51,7 +51,7 @@ public class GoldPouchDrop extends Drop implements IMultiDrop {
 			content[getAvailableSlot(content)] = new CurrencyItem("NOTE", a, 1).build();
 		}
 
-		nbt.add(new ItemTag("RpgPouchSize", 18), new ItemTag("RpgPouchMob", true), new ItemTag("RpgPouchInventory", MMOCoreUtils.toBase64(content)));
+		nbt.addTag(new ItemTag("RpgPouchSize", 18), new ItemTag("RpgPouchMob", true), new ItemTag("RpgPouchInventory", MMOCoreUtils.toBase64(content)));
 		loot.add(new ItemDrop(this.getLine(), (MythicLineConfig) this.getConfig(), new BukkitItemStack(nbt.toItem())));
 		return loot;
 	}

@@ -16,7 +16,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.api.math.format.DelayFormat;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
@@ -26,7 +25,8 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class EditableGuildAdmin extends EditableInventory {
 	public EditableGuildAdmin() {
@@ -70,7 +70,7 @@ public class EditableGuildAdmin extends EditableInventory {
 				disp.setItemMeta(meta);
 			}
 
-			return NBTItem.get(disp).add(new ItemTag("uuid", member.getUniqueId().toString())).toItem();
+			return NBTItem.get(disp).addTag(new ItemTag("uuid", member.getUniqueId().toString())).toItem();
 		}
 	}
 

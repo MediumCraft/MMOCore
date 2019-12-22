@@ -20,9 +20,9 @@ import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmoitems.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
 
 public class PlayerListener implements Listener {
 
@@ -103,15 +103,15 @@ public class PlayerListener implements Listener {
 		double d = 1, s = 1;
 		
 		if(MMOCore.plugin.isMILoaded())
-			for (DamageType type : event.getDamageInfo().getTypes())
+			for (DamageType type : event.getAttackInfo().getTypes())
 				s += (net.Indyuce.mmoitems.api.player.PlayerData.get(event.getPlayer()).getStats()
 				.getStat(AttackResult.DamageType.valueOf(type.name()).getStat()) / 100);
 
 		damage /= s;
 		
 		PlayerStats stats = event.getData().getStats();
-		for (DamageType type : event.getDamageInfo().getTypes())
-			d += (stats.getStat(type.getStat())) / 100;
+		for (DamageType type : event.getAttackInfo().getTypes())
+			d += (stats.getStat((StatType) type.getMMOCoreStat())) / 100;
 
 		event.setDamage(damage * d);
 	}

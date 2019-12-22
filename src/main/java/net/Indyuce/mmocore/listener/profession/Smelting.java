@@ -16,9 +16,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class Smelting implements Listener {
 
@@ -47,7 +48,7 @@ public class Smelting implements Listener {
 				recipes.add(recipe);
 				NamespacedKey vanillaKey = new NamespacedKey(MMOCore.plugin, "furnace_recipe_" + key.replace("-", "_").toLowerCase());
 				vanillaKeys.add(vanillaKey);
-				Bukkit.addRecipe(MMOCore.plugin.version.getVersionWrapper().getFurnaceRecipe(vanillaKey, new ItemStack(Material.BARRIER), recipe.getIngredientMaterial(), 0, recipe.getCookingTime()));
+				Bukkit.addRecipe(MMOLib.plugin.getVersion().getWrapper().getFurnaceRecipe(vanillaKey, new ItemStack(Material.BARRIER), recipe.getIngredientMaterial(), 0, recipe.getCookingTime()));
 			}
 		}
 	}

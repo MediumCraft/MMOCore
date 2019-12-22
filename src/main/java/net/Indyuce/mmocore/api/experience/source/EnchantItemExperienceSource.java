@@ -18,6 +18,7 @@ import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
+import net.mmogroup.mmolib.MMOLib;
 
 public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 	private final List<Enchantment> enchants = new ArrayList<>();
@@ -27,7 +28,7 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 
 		if (config.contains("enchant"))
 			for (String key : config.getString("enchant").split("\\,"))
-				enchants.add(MMOCore.plugin.version.getVersionWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_")));
+				enchants.add(MMOLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_")));
 	}
 
 	@Override

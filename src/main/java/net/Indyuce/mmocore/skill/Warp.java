@@ -11,7 +11,7 @@ import net.Indyuce.mmocore.api.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.version.VersionSound;
+import net.mmogroup.mmolib.version.VersionSound;
 
 public class Warp extends Skill {
 	public Warp() {

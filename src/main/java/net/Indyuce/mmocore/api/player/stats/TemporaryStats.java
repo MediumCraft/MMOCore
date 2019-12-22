@@ -6,9 +6,10 @@ import java.util.Map;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
 
 public class TemporaryStats {
 	private final PlayerData playerData;
@@ -37,6 +38,6 @@ public class TemporaryStats {
 	}
 
 	public void damage(LivingEntity target, double value, DamageType... types) {
-		MMOCore.plugin.damage.damage(playerData, target, value, types);
+		MMOLib.plugin.getDamage().damage(playerData.getPlayer(), target, new AttackResult(true, value, types));
 	}
 }

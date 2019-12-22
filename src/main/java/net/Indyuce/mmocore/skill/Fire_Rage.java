@@ -22,9 +22,11 @@ import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
-import net.Indyuce.mmocore.version.VersionMaterial;
-import net.Indyuce.mmocore.version.VersionSound;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.version.VersionMaterial;
+import net.mmogroup.mmolib.version.VersionSound;
 
 public class Fire_Rage extends Skill {
 	public Fire_Rage() {
@@ -73,7 +75,7 @@ public class Fire_Rage extends Skill {
 			Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> close(), (long) (cast.getModifier("duration") * 20));
 			runTaskTimer(MMOCore.plugin, 0, 1);
-			
+
 			data.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 			data.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (cast.getModifier("duration") * 20), 1));
 		}
@@ -110,7 +112,7 @@ public class Fire_Rage extends Skill {
 				data.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 				data.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 			}
-			
+
 			data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, last ? 0 : 1);
 			new BukkitRunnable() {
 				int j = 0;
@@ -127,14 +129,14 @@ public class Fire_Rage extends Skill {
 						loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_AMBIENT, 2, 1);
 					loc.getWorld().spawnParticle(Particle.FLAME, loc, 4, .1, .1, .1, 0);
 					loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
-					
+
 					for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-						if (MMOCore.plugin.nms.getBoundingBox(target).expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
+						if (target.getBoundingBox().expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
 							loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 							loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 							loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
 							target.setFireTicks((int) (target.getFireTicks() + ignite));
-							MMOCore.plugin.damage.damage(data, (LivingEntity) target, damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL);
+							MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL));
 							cancel();
 						}
 				}

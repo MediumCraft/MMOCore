@@ -8,12 +8,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
+import net.mmogroup.mmolib.MMOLib;
 
 public class MineBlockExperienceSource extends SpecificExperienceSource<Material> {
 	public final Material material;
@@ -45,7 +45,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 				{
 					if (source.silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand()))
 						continue;
-					if (source.crop && !MMOCore.plugin.version.getVersionWrapper().isCropFullyGrown(event.getBlock()))
+					if (source.crop && !MMOLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
 						continue;
 					if ((!source.playerPlaced) && event.getBlock().hasMetadata("player_placed"))
 						continue;

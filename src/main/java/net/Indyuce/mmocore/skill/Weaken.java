@@ -18,7 +18,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.TargetSkillResult;
-import net.Indyuce.mmocore.version.VersionMaterial;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class Weaken extends Skill {
 	public Weaken() {

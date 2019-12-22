@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Consumer;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.mmogroup.mmolib.MMOLib;
 
 public class AnvilGUI extends PlayerInput {
 	private final int containerId;
@@ -25,25 +26,25 @@ public class AnvilGUI extends PlayerInput {
 		paperMeta.setDisplayName(MMOCore.plugin.configManager.getSimpleMessage("player-input.anvil." + type.getLowerCaseName()).message());
 		paper.setItemMeta(paperMeta);
 
-		MMOCore.plugin.nms.handleInventoryCloseEvent(player);
-		MMOCore.plugin.nms.setActiveContainerDefault(player);
+		MMOLib.plugin.getNMS().handleInventoryCloseEvent(player);
+		MMOLib.plugin.getNMS().setActiveContainerDefault(player);
 
-		final Object container = MMOCore.plugin.nms.newContainerAnvil(player);
+		final Object container = MMOLib.plugin.getNMS().newContainerAnvil(player);
 
-		inventory = MMOCore.plugin.nms.toBukkitInventory(container);
+		inventory = MMOLib.plugin.getNMS().toBukkitInventory(container);
 		inventory.setItem(0, paper);
 
-		containerId = MMOCore.plugin.nms.getNextContainerId(player);
-		MMOCore.plugin.nms.sendPacketOpenWindow(player, containerId);
-		MMOCore.plugin.nms.setActiveContainer(player, container);
-		MMOCore.plugin.nms.setActiveContainerId(container, containerId);
-		MMOCore.plugin.nms.addActiveContainerSlotListener(container, player);
+		containerId = MMOLib.plugin.getNMS().getNextContainerId(player);
+		MMOLib.plugin.getNMS().sendPacketOpenWindow(player, containerId);
+		MMOLib.plugin.getNMS().setActiveContainer(player, container);
+		MMOLib.plugin.getNMS().setActiveContainerId(container, containerId);
+		MMOLib.plugin.getNMS().addActiveContainerSlotListener(container, player);
 	}
 
 	public void close() {
-		MMOCore.plugin.nms.handleInventoryCloseEvent(getPlayer());
-		MMOCore.plugin.nms.setActiveContainerDefault(getPlayer());
-		MMOCore.plugin.nms.sendPacketCloseWindow(getPlayer(), containerId);
+		MMOLib.plugin.getNMS().handleInventoryCloseEvent(getPlayer());
+		MMOLib.plugin.getNMS().setActiveContainerDefault(getPlayer());
+		MMOLib.plugin.getNMS().sendPacketCloseWindow(getPlayer(), containerId);
 
 		InventoryClickEvent.getHandlerList().unregister(this);
 		InventoryCloseEvent.getHandlerList().unregister(this);

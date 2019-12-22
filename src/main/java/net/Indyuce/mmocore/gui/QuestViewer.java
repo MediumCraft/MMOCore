@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.api.math.format.DelayFormat;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.Quest;
@@ -28,7 +27,8 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class QuestViewer extends EditableInventory {
 	public QuestViewer() {
@@ -141,7 +141,7 @@ public class QuestViewer extends EditableInventory {
 			meta.setLore(lore);
 			item.setItemMeta(meta);
 
-			return NBTItem.get(item).add(new ItemTag("questId", quest.getId())).toItem();
+			return NBTItem.get(item).addTag(new ItemTag("questId", quest.getId())).toItem();
 		}
 
 		private Placeholders getPlaceholders(PlayerData data, Quest quest) {

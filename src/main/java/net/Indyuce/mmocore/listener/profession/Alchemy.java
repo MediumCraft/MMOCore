@@ -22,10 +22,10 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class Alchemy implements Listener {
 	private Set<String> runnables = new HashSet<>();

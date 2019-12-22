@@ -18,8 +18,10 @@ import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
-import net.Indyuce.mmocore.version.VersionMaterial;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class Ice_Spikes extends Skill {
 
@@ -67,7 +69,7 @@ public class Ice_Spikes extends Skill {
 				Line3D line = new Line3D(loc.toVector(), loc.toVector().add(new Vector(0, 1, 0)));
 				for (Entity entity : MMOCoreUtils.getNearbyChunkEntities(loc1))
 					if (line.distanceSquared(entity.getLocation().toVector()) < 3 && Math.abs(entity.getLocation().getY() - loc1.getY()) < 10 && MMOCoreUtils.canTarget(data.getPlayer(), entity)) {
-						MMOCore.plugin.damage.damage(data, (LivingEntity) entity, damage, DamageType.SKILL, DamageType.MAGICAL);
+						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(damage, DamageType.SKILL, DamageType.MAGICAL));
 						((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slow, 0));
 					}
 			}
@@ -84,7 +86,8 @@ public class Ice_Spikes extends Skill {
 
 		public IceSpikesCast(PlayerData data, SkillInfo skill) {
 			super(data, skill);
-			if (isSuccessful() && (loc = MMOCore.plugin.version.getVersionWrapper().rayTrace(data.getPlayer(), 30)) == null)
+			if (isSuccessful() && (loc = data.getPlayer().getWorld().rayTraceEntities(data.getPlayer().getEyeLocation(), 
+					data.getPlayer().getEyeLocation().getDirection(), 30, (entity) -> MMOCoreUtils.canTarget(data.getPlayer(), entity))) == null)
 				abort();
 		}
 	}

@@ -20,6 +20,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
+import net.mmogroup.mmolib.MMOLib;
 
 public abstract class InventoryPlaceholderItem extends InventoryItem {
 	private final ItemStack stack;
@@ -109,7 +110,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 			meta.setLore(lore);
 		}
 
-		if (MMOCore.plugin.version.isStrictlyHigher(1, 13))
+		if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(getModelData());
 		
 		item.setItemMeta(meta);

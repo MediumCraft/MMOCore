@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.MMOCoreUtils;
-import net.Indyuce.mmocore.api.item.NBTItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
@@ -28,7 +27,8 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.version.nms.ItemTag;
+import net.mmogroup.mmolib.api.ItemTag;
+import net.mmogroup.mmolib.api.NBTItem;
 
 public class SkillList extends EditableInventory {
 	public SkillList() {
@@ -177,7 +177,7 @@ public class SkillList extends EditableInventory {
 			meta.setLore(lore);
 			item.setItemMeta(meta);
 
-			return NBTItem.get(item).add(new ItemTag("skillId", skill.getSkill().getId())).toItem();
+			return NBTItem.get(item).addTag(new ItemTag("skillId", skill.getSkill().getId())).toItem();
 		}
 
 		@Override
@@ -244,7 +244,7 @@ public class SkillList extends EditableInventory {
 			meta.setLore(lore);
 			item.setItemMeta(meta);
 
-			return NBTItem.get(item).add(new ItemTag("skillId", skill.getSkill().getId())).toItem();
+			return NBTItem.get(item).addTag(new ItemTag("skillId", skill.getSkill().getId())).toItem();
 		}
 
 		public Placeholders getPlaceholders(PlayerData player, SkillInfo skill) {

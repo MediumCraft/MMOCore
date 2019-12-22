@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
-import net.Indyuce.mmocore.comp.rpg.damage.DamageInfo.DamageType;
+import net.mmogroup.mmolib.api.DamageType;
 
 public class AttackEventTrigger implements EventTriggerHandler {
 
@@ -21,7 +21,7 @@ public class AttackEventTrigger implements EventTriggerHandler {
 		PlayerData player = event.getData();
 		PlayerClass profess = player.getProfess();
 
-		for (DamageType type : event.getDamageInfo().getTypes()) {
+		for (DamageType type : event.getAttackInfo().getTypes()) {
 			String path = type.getPath() + "-damage";
 			if (profess.hasEventTriggers(path))
 				profess.getEventTriggers(path).getTriggers().forEach(trigger -> trigger.apply(player));
