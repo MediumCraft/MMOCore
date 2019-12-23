@@ -78,7 +78,7 @@ public class PlayerData {
 	private final List<SkillInfo> boundSkills = new ArrayList<>();
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
 
-	private final PlayerStats playerStats = new PlayerStats(this);
+	private final PlayerStats playerStats;
 	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut;
 
 	private final Map<String, Integer> skills = new HashMap<>();
@@ -97,6 +97,7 @@ public class PlayerData {
 	private PlayerData(Player player) {
 		uuid = player.getUniqueId();
 		setPlayer(player);
+		playerStats = new PlayerStats(this);
 
 		questData = new PlayerQuests(this);
 	}

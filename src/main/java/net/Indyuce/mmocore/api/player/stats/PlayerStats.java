@@ -10,8 +10,8 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.AttackResult;
 import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.api.stat.StatInstance;
 import net.mmogroup.mmolib.api.stat.StatMap;
-import net.mmogroup.mmolib.api.stat.StatMap.StatInstance;
 
 public class PlayerStats {
 	private final PlayerData data;

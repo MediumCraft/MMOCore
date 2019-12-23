@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.mmogroup.mmolib.api.player.MMOData;
 import net.mmogroup.mmolib.api.stat.SharedStat;
 import net.mmogroup.mmolib.api.stat.StatMap;
+import net.mmogroup.mmolib.api.stat.instance.MMOCoreStatInstance;
 
 public class MMOLibHook {
 	public MMOLibHook() {
@@ -27,6 +28,8 @@ public class MMOLibHook {
 		Consumer<MMOData> moveSpeed = new MovementSpeedStat();
 		StatMap.registerUpdate(SharedStat.MOVEMENT_SPEED, moveSpeed);
 		StatMap.registerUpdate(SharedStat.SPEED_MALUS_REDUCTION, moveSpeed);
+
+		StatMap.setInstanceGenerator((map, stat) -> new MMOCoreStatInstance(map, stat));
 	}
 
 	public class AttributeStatHandler implements Consumer<MMOData> {

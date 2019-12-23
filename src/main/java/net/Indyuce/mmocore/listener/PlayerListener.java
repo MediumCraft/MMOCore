@@ -28,7 +28,7 @@ public class PlayerListener implements Listener {
 	/*
 	 * initialize player data
 	 */
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOW)
 	public void a(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		PlayerData.setup(player).getStats().getMap().updateAll();
@@ -91,7 +91,7 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler
 	public void g(ArmorEquipEvent event) {
-		PlayerData.get(event.getPlayer()).getStats().getMap().runUpdates(SharedStat.MOVEMENT_SPEED);
+		PlayerData.get(event.getPlayer()).getStats().getMap().update(SharedStat.MOVEMENT_SPEED);
 	}
 
 	/*
