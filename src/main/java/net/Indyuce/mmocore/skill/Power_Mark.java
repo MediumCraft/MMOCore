@@ -21,7 +21,7 @@ import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.TemporaryStats;
+import net.Indyuce.mmocore.api.player.stats.PlayerStats.CachedStats;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.mmogroup.mmolib.api.DamageType;
@@ -59,7 +59,7 @@ public class Power_Mark extends Skill implements Listener {
 	public class PowerMark extends BukkitRunnable implements Listener {
 		private final PlayerData data;
 		private final Location loc;
-		private final TemporaryStats stats;
+		private final CachedStats stats;
 
 		private double duration, ratio, stun;
 

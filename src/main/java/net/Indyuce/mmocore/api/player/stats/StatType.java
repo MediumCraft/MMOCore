@@ -2,27 +2,23 @@ package net.Indyuce.mmocore.api.player.stats;
 
 import java.text.DecimalFormat;
 
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
-import net.Indyuce.mmocore.api.player.stats.stat.AttributeStat;
-import net.Indyuce.mmocore.api.player.stats.stat.MovementSpeedStat;
-import net.Indyuce.mmocore.api.player.stats.stat.PlayerStat;
 
 public enum StatType {
 
-	ATTACK_DAMAGE(Attribute.GENERIC_ATTACK_DAMAGE),
-	ATTACK_SPEED(Attribute.GENERIC_ATTACK_SPEED),
-	MAX_HEALTH(Attribute.GENERIC_MAX_HEALTH),
+	ATTACK_DAMAGE,
+	ATTACK_SPEED,
+	MAX_HEALTH,
 	HEALTH_REGENERATION,
 
-	MOVEMENT_SPEED(new MovementSpeedStat()),
-	SPEED_MALUS_REDUCTION(new MovementSpeedStat()),
-	KNOCKBACK_RESISTANCE(Attribute.GENERIC_KNOCKBACK_RESISTANCE),
+	MOVEMENT_SPEED,
+	SPEED_MALUS_REDUCTION,
+	KNOCKBACK_RESISTANCE,
 
 	MAX_MANA,
 	MAX_STAMINA,
@@ -31,8 +27,8 @@ public enum StatType {
 	STAMINA_REGENERATION,
 	STELLIUM_REGENERATION,
 
-	ARMOR(Attribute.GENERIC_ARMOR),
-	ARMOR_TOUGHNESS(Attribute.GENERIC_ARMOR_TOUGHNESS),
+	ARMOR,
+	ARMOR_TOUGHNESS,
 
 	ADDITIONAL_EXPERIENCE,
 	COOLDOWN_REDUCTION,
@@ -64,21 +60,12 @@ public enum StatType {
 	;
 
 	private String profession;
-	private PlayerStat handler;
 
 	private LinearValue defaultInfo;
 	private DecimalFormat format;
 
 	private StatType() {
 		// completely custom stat.
-	}
-
-	private StatType(PlayerStat handler) {
-		this.handler = handler;
-	}
-
-	private StatType(Attribute attribute) {
-		this.handler = new AttributeStat(attribute);
 	}
 
 	private StatType(String profession) {
@@ -95,14 +82,6 @@ public enum StatType {
 
 	public boolean hasProfession() {
 		return profession != null;
-	}
-
-	public boolean hasHandler() {
-		return handler != null;
-	}
-
-	public PlayerStat getHandler() {
-		return handler;
 	}
 
 	public LinearValue getDefault() {

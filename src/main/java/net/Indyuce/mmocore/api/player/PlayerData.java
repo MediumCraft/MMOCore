@@ -362,7 +362,7 @@ public class PlayerData {
 
 	public void setLevel(int level) {
 		this.level = Math.max(1, level);
-		getStats().updateAll();
+		getStats().getMap().updateAll();
 	}
 
 	public void giveLevels(int value) {
@@ -556,7 +556,7 @@ public class PlayerData {
 			new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(player);
 			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 			new SmallParticleEffect(player, Particle.SPELL_INSTANT);
-			getStats().updateAll();
+			getStats().getMap().updateAll();
 		}
 
 		refreshVanillaExp(needed);
@@ -721,7 +721,7 @@ public class PlayerData {
 		// if (!getProfess().hasSkill(iterator.next().getSkill()))
 		// iterator.remove();
 
-		getStats().updateAll();
+		getStats().getMap().updateAll();
 	}
 
 	public void setProfess(PlayerClass profess) {

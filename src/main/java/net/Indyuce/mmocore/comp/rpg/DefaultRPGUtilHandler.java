@@ -1,11 +1,12 @@
 package net.Indyuce.mmocore.comp.rpg;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.TemporaryStats;
+import net.Indyuce.mmocore.api.player.stats.PlayerStats.CachedStats;
 
 public class DefaultRPGUtilHandler implements RPGUtilHandler {
+
 	@Override
-	public TemporaryStats cachePlayerStats(PlayerData playerData) {
-		return new TemporaryStats(playerData.getStats());
+	public CachedStats cachePlayerStats(PlayerData playerData) {
+		return playerData.getStats().cache();
 	}
 }

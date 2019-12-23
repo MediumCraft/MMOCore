@@ -11,7 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.stat.modifier.StatModifier;
+import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerAttributes {
 	private final PlayerData data;

@@ -12,8 +12,8 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.Party;
 import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.api.player.stats.stat.modifier.StatModifier;
 import net.Indyuce.mmocore.manager.MMOManager;
+import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PartyManager extends MMOManager {
 	private final Set<Party> parties = new HashSet<>();

@@ -2,36 +2,45 @@ package net.Indyuce.mmocore.api.player.stats;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.stat.modifier.StatModifier;
-import net.Indyuce.mmocore.api.player.stats.stat.modifier.TemporaryStatModifier;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
+import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.api.stat.StatMap;
+import net.mmogroup.mmolib.api.stat.StatMap.StatInstance;
 
 public class PlayerStats {
 	private final PlayerData data;
+	private final StatMap map;
 
 	/*
-	 * allows for extra compatibility with extra MMOCore plugins like item
-	 * plugins which can apply other stats onto the player.
+	 * util class to manipulate more easily stat data from MMOLib
 	 */
-	private final Map<String, StatInstance> extra = new HashMap<>();
-
 	public PlayerStats(PlayerData data) {
 		this.data = data;
+
+		/*
+		 * retrieve stat map (where all stat data is saved) and refresh MMOCore
+		 * data
+		 */
+		this.map = StatMap.get(data.getPlayer());
+		map.getPlayerData().setMMOCore(data);
 	}
 
 	public PlayerData getData() {
 		return data;
 	}
 
-	public StatInstance getInstance(StatType stat) {
-		if (extra.containsKey(stat.name()))
-			return extra.get(stat.name());
+	public StatMap getMap() {
+		return map;
+	}
 
-		StatInstance ins = new StatInstance(stat);
-		extra.put(stat.name(), ins);
-		return ins;
+	public StatInstance getInstance(StatType stat) {
+		return map.getInstance(stat.name());
 	}
 
 	/*
@@ -52,92 +61,35 @@ public class PlayerStats {
 		return getInstance(stat).getTotal(0);
 	}
 
-	public void updateAll() {
-		for (StatType stat : StatType.values())
-			update(stat);
+	public CachedStats cache() {
+		return new CachedStats();
 	}
 
-	public void update(StatType stat) {
-		if (stat.hasHandler())
-			stat.getHandler().refresh(data, getStat(stat));
-	}
+	public class CachedStats {
+		private final Player player;
 
-	public class StatInstance {
-		private final StatType stat;
-		private final Map<String, StatModifier> map = new HashMap<>();
+		private final Map<String, Double> stats = new HashMap<>();
 
-		public StatInstance(StatType stat) {
-			this.stat = stat;
+		public CachedStats() {
+			this.player = data.getPlayer();
+			for (StatType stat : StatType.values())
+				this.stats.put(stat.name(), getStat(stat));
 		}
 
-		public double getTotal() {
-			return getTotal(0);
+		public Player getPlayer() {
+			return player;
 		}
 
-		/*
-		 * 1) two types of attributes: flat attributes which add X to the value,
-		 * and relative attributes which add X% and which must be applied
-		 * afterwards 2) the 'd' parameter lets you choose if the relative
-		 * attributes also apply on the base stat, or if they only apply on the
-		 * extra stat value
-		 */
-		public double getTotal(double d) {
-
-			for (StatModifier attr : map.values())
-				if (attr.isRelative())
-					d = attr.apply(d);
-
-			for (StatModifier attr : map.values())
-				if (!attr.isRelative())
-					d = attr.apply(d);
-
-			return d;
+		public PlayerData getData() {
+			return data;
 		}
 
-		public StatModifier getAttribute(String key) {
-			return map.get(key);
+		public double getStat(StatType stat) {
+			return stats.get(stat.name());
 		}
 
-		public void addModifier(String key, double value) {
-			addModifier(key, new StatModifier(value));
-		}
-
-		public void applyTemporaryModifier(String key, StatModifier modifier, long duration) {
-			addModifier(key, new TemporaryStatModifier(modifier.getValue(), duration, modifier.isRelative(), key, this));
-		}
-
-		public void addModifier(String key, StatModifier modifier) {
-			map.put(key, modifier);
-
-			update(stat);
-		}
-
-		public Set<String> getKeys() {
-			return map.keySet();
-		}
-
-		public boolean contains(String key) {
-			return map.containsKey(key);
-		}
-
-		public void remove(String key) {
-
-			/*
-			 * closing stat is really important with temporary stats because
-			 * otherwise the runnable will try to remove the key from the map
-			 * even though the attribute was cancelled before hand
-			 */
-			if (map.containsKey(key)) {
-				map.get(key).close();
-				map.remove(key);
-			}
-
-			update(stat);
-		}
-
-		@Deprecated
-		public void setValue(String key, double value) {
-			addModifier(key, new StatModifier(value));
+		public void damage(LivingEntity target, double value, DamageType... types) {
+			MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(true, value, types));
 		}
 	}
 }

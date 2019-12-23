@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.api.stat.SharedStat;
 
 public class PlayerListener implements Listener {
 
@@ -30,7 +31,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void a(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerData.setup(player).getStats().updateAll();
+		PlayerData.setup(player).getStats().getMap().updateAll();
 	}
 
 	/*
@@ -90,7 +91,7 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler
 	public void g(ArmorEquipEvent event) {
-		PlayerData.get(event.getPlayer()).getStats().update(StatType.MOVEMENT_SPEED);
+		PlayerData.get(event.getPlayer()).getStats().getMap().runUpdates(SharedStat.MOVEMENT_SPEED);
 	}
 
 	/*
