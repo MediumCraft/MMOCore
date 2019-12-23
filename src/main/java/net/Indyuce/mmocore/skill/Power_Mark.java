@@ -88,8 +88,8 @@ public class Power_Mark extends Skill implements Listener {
 
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void stackDamage(PlayerAttackEvent event) {
-			if (!event.isCancelled() && j < 20 * (duration - 2) && radiusCheck(event.getEntity().getLocation()) && event.getData().equals(data)) {
-				accumulate += event.getDamage() * ratio;
+			if (!event.isCancelled() && j < 20 * (duration - 2) && radiusCheck(event.getEntity().getLocation()) && event.getData().getMMOCore().equals(data)) {
+				accumulate += event.getAttack().getDamage() * ratio;
 				new ParabolicProjectile(event.getEntity().getLocation().add(0, event.getEntity().getHeight() / 2, 0), loc, () -> loc.getWorld().playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1), Color.PURPLE);
 			}
 		}

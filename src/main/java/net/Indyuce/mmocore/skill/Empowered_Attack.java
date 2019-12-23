@@ -100,7 +100,7 @@ public class Empowered_Attack extends Skill {
 				target.getWorld().playSound(target.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 2, .5f);
 				target.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, target.getLocation().add(0, target.getHeight() / 2, 0), 32, 0, 0, 0, .2);
 
-				double sweep = event.getDamage() * r;
+				double sweep = event.getAttack().getDamage() * r;
 				Location src = target.getLocation().add(0, target.getHeight() / 2, 0);
 
 				for (Entity entity : target.getNearbyEntities(rad, rad, rad))
@@ -113,7 +113,7 @@ public class Empowered_Attack extends Skill {
 				 * apply damage afterwards otherwise the damage dealt to nearby
 				 * entities scale with the extra ability damage.
 				 */
-				event.setDamage(event.getDamage() * c);
+				event.getAttack().multiplyDamage(1 + c);
 			}
 		}
 	}

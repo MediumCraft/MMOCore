@@ -21,7 +21,7 @@ public class AttackEventTrigger implements EventTriggerHandler {
 		PlayerData player = event.getData().getMMOCore();
 		PlayerClass profess = player.getProfess();
 
-		for (DamageType type : event.getAttackInfo().getTypes()) {
+		for (DamageType type : event.getAttack().getTypes()) {
 			String path = type.getPath() + "-damage";
 			if (profess.hasEventTriggers(path))
 				profess.getEventTriggers(path).getTriggers().forEach(trigger -> trigger.apply(player));

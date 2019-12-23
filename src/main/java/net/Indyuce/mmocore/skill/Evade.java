@@ -65,7 +65,7 @@ public class Evade extends Skill {
 
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void b(PlayerAttackEvent event) {
-			if (event.isWeapon() && !event.isCancelled() && event.getData().equals(data))
+			if (event.isWeapon() && !event.isCancelled() && event.getData().getMMOCore().equals(data))
 				close();
 		}
 
