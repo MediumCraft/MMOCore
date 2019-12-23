@@ -31,7 +31,6 @@ import net.Indyuce.mmocore.command.QuestsCommand;
 import net.Indyuce.mmocore.command.SkillsCommand;
 import net.Indyuce.mmocore.command.WaypointsCommand;
 import net.Indyuce.mmocore.command.WithdrawCommand;
-import net.Indyuce.mmocore.comp.Metrics;
 import net.Indyuce.mmocore.comp.ShopKeepersEntityHandler;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
@@ -92,6 +91,7 @@ import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.GuildManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import net.mmogroup.mmolib.comp.Metrics;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;

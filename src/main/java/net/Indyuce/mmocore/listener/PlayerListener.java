@@ -14,14 +14,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.Indyuce.mmoitems.api.AttackResult;
 import net.mmogroup.mmolib.api.DamageType;
 
 public class PlayerListener implements Listener {
@@ -58,7 +56,8 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void d(EntityDamageByEntityEvent event) {
-		if(event.getEntity().hasMetadata("NPC")) return;
+		if (event.getEntity().hasMetadata("NPC"))
+			return;
 		if (event.getEntity() instanceof Player)
 			PlayerData.get((Player) event.getEntity()).updateCombat();
 
@@ -100,15 +99,8 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void h(PlayerAttackEvent event) {
 		double damage = event.getDamage();
-		double d = 1, s = 1;
-		
-		if(MMOCore.plugin.isMILoaded())
-			for (DamageType type : event.getAttackInfo().getTypes())
-				s += (net.Indyuce.mmoitems.api.player.PlayerData.get(event.getPlayer()).getStats()
-				.getStat(AttackResult.DamageType.valueOf(type.name()).getStat()) / 100);
+		double d = 1;
 
-		damage /= s;
-		
 		PlayerStats stats = event.getData().getStats();
 		for (DamageType type : event.getAttackInfo().getTypes())
 			d += (stats.getStat((StatType) type.getMMOCoreStat())) / 100;
