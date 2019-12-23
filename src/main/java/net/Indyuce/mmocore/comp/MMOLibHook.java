@@ -23,7 +23,7 @@ public class MMOLibHook {
 		StatMap.registerUpdate(SharedStat.ATTACK_DAMAGE, new AttributeStatHandler(Attribute.GENERIC_ATTACK_DAMAGE, StatType.ATTACK_DAMAGE));
 		StatMap.registerUpdate(SharedStat.ATTACK_SPEED, new AttributeStatHandler(Attribute.GENERIC_ATTACK_SPEED, StatType.ATTACK_SPEED));
 		StatMap.registerUpdate(SharedStat.KNOCKBACK_RESISTANCE, new AttributeStatHandler(Attribute.GENERIC_KNOCKBACK_RESISTANCE, StatType.KNOCKBACK_RESISTANCE));
-		StatMap.registerUpdate(SharedStat.ARMOR, new AttributeStatHandler(Attribute.GENERIC_MAX_HEALTH, StatType.MAX_HEALTH));
+		StatMap.registerUpdate(SharedStat.MAX_HEALTH, new AttributeStatHandler(Attribute.GENERIC_MAX_HEALTH, StatType.MAX_HEALTH));
 
 		Consumer<MMOData> moveSpeed = new MovementSpeedStat();
 		StatMap.registerUpdate(SharedStat.MOVEMENT_SPEED, moveSpeed);

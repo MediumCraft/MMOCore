@@ -31,6 +31,7 @@ import net.Indyuce.mmocore.command.QuestsCommand;
 import net.Indyuce.mmocore.command.SkillsCommand;
 import net.Indyuce.mmocore.command.WaypointsCommand;
 import net.Indyuce.mmocore.command.WithdrawCommand;
+import net.Indyuce.mmocore.comp.MMOLibHook;
 import net.Indyuce.mmocore.comp.ShopKeepersEntityHandler;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
@@ -159,6 +160,8 @@ public class MMOCore extends JavaPlugin {
 	public void onEnable() {
 
 		new Metrics(this);
+		
+		new MMOLibHook();
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
