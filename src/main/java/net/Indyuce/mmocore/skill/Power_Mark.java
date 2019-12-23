@@ -17,7 +17,6 @@ import org.bukkit.util.Vector;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.MMOCoreUtils;
-import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -25,6 +24,7 @@ import net.Indyuce.mmocore.api.player.stats.PlayerStats.CachedStats;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 import net.mmogroup.mmolib.version.VersionMaterial;
 import net.mmogroup.mmolib.version.VersionSound;
 
@@ -45,7 +45,7 @@ public class Power_Mark extends Skill implements Listener {
 
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData();
+		PlayerData data = event.getData().getMMOCore();
 		if (!event.isWeapon() || !data.getProfess().hasSkill(this))
 			return;
 

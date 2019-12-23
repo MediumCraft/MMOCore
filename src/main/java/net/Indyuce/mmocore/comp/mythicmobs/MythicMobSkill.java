@@ -21,7 +21,7 @@ import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 public class MythicMobSkill extends Skill {
 	private final io.lumine.xikage.mythicmobs.skills.Skill skill;
 
-	// private final BiFunction<PlayerData, SkillInfo, SkillResult> cast;
+	// private final BiFunction<PlayerDataManager, SkillInfo, SkillResult> cast;
 
 	public MythicMobSkill(String id, FileConfiguration config) {
 		super(id);

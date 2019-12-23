@@ -269,11 +269,11 @@ public class EditableFriendList extends EditableInventory {
 	// continue;
 	// }
 	//
-	// PlayerData data;
+	// PlayerDataManager data;
 	// ItemStack item = offline.isOnline() ? new
 	// ConfigItem("ONLINE_FRIEND").addPlaceholders("name", offline.getName(),
 	// "online_since", "" + new DelayFormat(2).format(System.currentTimeMillis()
-	// - (data = PlayerData.get(offline)).getLastLogin()), "class",
+	// - (data = PlayerDataManager.get(offline)).getLastLogin()), "class",
 	// data.getProfess().getName(), "level", "" + data.getLevel()).build() : new
 	// ConfigItem("OFFLINE_FRIEND").addPlaceholders("name", offline.getName(),
 	// "last_seen", new DelayFormat(2).format(System.currentTimeMillis() -

@@ -62,7 +62,6 @@ import net.Indyuce.mmocore.listener.PartyListener;
 import net.Indyuce.mmocore.listener.PlayerListener;
 import net.Indyuce.mmocore.listener.SpellCast;
 import net.Indyuce.mmocore.listener.WaypointsListener;
-import net.Indyuce.mmocore.listener.event.PlayerAttackEventListener;
 import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
 import net.Indyuce.mmocore.listener.option.HealthScale;
 import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
@@ -113,14 +112,14 @@ public class MMOCore extends JavaPlugin {
 	public ConfigItemManager configItems;
 	public SkillManager skillManager;
 	public final ProfessionManager professionManager = new ProfessionManager();
-	//public final SQLManager sqlManager = new SQLManager();
+	// public final SQLManager sqlManager = new SQLManager();
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public PlaceholderParser placeholderParser = new DefaultParser();
 	public final EntityManager entities = new EntityManager();
 	public InventoryManager inventoryManager;
 	public RegionHandler regionHandler;
-	public PlayerActionBar actionBarManager ;
+	public PlayerActionBar actionBarManager;
 
 	/*
 	 * professions
@@ -143,7 +142,7 @@ public class MMOCore extends JavaPlugin {
 		 */
 		if (Bukkit.getPluginManager().getPlugin("MMOItems") != null)
 			loadManager.registerLoader(new MMOItemsMMOLoader());
-		
+
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
 			loadManager.registerLoader(new WorldGuardMMOLoader());
 
@@ -160,7 +159,7 @@ public class MMOCore extends JavaPlugin {
 	public void onEnable() {
 
 		new Metrics(this);
-		
+
 		new MMOLibHook();
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
@@ -271,8 +270,6 @@ public class MMOCore extends JavaPlugin {
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
 
-		Bukkit.getPluginManager().registerEvents(new PlayerAttackEventListener(), this);
-
 		Bukkit.getPluginManager().registerEvents(new WaypointsListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 		Bukkit.getPluginManager().registerEvents(new GoldPouchesListener(), this);
@@ -335,8 +332,8 @@ public class MMOCore extends JavaPlugin {
 		MMOCoreCommand mmoCoreCommand = new MMOCoreCommand();
 		getCommand("mmocore").setExecutor(mmoCoreCommand);
 		getCommand("mmocore").setTabCompleter(mmoCoreCommand);
-		
-		if(getConfig().getBoolean("auto-save.enabled")) {
+
+		if (getConfig().getBoolean("auto-save.enabled")) {
 			int autosave = getConfig().getInt("auto-save.interval") * 20;
 			new BukkitRunnable() {
 				public void run() {
@@ -429,11 +426,11 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public boolean isMILoaded() {
-		if(!miChecked) {
+		if (!miChecked) {
 			miLoaded = Bukkit.getPluginManager().isPluginEnabled("MMOItems");
 			miChecked = true;
 		}
-		
+
 		return miLoaded;
 	}
 }

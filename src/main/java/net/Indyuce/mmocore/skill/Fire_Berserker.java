@@ -6,10 +6,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
+import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
 public class Fire_Berserker extends Skill implements Listener {
 	public Fire_Berserker() {
@@ -27,7 +27,7 @@ public class Fire_Berserker extends Skill implements Listener {
 
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData();
+		PlayerData data = event.getData().getMMOCore();
 		if (event.getPlayer().getFireTicks() > 0 && data.hasSkillUnlocked(this))
 			event.setDamage(event.getDamage() * (1 + data.getProfess().getSkill(this).getModifier("extra", data.getSkillLevel(this))));
 	}

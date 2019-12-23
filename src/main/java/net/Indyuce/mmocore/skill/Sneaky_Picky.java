@@ -6,11 +6,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 
-import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
 public class Sneaky_Picky extends Skill {
 	public Sneaky_Picky() {
@@ -26,7 +26,7 @@ public class Sneaky_Picky extends Skill {
 
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData();
+		PlayerData data = event.getData().getMMOCore();
 		if (!event.isWeapon() || data.isInCombat() || !data.getProfess().hasSkill(this))
 			return;
 

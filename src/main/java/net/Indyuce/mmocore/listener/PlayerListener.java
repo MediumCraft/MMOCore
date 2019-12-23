@@ -14,13 +14,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.codingforcookies.armorequip.ArmorEquipEvent;
 
-import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.PlayerStats;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.stat.SharedStat;
 
 public class PlayerListener implements Listener {
@@ -92,20 +88,5 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void g(ArmorEquipEvent event) {
 		PlayerData.get(event.getPlayer()).getStats().getMap().update(SharedStat.MOVEMENT_SPEED);
-	}
-
-	/*
-	 * apply damage modifiers.
-	 */
-	@EventHandler
-	public void h(PlayerAttackEvent event) {
-		double damage = event.getDamage();
-		double d = 1;
-
-		PlayerStats stats = event.getData().getStats();
-		for (DamageType type : event.getAttackInfo().getTypes())
-			d += (stats.getStat((StatType) type.getMMOCoreStat())) / 100;
-
-		event.setDamage(damage * d);
 	}
 }

@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.AttackResult;
 import net.mmogroup.mmolib.api.DamageType;
+import net.mmogroup.mmolib.api.player.MMOData;
 import net.mmogroup.mmolib.api.stat.StatInstance;
 import net.mmogroup.mmolib.api.stat.StatMap;
 
@@ -23,12 +24,7 @@ public class PlayerStats {
 	public PlayerStats(PlayerData data) {
 		this.data = data;
 
-		/*
-		 * retrieve stat map (where all stat data is saved) and refresh MMOCore
-		 * data
-		 */
-		this.map = StatMap.get(data.getPlayer());
-		map.getPlayerData().setMMOCore(data);
+		map = MMOData.get(data.getPlayer()).setMMOCore(data).getStatMap();
 	}
 
 	public PlayerData getData() {

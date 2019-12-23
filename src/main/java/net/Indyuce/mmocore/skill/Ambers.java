@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -19,6 +18,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
 public class Ambers extends Skill implements Listener {
 	public Ambers() {
@@ -34,7 +34,7 @@ public class Ambers extends Skill implements Listener {
 
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData();
+		PlayerData data = event.getData().getMMOCore();
 		if (event.isWeapon() || !data.getProfess().hasSkill(this))
 			return;
 

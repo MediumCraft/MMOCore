@@ -11,7 +11,7 @@ public class PlayerCombatEvent extends PlayerDataEvent {
 
 	public PlayerCombatEvent(PlayerData playerData, boolean enter) {
 		super(playerData);
-		
+
 		this.enter = enter;
 	}
 
