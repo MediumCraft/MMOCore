@@ -69,25 +69,28 @@
         </repository>
   </repositories>
     <dependencies>
+    
+      <dependency>
+        <groupId>net.Indyuce</groupId>
+        <artifactId>mmoitems</artifactId>
+        <version>5.1.2</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/lib/MMOItems.jar</systemPath>
+      </dependency>
+		<dependency>
+			<groupId>net.Indyuce</groupId>
+			<artifactId>MMOLib</artifactId>
+			<version>1.0</version>
+        	<scope>system</scope>
+        	<systemPath>${basedir}/lib/MMOLib.jar</systemPath>
+		</dependency>
+    
       <dependency>
         <groupId>org.spigotmc</groupId>
         <artifactId>spigot-api</artifactId>
         <version>1.14.4</version>
         <scope>system</scope>
         <systemPath>${basedir}/lib/spigot.jar</systemPath>
-      </dependency>
-      <dependency>
-        <groupId>org.bukkit</groupId>
-        <artifactId>bukkit</artifactId>
-        <version>1.14.4-R0.1-SNAPSHOT</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>net.Indyuce</groupId>
-        <artifactId>MMOItems</artifactId>
-        <version>5.1.2</version>
-        <scope>system</scope>
-        <systemPath>${basedir}/lib/MMOItems.jar</systemPath>
       </dependency>
       <dependency>
         <groupId>com.nisovin</groupId>
