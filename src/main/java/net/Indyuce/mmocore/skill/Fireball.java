@@ -66,7 +66,7 @@ public class Fireball extends Skill {
 						loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 						loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
 						target.setFireTicks((int) (target.getFireTicks() + cast.getModifier("ignite") * 20));
-						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(cast.getModifier("damage"), DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL));
+						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(cast.getModifier("damage"), DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
 						cancel();
 					}
 			}

@@ -64,7 +64,7 @@ items:
         - '&7Current {name}: &6&l{current}'
         - ''
         - '&8When Leveled Up:'
-        - '&7  +{buff_magical_damage}% Magical Damage (&a+{total_magical_damage}%&7)'
+        - '&7  +{buff_magic_damage}% Magic Damage (&a+{total_magic_damage}%&7)'
         - '&7  +{buff_cooldown_reduction}% Cooldown Reduction (&a+{total_cooldown_reduction}%&7)'
         - ''
         - '&eClick to level up for 1 attribute point.'

@@ -60,7 +60,7 @@ public class Fire_Storm extends Skill {
 				new ParabolicProjectile(data.getPlayer().getLocation().add(0, 1, 0), target.getLocation().add(0, target.getHeight() / 2, 0), randomVector(data.getPlayer()), () -> {
 					target.getWorld().playSound(target.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_TWINKLE.toSound(), 1, 2);
 					target.getWorld().spawnParticle(Particle.SMOKE_NORMAL, target.getLocation().add(0, target.getHeight() / 2, 0), 8, 0, 0, 0, .15);
-					MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGICAL));
+					MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
 					target.setFireTicks(ignite);
 
 				}, 2, Particle.FLAME);

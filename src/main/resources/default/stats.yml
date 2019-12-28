@@ -69,8 +69,8 @@ default:
         base: 0
         per-level: 0
     
-    # Magical skill damage
-    MAGICAL_DAMAGE:
+    # Magic skill damage
+    MAGIC_DAMAGE:
         base: 0
         per-level: 0
     
