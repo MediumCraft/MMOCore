@@ -78,7 +78,7 @@ public class WaypointViewer extends EditableInventory {
 			WaypointViewerInventory generated = (WaypointViewerInventory) inv;
 			ItemStack disp = super.display(inv, n);
 
-			Waypoint waypoint = generated.waypoints.get(generated.page * 27 + n);
+			Waypoint waypoint = generated.waypoints.get(generated.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
 			if (inv.getPlayerData().getStellium() < waypoint.getStelliumCost() || (generated.current == null && !waypoint.isDynamic()))
 				disp.setType(notReady);
 
@@ -95,7 +95,7 @@ public class WaypointViewer extends EditableInventory {
 			WaypointViewerInventory generated = (WaypointViewerInventory) inv;
 			Placeholders holders = new Placeholders();
 
-			Waypoint waypoint = generated.waypoints.get(generated.page * 27 + n);
+			Waypoint waypoint = generated.waypoints.get(generated.page * generated.getByFunction("waypoint").getSlots().size() + n);
 			holders.register("name", waypoint.getName());
 			holders.register("stellium", decimal.format(waypoint.getStelliumCost()));
 
@@ -127,11 +127,11 @@ public class WaypointViewer extends EditableInventory {
 		public ItemStack display(GeneratedInventory inv, int n) {
 			WaypointViewerInventory generated = (WaypointViewerInventory) inv;
 
-			int index = generated.page * 27 + n;
+			int index = generated.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n;
 			if (index >= generated.waypoints.size())
 				return noWaypoint.display(inv, n);
 
-			Waypoint waypoint = generated.waypoints.get(generated.page * 27 + n);
+			Waypoint waypoint = generated.waypoints.get(generated.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
 			return inv.getPlayerData().hasWaypoint(waypoint) ? availWaypoint.display(inv, n) : locked.display(inv);
 		}
 
