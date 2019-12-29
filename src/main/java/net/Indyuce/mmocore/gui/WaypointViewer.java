@@ -131,7 +131,7 @@ public class WaypointViewer extends EditableInventory {
 			if (index >= generated.waypoints.size())
 				return noWaypoint.display(inv, n);
 
-			Waypoint waypoint = generated.waypoints.get(generated.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
+			Waypoint waypoint = generated.waypoints.get(index);
 			return inv.getPlayerData().hasWaypoint(waypoint) ? availWaypoint.display(inv, n) : locked.display(inv);
 		}
 
