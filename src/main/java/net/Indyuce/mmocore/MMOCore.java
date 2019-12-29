@@ -31,7 +31,6 @@ import net.Indyuce.mmocore.command.QuestsCommand;
 import net.Indyuce.mmocore.command.SkillsCommand;
 import net.Indyuce.mmocore.command.WaypointsCommand;
 import net.Indyuce.mmocore.command.WithdrawCommand;
-import net.Indyuce.mmocore.comp.MMOLibHook;
 import net.Indyuce.mmocore.comp.ShopKeepersEntityHandler;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
@@ -90,6 +89,8 @@ import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.GuildManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import net.mmogroup.mmolib.api.stat.StatMap;
+import net.mmogroup.mmolib.api.stat.instance.MMOCoreStatInstance;
 import net.mmogroup.mmolib.comp.Metrics;
 
 public class MMOCore extends JavaPlugin {
@@ -156,7 +157,13 @@ public class MMOCore extends JavaPlugin {
 
 		new Metrics(this);
 
-		new MMOLibHook();
+		/*
+		 * mmocore stats are functions of the stat base value. the function
+		 * applies all the different stat modifiers saved in the stat map using
+		 * specific stat instances let MMOLib calculate stats with set base
+		 * value
+		 */
+		StatMap.setInstanceGenerator((map, stat) -> new MMOCoreStatInstance(map, stat));
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
