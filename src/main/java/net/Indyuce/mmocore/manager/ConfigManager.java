@@ -26,7 +26,6 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class ConfigManager {
 
-	public float speedMalus;
 	public boolean overrideVanillaExp, hotbarSwap;
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix;
@@ -94,7 +93,6 @@ public class ConfigManager {
 	}
 
 	public void loadOptions() {
-		speedMalus = (float) MMOCore.plugin.getConfig().getDouble("heavy-armors.speed-malus") / 100;
 		messages = new ConfigFile("messages").getConfig();
 		hotbarSwap = MMOCore.plugin.getConfig().getBoolean("hotbar-swap");
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");

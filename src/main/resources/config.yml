@@ -7,26 +7,6 @@ auto-save:
     # In seconds (1800 = 30 minutes)
     interval: 1800
 
-# Wearing heavy pieces of armors reduces
-# your movement speed by a specific amount,
-# relative to your current move speed.
-heavy-armors:
-
-    # The movement speed reduction in % for each heavy armor piece worn.
-    speed-malus: 5.0
-    
-    # The list of heavy armor pieces. By default gold is not
-    # considered a heavy armor to incite players to use this armor set.
-    list:
-    - DIAMOND_HELMET
-    - DIAMOND_CHESTPLATE
-    - DIAMOND_LEGGINGS
-    - DIAMOND_BOOTS
-    - IRON_HELMET
-    - IRON_CHESTPLATE
-    - IRON_LEGGINGS
-    - IRON_BOOTS
-
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply.
 # Set to 'custom-mine-conditions: []' for no condition.
