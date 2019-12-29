@@ -12,12 +12,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.codingforcookies.armorequip.ArmorEquipEvent;
-
 import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.mmogroup.mmolib.api.stat.SharedStat;
 
 public class PlayerListener implements Listener {
 
@@ -79,14 +76,5 @@ public class PlayerListener implements Listener {
 	public void f(PlayerCombatEvent event) {
 		if (!event.entersCombat())
 			event.getData().getSkillData().resetData();
-	}
-
-	/*
-	 * updates the player's movement speed when equipping an armor to update the
-	 * speed malus reduction from the armors.
-	 */
-	@EventHandler
-	public void g(ArmorEquipEvent event) {
-		PlayerData.get(event.getPlayer()).getStats().getMap().update(SharedStat.MOVEMENT_SPEED);
 	}
 }

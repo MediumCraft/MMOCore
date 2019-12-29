@@ -11,8 +11,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.codingforcookies.armorequip.ArmorListener;
-
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.debug.DebugMode;
@@ -283,8 +281,6 @@ public class MMOCore extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new GuildListener(), this);
 		Bukkit.getPluginManager().registerEvents(new FishingListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerCollectStats(), this);
-
-		Bukkit.getPluginManager().registerEvents(new ArmorListener(), this);
 
 		/*
 		 * initialize player data from all online players. this is very
