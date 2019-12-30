@@ -89,6 +89,7 @@ import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.mmogroup.mmolib.api.stat.StatMap;
 import net.mmogroup.mmolib.api.stat.instance.MMOCoreStatInstance;
+import net.mmogroup.mmolib.api.stat.instance.SimpleStatInstance;
 import net.mmogroup.mmolib.comp.Metrics;
 
 public class MMOCore extends JavaPlugin {
@@ -161,7 +162,13 @@ public class MMOCore extends JavaPlugin {
 		 * specific stat instances let MMOLib calculate stats with set base
 		 * value
 		 */
-		StatMap.setInstanceGenerator((map, stat) -> new MMOCoreStatInstance(map, stat));
+		StatMap.setInstanceGenerator((map, stat) -> {
+			try {
+				return new MMOCoreStatInstance(map, StatType.valueOf(stat));
+			} catch (IllegalArgumentException notMMOCoreStat) {
+				return new SimpleStatInstance(map, stat);
+			}
+		});
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
