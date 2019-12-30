@@ -91,6 +91,7 @@ import net.mmogroup.mmolib.api.stat.StatMap;
 import net.mmogroup.mmolib.api.stat.instance.MMOCoreStatInstance;
 import net.mmogroup.mmolib.api.stat.instance.SimpleStatInstance;
 import net.mmogroup.mmolib.comp.Metrics;
+import net.mmogroup.mmolib.version.SpigotPlugin;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
@@ -154,6 +155,7 @@ public class MMOCore extends JavaPlugin {
 
 	public void onEnable() {
 
+		new SpigotPlugin(70575, this, "https://www.spigotmc.org/resources/70575/").checkForUpdate();
 		new Metrics(this);
 
 		/*
