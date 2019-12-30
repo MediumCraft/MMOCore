@@ -155,7 +155,7 @@ public class MMOCore extends JavaPlugin {
 
 	public void onEnable() {
 
-		new SpigotPlugin(70575, this, "https://www.spigotmc.org/resources/70575/").checkForUpdate();
+		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
 
 		/*
