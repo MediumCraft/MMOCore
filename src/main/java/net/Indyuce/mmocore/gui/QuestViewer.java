@@ -134,7 +134,7 @@ public class QuestViewer extends EditableInventory {
 			/*
 			 * generate item
 			 */
-			ItemStack item = new ItemStack(getStack());
+			ItemStack item = cloneItem();
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(holders.apply(inv.getPlayer(), getName()));
 			meta.addItemFlags(ItemFlag.values());

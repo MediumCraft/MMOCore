@@ -45,8 +45,8 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 		this.modelData = config.getInt("custom-model-data");
 	}
 
-	public ItemStack getStack() {
-		return stack;
+	public ItemStack cloneItem() {
+		return stack.clone();
 	}
 
 	public boolean hideFlags() {
@@ -92,7 +92,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 	public ItemStack display(GeneratedInventory inv, int n) {
 
 		Placeholders placeholders = getPlaceholders(inv, n);
-		ItemStack item = getStack();
+		ItemStack item = cloneItem();
 		ItemMeta meta = item.getItemMeta();
 
 		if (texture != null && meta instanceof SkullMeta)

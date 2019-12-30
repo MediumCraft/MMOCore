@@ -30,7 +30,7 @@ public class Ice_Spikes extends Skill {
 	public Ice_Spikes() {
 		super();
 		setMaterial(VersionMaterial.SNOWBALL.toMaterial());
-		setLore("Ice spikes summon from the ground", "and shatters, each dealing &9{damage} &7damage", "to hit enemies and slowing them down", "for &9{slow} &7seconds.", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
+		setLore("Ice spikes summon from the ground", "and shatter, each dealing &9{damage} &7damage", "to hit enemies and slowing them down", "for &9{slow} &7seconds.", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
 
 		addModifier("cooldown", new LinearValue(6, -.1, 2, 6));
 		addModifier("mana", new LinearValue(20, 2));

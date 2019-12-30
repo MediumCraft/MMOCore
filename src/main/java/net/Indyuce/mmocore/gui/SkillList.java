@@ -170,7 +170,7 @@ public class SkillList extends EditableInventory {
 			for (int j = 0; j < lore.size(); j++)
 				lore.set(j, ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', lore.get(j)));
 
-			ItemStack item = new ItemStack(getStack());
+			ItemStack item = cloneItem();
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', getName().replace("{skill}", skill.getSkill().getName()).replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)));
 			meta.addItemFlags(ItemFlag.values());
