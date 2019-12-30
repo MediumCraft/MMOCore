@@ -35,7 +35,7 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 	public boolean matches(PlayerData player, Void v) {
 		return hasRightClass(player);
 	}
-
+ 
 	@Override
 	public ExperienceManager<EnchantItemExperienceSource> newManager() {
 		return new ExperienceManager<EnchantItemExperienceSource>() {
