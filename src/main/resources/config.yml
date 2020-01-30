@@ -68,7 +68,7 @@ number-format:
 # Requires a SERVER reload when changed.
 health-scale:
     enabled: true
-    scale: 40
+    scale: 20
 
 # Players can swap their hotbar with the 9 inventory slots
 # right above it by pressing [swap items] while crouching.

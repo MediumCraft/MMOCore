@@ -13,7 +13,7 @@ commands:
         aliases: [rpg]
 permissions:
     mmocore.admin:
-        description: Access to /rpg
+        description: Access to /mmocore
         default: op
     mmocore.waypoints:
         description: Access to /waypoints
