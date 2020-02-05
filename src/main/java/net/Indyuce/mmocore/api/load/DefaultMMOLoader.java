@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.load;
 
+import net.Indyuce.mmocore.api.droptable.condition.BiomeCondition;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
@@ -104,6 +105,9 @@ public class DefaultMMOLoader implements MMOLoader {
 	public Condition loadCondition(MMOLineConfig config) {
 		if (config.getKey().equals("world"))
 			return new WorldCondition(config);
+
+		if (config.getKey().equals("biome"))
+			return new BiomeCondition(config);
 
 		return null;
 	}
