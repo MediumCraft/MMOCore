@@ -11,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -122,7 +124,33 @@ public class BlockListener implements Listener {
 	public void b(BlockPlaceEvent event) {
 		event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 	}
+	
+	@EventHandler
+	public void c1(BlockPistonExtendEvent event) {
+        Block movedBlock = event.getBlock();
+        if(!movedBlock.hasMetadata("player_placed")) return;
+		BlockFace direction = event.getDirection();
+        movedBlock = movedBlock.getRelative(direction, 2);
 
+        for (Block b : event.getBlocks()) {
+            if (b.hasMetadata("player_placed")) {
+                movedBlock = b.getRelative(direction);
+                movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
+            }
+        }
+	}
+	@EventHandler
+	public void c2(BlockPistonRetractEvent event) {
+		BlockFace direction = event.getDirection();
+        Block movedBlock = event.getBlock().getRelative(direction);
+        movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
+
+        for (Block block : event.getBlocks()) {
+            movedBlock = block.getRelative(direction);
+            movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
+        }
+	}
+	
 	private Location getSafeDropLocation(Block block, boolean self) {
 		if (block.getType() == Material.AIR && self)
 			return block.getLocation();
