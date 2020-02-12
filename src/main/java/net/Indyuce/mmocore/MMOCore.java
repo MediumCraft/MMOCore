@@ -8,6 +8,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -172,6 +175,16 @@ public class MMOCore extends JavaPlugin {
 			}
 		});
 
+		Bukkit.getPluginManager().registerEvents(new Listener() {
+			@EventHandler
+			public void pluginLoad(PluginEnableEvent event) {
+				if (event.getPlugin().getName().equals("MythicMobs")) {
+					Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), plugin);
+					getLogger().log(Level.INFO, "Hooked onto MythicMobs");
+				}
+			}
+		}, plugin);
+
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
 
@@ -210,11 +223,6 @@ public class MMOCore extends JavaPlugin {
 		if (Bukkit.getPluginManager().getPlugin("MyPet") != null) {
 			entities.registerHandler(new MyPetEntityHandler());
 			getLogger().log(Level.INFO, "Hooked onto MyPet");
-		}
-
-		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
-			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
-			getLogger().log(Level.INFO, "Hooked onto MythicMobs");
 		}
 
 		/*
