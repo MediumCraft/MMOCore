@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -8,7 +7,7 @@ import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class MessageTrigger extends Trigger {
-	private String message;
+	private final String message;
 
 	public MessageTrigger(MMOLineConfig config) {
 		super(config);
@@ -23,7 +22,6 @@ public class MessageTrigger extends Trigger {
 	}
 
 	private String format(Player player) {
-		message = ChatColor.translateAlternateColorCodes('&', message);
 		return MMOCore.plugin.placeholderParser.parse(player, message.replace("%player%", player.getName()));
 	}
 }
