@@ -65,24 +65,23 @@ public class PlayerData extends OfflinePlayerData {
 	private Player player;
 
 	private PlayerClass profess;
-	private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
 	private int level, experience, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
 	private double mana, stamina, stellium;
-	private final Professions collectSkills = new Professions(this);
-	private final PlayerQuests questData;
-	private final Set<String> waypoints = new HashSet<>();
 	private List<UUID> friends;
 	private Party party;
 	private Guild guild;
+	private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
 	private final List<SkillInfo> boundSkills = new ArrayList<>();
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
-
+	private final Professions collectSkills = new Professions(this);
+	private final PlayerQuests questData;
+	private final Set<String> waypoints = new HashSet<>();
 	private final PlayerStats playerStats;
-	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut;
-
 	private final Map<String, Integer> skills = new HashMap<>();
 	private final PlayerSkillData skillData = new PlayerSkillData(this);
 
+	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut;
+	
 	/*
 	 * NON-FINAL player data stuff made public to facilitate field change
 	 */
@@ -162,10 +161,7 @@ public class PlayerData extends OfflinePlayerData {
 		config.set("waypoints", new ArrayList<>(waypoints));
 		config.set("friends", toStringList(friends));
 		config.set("last-login", lastLogin);
-		if (guild != null)
-			config.set("guild", guild.getId());
-		else
-			config.set("guild", null);
+		config.set("guild", guild != null ? guild.getId() : null);
 
 		config.set("skill", null);
 		skills.entrySet().forEach(entry -> config.set("skill." + entry.getKey(), entry.getValue()));
