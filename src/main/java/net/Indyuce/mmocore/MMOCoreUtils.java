@@ -101,7 +101,7 @@ public class MMOCoreUtils {
 		if (input < 1)
 			return "<1";
 		if (input > 3999)
-			return ">499";
+			return ">3999";
 
 		String result = "";
 
