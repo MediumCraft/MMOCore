@@ -55,9 +55,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.version.VersionSound;
 
-public class PlayerData {
-
-	private final UUID uuid;
+public class PlayerData extends OfflinePlayerData {
 
 	/*
 	 * is updated everytime the player joins the server. it is kept when the
@@ -96,7 +94,8 @@ public class PlayerData {
 	private static Map<UUID, PlayerData> playerData = new HashMap<>();
 
 	private PlayerData(Player player) {
-		uuid = player.getUniqueId();
+		super(player.getUniqueId());
+
 		setPlayer(player);
 		playerStats = new PlayerStats(this);
 
@@ -115,7 +114,8 @@ public class PlayerData {
 		this.mana = getStats().getStat(StatType.MAX_MANA);
 		this.stamina = getStats().getStat(StatType.MAX_STAMINA);
 		this.stellium = getStats().getStat(StatType.MAX_STELLIUM);
-		if (config.contains("guild")) this.guild = MMOCore.plugin.guildManager.stillInGuild(getUniqueId(), config.getString("guild"));
+		if (config.contains("guild"))
+			this.guild = MMOCore.plugin.guildManager.stillInGuild(getUniqueId(), config.getString("guild"));
 		if (config.contains("attribute"))
 			attributes.load(config.getConfigurationSection("attribute"));
 		if (config.contains("profession"))
@@ -162,9 +162,11 @@ public class PlayerData {
 		config.set("waypoints", new ArrayList<>(waypoints));
 		config.set("friends", toStringList(friends));
 		config.set("last-login", lastLogin);
-		if(guild != null) config.set("guild", guild.getId());
-		else config.set("guild", null);
-		
+		if (guild != null)
+			config.set("guild", guild.getId());
+		else
+			config.set("guild", null);
+
 		config.set("skill", null);
 		skills.entrySet().forEach(entry -> config.set("skill." + entry.getKey(), entry.getValue()));
 
@@ -246,44 +248,6 @@ public class PlayerData {
 		return playerData.values();
 	}
 
-	/**
-	 * START OF EXPERIMENTAL CODE
-	 * 
-	 * This must be more simple to do than my 2AM brain could think of...
-	 * - Aria
-	 */
-	
-	private static Map<UUID, PlayerDataOfflineValues> offlineValues = new HashMap<>();
-	public static PlayerDataOfflineValues getOfflineValues(UUID uuid) {
-		if(!offlineValues.containsKey(uuid))
-			offlineValues.put(uuid, new PlayerDataOfflineValues(uuid));
-		return offlineValues.get(uuid) ;
-	}
-	
-	public static class PlayerDataOfflineValues {
-		// Values can be added as they are needed
-		private final PlayerClass profess;
-		private final int level;
-		private final long lastLogin;
-		
-		public PlayerDataOfflineValues(UUID uuid) {
-			FileConfiguration config = new ConfigFile(uuid).getConfig();
-			this.profess = MMOCore.plugin.classManager.get(config.getString("class"));
-			this.level = config.getInt("level");
-			this.lastLogin = config.getLong("last-login");
-		}
-		
-		public PlayerClass getProfess()
-		{ return profess; }
-		public int getLevel()
-		{ return level; }
-		public long getLastLogin()
-		{ return lastLogin; }
-	}
-	/**
-	 * END OF EXPERIMENTAL CODE
-	 */
-	
 	private PlayerData setPlayer(Player player) {
 		this.player = player;
 		this.lastLogin = System.currentTimeMillis();
@@ -306,10 +270,7 @@ public class PlayerData {
 		return player;
 	}
 
-	public UUID getUniqueId() {
-		return uuid;
-	}
-
+	@Override
 	public long getLastLogin() {
 		return lastLogin;
 	}
@@ -318,6 +279,7 @@ public class PlayerData {
 		return lastFriendRequest;
 	}
 
+	@Override
 	public int getLevel() {
 		return Math.max(1, level);
 	}
@@ -446,10 +408,12 @@ public class PlayerData {
 		friends.add(uuid);
 	}
 
+	@Override
 	public void removeFriend(UUID uuid) {
 		friends.remove(uuid);
 	}
 
+	@Override
 	public boolean hasFriend(UUID uuid) {
 		return friends.contains(uuid);
 	}
@@ -518,13 +482,13 @@ public class PlayerData {
 	public void giveExperience(int value) {
 		giveExperience(value, null);
 	}
-	
+
 	public void giveExperience(int value, Location loc) {
 		if (profess == null || hasReachedMaxLevel()) {
 			setExperience(0);
 			return;
 		}
-		
+
 		// display hologram
 		if (MMOItems.plugin.getConfig().getBoolean("game-indicators.exp.enabled")) {
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
@@ -570,6 +534,7 @@ public class PlayerData {
 		return experience;
 	}
 
+	@Override
 	public PlayerClass getProfess() {
 		return profess == null ? MMOCore.plugin.classManager.getDefaultClass() : profess;
 	}
@@ -637,7 +602,7 @@ public class PlayerData {
 	public boolean canSeeActionBar() {
 		return actionBarTimeOut < System.currentTimeMillis();
 	}
-	
+
 	public void setActionBarTimeOut(long timeOut) {
 		actionBarTimeOut = System.currentTimeMillis() + (timeOut * 50);
 	}
@@ -824,6 +789,6 @@ public class PlayerData {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj != null && obj instanceof PlayerData && ((PlayerData) obj).uuid.equals(uuid);
+		return obj != null && obj instanceof PlayerData && ((PlayerData) obj).getUniqueId().equals(getUniqueId());
 	}
 }
