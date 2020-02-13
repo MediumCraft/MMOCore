@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import net.Indyuce.mmoitems.MMOItems;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -39,7 +38,6 @@ import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass.Subclass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
-import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.social.Party;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
@@ -50,6 +48,7 @@ import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
+import net.Indyuce.mmoitems.MMOItems;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.mmogroup.mmolib.MMOLib;
@@ -81,7 +80,7 @@ public class PlayerData extends OfflinePlayerData {
 	private final PlayerSkillData skillData = new PlayerSkillData(this);
 
 	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut;
-	
+
 	/*
 	 * NON-FINAL player data stuff made public to facilitate field change
 	 */
@@ -565,14 +564,6 @@ public class PlayerData extends OfflinePlayerData {
 
 	public PlayerAttributes getAttributes() {
 		return attributes;
-	}
-
-	public boolean canRegen(PlayerResource resource) {
-		return getProfess().getHandler(resource).isAvailable(this);
-	}
-
-	public double calculateRegen(PlayerResource resource) {
-		return getProfess().getHandler(resource).getRegen(this);
 	}
 
 	public void setMana(double amount) {

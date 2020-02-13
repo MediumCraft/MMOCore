@@ -31,6 +31,7 @@ import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.math.particle.CastingParticle;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
+import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceHandler;
 import net.Indyuce.mmocore.api.player.stats.StatType;
@@ -51,9 +52,9 @@ public class PlayerClass {
 	private final Map<String, SkillInfo> skills = new LinkedHashMap<>();
 	private final List<Subclass> subclasses = new ArrayList<>();
 
-	private Map<String, EventTrigger> eventTriggers = new HashMap<>();
+	private final Map<PlayerResource, ResourceHandler> resourceHandlers = new HashMap<>();
+	private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
-	private final Map<PlayerResource, ResourceHandler> resources = new HashMap<>();
 	private CastingParticle castParticle = new CastingParticle(Particle.SPELL_INSTANT);
 
 	/*
@@ -67,9 +68,9 @@ public class PlayerClass {
 
 		name = ChatColor.translateAlternateColorCodes('&', config.getString("display.name"));
 		icon = MMOCoreUtils.readIcon(config.getString("display.item"));
-		
-		if(config.contains("display.texture")) {
-			if(icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
+
+		if (config.contains("display.texture")) {
+			if (icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
 				ItemMeta meta = icon.getItemMeta();
 				try {
 					Field profileField = meta.getClass().getDeclaredField("profile");
@@ -81,12 +82,11 @@ public class PlayerClass {
 					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not apply playerhead texture: " + exception.getMessage());
 				}
 				icon.setItemMeta(meta);
-			}
-			else {
+			} else {
 				MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not add player head texture. The item is not a playerhead!");
 			}
 		}
-		
+
 		for (String string : config.getStringList("display.lore"))
 			description.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', string));
 		for (String string : config.getStringList("display.attribute-lore"))
@@ -141,8 +141,6 @@ public class PlayerClass {
 			for (String key : config.getConfigurationSection("triggers").getKeys(false)) {
 				try {
 					String format = key.toLowerCase().replace("_", "-").replace(" ", "-");
-					// Validate.isTrue(MMOCore.plugin.classManager.isEventRegistered(format),
-					// "Could not find trigger event called '" + format + "'");
 					eventTriggers.put(format, new EventTrigger(format, config.getStringList("triggers." + key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] " + exception.getMessage());
@@ -150,8 +148,21 @@ public class PlayerClass {
 				}
 			}
 
-		for (PlayerResource resource : PlayerResource.values())
-			resources.put(resource, new ResourceHandler(this, resource));
+		/*
+		 * must make sure all the resourceHandlers are registered when the
+		 * placer class is initialized.
+		 */
+		for (PlayerResource resource : PlayerResource.values()) {
+			if (config.isConfigurationSection("resource." + resource.name().toLowerCase()))
+				try {
+					resourceHandlers.put(resource, new ResourceHandler(resource, config.getConfigurationSection("resource." + resource.name().toLowerCase())));
+				} catch (IllegalArgumentException exception) {
+					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load special resource regen for " + resource.name() + ": " + exception.getMessage());
+					resourceHandlers.put(resource, new ResourceHandler(resource));
+				}
+			else
+				resourceHandlers.put(resource, new ResourceHandler(resource));
+		}
 	}
 
 	/*
@@ -170,7 +181,7 @@ public class PlayerClass {
 		setOption(ClassOption.DEFAULT, false);
 
 		for (PlayerResource resource : PlayerResource.values())
-			resources.put(resource, new ResourceHandler(this, resource));
+			resourceHandlers.put(resource, new ResourceHandler(resource));
 	}
 
 	public void loadSubclasses(ClassManager manager) {
@@ -193,7 +204,7 @@ public class PlayerClass {
 	}
 
 	public ResourceHandler getHandler(PlayerResource resource) {
-		return resources.get(resource);
+		return resourceHandlers.get(resource);
 	}
 
 	public int getMaxLevel() {
@@ -203,7 +214,7 @@ public class PlayerClass {
 	public int getDisplayOrder() {
 		return displayOrder;
 	}
-	
+
 	public String getFileName() {
 		return fileName;
 	}
@@ -312,25 +323,12 @@ public class PlayerClass {
 		DISPLAY(true),
 
 		/*
-		 * resource regeneration depends on max resource
-		 */
-		MISSING_HEALTH_REGEN,
-		MISSING_MANA_REGEN,
-		MISSING_STAMINA_REGEN,
-
-		/*
-		 * resource regeneration depends on missing resource
-		 */
-		MAX_HEALTH_REGEN,
-		MAX_MANA_REGEN,
-		MAX_STAMINA_REGEN,
-
-		/*
 		 * only regen resource when out of combat
 		 */
 		OFF_COMBAT_HEALTH_REGEN,
-		OFF_COMBAT_MANA_REGEN(true),
-		OFF_COMBAT_STAMINA_REGEN;
+		OFF_COMBAT_MANA_REGEN,
+		OFF_COMBAT_STAMINA_REGEN,
+		OFF_COMBAT_STELLIUM_REGEN;
 
 		private final boolean def;
 

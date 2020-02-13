@@ -35,7 +35,6 @@ triggers:
 options:
     off-combat-mana-regen: true
     off-combat-health-regen: true
-    missing-health-regen: true
 
 cast-particle:
     particle: SPELL_WITCH

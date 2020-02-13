@@ -13,11 +13,11 @@ import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
 
-public class ResourcesCommandMap extends CommandMap {
+public class ResourceCommandMap extends CommandMap {
 	private final String type;
 	private final Function<PlayerData, Double> get;
 
-	public ResourcesCommandMap(String type, CommandMap parent, BiConsumer<PlayerData, Double> set, BiConsumer<PlayerData, Double> give, BiConsumer<PlayerData, Double> take, Function<PlayerData, Double> get) {
+	public ResourceCommandMap(String type, CommandMap parent, BiConsumer<PlayerData, Double> set, BiConsumer<PlayerData, Double> give, BiConsumer<PlayerData, Double> take, Function<PlayerData, Double> get) {
 		super(parent, "resource-" + type);
 
 		this.type = type;

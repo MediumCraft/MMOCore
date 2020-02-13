@@ -62,6 +62,7 @@ import net.Indyuce.mmocore.listener.PlayerListener;
 import net.Indyuce.mmocore.listener.SpellCast;
 import net.Indyuce.mmocore.listener.WaypointsListener;
 import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
+import net.Indyuce.mmocore.listener.option.DisableRegeneration;
 import net.Indyuce.mmocore.listener.option.HealthScale;
 import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
 import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
@@ -231,20 +232,13 @@ public class MMOCore extends JavaPlugin {
 		 */
 		new BukkitRunnable() {
 			public void run() {
-				for (PlayerData data : PlayerData.getAll())
-					if (data.isOnline() && !data.getPlayer().isDead()) {
-
-						data.giveStellium(data.getStats().getStat(StatType.STELLIUM_REGENERATION));
-
-						if (data.canRegen(PlayerResource.HEALTH))
-							data.heal(data.calculateRegen(PlayerResource.HEALTH));
-
-						if (data.canRegen(PlayerResource.MANA))
-							data.giveMana(data.calculateRegen(PlayerResource.MANA));
-
-						if (data.canRegen(PlayerResource.STAMINA))
-							data.giveStamina(data.calculateRegen(PlayerResource.STAMINA));
-					}
+				for (PlayerData player : PlayerData.getAll())
+					if (player.isOnline() && !player.getPlayer().isDead())
+						for (PlayerResource resource : PlayerResource.values()) {
+							double d = player.getProfess().getHandler(resource).getRegen(player);
+							if (d > 0)
+								resource.regen(player, d);
+						}
 			}
 		}.runTaskTimerAsynchronously(MMOCore.plugin, 100, 20);
 
@@ -254,9 +248,9 @@ public class MMOCore extends JavaPlugin {
 		 * produced by people not reading the installation guide...
 		 */
 		if (Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with the Mana & Stamina MMOItems!!!");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
-			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with the Mana & Stamina MMOItems!!!");
+			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "MMOCore is not meant to be used with MMOItems ManaAndStamina");
+			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "Please read the installation guide!");
+			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with MMOItems ManaAndStamina");
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
 			return;
 		}
@@ -287,6 +281,9 @@ public class MMOCore extends JavaPlugin {
 
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
+
+		if (getConfig().getBoolean("disable-vanilla-regen"))
+			Bukkit.getPluginManager().registerEvents(new DisableRegeneration(), this);
 
 		Bukkit.getPluginManager().registerEvents(new WaypointsListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);

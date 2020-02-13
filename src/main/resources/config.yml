@@ -70,6 +70,11 @@ health-scale:
     enabled: true
     scale: 20
 
+# Disable player health regen due to saturation and eating
+# to control health regen via MMOCore resource regen.
+# Requires a SERVER reload when changed.
+disable-vanilla-regen: false
+
 # Allows to toggle exp hologram from gaining experiences
 game-indicators:
     exp:
