@@ -24,6 +24,7 @@ import net.Indyuce.mmocore.manager.CustomBlockManager.BlockInfo;
 import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.CustomBlock;
+import net.mmogroup.mmolib.MMOLib;
 
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
@@ -34,7 +35,7 @@ public class BlockListener implements Listener {
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		String savedData = event.getBlock().getBlockData().getAsString();
+		String savedData = MMOLib.plugin.getVersion().isStrictlyHigher(1, 12) ? event.getBlock().getBlockData().getAsString() : "";
 		Block block = event.getBlock();
 		/*
 		 * if custom mining enabled, check for item breaking restrictions
@@ -104,8 +105,12 @@ public class BlockListener implements Listener {
 			/*
 			 * enable block regen.
 			 */
-			if (info.hasRegen())
-				MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(Bukkit.createBlockData(savedData), block.getLocation()));
+			if (info.hasRegen()) {
+				if(MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
+					MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(Bukkit.createBlockData(savedData), block.getLocation()));
+				else
+					MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(block.getLocation()));
+			}
 		}
 	}
 
