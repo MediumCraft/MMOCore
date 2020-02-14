@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.player;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -86,8 +87,10 @@ public class Professions {
 		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
 
 		// display hologram
-		if (loc != null && MMOCore.plugin.hologramSupport != null)
-			MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
+		if (MMOItems.plugin.getConfig().getBoolean("game-indicators.exp.enabled")) {
+			if (loc != null && MMOCore.plugin.hologramSupport != null)
+				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
+		}
 
 		int needed, exp, level;
 		boolean check = false;

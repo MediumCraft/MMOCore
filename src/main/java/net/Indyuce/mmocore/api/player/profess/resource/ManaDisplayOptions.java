@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.player.profess;
+package net.Indyuce.mmocore.api.player.profess.resource;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -27,8 +27,8 @@ public class ManaDisplayOptions {
 
 	public ManaDisplayOptions(ChatColor color, String name, char barCharacter) {
 		Validate.notNull(color, "Color cannot be null");
-		Validate.notNull(name, "name cannot be null");
-		Validate.notNull(barCharacter, "barCharacter cannot be null");
+		Validate.notNull(name, "Name cannot be null");
+		Validate.notNull(barCharacter, "Bar character cannot be null");
 
 		this.color = color;
 		this.name = name;

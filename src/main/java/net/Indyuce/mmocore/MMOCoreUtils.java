@@ -94,52 +94,29 @@ public class MMOCoreUtils {
 		}
 	}
 
-	public static String intToRoman(int input) {
-		if (input < 1 || input > 499)
-			return ">499";
+	private static final String[] romanChars = { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
+	private static final int[] romanQuantities = { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
 
-		String s = "";
-		while (input >= 400) {
-			s += "CD";
-			input -= 400;
+	public static String intToRoman(int input) {
+		if (input < 1)
+			return "<1";
+		if (input > 3999)
+			return ">3999";
+
+		String result = "";
+
+		for (int j = 0; j < romanChars.length; j++) {
+			int i = romanChars.length - j - 1;
+			int q = romanQuantities[i];
+			String c = romanChars[i];
+
+			while (input >= q) {
+				result += c;
+				input -= q;
+			}
 		}
-		while (input >= 100) {
-			s += "C";
-			input -= 100;
-		}
-		while (input >= 90) {
-			s += "XC";
-			input -= 90;
-		}
-		while (input >= 50) {
-			s += "L";
-			input -= 50;
-		}
-		while (input >= 40) {
-			s += "XL";
-			input -= 40;
-		}
-		while (input >= 10) {
-			s += "X";
-			input -= 10;
-		}
-		while (input >= 9) {
-			s += "IX";
-			input -= 9;
-		}
-		while (input >= 5) {
-			s += "V";
-			input -= 5;
-		}
-		while (input >= 4) {
-			s += "IV";
-			input -= 4;
-		}
-		while (input >= 1) {
-			s += "I";
-			input -= 1;
-		}
-		return s;
+
+		return result;
 	}
 
 	/*

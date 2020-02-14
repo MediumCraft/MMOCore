@@ -124,17 +124,14 @@ public class ConfigManager {
 		}
 	}
 
-	private ChatColor getColorOrDefault(String configKey, ChatColor defaultColor) {
-		ChatColor newColor;
+	private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {
 		try {
-			newColor = ChatColor.valueOf(MMOCore.plugin.getConfig().getString("resource-bar-colors." + configKey).toUpperCase());
+			return ChatColor.valueOf(MMOCore.plugin.getConfig().getString("resource-bar-colors." + key).toUpperCase());
 		}
-		catch(Exception e) {
-			MMOCore.log(Level.WARNING, "Resource Bar color config '" + configKey + "' is invalid... Using default color.");
-			newColor = defaultColor;
+		catch(IllegalArgumentException exception) {
+			MMOCore.log(Level.WARNING, "Could not read resource bar color from '" + key + "': using default.");
+			return defaultColor;
 		}
-		
-		return newColor;
 	}
 	
 	public DecimalFormat newFormat(String pattern) {

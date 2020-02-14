@@ -47,7 +47,7 @@ public class FriendsCommand extends BukkitCommand {
 				return true;
 			}
 
-			if (new OfflinePlayerData(((Player) sender).getUniqueId()).hasFriend(uuid)) {
+			if (OfflinePlayerData.get(((Player) sender).getUniqueId()).hasFriend(uuid)) {
 				MMOCore.plugin.requestManager.unregisterRequest(uuid);
 				return true;
 			}

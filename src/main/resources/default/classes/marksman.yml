@@ -40,6 +40,25 @@ mana:
 cast-particle:
     particle: CRIT
 
+# Special resource regeneration: (when out of combat),
+# players can regen a set % of their stamina mana/missing stamina.
+# This % can scale with the player level.
+# It also works with other player resources: health, stellium and mana!
+resource:
+    stamina:
+    
+        # Regen scales with missing stamina.
+        type: MISSING
+        
+        # Regen from 3 to 10% of missing stamina every second
+        value:
+            base: 5
+            per-level: .2
+            max: 13
+        
+        # Only regen when out of combat.
+        off-combat: true
+
 skills:
     WEAKEN:
         level: 3
