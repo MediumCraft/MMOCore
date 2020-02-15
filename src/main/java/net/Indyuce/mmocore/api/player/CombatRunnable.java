@@ -29,7 +29,7 @@ public class CombatRunnable extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		if (lastHit + 10000 < System.currentTimeMillis()) {
+		if (lastHit + (config.combatLogTimer * 100) < System.currentTimeMillis()) {
 			Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, false));
 			config.getSimpleMessage("leave-combat").send(player.getPlayer());
 			close();

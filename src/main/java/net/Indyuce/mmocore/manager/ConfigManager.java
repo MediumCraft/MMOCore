@@ -30,6 +30,7 @@ public class ConfigManager {
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix;
 	public ChatColor manaFull, manaHalf, manaEmpty, staminaFull, staminaHalf, staminaEmpty;
+	public int combatLogTimer;
 
 	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
@@ -100,6 +101,7 @@ public class ConfigManager {
 		regenPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.health-regen");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
 		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
+		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer");
 
 		manaFull = getColorOrDefault("mana-whole", ChatColor.BLUE);
 		manaHalf = getColorOrDefault("mana-half", ChatColor.AQUA);
