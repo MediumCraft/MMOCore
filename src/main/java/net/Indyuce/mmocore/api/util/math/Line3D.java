@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.math;
+package net.Indyuce.mmocore.api.util.math;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -38,8 +38,8 @@ public class Line3D {
 		// ( a + t * alpha - e ; b + t * beta - f ; c + t * gamma - g )
 
 		// length of vector is:
-		// d = sqrt( (a-e)² + (b-f)² + (c-g)² + 2t( alpha(a-e) + beta(b-f) +
-		// gamma(c-g) ) + t²(alpha² + beta² + gamma²) )
+		// d = sqrt( (a-e)ï¿½ + (b-f)ï¿½ + (c-g)ï¿½ + 2t( alpha(a-e) + beta(b-f) +
+		// gamma(c-g) ) + tï¿½(alphaï¿½ + betaï¿½ + gammaï¿½) )
 
 		// analysis: we find the value of t for which the distance d is the
 		// smallest. (canonical form) axis of symetry is min = -b/2a therefore

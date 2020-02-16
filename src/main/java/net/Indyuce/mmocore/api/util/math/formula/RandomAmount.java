@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.math.formula;
+package net.Indyuce.mmocore.api.util.math.formula;
 
 import java.util.Random;
 

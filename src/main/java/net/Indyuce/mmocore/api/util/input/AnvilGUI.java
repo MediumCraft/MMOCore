@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.input;
+package net.Indyuce.mmocore.api.util.input;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

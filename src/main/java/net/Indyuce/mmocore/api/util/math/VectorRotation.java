@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.math;
+package net.Indyuce.mmocore.api.util.math;
 
 import org.bukkit.Location;
 import org.bukkit.util.Vector;

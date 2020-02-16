@@ -9,8 +9,8 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.Waypoint;
-import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
 public class WaypointsListener implements Listener {

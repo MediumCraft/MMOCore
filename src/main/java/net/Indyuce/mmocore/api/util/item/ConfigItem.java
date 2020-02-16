@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.item;
+package net.Indyuce.mmocore.api.util.item;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

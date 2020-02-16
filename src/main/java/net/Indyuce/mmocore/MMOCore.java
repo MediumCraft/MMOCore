@@ -16,10 +16,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
-import net.Indyuce.mmocore.api.debug.DebugMode;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.AttributesCommand;
 import net.Indyuce.mmocore.command.ClassCommand;
 import net.Indyuce.mmocore.command.DepositCommand;

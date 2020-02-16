@@ -16,13 +16,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.MMOCoreUtils;
-import net.Indyuce.mmocore.api.math.formula.LinearValue;
-import net.Indyuce.mmocore.api.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats.CachedStats;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
 import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 import net.mmogroup.mmolib.version.VersionMaterial;

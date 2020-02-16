@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore;
+package net.Indyuce.mmocore.api.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +20,7 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.mmogroup.mmolib.MMOLib;
 
 public class MMOCoreUtils {

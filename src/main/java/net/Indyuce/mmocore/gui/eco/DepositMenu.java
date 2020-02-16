@@ -11,9 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.MMOCoreUtils;
-import net.Indyuce.mmocore.api.item.ConfigItem;
-import net.Indyuce.mmocore.api.item.SmartGive;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.api.util.item.ConfigItem;
+import net.Indyuce.mmocore.api.util.item.SmartGive;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.mmogroup.mmolib.api.item.NBTItem;
 

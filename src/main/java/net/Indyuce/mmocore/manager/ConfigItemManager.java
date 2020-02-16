@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.item.ConfigItem;
+import net.Indyuce.mmocore.api.util.item.ConfigItem;
 
 public class ConfigItemManager {
 	private Map<String, ConfigItem> map = new HashMap<>();

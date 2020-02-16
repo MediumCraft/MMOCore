@@ -3,9 +3,9 @@ package net.Indyuce.mmocore.api.skill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.RayTraceResult;
 
-import net.Indyuce.mmocore.MMOCoreUtils;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 
 public class TargetSkillResult extends SkillResult {
 	private LivingEntity target;

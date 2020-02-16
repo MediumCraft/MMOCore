@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.api.item.CurrencyItem;
 import net.Indyuce.mmocore.api.load.MMOLineConfig;
+import net.Indyuce.mmocore.api.util.item.CurrencyItem;
 
 public class GoldDropItem extends DropItem {
 	public GoldDropItem(MMOLineConfig config) {

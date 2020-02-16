@@ -5,8 +5,8 @@ import java.util.function.BiFunction;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
-import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 
 public class ResourceHandler {
 

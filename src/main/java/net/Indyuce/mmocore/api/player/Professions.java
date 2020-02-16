@@ -15,7 +15,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 
 public class Professions {
 	private final Map<String, Integer> exp = new HashMap<>();

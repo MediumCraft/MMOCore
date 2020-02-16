@@ -17,8 +17,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.item.CurrencyItem;
-import net.Indyuce.mmocore.api.item.SmartGive;
+import net.Indyuce.mmocore.api.util.item.CurrencyItem;
+import net.Indyuce.mmocore.api.util.item.SmartGive;
 
 public class Withdraw implements Listener {
 	private static final Set<UUID> withdrawing = new HashSet<>();

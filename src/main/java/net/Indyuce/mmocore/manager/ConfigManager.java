@@ -18,11 +18,11 @@ import org.bukkit.util.Consumer;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.input.AnvilGUI;
-import net.Indyuce.mmocore.api.input.ChatInput;
-import net.Indyuce.mmocore.api.input.PlayerInput;
-import net.Indyuce.mmocore.api.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.input.AnvilGUI;
+import net.Indyuce.mmocore.api.util.input.ChatInput;
+import net.Indyuce.mmocore.api.util.input.PlayerInput;
+import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 
 public class ConfigManager {
 

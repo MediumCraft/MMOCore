@@ -7,7 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.math.formula.LinearValue;
+import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 
 public enum StatType {
 

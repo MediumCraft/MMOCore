@@ -9,7 +9,7 @@ import io.lumine.xikage.mythicmobs.drops.IMultiDrop;
 import io.lumine.xikage.mythicmobs.drops.LootBag;
 import io.lumine.xikage.mythicmobs.drops.droppables.ItemDrop;
 import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
-import net.Indyuce.mmocore.api.item.CurrencyItem;
+import net.Indyuce.mmocore.api.util.item.CurrencyItem;
 
 public class CurrencyItemDrop extends Drop implements IMultiDrop {
 	private String key;

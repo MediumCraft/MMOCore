@@ -12,8 +12,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
-import net.Indyuce.mmocore.api.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.mmogroup.mmolib.MMOLib;
 
 public class PlayerCollectStats implements Listener {

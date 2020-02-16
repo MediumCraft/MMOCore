@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Booster;
-import net.Indyuce.mmocore.api.math.format.DelayFormat;
+import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.mmogroup.mmolib.MMOLib;

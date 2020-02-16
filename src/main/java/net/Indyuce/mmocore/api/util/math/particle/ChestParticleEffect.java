@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.math.particle;
+package net.Indyuce.mmocore.api.util.math.particle;
 
 import java.util.function.BiConsumer;
 

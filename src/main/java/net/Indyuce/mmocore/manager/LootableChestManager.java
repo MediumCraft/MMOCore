@@ -22,7 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
-import net.Indyuce.mmocore.api.math.particle.ChestParticleEffect;
+import net.Indyuce.mmocore.api.util.math.particle.ChestParticleEffect;
 
 public class LootableChestManager {
 	private Set<LootableChest> map = new HashSet<>();

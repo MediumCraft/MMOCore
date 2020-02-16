@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.math.format;
+package net.Indyuce.mmocore.api.util.math.format;
 
 public class DelayFormat {
 	private int display = charArray.length;

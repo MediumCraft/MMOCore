@@ -17,8 +17,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobSkill;
 
 public class SkillManager {

@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.debug;
+package net.Indyuce.mmocore.api.util.debug;
 
 import net.Indyuce.mmocore.MMOCore;
 

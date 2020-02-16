@@ -12,9 +12,9 @@ import io.lumine.xikage.mythicmobs.drops.IMultiDrop;
 import io.lumine.xikage.mythicmobs.drops.LootBag;
 import io.lumine.xikage.mythicmobs.drops.droppables.ItemDrop;
 import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
-import net.Indyuce.mmocore.MMOCoreUtils;
-import net.Indyuce.mmocore.api.item.ConfigItem;
-import net.Indyuce.mmocore.api.item.CurrencyItem;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.api.util.item.ConfigItem;
+import net.Indyuce.mmocore.api.util.item.CurrencyItem;
 import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
 

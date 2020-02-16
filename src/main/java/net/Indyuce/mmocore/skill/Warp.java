@@ -6,11 +6,11 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 
-import net.Indyuce.mmocore.api.math.formula.LinearValue;
-import net.Indyuce.mmocore.api.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
 import net.mmogroup.mmolib.version.VersionSound;
 
 public class Warp extends Skill {

@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.item;
+package net.Indyuce.mmocore.api.util.item;
 
 import java.util.List;
 
