@@ -398,12 +398,16 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void heal(double heal) {
+		double current = player.getHealth(), newest = Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		if (current == newest)
+			return;
+
 		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.HEALTH, heal);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
 
-		getPlayer().setHealth(Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
+		getPlayer().setHealth(newest);
 	}
 
 	public void addFriend(UUID uuid) {
@@ -542,30 +546,42 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void giveMana(double amount) {
+		double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount));
+		if (mana == newest)
+			return;
+
 		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.MANA, amount);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
 
-		mana = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount));
+		mana = newest;
 	}
 
 	public void giveStamina(double amount) {
+		double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STAMINA), stamina + amount));
+		if (stamina == newest)
+			return;
+
 		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.STAMINA, amount);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
 
-		stamina = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STAMINA), stamina + amount));
+		stamina = newest;
 	}
 
 	public void giveStellium(double amount) {
+		double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STELLIUM), stellium + amount));
+		if (stellium == newest)
+			return;
+
 		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.STELLIUM, amount);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
 
-		stellium = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STELLIUM), stellium + amount));
+		stellium = newest;
 	}
 
 	public double getMana() {

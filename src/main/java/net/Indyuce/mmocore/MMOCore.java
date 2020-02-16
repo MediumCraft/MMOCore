@@ -240,7 +240,7 @@ public class MMOCore extends JavaPlugin {
 								resource.regen(player, d);
 						}
 			}
-		}.runTaskTimerAsynchronously(MMOCore.plugin, 100, 20);
+		}.runTaskTimer(MMOCore.plugin, 100, 20);
 
 		/*
 		 * For the sake of the lord, make sure they aren't using MMOItems Mana
