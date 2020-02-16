@@ -11,9 +11,6 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 
 public enum PlayerResource {
 
-	/*
-	 * used to handle resource regeneration.
-	 */
 	HEALTH(StatType.HEALTH_REGENERATION, ClassOption.OFF_COMBAT_HEALTH_REGEN, (data) -> data.getPlayer().getHealth(), (data) -> data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), (data, d) -> data.heal(d)),
 	MANA(StatType.MANA_REGENERATION, ClassOption.OFF_COMBAT_MANA_REGEN, (data) -> data.getMana(), (data) -> data.getStats().getStat(StatType.MAX_MANA), (data, d) -> data.giveMana(d)),
 	STAMINA(StatType.STAMINA_REGENERATION, ClassOption.OFF_COMBAT_STAMINA_REGEN, (data) -> data.getStamina(), (data) -> data.getStats().getStat(StatType.MAX_STAMINA), (data, d) -> data.giveStamina(d)),
@@ -32,22 +29,38 @@ public enum PlayerResource {
 		this.regen = regen;
 	}
 
+	/*
+	 * stat which correspondons to resource regeneration
+	 */
 	public StatType getRegenStat() {
 		return regenStat;
 	}
 
+	/*
+	 * class option which determines whether or not resource should be
+	 * regenerated off combat only
+	 */
 	public ClassOption getOffCombatRegen() {
 		return offCombatRegen;
 	}
 
+	/*
+	 * get current resource of player
+	 */
 	public double getCurrent(PlayerData player) {
 		return current.apply(player);
 	}
 
+	/*
+	 * get max resource of player
+	 */
 	public double getMax(PlayerData player) {
 		return max.apply(player);
 	}
 
+	/*
+	 * regenerate resource of player (TRIGGERS A BUKKIT/CUSTOM EVENT)
+	 */
 	public void regen(PlayerData player, double amount) {
 		regen.accept(player, amount);
 	}

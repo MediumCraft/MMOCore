@@ -32,11 +32,13 @@ import net.Indyuce.mmocore.api.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerCastSkillEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
+import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass.Subclass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.social.Party;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
@@ -396,6 +398,11 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void heal(double heal) {
+		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.HEALTH, heal);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			return;
+
 		getPlayer().setHealth(Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())));
 	}
 
@@ -535,14 +542,29 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void giveMana(double amount) {
+		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.MANA, amount);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			return;
+
 		mana = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount));
 	}
 
 	public void giveStamina(double amount) {
+		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.STAMINA, amount);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			return;
+
 		stamina = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STAMINA), stamina + amount));
 	}
 
 	public void giveStellium(double amount) {
+		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.STELLIUM, amount);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			return;
+
 		stellium = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STELLIUM), stellium + amount));
 	}
 

@@ -1,19 +1,24 @@
 
 package net.Indyuce.mmocore.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
+import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 
 public class PlayerListener implements Listener {
@@ -57,7 +62,8 @@ public class PlayerListener implements Listener {
 			PlayerData.get((Player) event.getDamager()).updateCombat();
 
 		if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player) {
-			if(((Player) ((Projectile) event.getDamager()).getShooter()).hasMetadata("NPC")) return;
+			if (((Player) ((Projectile) event.getDamager()).getShooter()).hasMetadata("NPC"))
+				return;
 			PlayerData.get((Player) ((Projectile) event.getDamager()).getShooter()).updateCombat();
 		}
 	}
@@ -76,5 +82,21 @@ public class PlayerListener implements Listener {
 	public void f(PlayerCombatEvent event) {
 		if (!event.entersCombat())
 			event.getData().getSkillData().resetData();
+	}
+
+	/*
+	 * Warning: this really is not the best way to interface with MMOCore
+	 * generation. Use instead PlayerRegenResourceEvent to be able to access
+	 * directly the PlayerData without an extra map lookup.
+	 */
+	@Deprecated
+	@EventHandler(priority = EventPriority.HIGH)
+	public void g(PlayerRegenResourceEvent event) {
+		if (event.getResource() == PlayerResource.HEALTH) {
+			EntityRegainHealthEvent bukkitEvent = new EntityRegainHealthEvent(event.getPlayer(), event.getAmount(), RegainReason.REGEN);
+			Bukkit.getPluginManager().callEvent(bukkitEvent);
+			event.setCancelled(bukkitEvent.isCancelled());
+			event.setAmount(bukkitEvent.getAmount());
+		}
 	}
 }
