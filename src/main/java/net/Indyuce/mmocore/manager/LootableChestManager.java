@@ -32,7 +32,11 @@ public class LootableChestManager {
 
 	public LootableChestManager(FileConfiguration config) {
 		for (String key : config.getKeys(false))
-			register(new LootableChest(config.getConfigurationSection(key)));
+			try {
+				register(new LootableChest(config.getConfigurationSection(key)));
+			} catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not register loot chest '" + key + "': " + exception.getMessage());
+			}
 
 		if (runnable != null)
 			runnable.cancel();
@@ -48,10 +52,8 @@ public class LootableChestManager {
 	}
 
 	public void register(LootableChest chest) {
-		if (chest.isValid()) {
-			map.add(chest);
-			chest.whenClosed(false);
-		}
+		map.add(chest);
+		chest.whenClosed(false);
 	}
 
 	public LootableChest getLootableChest(Location loc) {
@@ -66,35 +68,32 @@ public class LootableChestManager {
 	}
 
 	public class LootableChest {
-		private Location loc;
-		private DropTable table;
-		private int regenTime = -1;
+		private final Location loc;
+		private final DropTable table;
+		private final int regenTime;
+		private final Particle effectParticle;
+		private final ChestParticleEffect effect;
+
 		private long lastDisappear;
-		private Particle effectParticle;
-		private ChestParticleEffect effect;
 
 		public LootableChest(ConfigurationSection config) {
-			try {
-				loc = readLocation(config.getName());
-				regenTime = config.getInt("regen-time");
-				table = MMOCore.plugin.dropTableManager.loadDropTable(config.get("drop-table"));
+			loc = readLocation(config.getName());
+			regenTime = config.getInt("regen-time");
+			table = MMOCore.plugin.dropTableManager.loadDropTable(config.get("drop-table"));
 
-				if (config.contains("effect")) {
-					String format = config.getString("effect.particle");
-					Validate.notNull(format, "Particle is missing particle");
-					effectParticle = Particle.valueOf(format.toUpperCase().replace("-", "_"));
+			if (config.contains("effect")) {
+				String format = config.getString("effect.particle");
+				Validate.notNull(format, "Particle is missing particle");
+				effectParticle = Particle.valueOf(format.toUpperCase().replace("-", "_"));
 
-					format = config.getString("effect.type");
-					Validate.notNull(format, "Particle is missing effect type");
-					effect = ChestParticleEffect.valueOf(format.toUpperCase().replace("-", "_"));
-				}
-			} catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
-				MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't read the loot chest config '" + config.getName() + "':" + exception.getMessage());
+				format = config.getString("effect.type");
+				Validate.notNull(format, "Particle is missing effect type");
+				effect = ChestParticleEffect.valueOf(format.toUpperCase().replace("-", "_"));
+
+			} else {
+				effectParticle = null;
+				effect = null;
 			}
-		}
-
-		public boolean isValid() {
-			return loc != null && table != null && regenTime > -1;
 		}
 
 		public boolean hasEffect() {
@@ -126,7 +125,7 @@ public class LootableChestManager {
 				loc.getWorld().playSound(loc, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
 				loc.getWorld().spawnParticle(Particle.CRIT, loc.clone().add(.5, .5, .5), 16, 0, 0, 0, .5);
 			}
-			if(loc.getBlock().getState() instanceof Chest)
+			if (loc.getBlock().getState() instanceof Chest)
 				((Chest) loc.getBlock().getState()).getBlockInventory().clear();
 			loc.getBlock().setType(Material.AIR);
 			lastDisappear = System.currentTimeMillis();
