@@ -82,11 +82,11 @@ public class CustomBlockManager extends MMOManager {
 		if(MMOCore.plugin.isMILoaded() && info.getRegen().getCustomRegenBlockID() != 0) {
 			CustomBlock block = MMOItems.plugin.getCustomBlocks().getBlock(info.getRegen().getCustomRegenBlockID());
 			info.getLocation().getBlock().setType(block.getType());
-			info.getLocation().getBlock().setBlockData(block.getBlockData());
+			if(MMOLib.plugin.getVersion().isStrictlyHigher(1, 12)) info.getLocation().getBlock().setBlockData(block.getBlockData());
 		}
 		else info.getLocation().getBlock().setType(info.getRegen().getTemporaryBlock());
 		if(isPlayerSkull(info.getLocation().getBlock().getType())) {
-			if(isPlayerSkull(info.getRegen().getBlock())) info.getLocation().getBlock().setBlockData(info.getBlockData());
+			if(isPlayerSkull(info.getRegen().getBlock()) && MMOLib.plugin.getVersion().isStrictlyHigher(1, 12)) info.getLocation().getBlock().setBlockData(info.getBlockData());
 			MMOLib.plugin.getNMS().setSkullValue(info.getLocation().getBlock(), info.getRegen().getRegenHeadValue());
 		}
 
@@ -96,7 +96,8 @@ public class CustomBlockManager extends MMOManager {
 	}
 	
 	private void regen(RegenInfo info) {
-		info.getLocation().getBlock().setBlockData(info.getBlockData());
+		if(MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
+			info.getLocation().getBlock().setBlockData(info.getBlockData());
 		if(isPlayerSkull(info.getLocation().getBlock().getType()))
 			MMOLib.plugin.getNMS().setSkullValue(info.getLocation().getBlock(), info.getRegen().getHeadValue());
 		active.remove(info);
@@ -214,6 +215,10 @@ public class CustomBlockManager extends MMOManager {
 
 		public RegenInfo generateRegenInfo(BlockData data, Location loc) {
 			return new RegenInfo(data, loc, this);
+		}
+		
+		public RegenInfo generateRegenInfo(Location loc) {
+			return new RegenInfo(null, loc, this);
 		}
 		
 		public int getCustomBlockID() {
