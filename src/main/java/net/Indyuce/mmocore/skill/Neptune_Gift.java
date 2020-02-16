@@ -17,7 +17,7 @@ public class Neptune_Gift extends Skill implements Listener {
 		setName("Neptune's Gift");
 
 		setMaterial(Material.LILY_PAD);
-		setLore("Resource regeneration is increased by &8{extra} &7when standing in water.");
+		setLore("Resource regeneration is increased by &8{extra}% &7when standing in water.");
 		setPassive();
 
 		addModifier("extra", new LinearValue(30, 5));
