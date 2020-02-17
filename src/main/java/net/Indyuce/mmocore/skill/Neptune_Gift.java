@@ -10,13 +10,14 @@ import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class Neptune_Gift extends Skill implements Listener {
 	public Neptune_Gift() {
 		super("NEPTUNE_GIFT");
 		setName("Neptune's Gift");
 
-		setMaterial(Material.LILY_PAD);
+		setMaterial(VersionMaterial.LILY_PAD.toMaterial());
 		setLore("Resource regeneration is increased by &8{extra}% &7when standing in water.");
 		setPassive();
 
