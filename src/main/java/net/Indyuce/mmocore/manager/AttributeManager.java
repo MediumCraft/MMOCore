@@ -33,7 +33,7 @@ public class AttributeManager extends MMOManager {
 				String path = key.toLowerCase().replace("_", "-").replace(" ", "-");
 				map.put(path, new PlayerAttribute(config.getConfig().getConfigurationSection(key)));
 			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "[PlayerAttributes] Could not load '" + key + "': " + exception.getMessage());
+				MMOCore.log(Level.WARNING, "Could not load attribute '" + key + "': " + exception.getMessage());
 			}
 	}
 
