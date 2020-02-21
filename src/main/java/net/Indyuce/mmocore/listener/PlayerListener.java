@@ -93,7 +93,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void g(PlayerRegenResourceEvent event) {
 		if (event.getResource() == PlayerResource.HEALTH) {
-			EntityRegainHealthEvent bukkitEvent = new EntityRegainHealthEvent(event.getPlayer(), event.getAmount(), RegainReason.REGEN);
+			EntityRegainHealthEvent bukkitEvent = new EntityRegainHealthEvent(event.getPlayer(), event.getAmount(), RegainReason.CUSTOM);
 			Bukkit.getPluginManager().callEvent(bukkitEvent);
 			event.setCancelled(bukkitEvent.isCancelled());
 			event.setAmount(bukkitEvent.getAmount());
