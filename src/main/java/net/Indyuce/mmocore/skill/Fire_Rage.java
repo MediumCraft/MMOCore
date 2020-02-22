@@ -131,7 +131,7 @@ public class Fire_Rage extends Skill {
 					loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
 
 					for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-						if (target.getBoundingBox().expand(.2, .2, .2).contains(loc.toVector()) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
+						if (MMOLib.plugin.getNMS().isInBoundingBox(target, loc) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
 							loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 							loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 							loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
