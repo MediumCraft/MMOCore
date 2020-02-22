@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.gui;
 
+import java.util.Map.Entry;
+
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -8,7 +10,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
@@ -59,15 +60,14 @@ public class AttributeView extends EditableInventory {
 
 			Placeholders holders = new Placeholders();
 			holders.register("name", attribute.getName());
-			holders.register("buffs", attribute.getStats().size());
+			holders.register("buffs", attribute.getBuffs().size());
 			holders.register("spent", inv.getPlayerData().getAttributes().getInstance(attribute).getBase());
 			holders.register("max", attribute.getMax());
 			holders.register("current", total);
 			holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
-			for (StatType stat : attribute.getStats()) {
-				StatModifier buff = attribute.getBuff(stat);
-				holders.register("buff_" + stat.name().toLowerCase(), buff);
-				holders.register("total_" + stat.name().toLowerCase(), buff.multiply(total));
+			for (Entry<String, StatModifier> entry : attribute.getBuffs()) {
+				holders.register("buff_" + entry.getKey().toLowerCase(), entry.getValue());
+				holders.register("total_" + entry.getKey().toLowerCase(), entry.getValue().multiply(total));
 			}
 			return holders;
 		}

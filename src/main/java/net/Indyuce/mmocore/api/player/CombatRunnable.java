@@ -5,20 +5,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
-import net.Indyuce.mmocore.manager.ConfigManager;
 
 public class CombatRunnable extends BukkitRunnable {
 	private final PlayerData player;
 
 	private long lastHit = System.currentTimeMillis();
-	private ConfigManager config;
 
 	public CombatRunnable(PlayerData player) {
 		this.player = player;
 
-		config = MMOCore.plugin.configManager;
-		
-		config.getSimpleMessage("now-in-combat").send(player.getPlayer());
+		MMOCore.plugin.configManager.getSimpleMessage("now-in-combat").send(player.getPlayer());
 		Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, true));
 		runTaskTimer(MMOCore.plugin, 20, 20);
 	}
@@ -29,9 +25,9 @@ public class CombatRunnable extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		if (lastHit + (config.combatLogTimer * 100) < System.currentTimeMillis()) {
+		if (lastHit + (MMOCore.plugin.configManager.combatLogTimer * 1000) < System.currentTimeMillis()) {
 			Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, false));
-			config.getSimpleMessage("leave-combat").send(player.getPlayer());
+			MMOCore.plugin.configManager.getSimpleMessage("leave-combat").send(player.getPlayer());
 			close();
 		}
 	}

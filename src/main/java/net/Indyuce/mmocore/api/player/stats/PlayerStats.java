@@ -36,7 +36,11 @@ public class PlayerStats {
 	}
 
 	public StatInstance getInstance(StatType stat) {
-		return map.getInstance(stat.name());
+		return getInstance(stat.name());
+	}
+
+	public StatInstance getInstance(String stat) {
+		return map.getInstance(stat);
 	}
 
 	/*

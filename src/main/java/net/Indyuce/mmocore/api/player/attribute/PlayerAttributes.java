@@ -156,7 +156,7 @@ public class PlayerAttributes {
 		public void update() {
 			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 			int total = getTotal();
-			attribute.getStats().forEach(stat -> data.getStats().getInstance(stat).addModifier("attribute." + attribute.getId(), attribute.getBuff(stat).multiply(total)));
+			attribute.getBuffs().forEach(buff -> data.getStats().getInstance(buff.getKey()).addModifier("attribute." + attribute.getId(), buff.getValue().multiply(total)));
 		}
 
 		public String getId() {
