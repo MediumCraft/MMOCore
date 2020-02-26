@@ -31,7 +31,7 @@ public class KillMythicMobExperienceSource extends SpecificExperienceSource<Stri
 					@Override
 					public void run() {
 						if (!event.getEntity().isDead()) return;
-						if (!(event.getKiller() instanceof Player)) return;
+						if (!(event.getKiller() instanceof Player) && !event.getKiller().hasMetadata("NPC")) return;
 
 						PlayerData data = PlayerData.get((Player) event.getKiller());
 						for (KillMythicMobExperienceSource source : getSources())
