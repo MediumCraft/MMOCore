@@ -50,7 +50,6 @@ import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
-import net.Indyuce.mmoitems.MMOItems;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.mmogroup.mmolib.MMOLib;
@@ -496,7 +495,7 @@ public class PlayerData extends OfflinePlayerData {
 		}
 
 		// display hologram
-		if (MMOItems.plugin.getConfig().getBoolean("game-indicators.exp.enabled")) {
+		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms")) {
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
 				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
 		}
