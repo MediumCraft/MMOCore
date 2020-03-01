@@ -49,14 +49,14 @@ public class ConfigFile {
 	public void save() {
 		try {
 			config.save(file);
-		} catch (IOException e2) {
-			MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not save " + name + ".yml!");
+		} catch (IOException exception) {
+			MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not save " + name + ".yml: " + exception.getMessage());
 		}
 	}
-	
+
 	public void delete() {
-		if(file.exists())
-			if(!file.delete())
-				MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not delete " + name + ".yml!");
+		if (file.exists())
+			if (!file.delete())
+				MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not delete " + name + ".yml.");
 	}
 }

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.api.player;
 
 import java.util.UUID;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 
 public abstract class OfflinePlayerData {
@@ -26,6 +27,6 @@ public abstract class OfflinePlayerData {
 	public abstract long getLastLogin();
 
 	public static OfflinePlayerData get(UUID uuid) {
-		return PlayerData.isLoaded(uuid) ? PlayerData.get(uuid) : new SimpleOfflinePlayerData(uuid);
+		return MMOCore.plugin.playerDataManager.getOffline(uuid);
 	}
 }

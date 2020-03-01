@@ -9,9 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -19,14 +17,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerCastSkillEvent;
@@ -67,18 +63,19 @@ public class PlayerData extends OfflinePlayerData {
 	private PlayerClass profess;
 	private int level, experience, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
 	private double mana, stamina, stellium;
-	private List<UUID> friends;
 	private Party party;
 	private Guild guild;
-	private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
-	private final List<SkillInfo> boundSkills = new ArrayList<>();
-	private final PlayerAttributes attributes = new PlayerAttributes(this);
-	private final Professions collectSkills = new Professions(this);
+
 	private final PlayerQuests questData;
-	private final Set<String> waypoints = new HashSet<>();
 	private final PlayerStats playerStats;
+	private final List<UUID> friends = new ArrayList<>();
+	private final Set<String> waypoints = new HashSet<>();
 	private final Map<String, Integer> skills = new HashMap<>();
+	private final List<SkillInfo> boundSkills = new ArrayList<>();
+	private final Professions collectSkills = new Professions(this);
 	private final PlayerSkillData skillData = new PlayerSkillData(this);
+	private final PlayerAttributes attributes = new PlayerAttributes(this);
+	private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
 
 	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut;
 
@@ -90,109 +87,12 @@ public class PlayerData extends OfflinePlayerData {
 	public boolean nocd;
 	public CombatRunnable combat;
 
-	private static Map<UUID, PlayerData> playerData = new HashMap<>();
-
-	private PlayerData(Player player) {
+	public PlayerData(Player player) {
 		super(player.getUniqueId());
 
 		setPlayer(player);
 		playerStats = new PlayerStats(this);
-
 		questData = new PlayerQuests(this);
-	}
-
-	public PlayerData load(FileConfiguration config) {
-		this.classPoints = config.getInt("class-points");
-		this.skillPoints = config.getInt("skill-points");
-		this.attributePoints = config.getInt("attribute-points");
-		// this.skillReallocationPoints = config.getInt("skill-realloc-points");
-		this.attributeReallocationPoints = config.getInt("attribute-realloc-points");
-		this.level = config.getInt("level");
-		this.experience = config.getInt("experience");
-		this.profess = config.contains("class") ? MMOCore.plugin.classManager.get(config.getString("class")) : MMOCore.plugin.classManager.getDefaultClass();
-		this.mana = getStats().getStat(StatType.MAX_MANA);
-		this.stamina = getStats().getStat(StatType.MAX_STAMINA);
-		this.stellium = getStats().getStat(StatType.MAX_STELLIUM);
-		if (config.contains("guild"))
-			this.guild = MMOCore.plugin.guildManager.stillInGuild(getUniqueId(), config.getString("guild"));
-		if (config.contains("attribute"))
-			attributes.load(config.getConfigurationSection("attribute"));
-		if (config.contains("profession"))
-			collectSkills.load(config.getConfigurationSection("profession"));
-		if (config.contains("quest"))
-			questData.load(config.getConfigurationSection("quest"));
-		questData.updateBossBar();
-		if (config.contains("waypoints"))
-			waypoints.addAll(config.getStringList("waypoints"));
-		MMOCore.plugin.waypointManager.getDefault().forEach(waypoint -> waypoints.add(waypoint.getId()));
-		this.friends = config.contains("friends") ? config.getStringList("friends").stream().map((str) -> UUID.fromString(str)).collect(Collectors.toList()) : new ArrayList<>();
-		if (config.contains("skill"))
-			config.getConfigurationSection("skill").getKeys(false).forEach(id -> skills.put(id, config.getInt("skill." + id)));
-		if (config.contains("bound-skills"))
-			for (String id : config.getStringList("bound-skills"))
-				if (MMOCore.plugin.skillManager.has(id))
-					boundSkills.add(getProfess().getSkill(id));
-
-		/*
-		 * load class slots, use try so the player can log in.
-		 */
-		if (config.contains("class-info"))
-			for (String key : config.getConfigurationSection("class-info").getKeys(false))
-				try {
-					PlayerClass profess = MMOCore.plugin.classManager.get(key);
-					Validate.notNull(profess, "Could not find class '" + key + "'");
-					applyClassInfo(profess, new SavedClassInformation(config.getConfigurationSection("class-info." + key)));
-				} catch (IllegalArgumentException exception) {
-					log(Level.SEVERE, "Could not load class info " + key + ": " + exception.getMessage());
-				}
-
-		return this;
-	}
-
-	public void saveInConfig(FileConfiguration config) {
-		config.set("class-points", classPoints);
-		config.set("skill-points", skillPoints);
-		config.set("attribute-points", attributePoints);
-		// config.set("skill-realloc-points", skillReallocationPoints);
-		config.set("attribute-realloc-points", attributeReallocationPoints);
-		config.set("level", getLevel());
-		config.set("experience", experience);
-		config.set("class", profess == null ? null : profess.getId());
-		config.set("waypoints", new ArrayList<>(waypoints));
-		config.set("friends", toStringList(friends));
-		config.set("last-login", lastLogin);
-		config.set("guild", guild != null ? guild.getId() : null);
-
-		config.set("skill", null);
-		skills.entrySet().forEach(entry -> config.set("skill." + entry.getKey(), entry.getValue()));
-
-		List<String> boundSkills = new ArrayList<>();
-		this.boundSkills.forEach(skill -> boundSkills.add(skill.getSkill().getId()));
-		config.set("bound-skills", boundSkills);
-
-		config.set("attribute", null);
-		config.createSection("attribute");
-		attributes.save(config.getConfigurationSection("attribute"));
-
-		config.set("profession", null);
-		config.createSection("profession");
-		collectSkills.save(config.getConfigurationSection("profession"));
-
-		config.set("quest", null);
-		config.createSection("quest");
-		questData.save(config.getConfigurationSection("quest"));
-
-		config.set("class-info", null);
-		for (String key : classSlots.keySet()) {
-			SavedClassInformation info = classSlots.get(key);
-			config.set("class-info." + key + ".level", info.getLevel());
-			config.set("class-info." + key + ".experience", info.getExperience());
-			config.set("class-info." + key + ".skill-points", info.getSkillPoints());
-			config.set("class-info." + key + ".attribute-points", info.getAttributePoints());
-			config.set("class-info." + key + ".attribute-realloc-points", info.getAttributeReallocationPoints());
-			info.getSkillKeys().forEach(skill -> config.set("class-info." + key + ".skill." + skill, info.getSkillLevel(skill)));
-			info.getAttributeKeys().forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
-		}
 	}
 
 	/*
@@ -223,28 +123,14 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public static PlayerData get(UUID uuid) {
-		return playerData.get(uuid);
-	}
-
-	public static void remove(Player player) {
-		playerData.remove(player.getUniqueId());
-	}
-
-	public static PlayerData setup(Player player) {
-		if (!playerData.containsKey(player.getUniqueId()))
-			playerData.put(player.getUniqueId(), new PlayerData(player).load(new ConfigFile(player).getConfig()));
-		return get(player).setPlayer(player);
-	}
-
-	public static boolean isLoaded(UUID uuid) {
-		return playerData.containsKey(uuid);
+		return MMOCore.plugin.playerDataManager.get(uuid);
 	}
 
 	public static Collection<PlayerData> getAll() {
-		return playerData.values();
+		return MMOCore.plugin.playerDataManager.getLoaded();
 	}
 
-	private PlayerData setPlayer(Player player) {
+	public PlayerData setPlayer(Player player) {
 		this.player = player;
 		this.lastLogin = System.currentTimeMillis();
 		return this;
@@ -282,6 +168,10 @@ public class PlayerData extends OfflinePlayerData {
 
 	public Party getParty() {
 		return party;
+	}
+
+	public boolean hasGuild() {
+		return guild != null;
 	}
 
 	public Guild getGuild() {
@@ -368,8 +258,16 @@ public class PlayerData extends OfflinePlayerData {
 		return classSlots.containsKey(profess.getId());
 	}
 
+	public Set<String> getSavedClasses() {
+		return classSlots.keySet();
+	}
+
 	public SavedClassInformation getClassInfo(PlayerClass profess) {
-		return classSlots.get(profess.getId());
+		return getClassInfo(profess.getId());
+	}
+
+	public SavedClassInformation getClassInfo(String profess) {
+		return classSlots.get(profess);
 	}
 
 	public void applyClassInfo(PlayerClass profess, SavedClassInformation info) {
@@ -397,8 +295,8 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void heal(double heal) {
-		double current = player.getHealth(), newest = Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
-		if (current == newest)
+		double newest = Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		if (player.getHealth() == newest)
 			return;
 
 		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.HEALTH, heal);
@@ -759,15 +657,6 @@ public class PlayerData extends OfflinePlayerData {
 			combat.update();
 		else
 			combat = new CombatRunnable(this);
-	}
-
-	private List<String> toStringList(List<UUID> list) {
-		if (list.isEmpty())
-			return null;
-
-		List<String> stringList = new ArrayList<>();
-		list.forEach(uuid -> stringList.add(uuid.toString()));
-		return stringList;
 	}
 
 	public SkillResult cast(Skill skill) {

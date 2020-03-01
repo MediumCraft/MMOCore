@@ -78,6 +78,8 @@ import net.Indyuce.mmocore.manager.QuestManager;
 import net.Indyuce.mmocore.manager.RestrictionManager;
 import net.Indyuce.mmocore.manager.SkillManager;
 import net.Indyuce.mmocore.manager.WaypointManager;
+import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.manager.data.YAMLPlayerDataManager;
 import net.Indyuce.mmocore.manager.profession.AlchemyManager;
 import net.Indyuce.mmocore.manager.profession.EnchantManager;
 import net.Indyuce.mmocore.manager.profession.FishingManager;
@@ -96,30 +98,30 @@ import net.mmogroup.mmolib.version.SpigotPlugin;
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
 
-	public final ClassManager classManager = new ClassManager();
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
 	public RestrictionManager restrictionManager;
+	public LootableChestManager chestManager;
+	public RequestManager requestManager;
+	public GuildManager guildManager = new GuildManager();
+	public ConfigItemManager configItems;
+	public SkillManager skillManager;
+	public final ClassManager classManager = new ClassManager();
 	public final DropTableManager dropTableManager = new DropTableManager();
 	public final CustomBlockManager mineManager = new CustomBlockManager();
 	public final BoosterManager boosterManager = new BoosterManager();
-	public LootableChestManager chestManager;
-	public RequestManager requestManager;
 	public final AttributeManager attributeManager = new AttributeManager();
 	public final PartyManager partyManager = new PartyManager();
-	public GuildManager guildManager = new GuildManager();
 	public final QuestManager questManager = new QuestManager();
-	public ConfigItemManager configItems;
-	public SkillManager skillManager;
 	public final ProfessionManager professionManager = new ProfessionManager();
-	// public final SQLManager sqlManager = new SQLManager();
+	public final EntityManager entities = new EntityManager();
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public PlaceholderParser placeholderParser = new DefaultParser();
-	public final EntityManager entities = new EntityManager();
 	public InventoryManager inventoryManager;
 	public RegionHandler regionHandler;
 	public PlayerActionBar actionBarManager;
+	public final PlayerDataManager playerDataManager = new YAMLPlayerDataManager();
 
 	/*
 	 * professions
@@ -160,7 +162,7 @@ public class MMOCore extends JavaPlugin {
 
 		/*
 		 * mmocore stats are functions of the stat base value. the function
-		 * applies all the different stat modifiers saved in the stat map using
+		 * applies all the different stat modifiers saved in the stat map. using
 		 * specific stat instances let MMOLib calculate stats with set base
 		 * value
 		 */
@@ -290,7 +292,7 @@ public class MMOCore extends JavaPlugin {
 		 * the player datas can't recognize what profess the player has and
 		 * professes will be lost
 		 */
-		Bukkit.getOnlinePlayers().forEach(player -> PlayerData.setup(player));
+		Bukkit.getOnlinePlayers().forEach(player -> playerDataManager.setup(player));
 
 		// commands
 		try {
@@ -338,11 +340,8 @@ public class MMOCore extends JavaPlugin {
 			int autosave = getConfig().getInt("auto-save.interval") * 20;
 			new BukkitRunnable() {
 				public void run() {
-					for (PlayerData playerData : PlayerData.getAll()) {
-						ConfigFile config = new ConfigFile(playerData.getUniqueId());
-						playerData.saveInConfig(config.getConfig());
-						config.save();
-					}
+					for (PlayerData loaded : PlayerData.getAll())
+						playerDataManager.saveData(loaded);
 
 					guildManager.save();
 				}
@@ -351,11 +350,9 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		for (PlayerData playerData : PlayerData.getAll()) {
-			ConfigFile config = new ConfigFile(playerData.getUniqueId());
-			playerData.getQuestData().resetBossBar();
-			playerData.saveInConfig(config.getConfig());
-			config.save();
+		for (PlayerData data : PlayerData.getAll()) {
+			data.getQuestData().resetBossBar();
+			playerDataManager.saveData(data);
 		}
 
 		guildManager.save();

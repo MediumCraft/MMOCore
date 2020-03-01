@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
 import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -29,7 +30,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void a(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerData.setup(player).getStats().getMap().updateAll();
+		MMOCore.plugin.playerDataManager.setup(player).getStats().getMap().updateAll();
 	}
 
 	/*
@@ -50,10 +51,10 @@ public class PlayerListener implements Listener {
 	/*
 	 * updates the player's combat log data every time he hits an entity, or
 	 * gets hit by an entity or a projectile sent by another entity. updates
-	 * this stuff on HIGH level so other plugins can check if the player just
+	 * this stuff on LOW level so other plugins can check if the player just
 	 * entered combat
 	 */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void d(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player && !event.getEntity().hasMetadata("NPC"))
 			PlayerData.get((Player) event.getEntity()).updateCombat();
@@ -61,11 +62,9 @@ public class PlayerListener implements Listener {
 		if (event.getDamager() instanceof Player && !event.getDamager().hasMetadata("NPC"))
 			PlayerData.get((Player) event.getDamager()).updateCombat();
 
-		if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player) {
-			if (((Player) ((Projectile) event.getDamager()).getShooter()).hasMetadata("NPC"))
-				return;
-			PlayerData.get((Player) ((Projectile) event.getDamager()).getShooter()).updateCombat();
-		}
+		if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player)
+			if (!((Player) ((Projectile) event.getDamager()).getShooter()).hasMetadata("NPC"))
+				PlayerData.get((Player) ((Projectile) event.getDamager()).getShooter()).updateCombat();
 	}
 
 	@EventHandler
