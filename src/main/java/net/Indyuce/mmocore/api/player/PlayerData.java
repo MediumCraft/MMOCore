@@ -393,7 +393,7 @@ public class PlayerData extends OfflinePlayerData {
 		}
 
 		// display hologram
-		if (MMOCore.plugin.getConfig().getBoolean("game-indicators.exp.enabled"))
+		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
 				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
 

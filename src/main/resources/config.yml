@@ -71,9 +71,7 @@ health-scale:
     scale: 20
 
 # Allows to toggle exp hologram from gaining experiences
-game-indicators:
-    exp:
-        enabled: false
+display-exp-holograms: true
 
 # Players can swap their hotbar with the 9 inventory slots
 # right above it by pressing [swap items] while crouching.
