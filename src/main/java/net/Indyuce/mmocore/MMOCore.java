@@ -59,7 +59,6 @@ import net.Indyuce.mmocore.listener.PlayerListener;
 import net.Indyuce.mmocore.listener.SpellCast;
 import net.Indyuce.mmocore.listener.WaypointsListener;
 import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
-import net.Indyuce.mmocore.listener.option.DisableRegeneration;
 import net.Indyuce.mmocore.listener.option.HealthScale;
 import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
 import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
@@ -273,9 +272,6 @@ public class MMOCore extends JavaPlugin {
 
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
-
-		if (getConfig().getBoolean("disable-vanilla-regen"))
-			Bukkit.getPluginManager().registerEvents(new DisableRegeneration(), this);
 
 		Bukkit.getPluginManager().registerEvents(new WaypointsListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
