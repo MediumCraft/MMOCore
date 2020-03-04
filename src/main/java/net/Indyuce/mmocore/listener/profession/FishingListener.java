@@ -122,6 +122,7 @@ public class FishingListener implements Listener {
 				/*
 				 * lose the catch if the current fish is gone!
 				 */
+				//TODO: Cancelling the event also cancels Rod damage (so it's technically unbreakable)
 				event.setCancelled(true);
 				if (isTimedOut()) {
 					close();

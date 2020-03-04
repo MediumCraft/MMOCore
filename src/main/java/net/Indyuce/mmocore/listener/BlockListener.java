@@ -77,7 +77,8 @@ public class BlockListener implements Listener {
 			 * remove vanilla drops if needed
 			 */
 			if (!info.hasVanillaDrops()) {
-				event.setCancelled(true);
+				event.setDropItems(false); //May not work
+				//event.setCancelled(true);
 				event.getBlock().setType(Material.AIR);
 			}
 
