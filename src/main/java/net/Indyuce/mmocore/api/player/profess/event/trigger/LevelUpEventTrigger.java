@@ -20,29 +20,20 @@ public class LevelUpEventTrigger implements EventTriggerHandler {
 		PlayerData player = event.getData();
 		PlayerClass profess = player.getProfess();
 
-		if (event.hasProfession())
-			for (String event1 : profess.getEventTriggers())
-			{
-				if (event1.startsWith("level-up-") && event1.substring(9).equalsIgnoreCase(event.getProfession().getId())) {
-					profess.getEventTriggers(event1).getTriggers().forEach(trigger -> trigger.apply(player));
-					break;
-				}
-				if (event1.startsWith("level-up-") && event1.substring(9).equalsIgnoreCase(event.getProfession().getId() + "-" + event.getNewLevel())) {
-					profess.getEventTriggers(event1).getTriggers().forEach(trigger -> trigger.apply(player));
-					break;
-				}
-				if (event1.startsWith("level-up-") && event1.substring(9).equalsIgnoreCase(event.getProfession().getId() + "-max")) {
-					if(event.getNewLevel() == profess.getMaxLevel())
-						profess.getEventTriggers(event1).getTriggers().forEach(trigger -> trigger.apply(player));
-				}
-			}
-		
-		if (!event.hasProfession() && profess.hasEventTriggers("level-up"))
-			profess.getEventTriggers("level-up").getTriggers().forEach(trigger -> trigger.apply(player));
-		if (!event.hasProfession() && profess.hasEventTriggers("level-up-" + event.getNewLevel()))
-			profess.getEventTriggers("level-up-" + event.getNewLevel()).getTriggers().forEach(trigger -> trigger.apply(player));
-		if (!event.hasProfession() && profess.hasEventTriggers("level-up-max"))
-			if(event.getNewLevel() == profess.getMaxLevel())
-				profess.getEventTriggers("level-up-max").getTriggers().forEach(trigger -> trigger.apply(player));
+
+		if(event.hasProfession()) {
+			String prof = event.getProfession().getId().toLowerCase();
+			processTrigger(player, profess, "level-up-" + prof);
+			processTrigger(player, profess, "level-up-" + prof + "-" + event.getNewLevel());
+		} else {
+			processTrigger(player, profess, "level-up");
+			processTrigger(player, profess, "level-up-" + event.getNewLevel());
+			if(profess.getMaxLevel() == event.getNewLevel())
+				processTrigger(player, profess, "level-up-max");
+		}
+	}
+	
+	public void processTrigger(PlayerData player, PlayerClass profess, String trigger) {
+		if(profess.hasEventTriggers(trigger)) profess.getEventTriggers(trigger).getTriggers().forEach(t -> t.apply(player));
 	}
 }
