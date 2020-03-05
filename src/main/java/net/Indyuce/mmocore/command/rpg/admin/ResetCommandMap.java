@@ -116,11 +116,11 @@ public class ResetCommandMap extends CommandEnd {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			data.setAttributePoints(0);
-			data.setAttributeReallocationPoints(0);
-			for(PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
-				data.setAttribute(att, 0);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute data was succesfully reset.");
+			data.setSkillPoints(0);
+			MMOCore.plugin.skillManager.getAll().forEach(skill -> data.lockSkill(skill));
+			while (data.hasSkillBound(0))
+				data.unbindSkill(0);
+			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill data was succesfully reset.");
 			return CommandResult.SUCCESS;
 		}
 	}
@@ -144,11 +144,11 @@ public class ResetCommandMap extends CommandEnd {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			data.setSkillPoints(0);
-			MMOCore.plugin.skillManager.getAll().forEach(skill -> data.lockSkill(skill));
-			while (data.hasSkillBound(0))
-				data.unbindSkill(0);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill data was succesfully reset.");
+			data.setAttributePoints(0);
+			data.setAttributeReallocationPoints(0);
+			for(PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
+				data.setAttribute(att, 0);
+			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute data was succesfully reset.");
 			return CommandResult.SUCCESS;
 		}
 	}
