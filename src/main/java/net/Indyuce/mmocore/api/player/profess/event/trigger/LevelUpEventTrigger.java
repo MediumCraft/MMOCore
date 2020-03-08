@@ -20,15 +20,14 @@ public class LevelUpEventTrigger implements EventTriggerHandler {
 		PlayerData player = event.getData();
 		PlayerClass profess = player.getProfess();
 
-		player.getPlayer().sendMessage("Test Message: " + event.getNewLevel());
 		if(event.hasProfession()) {
 			String prof = event.getProfession().getId().toLowerCase();
 			processTrigger(player, profess, "level-up-" + prof);
 			processTrigger(player, profess, "level-up-" + prof + "-" + event.getNewLevel());
 		} else {
 			processTrigger(player, profess, "level-up");
-			processTrigger(player, profess, "level-up-" + event.getNewLevel());
-			if(profess.getMaxLevel() == event.getNewLevel())
+			processTrigger(player, profess, "level-up-" + (event.getNewLevel() - 1));
+			if(profess.getMaxLevel() == (event.getNewLevel() - 1))
 				processTrigger(player, profess, "level-up-max");
 		}
 	}
