@@ -20,7 +20,7 @@ public class LevelUpEventTrigger implements EventTriggerHandler {
 		PlayerData player = event.getData();
 		PlayerClass profess = player.getProfess();
 
-
+		player.getPlayer().sendMessage("Test Message: " + event.getNewLevel());
 		if(event.hasProfession()) {
 			String prof = event.getProfession().getId().toLowerCase();
 			processTrigger(player, profess, "level-up-" + prof);
