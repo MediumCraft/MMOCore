@@ -1,8 +1,10 @@
 package net.Indyuce.mmocore.skill;
 
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
@@ -41,16 +43,22 @@ public class Ice_Spikes extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		IceSpikesCast cast = new IceSpikesCast(data, skill);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || cast.loc == null)
 			return cast;
-
-		Location loc = cast.loc.getHitBlock().getLocation();
+		
+		Location loc;
+		Block hitBlock = cast.loc.getHitBlock();
+		if (hitBlock == null) {
+			Entity hitEntity = cast.loc.getHitEntity();
+			if(hitEntity == null) return cast;
+			else loc = hitEntity.getLocation();
+		}
+		else loc = hitBlock.getLocation();
 
 		double damage = cast.getModifier("damage");
 		int slow = (int) (20 * cast.getModifier("slow"));
 
 		new BukkitRunnable() {
-
 			int j = 0;
 
 			@Override
@@ -86,9 +94,10 @@ public class Ice_Spikes extends Skill {
 
 		public IceSpikesCast(PlayerData data, SkillInfo skill) {
 			super(data, skill);
-			if (isSuccessful() && (loc = data.getPlayer().getWorld().rayTraceEntities(data.getPlayer().getEyeLocation(), 
-					data.getPlayer().getEyeLocation().getDirection(), 30, (entity) -> MMOCoreUtils.canTarget(data.getPlayer(), entity))) == null)
-				abort();
+			if (!isSuccessful()) abort();
+
+			loc = data.getPlayer().getWorld().rayTrace(data.getPlayer().getEyeLocation(), data.getPlayer().getEyeLocation().getDirection(),
+					30, FluidCollisionMode.ALWAYS, true, 1.0D, (entity) -> MMOCoreUtils.canTarget(data.getPlayer(), entity));
 		}
 	}
 }
