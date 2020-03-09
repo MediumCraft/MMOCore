@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.api.player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,6 +10,10 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
@@ -42,6 +47,29 @@ public class Professions {
 			config.set(id + ".level", level.get(id));
 	}
 
+	public String toJsonString() {
+		JsonObject json = new JsonObject();
+		for (Profession prof : MMOCore.plugin.professionManager.getAll()) {
+			JsonObject p = new JsonObject();
+			p.addProperty("exp", getExperience(prof));
+			p.addProperty("level", getLevel(prof));
+
+			json.add(prof.getId(), p);
+		}
+		return json.toString();
+	}
+
+	public void load(String json) {
+		Gson parser = new Gson();
+		JsonObject jo = parser.fromJson(json, JsonObject.class);
+		for (Entry<String, JsonElement> entry : jo.entrySet()) {
+			if (MMOCore.plugin.professionManager.has(entry.getKey())) {
+				exp.put(entry.getKey(), entry.getValue().getAsJsonObject().get("exp").getAsInt());
+				level.put(entry.getKey(), entry.getValue().getAsJsonObject().get("level").getAsInt());
+			}
+		}
+	}
+
 	public PlayerData getPlayerData() {
 		return playerData;
 	}
@@ -54,20 +82,20 @@ public class Professions {
 		return getLevel(profession.getId());
 	}
 
-	public int getExperience(Profession profession) {
-		return getExperience(profession.getId());
-	}
-
 	public int getExperience(String id) {
 		return exp.containsKey(id) ? exp.get(id) : 0;
 	}
 
-	public void setExperience(Profession profession, int value) {
-		exp.put(profession.getId(), value);
+	public int getExperience(Profession profession) {
+		return getExperience(profession.getId());
 	}
 
 	public void setLevel(Profession profession, int value) {
 		level.put(profession.getId(), value);
+	}
+
+	public void setExperience(Profession profession, int value) {
+		exp.put(profession.getId(), value);
 	}
 
 	public void giveLevels(Profession profession, int value) {

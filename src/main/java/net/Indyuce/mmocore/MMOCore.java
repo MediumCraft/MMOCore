@@ -13,9 +13,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
+import net.Indyuce.mmocore.api.data.DataProvider;
+import net.Indyuce.mmocore.api.data.MySQLDataProvider;
+import net.Indyuce.mmocore.api.data.YAMLDataProvider;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.api.util.MMOSQL;
+import net.Indyuce.mmocore.api.util.MMOSQL.MySQLConfig;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.AttributesCommand;
 import net.Indyuce.mmocore.command.ClassCommand;
@@ -37,7 +43,7 @@ import net.Indyuce.mmocore.comp.holograms.CMIPlugin;
 import net.Indyuce.mmocore.comp.holograms.HologramSupport;
 import net.Indyuce.mmocore.comp.holograms.HologramsPlugin;
 import net.Indyuce.mmocore.comp.holograms.HolographicDisplaysPlugin;
-import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsDrops;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsEnableListener;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderAPIParser;
@@ -78,15 +84,12 @@ import net.Indyuce.mmocore.manager.QuestManager;
 import net.Indyuce.mmocore.manager.RestrictionManager;
 import net.Indyuce.mmocore.manager.SkillManager;
 import net.Indyuce.mmocore.manager.WaypointManager;
-import net.Indyuce.mmocore.manager.data.PlayerDataManager;
-import net.Indyuce.mmocore.manager.data.YAMLPlayerDataManager;
 import net.Indyuce.mmocore.manager.profession.AlchemyManager;
 import net.Indyuce.mmocore.manager.profession.EnchantManager;
 import net.Indyuce.mmocore.manager.profession.FishingManager;
 import net.Indyuce.mmocore.manager.profession.ProfessionManager;
 import net.Indyuce.mmocore.manager.profession.SmithingManager;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
-import net.Indyuce.mmocore.manager.social.GuildManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.mmogroup.mmolib.api.stat.StatMap;
@@ -97,13 +100,12 @@ import net.mmogroup.mmolib.version.SpigotPlugin;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
-
+	
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
 	public RestrictionManager restrictionManager;
 	public LootableChestManager chestManager;
 	public RequestManager requestManager;
-	public GuildManager guildManager = new GuildManager();
 	public ConfigItemManager configItems;
 	public SkillManager skillManager;
 	public final ClassManager classManager = new ClassManager();
@@ -121,7 +123,7 @@ public class MMOCore extends JavaPlugin {
 	public InventoryManager inventoryManager;
 	public RegionHandler regionHandler;
 	public PlayerActionBar actionBarManager;
-	public final PlayerDataManager playerDataManager = new YAMLPlayerDataManager();
+	public DataProvider dataProvider = new YAMLDataProvider();
 
 	/*
 	 * professions
@@ -135,7 +137,7 @@ public class MMOCore extends JavaPlugin {
 	public RPGUtilHandler rpgUtilHandler = new DefaultRPGUtilHandler();
 
 	private boolean miLoaded, miChecked;
-
+	
 	public void onLoad() {
 		plugin = this;
 
@@ -174,10 +176,11 @@ public class MMOCore extends JavaPlugin {
 			}
 		});
 
-		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
-			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
-			getLogger().log(Level.INFO, "Hooked onto MythicMobs");
-		}
+		if(getConfig().contains("mysql") && getConfig().getBoolean("mysql.enabled") &&
+			MMOSQL.testConnection(new MySQLConfig(getConfig().getConfigurationSection("mysql"))))
+			dataProvider = new MySQLDataProvider();
+				
+		Bukkit.getPluginManager().registerEvents(new MythicMobsEnableListener(), this);
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
@@ -292,7 +295,7 @@ public class MMOCore extends JavaPlugin {
 		 * the player datas can't recognize what profess the player has and
 		 * professes will be lost
 		 */
-		Bukkit.getOnlinePlayers().forEach(player -> playerDataManager.setup(player));
+		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player));
 
 		// commands
 		try {
@@ -341,21 +344,24 @@ public class MMOCore extends JavaPlugin {
 			new BukkitRunnable() {
 				public void run() {
 					for (PlayerData loaded : PlayerData.getAll())
-						playerDataManager.saveData(loaded);
+						dataProvider.getDataManager().saveData(loaded);
 
-					guildManager.save();
+					for (Guild guild : dataProvider.getGuildManager().getAll())
+						dataProvider.getGuildManager().save(guild);
 				}
 			}.runTaskTimerAsynchronously(MMOCore.plugin, autosave, autosave);
 		}
 	}
 
-	public void onDisable() {
+	public void onDisable() {		
 		for (PlayerData data : PlayerData.getAll()) {
 			data.getQuestData().resetBossBar();
-			playerDataManager.saveData(data);
+			dataProvider.getDataManager().saveData(data);
 		}
 
-		guildManager.save();
+		for (Guild guild : dataProvider.getGuildManager().getAll())
+			dataProvider.getGuildManager().save(guild);
+		MMOSQL.stop();
 
 		mineManager.resetRemainingBlocks();
 	}
@@ -373,9 +379,6 @@ public class MMOCore extends JavaPlugin {
 
 		partyManager.clear();
 		partyManager.reload();
-
-		guildManager.clear();
-		guildManager.reload();
 
 		attributeManager.clear();
 		attributeManager.reload();

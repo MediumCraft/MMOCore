@@ -1,16 +1,20 @@
 package net.Indyuce.mmocore.api.data;
 
+import net.Indyuce.mmocore.api.util.MMOSQL;
 import net.Indyuce.mmocore.manager.data.GuildDataManager;
+import net.Indyuce.mmocore.manager.data.MySQLPlayerDataManager;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.YAMLGuildDataManager;
-import net.Indyuce.mmocore.manager.data.YAMLPlayerDataManager;
 
-public class YAMLDataProvider implements DataProvider {
-	private final YAMLPlayerDataManager playerManager;
+public class MySQLDataProvider implements DataProvider {
+	private final MySQLPlayerDataManager playerManager;
 	private final YAMLGuildDataManager guildManager;
-	public YAMLDataProvider() {
-		playerManager = new YAMLPlayerDataManager();
+	
+	public MySQLDataProvider() {
+		playerManager = new MySQLPlayerDataManager();
 		guildManager = new YAMLGuildDataManager();
+		
+		MMOSQL.createTables();
 	}
 	
 	@Override

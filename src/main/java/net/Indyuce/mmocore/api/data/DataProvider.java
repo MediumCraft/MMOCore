@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.api.data;
 
+import net.Indyuce.mmocore.manager.data.GuildDataManager;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
-import net.Indyuce.mmocore.manager.social.GuildManager;
 
 public interface DataProvider {
 
@@ -12,7 +12,6 @@ public interface DataProvider {
 	 * data
 	 */
 
-	PlayerDataManager provideDataManager();
-
-	GuildManager provideGuildManager();
+	PlayerDataManager getDataManager();
+	GuildDataManager getGuildManager();
 }

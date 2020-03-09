@@ -48,7 +48,7 @@ public class GuildCommand extends BukkitCommand {
 				return true;
 			}
 
-			if (!MMOCore.plugin.guildManager.isRegistered(((GuildInvite) request).getGuild())) {
+			if (!MMOCore.plugin.dataProvider.getGuildManager().isRegistered(((GuildInvite) request).getGuild())) {
 				MMOCore.plugin.requestManager.unregisterRequest(uuid);
 				return true;
 			}

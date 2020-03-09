@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -81,7 +80,7 @@ public class Guild {
 
 			// disband the guild if no member left
 			if (members.count() < 1) {
-				MMOCore.plugin.guildManager.unregisterGuild(this);
+				MMOCore.plugin.dataProvider.getGuildManager().unregisterGuild(this);
 				return;
 			}
 
@@ -121,18 +120,6 @@ public class Guild {
 		Request request = new GuildInvite(this, inviter, target);
 		new ConfigMessage("guild-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
 		MMOCore.plugin.requestManager.registerRequest(request);
-	}
-
-	public void saveInConfig(FileConfiguration config) {
-		config.set("name", guildName);
-		config.set("tag", guildTag);
-		config.set("owner", owner.toString());
-		
-		List<String> memberList = new ArrayList<>();
-		for(UUID uuid : members.members)
-			memberList.add(uuid.toString());
-			
-		config.set("members", memberList);
 	}
 	
 	public class GuildMembers {

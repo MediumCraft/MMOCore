@@ -13,7 +13,7 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.manager.social.GuildManager.GuildConfiguration.NamingRules;
+import net.Indyuce.mmocore.manager.data.GuildDataManager.GuildConfiguration.NamingRules;
 
 public class EditableGuildCreation extends EditableInventory {
 	public EditableGuildCreation() {
@@ -41,16 +41,16 @@ public class EditableGuildCreation extends EditableInventory {
 
 			if (item.getFunction().equals("create")) {
 				MMOCore.plugin.configManager.newPlayerInput(player, InputType.GUILD_CREATION_TAG, (input) -> {
-					if(MMOCore.plugin.guildManager.getConfig().shouldUppercaseTags())
+					if(MMOCore.plugin.dataProvider.getGuildManager().getConfig().shouldUppercaseTags())
 						input = input.toUpperCase();
 						
-					if(check(player, input, MMOCore.plugin.guildManager.getConfig().getTagRules())) {
+					if(check(player, input, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getTagRules())) {
 						String tag = input;
 						
 						MMOCore.plugin.configManager.newPlayerInput(player, InputType.GUILD_CREATION_NAME, (name) -> {								
-							if(check(player, name, MMOCore.plugin.guildManager.getConfig().getNameRules())) {
-								MMOCore.plugin.guildManager.newRegisteredGuild(playerData.getUniqueId(), name, tag);
-								MMOCore.plugin.guildManager.getGuild(tag.toLowerCase()).addMember(playerData.getUniqueId());
+							if(check(player, name, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getNameRules())) {
+								MMOCore.plugin.dataProvider.getGuildManager().newRegisteredGuild(playerData.getUniqueId(), name, tag);
+								MMOCore.plugin.dataProvider.getGuildManager().getGuild(tag.toLowerCase()).addMember(playerData.getUniqueId());
 
 								InventoryManager.GUILD_VIEW.newInventory(playerData).open();
 								player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -77,7 +77,7 @@ public class EditableGuildCreation extends EditableInventory {
 		
 		if(input.length() <= rules.getMax() && input.length() >= rules.getMin())
 			if(input.matches(rules.getRegex()))
-				if(!MMOCore.plugin.guildManager.isRegistered(input))
+				if(!MMOCore.plugin.dataProvider.getGuildManager().isRegistered(input))
 					return true;
 				else
 					reason = MMOCore.plugin.configManager.getSimpleMessage("guild-creation.reasons.already-taken").message();

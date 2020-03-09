@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
@@ -34,7 +35,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
 		data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
 		if (config.contains("guild"))
-			data.setGuild(MMOCore.plugin.guildManager.stillInGuild(data.getUniqueId(), config.getString("guild")));
+			data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), config.getString("guild")));
 		if (config.contains("attribute"))
 			data.getAttributes().load(config.getConfigurationSection("attribute"));
 		if (config.contains("profession"))
@@ -118,5 +119,10 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		}
 
 		file.save();
+	}
+
+	@Override
+	public OfflinePlayerData getOffline(UUID uuid) {
+		return isLoaded(uuid) ? get(uuid) : new YAMLOfflinePlayerData(uuid);
 	}
 }

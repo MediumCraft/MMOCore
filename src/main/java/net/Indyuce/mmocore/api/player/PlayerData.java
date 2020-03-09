@@ -123,11 +123,11 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public static PlayerData get(UUID uuid) {
-		return MMOCore.plugin.playerDataManager.get(uuid);
+		return MMOCore.plugin.dataProvider.getDataManager().get(uuid);
 	}
 
 	public static Collection<PlayerData> getAll() {
-		return MMOCore.plugin.playerDataManager.getLoaded();
+		return MMOCore.plugin.dataProvider.getDataManager().getLoaded();
 	}
 
 	public PlayerData setPlayer(Player player) {

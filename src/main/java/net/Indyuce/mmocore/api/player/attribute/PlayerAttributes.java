@@ -3,11 +3,16 @@ package net.Indyuce.mmocore.api.player.attribute;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -38,6 +43,31 @@ public class PlayerAttributes {
 
 	public void save(ConfigurationSection config) {
 		extra.values().forEach(ins -> config.set(ins.id, ins.getBase()));
+	}
+
+	public String toJsonString() {
+		JsonObject json = new JsonObject();
+		for (AttributeInstance ins : extra.values())
+			json.addProperty(ins.getId(), ins.getBase());
+		return json.toString();
+	}
+
+	public void load(String json) {
+		Gson parser = new Gson();
+		JsonObject jo = parser.fromJson(json, JsonObject.class);
+		for (Entry<String, JsonElement> entry : jo.entrySet()) {
+			try {
+				String id = entry.getKey().toLowerCase().replace("_", "-").replace(" ", "-");
+				Validate.isTrue(MMOCore.plugin.attributeManager.has(id), "Could not find attribute '" + id + "'");
+
+				PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
+				AttributeInstance ins = new AttributeInstance(attribute);
+				ins.setBase(entry.getValue().getAsInt());
+				extra.put(id, ins);
+			} catch (IllegalArgumentException exception) {
+				data.log(Level.WARNING, exception.getMessage());
+			}
+		}
 	}
 
 	public PlayerData getData() {

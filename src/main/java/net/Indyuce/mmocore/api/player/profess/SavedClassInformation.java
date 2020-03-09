@@ -2,9 +2,13 @@ package net.Indyuce.mmocore.api.player.profess;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
@@ -25,12 +29,30 @@ public class SavedClassInformation {
 
 		attributes = new HashMap<>();
 		if (config.contains("attribute"))
-			config.getKeys(false).forEach(key -> attributes.put(key, config.getInt(key)));
+			config.getConfigurationSection("attribute").getKeys(false).forEach(key -> attributes.put(key, config.getInt(key)));
 		skills = new HashMap<>();
 		if (config.contains("skill"))
-			config.getKeys(false).forEach(key -> skills.put(key, config.getInt(key)));
+			config.getConfigurationSection("skill").getKeys(false).forEach(key -> skills.put(key, config.getInt(key)));
 	}
 
+	public SavedClassInformation(JsonObject json) {
+		level = json.get("level").getAsInt();
+		experience = json.get("experience").getAsInt();
+		skillPoints = json.get("skill-points").getAsInt();
+		attributePoints = json.get("attribute-points").getAsInt();
+		attributeReallocationPoints = json.get("attribute-realloc-points").getAsInt();
+
+		attributes = new HashMap<>();
+		if (json.has("attribute"))
+			for(Entry<String, JsonElement> entry : json.getAsJsonObject("attribute").entrySet())
+				attributes.put(entry.getKey(), entry.getValue().getAsInt());
+		skills = new HashMap<>();
+		if (json.has("skill"))
+			for(Entry<String, JsonElement> entry : json.getAsJsonObject("skill").entrySet())
+				skills.put(entry.getKey(), entry.getValue().getAsInt());
+			
+	}
+	
 	public SavedClassInformation(PlayerData player) {
 		level = player.getLevel();
 		skillPoints = player.getSkillPoints();

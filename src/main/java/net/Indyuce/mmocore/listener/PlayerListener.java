@@ -30,7 +30,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void a(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		MMOCore.plugin.playerDataManager.setup(player).getStats().getMap().updateAll();
+		MMOCore.plugin.dataProvider.getDataManager().setup(player).getStats().getMap().updateAll();
 	}
 
 	/*

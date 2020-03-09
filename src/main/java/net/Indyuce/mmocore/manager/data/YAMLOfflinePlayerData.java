@@ -1,20 +1,21 @@
-package net.Indyuce.mmocore.api.player;
+package net.Indyuce.mmocore.manager.data;
 
 import java.util.List;
 import java.util.UUID;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 
-public class SimpleOfflinePlayerData extends OfflinePlayerData {
+public class YAMLOfflinePlayerData extends OfflinePlayerData {
 	private final ConfigFile config;
 
 	/*
 	 * supports offline player data operations like friend removals which can't
 	 * be handled when their player data is not loaded in the data map.
 	 */
-	public SimpleOfflinePlayerData(UUID uuid) {
+	public YAMLOfflinePlayerData(UUID uuid) {
 		super(uuid);
 
 		config = new ConfigFile(uuid);

@@ -178,7 +178,7 @@ public class EditableGuildView extends EditableInventory {
 			if (item.getFunction().equals("disband")) {
 				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
 					return;
-				MMOCore.plugin.guildManager.unregisterGuild(playerData.getGuild());
+				MMOCore.plugin.dataProvider.getGuildManager().unregisterGuild(playerData.getGuild());
 				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 				player.closeInventory();
 				return;

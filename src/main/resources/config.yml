@@ -7,6 +7,16 @@ auto-save:
     # In seconds (1800 = 30 minutes)
     interval: 1800
 
+# MySQL Support
+mysql:
+  enabled: false
+  database: minecraft
+  host: localhost
+  port: 3306
+  user: mmolover
+  pass: ILoveAria
+  flags: "?allowReconnect=true"
+
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply.
 # Set to 'custom-mine-conditions: []' for no condition.

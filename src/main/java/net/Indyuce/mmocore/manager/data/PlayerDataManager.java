@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.SimpleOfflinePlayerData;
 
 public abstract class PlayerDataManager {
 	private final Map<UUID, PlayerData> map = new HashMap<>();
@@ -23,9 +22,7 @@ public abstract class PlayerDataManager {
 		return map.get(uuid);
 	}
 
-	public OfflinePlayerData getOffline(UUID uuid) {
-		return isLoaded(uuid) ? get(uuid) : new SimpleOfflinePlayerData(uuid);
-	}
+	public abstract OfflinePlayerData getOffline(UUID uuid);
 
 	public PlayerData setup(Player player) {
 
