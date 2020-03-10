@@ -27,6 +27,9 @@ display:
     - '&7  Mana Regen: &90.166 &7(+&90&7)'
     item: ENCHANTED_GOLDEN_APPLE:0 # Supports custom model data/texture by durability
 
+# Must match an existing exp curve filename from the 'expcurves' folder
+exp-curve: levels
+
 # Players cannot go further than Lvl 100
 max-level: 100
 

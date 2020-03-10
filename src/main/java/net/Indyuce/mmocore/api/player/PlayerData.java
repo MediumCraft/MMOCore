@@ -218,13 +218,13 @@ public class PlayerData extends OfflinePlayerData {
 	public void giveLevels(int value) {
 		int total = 0;
 		while (value-- > 0)
-			total += MMOCore.plugin.configManager.getNeededExperience(getLevel() + value + 1);
+			total += MMOCore.plugin.configManager.getNeededExperience(getLevel() + value + 1, profess);
 		giveExperience(total);
 	}
 
 	public void setExperience(int value) {
 		experience = Math.max(0, value);
-		refreshVanillaExp(MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1));
+		refreshVanillaExp(MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, profess));
 	}
 
 	public void refreshVanillaExp(float needed) {
@@ -409,7 +409,7 @@ public class PlayerData extends OfflinePlayerData {
 
 		int needed;
 		boolean check = false;
-		while (experience >= (needed = MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1))) {
+		while (experience >= (needed = MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, profess))) {
 
 			if (hasReachedMaxLevel()) {
 				experience = 0;

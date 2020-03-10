@@ -101,7 +101,7 @@ public class Professions {
 	public void giveLevels(Profession profession, int value) {
 		int total = 0, level = getLevel(profession);
 		while (value-- > 0)
-			total += MMOCore.plugin.configManager.getNeededExperience(level + value + 1);
+			total += MMOCore.plugin.configManager.getNeededExperience(level + value + 1, profession);
 		giveExperience(profession, total);
 	}
 
@@ -121,11 +121,11 @@ public class Professions {
 
 		int needed, exp, level;
 		boolean check = false;
-		while ((exp = this.exp.get(profession.getId())) >= (needed = MMOCore.plugin.configManager.getNeededExperience((level = getLevel(profession)) + 1))) {
+		while ((exp = this.exp.get(profession.getId())) >= (needed = MMOCore.plugin.configManager.getNeededExperience((level = getLevel(profession)) + 1, profession))) {
 			this.exp.put(profession.getId(), exp - needed);
 			this.level.put(profession.getId(), level + 1);
 			check = true;
-			playerData.giveExperience((int) profession.getExperience().calculate(level));
+			playerData.giveExperience((int) profession.getExperience().calculate(level), null);
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, level + 1));
 
 			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level + 1), "profession", profession.getName()).send(playerData.getPlayer());

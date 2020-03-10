@@ -30,6 +30,9 @@ display:
     - '&7  Rage Degeneration: &9-0.5&7/s'
     item: IRON_SWORD:0 # Supports custom model data/texture by durability
 
+# Must match an existing exp curve filename from the 'expcurves' folder
+exp-curve: levels
+
 # Players cannot go further than Lvl 100
 max-level: 100
 

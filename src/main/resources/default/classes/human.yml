@@ -9,6 +9,9 @@ options:
     off-combat-health-regen: false
     off-combat-mana-regen: false
 
+# Must match an existing exp curve filename from the 'expcurves' folder
+exp-curve: levels
+
 mana:
     char: ■
     color: BLUE

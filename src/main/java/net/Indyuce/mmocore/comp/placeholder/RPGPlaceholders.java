@@ -38,7 +38,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 
 		else if (identifier.equals("level_percent")) {
 			PlayerData playerData = PlayerData.get(player);
-			double current = playerData.getExperience(), next = MMOCore.plugin.configManager.getNeededExperience(playerData.getLevel() + 1);
+			double current = playerData.getExperience(), next = MMOCore.plugin.configManager.getNeededExperience(playerData.getLevel() + 1, playerData.getProfess());
 			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
 		}
 
@@ -57,7 +57,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 		else if (identifier.startsWith("profession_percent_")) {
 			Professions professions = PlayerData.get(player).getCollectionSkills();
 			String profession = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
-			double current = professions.getExperience(profession), next = MMOCore.plugin.configManager.getNeededExperience(professions.getLevel(profession) + 1);
+			double current = professions.getExperience(profession), next = MMOCore.plugin.configManager.getNeededExperience(professions.getLevel(profession) + 1, profession);
 			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
 		}
 
@@ -71,7 +71,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 			return "" + PlayerData.get(player).getExperience();
 
 		else if (identifier.equals("next_level"))
-			return "" + MMOCore.plugin.configManager.getNeededExperience(PlayerData.get(player).getLevel() + 1);
+			return "" + MMOCore.plugin.configManager.getNeededExperience(PlayerData.get(player).getLevel() + 1, PlayerData.get(player).getProfess());
 
 		else if (identifier.equals("class_points"))
 			return "" + PlayerData.get(player).getClassPoints();

@@ -15,10 +15,10 @@ import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.mmogroup.mmolib.MMOLib;
 
 public class Profession {
-	private final String id, name;
+	private final String id, name, expCurve;
 
 	private final LinearValue experience;
-
+	
 	/*
 	 * removed when loaded
 	 */
@@ -31,6 +31,7 @@ public class Profession {
 		this.name = config.getString("name");
 		Validate.notNull(name, "Could not load name");
 
+		expCurve = config.getString("exp-curve", "levels");
 		experience = new LinearValue(config.getConfigurationSection("experience"));
 
 		if (config.contains("exp-sources"))
@@ -109,6 +110,10 @@ public class Profession {
 		return name;
 	}
 
+	public String getEXPCurve() {
+		return expCurve;
+	}
+	
 	public int calculateExperience(int x) {
 		return (int) experience.calculate(x);
 	}

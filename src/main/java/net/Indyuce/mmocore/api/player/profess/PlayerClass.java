@@ -41,7 +41,7 @@ import net.Indyuce.mmocore.manager.ClassManager;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class PlayerClass {
-	private final String name, id, fileName;
+	private final String name, id, fileName, expCurve;
 	private final List<String> description = new ArrayList<>(), attrDescription = new ArrayList<>();
 	private final ItemStack icon;
 	private final Map<ClassOption, Boolean> options = new HashMap<>();
@@ -94,6 +94,7 @@ public class PlayerClass {
 		manaDisplay = new ManaDisplayOptions(config.getConfigurationSection("mana"));
 		maxLevel = config.getInt("max-level");
 		displayOrder = config.getInt("display-order");
+		expCurve = config.getString("exp-curve", "levels");
 
 		if (config.contains("attributes"))
 			for (String key : config.getConfigurationSection("attributes").getKeys(false))
@@ -175,6 +176,7 @@ public class PlayerClass {
 		manaDisplay = new ManaDisplayOptions(ChatColor.BLUE, "Mana", AltChar.listSquare.charAt(0));
 		maxLevel = 0;
 		displayOrder = 0;
+		expCurve = "";
 
 		this.icon = new ItemStack(material);
 		setOption(ClassOption.DISPLAY, false);
@@ -213,6 +215,10 @@ public class PlayerClass {
 
 	public int getDisplayOrder() {
 		return displayOrder;
+	}
+
+	public String getEXPCurve() {
+		return expCurve;
 	}
 
 	public String getFileName() {

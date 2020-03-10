@@ -8,7 +8,9 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -18,7 +20,9 @@ import org.bukkit.util.Consumer;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.util.input.AnvilGUI;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
@@ -35,7 +39,7 @@ public class ConfigManager {
 	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
 
-	private List<Integer> neededExp = new ArrayList<>();
+	private Map<String, List<Integer>> neededExp = new HashMap<String, List<Integer>>();
 	private FileConfiguration messages;
 	private boolean chatInput;
 
@@ -78,11 +82,15 @@ public class ConfigManager {
 			loadDefaultFile("classes", "rogue.yml");
 			loadDefaultFile("classes", "warrior.yml");
 		}
+		
+		if (!new File(MMOCore.plugin.getDataFolder() + "/expcurves").exists()) {
+			loadDefaultFile("expcurves", "levels.txt");
+			loadDefaultFile("expcurves", "mining.txt");
+		}
 
 		loadDefaultFile("attributes.yml");
 		loadDefaultFile("items.yml");
 		loadDefaultFile("messages.yml");
-		loadDefaultFile("levels.txt");
 		loadDefaultFile("stats.yml");
 		loadDefaultFile("waypoints.yml");
 		loadDefaultFile("restrictions.yml");
@@ -111,18 +119,22 @@ public class ConfigManager {
 		staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
 		
 		neededExp.clear();
-		int line = 0;
-		try {
-			line++;
-			File txt = new File(MMOCore.plugin.getDataFolder(), "levels.txt");
-			BufferedReader reader = new BufferedReader(new FileReader(txt));
-			String readLine;
-			while ((readLine = reader.readLine()) != null)
-				neededExp.add(Integer.valueOf(readLine));
-			reader.close();
-		} catch (IOException | IllegalArgumentException e) {
-			MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not read line " + line + " from levels.txt");
-			e.printStackTrace();
+		for(File txt : new File(MMOCore.plugin.getDataFolder() + "/expcurves").listFiles()) {
+			int line = 0;
+			try {
+				line++;
+				//File txt = new File(MMOCore.plugin.getDataFolder(), "levels.txt");
+				BufferedReader reader = new BufferedReader(new FileReader(txt));
+				String readLine;
+				List<Integer> levels = new ArrayList<>();
+				while ((readLine = reader.readLine()) != null)
+					levels.add(Integer.valueOf(readLine));
+				neededExp.put(txt.getName().toLowerCase().replace(".txt", ""), levels);
+				reader.close();
+			} catch (IOException | IllegalArgumentException e) {
+				MMOCore.plugin.getLogger().log(Level.SEVERE, "Could not read line " + line + " from " + txt.getName());
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -166,10 +178,24 @@ public class ConfigManager {
 			}
 	}
 
-	public int getNeededExperience(int level) {
-		return neededExp.get(level - 1 >= neededExp.size() ? neededExp.size() - 1 : level - 1);
+	public int getNeededExperience(int level, PlayerClass clas) {
+		if(clas == null) return getNeededExperience(level, MMOCore.plugin.classManager.getDefaultClass().getEXPCurve());
+		return getNeededExperience(level, clas.getEXPCurve());
 	}
 
+	public int getNeededExperience(int level, Profession prof) {
+		return getNeededExperience(level, prof.getEXPCurve());
+	}
+
+	public int getNeededExperience(int level, String curve) {
+		List<Integer> expCurve = neededExp.get(curve);
+		if(expCurve == null) {
+			MMOCore.log(Level.SEVERE, "Couldn't load EXPCurve: '" + curve + "'. Does it exist?");
+			return 1;
+		}
+		return expCurve.get(level - 1 >= expCurve.size() ? expCurve.size() - 1 : level - 1);
+	}
+	
 	public List<String> getMessage(String key) {
 		return messages.getStringList(key);
 	}

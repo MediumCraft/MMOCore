@@ -26,6 +26,9 @@ display:
     - '&7  Mana Regen: &90.2 &7(+&90.04&7)'
     item: BLAZE_POWDER
 
+# Must match an existing exp curve filename from the 'expcurves' folder
+exp-curve: levels
+
 # Players cannot go further than Lvl 100
 max-level: 100
 
