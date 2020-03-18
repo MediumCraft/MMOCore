@@ -1,7 +1,10 @@
-package net.Indyuce.mmocore.manager.data;
+package net.Indyuce.mmocore.manager.data.mysql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -19,58 +22,64 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.api.util.MMOSQL;
-import net.Indyuce.mmocore.api.util.MMOSQL.Table;
+import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
 
 public class MySQLPlayerDataManager extends PlayerDataManager {
+	private final MySQLDataProvider provider;
+
+	public MySQLPlayerDataManager(MySQLDataProvider provider) {
+		this.provider = provider;
+	}
+
 	@Override
 	public void loadData(PlayerData data) {
-		ResultSet result = MMOSQL.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';");
-		if(result == null)
+		ResultSet result = provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';");
+		if (result == null)
 			MMOCore.log(Level.SEVERE, "Failed to load playerdata from MySQL!");
 		try {
-			if(!result.next()) {
+			if (!result.next()) {
 				return;
 			}
 			Gson parser = new Gson();
-			
+
 			data.setClassPoints(result.getInt("class_points"));
 			data.setSkillPoints(result.getInt("skill_points"));
 			data.setAttributePoints(result.getInt("attribute_points"));
 			data.setAttributeReallocationPoints(result.getInt("attribute_realloc_points"));
 			data.setLevel(result.getInt("level"));
 			data.setExperience(result.getInt("experience"));
-			if(!isEmpty(result.getString("class")))
+			if (!isEmpty(result.getString("class")))
 				data.setProfess(MMOCore.plugin.classManager.get(result.getString("class")));
 			data.setMana(data.getStats().getStat(StatType.MAX_MANA));
 			data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
 			data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
-			if(!isEmpty(result.getString("guild")))
+			if (!isEmpty(result.getString("guild")))
 				data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), result.getString("guild")));
-			if(!isEmpty(result.getString("attributes")))
+			if (!isEmpty(result.getString("attributes")))
 				data.getAttributes().load(result.getString("attributes"));
-			if(!isEmpty(result.getString("professions")))
+			if (!isEmpty(result.getString("professions")))
 				data.getCollectionSkills().load(result.getString("professions"));
 			String quests = result.getString("quests");
-			if(!isEmpty(quests)) 
+			if (!isEmpty(quests))
 				data.getQuestData().load(quests);
 			data.getQuestData().updateBossBar();
-			if(!isEmpty(result.getString("waypoints")))
-				data.getWaypoints().addAll(MMOSQL.getJSONArray(result.getString("waypoints")));
-			if(!isEmpty(result.getString("friends")))
-				MMOSQL.getJSONArray(result.getString("friends")).forEach(str -> data.getFriends().add(UUID.fromString(str)));
-			if(!isEmpty(result.getString("skills"))) {
+			if (!isEmpty(result.getString("waypoints")))
+				data.getWaypoints().addAll(getJSONArray(result.getString("waypoints")));
+			if (!isEmpty(result.getString("friends")))
+				getJSONArray(result.getString("friends")).forEach(str -> data.getFriends().add(UUID.fromString(str)));
+			if (!isEmpty(result.getString("skills"))) {
 				JsonObject object = parser.fromJson(result.getString("skills"), JsonObject.class);
-				for(Entry<String, JsonElement> entry : object.entrySet())
+				for (Entry<String, JsonElement> entry : object.entrySet())
 					data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
 			}
-			if(!isEmpty(result.getString("bound_skills")))
-				for(String skill : MMOSQL.getJSONArray(result.getString("bound_skills")))
-					if(MMOCore.plugin.skillManager.has(skill))
+			if (!isEmpty(result.getString("bound_skills")))
+				for (String skill : getJSONArray(result.getString("bound_skills")))
+					if (MMOCore.plugin.skillManager.has(skill))
 						data.getBoundSkills().add(data.getProfess().getSkill(skill));
-			if(!isEmpty(result.getString("class_info"))) {
+			if (!isEmpty(result.getString("class_info"))) {
 				JsonObject object = parser.fromJson(result.getString("class_info"), JsonObject.class);
-				for(Entry<String, JsonElement> entry : object.entrySet()) {
+				for (Entry<String, JsonElement> entry : object.entrySet()) {
 					try {
 						PlayerClass profess = MMOCore.plugin.classManager.get(entry.getKey());
 						Validate.notNull(profess, "Could not find class '" + entry.getKey() + "'");
@@ -78,7 +87,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 					} catch (IllegalArgumentException exception) {
 						MMOCore.log(Level.WARNING, "Could not load class info '" + entry.getKey() + "': " + exception.getMessage());
 					}
-				}	
+				}
 			}
 		} catch (SQLException e) {
 			MMOCore.log(Level.SEVERE, "Failed to load playerdata from MySQL!");
@@ -87,14 +96,13 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 	}
 
 	private boolean isEmpty(String s) {
-		return s.equalsIgnoreCase("null") || s.equalsIgnoreCase("{}")
-			|| s.equalsIgnoreCase("[]") || s.equalsIgnoreCase("");
+		return s.equalsIgnoreCase("null") || s.equalsIgnoreCase("{}") || s.equalsIgnoreCase("[]") || s.equalsIgnoreCase("");
 	}
 
 	@Override
 	public void saveData(PlayerData data) {
-		MMOSQL sql = new MMOSQL(Table.PLAYERDATA, data.getUniqueId());
-		
+		MySQLTableEditor sql = new MySQLTableEditor(Table.PLAYERDATA, data.getUniqueId());
+
 		sql.updateData("class_points", data.getClassPoints());
 		sql.updateData("skill_points", data.getSkillPoints());
 		sql.updateData("attribute_points", data.getAttributePoints());
@@ -104,7 +112,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		sql.updateData("class", data.getProfess().getId());
 		sql.updateData("last_login", data.getLastLogin());
 		sql.updateData("guild", data.hasGuild() ? data.getGuild().getId() : null);
-		
+
 		sql.updateJSONArray("waypoints", data.getWaypoints());
 		sql.updateJSONArray("friends", data.getFriends().stream().map(uuid -> uuid.toString()).collect(Collectors.toList()));
 		sql.updateJSONArray("bound_skills", data.getBoundSkills().stream().map(skill -> skill.getSkill().getId()).collect(Collectors.toList()));
@@ -117,10 +125,10 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
 		sql.updateData("class_info", createClassInfoData(data).toString());
 	}
-	
+
 	private JsonObject createClassInfoData(PlayerData data) {
 		JsonObject json = new JsonObject();
-		for(String c : data.getSavedClasses()) {
+		for (String c : data.getSavedClasses()) {
 			SavedClassInformation info = data.getClassInfo(c);
 			JsonObject classinfo = new JsonObject();
 			classinfo.addProperty("level", info.getLevel());
@@ -129,22 +137,92 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			classinfo.addProperty("attribute-points", info.getAttributePoints());
 			classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
 			JsonObject skillinfo = new JsonObject();
-			for(String skill : info.getSkillKeys())
+			for (String skill : info.getSkillKeys())
 				skillinfo.addProperty(skill, info.getSkillLevel(skill));
 			classinfo.add("skill", skillinfo);
 			JsonObject attributeinfo = new JsonObject();
-			for(String attribute : info.getAttributeKeys())
+			for (String attribute : info.getAttributeKeys())
 				attributeinfo.addProperty(attribute, info.getAttributeLevel(attribute));
 			classinfo.add("attribute", attributeinfo);
-			
+
 			json.add(c, classinfo);
 		}
-		
+
 		return json;
 	}
 
 	@Override
 	public OfflinePlayerData getOffline(UUID uuid) {
 		return isLoaded(uuid) ? get(uuid) : new MySQLOfflinePlayerData(uuid);
+	}
+
+	private Collection<String> getJSONArray(String json) {
+		Collection<String> collection = new ArrayList<String>();
+		Gson parser = new Gson();
+
+		for (String s : parser.fromJson(json, String[].class))
+			collection.add(s);
+
+		return collection;
+	}
+
+	public class MySQLOfflinePlayerData extends OfflinePlayerData {
+		private int level;
+		private long lastLogin;
+		private PlayerClass profess;
+		private List<UUID> friends;
+
+		public MySQLOfflinePlayerData(UUID uuid) {
+			super(uuid);
+
+			ResultSet result = provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + uuid + "';");
+			try {
+				if (!result.next()) {
+					level = 0;
+					lastLogin = 0;
+					profess = MMOCore.plugin.classManager.getDefaultClass();
+					friends = new ArrayList<UUID>();
+				} else
+					while (result.next()) {
+						level = result.getInt("level");
+						lastLogin = result.getLong("last_login");
+						profess = result.getString("class").equalsIgnoreCase("null") ? MMOCore.plugin.classManager.getDefaultClass() : MMOCore.plugin.classManager.get(result.getString("class"));
+						if (!result.getString("friends").equalsIgnoreCase("null"))
+							getJSONArray(result.getString("friends")).forEach(str -> friends.add(UUID.fromString(str)));
+						else
+							friends = new ArrayList<UUID>();
+					}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void removeFriend(UUID uuid) {
+			friends.remove(uuid);
+			new MySQLTableEditor(Table.PLAYERDATA, uuid).updateData("friends", friends.stream().map(friend -> friend.toString()).collect(Collectors.toList()));
+		}
+
+		@Override
+		public boolean hasFriend(UUID uuid) {
+			return friends.contains(uuid);
+		}
+
+		@Override
+		public PlayerClass getProfess() {
+			return profess;
+		}
+
+		@Override
+		public int getLevel() {
+			return level;
+		}
+
+		@Override
+		public long getLastLogin() {
+			return lastLogin;
+		}
+
 	}
 }

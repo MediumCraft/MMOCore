@@ -44,9 +44,6 @@ mana:
 cast-particle:
     particle: SPELL_INSTANT
 
-options:
-    off-combat-health-regen: true
-
 # Special resource regeneration: (when out of combat),
 # players can regen a set % of their maximum mana/missing mana.
 # This % can scale with the player level.
@@ -65,6 +62,9 @@ resource:
         
         # Only regen when out of combat.
         off-combat: true
+
+options:
+    off-combat-health-regen: true
 
 attributes:
     max-health:

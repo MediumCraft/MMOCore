@@ -13,15 +13,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
-import net.Indyuce.mmocore.api.data.DataProvider;
-import net.Indyuce.mmocore.api.data.MySQLDataProvider;
-import net.Indyuce.mmocore.api.data.YAMLDataProvider;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.api.util.MMOSQL;
-import net.Indyuce.mmocore.api.util.MMOSQL.MySQLConfig;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.AttributesCommand;
 import net.Indyuce.mmocore.command.ClassCommand;
@@ -84,6 +79,9 @@ import net.Indyuce.mmocore.manager.QuestManager;
 import net.Indyuce.mmocore.manager.RestrictionManager;
 import net.Indyuce.mmocore.manager.SkillManager;
 import net.Indyuce.mmocore.manager.WaypointManager;
+import net.Indyuce.mmocore.manager.data.DataProvider;
+import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
+import net.Indyuce.mmocore.manager.data.yaml.YAMLDataProvider;
 import net.Indyuce.mmocore.manager.profession.AlchemyManager;
 import net.Indyuce.mmocore.manager.profession.EnchantManager;
 import net.Indyuce.mmocore.manager.profession.FishingManager;
@@ -100,7 +98,7 @@ import net.mmogroup.mmolib.version.SpigotPlugin;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
-	
+
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
 	public RestrictionManager restrictionManager;
@@ -137,7 +135,7 @@ public class MMOCore extends JavaPlugin {
 	public RPGUtilHandler rpgUtilHandler = new DefaultRPGUtilHandler();
 
 	private boolean miLoaded, miChecked;
-	
+
 	public void onLoad() {
 		plugin = this;
 
@@ -176,10 +174,9 @@ public class MMOCore extends JavaPlugin {
 			}
 		});
 
-		if(getConfig().contains("mysql") && getConfig().getBoolean("mysql.enabled") &&
-			MMOSQL.testConnection(new MySQLConfig(getConfig().getConfigurationSection("mysql"))))
+		if (getConfig().contains("mysql") && getConfig().getBoolean("mysql.enabled"))
 			dataProvider = new MySQLDataProvider();
-				
+
 		Bukkit.getPluginManager().registerEvents(new MythicMobsEnableListener(), this);
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
@@ -353,7 +350,7 @@ public class MMOCore extends JavaPlugin {
 		}
 	}
 
-	public void onDisable() {		
+	public void onDisable() {
 		for (PlayerData data : PlayerData.getAll()) {
 			data.getQuestData().resetBossBar();
 			dataProvider.getDataManager().saveData(data);
@@ -361,7 +358,6 @@ public class MMOCore extends JavaPlugin {
 
 		for (Guild guild : dataProvider.getGuildManager().getAll())
 			dataProvider.getGuildManager().save(guild);
-		MMOSQL.stop();
 
 		mineManager.resetRemainingBlocks();
 	}

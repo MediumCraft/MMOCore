@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.manager.data;
+package net.Indyuce.mmocore.manager.data.yaml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 
 public class YAMLPlayerDataManager extends PlayerDataManager {
 

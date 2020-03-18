@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.manager.data;
+package net.Indyuce.mmocore.manager.data.yaml;
 
 import java.util.List;
 import java.util.UUID;

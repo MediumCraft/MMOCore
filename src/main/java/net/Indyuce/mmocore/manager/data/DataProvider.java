@@ -1,7 +1,4 @@
-package net.Indyuce.mmocore.api.data;
-
-import net.Indyuce.mmocore.manager.data.GuildDataManager;
-import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+package net.Indyuce.mmocore.manager.data;
 
 public interface DataProvider {
 

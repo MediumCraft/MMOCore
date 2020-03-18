@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.manager.data;
+package net.Indyuce.mmocore.manager.data.mysql;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
+import net.Indyuce.mmocore.manager.data.GuildDataManager;
 
 public class MySQLGuildDataManager extends GuildDataManager {
 	@Override
