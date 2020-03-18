@@ -8,11 +8,12 @@ import net.Indyuce.mmocore.manager.data.YAMLPlayerDataManager;
 public class YAMLDataProvider implements DataProvider {
 	private final YAMLPlayerDataManager playerManager;
 	private final YAMLGuildDataManager guildManager;
+
 	public YAMLDataProvider() {
 		playerManager = new YAMLPlayerDataManager();
 		guildManager = new YAMLGuildDataManager();
 	}
-	
+
 	@Override
 	public PlayerDataManager getDataManager() {
 		return playerManager;
