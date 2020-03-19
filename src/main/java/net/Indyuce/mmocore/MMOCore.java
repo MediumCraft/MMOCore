@@ -38,7 +38,7 @@ import net.Indyuce.mmocore.comp.holograms.CMIPlugin;
 import net.Indyuce.mmocore.comp.holograms.HologramSupport;
 import net.Indyuce.mmocore.comp.holograms.HologramsPlugin;
 import net.Indyuce.mmocore.comp.holograms.HolographicDisplaysPlugin;
-import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsEnableListener;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsDrops;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderAPIParser;
@@ -177,8 +177,6 @@ public class MMOCore extends JavaPlugin {
 		if (getConfig().contains("mysql") && getConfig().getBoolean("mysql.enabled"))
 			dataProvider = new MySQLDataProvider();
 
-		Bukkit.getPluginManager().registerEvents(new MythicMobsEnableListener(), this);
-
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
 
@@ -212,6 +210,11 @@ public class MMOCore extends JavaPlugin {
 		if (Bukkit.getPluginManager().getPlugin("ShopKeepers") != null) {
 			entities.registerHandler(new ShopKeepersEntityHandler());
 			getLogger().log(Level.INFO, "Hooked onto ShopKeepers");
+		}
+
+		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
+			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
+			MMOCore.plugin.getLogger().log(Level.INFO, "Hooked onto MythicMobs");
 		}
 
 		if (Bukkit.getPluginManager().getPlugin("MyPet") != null) {
