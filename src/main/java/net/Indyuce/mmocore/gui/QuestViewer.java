@@ -152,7 +152,7 @@ public class QuestViewer extends EditableInventory {
 
 			if (data.getQuestData().hasCurrent(quest)) {
 				holders.register("objective", data.getQuestData().getCurrent().getFormattedLore());
-				holders.register("progress", (int) (double) data.getQuestData().getCurrent().getObjectiveNumber() / quest.getObjectives().size() * 100);
+				holders.register("progress", (int) ((double) data.getQuestData().getCurrent().getObjectiveNumber() / quest.getObjectives().size() * 100.));
 			}
 
 			if (data.getQuestData().hasFinished(quest)) {
