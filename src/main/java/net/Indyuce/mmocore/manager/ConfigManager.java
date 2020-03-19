@@ -105,8 +105,6 @@ public class ConfigManager {
 		messages = new ConfigFile("messages").getConfig();
 		hotbarSwap = MMOCore.plugin.getConfig().getBoolean("hotbar-swap");
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
-		expPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.experience");
-		regenPartyBuff = MMOCore.plugin.getConfig().getDouble("party.buff.health-regen");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
 		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
 		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer");

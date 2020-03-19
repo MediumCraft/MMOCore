@@ -34,6 +34,7 @@ public class PartyManager extends MMOManager {
 	}
 
 	public void unregisterParty(Party party) {
+		// IMPORTANT: clears all party stats before unregistering the party
 		party.getMembers().forEach(member -> party.removeMember(member));
 		parties.remove(party);
 	}
@@ -45,7 +46,7 @@ public class PartyManager extends MMOManager {
 	public StatModifier getBonus(StatType stat) {
 		return buffs.get(stat);
 	}
-	
+
 	public Set<StatType> getBonuses() {
 		return buffs.keySet();
 	}

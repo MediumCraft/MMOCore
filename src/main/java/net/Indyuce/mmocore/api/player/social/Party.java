@@ -94,10 +94,10 @@ public class Party {
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 
-	// @Override
-	// public boolean equals(Object obj) {
-	// return obj instanceof Party && ((Party) obj).uuid.equals(uuid);
-	// }
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Party && ((Party) obj).owner.getUniqueId().equals(owner.getUniqueId());
+	}
 
 	/*
 	 * this class makes controling entries and departures and APPLYING PARTY
@@ -117,14 +117,14 @@ public class Party {
 		public void add(PlayerData player) {
 			members.add(player);
 
-			refreshAttributes();
+			members.forEach(member -> applyAttributes(member));
 		}
 
 		public void remove(PlayerData player) {
 			members.remove(player);
 
-			refreshAttributes();
-			refreshAttributes(player);
+			members.forEach(member -> applyAttributes(member));
+			clearAttributes(player);
 		}
 
 		public void forEach(Consumer<? super PlayerData> action) {
@@ -135,12 +135,12 @@ public class Party {
 			return members.size();
 		}
 
-		public void refreshAttributes() {
-			members.forEach(member -> refreshAttributes(member));
+		private void applyAttributes(PlayerData player) {
+			MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("mmocoreParty", MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
 		}
 
-		public void refreshAttributes(PlayerData player) {
-			MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("party", MMOCore.plugin.partyManager.getBonus(stat)));
+		private void clearAttributes(PlayerData player) {
+			MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).remove("mmocoreParty"));
 		}
 	}
 }
