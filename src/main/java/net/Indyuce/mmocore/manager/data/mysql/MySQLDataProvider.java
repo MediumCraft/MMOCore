@@ -68,11 +68,11 @@ public class MySQLDataProvider implements DataProvider {
 			port = config.getInt("port", 3306);
 			userid = config.getString("user", "mmolover");
 			password = config.getString("pass", "ILoveAria");
-			flags = config.getString("flags", "?allowReconnect=true");
+			flags = config.getString("flags", "?allowReconnect=true&useSSL=false");
 		}
 
 		public String getConnectionString() {
-			return "jdbc:mysql://" + hostname + ":" + port + "/" + database + flags + "&useSSL=false";
+			return "jdbc:mysql://" + hostname + ":" + port + "/" + database + flags;
 		}
 
 		public String getUser() {

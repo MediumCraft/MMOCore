@@ -106,6 +106,13 @@ public class MMOCore extends JavaPlugin {
 	public RequestManager requestManager;
 	public ConfigItemManager configItems;
 	public SkillManager skillManager;
+	public VaultEconomy economy;
+	public HologramSupport hologramSupport;
+	public InventoryManager inventoryManager;
+	public RegionHandler regionHandler;
+	public PlayerActionBar actionBarManager;
+	public PlaceholderParser placeholderParser = new DefaultParser();
+	public DataProvider dataProvider = new YAMLDataProvider();
 	public final ClassManager classManager = new ClassManager();
 	public final DropTableManager dropTableManager = new DropTableManager();
 	public final CustomBlockManager mineManager = new CustomBlockManager();
@@ -115,13 +122,6 @@ public class MMOCore extends JavaPlugin {
 	public final QuestManager questManager = new QuestManager();
 	public final ProfessionManager professionManager = new ProfessionManager();
 	public final EntityManager entities = new EntityManager();
-	public VaultEconomy economy;
-	public HologramSupport hologramSupport;
-	public PlaceholderParser placeholderParser = new DefaultParser();
-	public InventoryManager inventoryManager;
-	public RegionHandler regionHandler;
-	public PlayerActionBar actionBarManager;
-	public DataProvider dataProvider = new YAMLDataProvider();
 
 	/*
 	 * professions
@@ -229,7 +229,7 @@ public class MMOCore extends JavaPlugin {
 					if (player.isOnline() && !player.getPlayer().isDead())
 						for (PlayerResource resource : PlayerResource.values()) {
 							double d = player.getProfess().getHandler(resource).getRegen(player);
-							if (d > 0)
+							if (d != 0)
 								resource.regen(player, d);
 						}
 			}
