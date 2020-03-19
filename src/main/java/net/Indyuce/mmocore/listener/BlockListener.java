@@ -67,7 +67,7 @@ public class BlockListener implements Listener {
 				return;
 			}
 
-			if(!perms.canMine(getBlockName(block))) {
+			if (!perms.canMine(getBlockName(block))) {
 				MMOCore.plugin.configManager.getSimpleMessage("cannot-break").send(player);
 				event.setCancelled(true);
 				return;
@@ -77,8 +77,8 @@ public class BlockListener implements Listener {
 			 * remove vanilla drops if needed
 			 */
 			if (!info.hasVanillaDrops()) {
-				event.setDropItems(false); //May not work
-				//event.setCancelled(true);
+				event.setDropItems(false); // May not work
+				// event.setCancelled(true);
 				event.getBlock().setType(Material.AIR);
 			}
 
@@ -89,15 +89,22 @@ public class BlockListener implements Listener {
 			if (info.hasTriggers() && !block.hasMetadata("player_placed")) {
 				PlayerData playerData = PlayerData.get(player);
 				info.getTriggers().forEach(trigger -> trigger.apply(playerData));
-				/**if (!block.hasMetadata("player_placed") && info.hasExperience() && MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + called.getGainedExperience().getValue()).message(), player);*/
+				/**
+				 * if (!block.hasMetadata("player_placed") &&
+				 * info.hasExperience() && MMOCore.plugin.hasHolograms())
+				 * MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5,
+				 * 1.5, .5),
+				 * MMOCore.plugin.configManager.getSimpleMessage("exp-hologram",
+				 * "exp", "" +
+				 * called.getGainedExperience().getValue()).message(), player);
+				 */
 			}
 
 			/*
 			 * apply drop tables
 			 */
 			if (info.hasDropTable()) {
-				Location dropLocation = getSafeDropLocation(block, !info.hasDropTable());
+				Location dropLocation = getSafeDropLocation(block, true);
 				for (ItemStack drop : called.getDrops())
 					if (drop.getType() != Material.AIR && drop.getAmount() > 0)
 						block.getWorld().dropItemNaturally(dropLocation, drop);
@@ -107,7 +114,7 @@ public class BlockListener implements Listener {
 			 * enable block regen.
 			 */
 			if (info.hasRegen()) {
-				if(MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
+				if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
 					MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(Bukkit.createBlockData(savedData), block.getLocation()));
 				else
 					MMOCore.plugin.mineManager.initialize(info.generateRegenInfo(block.getLocation()));
@@ -116,13 +123,13 @@ public class BlockListener implements Listener {
 	}
 
 	private String getBlockName(Block block) {
-		if(MMOCore.plugin.isMILoaded())
-			if(MMOItems.plugin.getCustomBlocks().isMushroomBlock(block.getType())) {
+		if (MMOCore.plugin.isMILoaded())
+			if (MMOItems.plugin.getCustomBlocks().isMushroomBlock(block.getType())) {
 				CustomBlock cblock = CustomBlock.getFromData(block.getBlockData());
-				if(cblock != null)
+				if (cblock != null)
 					return "MICUSTOM_" + cblock.getId();
 			}
-		
+
 		return block.getType().toString();
 	}
 
@@ -130,33 +137,35 @@ public class BlockListener implements Listener {
 	public void b(BlockPlaceEvent event) {
 		event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 	}
-	
+
 	@EventHandler
 	public void c1(BlockPistonExtendEvent event) {
-        Block movedBlock = event.getBlock();
-        if(!movedBlock.hasMetadata("player_placed")) return;
+		Block movedBlock = event.getBlock();
+		if (!movedBlock.hasMetadata("player_placed"))
+			return;
 		BlockFace direction = event.getDirection();
-        movedBlock = movedBlock.getRelative(direction, 2);
+		movedBlock = movedBlock.getRelative(direction, 2);
 
-        for (Block b : event.getBlocks()) {
-            if (b.hasMetadata("player_placed")) {
-                movedBlock = b.getRelative(direction);
-                movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
-            }
-        }
+		for (Block b : event.getBlocks()) {
+			if (b.hasMetadata("player_placed")) {
+				movedBlock = b.getRelative(direction);
+				movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
+			}
+		}
 	}
+
 	@EventHandler
 	public void c2(BlockPistonRetractEvent event) {
 		BlockFace direction = event.getDirection();
-        Block movedBlock = event.getBlock().getRelative(direction);
-        movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
+		Block movedBlock = event.getBlock().getRelative(direction);
+		movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 
-        for (Block block : event.getBlocks()) {
-            movedBlock = block.getRelative(direction);
-            movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
-        }
+		for (Block block : event.getBlocks()) {
+			movedBlock = block.getRelative(direction);
+			movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
+		}
 	}
-	
+
 	private Location getSafeDropLocation(Block block, boolean self) {
 		if (block.getType() == Material.AIR && self)
 			return block.getLocation();

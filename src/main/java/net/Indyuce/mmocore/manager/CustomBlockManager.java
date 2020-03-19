@@ -124,7 +124,7 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	public class BlockInfo {
-		private Material block;
+		private final Material block;
 		private final DropTable table;
 		private final boolean vanillaDrops;
 		private final String headValue;
