@@ -50,8 +50,8 @@ party:
     # Edit party buffs here. You may
     # add as many stats as you want.
     buff:
-        health-regeneration: 3%
-        additional-experience: 5%
+        health-regeneration: 3
+        additional-experience: 5
     
     # Prefix you need to put in the chat
     # to talk in the party chat.
