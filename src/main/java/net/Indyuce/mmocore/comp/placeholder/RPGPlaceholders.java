@@ -48,9 +48,6 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 		else if (identifier.equals("health"))
 			return MMOCore.plugin.configManager.decimals.format(player.getHealth());
 
-		else if (identifier.startsWith("attribute_"))
-			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
-
 		else if (identifier.equals("class"))
 			return PlayerData.get(player).getProfess().getName();
 
@@ -85,6 +82,9 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 		else if (identifier.equals("attribute_reallocation_points"))
 			return "" + PlayerData.get(player).getAttributeReallocationPoints();
 
+		else if (identifier.startsWith("attribute_"))
+			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
+		
 		else if (identifier.equals("mana"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getMana());
 
