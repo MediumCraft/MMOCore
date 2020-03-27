@@ -13,7 +13,9 @@ import net.Indyuce.mmocore.api.player.PlayerQuests;
 import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 
-public class RPGPlaceholders extends PlaceholderExpansion /** implements Relational*/ {
+public class RPGPlaceholders
+		extends PlaceholderExpansion /** implements Relational */
+{
 
 	@Override
 	public String getAuthor() {
@@ -32,7 +34,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 
 	@Override
 	public String onPlaceholderRequest(Player player, String identifier) {
-		
+
 		if (identifier.equals("level"))
 			return "" + PlayerData.get(player).getLevel();
 
@@ -46,7 +48,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 			return String.valueOf(PlayerData.get(player).isInCombat());
 
 		else if (identifier.equals("health"))
-			return MMOCore.plugin.configManager.decimals.format(player.getHealth());
+			return StatType.MAX_HEALTH.format(player.getHealth());
 
 		else if (identifier.equals("class"))
 			return PlayerData.get(player).getProfess().getName();
@@ -62,7 +64,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 			return "" + PlayerData.get(player).getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
 
 		else if (identifier.equals("max_health"))
-			return MMOCore.plugin.configManager.decimals.format(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			return StatType.MAX_HEALTH.format(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 
 		else if (identifier.equals("experience"))
 			return "" + PlayerData.get(player).getExperience();
@@ -84,12 +86,9 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 
 		else if (identifier.startsWith("attribute_"))
 			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
-		
+
 		else if (identifier.equals("mana"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getMana());
-
-		else if (identifier.equals("max_mana"))
-			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStats().getStat(StatType.MAX_MANA));
 
 		else if (identifier.equals("mana_bar")) {
 			String format = "";
@@ -103,9 +102,6 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 		else if (identifier.equals("stamina"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStamina());
 
-		else if (identifier.equals("max_stamina"))
-			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STAMINA));
-
 		else if (identifier.equals("stamina_bar")) {
 			String format = "";
 			PlayerData data = PlayerData.get(player);
@@ -115,11 +111,13 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 			return format;
 		}
 
+		else if (identifier.startsWith("stat_")) {
+			StatType type = StatType.valueOf(identifier.substring(5).toUpperCase());
+			return type == null ? "Invalid Stat" : type.format(PlayerData.get(player).getStats().getStat(type));
+		}
+
 		else if (identifier.equals("stellium"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStellium());
-
-		else if (identifier.equals("max_stellium"))
-			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStats().getStat(StatType.MAX_STELLIUM));
 
 		else if (identifier.equals("stellium_bar")) {
 			String format = "";
@@ -145,16 +143,12 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 			return data.hasCurrent() ? data.getCurrent().getFormattedLore() : "None";
 		}
 
-		else if (identifier.startsWith("stat_"))
-			return StatType.valueOf(identifier.substring(5).toUpperCase()) != null ? "" + PlayerData.get(player).getStats().getStat(StatType.valueOf(identifier.substring(5).toUpperCase())) : "Invalid stat";
-		else if (identifier.startsWith("formatted_stat_"))
-			return StatType.valueOf(identifier.substring(15).toUpperCase()) != null ? "" + StatType.valueOf(identifier.substring(15).toUpperCase()).format(PlayerData.get(player).getStats().getStat(StatType.valueOf(identifier.substring(15).toUpperCase()))) : "Invalid stat";
-			
 		else if (identifier.startsWith("guild_")) {
 			String placeholder = identifier.substring(6);
 			PlayerData data = PlayerData.get(player);
-			if(data.getGuild() == null) return "";
-			
+			if (data.getGuild() == null)
+				return "";
+
 			if (placeholder.equalsIgnoreCase("name"))
 				return data.getGuild().getName();
 			else if (placeholder.equalsIgnoreCase("tag"))
@@ -166,12 +160,7 @@ public class RPGPlaceholders extends PlaceholderExpansion /** implements Relatio
 			else if (placeholder.equalsIgnoreCase("online_members"))
 				return "" + data.getGuild().getMembers().countOnline();
 		}
-			
+
 		return null;
 	}
-
-	/**@Override
-	public String onPlaceholderRequest(Player player1, Player player2, String identifier) {
-		return null;
-	}*/
 }
