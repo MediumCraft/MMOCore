@@ -27,6 +27,9 @@ public class ResourceHandler {
 	private final HandlerType type;
 	private final PlayerResource resource;
 
+	/*
+	 * used when there is no special resource regeneration
+	 */
 	public ResourceHandler(PlayerResource resource) {
 		this(resource, null, null, false);
 	}
