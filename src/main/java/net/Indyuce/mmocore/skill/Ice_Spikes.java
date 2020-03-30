@@ -1,22 +1,20 @@
 package net.Indyuce.mmocore.skill;
 
-import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.api.skill.result.LocationSkillResult;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.Line3D;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -26,8 +24,7 @@ import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class Ice_Spikes extends Skill {
-
-	private static final double r = 3;
+	private static final double radius = 3;
 
 	public Ice_Spikes() {
 		super();
@@ -42,19 +39,11 @@ public class Ice_Spikes extends Skill {
 
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
-		IceSpikesCast cast = new IceSpikesCast(data, skill);
-		if (!cast.isSuccessful() || cast.loc == null)
+		LocationSkillResult cast = new LocationSkillResult(data, skill, 20);
+		if (!cast.isSuccessful())
 			return cast;
-		
-		Location loc;
-		Block hitBlock = cast.loc.getHitBlock();
-		if (hitBlock == null) {
-			Entity hitEntity = cast.loc.getHitEntity();
-			if(hitEntity == null) return cast;
-			else loc = hitEntity.getLocation();
-		}
-		else loc = hitBlock.getLocation();
 
+		Location loc = cast.getHit();
 		double damage = cast.getModifier("damage");
 		int slow = (int) (20 * cast.getModifier("slow"));
 
@@ -69,14 +58,14 @@ public class Ice_Spikes extends Skill {
 					return;
 				}
 
-				Location loc1 = loc.clone().add(offset() * r, 0, offset() * r).add(0, 2, 0);
+				Location loc1 = loc.clone().add(offset() * radius, 0, offset() * radius).add(0, 2, 0);
 				loc.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, loc1, 32, 0, 2, 0, 0);
 				loc.getWorld().spawnParticle(Particle.SNOWBALL, loc1, 32, 0, 2, 0, 0);
 				loc.getWorld().playSound(loc1, Sound.BLOCK_GLASS_BREAK, 2, 0);
 
 				Line3D line = new Line3D(loc.toVector(), loc.toVector().add(new Vector(0, 1, 0)));
 				for (Entity entity : MMOCoreUtils.getNearbyChunkEntities(loc1))
-					if (line.distanceSquared(entity.getLocation().toVector()) < 3 && Math.abs(entity.getLocation().getY() - loc1.getY()) < 10 && MMOCoreUtils.canTarget(data.getPlayer(), entity)) {
+					if (line.distanceSquared(entity.getLocation().toVector()) < radius && Math.abs(entity.getLocation().getY() - loc1.getY()) < 10 && MMOCoreUtils.canTarget(data.getPlayer(), entity)) {
 						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(damage, DamageType.SKILL, DamageType.MAGIC));
 						((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slow, 0));
 					}
@@ -87,17 +76,5 @@ public class Ice_Spikes extends Skill {
 
 	private double offset() {
 		return random.nextDouble() * (random.nextBoolean() ? 1 : -1);
-	}
-
-	private class IceSpikesCast extends SkillResult {
-		private RayTraceResult loc;
-
-		public IceSpikesCast(PlayerData data, SkillInfo skill) {
-			super(data, skill);
-			if (!isSuccessful()) abort();
-
-			loc = data.getPlayer().getWorld().rayTrace(data.getPlayer().getEyeLocation(), data.getPlayer().getEyeLocation().getDirection(),
-					30, FluidCollisionMode.ALWAYS, true, 1.0D, (entity) -> MMOCoreUtils.canTarget(data.getPlayer(), entity));
-		}
 	}
 }

@@ -1,9 +1,10 @@
-package net.Indyuce.mmocore.api.skill;
+package net.Indyuce.mmocore.api.skill.result;
 
 import org.bukkit.entity.LivingEntity;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMORayTraceResult;
@@ -21,6 +22,10 @@ public class TargetSkillResult extends SkillResult {
 			else
 				target = (LivingEntity) result.getHit();
 		}
+	}
+
+	public boolean hasTarget() {
+		return target != null;
 	}
 
 	public LivingEntity getTarget() {
