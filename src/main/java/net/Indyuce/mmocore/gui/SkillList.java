@@ -393,7 +393,7 @@ public class SkillList extends EditableInventory {
 					return;
 				}
 
-				if (playerData.getSkillLevel(selected.getSkill()) >= selected.getMaxLevel()) {
+				if (selected.hasMaxLevel() && playerData.getSkillLevel(selected.getSkill()) >= selected.getMaxLevel()) {
 					MMOCore.plugin.configManager.getSimpleMessage("skill-max-level-hit").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
 					return;
