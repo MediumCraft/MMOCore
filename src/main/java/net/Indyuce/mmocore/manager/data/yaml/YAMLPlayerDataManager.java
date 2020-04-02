@@ -31,7 +31,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		data.setLevel(config.getInt("level"));
 		data.setExperience(config.getInt("experience"));
 		if (config.contains("class"))
-			data.setProfess(MMOCore.plugin.classManager.get(config.getString("class")));
+			data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));
 		data.setMana(data.getStats().getStat(StatType.MAX_MANA));
 		data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
 		data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));

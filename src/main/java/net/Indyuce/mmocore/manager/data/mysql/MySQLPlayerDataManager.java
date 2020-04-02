@@ -50,7 +50,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			data.setLevel(result.getInt("level"));
 			data.setExperience(result.getInt("experience"));
 			if (!isEmpty(result.getString("class")))
-				data.setProfess(MMOCore.plugin.classManager.get(result.getString("class")));
+				data.setClass(MMOCore.plugin.classManager.get(result.getString("class")));
 			data.setMana(data.getStats().getStat(StatType.MAX_MANA));
 			data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
 			data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));

@@ -72,7 +72,7 @@ public class ClassManager extends MMOManager {
 	}
 
 	public void reloadPlayerClasses() {
-		PlayerData.getAll().forEach(data -> data.setProfess(get(data.getProfess().getId())));
+		PlayerData.getAll().forEach(data -> data.setClass(get(data.getProfess().getId())));
 	}
 
 	@Override
