@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerCombatEvent;
 import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
@@ -77,11 +76,11 @@ public class PlayerListener implements Listener {
 	/*
 	 * reset skill data when leaving combat
 	 */
-	@EventHandler
-	public void f(PlayerCombatEvent event) {
-		if (!event.entersCombat())
-			event.getData().getSkillData().resetData();
-	}
+	// @EventHandler
+	// public void f(PlayerCombatEvent event) {
+	// if (!event.entersCombat())
+	// event.getData().getSkillData().resetData();
+	// }
 
 	/*
 	 * Warning: this really is not the best way to interface with MMOCore

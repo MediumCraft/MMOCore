@@ -72,7 +72,7 @@ public class Ambers extends Skill implements Listener {
 			if (data.getPlayer().getLocation().distanceSquared(loc) < 2) {
 
 				data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
-				data.getSkillData().ambers++;
+				// data.getSkillData().ambers++;
 				data.giveMana((data.getStats().getStat(StatType.MAX_MANA) - data.getMana()) * .15);
 
 				cancel();

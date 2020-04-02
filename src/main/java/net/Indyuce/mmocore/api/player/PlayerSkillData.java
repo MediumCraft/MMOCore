@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.Indyuce.mmocore.api.skill.Skill;
-import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobSkill;
 
 public class PlayerSkillData {
@@ -22,7 +22,7 @@ public class PlayerSkillData {
 	 */
 	private final Map<String, CachedModifier> cache = new HashMap<>();
 
-	public int ambers;
+	// public int ambers;
 
 	public PlayerSkillData(PlayerData data) {
 		this.data = data;
@@ -53,9 +53,9 @@ public class PlayerSkillData {
 		cooldowns.put(skill.getSkill().getId(), lastCast(skill.getSkill()) + (long) (relative ? value * getCooldown(skill) : value * 1000));
 	}
 
-	public void resetData() {
-		ambers = 0;
-	}
+	// public void resetData() {
+	// ambers = 0;
+	// }
 
 	public int getCachedModifier(String name) {
 		return cache.containsKey(name) ? cache.get(name).getValue() : 0;
