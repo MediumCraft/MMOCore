@@ -80,7 +80,7 @@ health-scale:
     enabled: true
     scale: 20
 
-# Allows to toggle exp hologram from gaining experiences
+# Allows to toggle exp hologram from gaining experience
 display-exp-holograms: true
 
 # Players can swap their hotbar with the 9 inventory slots
