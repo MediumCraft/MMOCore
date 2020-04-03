@@ -54,12 +54,16 @@ import net.mmogroup.mmolib.version.VersionSound;
 public class PlayerData extends OfflinePlayerData {
 
 	/*
-	 * is updated everytime the player joins the server. it is kept when the
-	 * player is offline so the plugin can use #isOnline to check if the player
-	 * is online
+	 * is updated everytime the player joins the server. it is kept when the player
+	 * is offline so the plugin can use #isOnline to check if the player is online
 	 */
 	private Player player;
 
+	/*
+	 * 'profess' can be null, you need to retrieve the player class using the
+	 * getProfess() method which should never return null if the plugin is
+	 * configured right
+	 */
 	private PlayerClass profess;
 	private int level, experience, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
 	private double mana, stamina, stellium;
@@ -104,7 +108,8 @@ public class PlayerData extends OfflinePlayerData {
 		try {
 			profess = profess == null ? null : MMOCore.plugin.classManager.get(profess.getId());
 		} catch (NullPointerException exception) {
-			MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
+			MMOCore.log(Level.SEVERE,
+					"[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
 		}
 
 		int j = 0;
@@ -114,7 +119,8 @@ public class PlayerData extends OfflinePlayerData {
 				j++;
 			} catch (NullPointerException notFound) {
 				boundSkills.remove(j);
-				MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId() + " in class " + getProfess().getId() + " while refreshing player data.");
+				MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId()
+						+ " in class " + getProfess().getId() + " while refreshing player data.");
 			}
 	}
 
@@ -218,13 +224,13 @@ public class PlayerData extends OfflinePlayerData {
 	public void giveLevels(int value) {
 		int total = 0;
 		while (value-- > 0)
-			total += MMOCore.plugin.configManager.getNeededExperience(getLevel() + value + 1, profess);
+			total += MMOCore.plugin.configManager.getNeededExperience(getLevel() + value + 1, getProfess());
 		giveExperience(total);
 	}
 
 	public void setExperience(int value) {
 		experience = Math.max(0, value);
-		refreshVanillaExp(MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, profess));
+		refreshVanillaExp(MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, getProfess()));
 	}
 
 	public void refreshVanillaExp(float needed) {
@@ -295,7 +301,8 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void heal(double heal) {
-		double newest = Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		double newest = Math.max(0,
+				Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		if (player.getHealth() == newest)
 			return;
 
@@ -341,7 +348,9 @@ public class PlayerData extends OfflinePlayerData {
 		setLastFriendRequest(System.currentTimeMillis());
 
 		FriendRequest request = new FriendRequest(this, target);
-		new ConfigMessage("friend-request").addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
+		new ConfigMessage("friend-request")
+				.addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString())
+				.sendAsJSon(target.getPlayer());
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 
@@ -350,10 +359,12 @@ public class PlayerData extends OfflinePlayerData {
 		giveStellium(-waypoint.getStelliumCost());
 
 		new BukkitRunnable() {
-			int x = player.getLocation().getBlockX(), y = player.getLocation().getBlockY(), z = player.getLocation().getBlockZ(), t;
+			int x = player.getLocation().getBlockX(), y = player.getLocation().getBlockY(),
+					z = player.getLocation().getBlockZ(), t;
 
 			public void run() {
-				if (player.getLocation().getBlockX() != x || player.getLocation().getBlockY() != y || player.getLocation().getBlockZ() != z) {
+				if (player.getLocation().getBlockX() != x || player.getLocation().getBlockY() != y
+						|| player.getLocation().getBlockZ() != z) {
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, .5f);
 					MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(player);
 					giveStellium(waypoint.getStelliumCost());
@@ -361,7 +372,8 @@ public class PlayerData extends OfflinePlayerData {
 					return;
 				}
 
-				MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(player);
+				MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20))
+						.send(player);
 				if (t++ >= 100) {
 					player.teleport(waypoint.getLocation());
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
@@ -370,10 +382,13 @@ public class PlayerData extends OfflinePlayerData {
 					return;
 				}
 
-				player.playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1, (float) (t / Math.PI * .015 + .5));
+				player.playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1,
+						(float) (t / Math.PI * .015 + .5));
 				double r = Math.sin((double) t / 100 * Math.PI);
 				for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
-					MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE, player.getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 1.25f, Color.PURPLE);
+					MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE, player.getLocation()
+							.add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r),
+							1.25f, Color.PURPLE);
 			}
 		}.runTaskTimer(MMOCore.plugin, 0, 1);
 	}
@@ -387,7 +402,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void giveExperience(int value, Location loc) {
-		if (profess == null || hasReachedMaxLevel()) {
+		if (hasReachedMaxLevel()) {
 			setExperience(0);
 			return;
 		}
@@ -395,7 +410,9 @@ public class PlayerData extends OfflinePlayerData {
 		// display hologram
 		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
-				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
+				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
+						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(),
+						getPlayer());
 
 		value = MMOCore.plugin.boosterManager.calculateExp(null, value);
 		value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
@@ -409,7 +426,7 @@ public class PlayerData extends OfflinePlayerData {
 
 		int needed;
 		boolean check = false;
-		while (experience >= (needed = MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, profess))) {
+		while (experience >= (needed = MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, getProfess()))) {
 
 			if (hasReachedMaxLevel()) {
 				experience = 0;
@@ -517,8 +534,8 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	/*
-	 * returns if the action bar is not being used to display anything else and
-	 * if the general info action bar can be displayed
+	 * returns if the action bar is not being used to display anything else and if
+	 * the general info action bar can be displayed
 	 */
 	public boolean canSeeActionBar() {
 		return actionBarTimeOut < System.currentTimeMillis();
@@ -612,10 +629,6 @@ public class PlayerData extends OfflinePlayerData {
 		// iterator.remove();
 
 		getStats().getMap().updateAll();
-	}
-
-	public void setProfess(PlayerClass profess) {
-		this.profess = profess;
 	}
 
 	public boolean hasSkillBound(int slot) {
