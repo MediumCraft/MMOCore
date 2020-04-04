@@ -48,6 +48,7 @@ public class BlockListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+
 		/*
 		 * calls the event and listen for cancel & for drops changes... also
 		 * allows to apply tool durability & enchants to drops, etc.
@@ -103,7 +104,7 @@ public class BlockListener implements Listener {
 		 * apply drop tables
 		 */
 		if (info.hasDropTable()) {
-			Location dropLocation = getSafeDropLocation(block, !(info.regenerates() && info.getRegenerationInfo().hasTemporaryBlock()));
+			Location dropLocation = getSafeDropLocation(block, !block.getType().isSolid() || !(info.regenerates() && info.getRegenerationInfo().hasTemporaryBlock()));
 			for (ItemStack drop : called.getDrops())
 				if (drop.getType() != Material.AIR && drop.getAmount() > 0)
 					block.getWorld().dropItemNaturally(dropLocation, drop);

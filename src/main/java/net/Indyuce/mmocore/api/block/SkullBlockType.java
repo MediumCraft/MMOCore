@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class SkullBlockType implements BlockType {
 	private final String value;
@@ -27,9 +28,10 @@ public class SkullBlockType implements BlockType {
 
 	@Override
 	public void place(Location loc, RegeneratingBlock block) {
+		loc.getBlock().setType(VersionMaterial.PLAYER_HEAD.toMaterial());
 
 		// save skull orientation if replaced block is a player head
-		if (MMOCoreUtils.isPlayerHead(loc.getBlock().getType()) && MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
+		if (MMOCoreUtils.isPlayerHead(block.getBlockData().getMaterial()) && MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
 			loc.getBlock().setBlockData(block.getBlockData());
 
 		MMOLib.plugin.getNMS().setSkullValue(loc.getBlock(), value);

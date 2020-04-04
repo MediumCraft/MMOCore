@@ -19,6 +19,25 @@ exp-curve: mining
 # configure drop tables with MMOItems.
 # Block Regen is currently only possible using custom mining.
 on-mine:
+
+    # Config example showing how you can bind drops and experience
+    # to custom player heads based on the skull texture.
+    diamond-skull:
+        # Diamond ore skull texture
+        material: 'skull{value="eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2EzYmI4NWRlYzEzMjlmZTgyOWNjNmNkY2QzNGUxYmQ2MGVlODMyZjU3MjYyOTY1MWYxNGI1ZTE0NTU1ZGJiMSJ9fX0="}'
+        drop-table:
+            items:
+            - 'vanilla{type=DIAMOND} 1 1-4'
+        vanilla-drops: false
+        regen:
+            time: 20
+            # Stone block skull texture
+            temp-block: 'skull{value="eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTU0ODE4MjMzYzgxMTg3M2U4NWY1YTRlYTQ0MjliNzVmMjNiNmFlMGVhNmY1ZmMwZjdiYjQyMGQ3YzQ3MSJ9fX0="}'
+        triggers:
+        - 'exp{profession=mining;amount=20}'
+     
+     
+    
     emerald:
         material: vanilla{type=EMERALD_ORE}
         drop-table:

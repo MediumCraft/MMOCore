@@ -19,6 +19,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 import net.Indyuce.mmocore.api.block.BlockType;
+import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
@@ -48,7 +49,7 @@ public class CustomBlockManager extends MMOManager {
 	private final List<Function<Block, BlockType>> blockTypes = new ArrayList<>();
 
 	public CustomBlockManager() {
-		registerBlockType(block -> MMOCoreUtils.isPlayerHead(block.getType()) ? new VanillaBlockType(block) : null);
+		registerBlockType(block -> MMOCoreUtils.isPlayerHead(block.getType()) ? new SkullBlockType(block) : null);
 	}
 
 	public void registerBlockType(Function<Block, BlockType> function) {

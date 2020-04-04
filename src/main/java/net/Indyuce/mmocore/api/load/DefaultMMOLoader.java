@@ -151,9 +151,12 @@ public class DefaultMMOLoader extends MMOLoader {
 	@Override
 	public BlockType loadBlockType(MMOLineConfig config) {
 
+		if (config.getKey().equalsIgnoreCase("vanilla"))
+			return new VanillaBlockType(config);
+		
 		if (config.getKey().equalsIgnoreCase("skull") || config.getKey().equals("head") || config.getKey().equals("playerhead"))
 			return new SkullBlockType(config);
 
-		return new VanillaBlockType(config);
+		return null;
 	}
 }
