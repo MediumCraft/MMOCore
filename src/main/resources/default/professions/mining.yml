@@ -20,20 +20,20 @@ exp-curve: mining
 # Block Regen is currently only possible using custom mining.
 on-mine:
     emerald:
-        material: EMERALD_ORE
+        material: vanilla{type=EMERALD_ORE}
         drop-table:
             items:
             - 'vanilla{type=EMERALD} 1 1-9'
         vanilla-drops: false
         regen:
             time: 2000
-            temp-block: STONE
+            temp-block: vanilla{type=STONE}
         triggers:
         - 'exp{profession=mining;amount=32}'
 
     diamond:
         # The material you need to mine
-        material: DIAMOND_ORE
+        material: vanilla{type=DIAMOND_ORE}
 
         # Refer to drop-tables.yml
         # The drop table used by the block.
@@ -63,4 +63,4 @@ on-mine:
             # When using the temp-block option, make sure you choose
             # one temp block and don't use it anywhere else in the
             # configuration so that block regens do not affect each other
-            temp-block: STONE
+            temp-block: vanilla{type=STONE}

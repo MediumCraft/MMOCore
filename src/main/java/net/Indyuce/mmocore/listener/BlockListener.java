@@ -103,7 +103,7 @@ public class BlockListener implements Listener {
 		 * apply drop tables
 		 */
 		if (info.hasDropTable()) {
-			Location dropLocation = getSafeDropLocation(block, true);
+			Location dropLocation = getSafeDropLocation(block, !(info.regenerates() && info.getRegenerationInfo().hasTemporaryBlock()));
 			for (ItemStack drop : called.getDrops())
 				if (drop.getType() != Material.AIR && drop.getAmount() > 0)
 					block.getWorld().dropItemNaturally(dropLocation, drop);
@@ -120,7 +120,6 @@ public class BlockListener implements Listener {
 		}
 	}
 
-
 	@EventHandler(priority = EventPriority.HIGH)
 	public void b(BlockPlaceEvent event) {
 		event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
@@ -134,12 +133,11 @@ public class BlockListener implements Listener {
 		BlockFace direction = event.getDirection();
 		movedBlock = movedBlock.getRelative(direction, 2);
 
-		for (Block b : event.getBlocks()) {
+		for (Block b : event.getBlocks())
 			if (b.hasMetadata("player_placed")) {
 				movedBlock = b.getRelative(direction);
 				movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 			}
-		}
 	}
 
 	@EventHandler
@@ -158,10 +156,12 @@ public class BlockListener implements Listener {
 		if (block.getType() == Material.AIR && self)
 			return block.getLocation();
 
-		Block relative;
-		for (BlockFace face : order)
-			if (!(relative = block.getRelative(face)).getType().isSolid())
-				return relative.getLocation().add(block.getLocation().subtract(relative.getLocation()).multiply(.3));
+		for (BlockFace face : order) {
+			Block relative = block.getRelative(face);
+			if (!relative.getType().isSolid())
+				return relative.getLocation().add(block.getLocation().subtract(relative.getLocation()).multiply(.6));
+		}
+
 		return block.getLocation();
 	}
 }

@@ -88,6 +88,10 @@ public class BlockInfo {
 		return regen != null;
 	}
 
+	public boolean regenerates() {
+		return regen != null;
+	}
+
 	public RegenInfo getRegenerationInfo() {
 		return regen;
 	}

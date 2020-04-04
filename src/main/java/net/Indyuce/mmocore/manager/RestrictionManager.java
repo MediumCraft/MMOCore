@@ -90,7 +90,12 @@ public class RestrictionManager {
 
 		// recursive function to check for parent permissions
 		public boolean canMine(BlockType type) {
-			return mineable.contains(type) || (parent != null && parent.canMine(type));
+			String key = type.generateKey();
+			for (BlockType mineable : this.mineable)
+				if (mineable.generateKey().equals(key))
+					return true;
+
+			return parent != null && parent.canMine(type);
 		}
 
 		public Material getTool() {
