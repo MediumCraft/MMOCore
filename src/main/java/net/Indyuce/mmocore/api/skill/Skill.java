@@ -190,8 +190,8 @@ public abstract class Skill {
 				modifiers.put(modifier, linear);
 		}
 
-		public int getModifier(String modifier, int level) {
-			return (int) modifiers.get(modifier).calculate(level);
+		public double getModifier(String modifier, int level) {
+			return modifiers.get(modifier).calculate(level);
 		}
 
 		public boolean isUnlocked(PlayerData profess) {

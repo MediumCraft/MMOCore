@@ -34,7 +34,7 @@ public class PlayerSkillData {
 	 * up to 3 digits)
 	 */
 	public long getCooldown(SkillInfo skill) {
-		return Math.max(0, lastCast(skill.getSkill()) + 1000 * (long) skill.getModifier("cooldown", data.getSkillLevel(skill.getSkill())) - System.currentTimeMillis());
+		return Math.max(0, lastCast(skill.getSkill()) - System.currentTimeMillis() + (long) (1000. * skill.getModifier("cooldown", data.getSkillLevel(skill.getSkill()))));
 	}
 
 	public long lastCast(Skill skill) {
@@ -57,7 +57,7 @@ public class PlayerSkillData {
 	// ambers = 0;
 	// }
 
-	public int getCachedModifier(String name) {
+	public double getCachedModifier(String name) {
 		return cache.containsKey(name) ? cache.get(name).getValue() : 0;
 	}
 
@@ -68,7 +68,7 @@ public class PlayerSkillData {
 		cacheModifier(mmSkill, "level", cast.getLevel());
 	}
 
-	public void cacheModifier(MythicMobSkill skill, String name, int value) {
+	public void cacheModifier(MythicMobSkill skill, String name, double value) {
 		cache.put(skill.getInternalName() + "." + name, new CachedModifier(value));
 	}
 
@@ -80,9 +80,9 @@ public class PlayerSkillData {
 
 	public class CachedModifier {
 		private final long date = System.currentTimeMillis();
-		private final int value;
+		private final double value;
 
-		public CachedModifier(int value) {
+		public CachedModifier(double value) {
 			this.value = value;
 		}
 
@@ -90,7 +90,7 @@ public class PlayerSkillData {
 			return date + 1000 * 60 < System.currentTimeMillis();
 		}
 
-		public int getValue() {
+		public double getValue() {
 			return value;
 		}
 	}
