@@ -80,17 +80,17 @@ public class PlayerSkillData {
 
 	public class CachedModifier {
 		private final long date = System.currentTimeMillis();
-		private final double value;
+		private final int value;
 
 		public CachedModifier(double value) {
-			this.value = value;
+			this.value = (int) value;
 		}
 
 		public boolean isTimedOut() {
 			return date + 1000 * 60 < System.currentTimeMillis();
 		}
 
-		public double getValue() {
+		public int getValue() {
 			return value;
 		}
 	}
