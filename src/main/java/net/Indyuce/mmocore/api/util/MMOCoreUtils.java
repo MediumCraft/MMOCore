@@ -22,6 +22,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class MMOCoreUtils {
 	public static boolean pluginItem(ItemStack item) {
@@ -46,6 +47,10 @@ public class MMOCoreUtils {
 				isLastSpace = true;
 		}
 		return builder.toString();
+	}
+
+	public static boolean isPlayerHead(Material material) {
+		return material == VersionMaterial.PLAYER_HEAD.toMaterial() || material == VersionMaterial.PLAYER_WALL_HEAD.toMaterial();
 	}
 
 	public static ItemStack readIcon(String string) {

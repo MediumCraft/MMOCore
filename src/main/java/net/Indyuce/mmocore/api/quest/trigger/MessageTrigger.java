@@ -3,8 +3,8 @@ package net.Indyuce.mmocore.api.quest.trigger;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public class MessageTrigger extends Trigger {
 	private final String message;

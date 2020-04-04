@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.api.droptable.condition;
 import java.util.Arrays;
 import java.util.List;
 
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public class WorldCondition extends Condition {
 	private final List<String> names;

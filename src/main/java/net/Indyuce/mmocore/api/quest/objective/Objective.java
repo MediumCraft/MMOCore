@@ -8,11 +8,11 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public abstract class Objective {
 	private final String id, lore;

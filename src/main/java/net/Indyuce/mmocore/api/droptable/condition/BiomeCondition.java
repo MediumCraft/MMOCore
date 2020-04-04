@@ -1,10 +1,11 @@
 package net.Indyuce.mmocore.api.droptable.condition;
 
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
-import org.bukkit.block.Biome;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.bukkit.block.Biome;
+
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public class BiomeCondition extends Condition {
 	private final List<String> names;

@@ -5,9 +5,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 import net.mmogroup.mmolib.api.event.EntityKillEntityEvent;
 
 public class KillMobObjective extends Objective {

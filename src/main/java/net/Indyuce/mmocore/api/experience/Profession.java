@@ -9,9 +9,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionType;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 import net.mmogroup.mmolib.MMOLib;
 
 public class Profession {

@@ -7,9 +7,9 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public class EventTrigger {
 	private final String event;

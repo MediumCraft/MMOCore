@@ -3,8 +3,8 @@ package net.Indyuce.mmocore.api.quest.trigger;
 import org.bukkit.Bukkit;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public abstract class Trigger {
 	private final long delay;

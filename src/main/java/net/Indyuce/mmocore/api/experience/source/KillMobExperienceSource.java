@@ -10,9 +10,9 @@ import org.bukkit.event.EventPriority;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 import net.mmogroup.mmolib.api.event.EntityKillEntityEvent;
 
 public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {

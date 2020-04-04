@@ -9,9 +9,9 @@ import org.bukkit.entity.Entity;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.skills.Skill;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public class MythicMobSkillTrigger extends Trigger {
 	private final Skill skill;

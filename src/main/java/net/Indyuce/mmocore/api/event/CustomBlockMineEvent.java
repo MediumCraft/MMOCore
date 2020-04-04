@@ -7,9 +7,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
+import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.experience.ExperienceInfo;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.manager.CustomBlockManager.BlockInfo;
 
 public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();

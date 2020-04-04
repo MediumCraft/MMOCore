@@ -134,7 +134,6 @@ public class MMOCore extends JavaPlugin {
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public RPGUtilHandler rpgUtilHandler = new DefaultRPGUtilHandler();
 
-	private boolean miLoaded, miChecked;
 
 	public void onLoad() {
 		plugin = this;
@@ -423,14 +422,5 @@ public class MMOCore extends JavaPlugin {
 
 	public boolean hasEconomy() {
 		return economy != null && economy.isValid();
-	}
-
-	public boolean isMILoaded() {
-		if (!miChecked) {
-			miLoaded = Bukkit.getPluginManager().isPluginEnabled("MMOItems");
-			miChecked = true;
-		}
-
-		return miLoaded;
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public class VanillaDropItem extends DropItem {
 	private final Material material;

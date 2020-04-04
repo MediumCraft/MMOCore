@@ -1,8 +1,11 @@
 package net.Indyuce.mmocore.api.load;
 
-import net.Indyuce.mmocore.api.droptable.condition.BiomeCondition;
 import org.bukkit.configuration.ConfigurationSection;
 
+import net.Indyuce.mmocore.api.block.BlockType;
+import net.Indyuce.mmocore.api.block.SkullBlockType;
+import net.Indyuce.mmocore.api.block.VanillaBlockType;
+import net.Indyuce.mmocore.api.droptable.condition.BiomeCondition;
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.WorldCondition;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
@@ -35,8 +38,9 @@ import net.Indyuce.mmocore.api.quest.trigger.MessageTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.SoundTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StelliumTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
-public class DefaultMMOLoader implements MMOLoader {
+public class DefaultMMOLoader extends MMOLoader {
 
 	@Override
 	public Trigger loadTrigger(MMOLineConfig config) {
@@ -80,7 +84,7 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("mmdroptable"))
 			return new MMDropTableDropItem(config);
-		
+
 		return null;
 	}
 
@@ -91,7 +95,7 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("mineblock"))
 			return new MineBlockObjective(section, config);
-		
+
 		if (config.getKey().equals("killmob"))
 			return new KillMobObjective(section, config);
 
@@ -122,10 +126,10 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("mineblock"))
 			return new MineBlockExperienceSource(profession, config);
-		
+
 		if (config.getKey().equals("placeblock"))
 			return new PlaceBlockExperienceSource(profession, config);
-		
+
 		if (config.getKey().equals("brewpotion"))
 			return new BrewPotionExperienceSource(profession, config);
 
@@ -137,10 +141,19 @@ public class DefaultMMOLoader implements MMOLoader {
 
 		if (config.getKey().equals("repairitem"))
 			return new RepairItemExperienceSource(profession, config);
-		
+
 		if (config.getKey().equals("craftitem"))
 			return new CraftItemExperienceSource(profession, config);
-		
+
 		return null;
+	}
+
+	@Override
+	public BlockType loadBlockType(MMOLineConfig config) {
+
+		if (config.getKey().equalsIgnoreCase("skull") || config.getKey().equals("head") || config.getKey().equals("playerhead"))
+			return new SkullBlockType(config);
+
+		return new VanillaBlockType(config);
 	}
 }

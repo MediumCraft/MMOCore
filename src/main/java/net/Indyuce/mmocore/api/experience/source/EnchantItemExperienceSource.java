@@ -15,9 +15,9 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 import net.mmogroup.mmolib.MMOLib;
 
 public class EnchantItemExperienceSource extends ExperienceSource<Void> {

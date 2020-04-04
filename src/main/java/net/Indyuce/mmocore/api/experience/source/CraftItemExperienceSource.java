@@ -8,9 +8,9 @@ import org.bukkit.event.inventory.CraftItemEvent;
 
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 
 public class CraftItemExperienceSource extends SpecificExperienceSource<Material> {
 	public final Material material;

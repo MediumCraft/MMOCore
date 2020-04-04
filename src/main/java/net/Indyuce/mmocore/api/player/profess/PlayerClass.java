@@ -25,7 +25,6 @@ import com.mojang.authlib.properties.Property;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
@@ -38,6 +37,7 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
 import net.Indyuce.mmocore.manager.ClassManager;
+import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class PlayerClass {
