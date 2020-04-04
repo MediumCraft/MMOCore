@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
 	private final RandomAmount amount;

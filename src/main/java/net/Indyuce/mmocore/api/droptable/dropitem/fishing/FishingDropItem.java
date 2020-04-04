@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class FishingDropItem {
 	private final RandomAmount experience, tugs;

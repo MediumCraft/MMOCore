@@ -11,8 +11,8 @@ import org.bukkit.potion.PotionType;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class Profession {
 	private final String id, name, expCurve;

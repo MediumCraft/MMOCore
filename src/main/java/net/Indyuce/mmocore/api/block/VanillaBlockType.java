@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class VanillaBlockType implements BlockType {
 	private final Material type;

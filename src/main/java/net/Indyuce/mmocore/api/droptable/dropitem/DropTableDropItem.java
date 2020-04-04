@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class DropTableDropItem extends DropItem {
 	private DropTable dropTable;

@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class ClickonObjective extends Objective {
 	private final Location loc;

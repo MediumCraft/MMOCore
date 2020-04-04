@@ -19,7 +19,7 @@ import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class MMOLoadManager {
 	private final List<MMOLoader> loaders = new ArrayList<>();

@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.api.quest.trigger;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger.Operation;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class StelliumTrigger extends Trigger {
 	private final RandomAmount amount;

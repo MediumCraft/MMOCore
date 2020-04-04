@@ -10,7 +10,7 @@ import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobExperienceSource;
 import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobObjective;
 import net.Indyuce.mmocore.comp.mythicmobs.load.MythicMobSkillTrigger;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class MythicMobsMMOLoader extends MMOLoader {
 

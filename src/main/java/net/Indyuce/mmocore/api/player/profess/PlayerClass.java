@@ -37,7 +37,7 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
 import net.Indyuce.mmocore.manager.ClassManager;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class PlayerClass {

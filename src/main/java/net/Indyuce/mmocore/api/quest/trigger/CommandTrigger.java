@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class CommandTrigger extends Trigger {
 	private final String command;

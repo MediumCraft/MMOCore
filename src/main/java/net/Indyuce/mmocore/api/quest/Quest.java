@@ -17,7 +17,7 @@ import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.manager.QuestManager;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class Quest {
 	private final String id;

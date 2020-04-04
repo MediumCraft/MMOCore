@@ -24,7 +24,7 @@ import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class CustomBlockManager extends MMOManager {
 

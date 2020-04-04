@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.block.Biome;
 
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class BiomeCondition extends Condition {
 	private final List<String> names;

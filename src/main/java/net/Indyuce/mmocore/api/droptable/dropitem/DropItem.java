@@ -6,7 +6,7 @@ import java.util.Random;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public abstract class DropItem {
 	protected static final Random random = new Random();

@@ -12,7 +12,7 @@ import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public abstract class Objective {
 	private final String id, lore;

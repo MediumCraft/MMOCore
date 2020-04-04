@@ -9,7 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class MineBlockObjective extends Objective {
 	private final Material block;

@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.util.item.CurrencyItem;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class NoteDropItem extends DropItem {
 	private int min, max;

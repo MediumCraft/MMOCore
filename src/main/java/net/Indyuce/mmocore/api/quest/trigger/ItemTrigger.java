@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.item.SmartGive;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class ItemTrigger extends Trigger {
 	private final Material material;

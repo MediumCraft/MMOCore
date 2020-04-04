@@ -5,8 +5,8 @@ import org.bukkit.block.Block;
 
 import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmoitems.api.util.MMOLineConfig;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class SkullBlockType implements BlockType {
 	private final String value;
