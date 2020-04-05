@@ -43,8 +43,6 @@ import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderAPIParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderParser;
-import net.Indyuce.mmocore.comp.rpg.DefaultRPGUtilHandler;
-import net.Indyuce.mmocore.comp.rpg.RPGUtilHandler;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
 import net.Indyuce.mmocore.comp.worldguard.DefaultRegionHandler;
@@ -132,7 +130,6 @@ public class MMOCore extends JavaPlugin {
 	public final SmithingManager smithingManager = new SmithingManager();
 
 	public final MMOLoadManager loadManager = new MMOLoadManager();
-	public RPGUtilHandler rpgUtilHandler = new DefaultRPGUtilHandler();
 
 
 	public void onLoad() {

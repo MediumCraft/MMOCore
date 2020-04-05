@@ -666,9 +666,6 @@ public class PlayerData extends OfflinePlayerData {
 
 	public SkillResult cast(SkillInfo skill) {
 
-		if (skill.getSkill().isPassive())
-			return new SkillResult(this, skill, CancelReason.OTHER);
-
 		PlayerCastSkillEvent event = new PlayerCastSkillEvent(this, skill);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
@@ -676,12 +673,13 @@ public class PlayerData extends OfflinePlayerData {
 
 		SkillResult cast = skill.getSkill().whenCast(this, skill);
 		if (!cast.isSuccessful()) {
+			if (!skill.getSkill().isPassive()) {
+				if (cast.getCancelReason() == CancelReason.MANA)
+					MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(player);
 
-			if (cast.getCancelReason() == CancelReason.MANA)
-				MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(player);
-
-			if (cast.getCancelReason() == CancelReason.COOLDOWN)
-				MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(player);
+				if (cast.getCancelReason() == CancelReason.COOLDOWN)
+					MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(player);
+			}
 
 			return cast;
 		}
