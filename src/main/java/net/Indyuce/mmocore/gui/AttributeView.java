@@ -32,6 +32,7 @@ public class AttributeView extends EditableInventory {
 				@Override
 				public Placeholders getPlaceholders(PluginInventory inv, int n) {
 					Placeholders holders = new Placeholders();
+					holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
 					holders.register("points", inv.getPlayerData().getAttributeReallocationPoints());
 					holders.register("total", inv.getPlayerData().getAttributes().countSkillPoints());
 					return holders;
