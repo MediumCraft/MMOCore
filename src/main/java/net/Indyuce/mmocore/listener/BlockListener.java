@@ -42,7 +42,7 @@ public class BlockListener implements Listener {
 		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player, block.getLocation());
 		if (!customMine)
 			return;
-
+ 
 		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
 		if (info == null) {
 			event.setCancelled(true);
