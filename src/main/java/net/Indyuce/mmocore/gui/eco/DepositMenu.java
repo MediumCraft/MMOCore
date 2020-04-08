@@ -13,9 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.item.ConfigItem;
-import net.Indyuce.mmocore.api.util.item.SmartGive;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.mmogroup.mmolib.api.item.NBTItem;
+import net.mmogroup.mmolib.api.util.SmartGive;
 
 public class DepositMenu extends PluginInventory {
 	private ItemStack depositItem;

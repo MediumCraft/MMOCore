@@ -6,10 +6,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.api.util.item.CurrencyItem;
-import net.Indyuce.mmocore.api.util.item.SmartGive;
 import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
+import net.mmogroup.mmolib.api.util.SmartGive;
 
 public class CoinsCommandMap extends CommandEnd {
 	public CoinsCommandMap(CommandMap parent) {
