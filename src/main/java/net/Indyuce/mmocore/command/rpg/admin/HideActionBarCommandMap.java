@@ -20,7 +20,7 @@ public class HideActionBarCommandMap extends CommandEnd {
 
 	@Override
 	public CommandResult execute(CommandSender sender, String[] args) {
-		if (args.length < 3)
+		if (args.length < 4)
 			return CommandResult.THROW_USAGE;
 
 		Player player = Bukkit.getPlayer(args[2]);

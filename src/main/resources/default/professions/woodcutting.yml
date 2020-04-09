@@ -8,6 +8,9 @@ experience:
     base: 13
     per-level: 2.5
 
+# Must match an existing exp curve filename from the 'expcurves' folder
+exp-curve: levels
+
 exp-sources:
 - 'mineblock{type=OAK_LOG;amount=1-3}'
 - 'mineblock{type=SPRUCE_LOG;amount=1-3}'
