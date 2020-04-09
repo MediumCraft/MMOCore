@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
 import net.mmogroup.mmolib.api.MMOLineConfig;
@@ -36,9 +37,19 @@ public class MineBlockObjective extends Objective {
 			super(questProgress, objective);
 		}
 
-		@EventHandler(priority = EventPriority.HIGH)
+		@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 		public void a(BlockBreakEvent event) {
-			if (!event.isCancelled() && event.getPlayer().equals(getQuestProgress().getPlayer().getPlayer()) && event.getBlock().getType() == block) {
+			if (event.getPlayer().equals(getQuestProgress().getPlayer().getPlayer()) && event.getBlock().getType() == block) {
+				count++;
+				getQuestProgress().getPlayer().getQuestData().updateBossBar();
+				if (count >= required)
+					getQuestProgress().completeObjective();
+			}
+		}
+
+		@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+		public void b(CustomBlockMineEvent event) {
+			if (event.getPlayer().equals(getQuestProgress().getPlayer().getPlayer()) && event.getBlock().getType() == block) {
 				count++;
 				getQuestProgress().getPlayer().getQuestData().updateBossBar();
 				if (count >= required)
