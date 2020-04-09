@@ -7,6 +7,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -28,9 +29,10 @@ public class Lootsplosion implements Listener {
 		colored = Bukkit.getPluginManager().getPlugin("MMOItems") != null && MMOCore.plugin.getConfig().getBoolean("lootsplosion.mmoitems-color");
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void b(MythicMobDeathEvent event) {
-		new LootsplosionHandler(event);
+		if (event.getMob().getVariables().has("Lootsplosion"))
+			new LootsplosionHandler(event);
 	}
 
 	public class LootsplosionHandler implements Listener {
@@ -80,7 +82,8 @@ public class Lootsplosion implements Listener {
 	}
 
 	private Vector randomVector() {
-		double offset = MMOCore.plugin.getConfig().getDouble("lootsplosion.offset"), height = MMOCore.plugin.getConfig().getDouble("lootsplosion.height");
+		double offset = MMOCore.plugin.getConfig().getDouble("lootsplosion.offset"),
+				height = MMOCore.plugin.getConfig().getDouble("lootsplosion.height");
 		return new Vector(Math.cos(random.nextDouble() * Math.PI * 2) * offset, height, Math.sin(random.nextDouble() * Math.PI * 2) * offset);
 	}
 }
