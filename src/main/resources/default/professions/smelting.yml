@@ -7,3 +7,6 @@ name: Smelting
 experience:
     base: 20
     per-level: 3
+
+# Must match an existing exp curve filename from the 'expcurves' folder
+exp-curve: levels

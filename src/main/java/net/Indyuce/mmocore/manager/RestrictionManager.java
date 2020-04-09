@@ -12,9 +12,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.block.BlockType;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class RestrictionManager {
-	private Set<String> breakBlackList = new HashSet<>();
+	// private Set<String> breakBlackList = new HashSet<>();
 	private Map<Material, BlockPermissions> map = new HashMap<>();
 
 	public RestrictionManager(FileConfiguration config) {
@@ -37,20 +39,21 @@ public class RestrictionManager {
 	public void register(BlockPermissions perms) {
 		if (perms.isValid()) {
 			map.put(perms.getTool(), perms);
-			perms.getMinable().forEach(material -> breakBlackList.add(material));
+			// perms.getMinable().forEach(material ->
+			// breakBlackList.add(material));
 		}
 	}
 
-	public boolean isBlackListed(String s) {
-		return breakBlackList.contains(s);
-	}
+	// public boolean isBlackListed(String s) {
+	// return breakBlackList.contains(s);
+	// }
 
 	public BlockPermissions getPermissions(Material tool) {
 		return map.containsKey(tool) ? map.get(tool) : null;
 	}
 
 	public class BlockPermissions {
-		private final Set<String> canMine = new HashSet<>();
+		private final Set<BlockType> mineable = new HashSet<>();
 		private final Material tool;
 
 		private BlockPermissions parent;
@@ -73,36 +76,26 @@ public class RestrictionManager {
 		}
 
 		public void load() {
-			if (loaded.contains("parent")) {
-				String str = loaded.getString("parent").toUpperCase().replace("-", "_").replace(" ", "_");
-				Validate.notNull(str, "Could not load parent");
-				parent = map.get(Material.valueOf(str));
-			}
-
+			if (loaded.contains("parent"))
+				parent = map.get(Material.valueOf(loaded.getString("parent", "???").toUpperCase().replace("-", "_").replace(" ", "_")));
 			for (String key : loaded.getStringList("can-mine"))
-				canMine.add(key.toUpperCase().replace("-", "_"));
+				mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)));
 
 			loaded = null;
 		}
 
-		public void setParent(BlockPermissions parent) {
-			this.parent = parent;
-		}
-
-		public void addPermission(String s) {
-			canMine.add(s);
+		public void addPermission(BlockType block) {
+			mineable.add(block);
 		}
 
 		// recursive function to check for parent permissions
-		public boolean canMine(String material) {
-			return canMine.contains(material) || (parent != null && parent.canMine(material));
-		}
+		public boolean canMine(BlockType type) {
+			String key = type.generateKey();
+			for (BlockType mineable : this.mineable)
+				if (mineable.generateKey().equals(key))
+					return true;
 
-		public Set<String> getMinable() {
-			Set<String> total = new HashSet<>(canMine);
-			if (parent != null)
-				total.addAll(parent.getMinable());
-			return total;
+			return parent != null && parent.canMine(type);
 		}
 
 		public Material getTool() {

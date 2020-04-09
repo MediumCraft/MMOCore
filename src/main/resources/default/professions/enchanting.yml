@@ -8,6 +8,9 @@ experience:
     base: 10
     per-level: 2
 
+# Must match an existing exp curve filename from the 'expcurves' folder
+exp-curve: levels
+
 # Remove the 'enchant' parameter from the line config
 # to make the profession get EXP with ANY enchant.
 

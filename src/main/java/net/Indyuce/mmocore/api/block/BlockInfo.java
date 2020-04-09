@@ -1,0 +1,152 @@
+package net.Indyuce.mmocore.api.block;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.droptable.DropTable;
+import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.mmogroup.mmolib.api.MMOLineConfig;
+
+public class BlockInfo {
+	private final BlockType block;
+	private final DropTable table;
+	private final boolean vanillaDrops;
+	private final List<Trigger> triggers = new ArrayList<>();
+	private final RegenInfo regen;
+
+	/*
+	 * saved separately because MMOCore needs to display the experience gained,
+	 * since it requires a steam call it is better to cache right off the start
+	 */
+	private final ExperienceTrigger experience;
+
+	public BlockInfo(ConfigurationSection config) {
+		Validate.notNull(config, "Could not load config");
+		Validate.isTrue(config.contains("material"), "Could not find block type");
+
+		block = MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(config.getString("material")));
+		table = config.contains("drop-table") ? MMOCore.plugin.dropTableManager.loadDropTable(config.get("drop-table")) : null;
+		vanillaDrops = config.getBoolean("vanilla-drops", true);
+
+		regen = config.contains("regen") ? new RegenInfo(config.getConfigurationSection("regen")) : null;
+
+		if (config.contains("triggers")) {
+			List<String> list = config.getStringList("triggers");
+			Validate.notNull(list, "Could not load triggers");
+
+			for (String key : list)
+				try {
+					triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
+				} catch (MMOLoadException exception) {
+					exception.printConsole("BlockRegen", "trigger");
+				}
+		}
+
+		Optional<Trigger> opt = triggers.stream().filter(trigger -> (trigger instanceof ExperienceTrigger)).findFirst();
+		experience = opt.isPresent() ? (ExperienceTrigger) opt.get() : null;
+	}
+
+	public boolean hasVanillaDrops() {
+		return vanillaDrops;
+	}
+
+	public BlockType getBlock() {
+		return block;
+	}
+
+	/*
+	 * generates a key used to store the BlockInfo instance in the manager map,
+	 * the key depends on the block type to make sure there is no interference
+	 */
+	public String generateKey() {
+		return block.generateKey();
+	}
+
+	public DropTable getDropTable() {
+		return table;
+	}
+
+	public List<ItemStack> collectDrops() {
+		return hasDropTable() ? table.collect() : new ArrayList<>();
+	}
+
+	public boolean hasDropTable() {
+		return table != null;
+	}
+
+	public boolean hasRegen() {
+		return regen != null;
+	}
+
+	public boolean regenerates() {
+		return regen != null;
+	}
+
+	public RegenInfo getRegenerationInfo() {
+		return regen;
+	}
+
+	public RegeneratingBlock startRegeneration(BlockData data, Location loc) {
+		return new RegeneratingBlock(data, loc, this);
+	}
+
+	public RegeneratingBlock startRegeneration(Location loc) {
+		return new RegeneratingBlock(null, loc, this);
+	}
+
+	public boolean hasExperience() {
+		return experience != null;
+	}
+
+	public ExperienceTrigger getExperience() {
+		return experience;
+	}
+
+	public boolean hasTriggers() {
+		return !triggers.isEmpty();
+	}
+
+	public List<Trigger> getTriggers() {
+		return triggers;
+	}
+
+	public class RegeneratingBlock {
+		private final BlockData data;
+		private final Location loc;
+		private final BlockInfo regenerating;
+
+		private final long date = System.currentTimeMillis();
+
+		public RegeneratingBlock(BlockData data, Location loc, BlockInfo regenerating) {
+			this.data = data;
+			this.loc = loc;
+			this.regenerating = regenerating;
+		}
+
+		public boolean isTimedOut() {
+			return date + regenerating.getRegenerationInfo().getTime() * 50 < System.currentTimeMillis();
+		}
+
+		public BlockData getBlockData() {
+			return data;
+		}
+
+		public Location getLocation() {
+			return loc;
+		}
+
+		public BlockInfo getRegeneratingBlock() {
+			return regenerating;
+		}
+	}
+}

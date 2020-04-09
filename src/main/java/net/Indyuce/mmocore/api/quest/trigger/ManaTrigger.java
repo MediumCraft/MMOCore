@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class ManaTrigger extends Trigger {
 	private final RandomAmount amount;

@@ -17,12 +17,13 @@ import org.bukkit.util.Vector;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.PlayerStats.CachedStats;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
+import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.AttackResult;
 import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 import net.mmogroup.mmolib.version.VersionMaterial;
@@ -59,7 +60,6 @@ public class Power_Mark extends Skill implements Listener {
 	public class PowerMark extends BukkitRunnable implements Listener {
 		private final PlayerData data;
 		private final Location loc;
-		private final CachedStats stats;
 
 		private double duration, ratio, stun;
 
@@ -69,7 +69,6 @@ public class Power_Mark extends Skill implements Listener {
 		public PowerMark(PlayerData data, SkillResult cast, Location loc) {
 			this.data = data;
 			this.loc = loc;
-			this.stats = MMOCore.plugin.rpgUtilHandler.cachePlayerStats(data);
 
 			loc.getWorld().playSound(loc, Sound.BLOCK_END_PORTAL_FRAME_FILL, 2, 1);
 
@@ -81,7 +80,7 @@ public class Power_Mark extends Skill implements Listener {
 			Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 		}
 
-		public void unregister() {
+		private void unregister() {
 			PlayerAttackEvent.getHandlerList().unregister(this);
 			cancel();
 		}
@@ -115,9 +114,9 @@ public class Power_Mark extends Skill implements Listener {
 
 				for (Entity entity : MMOCoreUtils.getNearbyChunkEntities(loc))
 					if (entity.getLocation().distanceSquared(loc) < 25 && MMOCoreUtils.canTarget(data.getPlayer(), entity)) {
-						entity.setVelocity(format(entity.getLocation().subtract(loc).toVector().setY(0)).setY(.3));
 						((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (stun * 20), 10, false, false));
-						stats.damage((LivingEntity) entity, accumulate, DamageType.SKILL, DamageType.MAGIC);
+						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(accumulate, DamageType.SKILL, DamageType.MAGIC));
+						entity.setVelocity(format(entity.getLocation().subtract(loc).toVector().setY(0)).setY(.3));
 					}
 				return;
 			}

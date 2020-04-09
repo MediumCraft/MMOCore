@@ -15,7 +15,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -131,9 +130,7 @@ public abstract class Skill {
 	 * not overriden for passive skills therefore not abstract.
 	 */
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
-		SkillResult cast = new SkillResult(data, skill);
-		cast.abort(CancelReason.OTHER);
-		return cast;
+		return new SkillResult(data, skill);
 	}
 
 	public SkillInfo newSkillInfo(ConfigurationSection config) {
@@ -190,8 +187,8 @@ public abstract class Skill {
 				modifiers.put(modifier, linear);
 		}
 
-		public int getModifier(String modifier, int level) {
-			return (int) modifiers.get(modifier).calculate(level);
+		public double getModifier(String modifier, int level) {
+			return modifiers.get(modifier).calculate(level);
 		}
 
 		public boolean isUnlocked(PlayerData profess) {

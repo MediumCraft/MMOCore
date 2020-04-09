@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.load;
 import java.util.logging.Level;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class MMOLoadException extends IllegalArgumentException {
 	private static final long serialVersionUID = -8839506644440697800L;

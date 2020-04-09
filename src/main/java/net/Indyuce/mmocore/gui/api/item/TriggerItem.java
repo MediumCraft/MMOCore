@@ -3,9 +3,9 @@ package net.Indyuce.mmocore.gui.api.item;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class TriggerItem extends InventoryPlaceholderItem {
 	private final Trigger trigger;

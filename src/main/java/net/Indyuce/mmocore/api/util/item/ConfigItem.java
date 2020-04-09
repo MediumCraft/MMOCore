@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mojang.authlib.GameProfile;
@@ -33,7 +32,7 @@ public class ConfigItem {
 	private final int damage, modeldata;
 
 	private boolean unbreakable;
-	private Map<String, String> placeholders = new HashMap<>();
+	private final Map<String, String> placeholders = new HashMap<>();
 
 	public ConfigItem(ConfigurationSection config) {
 		id = config.getName();
@@ -79,7 +78,7 @@ public class ConfigItem {
 	public String getName() {
 		return name;
 	}
-	
+
 	public int getModelData() {
 		return modeldata;
 	}
@@ -107,13 +106,13 @@ public class ConfigItem {
 		ItemStack item = getItem(amount);
 		ItemMeta meta = item.getItemMeta();
 
-		if (meta instanceof Damageable)
-			((Damageable) meta).setDamage(damage);
+		if (MMOLib.plugin.getVersion().getWrapper().isDamageable(item))
+			MMOLib.plugin.getVersion().getWrapper().applyDurability(item, meta, damage);
 
-		if(MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
+		if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(modeldata);
-		
-		if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial() && texture != null) {
+
+		if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial() && texture != null)
 			try {
 				Field profileField = meta.getClass().getDeclaredField("profile");
 				profileField.setAccessible(true);
@@ -123,7 +122,6 @@ public class ConfigItem {
 			} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException exception) {
 				MMOCore.log(Level.WARNING, "Could not load config item texture of " + id);
 			}
-		}
 
 		meta.addItemFlags(ItemFlag.values());
 		meta.setDisplayName(format(name));

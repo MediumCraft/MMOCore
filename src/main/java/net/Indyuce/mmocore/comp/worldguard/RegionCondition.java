@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
-import net.Indyuce.mmocore.api.load.MMOLineConfig;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class RegionCondition extends Condition {
 	private final List<String> names;
