@@ -37,7 +37,30 @@ public class QuestViewer extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equals("quest") ? new QuestItem(config) : new NoPlaceholderItem(config);
+
+		if (function.equals("quest"))
+			return new QuestItem(config);
+		
+		if (function.equals("previous"))
+			return new NoPlaceholderItem(config) {
+
+				@Override
+				public boolean canDisplay(GeneratedInventory inv) {
+					return ((QuestInventory) inv).page > 0;
+				}
+			};
+
+		if (function.equals("next"))
+			return new NoPlaceholderItem(config) {
+
+				@Override
+				public boolean canDisplay(GeneratedInventory inv) {
+					QuestInventory generated = (QuestInventory) inv;
+					return generated.perPage * (generated.page + 1) < generated.quests.size();
+				}
+			};
+
+		return new NoPlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
@@ -64,8 +87,10 @@ public class QuestViewer extends EditableInventory {
 
 			Validate.notNull(mainHit = config.getString("level-requirement.main.hit"), "Could not load 'level-requirement.main.hit'");
 			Validate.notNull(mainNotHit = config.getString("level-requirement.main.not-hit"), "Could not load 'level-requirement.main.not-hit'");
-			Validate.notNull(professionHit = config.getString("level-requirement.profession.hit"), "Could not load 'level-requirement.profession.hit'");
-			Validate.notNull(professionNotHit = config.getString("level-requirement.profession.not-hit"), "Could not load 'level-requirement.profession.not-hit'");
+			Validate.notNull(professionHit = config.getString("level-requirement.profession.hit"),
+					"Could not load 'level-requirement.profession.hit'");
+			Validate.notNull(professionNotHit = config.getString("level-requirement.profession.not-hit"),
+					"Could not load 'level-requirement.profession.not-hit'");
 		}
 
 		@Override
@@ -101,12 +126,17 @@ public class QuestViewer extends EditableInventory {
 			 * calculate quest info for later.
 			 */
 			int reqCount = quest.countLevelRestrictions();
-			boolean started = inv.getPlayerData().getQuestData().hasCurrent(quest), completed = inv.getPlayerData().getQuestData().hasFinished(quest), cooldown = completed ? inv.getPlayerData().getQuestData().checkCooldownAvailability(quest) : false;
+			boolean started = inv.getPlayerData().getQuestData().hasCurrent(quest), completed = inv.getPlayerData().getQuestData().hasFinished(quest),
+					cooldown = completed ? inv.getPlayerData().getQuestData().checkCooldownAvailability(quest) : false;
 
 			for (Iterator<String> iterator = lore.iterator(); iterator.hasNext();) {
 				String next = iterator.next();
 
-				if ((next.startsWith("{level_req}") && reqCount < 1) || (next.startsWith("{started}") && !started) || (next.startsWith("{!started}") && started) || (next.startsWith("{completed}") && !completed) || (next.startsWith("{completed_cannot_redo}") && !(completed && !quest.isRedoable())) || (next.startsWith("{completed_can_redo}") && !(cooldown && quest.isRedoable())) || (next.startsWith("{completed_delay}") && !(completed && !cooldown)))
+				if ((next.startsWith("{level_req}") && reqCount < 1) || (next.startsWith("{started}") && !started)
+						|| (next.startsWith("{!started}") && started) || (next.startsWith("{completed}") && !completed)
+						|| (next.startsWith("{completed_cannot_redo}") && !(completed && !quest.isRedoable()))
+						|| (next.startsWith("{completed_can_redo}") && !(cooldown && quest.isRedoable()))
+						|| (next.startsWith("{completed_delay}") && !(completed && !cooldown)))
 					iterator.remove();
 			}
 
@@ -122,7 +152,9 @@ public class QuestViewer extends EditableInventory {
 
 				for (Profession profession : quest.getLevelRestrictions()) {
 					int required = quest.getLevelRestriction(profession);
-					lore.add(index + (mainRequired > 0 ? 1 : 0), (inv.getPlayerData().getCollectionSkills().getLevel(profession) >= required ? professionHit : professionNotHit).replace("{level}", "" + required).replace("{profession}", profession.getName()));
+					lore.add(index + (mainRequired > 0 ? 1 : 0),
+							(inv.getPlayerData().getCollectionSkills().getLevel(profession) >= required ? professionHit : professionNotHit)
+									.replace("{level}", "" + required).replace("{profession}", profession.getName()));
 				}
 			}
 
@@ -148,11 +180,13 @@ public class QuestViewer extends EditableInventory {
 			Placeholders holders = new Placeholders();
 			holders.register("name", quest.getName());
 			holders.register("total_level_req", quest.getLevelRestrictions().size() + (quest.getLevelRestriction(null) > 0 ? 1 : 0));
-			holders.register("current_level_req", (data.getLevel() >= quest.getLevelRestriction(null) ? 1 : 0) + quest.getLevelRestrictions().stream().filter(type -> data.getCollectionSkills().getLevel(type) >= quest.getLevelRestriction(type)).collect(Collectors.toSet()).size());
+			holders.register("current_level_req", (data.getLevel() >= quest.getLevelRestriction(null) ? 1 : 0) + quest.getLevelRestrictions().stream()
+					.filter(type -> data.getCollectionSkills().getLevel(type) >= quest.getLevelRestriction(type)).collect(Collectors.toSet()).size());
 
 			if (data.getQuestData().hasCurrent(quest)) {
 				holders.register("objective", data.getQuestData().getCurrent().getFormattedLore());
-				holders.register("progress", (int) ((double) data.getQuestData().getCurrent().getObjectiveNumber() / quest.getObjectives().size() * 100.));
+				holders.register("progress",
+						(int) ((double) data.getQuestData().getCurrent().getObjectiveNumber() / quest.getObjectives().size() * 100.));
 			}
 
 			if (data.getQuestData().hasFinished(quest)) {
@@ -236,7 +270,9 @@ public class QuestViewer extends EditableInventory {
 
 				for (Profession profession : quest.getLevelRestrictions())
 					if (playerData.getCollectionSkills().getLevel(profession) < (level = quest.getLevelRestriction(profession))) {
-						MMOCore.plugin.configManager.getSimpleMessage("quest-level-restriction", "level", profession.getName() + " Lvl", "count", "" + level).send(player);
+						MMOCore.plugin.configManager
+								.getSimpleMessage("quest-level-restriction", "level", profession.getName() + " Lvl", "count", "" + level)
+								.send(player);
 						return;
 					}
 
@@ -255,7 +291,9 @@ public class QuestViewer extends EditableInventory {
 					*
 					*/
 					if (!playerData.getQuestData().checkCooldownAvailability(quest)) {
-						MMOCore.plugin.configManager.getSimpleMessage("quest-cooldown", "delay", new DelayFormat(2).format(playerData.getQuestData().getDelayFeft(quest))).send(player);
+						MMOCore.plugin.configManager
+								.getSimpleMessage("quest-cooldown", "delay", new DelayFormat(2).format(playerData.getQuestData().getDelayFeft(quest)))
+								.send(player);
 						return;
 					}
 				}
