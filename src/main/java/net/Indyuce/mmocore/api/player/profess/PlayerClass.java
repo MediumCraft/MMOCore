@@ -26,6 +26,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.player.ExpCurve;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
@@ -41,12 +42,13 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class PlayerClass {
-	private final String name, id, fileName, expCurve;
+	private final String name, id, fileName;
 	private final List<String> description = new ArrayList<>(), attrDescription = new ArrayList<>();
 	private final ItemStack icon;
 	private final Map<ClassOption, Boolean> options = new HashMap<>();
 	private final ManaDisplayOptions manaDisplay;
 	private final int maxLevel, displayOrder;
+	private final ExpCurve expCurve;
 
 	private final Map<StatType, LinearValue> stats = new HashMap<>();
 	private final Map<String, SkillInfo> skills = new LinkedHashMap<>();
@@ -94,12 +96,16 @@ public class PlayerClass {
 		manaDisplay = new ManaDisplayOptions(config.getConfigurationSection("mana"));
 		maxLevel = config.getInt("max-level");
 		displayOrder = config.getInt("display-order");
-		expCurve = config.getString("exp-curve", "levels");
+
+		expCurve = config.contains("exp-curve")
+				? MMOCore.plugin.experience.getOrThrow(config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
+				: ExpCurve.DEFAULT;
 
 		if (config.contains("attributes"))
 			for (String key : config.getConfigurationSection("attributes").getKeys(false))
 				try {
-					stats.put(StatType.valueOf(key.toUpperCase().replace("-", "_")), new LinearValue(config.getConfigurationSection("attributes." + key)));
+					stats.put(StatType.valueOf(key.toUpperCase().replace("-", "_")),
+							new LinearValue(config.getConfigurationSection("attributes." + key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load stat info '" + key + "': " + exception.getMessage());
 				}
@@ -156,9 +162,11 @@ public class PlayerClass {
 		for (PlayerResource resource : PlayerResource.values()) {
 			if (config.isConfigurationSection("resource." + resource.name().toLowerCase()))
 				try {
-					resourceHandlers.put(resource, new ResourceHandler(resource, config.getConfigurationSection("resource." + resource.name().toLowerCase())));
+					resourceHandlers.put(resource,
+							new ResourceHandler(resource, config.getConfigurationSection("resource." + resource.name().toLowerCase())));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load special resource regen for " + resource.name() + ": " + exception.getMessage());
+					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load special resource regen for " + resource.name() + ": "
+							+ exception.getMessage());
 					resourceHandlers.put(resource, new ResourceHandler(resource));
 				}
 			else
@@ -176,7 +184,7 @@ public class PlayerClass {
 		manaDisplay = new ManaDisplayOptions(ChatColor.BLUE, "Mana", AltChar.listSquare.charAt(0));
 		maxLevel = 0;
 		displayOrder = 0;
-		expCurve = "";
+		expCurve = ExpCurve.DEFAULT;
 
 		this.icon = new ItemStack(material);
 		setOption(ClassOption.DISPLAY, false);
@@ -217,7 +225,7 @@ public class PlayerClass {
 		return displayOrder;
 	}
 
-	public String getEXPCurve() {
+	public ExpCurve getExpCurve() {
 		return expCurve;
 	}
 

@@ -70,6 +70,7 @@ import net.Indyuce.mmocore.manager.ConfigManager;
 import net.Indyuce.mmocore.manager.CustomBlockManager;
 import net.Indyuce.mmocore.manager.DropTableManager;
 import net.Indyuce.mmocore.manager.EntityManager;
+import net.Indyuce.mmocore.manager.ExperienceManager;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.LootableChestManager;
 import net.Indyuce.mmocore.manager.MMOLoadManager;
@@ -120,6 +121,7 @@ public class MMOCore extends JavaPlugin {
 	public final QuestManager questManager = new QuestManager();
 	public final ProfessionManager professionManager = new ProfessionManager();
 	public final EntityManager entities = new EntityManager();
+	public final ExperienceManager experience = new ExperienceManager();
 
 	/*
 	 * professions
@@ -130,7 +132,6 @@ public class MMOCore extends JavaPlugin {
 	public final SmithingManager smithingManager = new SmithingManager();
 
 	public final MMOLoadManager loadManager = new MMOLoadManager();
-
 
 	public void onLoad() {
 		plugin = this;
@@ -377,6 +378,9 @@ public class MMOCore extends JavaPlugin {
 
 		attributeManager.clear();
 		attributeManager.reload();
+
+		// experience must be loaded before professions and classes
+		experience.reload();
 
 		professionManager.clear();
 		professionManager.reload();

@@ -79,7 +79,8 @@ public class PlayerStats extends EditableInventory {
 					Placeholders holders = new Placeholders();
 					net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.getPlayerData().getStats();
 
-					double ratio = (double) inv.getPlayerData().getCollectionSkills().getExperience(profession) / MMOCore.plugin.configManager.getNeededExperience(inv.getPlayerData().getCollectionSkills().getLevel(profession) + 1, profession);
+					double ratio = (double) inv.getPlayerData().getCollectionSkills().getExperience(profession)
+							/ (double) inv.getPlayerData().getCollectionSkills().getLevelUpExperience(profession);
 
 					String bar = "" + ChatColor.BOLD;
 					int chars = (int) (ratio * 20);
@@ -277,7 +278,7 @@ public class PlayerStats extends EditableInventory {
 			PlayerData data = inv.getPlayerData();
 			Placeholders holders = new Placeholders();
 
-			int nextLevelExp = MMOCore.plugin.configManager.getNeededExperience(data.getLevel() + 1, data.getProfess());
+			int nextLevelExp = inv.getPlayerData().getLevelUpExperience();
 			double ratio = (double) data.getExperience() / (double) nextLevelExp;
 
 			String bar = "" + ChatColor.BOLD;

@@ -49,12 +49,12 @@ public class Professions {
 
 	public String toJsonString() {
 		JsonObject json = new JsonObject();
-		for (Profession prof : MMOCore.plugin.professionManager.getAll()) {
-			JsonObject p = new JsonObject();
-			p.addProperty("exp", getExperience(prof));
-			p.addProperty("level", getLevel(prof));
+		for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
+			JsonObject object = new JsonObject();
+			object.addProperty("exp", getExperience(profession));
+			object.addProperty("level", getLevel(profession));
 
-			json.add(prof.getId(), p);
+			json.add(profession.getId(), object);
 		}
 		return json.toString();
 	}
@@ -90,6 +90,10 @@ public class Professions {
 		return getExperience(profession.getId());
 	}
 
+	public int getLevelUpExperience(Profession profession) {
+		return profession.getExpCurve().getExperience(getLevel(profession) + 1);
+	}
+
 	public void setLevel(Profession profession, int value) {
 		level.put(profession.getId(), value);
 	}
@@ -101,7 +105,7 @@ public class Professions {
 	public void giveLevels(Profession profession, int value) {
 		int total = 0, level = getLevel(profession);
 		while (value-- > 0)
-			total += MMOCore.plugin.configManager.getNeededExperience(level + value + 1, profession);
+			total += profession.getExpCurve().getExperience(level + value + 1);
 		giveExperience(profession, total);
 	}
 
@@ -116,19 +120,21 @@ public class Professions {
 		// display hologram
 		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms")) {
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
-				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
+				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
+						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
 		}
 
 		int needed, exp, level;
 		boolean check = false;
-		while ((exp = this.exp.get(profession.getId())) >= (needed = MMOCore.plugin.configManager.getNeededExperience((level = getLevel(profession)) + 1, profession))) {
+		while ((exp = this.exp.get(profession.getId())) >= (needed = profession.getExpCurve().getExperience((level = getLevel(profession)) + 1))) {
 			this.exp.put(profession.getId(), exp - needed);
 			this.level.put(profession.getId(), level + 1);
 			check = true;
 			playerData.giveExperience((int) profession.getExperience().calculate(level), null);
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, level + 1));
 
-			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level + 1), "profession", profession.getName()).send(playerData.getPlayer());
+			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level + 1), "profession", profession.getName())
+					.send(playerData.getPlayer());
 			playerData.getPlayer().playSound(playerData.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
 		}
 		if (check)
@@ -138,6 +144,7 @@ public class Professions {
 		int chars = (int) ((double) exp / needed * 20);
 		for (int j = 0; j < 20; j++)
 			bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
-		MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio", MMOCore.plugin.configManager.decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
+		MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio",
+				MMOCore.plugin.configManager.decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
 }

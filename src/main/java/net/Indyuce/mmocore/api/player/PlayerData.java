@@ -119,7 +119,8 @@ public class PlayerData extends OfflinePlayerData {
 				j++;
 			} catch (NullPointerException notFound) {
 				boundSkills.remove(j);
-				MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId() + " in class " + getProfess().getId() + " while refreshing player data.");
+				MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId() + " in class "
+						+ getProfess().getId() + " while refreshing player data.");
 			}
 	}
 
@@ -191,6 +192,13 @@ public class PlayerData extends OfflinePlayerData {
 		return skillPoints;
 	}
 
+	/*
+	 * returns level up needed in order to level up
+	 */
+	public int getLevelUpExperience() {
+		return getProfess().getExpCurve().getExperience(getLevel() + 1);
+	}
+
 	// public int getSkillReallocationPoints() {
 	// return skillReallocationPoints;
 	// }
@@ -223,19 +231,19 @@ public class PlayerData extends OfflinePlayerData {
 	public void giveLevels(int value) {
 		int total = 0;
 		while (value-- > 0)
-			total += MMOCore.plugin.configManager.getNeededExperience(getLevel() + value + 1, getProfess());
+			total += getProfess().getExpCurve().getExperience(getLevel() + value + 1);
 		giveExperience(total);
 	}
 
 	public void setExperience(int value) {
 		experience = Math.max(0, value);
-		refreshVanillaExp(MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, getProfess()));
+		refreshVanillaExp();
 	}
 
-	public void refreshVanillaExp(float needed) {
+	public void refreshVanillaExp() {
 		if (MMOCore.plugin.configManager.overrideVanillaExp) {
 			player.setLevel(getLevel());
-			player.setExp((float) experience / needed);
+			player.setExp((float) experience / (float) getLevelUpExperience());
 		}
 	}
 
@@ -346,7 +354,8 @@ public class PlayerData extends OfflinePlayerData {
 		setLastFriendRequest(System.currentTimeMillis());
 
 		FriendRequest request = new FriendRequest(this, target);
-		new ConfigMessage("friend-request").addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
+		new ConfigMessage("friend-request").addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString())
+				.sendAsJSon(target.getPlayer());
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 
@@ -378,7 +387,9 @@ public class PlayerData extends OfflinePlayerData {
 				player.playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1, (float) (t / Math.PI * .015 + .5));
 				double r = Math.sin((double) t / 100 * Math.PI);
 				for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
-					MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE, player.getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 1.25f, Color.PURPLE);
+					MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE,
+							player.getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 1.25f,
+							Color.PURPLE);
 			}
 		}.runTaskTimer(MMOCore.plugin, 0, 1);
 	}
@@ -400,7 +411,8 @@ public class PlayerData extends OfflinePlayerData {
 		// display hologram
 		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
-				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
+				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
+						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
 
 		value = MMOCore.plugin.boosterManager.calculateExp(null, value);
 		value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
@@ -414,7 +426,7 @@ public class PlayerData extends OfflinePlayerData {
 
 		int needed;
 		boolean check = false;
-		while (experience >= (needed = MMOCore.plugin.configManager.getNeededExperience(getLevel() + 1, getProfess()))) {
+		while (experience >= (needed = getLevelUpExperience())) {
 
 			if (hasReachedMaxLevel()) {
 				experience = 0;
@@ -434,7 +446,7 @@ public class PlayerData extends OfflinePlayerData {
 			getStats().getMap().updateAll();
 		}
 
-		refreshVanillaExp(needed);
+		refreshVanillaExp();
 	}
 
 	public int getExperience() {

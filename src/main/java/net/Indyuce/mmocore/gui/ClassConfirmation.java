@@ -47,7 +47,7 @@ public class ClassConfirmation extends EditableInventory {
 			SavedClassInformation info = inv.getPlayerData().getClassInfo(profess);
 			Placeholders holders = new Placeholders();
 
-			int nextLevelExp = MMOCore.plugin.configManager.getNeededExperience(info.getLevel() + 1, profess);
+			int nextLevelExp = inv.getPlayerData().getLevelUpExperience();
 			double ratio = (double) info.getExperience() / (double) nextLevelExp;
 
 			String bar = "" + ChatColor.BOLD;

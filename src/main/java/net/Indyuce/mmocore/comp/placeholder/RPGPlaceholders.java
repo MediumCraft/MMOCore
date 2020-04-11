@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
+import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.PlayerQuests;
 import net.Indyuce.mmocore.api.player.Professions;
@@ -40,7 +41,7 @@ public class RPGPlaceholders
 
 		else if (identifier.equals("level_percent")) {
 			PlayerData playerData = PlayerData.get(player);
-			double current = playerData.getExperience(), next = MMOCore.plugin.configManager.getNeededExperience(playerData.getLevel() + 1, playerData.getProfess());
+			double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
 			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
 		}
 
@@ -55,8 +56,10 @@ public class RPGPlaceholders
 
 		else if (identifier.startsWith("profession_percent_")) {
 			Professions professions = PlayerData.get(player).getCollectionSkills();
-			String profession = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
-			double current = professions.getExperience(profession), next = MMOCore.plugin.configManager.getNeededExperience(professions.getLevel(profession) + 1, profession);
+			String name = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
+			Profession profession = MMOCore.plugin.professionManager.get(name);
+			double current = professions.getExperience(profession),
+					next = professions.getLevelUpExperience(profession);
 			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
 		}
 
@@ -70,7 +73,7 @@ public class RPGPlaceholders
 			return "" + PlayerData.get(player).getExperience();
 
 		else if (identifier.equals("next_level"))
-			return "" + MMOCore.plugin.configManager.getNeededExperience(PlayerData.get(player).getLevel() + 1, PlayerData.get(player).getProfess());
+			return "" +PlayerData.get(player).getLevelUpExperience();
 
 		else if (identifier.equals("class_points"))
 			return "" + PlayerData.get(player).getClassPoints();
@@ -135,7 +138,10 @@ public class RPGPlaceholders
 
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = PlayerData.get(player).getQuestData();
-			return data.hasCurrent() ? MMOCore.plugin.configManager.decimal.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100) : "0";
+			return data.hasCurrent()
+					? MMOCore.plugin.configManager.decimal
+							.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100)
+					: "0";
 		}
 
 		else if (identifier.equals("quest_objective")) {

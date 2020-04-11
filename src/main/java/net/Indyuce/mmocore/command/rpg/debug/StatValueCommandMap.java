@@ -36,8 +36,8 @@ public class StatValueCommandMap extends CommandEnd {
 		}
 		
 		if(args.length > 3 && args[3].equals("true"))
-			sender.sendMessage(Debug.cmdPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE  + "): " + ChatColor.GREEN + stat.format(data.getStats().getStat(stat)) + ChatColor.WHITE + " *");
-		else sender.sendMessage(Debug.cmdPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE + "): " + ChatColor.GREEN + data.getStats().getStat(stat));
+			sender.sendMessage(DebugCommandMap.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE  + "): " + ChatColor.GREEN + stat.format(data.getStats().getStat(stat)) + ChatColor.WHITE + " *");
+		else sender.sendMessage(DebugCommandMap.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE + "): " + ChatColor.GREEN + data.getStats().getStat(stat));
 		
 		return CommandResult.SUCCESS;
 	}

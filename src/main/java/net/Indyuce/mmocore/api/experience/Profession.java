@@ -10,15 +10,21 @@ import org.bukkit.potion.PotionType;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.player.ExpCurve;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class Profession {
-	private final String id, name, expCurve;
+	private final String id, name;
+	private final ExpCurve expCurve;
 
+	/*
+	 * experience given to the main player level whenever he levels up this
+	 * profession
+	 */
 	private final LinearValue experience;
-	
+
 	/*
 	 * removed when loaded
 	 */
@@ -31,7 +37,9 @@ public class Profession {
 		this.name = config.getString("name");
 		Validate.notNull(name, "Could not load name");
 
-		expCurve = config.getString("exp-curve", "levels");
+		expCurve = config.contains("exp-curve")
+				? MMOCore.plugin.experience.getOrThrow(config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
+				: ExpCurve.DEFAULT;
 		experience = new LinearValue(config.getConfigurationSection("experience"));
 
 		if (config.contains("exp-sources"))
@@ -110,10 +118,10 @@ public class Profession {
 		return name;
 	}
 
-	public String getEXPCurve() {
+	public ExpCurve getExpCurve() {
 		return expCurve;
 	}
-	
+
 	public int calculateExperience(int x) {
 		return (int) experience.calculate(x);
 	}

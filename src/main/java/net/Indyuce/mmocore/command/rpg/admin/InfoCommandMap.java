@@ -34,12 +34,17 @@ public class InfoCommandMap extends CommandEnd {
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
 		sender.sendMessage(ChatColor.YELLOW + "Class: " + ChatColor.GOLD + playerData.getProfess().getName());
 		sender.sendMessage(ChatColor.YELLOW + "Level: " + ChatColor.GOLD + playerData.getLevel());
-		sender.sendMessage(ChatColor.YELLOW + "Experience: " + ChatColor.GOLD + playerData.getExperience() + ChatColor.YELLOW + " / " + ChatColor.GOLD + MMOCore.plugin.configManager.getNeededExperience(playerData.getLevel() + 1, playerData.getProfess()));
+		sender.sendMessage(ChatColor.YELLOW + "Experience: " + ChatColor.GOLD + playerData.getExperience() + ChatColor.YELLOW + " / " + ChatColor.GOLD
+				+ playerData.getLevelUpExperience());
 		sender.sendMessage(ChatColor.YELLOW + "Class Points: " + ChatColor.GOLD + playerData.getClassPoints());
-		sender.sendMessage(ChatColor.YELLOW + "Quests: " + ChatColor.GOLD + playerData.getQuestData().getFinishedQuests().size() + ChatColor.YELLOW + " / " + ChatColor.GOLD + MMOCore.plugin.questManager.getAll().size());
+		sender.sendMessage(ChatColor.YELLOW + "Quests: " + ChatColor.GOLD + playerData.getQuestData().getFinishedQuests().size() + ChatColor.YELLOW
+				+ " / " + ChatColor.GOLD + MMOCore.plugin.questManager.getAll().size());
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
 		for (Profession profession : MMOCore.plugin.professionManager.getAll())
-			sender.sendMessage(ChatColor.YELLOW + profession.getName() + ": Lvl " + ChatColor.GOLD + playerData.getCollectionSkills().getLevel(profession) + ChatColor.YELLOW + " - " + ChatColor.GOLD + playerData.getCollectionSkills().getExperience(profession) + ChatColor.YELLOW + " / " + ChatColor.GOLD + MMOCore.plugin.configManager.getNeededExperience(playerData.getCollectionSkills().getLevel(profession) + 1, profession));
+			sender.sendMessage(
+					ChatColor.YELLOW + profession.getName() + ": Lvl " + ChatColor.GOLD + playerData.getCollectionSkills().getLevel(profession)
+							+ ChatColor.YELLOW + " - " + ChatColor.GOLD + playerData.getCollectionSkills().getExperience(profession)
+							+ ChatColor.YELLOW + " / " + ChatColor.GOLD + playerData.getCollectionSkills().getLevelUpExperience(profession));
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
 		return CommandResult.SUCCESS;
 	}
