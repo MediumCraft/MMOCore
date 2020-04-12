@@ -1,7 +1,10 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.command.api.CommandMap;
 
 public class AdminCommandMap extends CommandMap {
@@ -30,6 +33,9 @@ public class AdminCommandMap extends CommandMap {
 
 	@Override
 	public CommandResult execute(CommandSender sender, String[] args) {
+		
+		MMOCore.plugin.lootChests.getRegion("test-region").spawnChest(PlayerData.get((Player) sender));
+		
 		return CommandResult.THROW_USAGE;
 	}
 }

@@ -14,31 +14,41 @@ public class StatValueCommandMap extends CommandEnd {
 	public StatValueCommandMap(CommandMap parent) {
 		super(parent, "statvalue");
 
-		addParameter(new Parameter("<stat>", list -> { for(StatType stat : StatType.values()) list.add(stat.name()); }));
-		addParameter(new Parameter("(formatted)", list -> { list.add("true"); }));
+		addParameter(new Parameter("<stat>", list -> {
+			for (StatType stat : StatType.values())
+				list.add(stat.name());
+		}));
+		addParameter(new Parameter("(formatted)", list -> {
+			list.add("true");
+		}));
 	}
 
 	@Override
 	public CommandResult execute(CommandSender sender, String[] args) {
-		if (args.length < 3 )
+		if (args.length < 3)
 			return CommandResult.THROW_USAGE;
 
-		if(!(sender instanceof Player)) {
+		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
 			return CommandResult.FAILURE;
 		}
 		PlayerData data = PlayerData.get((Player) sender);
-		
-		StatType stat = StatType.valueOf(args[2]);
-		if (stat == null) {
+
+		StatType stat;
+		try {
+			stat = StatType.valueOf(args[2].toUpperCase().replace("-", "_").replace(" ", "_"));
+		} catch (IllegalArgumentException exception) {
 			sender.sendMessage(ChatColor.RED + "Could not find stat: " + args[2] + ".");
 			return CommandResult.FAILURE;
 		}
-		
-		if(args.length > 3 && args[3].equals("true"))
-			sender.sendMessage(DebugCommandMap.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE  + "): " + ChatColor.GREEN + stat.format(data.getStats().getStat(stat)) + ChatColor.WHITE + " *");
-		else sender.sendMessage(DebugCommandMap.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE + "): " + ChatColor.GREEN + data.getStats().getStat(stat));
-		
+
+		if (args.length > 3 && args[3].equals("true"))
+			sender.sendMessage(DebugCommandMap.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE + "): "
+					+ ChatColor.GREEN + stat.format(data.getStats().getStat(stat)) + ChatColor.WHITE + " *");
+		else
+			sender.sendMessage(DebugCommandMap.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE + "): "
+					+ ChatColor.GREEN + data.getStats().getStat(stat));
+
 		return CommandResult.SUCCESS;
 	}
 }
