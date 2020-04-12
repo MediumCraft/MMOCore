@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandSender;
 
 public abstract class CommandMap {
@@ -14,7 +15,15 @@ public abstract class CommandMap {
 	private final String id;
 	private final CommandMap parent;
 
+	public static final CommandMap EMPTY = new CommandMap(null, "empty") {
+		public CommandResult execute(CommandSender sender, String[] args) {
+			return CommandResult.THROW_USAGE;
+		}
+	};
+
 	public CommandMap(CommandMap parent, String id) {
+		Validate.isTrue(!(parent instanceof CommandEnd), "You cannot use a CommandEnd as a parent");
+
 		this.id = id;
 		this.parent = parent;
 	}
@@ -47,26 +56,28 @@ public abstract class CommandMap {
 		floors.put(floor.getId(), floor);
 	}
 
-	public abstract CommandResult execute(CommandSender sender, String[] args);
-
 	public Set<String> getKeys() {
 		return floors.keySet();
 	}
 
-	public List<String> calculateTabCompletion(int n) {
+	public abstract CommandResult execute(CommandSender sender, String[] args);
+
+	public List<String> calculateTabCompletion(int parameterIndex) {
 
 		/*
-		 * add extra floor keys
+		 * add extra floor keys. only commandEnds can have parameters, that
+		 * means commands must be clean and cannot have both floors and
+		 * parameters to input
 		 */
 		List<String> list = new ArrayList<>();
 		getKeys().forEach(key -> list.add(key));
 
 		/*
-		 * add final arguments if needed.
+		 * if the player is at the end of a command branch, display the
+		 * parameter with the right index that the player must input
 		 */
-		if (isEnd())
-			if (((CommandEnd) this).getParameters().size() > n)
-				((CommandEnd) this).getParameters().get(n).autoComplete(list);
+		if (isEnd() && ((CommandEnd) this).getParameters().size() > parameterIndex)
+			((CommandEnd) this).getParameters().get(parameterIndex).autoComplete(list);
 
 		return list;
 	}

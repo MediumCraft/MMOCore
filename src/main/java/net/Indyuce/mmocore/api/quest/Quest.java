@@ -39,7 +39,7 @@ public class Quest {
 	private FileConfiguration loaded;
 
 	public Quest(String id, FileConfiguration config) {
-		this.id = id;
+		this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
 		loaded = config;
 	}
 

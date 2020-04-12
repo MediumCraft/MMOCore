@@ -13,7 +13,7 @@ import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
 
-public class ResetCommandMap extends CommandEnd {
+public class ResetCommandMap extends CommandMap {
 	public ResetCommandMap(CommandMap parent) {
 		super(parent, "reset");
 

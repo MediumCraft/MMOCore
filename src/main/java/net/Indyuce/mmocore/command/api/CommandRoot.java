@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.command.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -18,29 +17,33 @@ public abstract class CommandRoot extends CommandMap {
 			read.calculateUsageList().forEach(str -> sender.sendMessage(ChatColor.YELLOW + "/" + str));
 	}
 
-	public CommandReader readCommand(String[] args) {
-		return new CommandReader(this, args);
+	public CommandParser readCommand(String[] args) {
+		return new CommandParser(this, args);
 	}
 
-	public class CommandReader {
+	public class CommandParser {
 		private CommandMap current;
 		private int parameter = 0;
 
-		public CommandReader(CommandRoot begin, String[] args) {
+		/*
+		 * used to parse a command and identify the commandMap which is supposed
+		 * to
+		 */
+		public CommandParser(CommandRoot begin, String[] args) {
 			this.current = begin;
 
 			for (String arg : args)
 
 				/*
-				 * check if current command map has the corresponding arg, if so
-				 * let the next map handle the command.
+				 * check if current command floor has the corresponding arg, if
+				 * so let the next floor handle the command.
 				 */
 				if (parameter == 0 && current.hasFloor(arg))
 					current = current.getFloor(arg);
-			
+
 				/*
 				 * if the plugin cannot find a command map higher, then the
-				 * current map will handle the command.
+				 * current floor will handle the command.
 				 */
 				else
 					parameter++;
@@ -55,7 +58,7 @@ public abstract class CommandRoot extends CommandMap {
 		}
 
 		public List<String> readTabCompletion() {
-			return parameter < 0 ? new ArrayList<>() : current.calculateTabCompletion(Math.max(0, parameter - 1));
+			return current.calculateTabCompletion(Math.max(0, parameter - 1));
 		}
 	}
 }

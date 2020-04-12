@@ -16,6 +16,7 @@ import net.Indyuce.mmocore.command.rpg.ReloadCommandMap;
 import net.Indyuce.mmocore.command.rpg.admin.AdminCommandMap;
 import net.Indyuce.mmocore.command.rpg.booster.BoosterCommandMap;
 import net.Indyuce.mmocore.command.rpg.debug.DebugCommandMap;
+import net.Indyuce.mmocore.command.rpg.quest.QuestCommandMap;
 import net.Indyuce.mmocore.command.rpg.waypoint.WaypointsCommandMap;
 
 public class MMOCoreCommand extends CommandRoot implements CommandExecutor, TabCompleter {
@@ -29,6 +30,7 @@ public class MMOCoreCommand extends CommandRoot implements CommandExecutor, TabC
 		addFloor(new DebugCommandMap(this));
 		addFloor(new BoosterCommandMap(this));
 		addFloor(new WaypointsCommandMap(this));
+		addFloor(new QuestCommandMap(this));
 	}
 
 	@Override
@@ -50,7 +52,7 @@ public class MMOCoreCommand extends CommandRoot implements CommandExecutor, TabC
 		if (!sender.hasPermission("mmocore.admin"))
 			return new ArrayList<>();
 
-		CommandReader reader = readCommand(args);
+		CommandParser reader = readCommand(args);
 		List<String> list = reader.readTabCompletion();
 		return args[args.length - 1].isEmpty() ? list : list.stream().filter(string -> string.toLowerCase().startsWith(args[args.length - 1].toLowerCase())).collect(Collectors.toList());
 	}

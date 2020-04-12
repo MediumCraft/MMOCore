@@ -15,7 +15,7 @@ import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
 
-public class ExperienceCommandMap extends CommandEnd {
+public class ExperienceCommandMap extends CommandMap {
 	public ExperienceCommandMap(CommandMap parent) {
 		super(parent, "exp");
 
