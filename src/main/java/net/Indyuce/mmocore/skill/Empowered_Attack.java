@@ -104,7 +104,7 @@ public class Empowered_Attack extends Skill {
 				Location src = target.getLocation().add(0, target.getHeight() / 2, 0);
 
 				for (Entity entity : target.getNearbyEntities(rad, rad, rad))
-					if (MMOCoreUtils.canTarget(player.getPlayer(), entity)) {
+					if (MMOCoreUtils.canTarget(player, entity)) {
 						drawVector(src, entity.getLocation().add(0, entity.getHeight() / 2, 0).subtract(src).toVector());
 						MMOLib.plugin.getDamage().damage(player.getPlayer(), (LivingEntity) entity, new AttackResult(sweep, DamageType.SKILL, DamageType.PHYSICAL));
 					}

@@ -113,7 +113,7 @@ public class Power_Mark extends Skill implements Listener {
 				stun += Math.log(Math.max(1, accumulate - 10)) / 8;
 
 				for (Entity entity : MMOCoreUtils.getNearbyChunkEntities(loc))
-					if (entity.getLocation().distanceSquared(loc) < 25 && MMOCoreUtils.canTarget(data.getPlayer(), entity)) {
+					if (entity.getLocation().distanceSquared(loc) < 25 && MMOCoreUtils.canTarget(data, entity)) {
 						((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (stun * 20), 10, false, false));
 						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(accumulate, DamageType.SKILL, DamageType.MAGIC));
 						entity.setVelocity(format(entity.getLocation().subtract(loc).toVector().setY(0)).setY(.3));

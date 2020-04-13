@@ -21,6 +21,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
@@ -30,7 +31,8 @@ public class MMOCoreUtils {
 	}
 
 	public static String displayName(ItemStack item) {
-		return item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : caseOnWords(item.getType().name().replace("_", " "));
+		return item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName()
+				: caseOnWords(item.getType().name().replace("_", " "));
 	}
 
 	public static String caseOnWords(String s) {
@@ -58,7 +60,8 @@ public class MMOCoreUtils {
 			Validate.notNull(string, "String cannot be null");
 			String[] split = string.split("\\:");
 			Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
-			return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
+			return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1]))
+					: new ItemStack(material);
 		} catch (IllegalArgumentException exception) {
 			return new ItemStack(Material.BARRIER);
 		}
@@ -154,8 +157,20 @@ public class MMOCoreUtils {
 	}
 
 	// TODO worldguard flags support for no target
-	public static boolean canTarget(Player player, Entity target) {
-		return !player.equals(target) && target instanceof LivingEntity && !target.isDead() && !MMOCore.plugin.entities.findCustom(target);
+	public static boolean canTarget(PlayerData player, Entity target) {
+
+		// basic checks
+		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead() || MMOCore.plugin.entities.findCustom(target))
+			return false;
+
+		// party check
+		if (target instanceof Player) {
+			PlayerData targetData = PlayerData.get((Player) target);
+			if (targetData.hasParty() && targetData.getParty().getMembers().has(player))
+				return false;
+		}
+
+		return true;
 	}
 
 	public static void heal(LivingEntity target, double value) {

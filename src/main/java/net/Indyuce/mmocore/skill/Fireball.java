@@ -60,7 +60,7 @@ public class Fireball extends Skill {
 				loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
 
 				for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-					if (MMOLib.plugin.getNMS().isInBoundingBox(target, loc) && MMOCoreUtils.canTarget(data.getPlayer(), target)) {
+					if (MMOLib.plugin.getNMS().isInBoundingBox(target, loc) && MMOCoreUtils.canTarget(data, target)) {
 						loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 						loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 						loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
@@ -82,7 +82,7 @@ public class Fireball extends Skill {
 								Vector dir = randomDirection();
 								loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1.5f);
 
-								MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(loc, dir, range, entity -> MMOCoreUtils.canTarget(data.getPlayer(), entity));
+								MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(loc, dir, range, entity -> MMOCoreUtils.canTarget(data, entity));
 								if (result.hasHit())
 									MMOLib.plugin.getDamage().damage(data.getPlayer(), result.getHit(), new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
 								result.draw(loc.clone(), dir, 8, tick -> tick.getWorld().spawnParticle(Particle.FLAME, tick, 0));
