@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,6 +11,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.social.PartyChatEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.ConfigManager.SimpleMessage;
+import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
 public class PartyListener implements Listener {
 
@@ -28,7 +30,8 @@ public class PartyListener implements Listener {
 		 * running it in a delayed task is recommended
 		 */
 		Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> {
-			SimpleMessage format = MMOCore.plugin.configManager.getSimpleMessage("party-chat", "player", data.getPlayer().getName(), "message", event.getMessage().substring(MMOCore.plugin.configManager.partyChatPrefix.length()));
+			SimpleMessage format = MMOCore.plugin.configManager.getSimpleMessage("party-chat", "player", data.getPlayer().getName(), "message",
+					event.getMessage().substring(MMOCore.plugin.configManager.partyChatPrefix.length()));
 			PartyChatEvent called = new PartyChatEvent(data, format.message());
 			Bukkit.getPluginManager().callEvent(called);
 			if (!called.isCancelled())
@@ -37,5 +40,17 @@ public class PartyListener implements Listener {
 						format.send(member.getPlayer());
 				});
 		});
+	}
+
+	/*
+	 * cancel damage of players from the same party
+	 */
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void b(PlayerAttackEvent event) {
+		if (event.getEntity() instanceof Player) {
+			PlayerData targetData = PlayerData.get((Player) event.getEntity());
+			if (targetData.hasParty() && targetData.getParty().getMembers().has(event.getData().getMMOCore()))
+				event.setCancelled(true);
+		}
 	}
 }
