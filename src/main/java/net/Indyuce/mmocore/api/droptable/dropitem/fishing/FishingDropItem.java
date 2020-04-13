@@ -1,12 +1,10 @@
 package net.Indyuce.mmocore.api.droptable.dropitem.fishing;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
@@ -58,8 +56,8 @@ public class FishingDropItem {
 	}
 
 	public ItemStack collect() {
-		List<ItemStack> collect = new ArrayList<>();
-		dropItem.collect(collect);
-		return collect.stream().findAny().get();
+		LootBuilder builder = new LootBuilder(null, 0);
+		dropItem.collect(builder);
+		return builder.getLoot().stream().findAny().get();
 	}
 }

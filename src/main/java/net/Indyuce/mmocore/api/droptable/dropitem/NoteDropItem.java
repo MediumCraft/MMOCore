@@ -1,14 +1,11 @@
 package net.Indyuce.mmocore.api.droptable.dropitem;
 
-import java.util.List;
-
-import org.bukkit.inventory.ItemStack;
-
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.item.CurrencyItem;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class NoteDropItem extends DropItem {
-	private int min, max;
+	private final int min, max;
 
 	public NoteDropItem(MMOLineConfig config) {
 		super(config);
@@ -20,7 +17,7 @@ public class NoteDropItem extends DropItem {
 	}
 
 	@Override
-	public void collect(List<ItemStack> total) {
-		total.add(new CurrencyItem("NOTE", random.nextInt(max - min + 1) + min, rollAmount()).build());
+	public void collect(LootBuilder builder) {
+		builder.addLoot(new CurrencyItem("NOTE", random.nextInt(max - min + 1) + min, rollAmount()).build());
 	}
 }

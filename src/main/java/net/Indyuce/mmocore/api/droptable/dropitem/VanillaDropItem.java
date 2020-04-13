@@ -1,10 +1,9 @@
 package net.Indyuce.mmocore.api.droptable.dropitem;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class VanillaDropItem extends DropItem {
@@ -16,13 +15,13 @@ public class VanillaDropItem extends DropItem {
 		config.validate("type");
 		this.material = Material.valueOf(config.getString("type"));
 	}
-	
+
 	public Material getMaterial() {
 		return material;
 	}
 
 	@Override
-	public void collect(List<ItemStack> total) {
-		total.add(new ItemStack(material, rollAmount()));
+	public void collect(LootBuilder builder) {
+		builder.addLoot(new ItemStack(material, rollAmount()));
 	}
 }

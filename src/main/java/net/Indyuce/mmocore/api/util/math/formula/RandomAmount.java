@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.api.util.math.formula;
 import java.util.Random;
 
 public class RandomAmount {
-	private double min, max;
+	private final double min, max;
 
 	private static final Random random = new Random();
 
@@ -15,8 +15,7 @@ public class RandomAmount {
 	public RandomAmount(String value) {
 		String[] split = value.split("\\-");
 		min = Double.parseDouble(split[0]);
-		if (split.length > 1)
-			max = Double.parseDouble(split[1]);
+		max = split.length > 1 ? Double.parseDouble(split[1]) : 0;
 	}
 
 	public double getMax() {

@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.api.droptable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,11 +11,12 @@ import org.bukkit.inventory.ItemStack;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class DropTable {
 	private final String id;
-	private final Set<DropItem> drops = new HashSet<>();
+	private final Set<DropItem> drops = new LinkedHashSet<>();
 
 	/*
 	 * cached in order to load other items.
@@ -52,13 +52,14 @@ public class DropTable {
 		return id;
 	}
 
-	public List<ItemStack> collect() {
-		List<ItemStack> total = new ArrayList<>();
+	public List<ItemStack> collect(LootBuilder builder) {
 
 		for (DropItem item : drops)
-			if (item.rollChance())
-				item.collect(total);
+			if (item.rollChance() && builder.getCapacity() >= item.getWeight()) {
+				item.collect(builder);
+				builder.reduceCapacity(item.getWeight());
+			}
 
-		return total;
+		return builder.getLoot();
 	}
 }

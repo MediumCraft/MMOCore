@@ -20,19 +20,23 @@ public class Party {
 	private final PartyMembers members = new PartyMembers();
 	private final Map<UUID, Long> invites = new HashMap<>();
 
+	// used to check if two parties are the same
+	private final UUID id = UUID.randomUUID();
+
 	/*
 	 * owner changes when the old owner leaves party
 	 */
 	private PlayerData owner;
-
-	// used to check if two parties are the same
-	// private UUID uuid = UUID.randomUUID();
 
 	public Party(PlayerData owner) {
 		this.owner = owner;
 		addMember(owner);
 	}
 
+	public UUID getUniqueId() {
+		return id;
+	}
+	
 	public PlayerData getOwner() {
 		return owner;
 	}
@@ -50,7 +54,8 @@ public class Party {
 	}
 
 	public void removeMember(PlayerData data) {
-		if (data.isOnline() && data.getPlayer().getOpenInventory() != null && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
+		if (data.isOnline() && data.getPlayer().getOpenInventory() != null
+				&& data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
 			InventoryManager.PARTY_CREATION.newInventory(data).open();
 
 		members.remove(data);
@@ -83,20 +88,22 @@ public class Party {
 
 	public void reopenInventories() {
 		for (PlayerData member : members.members)
-			if (member.isOnline() && member.getPlayer().getOpenInventory() != null && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
+			if (member.isOnline() && member.getPlayer().getOpenInventory() != null
+					&& member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
 				((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
 	}
 
 	public void sendPartyInvite(PlayerData inviter, PlayerData target) {
 		invites.put(target.getUniqueId(), System.currentTimeMillis());
 		Request request = new PartyInvite(this, inviter, target);
-		new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
+		new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
+				.sendAsJSon(target.getPlayer());
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof Party && ((Party) obj).owner.getUniqueId().equals(owner.getUniqueId());
+		return obj instanceof Party && ((Party) obj).getUniqueId().equals(getUniqueId());
 	}
 
 	/*
@@ -136,7 +143,8 @@ public class Party {
 		}
 
 		private void applyAttributes(PlayerData player) {
-			MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("mmocoreParty", MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
+			MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("mmocoreParty",
+					MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
 		}
 
 		private void clearAttributes(PlayerData player) {

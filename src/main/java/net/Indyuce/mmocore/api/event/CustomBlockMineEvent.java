@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.experience.ExperienceInfo;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable {
@@ -24,7 +25,7 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 		super(player);
 		
 		this.block = block;
-		this.drops = info.collectDrops();
+		this.drops = info.collectDrops(new LootBuilder(player, 0));
 		this.experience = info.hasExperience() ? info.getExperience().newInfo() : null;
 	}
 

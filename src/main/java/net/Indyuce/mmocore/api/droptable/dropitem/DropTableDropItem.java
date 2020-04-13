@@ -1,16 +1,14 @@
 package net.Indyuce.mmocore.api.droptable.dropitem;
 
-import java.util.List;
-
 import org.apache.commons.lang.Validate;
-import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class DropTableDropItem extends DropItem {
-	private DropTable dropTable;
+	private final DropTable dropTable;
 
 	public DropTableDropItem(MMOLineConfig config) {
 		super(config);
@@ -23,8 +21,8 @@ public class DropTableDropItem extends DropItem {
 	}
 
 	@Override
-	public void collect(List<ItemStack> total) {
+	public void collect(LootBuilder builder) {
 		for (int j = 0; j < rollAmount(); j++)
-			total.addAll(dropTable.collect());
+			builder.addLoot(dropTable.collect(builder));
 	}
 }

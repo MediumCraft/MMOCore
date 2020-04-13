@@ -1,9 +1,6 @@
 package net.Indyuce.mmocore.api.droptable.dropitem;
 
-import java.util.List;
-
-import org.bukkit.inventory.ItemStack;
-
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.item.CurrencyItem;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
@@ -13,7 +10,7 @@ public class GoldDropItem extends DropItem {
 	}
 
 	@Override
-	public void collect(List<ItemStack> total) {
-		total.add(new CurrencyItem("GOLD_COIN", 1, rollAmount()).build());
+	public void collect(LootBuilder builder) {
+		builder.addLoot(new CurrencyItem("GOLD_COIN", 1, rollAmount()).build());
 	}
 }

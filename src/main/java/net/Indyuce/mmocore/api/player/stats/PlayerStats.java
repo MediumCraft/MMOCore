@@ -38,11 +38,11 @@ public class PlayerStats {
 	 * applies relative attributes on the base stat too
 	 */
 	public double getStat(StatType stat) {
-		return getInstance(stat).getTotal(getBase(stat));
+		return getInstance(stat).getTotal();
 	}
 
 	public double getBase(StatType stat) {
-		return data.getProfess().calculateStat(stat, stat.hasProfession() ? data.getCollectionSkills().getLevel(stat.getProfession()) : data.getLevel());
+		return getInstance(stat).getBase();
 	}
 
 	/*

@@ -1,22 +1,21 @@
 package net.Indyuce.mmocore.api.droptable.dropitem;
 
-import java.util.List;
 import java.util.Random;
 
-import org.bukkit.inventory.ItemStack;
-
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public abstract class DropItem {
 	protected static final Random random = new Random();
 
-	private double chance;
-	private RandomAmount amount;
+	private final double chance, weight;
+	private final RandomAmount amount;
 
 	public DropItem(MMOLineConfig config) {
 		chance = config.args().length > 0 ? Double.parseDouble(config.args()[0]) : 1;
 		amount = config.args().length > 1 ? new RandomAmount(config.args()[1]) : new RandomAmount(1, 0);
+		weight = config.args().length > 2 ? Double.parseDouble(config.args()[2]) : 0;
 	}
 
 	public RandomAmount getAmount() {
@@ -27,6 +26,10 @@ public abstract class DropItem {
 		return chance;
 	}
 
+	public double getWeight() {
+		return weight;
+	}
+
 	public int rollAmount() {
 		return amount.calculateInt();
 	}
@@ -35,5 +38,5 @@ public abstract class DropItem {
 		return random.nextDouble() < chance;
 	}
 
-	public abstract void collect(List<ItemStack> total);
+	public abstract void collect(LootBuilder builder);
 }

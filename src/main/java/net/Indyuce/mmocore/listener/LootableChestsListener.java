@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.manager.LootableChestManager.LootableChest;
+import net.Indyuce.mmocore.api.loot.LootChest;
 
 public class LootableChestsListener implements Listener {
 	@EventHandler
@@ -15,8 +15,8 @@ public class LootableChestsListener implements Listener {
 			return;
 
 		Chest chest = (Chest) event.getInventory().getHolder();
-		LootableChest lootable = MMOCore.plugin.chestManager.getLootableChest(chest.getLocation());
-		if (lootable != null)
-			lootable.whenClosed(true);
+		LootChest lootChest = MMOCore.plugin.lootChests.getChest(chest.getLocation());
+		if (lootChest != null)
+			lootChest.unregister(true);
 	}
 }

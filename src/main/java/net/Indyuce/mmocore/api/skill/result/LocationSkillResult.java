@@ -20,7 +20,7 @@ public class LocationSkillResult extends SkillResult {
 
 		if (isSuccessful()) {
 
-			RayTraceResult result = data.getPlayer().getWorld().rayTrace(data.getPlayer().getEyeLocation(), data.getPlayer().getEyeLocation().getDirection(), range, FluidCollisionMode.ALWAYS, true, 1.0D, entity -> MMOCoreUtils.canTarget(data.getPlayer(), entity));
+			RayTraceResult result = data.getPlayer().getWorld().rayTrace(data.getPlayer().getEyeLocation(), data.getPlayer().getEyeLocation().getDirection(), range, FluidCollisionMode.ALWAYS, true, 1.0D, entity -> MMOCoreUtils.canTarget(data, entity));
 			if (result == null)
 				abort(CancelReason.OTHER);
 			else

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
+import net.Indyuce.mmocore.api.loot.LootChest;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
@@ -72,7 +74,7 @@ import net.Indyuce.mmocore.manager.DropTableManager;
 import net.Indyuce.mmocore.manager.EntityManager;
 import net.Indyuce.mmocore.manager.ExperienceManager;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.manager.LootableChestManager;
+import net.Indyuce.mmocore.manager.LootChestManager;
 import net.Indyuce.mmocore.manager.MMOLoadManager;
 import net.Indyuce.mmocore.manager.QuestManager;
 import net.Indyuce.mmocore.manager.RestrictionManager;
@@ -101,7 +103,6 @@ public class MMOCore extends JavaPlugin {
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
 	public RestrictionManager restrictionManager;
-	public LootableChestManager chestManager;
 	public RequestManager requestManager;
 	public ConfigItemManager configItems;
 	public SkillManager skillManager;
@@ -122,6 +123,7 @@ public class MMOCore extends JavaPlugin {
 	public final ProfessionManager professionManager = new ProfessionManager();
 	public final EntityManager entities = new EntityManager();
 	public final ExperienceManager experience = new ExperienceManager();
+	public final LootChestManager lootChests = new LootChestManager();
 
 	/*
 	 * professions
@@ -234,6 +236,20 @@ public class MMOCore extends JavaPlugin {
 						}
 			}
 		}.runTaskTimer(MMOCore.plugin, 100, 20);
+
+		/*
+		 * clean active loot chests every 5 minutes. cannot register this
+		 * runnable in the loot chest manager because it is instanced when the
+		 * plugin loads
+		 */
+		new BukkitRunnable() {
+			public void run() {
+				for (LootChest chest : new HashSet<>(lootChests.getActive()))
+					if (chest.shouldExpire())
+						chest.unregister(false);
+
+			}
+		}.runTaskTimer(this, 5 * 60 * 20, 5 * 60 * 20);
 
 		/*
 		 * For the sake of the lord, make sure they aren't using MMOItems Mana
@@ -360,6 +376,8 @@ public class MMOCore extends JavaPlugin {
 			dataProvider.getGuildManager().save(guild);
 
 		mineManager.resetRemainingBlocks();
+
+		lootChests.getActive().forEach(chest -> chest.unregister(false));
 	}
 
 	public void reloadPlugin() {
@@ -396,7 +414,8 @@ public class MMOCore extends JavaPlugin {
 		questManager.clear();
 		questManager.reload();
 
-		chestManager = new LootableChestManager(new ConfigFile("chests").getConfig());
+		lootChests.reload();
+
 		waypointManager = new WaypointManager(new ConfigFile("waypoints").getConfig());
 		restrictionManager = new RestrictionManager(new ConfigFile("restrictions").getConfig());
 		requestManager = new RequestManager();

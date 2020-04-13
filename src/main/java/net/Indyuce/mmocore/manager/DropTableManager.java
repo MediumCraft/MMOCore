@@ -15,7 +15,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
 
 public class DropTableManager extends MMOManager {
-	private Map<String, DropTable> map = new HashMap<>();
+	private final Map<String, DropTable> map = new HashMap<>();
 
 	public void register(DropTable table) {
 		map.put(table.getId(), table);
@@ -47,11 +47,8 @@ public class DropTableManager extends MMOManager {
 		if (obj instanceof String)
 			return get((String) obj);
 
-		if (obj instanceof ConfigurationSection) {
-			DropTable table = new DropTable((ConfigurationSection) obj);
-			table.load();
-			return table;
-		}
+		if (obj instanceof ConfigurationSection)
+			return new DropTable((ConfigurationSection) obj).load();
 
 		throw new IllegalArgumentException("Could not parse drop table.");
 	}

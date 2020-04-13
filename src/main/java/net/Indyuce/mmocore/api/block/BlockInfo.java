@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.mmogroup.mmolib.api.MMOLineConfig;
@@ -76,8 +77,8 @@ public class BlockInfo {
 		return table;
 	}
 
-	public List<ItemStack> collectDrops() {
-		return hasDropTable() ? table.collect() : new ArrayList<>();
+	public List<ItemStack> collectDrops(LootBuilder builder) {
+		return hasDropTable() ? table.collect(builder) : new ArrayList<>();
 	}
 
 	public boolean hasDropTable() {
