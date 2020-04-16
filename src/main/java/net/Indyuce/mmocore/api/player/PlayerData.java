@@ -246,7 +246,7 @@ public class PlayerData extends OfflinePlayerData {
 	public void refreshVanillaExp() {
 		if (MMOCore.plugin.configManager.overrideVanillaExp) {
 			player.setLevel(getLevel());
-			player.setExp((float) experience / (float) getLevelUpExperience());
+			player.setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
 		}
 	}
 
