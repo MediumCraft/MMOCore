@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.player;
+package net.Indyuce.mmocore.api.experience;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,19 +18,19 @@ import com.google.gson.JsonObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 
-public class Professions {
+public class PlayerProfessions {
 	private final Map<String, Integer> exp = new HashMap<>();
 	private final Map<String, Integer> level = new HashMap<>();
 	private final PlayerData playerData;
 
-	public Professions(PlayerData playerData) {
+	public PlayerProfessions(PlayerData playerData) {
 		this.playerData = playerData;
 	}
 
-	public Professions load(ConfigurationSection config) {
+	public PlayerProfessions load(ConfigurationSection config) {
 		for (String key : config.getKeys(false))
 			if (MMOCore.plugin.professionManager.has(key)) {
 				exp.put(key, config.getInt(key + ".exp"));

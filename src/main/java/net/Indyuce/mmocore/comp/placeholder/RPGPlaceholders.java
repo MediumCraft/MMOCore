@@ -9,10 +9,10 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
 import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.PlayerQuests;
-import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.api.quest.PlayerQuests;
 
 public class RPGPlaceholders
 		extends PlaceholderExpansion /** implements Relational */
@@ -55,7 +55,7 @@ public class RPGPlaceholders
 			return PlayerData.get(player).getProfess().getName();
 
 		else if (identifier.startsWith("profession_percent_")) {
-			Professions professions = PlayerData.get(player).getCollectionSkills();
+			PlayerProfessions professions = PlayerData.get(player).getCollectionSkills();
 			String name = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
 			Profession profession = MMOCore.plugin.professionManager.get(name);
 			double current = professions.getExperience(profession),

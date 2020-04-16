@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.player;
+package net.Indyuce.mmocore.api.quest;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -19,8 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.quest.Quest;
-import net.Indyuce.mmocore.api.quest.QuestProgress;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.mmogroup.mmolib.MMOLib;
 
 public class PlayerQuests {

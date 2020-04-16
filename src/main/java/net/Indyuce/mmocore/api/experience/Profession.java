@@ -47,7 +47,7 @@ public class Profession {
 				try {
 					MMOCore.plugin.professionManager.registerExpSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
 				} catch (MMOLoadException exception) {
-					exception.printConsole("Professions", "exp source");
+					exception.printConsole("PlayerProfessions", "exp source");
 				}
 	}
 
@@ -74,7 +74,7 @@ public class Profession {
 					PotionType type = PotionType.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
 					MMOCore.plugin.alchemyManager.registerBaseExperience(type, config.getDouble("alchemy-experience.effects." + key));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[Professions:" + id + "] Could not read potion type from " + key);
+					MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read potion type from " + key);
 				}
 		}
 
@@ -84,7 +84,7 @@ public class Profession {
 					Enchantment enchant = MMOLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
 					MMOCore.plugin.enchantManager.registerBaseExperience(enchant, config.getDouble("base-enchant-exp." + key));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[Professions:" + id + "] Could not read enchant from " + key);
+					MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read enchant from " + key);
 				}
 
 		if (config.contains("repair-exp"))
@@ -93,7 +93,7 @@ public class Profession {
 					Material material = Material.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
 					MMOCore.plugin.smithingManager.registerBaseExperience(material, config.getDouble("repair-exp." + key));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[Professions:" + id + "] Could not read material from " + key);
+					MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read material from " + key);
 				}
 
 		// if (config.contains("effect-weight"))
@@ -103,7 +103,7 @@ public class Profession {
 		// MMOCore.plugin.alchemyManager.registerEffectWeight(PotionEffectType.getByName(key.toUpperCase().replace("-",
 		// "_").replace(" ", "_")), config.getDouble("effect-weight." + key));
 		// } catch (IllegalArgumentException exception) {
-		// MMOCore.log(Level.WARNING, "[Professions:" + id + "] Could not read
+		// MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read
 		// potion effect type from " + key);
 		// }
 

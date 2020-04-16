@@ -29,6 +29,7 @@ import net.Indyuce.mmocore.api.event.PlayerCastSkillEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
+import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -40,6 +41,8 @@ import net.Indyuce.mmocore.api.player.social.Party;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.skill.PlayerSkillData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.skill.SkillResult;
@@ -77,7 +80,7 @@ public class PlayerData extends OfflinePlayerData {
 	private final Set<String> waypoints = new HashSet<>();
 	private final Map<String, Integer> skills = new HashMap<>();
 	private final List<SkillInfo> boundSkills = new ArrayList<>();
-	private final Professions collectSkills = new Professions(this);
+	private final PlayerProfessions collectSkills = new PlayerProfessions(this);
 	private final PlayerSkillData skillData = new PlayerSkillData(this);
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
 	private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
@@ -146,7 +149,7 @@ public class PlayerData extends OfflinePlayerData {
 		return friends;
 	}
 
-	public Professions getCollectionSkills() {
+	public PlayerProfessions getCollectionSkills() {
 		return collectSkills;
 	}
 

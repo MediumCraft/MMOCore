@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.Professions;
 import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
@@ -25,9 +25,9 @@ public class ExperienceCommandMap extends CommandMap {
 
 	public class ActionCommandMap extends CommandEnd {
 		private final BiConsumer<PlayerData, Integer> main;
-		private final TriConsumer<Professions, Profession, Integer> profession;
+		private final TriConsumer<PlayerProfessions, Profession, Integer> profession;
 
-		public ActionCommandMap(CommandMap parent, String type, BiConsumer<PlayerData, Integer> main, TriConsumer<Professions, Profession, Integer> profession) {
+		public ActionCommandMap(CommandMap parent, String type, BiConsumer<PlayerData, Integer> main, TriConsumer<PlayerProfessions, Profession, Integer> profession) {
 			super(parent, type);
 
 			this.main = main;

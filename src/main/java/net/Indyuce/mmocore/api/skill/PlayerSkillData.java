@@ -1,12 +1,11 @@
-package net.Indyuce.mmocore.api.player;
+package net.Indyuce.mmocore.api.skill;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
-import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobSkill;
 
 public class PlayerSkillData {
