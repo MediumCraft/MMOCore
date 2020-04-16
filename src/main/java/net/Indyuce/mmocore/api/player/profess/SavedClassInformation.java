@@ -12,7 +12,6 @@ import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass.ClassOption;
 import net.Indyuce.mmocore.api.skill.Skill;
 
 public class SavedClassInformation {

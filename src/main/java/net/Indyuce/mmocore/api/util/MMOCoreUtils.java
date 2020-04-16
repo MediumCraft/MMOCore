@@ -55,16 +55,12 @@ public class MMOCoreUtils {
 		return material == VersionMaterial.PLAYER_HEAD.toMaterial() || material == VersionMaterial.PLAYER_WALL_HEAD.toMaterial();
 	}
 
-	public static ItemStack readIcon(String string) {
-		try {
-			Validate.notNull(string, "String cannot be null");
-			String[] split = string.split("\\:");
-			Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
-			return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1]))
-					: new ItemStack(material);
-		} catch (IllegalArgumentException exception) {
-			return new ItemStack(Material.BARRIER);
-		}
+	public static ItemStack readIcon(String string) throws IllegalArgumentException {
+		Validate.notNull(string, "String cannot be null");
+
+		String[] split = string.split("\\:");
+		Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
+		return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
 	}
 
 	public static int getWorth(ItemStack[] items) {

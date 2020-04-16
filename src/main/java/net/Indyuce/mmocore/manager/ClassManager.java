@@ -15,8 +15,8 @@ import org.bukkit.event.HandlerList;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
 import net.Indyuce.mmocore.api.player.profess.event.trigger.AttackEventTrigger;
 import net.Indyuce.mmocore.api.player.profess.event.trigger.BlockBrokenTrigger;
@@ -82,11 +82,18 @@ public class ClassManager extends MMOManager {
 				String id = file.getName().substring(0, file.getName().length() - 4);
 				register(new PlayerClass(id, YamlConfiguration.loadConfiguration(file)));
 			} catch (IllegalArgumentException exception) {
-				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load class " + file.getName() + ": " + exception.getMessage());
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load class '" + file.getName() + "': " + exception.getMessage());
 			}
 
-		map.values().forEach(profess -> profess.loadSubclasses(this));
-		defaultClass = map.values().stream().filter(profess -> profess.hasOption(ClassOption.DEFAULT)).findFirst().orElse(new PlayerClass("HUMAN", "Human", Material.LEATHER_BOOTS));
+		for (PlayerClass profess : map.values())
+			try {
+				profess.postLoad();
+			} catch (IllegalArgumentException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not post-load class '" + profess.getId() + "': " + exception.getMessage());
+			}
+
+		defaultClass = map.values().stream().filter(profess -> profess.hasOption(ClassOption.DEFAULT)).findFirst()
+				.orElse(new PlayerClass("HUMAN", "Human", Material.LEATHER_BOOTS));
 
 		/*
 		 * register event triggers

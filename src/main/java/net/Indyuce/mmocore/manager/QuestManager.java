@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -34,6 +35,11 @@ public class QuestManager extends MMOManager {
 		return quests.get(id);
 	}
 
+	public Quest getOrThrow(String id) {
+		Validate.isTrue(quests.containsKey(id), "Could not find quest with ID '" + id + "'");
+		return get(id);
+	}
+
 	public Collection<Quest> getAll() {
 		return quests.values();
 	}
@@ -41,7 +47,12 @@ public class QuestManager extends MMOManager {
 	@Override
 	public void reload() {
 		load(new File(MMOCore.plugin.getDataFolder() + "/quests"));
-		quests.values().forEach(quest -> quest.load(this));
+		for (Quest quest : quests.values())
+			try {
+				quest.postLoad();
+			} catch (IllegalArgumentException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not post-load quest '" + quest.getId() + "' :" + exception.getMessage());
+			}
 	}
 
 	@Override

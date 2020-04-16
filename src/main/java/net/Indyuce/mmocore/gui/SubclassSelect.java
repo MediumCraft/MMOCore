@@ -15,7 +15,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass.Subclass;
+import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
@@ -61,6 +61,8 @@ public class SubclassSelect extends EditableInventory {
 				return null;
 
 			PlayerClass profess = generated.subclasses.get(n).getProfess();
+			
+			
 			ItemStack item = profess.getIcon();
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name).replace("{name}", profess.getName()));
@@ -97,7 +99,8 @@ public class SubclassSelect extends EditableInventory {
 		public SubclassSelectionInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
 
-			subclasses = playerData.getProfess().getSubclasses().stream().filter(sub -> playerData.getLevel() >= sub.getLevel()).collect(Collectors.toList());
+			subclasses = playerData.getProfess().getSubclasses().stream().filter(sub -> playerData.getLevel() >= sub.getLevel())
+					.collect(Collectors.toList());
 		}
 
 		@Override

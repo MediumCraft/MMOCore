@@ -6,7 +6,7 @@ import java.util.function.Function;
 import org.bukkit.attribute.Attribute;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass.ClassOption;
+import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 
 public enum PlayerResource {

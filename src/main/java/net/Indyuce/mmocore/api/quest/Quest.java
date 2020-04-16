@@ -14,70 +14,50 @@ import org.bukkit.configuration.file.FileConfiguration;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
-import net.Indyuce.mmocore.manager.QuestManager;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
-public class Quest {
+public class Quest extends PostLoadObject {
 	private final String id;
 
-	private String name;
-	private List<Quest> parents = new ArrayList<>();
-	private List<Objective> objectives = new ArrayList<>();
-	private List<String> lore;
+	private final String name;
+	private final List<Quest> parents = new ArrayList<>();
+	private final List<Objective> objectives = new ArrayList<>();
+	private final List<String> lore;
 
-	private int mainLevelRestriction;
-	private Map<Profession, Integer> levelRestrictions = new HashMap<>();
+	private final int mainLevelRestriction;
+	private final Map<Profession, Integer> levelRestrictions = new HashMap<>();
 
 	// cooldown in millis
-	private long cooldown;
-
-	/*
-	 * cached to load other info to enable parent quests.
-	 */
-	private FileConfiguration loaded;
+	private final long cooldown;
 
 	public Quest(String id, FileConfiguration config) {
+		super(config);
+
 		this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
-		loaded = config;
-	}
+		cooldown = (long) (config.contains("delay") ? config.getDouble("delay") * 60 * 60 * 1000 : -1);
+		name = config.getString("name");
+		lore = config.getStringList("lore");
 
-	/*
-	 * forced to request a Questmanager instance because the one in the main
-	 * MMOCore class has not been initialized yet, so it can't be accessed using
-	 * MMOCore.plugin.questManager
-	 */
-	public void load(QuestManager manager) {
-		cooldown = (long) (loaded.contains("delay") ? loaded.getDouble("delay") * 60 * 60 * 1000 : -1);
+		mainLevelRestriction = config.getInt("level-req.main");
 
-		if (loaded.contains("parent"))
-			for (String parent : loaded.getStringList("parent"))
-				try {
-					parents.add(manager.get(parent));
-				} catch (NullPointerException exception) {
-					MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't find quest ID '" + parent + "'");
-				}
-
-		name = loaded.getString("name");
-		lore = loaded.getStringList("lore");
-
-		mainLevelRestriction = loaded.getInt("level-req.main");
-
-		if (loaded.contains("level-req"))
-			for (String key : loaded.getConfigurationSection("level-req").getKeys(false))
+		if (config.contains("level-req"))
+			for (String key : config.getConfigurationSection("level-req").getKeys(false))
 				if (!key.equals("main"))
 					try {
-						String id = key.toLowerCase().replace("_", "-");
-						Validate.isTrue(MMOCore.plugin.professionManager.has(id));
-						levelRestrictions.put(MMOCore.plugin.professionManager.get(id), loaded.getInt("level-req." + key));
+						String id1 = key.toLowerCase().replace("_", "-");
+						Validate.isTrue(MMOCore.plugin.professionManager.has(id1), "Could not find profession called '" + id1 + "'");
+						levelRestrictions.put(MMOCore.plugin.professionManager.get(id1), config.getInt("level-req." + key));
 					} catch (IllegalArgumentException exception) {
-						MMOCore.plugin.getLogger().log(Level.WARNING, "[Quests:" + id + "] Couldn't find profession '" + key + "'");
+						MMOCore.plugin.getLogger().log(Level.WARNING,
+								"Could not load level requirement '" + key + "' from quest '" + id + "': " + exception.getMessage());
 					}
 
-		for (String key : loaded.getConfigurationSection("objectives").getKeys(false))
+		for (String key : config.getConfigurationSection("objectives").getKeys(false))
 			try {
-				ConfigurationSection section = loaded.getConfigurationSection("objectives." + key);
+				ConfigurationSection section = config.getConfigurationSection("objectives." + key);
 				Validate.notNull(section, "Could not find config section");
 
 				String format = section.getString("type");
@@ -87,8 +67,17 @@ public class Quest {
 			} catch (MMOLoadException exception) {
 				exception.printConsole("Quests:" + id, "objective");
 			}
+	}
 
-		loaded = null;
+	@Override
+	protected void whenPostLoaded(FileConfiguration config) {
+		if (config.contains("parent"))
+			for (String parent : config.getStringList("parent"))
+				try {
+					parents.add(MMOCore.plugin.questManager.get(parent));
+				} catch (NullPointerException exception) {
+					MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't find quest ID '" + parent + "'");
+				}
 	}
 
 	public String getId() {

@@ -26,6 +26,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.player.ExpCurve;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
@@ -37,12 +38,11 @@ import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
-import net.Indyuce.mmocore.manager.ClassManager;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
-public class PlayerClass {
-	private final String name, id, fileName;
+public class PlayerClass extends PostLoadObject {
+	private final String name, id;
 	private final List<String> description = new ArrayList<>(), attrDescription = new ArrayList<>();
 	private final ItemStack icon;
 	private final Map<ClassOption, Boolean> options = new HashMap<>();
@@ -57,21 +57,17 @@ public class PlayerClass {
 	private final Map<PlayerResource, ResourceHandler> resourceHandlers = new HashMap<>();
 	private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
-	private CastingParticle castParticle = new CastingParticle(Particle.SPELL_INSTANT);
-
-	/*
-	 * easy load
-	 */
-	private FileConfiguration loaded;
+	private final CastingParticle castParticle;
 
 	public PlayerClass(String id, FileConfiguration config) {
-		this.id = (fileName = id).toUpperCase().replace("-", "_").replace(" ", "_");
-		this.loaded = config;
+		super(config);
+
+		this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
 
 		name = ChatColor.translateAlternateColorCodes('&', config.getString("display.name"));
 		icon = MMOCoreUtils.readIcon(config.getString("display.item"));
 
-		if (config.contains("display.texture")) {
+		if (config.contains("display.texture"))
 			if (icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
 				ItemMeta meta = icon.getItemMeta();
 				try {
@@ -84,10 +80,8 @@ public class PlayerClass {
 					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not apply playerhead texture: " + exception.getMessage());
 				}
 				icon.setItemMeta(meta);
-			} else {
+			} else
 				MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not add player head texture. The item is not a playerhead!");
-			}
-		}
 
 		for (String string : config.getStringList("display.lore"))
 			description.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', string));
@@ -95,7 +89,7 @@ public class PlayerClass {
 			attrDescription.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', string));
 		manaDisplay = new ManaDisplayOptions(config.getConfigurationSection("mana"));
 		maxLevel = config.getInt("max-level");
-		displayOrder = config.getInt("display-order");
+		displayOrder = config.getInt("display.order");
 
 		expCurve = config.contains("exp-curve")
 				? MMOCore.plugin.experience.getOrThrow(config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
@@ -119,12 +113,8 @@ public class PlayerClass {
 					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load skill info '" + key + "': " + exception.getMessage());
 				}
 
-		if (config.contains("cast-particle"))
-			try {
-				castParticle = new CastingParticle(config.getConfigurationSection("cast-particle"));
-			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not read casting particle, using default: " + exception.getMessage());
-			}
+		castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle"))
+				: new CastingParticle(Particle.SPELL_INSTANT);
 
 		if (config.contains("options"))
 			for (String key : config.getConfigurationSection("options").getKeys(false))
@@ -151,7 +141,6 @@ public class PlayerClass {
 					eventTriggers.put(format, new EventTrigger(format, config.getStringList("triggers." + key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] " + exception.getMessage());
-					continue;
 				}
 			}
 
@@ -178,13 +167,15 @@ public class PlayerClass {
 	 * used to generate display class
 	 */
 	public PlayerClass(String id, String name, Material material) {
+		super(null);
+
 		this.id = id;
 		this.name = name;
-		this.fileName = id;
 		manaDisplay = new ManaDisplayOptions(ChatColor.BLUE, "Mana", AltChar.listSquare.charAt(0));
 		maxLevel = 0;
 		displayOrder = 0;
 		expCurve = ExpCurve.DEFAULT;
+		castParticle = new CastingParticle(Particle.SPELL_INSTANT);
 
 		this.icon = new ItemStack(material);
 		setOption(ClassOption.DISPLAY, false);
@@ -194,11 +185,12 @@ public class PlayerClass {
 			resourceHandlers.put(resource, new ResourceHandler(resource));
 	}
 
-	public void loadSubclasses(ClassManager manager) {
-		if (loaded.contains("subclasses"))
-			for (String key : loaded.getConfigurationSection("subclasses").getKeys(false))
-				subclasses.add(new Subclass(manager.get(key.toUpperCase().replace("-", "_").replace(" ", "_")), loaded.getInt("subclasses." + key)));
-		loaded = null;
+	@Override
+	protected void whenPostLoaded(FileConfiguration config) {
+		if (config.contains("subclasses"))
+			for (String key : config.getConfigurationSection("subclasses").getKeys(false))
+				subclasses.add(new Subclass(MMOCore.plugin.classManager.get(key.toUpperCase().replace("-", "_").replace(" ", "_")),
+						config.getInt("subclasses." + key)));
 	}
 
 	public String getId() {
@@ -227,10 +219,6 @@ public class PlayerClass {
 
 	public ExpCurve getExpCurve() {
 		return expCurve;
-	}
-
-	public String getFileName() {
-		return fileName;
 	}
 
 	public ItemStack getIcon() {
@@ -304,62 +292,5 @@ public class PlayerClass {
 	@Override
 	public boolean equals(Object obj) {
 		return obj != null && obj instanceof PlayerClass && ((PlayerClass) obj).id.equals(id);
-	}
-
-	public class Subclass {
-		private PlayerClass profess;
-		private int level;
-
-		public Subclass(PlayerClass profess, int level) {
-			this.profess = profess;
-			this.level = level;
-		}
-
-		public PlayerClass getProfess() {
-			return profess;
-		}
-
-		public int getLevel() {
-			return level;
-		}
-	}
-
-	public enum ClassOption {
-
-		/*
-		 * is class by default
-		 */
-		DEFAULT,
-
-		/*
-		 * displays in the /class GUI
-		 */
-		DISPLAY(true),
-
-		/*
-		 * only regen resource when out of combat
-		 */
-		OFF_COMBAT_HEALTH_REGEN,
-		OFF_COMBAT_MANA_REGEN,
-		OFF_COMBAT_STAMINA_REGEN,
-		OFF_COMBAT_STELLIUM_REGEN;
-
-		private final boolean def;
-
-		private ClassOption() {
-			this(false);
-		}
-
-		private ClassOption(boolean def) {
-			this.def = def;
-		}
-
-		public boolean getDefault() {
-			return def;
-		}
-
-		public String getPath() {
-			return name().toLowerCase().replace("_", "-");
-		}
 	}
 }

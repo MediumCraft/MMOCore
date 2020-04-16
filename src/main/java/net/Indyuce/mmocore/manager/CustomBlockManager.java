@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -44,15 +45,16 @@ public class CustomBlockManager extends MMOManager {
 	private final List<Condition> customMineConditions = new ArrayList<>();
 
 	/*
-	 * list of functions which let
+	 * list of functions which let MMOCore recognize what block a player is
+	 * currently breaking
 	 */
-	private final List<Function<Block, BlockType>> blockTypes = new ArrayList<>();
+	private final List<Function<Block, Optional<BlockType>>> blockTypes = new ArrayList<>();
 
 	public CustomBlockManager() {
-		registerBlockType(block -> MMOCoreUtils.isPlayerHead(block.getType()) ? new SkullBlockType(block) : null);
+		registerBlockType(block -> MMOCoreUtils.isPlayerHead(block.getType()) ? Optional.of(new SkullBlockType(block)) : Optional.empty());
 	}
 
-	public void registerBlockType(Function<Block, BlockType> function) {
+	public void registerBlockType(Function<Block, Optional<BlockType>> function) {
 		blockTypes.add(function);
 	}
 
@@ -65,10 +67,10 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	public BlockType findBlockType(Block block) {
-		for (Function<Block, BlockType> blockType : blockTypes) {
-			BlockType type = blockType.apply(block);
-			if (type != null)
-				return type;
+		for (Function<Block, Optional<BlockType>> blockType : blockTypes) {
+			Optional<BlockType> type = blockType.apply(block);
+			if (type.isPresent())
+				return type.get();
 		}
 
 		return new VanillaBlockType(block);
