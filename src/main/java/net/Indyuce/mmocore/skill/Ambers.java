@@ -24,10 +24,13 @@ public class Ambers extends Skill implements Listener {
 	public Ambers() {
 		super();
 		setMaterial(Material.EMERALD);
-		setLore("Dealing magic damage has &630% &7chance", "of dropping an amber on the ground.", "", "When picked up, ambers stack and", "refund &915% &7of your missing mana.", "", "&oAmbers can be used in other damaging skills.", "&oThe more you collect, the more powerful the skills.", "", "&e{cooldown}s Cooldown");
+		setLore("Dealing magic damage has &630% &7chance", "of dropping an amber on the ground.", "", "When picked up, ambers stack and",
+				"refund &9{percent}% &7of your missing mana.", "", "&oAmbers can be used in other damaging skills.",
+				"&oThe more you collect, the more powerful the skills.", "", "&e{cooldown}s Cooldown");
 		setPassive();
 
 		addModifier("cooldown", new LinearValue(3, -.1, 1, 3));
+		addModifier("percent", new LinearValue(10, .1, 10, 20));
 
 		Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 	}
@@ -45,18 +48,21 @@ public class Ambers extends Skill implements Listener {
 		Location loc = event.getEntity().getLocation();
 		double a = random.nextDouble() * 2 * Math.PI;
 
-		new Amber(data, loc.add(0, event.getEntity().getHeight() / 2, 0), loc.clone().add(4 * Math.cos(a), 0, 4 * Math.sin(a)));
+		new Amber(data, loc.add(0, event.getEntity().getHeight() / 2, 0), loc.clone().add(4 * Math.cos(a), 0, 4 * Math.sin(a)),
+				cast.getModifier("percent"));
 	}
 
 	public class Amber extends BukkitRunnable {
 		private final Location loc;
 		private final PlayerData data;
+		private final double percent;
 
 		private int j;
 
-		private Amber(PlayerData data, Location source, Location loc) {
+		private Amber(PlayerData data, Location source, Location loc, double percent) {
 			this.loc = loc;
 			this.data = data;
+			this.percent = percent / 100;
 
 			final Amber amber = this;
 			new ParabolicProjectile(source, loc, Particle.REDSTONE, () -> amber.runTaskTimer(MMOCore.plugin, 0, 3), 1, Color.ORANGE, 1.3f);
@@ -73,7 +79,7 @@ public class Ambers extends Skill implements Listener {
 
 				data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
 				// data.getSkillData().ambers++;
-				data.giveMana((data.getStats().getStat(StatType.MAX_MANA) - data.getMana()) * .15);
+				data.giveMana((data.getStats().getStat(StatType.MAX_MANA) - data.getMana()) * percent);
 
 				cancel();
 				return;
