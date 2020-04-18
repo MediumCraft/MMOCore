@@ -6,8 +6,8 @@ import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 public class SkillResult {
 	private final SkillInfo skill;
 	private final int level;
-
 	private final double mana, cooldown;
+
 	private CancelReason cancelReason;
 
 	public SkillResult(PlayerData data, SkillInfo skill) {
@@ -16,7 +16,8 @@ public class SkillResult {
 		level = data.getSkillLevel(skill.getSkill());
 		cooldown = (skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0);
 		mana = (skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0);
-		cancelReason = cooldown > 0 ? CancelReason.COOLDOWN : mana > data.getMana() ? CancelReason.MANA : null;
+		cancelReason = !data.hasSkillUnlocked(skill.getSkill()) ? CancelReason.LOCKED
+				: cooldown > 0 ? CancelReason.COOLDOWN : mana > data.getMana() ? CancelReason.MANA : null;
 	}
 
 	public SkillResult(PlayerData data, SkillInfo skill, CancelReason reason) {
@@ -24,8 +25,8 @@ public class SkillResult {
 		this.cancelReason = reason;
 
 		level = data.getSkillLevel(skill.getSkill());
-		cooldown = (skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0);
-		mana = (skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0);
+		cooldown = skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0;
+		mana = skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0;
 	}
 
 	public Skill getSkill() {
@@ -69,8 +70,17 @@ public class SkillResult {
 	}
 
 	public enum CancelReason {
+
+		// not enough mana
 		MANA,
+
+		// skill still on cooldown
 		COOLDOWN,
+
+		// skill still not unlocked
+		LOCKED,
+
+		// no reason specified
 		OTHER;
 	}
 }

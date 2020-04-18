@@ -686,6 +686,11 @@ public class PlayerData extends OfflinePlayerData {
 		if (event.isCancelled())
 			return new SkillResult(this, skill, CancelReason.OTHER);
 
+		/*
+		 * skill, mana and cooldown requirements are all calculated in the
+		 * SkillResult instances. this cast(SkillResult) method only applies
+		 * cooldown, reduces mana and send messages
+		 */
 		SkillResult cast = skill.getSkill().whenCast(this, skill);
 		if (!cast.isSuccessful()) {
 			if (!skill.getSkill().isPassive()) {

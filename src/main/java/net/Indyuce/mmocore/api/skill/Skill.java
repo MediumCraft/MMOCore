@@ -88,6 +88,9 @@ public abstract class Skill {
 		return icon.clone();
 	}
 
+	/*
+	 * passive skills do not display any message
+	 */
 	public boolean isPassive() {
 		return passive;
 	}
