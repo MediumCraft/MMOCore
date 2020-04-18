@@ -33,11 +33,6 @@ exp-curve: levels
 # Players cannot go further than Lvl 100
 max-level: 100
 
-mana:
-    char: ■
-    color: BLUE
-    name: 'Mana'
-
 triggers:
     level-up:
     - 'command{format="mmocore admin skill-points give %player% 1"}'

@@ -39,9 +39,18 @@ max-level: 100
 # Warrior has rage which he gains while casting spells
 # Rage increase its skill damage. Use <mmocore.rage>
 # to get the player's rage (MythicMobs formulas)
+#
+# 'char' is the character used to generate the mana bar as a message
+# 'color' are also the colors used to generate the mana bar
+# 'icon' is the icon display on the player action bar
+# 'name' is basically displayed everywhere
 mana:
     char: ♦
-    color: RED
+    icon: '&4♦'
+    color:
+        full: DARK_RED
+        half: RED
+        empty: WHITE
     name: 'Rage'
 
 # Rage charges when dealing weapon and physical damage.

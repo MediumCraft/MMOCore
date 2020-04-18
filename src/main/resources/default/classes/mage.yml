@@ -36,9 +36,21 @@ triggers:
     level-up:
     - 'command{format="mmocore admin skill-points give %player% 1"}'
 
+# This is the default mana display options, however it is not mandatory
+# to have it in your class config file. Other classes do not have this
+# section and therefore have the default mana display options.
+#
+# 'char' is the character used to generate the mana bar as a message
+# 'color' are also the colors used to generate the mana bar
+# 'icon' is the icon display on the player action bar
+# 'name' is basically displayed everywhere
 mana:
     char: ■
-    color: BLUE
+    icon: '&9⭐'
+    color:
+        full: AQUA
+        half: BLUE
+        empty: WHITE
     name: 'Mana'
 
 cast-particle:

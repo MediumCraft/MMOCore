@@ -51,7 +51,7 @@ action-bar:
     ticks-to-update: 5
     
     # How to display the data.
-    format: "&c❤ {health}/{max_health} &f| &9⭐ {mana}/{max_mana} &f| &7⛨ {armor}"
+    format: "&c❤ {health}/{max_health} &f| {mana_icon} {mana}/{max_mana} &f| &7⛨ {armor}"
 
 party:
 

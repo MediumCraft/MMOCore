@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -56,8 +55,6 @@ public class MMOCoreUtils {
 	}
 
 	public static ItemStack readIcon(String string) throws IllegalArgumentException {
-		Validate.notNull(string, "String cannot be null");
-
 		String[] split = string.split("\\:");
 		Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
 		return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);

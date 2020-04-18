@@ -1,9 +1,5 @@
-options:
-    display: false
-mana:
-    char: ■
-    color: BLUE
-    name: 'Mana'
+
+# Display options
 display:
     name: 'Arcane Mage'
     lore:
@@ -37,6 +33,11 @@ exp-curve: levels
 
 # Players cannot go further than Lvl 100
 max-level: 100
+
+# This class must not display in /class
+# becasue it is a subclass of mage
+options:
+    display: false
 
 triggers:
     level-up:

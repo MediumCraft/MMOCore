@@ -34,6 +34,7 @@ public class PlayerActionBar extends BukkitRunnable {
 						ChatColor.translateAlternateColorCodes('&', new String(format)
 								.replace("{health}", digit.format(data.getPlayer().getHealth()))
 								.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
+								.replace("{mana_icon}", data.getProfess().getManaDisplay().getIcon())
 								.replace("{mana}", digit.format(data.getMana()))
 								.replace("{max_mana}", "" + StatType.MAX_MANA.format(data.getStats().getStat(StatType.MAX_MANA)))
 								.replace("{stamina}", digit.format(data.getStamina()))

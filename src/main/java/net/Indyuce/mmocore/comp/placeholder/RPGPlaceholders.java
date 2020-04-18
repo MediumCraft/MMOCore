@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.AltChar;
-import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
+import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
@@ -58,13 +58,13 @@ public class RPGPlaceholders
 			PlayerProfessions professions = PlayerData.get(player).getCollectionSkills();
 			String name = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
 			Profession profession = MMOCore.plugin.professionManager.get(name);
-			double current = professions.getExperience(profession),
-					next = professions.getLevelUpExperience(profession);
+			double current = professions.getExperience(profession), next = professions.getLevelUpExperience(profession);
 			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
 		}
 
 		else if (identifier.startsWith("profession_"))
-			return "" + PlayerData.get(player).getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
+			return "" + PlayerData.get(player).getCollectionSkills()
+					.getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
 
 		else if (identifier.equals("max_health"))
 			return StatType.MAX_HEALTH.format(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
@@ -73,7 +73,7 @@ public class RPGPlaceholders
 			return "" + PlayerData.get(player).getExperience();
 
 		else if (identifier.equals("next_level"))
-			return "" +PlayerData.get(player).getLevelUpExperience();
+			return "" + PlayerData.get(player).getLevelUpExperience();
 
 		else if (identifier.equals("class_points"))
 			return "" + PlayerData.get(player).getClassPoints();
@@ -88,18 +88,15 @@ public class RPGPlaceholders
 			return "" + PlayerData.get(player).getAttributeReallocationPoints();
 
 		else if (identifier.startsWith("attribute_"))
-			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
+			return String.valueOf(PlayerData.get(player).getAttributes()
+					.getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
 
 		else if (identifier.equals("mana"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getMana());
 
 		else if (identifier.equals("mana_bar")) {
-			String format = "";
 			PlayerData data = PlayerData.get(player);
-			double ratio = 20 * data.getMana() / data.getStats().getStat(StatType.MAX_MANA);
-			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? MMOCore.plugin.configManager.manaFull : ratio >= j - .5 ? MMOCore.plugin.configManager.manaHalf : MMOCore.plugin.configManager.manaEmpty) + AltChar.listSquare;
-			return format;
+			return data.getProfess().getManaDisplay().generateBar(data.getMana(), data.getStats().getStat(StatType.MAX_MANA));
 		}
 
 		else if (identifier.equals("stamina"))
@@ -110,7 +107,9 @@ public class RPGPlaceholders
 			PlayerData data = PlayerData.get(player);
 			double ratio = 20 * data.getStamina() / data.getStats().getStat(StatType.MAX_STAMINA);
 			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? MMOCore.plugin.configManager.staminaFull : ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty) + AltChar.listSquare;
+				format += (ratio >= j ? MMOCore.plugin.configManager.staminaFull
+						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty)
+						+ AltChar.listSquare;
 			return format;
 		}
 

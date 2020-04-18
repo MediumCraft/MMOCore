@@ -23,7 +23,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.AltChar;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.load.PostLoadObject;
@@ -65,29 +64,26 @@ public class PlayerClass extends PostLoadObject {
 		this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
 
 		name = ChatColor.translateAlternateColorCodes('&', config.getString("display.name"));
-		icon = MMOCoreUtils.readIcon(config.getString("display.item"));
+		icon = MMOCoreUtils.readIcon(config.getString("display.item", "BARRIER"));
 
-		if (config.contains("display.texture"))
-			if (icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
+		if (config.contains("display.texture") && icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())
+			try {
 				ItemMeta meta = icon.getItemMeta();
-				try {
-					Field profileField = meta.getClass().getDeclaredField("profile");
-					profileField.setAccessible(true);
-					GameProfile gp = new GameProfile(UUID.randomUUID(), null);
-					gp.getProperties().put("textures", new Property("textures", config.getString("display.texture")));
-					profileField.set(meta, gp);
-				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException exception) {
-					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not apply playerhead texture: " + exception.getMessage());
-				}
+				Field profileField = meta.getClass().getDeclaredField("profile");
+				profileField.setAccessible(true);
+				GameProfile gp = new GameProfile(UUID.randomUUID(), null);
+				gp.getProperties().put("textures", new Property("textures", config.getString("display.texture")));
+				profileField.set(meta, gp);
 				icon.setItemMeta(meta);
-			} else
-				MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not add player head texture. The item is not a playerhead!");
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException exception) {
+				throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
+			}
 
 		for (String string : config.getStringList("display.lore"))
 			description.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', string));
 		for (String string : config.getStringList("display.attribute-lore"))
 			attrDescription.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', string));
-		manaDisplay = new ManaDisplayOptions(config.getConfigurationSection("mana"));
+		manaDisplay = config.contains("mana") ? new ManaDisplayOptions(config.getConfigurationSection("mana")) : ManaDisplayOptions.DEFAULT;
 		maxLevel = config.getInt("max-level");
 		displayOrder = config.getInt("display.order");
 
@@ -171,7 +167,7 @@ public class PlayerClass extends PostLoadObject {
 
 		this.id = id;
 		this.name = name;
-		manaDisplay = new ManaDisplayOptions(ChatColor.BLUE, "Mana", AltChar.listSquare.charAt(0));
+		manaDisplay = ManaDisplayOptions.DEFAULT;
 		maxLevel = 0;
 		displayOrder = 0;
 		expCurve = ExpCurve.DEFAULT;
@@ -189,8 +185,13 @@ public class PlayerClass extends PostLoadObject {
 	protected void whenPostLoaded(FileConfiguration config) {
 		if (config.contains("subclasses"))
 			for (String key : config.getConfigurationSection("subclasses").getKeys(false))
-				subclasses.add(new Subclass(MMOCore.plugin.classManager.get(key.toUpperCase().replace("-", "_").replace(" ", "_")),
-						config.getInt("subclasses." + key)));
+				try {
+					subclasses.add(new Subclass(MMOCore.plugin.classManager.getOrThrow(key.toUpperCase().replace("-", "_").replace(" ", "_")),
+							config.getInt("subclasses." + key)));
+				} catch (IllegalArgumentException exception) {
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load subclass '" + key + "' from class '" + getId() + "': " + exception.getMessage());
+				}
 	}
 
 	public String getId() {

@@ -42,11 +42,6 @@ options:
 cast-particle:
     particle: SPELL_WITCH
 
-mana:
-    char: ■
-    color: BLUE
-    name: 'Mana'
-
 skills:
     DEEP_WOUND:
         level: 1

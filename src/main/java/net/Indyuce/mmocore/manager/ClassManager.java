@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -60,7 +61,12 @@ public class ClassManager extends MMOManager {
 	}
 
 	public PlayerClass get(String id) {
-		return map.containsKey(id) ? map.get(id) : null;
+		return map.get(id);
+	}
+
+	public PlayerClass getOrThrow(String id) {
+		Validate.isTrue(map.containsKey(id), "Could not find class with ID '" + id + "'");
+		return map.get(id);
 	}
 
 	public Collection<PlayerClass> getAll() {

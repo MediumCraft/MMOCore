@@ -247,7 +247,6 @@ public class MMOCore extends JavaPlugin {
 				for (LootChest chest : new HashSet<>(lootChests.getActive()))
 					if (chest.shouldExpire())
 						chest.unregister(false);
-
 			}
 		}.runTaskTimer(this, 5 * 60 * 20, 5 * 60 * 20);
 

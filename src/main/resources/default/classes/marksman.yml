@@ -35,11 +35,8 @@ triggers:
     level-up:
     - 'command{format="mmocore admin skill-points give %player% 1"}'
 
-mana:
-    char: ■
-    color: BLUE
-    name: 'Mana'
-
+# Particles displayed around the player
+# when he enters the casting mode.
 cast-particle:
     particle: CRIT
 

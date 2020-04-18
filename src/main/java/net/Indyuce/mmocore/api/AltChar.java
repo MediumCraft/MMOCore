@@ -6,6 +6,7 @@ public class AltChar {
 	public static final String star = "✦";
 	public static final String rightArrow = "⇨";
 	public static final String fourEdgedClub = "✤";
+	public static final String manaStar = "⭐";
 
 	public static final String club = "♣";
 	public static final String diamond = "◆";
