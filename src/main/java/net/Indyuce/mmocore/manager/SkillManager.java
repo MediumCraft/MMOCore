@@ -22,15 +22,21 @@ import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobSkill;
 
 public class SkillManager {
-	private Map<String, Skill> skills = new LinkedHashMap<>();
+	private final Map<String, Skill> skills = new LinkedHashMap<>();
 
-	public SkillManager() {
+	/*
+	 * skills are initialized when MMOCore enables but SkillManager must be
+	 * instanced when MMOCore loads so that extra plugins can register skills
+	 * before CLASSES are loaded
+	 */
+	public void reload() {
 
 		if (skills.isEmpty())
 			try {
 				JarEntry entry;
 				for (Enumeration<JarEntry> en = new JarFile(MMOCore.plugin.getJarFile()).entries(); en.hasMoreElements();)
-					if ((entry = en.nextElement()).getName().startsWith("net/Indyuce/mmocore/skill/") && !entry.isDirectory() && !entry.getName().contains("$"))
+					if ((entry = en.nextElement()).getName().startsWith("net/Indyuce/mmocore/skill/") && !entry.isDirectory()
+							&& !entry.getName().contains("$"))
 						register((Skill) Class.forName(entry.getName().replace("/", ".").replace(".class", "")).newInstance());
 			} catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException exception) {
 				exception.printStackTrace();
@@ -50,7 +56,8 @@ public class SkillManager {
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			for (File file : mythicMobs.listFiles()) {
 				try {
-					register(new MythicMobSkill(file.getName().substring(0, file.getName().length() - 4).toUpperCase(), YamlConfiguration.loadConfiguration(file)));
+					register(new MythicMobSkill(file.getName().substring(0, file.getName().length() - 4).toUpperCase(),
+							YamlConfiguration.loadConfiguration(file)));
 				} catch (Exception exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill from " + file.getName() + ": " + exception.getMessage());
 				}

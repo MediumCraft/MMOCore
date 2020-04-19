@@ -105,12 +105,12 @@ public class MMOCore extends JavaPlugin {
 	public RestrictionManager restrictionManager;
 	public RequestManager requestManager;
 	public ConfigItemManager configItems;
-	public SkillManager skillManager;
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public InventoryManager inventoryManager;
 	public RegionHandler regionHandler;
 	public PlayerActionBar actionBarManager;
+	public final SkillManager skillManager = new SkillManager();
 	public PlaceholderParser placeholderParser = new DefaultParser();
 	public DataProvider dataProvider = new YAMLDataProvider();
 	public final ClassManager classManager = new ClassManager();
@@ -381,7 +381,8 @@ public class MMOCore extends JavaPlugin {
 
 	public void reloadPlugin() {
 		configManager = new ConfigManager();
-		skillManager = new SkillManager();
+
+		skillManager.reload();
 
 		mineManager.clear();
 		mineManager.reload();
