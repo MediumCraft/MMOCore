@@ -10,25 +10,26 @@ public class PlayerLevelUpEvent extends PlayerDataEvent {
 
 	// if null, this is main level
 	private final Profession profession;
-	private final int level;
+	private final int oldLevel, newLevel;
 
-	public PlayerLevelUpEvent(PlayerData player, int level) {
-		this(player, null, level);
+	public PlayerLevelUpEvent(PlayerData player, int oldLevel, int newLevel) {
+		this(player, null, oldLevel, newLevel);
 	}
 
-	public PlayerLevelUpEvent(PlayerData player, Profession profession, int level) {
+	public PlayerLevelUpEvent(PlayerData player, Profession profession, int oldLevel, int newLevel) {
 		super(player);
 
 		this.profession = profession;
-		this.level = level;
+		this.oldLevel = oldLevel;
+		this.newLevel = newLevel;
 	}
 
 	public int getNewLevel() {
-		return level;
+		return newLevel;
 	}
 
-	public int getGained() {
-		return level - getData().getLevel();
+	public int getOldLevel() {
+		return oldLevel;
 	}
 
 	public boolean hasProfession() {

@@ -139,10 +139,9 @@ public class PlayerData extends OfflinePlayerData {
 		return MMOCore.plugin.dataProvider.getDataManager().getLoaded();
 	}
 
-	public PlayerData setPlayer(Player player) {
+	public void setPlayer(Player player) {
 		this.player = player;
 		this.lastLogin = System.currentTimeMillis();
-		return this;
 	}
 
 	public List<UUID> getFriends() {
@@ -228,7 +227,7 @@ public class PlayerData extends OfflinePlayerData {
 
 	public void setLevel(int level) {
 		this.level = Math.max(1, level);
-		getStats().getMap().updateAll();
+		getStats().updateStats();
 	}
 
 	public void giveLevels(int value) {
@@ -427,7 +426,7 @@ public class PlayerData extends OfflinePlayerData {
 
 		experience += event.getExperience();
 
-		int needed;
+		int level = getLevel(), oldLevel = level, needed;
 		boolean check = false;
 		while (experience >= (needed = getLevelUpExperience())) {
 
@@ -439,14 +438,14 @@ public class PlayerData extends OfflinePlayerData {
 			experience -= needed;
 			level = getLevel() + 1;
 			check = true;
-			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, level + 1));
 		}
 
 		if (check) {
+			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
 			new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(player);
 			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 			new SmallParticleEffect(player, Particle.SPELL_INSTANT);
-			getStats().getMap().updateAll();
+			getStats().updateStats();
 		}
 
 		refreshVanillaExp();
@@ -631,7 +630,7 @@ public class PlayerData extends OfflinePlayerData {
 		// if (!getProfess().hasSkill(iterator.next().getSkill()))
 		// iterator.remove();
 
-		getStats().getMap().updateAll();
+		getStats().updateStats();
 	}
 
 	public boolean hasSkillBound(int slot) {

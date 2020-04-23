@@ -4,7 +4,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
-import net.Indyuce.mmocore.api.AltChar;
+import net.mmogroup.mmolib.api.util.AltChar;
 
 public class ManaDisplayOptions {
 	private final ChatColor full, half, empty;
@@ -12,7 +12,7 @@ public class ManaDisplayOptions {
 	private final char barCharacter;
 
 	public static final ManaDisplayOptions DEFAULT = new ManaDisplayOptions(ChatColor.AQUA, ChatColor.BLUE, ChatColor.WHITE, "Mana",
-			AltChar.listSquare.charAt(0), ChatColor.BLUE + AltChar.manaStar);
+			AltChar.listSquare.charAt(0), ChatColor.BLUE + AltChar.star2);
 
 	public ManaDisplayOptions(ConfigurationSection config) {
 		Validate.notNull(config, "Could not load mana display options");

@@ -88,14 +88,12 @@ public class EditableFriendList extends EditableInventory {
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
 
-
-			if (meta instanceof SkullMeta) {
+			if (meta instanceof SkullMeta)
 				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
 					((SkullMeta) meta).setOwningPlayer(friend);
 					disp.setItemMeta(meta);
 				});
-			}
-			
+
 			return NBTItem.get(disp).addTag(new ItemTag("uuid", friend.getUniqueId().toString())).toItem();
 		}
 	}
@@ -125,13 +123,11 @@ public class EditableFriendList extends EditableInventory {
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
 
-			/*
-			 * run async to save performance
-			 */
-			if (meta instanceof SkullMeta) {
-				((SkullMeta) meta).setOwningPlayer(friend);
-				disp.setItemMeta(meta);
-			}
+			if (meta instanceof SkullMeta)
+				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+					((SkullMeta) meta).setOwningPlayer(friend);
+					disp.setItemMeta(meta);
+				});
 
 			return NBTItem.get(disp).addTag(new ItemTag("uuid", friend.getUniqueId().toString())).toItem();
 		}
@@ -153,7 +149,8 @@ public class EditableFriendList extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			return inv.getPlayerData().getFriends().size() <= n ? super.display(inv, n) : Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n)).isOnline() ? online.display(inv, n) : offline.display(inv, n);
+			return inv.getPlayerData().getFriends().size() <= n ? super.display(inv, n)
+					: Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n)).isOnline() ? online.display(inv, n) : offline.display(inv, n);
 		}
 
 		@Override
@@ -197,7 +194,8 @@ public class EditableFriendList extends EditableInventory {
 
 				long remaining = playerData.getLastFriendRequest() + 60 * 2 * 1000 - System.currentTimeMillis();
 				if (remaining > 0) {
-					MMOCore.plugin.configManager.getSimpleMessage("friend-request-cooldown", "cooldown", new DelayFormat().format(remaining)).send(player);
+					MMOCore.plugin.configManager.getSimpleMessage("friend-request-cooldown", "cooldown", new DelayFormat().format(remaining))
+							.send(player);
 					return;
 				}
 
@@ -232,7 +230,8 @@ public class EditableFriendList extends EditableInventory {
 			}
 
 			if (item.getFunction().equals("friend") && event.getAction() == InventoryAction.PICKUP_HALF)
-				InventoryManager.FRIEND_REMOVAL.newInventory(playerData, Bukkit.getOfflinePlayer(UUID.fromString(NBTItem.get(event.getCurrentItem()).getString("uuid"))), this).open();
+				InventoryManager.FRIEND_REMOVAL.newInventory(playerData,
+						Bukkit.getOfflinePlayer(UUID.fromString(NBTItem.get(event.getCurrentItem()).getString("uuid"))), this).open();
 		}
 	}
 

@@ -35,12 +35,17 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 	@Override
 	public void loadData(PlayerData data) {
 		ResultSet result = provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';");
-		if (result == null)
-			MMOCore.log(Level.SEVERE, "Failed to load playerdata from MySQL!");
+		if (result == null) {
+			MMOCore.log(Level.SEVERE, "Failed to load playerdata of '" + data.getPlayer().getName() + "' from MySQL server");
+			return;
+		}
+
 		try {
-			if (!result.next()) {
+
+			// player data not initialized yet
+			if (!result.next())
 				return;
-			}
+
 			Gson parser = new Gson();
 
 			data.setClassPoints(result.getInt("class_points"));
@@ -186,7 +191,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 					while (result.next()) {
 						level = result.getInt("level");
 						lastLogin = result.getLong("last_login");
-						profess = result.getString("class").equalsIgnoreCase("null") ? MMOCore.plugin.classManager.getDefaultClass() : MMOCore.plugin.classManager.get(result.getString("class"));
+						profess = result.getString("class").equalsIgnoreCase("null") ? MMOCore.plugin.classManager.getDefaultClass()
+								: MMOCore.plugin.classManager.get(result.getString("class"));
 						if (!result.getString("friends").equalsIgnoreCase("null"))
 							getJSONArray(result.getString("friends")).forEach(str -> friends.add(UUID.fromString(str)));
 						else
@@ -201,7 +207,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		@Override
 		public void removeFriend(UUID uuid) {
 			friends.remove(uuid);
-			new MySQLTableEditor(Table.PLAYERDATA, uuid).updateData("friends", friends.stream().map(friend -> friend.toString()).collect(Collectors.toList()));
+			new MySQLTableEditor(Table.PLAYERDATA, uuid).updateData("friends",
+					friends.stream().map(friend -> friend.toString()).collect(Collectors.toList()));
 		}
 
 		@Override
@@ -223,6 +230,5 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		public long getLastLogin() {
 			return lastLogin;
 		}
-
 	}
 }

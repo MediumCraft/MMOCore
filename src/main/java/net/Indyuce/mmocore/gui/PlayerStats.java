@@ -114,8 +114,8 @@ public class PlayerStats extends EditableInventory {
 					Placeholders holders = new Placeholders();
 
 					for (StatType stat : StatType.values()) {
-						double base = stats.getBase(stat), total = stats.getInstance(stat).getTotal(base), extra = total - base;
-						holders.register(stat.name().toLowerCase(), stat.format(extra + base));
+						double base = stats.getBase(stat), total = stats.getStat(stat), extra = total - base;
+						holders.register(stat.name().toLowerCase(), stat.format(total));
 						holders.register(stat.name().toLowerCase() + "_base", stat.format(base));
 						holders.register(stat.name().toLowerCase() + "_extra", stat.format(extra));
 					}

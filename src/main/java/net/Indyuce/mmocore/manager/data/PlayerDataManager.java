@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
@@ -24,7 +26,7 @@ public abstract class PlayerDataManager {
 
 	public abstract OfflinePlayerData getOffline(UUID uuid);
 
-	public PlayerData setup(Player player) {
+	public void setup(Player player) {
 
 		/*
 		 * setup playerData based on loadData method to support both MySQL and
@@ -32,11 +34,18 @@ public abstract class PlayerDataManager {
 		 */
 		if (!map.containsKey(player.getUniqueId())) {
 			PlayerData generated = new PlayerData(player);
-			loadData(generated);
 			map.put(player.getUniqueId(), generated);
+
+			/*
+			 * loads player data and ONLY THEN refresh the player statistics
+			 */
+			Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+				loadData(generated);
+				generated.getStats().updateStats();
+			});
 		}
 
-		return get(player).setPlayer(player);
+		get(player).setPlayer(player);
 	}
 
 	public boolean isLoaded(UUID uuid) {

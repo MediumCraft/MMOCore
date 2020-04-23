@@ -23,7 +23,7 @@ public class PlayerActionBar extends BukkitRunnable {
 		ticks = config.getInt("ticks-to-update");
 		format = config.getString("format");
 		
-		runTaskTimerAsynchronously(MMOCore.plugin, 0, ticks);
+		runTaskTimer(MMOCore.plugin, 0, ticks);
 	}
 
 	@Override

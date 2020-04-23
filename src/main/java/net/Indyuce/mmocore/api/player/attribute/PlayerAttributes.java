@@ -16,6 +16,8 @@ import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.mmogroup.mmolib.api.stat.modifier.Closable;
+import net.mmogroup.mmolib.api.stat.modifier.ModifierType;
 import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerAttributes {
@@ -136,12 +138,12 @@ public class PlayerAttributes {
 		public double getTotal(double d) {
 
 			for (StatModifier attr : map.values())
-				if (attr.isRelative())
-					d = attr.apply(d);
+				if (attr.getType() == ModifierType.FLAT)
+					d += attr.getValue();
 
 			for (StatModifier attr : map.values())
-				if (!attr.isRelative())
-					d = attr.apply(d);
+				if (attr.getType() == ModifierType.RELATIVE)
+					d *= attr.getValue();
 
 			return d;
 		}
@@ -175,8 +177,9 @@ public class PlayerAttributes {
 			 * otherwise the runnable will try to remove the key from the map
 			 * even though the attribute was cancelled before hand
 			 */
-			if (map.containsKey(key)) {
-				map.get(key).close();
+			StatModifier mod;
+			if (map.containsKey(key) && (mod = map.get(key)) instanceof Closable) {
+				((Closable) mod).close();
 				map.remove(key);
 			}
 
@@ -186,7 +189,8 @@ public class PlayerAttributes {
 		public void update() {
 			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 			int total = getTotal();
-			attribute.getBuffs().forEach(buff -> data.getStats().getInstance(buff.getKey()).addModifier("attribute." + attribute.getId(), buff.getValue().multiply(total)));
+			attribute.getBuffs().forEach(buff -> data.getStats().getInstance(buff.getKey()).addModifier("attribute." + attribute.getId(),
+					buff.getValue().multiply(total)));
 		}
 
 		public String getId() {
@@ -196,7 +200,7 @@ public class PlayerAttributes {
 
 	public void setBaseAttribute(String id, int value) {
 		getAttributeInstances().forEach(ins -> {
-			if(ins.getId().equals(id))
+			if (ins.getId().equals(id))
 				ins.setBase(value);
 		});
 	}

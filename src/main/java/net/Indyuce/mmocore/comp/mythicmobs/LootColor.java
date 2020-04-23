@@ -18,7 +18,7 @@ public class LootColor extends BukkitRunnable {
 		this.item = item;
 		this.color = color;
 		
-		runTaskTimerAsynchronously(MMOCore.plugin, 0, 1);
+		runTaskTimer(MMOCore.plugin, 0, 1);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ public class DebugCommandMap extends CommandMap {
 		super(parent, "debug");
 
 		addFloor(new StatValueCommandMap(this));
+		addFloor(new StatModifiersCommandMap(this));
 	}
 
 	@Override

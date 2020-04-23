@@ -62,13 +62,11 @@ public class EditableGuildAdmin extends EditableInventory {
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
 
-			/*
-			 * run async to save performance
-			 */
-			if (meta instanceof SkullMeta) {
-				((SkullMeta) meta).setOwningPlayer(member.getPlayer());
-				disp.setItemMeta(meta);
-			}
+			if (meta instanceof SkullMeta)
+				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+					((SkullMeta) meta).setOwningPlayer(member.getPlayer());
+					disp.setItemMeta(meta);
+				});
 
 			return NBTItem.get(disp).addTag(new ItemTag("uuid", member.getUniqueId().toString())).toItem();
 		}
@@ -151,7 +149,8 @@ public class EditableGuildAdmin extends EditableInventory {
 
 					long remaining = playerData.getGuild().getLastInvite(target) + 60 * 2 * 1000 - System.currentTimeMillis();
 					if (remaining > 0) {
-						MMOCore.plugin.configManager.getSimpleMessage("guild-invite-cooldown", "player", target.getName(), "cooldown", new DelayFormat().format(remaining)).send(player);
+						MMOCore.plugin.configManager.getSimpleMessage("guild-invite-cooldown", "player", target.getName(), "cooldown",
+								new DelayFormat().format(remaining)).send(player);
 						open();
 						return;
 					}

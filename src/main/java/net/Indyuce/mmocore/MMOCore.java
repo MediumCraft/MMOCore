@@ -91,9 +91,6 @@ import net.Indyuce.mmocore.manager.profession.SmithingManager;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
-import net.mmogroup.mmolib.api.stat.StatMap;
-import net.mmogroup.mmolib.api.stat.instance.MMOCoreStatInstance;
-import net.mmogroup.mmolib.api.stat.instance.SimpleStatInstance;
 import net.mmogroup.mmolib.comp.Metrics;
 import net.mmogroup.mmolib.version.SpigotPlugin;
 
@@ -158,20 +155,6 @@ public class MMOCore extends JavaPlugin {
 
 		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
-
-		/*
-		 * mmocore stats are functions of the stat base value. the function
-		 * applies all the different stat modifiers saved in the stat map. using
-		 * specific stat instances let MMOLib calculate stats with set base
-		 * value
-		 */
-		StatMap.setInstanceGenerator((map, stat) -> {
-			try {
-				return new MMOCoreStatInstance(map, StatType.valueOf(stat));
-			} catch (IllegalArgumentException notMMOCoreStat) {
-				return new SimpleStatInstance(map, stat);
-			}
-		});
 
 		if (getConfig().contains("mysql") && getConfig().getBoolean("mysql.enabled"))
 			dataProvider = new MySQLDataProvider();

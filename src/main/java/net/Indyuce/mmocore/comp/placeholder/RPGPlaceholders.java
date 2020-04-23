@@ -7,12 +7,12 @@ import org.bukkit.entity.Player;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.AltChar;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.mmogroup.mmolib.api.util.AltChar;
 
 public class RPGPlaceholders
 		extends PlaceholderExpansion /** implements Relational */

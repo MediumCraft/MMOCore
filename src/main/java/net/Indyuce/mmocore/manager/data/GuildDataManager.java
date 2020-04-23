@@ -39,6 +39,7 @@ public abstract class GuildDataManager {
 		delete(guild);
 	}
 
+	// TODO has nothing to do here
 	public Guild stillInGuild(UUID uuid, String id) {
 		Guild guild = getGuild(id);
 		if (guild != null && guild.getMembers().has(uuid))
@@ -64,10 +65,12 @@ public abstract class GuildDataManager {
 
 	public abstract void save(Guild guild);
 
+	// TODO move to constructor, useless to handle vie abstract method
 	public abstract void load();
 
 	public abstract void delete(Guild guild);
 
+	// TODO fix this
 	// Shitty code for loading config values for guilds.
 	private GuildConfiguration config;
 

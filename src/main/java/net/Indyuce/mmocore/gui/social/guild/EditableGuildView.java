@@ -69,13 +69,11 @@ public class EditableGuildView extends EditableInventory {
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
 
-			/*
-			 * run async to save performance
-			 */
-			if (meta instanceof SkullMeta) {
-				((SkullMeta) meta).setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
-				disp.setItemMeta(meta);
-			}
+			if (meta instanceof SkullMeta)
+				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+					((SkullMeta) meta).setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+					disp.setItemMeta(meta);
+				});
 
 			return NBTItem.get(disp).addTag(new ItemTag("uuid", uuid.toString())).toItem();
 		}

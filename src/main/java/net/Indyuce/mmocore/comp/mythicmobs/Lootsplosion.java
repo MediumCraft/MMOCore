@@ -69,7 +69,7 @@ public class Lootsplosion implements Listener {
 			item.setVelocity(randomVector());
 
 			if (colored)
-				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> {
 					NBTItem nbt = MMOLib.plugin.getNMS().getNBTItem(item.getItemStack());
 					if (nbt.hasTag("MMOITEMS_TIER")) {
 						ItemTier tier = MMOItems.plugin.getTiers().get(nbt.getString("MMOITEMS_TIER"));

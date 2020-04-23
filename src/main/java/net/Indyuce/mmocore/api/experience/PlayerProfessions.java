@@ -118,27 +118,28 @@ public class PlayerProfessions {
 		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
 
 		// display hologram
-		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms")) {
+		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
 				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
 						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
-		}
 
-		int needed, exp, level;
+		int needed, exp, level, oldLevel = getLevel(profession);
 		boolean check = false;
 		while ((exp = this.exp.get(profession.getId())) >= (needed = profession.getExpCurve().getExperience((level = getLevel(profession)) + 1))) {
 			this.exp.put(profession.getId(), exp - needed);
 			this.level.put(profession.getId(), level + 1);
 			check = true;
 			playerData.giveExperience((int) profession.getExperience().calculate(level), null);
-			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, level + 1));
+		}
 
+		if (check) {
+			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
+			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
 			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level + 1), "profession", profession.getName())
 					.send(playerData.getPlayer());
 			playerData.getPlayer().playSound(playerData.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
+			playerData.getStats().updateStats();
 		}
-		if (check)
-			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
 
 		String bar = "" + ChatColor.BOLD;
 		int chars = (int) ((double) exp / needed * 20);
