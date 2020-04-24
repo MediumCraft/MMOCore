@@ -426,8 +426,7 @@ public class PlayerData extends OfflinePlayerData {
 
 		experience += event.getExperience();
 
-		int level = getLevel(), oldLevel = level, needed;
-		boolean check = false;
+		int oldLevel = level, needed;
 		while (experience >= (needed = getLevelUpExperience())) {
 
 			if (hasReachedMaxLevel()) {
@@ -437,10 +436,9 @@ public class PlayerData extends OfflinePlayerData {
 
 			experience -= needed;
 			level = getLevel() + 1;
-			check = true;
 		}
 
-		if (check) {
+		if (level > oldLevel) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
 			new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(player);
 			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
