@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
@@ -37,10 +38,12 @@ public abstract class PlayerDataManager {
 			map.put(player.getUniqueId(), generated);
 
 			/*
-			 * loads player data and ONLY THEN refresh the player statistics
+			 * loads player data and ONLY THEN refresh the player statistics and
+			 * calls the load event on the MAIN thread
 			 */
 			Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
 				loadData(generated);
+				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(generated)));
 				generated.getStats().updateStats();
 			});
 		}
