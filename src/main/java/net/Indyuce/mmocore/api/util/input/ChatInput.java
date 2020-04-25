@@ -22,6 +22,7 @@ public class ChatInput extends PlayerInput {
 	@Override
 	public void close() {
 		AsyncPlayerChatEvent.getHandlerList().unregister(this);
+		InventoryOpenEvent.getHandlerList().unregister(this);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -30,7 +31,7 @@ public class ChatInput extends PlayerInput {
 			close();
 			event.setCancelled(true);
 
-			if(!event.getMessage().equals("cancel"))
+			if (!event.getMessage().equals("cancel"))
 				Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> output(event.getMessage()));
 		}
 	}
