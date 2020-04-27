@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
 import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
 import net.Indyuce.mmocore.command.api.Parameter;
@@ -59,9 +60,9 @@ public class ResetCommandMap extends CommandMap {
 
 			data.setAttributePoints(0);
 			data.setAttributeReallocationPoints(0);
-			for(PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
+			for (PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
 				data.setAttribute(att, 0);
-			
+
 			MMOCore.plugin.skillManager.getAll().forEach(skill -> data.lockSkill(skill));
 			while (data.hasSkillBound(0))
 				data.unbindSkill(0);
@@ -116,7 +117,6 @@ public class ResetCommandMap extends CommandMap {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			data.setSkillPoints(0);
 			MMOCore.plugin.skillManager.getAll().forEach(skill -> data.lockSkill(skill));
 			while (data.hasSkillBound(0))
 				data.unbindSkill(0);
@@ -130,6 +130,7 @@ public class ResetCommandMap extends CommandMap {
 			super(parent, "attributes");
 
 			addParameter(Parameter.PLAYER);
+			addParameter(new Parameter("(-reallocate)", list -> list.add("-reallocate")));
 		}
 
 		@Override
@@ -144,11 +145,26 @@ public class ResetCommandMap extends CommandMap {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			data.setAttributePoints(0);
-			data.setAttributeReallocationPoints(0);
-			for(PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
+
+			/*
+			 * force reallocating of player attribute points
+			 */
+			if (args.length > 4 && args[4].equalsIgnoreCase("-reallocate")) {
+
+				int points = 0;
+				for (AttributeInstance ins : data.getAttributes().getAttributeInstances()) {
+					points += ins.getBase();
+					ins.setBase(0);
+				}
+
+				data.giveAttributePoints(points);
+				sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute points spendings were successfully reset.");
+				return CommandResult.SUCCESS;
+			}
+
+			for (PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
 				data.setAttribute(att, 0);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute data was succesfully reset.");
+			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attributes were succesfully reset.");
 			return CommandResult.SUCCESS;
 		}
 	}
