@@ -104,6 +104,19 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	/*
+	 * easily solves some issues where other plugins use PlayerData.get
+	 */
+	public static final PlayerData NOT_LOADED = new PlayerData();
+
+	@Deprecated
+	private PlayerData() {
+		super(UUID.randomUUID());
+
+		playerStats = new PlayerStats(this);
+		questData = new PlayerQuests(this);
+	}
+
+	/*
 	 * update all references after /mmocore reload so there can be garbage
 	 * collection with old plugin objects like class or skill instances.
 	 */

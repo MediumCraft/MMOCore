@@ -22,7 +22,7 @@ public abstract class PlayerDataManager {
 	}
 
 	public PlayerData get(UUID uuid) {
-		return map.get(uuid);
+		return map.getOrDefault(uuid, PlayerData.NOT_LOADED);
 	}
 
 	public abstract OfflinePlayerData getOffline(UUID uuid);
