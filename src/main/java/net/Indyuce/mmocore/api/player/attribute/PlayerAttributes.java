@@ -124,10 +124,6 @@ public class PlayerAttributes {
 			setBase(spent + value);
 		}
 
-		public int getTotal() {
-			return (int) getTotal(spent);
-		}
-
 		/*
 		 * 1) two types of attributes: flat attributes which add X to the value,
 		 * and relative attributes which add X% and which must be applied
@@ -135,7 +131,8 @@ public class PlayerAttributes {
 		 * attributes also apply on the base stat, or if they only apply on the
 		 * extra stat value
 		 */
-		public double getTotal(double d) {
+		public int getTotal() {
+			double d = spent;
 
 			for (StatModifier attr : map.values())
 				if (attr.getType() == ModifierType.FLAT)
@@ -145,7 +142,8 @@ public class PlayerAttributes {
 				if (attr.getType() == ModifierType.RELATIVE)
 					d *= attr.getValue();
 
-			return d;
+			// cast to int at the last moment
+			return (int) d;
 		}
 
 		public StatModifier getModifier(String key) {
