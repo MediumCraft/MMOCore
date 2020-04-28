@@ -74,7 +74,7 @@ public class Quest extends PostLoadObject {
 		if (config.contains("parent"))
 			for (String parent : config.getStringList("parent"))
 				try {
-					parents.add(MMOCore.plugin.questManager.get(parent));
+					parents.add(MMOCore.plugin.questManager.getOrThrow(parent));
 				} catch (NullPointerException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't find quest ID '" + parent + "'");
 				}
