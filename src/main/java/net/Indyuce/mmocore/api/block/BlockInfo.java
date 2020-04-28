@@ -65,14 +65,6 @@ public class BlockInfo {
 		return block;
 	}
 
-	/*
-	 * generates a key used to store the BlockInfo instance in the manager map,
-	 * the key depends on the block type to make sure there is no interference
-	 */
-	public String generateKey() {
-		return block.generateKey();
-	}
-
 	public DropTable getDropTable() {
 		return table;
 	}

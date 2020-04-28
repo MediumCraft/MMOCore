@@ -15,6 +15,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -182,7 +183,7 @@ public class PlayerClass extends PostLoadObject {
 	}
 
 	@Override
-	protected void whenPostLoaded(FileConfiguration config) {
+	protected void whenPostLoaded(ConfigurationSection config) {
 		if (config.contains("subclasses"))
 			for (String key : config.getConfigurationSection("subclasses").getKeys(false))
 				try {

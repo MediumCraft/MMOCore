@@ -59,7 +59,7 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	public void register(BlockInfo regen) {
-		map.put(regen.generateKey(), regen);
+		map.put(regen.getBlock().generateKey(), regen);
 	}
 
 	public BlockInfo getInfo(Block block) {

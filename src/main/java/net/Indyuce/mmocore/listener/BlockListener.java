@@ -42,7 +42,7 @@ public class BlockListener implements Listener {
 		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player, block.getLocation());
 		if (!customMine)
 			return;
- 
+
 		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
 		if (info == null) {
 			event.setCancelled(true);
@@ -104,7 +104,8 @@ public class BlockListener implements Listener {
 		 * apply drop tables
 		 */
 		if (info.hasDropTable()) {
-			Location dropLocation = getSafeDropLocation(block, !block.getType().isSolid() || !(info.regenerates() && info.getRegenerationInfo().hasTemporaryBlock()));
+			Location dropLocation = getSafeDropLocation(block,
+					!block.getType().isSolid() || !(info.regenerates() && info.getRegenerationInfo().hasTemporaryBlock()));
 			for (ItemStack drop : called.getDrops())
 				if (drop.getType() != Material.AIR && drop.getAmount() > 0)
 					block.getWorld().dropItemNaturally(dropLocation, drop);

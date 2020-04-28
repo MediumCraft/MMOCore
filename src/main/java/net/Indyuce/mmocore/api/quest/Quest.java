@@ -70,7 +70,7 @@ public class Quest extends PostLoadObject {
 	}
 
 	@Override
-	protected void whenPostLoaded(FileConfiguration config) {
+	protected void whenPostLoaded(ConfigurationSection config) {
 		if (config.contains("parent"))
 			for (String parent : config.getStringList("parent"))
 				try {
