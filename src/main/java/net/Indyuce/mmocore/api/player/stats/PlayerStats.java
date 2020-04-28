@@ -19,6 +19,12 @@ public class PlayerStats {
 		map = MMOData.get(data.getPlayer()).setMMOCore(data).getStatMap();
 	}
 
+	@Deprecated
+	public PlayerStats(PlayerData data, StatMap map) {
+		this.data = data;
+		this.map = map;
+	}
+
 	public PlayerData getData() {
 		return data;
 	}

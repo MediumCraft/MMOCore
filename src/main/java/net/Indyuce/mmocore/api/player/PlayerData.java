@@ -52,6 +52,8 @@ import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.player.MMOData;
+import net.mmogroup.mmolib.api.stat.StatMap;
 import net.mmogroup.mmolib.version.VersionSound;
 
 public class PlayerData extends OfflinePlayerData {
@@ -112,8 +114,8 @@ public class PlayerData extends OfflinePlayerData {
 	private PlayerData() {
 		super(UUID.randomUUID());
 
-		playerStats = new PlayerStats(this);
-		questData = new PlayerQuests(this);
+		playerStats = new PlayerStats(this, new StatMap(new MMOData().setMMOCore(this)));
+		questData = new PlayerQuests(this, null);
 	}
 
 	/*
