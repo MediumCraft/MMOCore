@@ -26,23 +26,23 @@ public class SpellCast implements Listener {
 		PlayerData playerData = PlayerData.get(player);
 		event.setCancelled(true);
 
-		if (!player.isSneaking()) {
-			if (!playerData.isCasting() && playerData.getBoundSkills().size() > 0) {
-				playerData.skillCasting = new SkillCasting(playerData);
-				player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 2);
-			}
-
-			/*
-			 * hotbar swap feature only if the player is sneaking while entering
-			 * skill casting mode
-			 */
-		} else if (MMOCore.plugin.configManager.hotbarSwap) {
+		/*
+		 * hotbar swap feature only if the player is sneaking while entering
+		 * skill casting mode
+		 */
+		if (player.isSneaking() && MMOCore.plugin.configManager.hotbarSwap) {
 			player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
 			for (int j = 0; j < 9; j++) {
 				ItemStack replaced = player.getInventory().getItem(j + 9 * 3);
 				player.getInventory().setItem(j + 9 * 3, player.getInventory().getItem(j));
 				player.getInventory().setItem(j, replaced);
 			}
+			return;
+		}
+
+		if (!playerData.isCasting() && playerData.getBoundSkills().size() > 0) {
+			playerData.skillCasting = new SkillCasting(playerData);
+			player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 2);
 		}
 	}
 
@@ -109,7 +109,11 @@ public class SpellCast implements Listener {
 			String str = "";
 			for (int j = 0; j < data.getBoundSkills().size(); j++) {
 				SkillInfo skill = data.getBoundSkill(j);
-				str += (str.isEmpty() ? "" : split) + (onCooldown(data, skill) ? onCooldown.replace("{cooldown}", "" + data.getSkillData().getCooldown(skill) / 1000) : noMana(data, skill) ? noMana : ready).replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName());
+				str += (str.isEmpty() ? "" : split)
+						+ (onCooldown(data, skill) ? onCooldown.replace("{cooldown}", "" + data.getSkillData().getCooldown(skill) / 1000)
+								: noMana(data, skill) ? noMana : ready)
+										.replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0)))
+										.replace("{skill}", data.getBoundSkill(j).getSkill().getName());
 			}
 
 			return str;
@@ -138,7 +142,8 @@ public class SpellCast implements Listener {
 
 			for (int k = 0; k < 2; k++) {
 				double a = (double) j++ / 5;
-				playerData.getProfess().getCastParticle().display(playerData.getPlayer().getLocation().add(Math.cos(a), 1 + Math.sin(a / 3) / 1.3, Math.sin(a)));
+				playerData.getProfess().getCastParticle()
+						.display(playerData.getPlayer().getLocation().add(Math.cos(a), 1 + Math.sin(a / 3) / 1.3, Math.sin(a)));
 			}
 		}
 	}
