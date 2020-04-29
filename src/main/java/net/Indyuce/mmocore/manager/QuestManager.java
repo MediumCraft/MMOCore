@@ -51,7 +51,7 @@ public class QuestManager extends MMOManager {
 			try {
 				quest.postLoad();
 			} catch (IllegalArgumentException exception) {
-				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not post-load quest '" + quest.getId() + "' :" + exception.getMessage());
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not post-load quest '" + quest.getId() + "': " + exception.getMessage());
 			}
 	}
 
