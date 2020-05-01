@@ -199,11 +199,8 @@ public class WaypointViewer extends EditableInventory {
 					return;
 				}
 
-				double next = (double) playerData.getNextWaypointMillis() / 1000;
-				if (next < 0) {
-					MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "cooldown", decimal.format(next)).send(player);
+				if (playerData.getWaypointCooldown() > 0)
 					return;
-				}
 
 				player.closeInventory();
 				playerData.warp(waypoint);

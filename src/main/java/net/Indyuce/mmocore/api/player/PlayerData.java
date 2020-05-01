@@ -320,7 +320,7 @@ public class PlayerData extends OfflinePlayerData {
 		waypoints.add(waypoint.getId());
 	}
 
-	public long getNextWaypointMillis() {
+	public long getWaypointCooldown() {
 		return Math.max(0, lastWaypoint + 5000 - System.currentTimeMillis());
 	}
 
@@ -377,7 +377,14 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void warp(Waypoint waypoint) {
+
+		/*
+		 * this cooldown is only used internally to make sure the player is not
+		 * spamming waypoints. there is no need to reset it when resetting the
+		 * player waypoints data
+		 */
 		lastWaypoint = System.currentTimeMillis();
+
 		giveStellium(-waypoint.getStelliumCost());
 
 		new BukkitRunnable() {

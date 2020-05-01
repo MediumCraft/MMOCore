@@ -22,6 +22,7 @@ public class ResetCommandMap extends CommandMap {
 		addFloor(new ResetSkillsCommandMap(this));
 		addFloor(new ResetAllCommandMap(this));
 		addFloor(new ResetAttributesCommandMap(this));
+		addFloor(new ResetWaypointsCommandMap(this));
 	}
 
 	@Override
@@ -69,6 +70,32 @@ public class ResetCommandMap extends CommandMap {
 			data.getQuestData().resetFinishedQuests();
 			data.getQuestData().start(null);
 			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s data was succesfully reset.");
+			return CommandResult.SUCCESS;
+		}
+	}
+
+	public class ResetWaypointsCommandMap extends CommandEnd {
+		public ResetWaypointsCommandMap(CommandMap parent) {
+			super(parent, "waypoints");
+
+			addParameter(Parameter.PLAYER);
+		}
+
+		@Override
+		public CommandResult execute(CommandSender sender, String[] args) {
+			if (args.length < 4)
+				return CommandResult.THROW_USAGE;
+
+			Player player = Bukkit.getPlayer(args[3]);
+			if (player == null) {
+				sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+				return CommandResult.FAILURE;
+			}
+
+			PlayerData data = PlayerData.get(player);
+			data.getWaypoints().clear();
+			MMOCore.plugin.waypointManager.getAll().stream().filter(waypoint -> waypoint.isDefault())
+					.forEach(waypoint -> data.unlockWaypoint(waypoint));
 			return CommandResult.SUCCESS;
 		}
 	}
