@@ -24,7 +24,6 @@ import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
@@ -126,8 +125,8 @@ public class CustomBlockManager extends MMOManager {
 		for (String key : MMOCore.plugin.getConfig().getStringList("custom-mine-conditions"))
 			try {
 				customMineConditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
-			} catch (MMOLoadException exception) {
-				exception.printConsole("CustomMine", "condition");
+			} catch (IllegalArgumentException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load custom mining condition '" + key + "': " + exception.getMessage());
 			}
 	}
 

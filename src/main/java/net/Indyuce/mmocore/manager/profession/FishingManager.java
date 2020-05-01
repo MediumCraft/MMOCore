@@ -16,7 +16,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.manager.MMOManager;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
@@ -50,7 +49,7 @@ public class FishingManager extends MMOManager {
 		private final Set<Condition> conditions = new HashSet<>();
 		private final List<FishingDropItem> items = new ArrayList<>();
 		private int maxWeight = 0;
-		
+
 		public FishingDropTable(ConfigurationSection section) {
 			Validate.notNull(section, "Could not load config");
 			this.id = section.getName();
@@ -62,8 +61,9 @@ public class FishingManager extends MMOManager {
 				for (String str : list)
 					try {
 						conditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(str)));
-					} catch (MMOLoadException exception) {
-						exception.printConsole("FishDropTables", "fish drop item");
+					} catch (IllegalArgumentException exception) {
+						MMOCore.plugin.getLogger().log(Level.WARNING,
+								"Could not load condition '" + str + "' from fishing drop table '" + id + "': " + exception.getMessage());
 					}
 			}
 
@@ -75,10 +75,9 @@ public class FishingManager extends MMOManager {
 					FishingDropItem dropItem = new FishingDropItem(str);
 					maxWeight += dropItem.getWeight();
 					items.add(dropItem);
-				} catch (MMOLoadException exception) {
-					exception.printConsole("FishDropTables:" + id, "drop item");
 				} catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
-					MMOCore.log(Level.WARNING, "[FishDropTables:" + id + "] Could not load item '" + str + "': " + exception.getMessage());
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load item '" + str + "' from fishing drop table '" + id + "': " + exception.getMessage());
 				}
 
 			Validate.notEmpty(list, "The item list must not be empty.");
@@ -100,8 +99,9 @@ public class FishingManager extends MMOManager {
 
 			for (FishingDropItem item : items) {
 				weight -= item.getWeight();
-				
-				if(weight <= 0) return item;
+
+				if (weight <= 0)
+					return item;
 			}
 
 			throw new NullPointerException("Could not find item in drop table");

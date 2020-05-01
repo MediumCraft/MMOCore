@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
@@ -64,8 +63,9 @@ public class Quest extends PostLoadObject {
 				Validate.notNull(format, "Objective is missing format");
 
 				objectives.add(MMOCore.plugin.loadManager.loadObjective(new MMOLineConfig(format), section));
-			} catch (MMOLoadException exception) {
-				exception.printConsole("Quests:" + id, "objective");
+			} catch (IllegalArgumentException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING,
+						"Could not load objective '" + key + "' from quest '" + id + "': " + exception.getMessage());
 			}
 	}
 

@@ -10,14 +10,14 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.item.ConfigItem;
 
 public class ConfigItemManager {
-	private Map<String, ConfigItem> map = new HashMap<>();
+	private final Map<String, ConfigItem> map = new HashMap<>();
 
 	public ConfigItemManager(FileConfiguration config) {
 		for (String key : config.getKeys(false))
 			try {
 				register(new ConfigItem(config.getConfigurationSection(key)));
 			} catch (NullPointerException | IllegalArgumentException exception) {
-				MMOCore.plugin.getLogger().log(Level.INFO, "Could not load config item " + key);
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load config item " + key);
 			}
 	}
 

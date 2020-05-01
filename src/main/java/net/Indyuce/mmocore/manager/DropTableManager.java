@@ -47,8 +47,11 @@ public class DropTableManager extends MMOManager {
 		if (obj instanceof String)
 			return get((String) obj);
 
-		if (obj instanceof ConfigurationSection)
-			return new DropTable((ConfigurationSection) obj).load();
+		if (obj instanceof ConfigurationSection) {
+			DropTable table = new DropTable((ConfigurationSection) obj);
+			table.postLoad();
+			return table;
+		}
 
 		throw new IllegalArgumentException("Could not parse drop table.");
 	}
@@ -70,7 +73,7 @@ public class DropTableManager extends MMOManager {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load drop table file '" + file.getName() + "': " + exception.getMessage());
 			}
 
-		map.values().forEach(table -> table.load());
+		map.values().forEach(table -> table.postLoad());
 	}
 
 	@Override

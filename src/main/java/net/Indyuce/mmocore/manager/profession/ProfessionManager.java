@@ -34,7 +34,7 @@ public class ProfessionManager extends MMOManager {
 	@SuppressWarnings("unchecked")
 	public <T extends ExperienceSource<?>> void registerExpSource(T source) {
 		Class<T> path = (Class<T>) source.getClass();
-		
+
 		if (!managers.containsKey(path))
 			managers.put(path, source.newManager());
 		getManager(path).register(source);
@@ -66,7 +66,7 @@ public class ProfessionManager extends MMOManager {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load profession " + file.getName() + ": " + exception.getMessage());
 			}
 
-		getAll().forEach(profession -> profession.loadOptions());
+		getAll().forEach(profession -> profession.postLoad());
 	}
 
 	@Override

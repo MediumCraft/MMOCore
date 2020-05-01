@@ -4,18 +4,19 @@ import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionType;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
+import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.player.ExpCurve;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
-public class Profession {
+public class Profession extends PostLoadObject {
 	private final String id, name;
 	private final ExpCurve expCurve;
 
@@ -25,15 +26,10 @@ public class Profession {
 	 */
 	private final LinearValue experience;
 
-	/*
-	 * removed when loaded
-	 */
-	private FileConfiguration config;
-
 	public Profession(String id, FileConfiguration config) {
-		this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
-		this.config = config;
+		super(config);
 
+		this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
 		this.name = config.getString("name");
 		Validate.notNull(name, "Could not load name");
 
@@ -46,15 +42,17 @@ public class Profession {
 			for (String key : config.getStringList("exp-sources"))
 				try {
 					MMOCore.plugin.professionManager.registerExpSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
-				} catch (MMOLoadException exception) {
-					exception.printConsole("PlayerProfessions", "exp source");
+				} catch (IllegalArgumentException exception) {
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not register exp source '" + key + "' from profession '" + id + "': " + exception.getMessage());
 				}
 	}
 
 	/*
 	 * drop tables must be loaded after professions are initialized
 	 */
-	public void loadOptions() {
+	@Override
+	protected void whenPostLoaded(ConfigurationSection config) {
 
 		if (config.contains("on-fish"))
 			MMOCore.plugin.fishingManager.loadDropTables(config.getConfigurationSection("on-fish"));
@@ -103,11 +101,10 @@ public class Profession {
 		// MMOCore.plugin.alchemyManager.registerEffectWeight(PotionEffectType.getByName(key.toUpperCase().replace("-",
 		// "_").replace(" ", "_")), config.getDouble("effect-weight." + key));
 		// } catch (IllegalArgumentException exception) {
-		// MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read
+		// MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not
+		// read
 		// potion effect type from " + key);
 		// }
-
-		config = null;
 	}
 
 	public String getId() {

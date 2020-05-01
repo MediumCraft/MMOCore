@@ -15,7 +15,6 @@ import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.DefaultMMOLoader;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
@@ -67,10 +66,11 @@ public class MMOLoadManager {
 				if (found != null)
 					return found;
 			} catch (IllegalArgumentException | JsonParseException | IndexOutOfBoundsException exception) {
-				throw new MMOLoadException("Could not load '" + config.toString() + "': " + exception.getMessage());
+				throw new IllegalArgumentException("Could not load '" + config.toString() + "': " + exception.getMessage());
 			}
 		}
 
-		throw new MMOLoadException("Could not load '" + config.toString() + "': Could not find corresponding " + c.getSimpleName() + " in database");
+		throw new IllegalArgumentException(
+				"Could not load '" + config.toString() + "': Could not find corresponding " + c.getSimpleName() + " in database");
 	}
 }

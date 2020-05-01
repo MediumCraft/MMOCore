@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.block;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -12,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
@@ -48,8 +48,9 @@ public class BlockInfo {
 			for (String key : list)
 				try {
 					triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
-				} catch (MMOLoadException exception) {
-					exception.printConsole("BlockRegen", "trigger");
+				} catch (IllegalArgumentException exception) {
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load trigger '" + key + "' from block info '" + block.generateKey() + "': " + exception.getMessage());
 				}
 		}
 

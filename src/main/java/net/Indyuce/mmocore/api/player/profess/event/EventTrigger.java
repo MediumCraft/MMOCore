@@ -3,11 +3,11 @@ package net.Indyuce.mmocore.api.player.profess.event;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
@@ -17,17 +17,18 @@ public class EventTrigger {
 
 	public EventTrigger(String event, List<String> list) {
 		Validate.notNull(list, "Could not load trigger list");
-		
+
 		this.event = event;
 
 		for (String format : list)
 			try {
 				triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(format)));
-			} catch (MMOLoadException exception) {
-				exception.printConsole("EventTrigger:" + event, "trigger");
+			} catch (IllegalArgumentException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING,
+						"Could not load trigger '" + format + "' from event trigger '" + event + "': " + exception.getMessage());
 			}
 	}
-	
+
 	public String getEvent() {
 		return event;
 	}

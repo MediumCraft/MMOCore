@@ -25,7 +25,6 @@ import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.api.load.MMOLoadException;
 import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.player.ExpCurve;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
@@ -98,7 +97,8 @@ public class PlayerClass extends PostLoadObject {
 					stats.put(StatType.valueOf(key.toUpperCase().replace("-", "_")),
 							new LinearValue(config.getConfigurationSection("attributes." + key)));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load stat info '" + key + "': " + exception.getMessage());
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load stat info '" + key + "' from class '" + id + "': " + exception.getMessage());
 				}
 
 		if (config.contains("skills"))
@@ -107,7 +107,8 @@ public class PlayerClass extends PostLoadObject {
 					Validate.isTrue(MMOCore.plugin.skillManager.has(key), "Could not find skill " + key);
 					skills.put(key.toUpperCase(), MMOCore.plugin.skillManager.get(key).newSkillInfo(config.getConfigurationSection("skills." + key)));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load skill info '" + key + "': " + exception.getMessage());
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load skill info '" + key + "' from class '" + id + "': " + exception.getMessage());
 				}
 
 		castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle"))
@@ -118,7 +119,8 @@ public class PlayerClass extends PostLoadObject {
 				try {
 					setOption(ClassOption.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_")), config.getBoolean("options." + key));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not read class option from '" + key + "'");
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load option '" + key + "' from class '" + key + "': " + exception.getMessage());
 				}
 
 		if (config.contains("main-exp-sources"))
@@ -127,8 +129,9 @@ public class PlayerClass extends PostLoadObject {
 					ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), null);
 					source.setClass(this);
 					MMOCore.plugin.professionManager.registerExpSource(source);
-				} catch (MMOLoadException exception) {
-					exception.printConsole("PlayerClasses:" + id, "exp source");
+				} catch (IllegalArgumentException exception) {
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load exp source '" + key + "' from class '" + id + "': " + exception.getMessage());
 				}
 
 		if (config.contains("triggers"))
