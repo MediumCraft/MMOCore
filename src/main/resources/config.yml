@@ -1,11 +1,9 @@
-# Auto-Save feature automatically saves
-# playerdata (class, level, etc.) and
-# guild data (guild names, members, etc.)
-# at a set interval.
+# Auto-Save feature automatically saves playerdata
+# (class, level, etc.) and guild data
+# (guild names, members, etc.) at a set interval.
 auto-save:
     enabled: true
-    # In seconds (1800 = 30 minutes)
-    interval: 1800
+    interval: 1800 # In seconds (1800 = 30 minutes)
 
 # MySQL Support
 mysql:
@@ -41,7 +39,8 @@ loot-chest-expire-time: 600
 # Settings for the default action bar
 action-bar:
 
-    # Whether or not to use the default action bar. (This doesn't change any other action bars provided by MMOCore.)
+    # Whether or not to use the default action bar.
+    # (This doesn't change any other action bars provided by MMOCore.)
     enabled: true
     
     # The decimal format for stats (not including stat formats in stats.yml)
@@ -64,6 +63,14 @@ party:
     # Prefix you need to put in the chat
     # to talk in the party chat.
     chat-prefix: '@'
+
+# Redirects vanilla experience obtained to MMOCore
+# class experience. You can define the % of the vanilla
+# experience that is being transfered as MMOCore exp.
+# Requires a SERVER reload when changed.
+vanilla-exp-redirection:
+    enabled: false
+    ratio: 0.8
 
 # Enable this open to override vanilla EXP and display
 # level progress on the vanilla experience bar.
@@ -93,6 +100,7 @@ display-exp-holograms: true
 
 # Players can swap their hotbar with the 9 inventory slots
 # right above it by pressing [swap items] while crouching.
+# THis allows players to have two combat item sets.
 hotbar-swap: true
 
 # Use this option if you're having issue with Anvil GUIs.
@@ -109,9 +117,6 @@ combat-log:
 # Change this to the name of the color you want for
 # the different resource bar placeholders
 resource-bar-colors:
-    mana-whole: 'BLUE'
-    mana-half: 'AQUA'
-    mana-empty: 'WHITE'
     stamina-whole: 'GREEN'
     stamina-half: 'DARK_GREEN'
     stamina-empty: 'WHITE'

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.listener.option;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
@@ -14,7 +15,7 @@ public class VanillaExperienceOverride implements Listener {
 	/*
 	 * when picking up exp orbs or any action like that
 	 */
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void a(PlayerExpChangeEvent event) {
 		event.setAmount(0);
 	}

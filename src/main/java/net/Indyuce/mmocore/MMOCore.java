@@ -62,6 +62,7 @@ import net.Indyuce.mmocore.listener.WaypointsListener;
 import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
 import net.Indyuce.mmocore.listener.option.HealthScale;
 import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
+import net.Indyuce.mmocore.listener.option.RedirectVanillaExp;
 import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
@@ -254,6 +255,9 @@ public class MMOCore extends JavaPlugin {
 		 */
 		if (getConfig().getBoolean("action-bar.enabled"))
 			new PlayerActionBar(getConfig().getConfigurationSection("action-bar"));
+
+		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
+			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
 
 		/*
 		 * enable debug mode for extra debug tools.
