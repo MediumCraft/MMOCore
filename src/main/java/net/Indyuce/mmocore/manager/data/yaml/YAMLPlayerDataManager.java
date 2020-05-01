@@ -53,7 +53,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 			config.getConfigurationSection("skill").getKeys(false).forEach(id -> data.setSkillLevel(id, config.getInt("skill." + id)));
 		if (config.contains("bound-skills"))
 			for (String id : config.getStringList("bound-skills"))
-				if (MMOCore.plugin.skillManager.has(id))
+				if (data.getProfess().hasSkill(id))
 					data.getBoundSkills().add(data.getProfess().getSkill(id));
 
 		/*
@@ -116,7 +116,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 			config.set("class-info." + key + ".attribute-points", info.getAttributePoints());
 			config.set("class-info." + key + ".attribute-realloc-points", info.getAttributeReallocationPoints());
 			info.getSkillKeys().forEach(skill -> config.set("class-info." + key + ".skill." + skill, info.getSkillLevel(skill)));
-			info.getAttributeKeys().forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
+			info.getAttributeKeys()
+					.forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
 		}
 
 		file.save();

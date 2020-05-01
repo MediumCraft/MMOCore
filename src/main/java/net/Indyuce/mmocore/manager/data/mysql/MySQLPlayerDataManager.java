@@ -80,7 +80,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			}
 			if (!isEmpty(result.getString("bound_skills")))
 				for (String skill : getJSONArray(result.getString("bound_skills")))
-					if (MMOCore.plugin.skillManager.has(skill))
+					if (data.getProfess().hasSkill(skill))
 						data.getBoundSkills().add(data.getProfess().getSkill(skill));
 			if (!isEmpty(result.getString("class_info"))) {
 				JsonObject object = parser.fromJson(result.getString("class_info"), JsonObject.class);

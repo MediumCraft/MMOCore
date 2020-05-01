@@ -260,7 +260,11 @@ public class PlayerClass extends PostLoadObject {
 	}
 
 	public boolean hasSkill(Skill skill) {
-		return skills.containsKey(skill.getId());
+		return hasSkill(skill.getId());
+	}
+
+	public boolean hasSkill(String id) {
+		return skills.containsKey(id);
 	}
 
 	public SkillInfo getSkill(Skill skill) {
