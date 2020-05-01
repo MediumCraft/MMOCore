@@ -62,6 +62,13 @@ public class RPGPlaceholders
 			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
 		}
 
+		else if (identifier.startsWith("bound_")) {
+			int slot = Math.max(0, Integer.parseInt(identifier.substring(6)) - 1);
+			PlayerData playerData = PlayerData.get(player);
+			return playerData.hasSkillBound(slot) ? playerData.getBoundSkill(slot).getSkill().getName()
+					: MMOCore.plugin.configManager.noSkillBoundPlaceholder;
+		}
+		
 		else if (identifier.startsWith("profession_"))
 			return "" + PlayerData.get(player).getCollectionSkills()
 					.getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());

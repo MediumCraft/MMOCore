@@ -25,7 +25,7 @@ public class ConfigManager {
 
 	public boolean overrideVanillaExp, hotbarSwap;
 	public double expPartyBuff, regenPartyBuff;
-	public String partyChatPrefix;
+	public String partyChatPrefix, noSkillBoundPlaceholder;
 	public ChatColor staminaFull, staminaHalf, staminaEmpty;
 	public int combatLogTimer, lootChestExpireTime;
 
@@ -101,6 +101,7 @@ public class ConfigManager {
 		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
 		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer");
 		lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chest-expire-time"), 1) * 1000;
+		noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
 
 		staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
 		staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
