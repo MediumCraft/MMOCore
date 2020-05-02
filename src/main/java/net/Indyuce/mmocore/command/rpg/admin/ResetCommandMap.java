@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
 import net.Indyuce.mmocore.command.api.CommandEnd;
 import net.Indyuce.mmocore.command.api.CommandMap;
@@ -61,10 +60,9 @@ public class ResetCommandMap extends CommandMap {
 
 			data.setAttributePoints(0);
 			data.setAttributeReallocationPoints(0);
-			for (PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
-				data.setAttribute(att, 0);
+			data.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
 
-			MMOCore.plugin.skillManager.getAll().forEach(skill -> data.lockSkill(skill));
+			data.mapSkillLevels().forEach((skill, level) -> data.resetSkillLevel(skill));
 			while (data.hasSkillBound(0))
 				data.unbindSkill(0);
 			data.getQuestData().resetFinishedQuests();
@@ -144,7 +142,7 @@ public class ResetCommandMap extends CommandMap {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			MMOCore.plugin.skillManager.getAll().forEach(skill -> data.lockSkill(skill));
+			data.mapSkillLevels().forEach((skill, level) -> data.resetSkillLevel(skill));
 			while (data.hasSkillBound(0))
 				data.unbindSkill(0);
 			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill data was succesfully reset.");
@@ -179,7 +177,7 @@ public class ResetCommandMap extends CommandMap {
 			if (args.length > 4 && args[4].equalsIgnoreCase("-reallocate")) {
 
 				int points = 0;
-				for (AttributeInstance ins : data.getAttributes().getAttributeInstances()) {
+				for (AttributeInstance ins : data.getAttributes().getInstances()) {
 					points += ins.getBase();
 					ins.setBase(0);
 				}
@@ -189,8 +187,7 @@ public class ResetCommandMap extends CommandMap {
 				return CommandResult.SUCCESS;
 			}
 
-			for (PlayerAttribute att : MMOCore.plugin.attributeManager.getAll())
-				data.setAttribute(att, 0);
+			data.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
 			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attributes were succesfully reset.");
 			return CommandResult.SUCCESS;
 		}

@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.skill;
 
+import java.util.Optional;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -29,7 +31,10 @@ public class Neptune_Gift extends Skill implements Listener {
 	@EventHandler
 	public void a(PlayerRegenResourceEvent event) {
 		PlayerData data = event.getData();
-		if (event.getPlayer().getLocation().getBlock().getType() == Material.WATER && data.hasSkillUnlocked(this))
-			event.setAmount(event.getAmount() * (1 + data.getProfess().getSkill(this).getModifier("extra", data.getSkillLevel(this)) / 100));
+		if (event.getPlayer().getLocation().getBlock().getType() == Material.WATER) {
+			Optional<SkillInfo> skill = data.getProfess().findSkill(this);
+			if (skill.isPresent())
+				event.setAmount(event.getAmount() * (1 + skill.get().getModifier("extra", data.getSkillLevel(this)) / 100));
+		}
 	}
 }

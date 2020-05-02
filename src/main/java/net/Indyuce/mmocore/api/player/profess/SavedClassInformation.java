@@ -43,21 +43,21 @@ public class SavedClassInformation {
 
 		attributes = new HashMap<>();
 		if (json.has("attribute"))
-			for(Entry<String, JsonElement> entry : json.getAsJsonObject("attribute").entrySet())
+			for (Entry<String, JsonElement> entry : json.getAsJsonObject("attribute").entrySet())
 				attributes.put(entry.getKey(), entry.getValue().getAsInt());
 		skills = new HashMap<>();
 		if (json.has("skill"))
-			for(Entry<String, JsonElement> entry : json.getAsJsonObject("skill").entrySet())
+			for (Entry<String, JsonElement> entry : json.getAsJsonObject("skill").entrySet())
 				skills.put(entry.getKey(), entry.getValue().getAsInt());
-			
+
 	}
-	
+
 	public SavedClassInformation(PlayerData player) {
 		level = player.getLevel();
 		skillPoints = player.getSkillPoints();
 		experience = player.getExperience();
 		skills = player.mapSkillLevels();
-		attributes = player.mapAttributePoints();
+		attributes = player.getAttributes().mapPoints();
 		attributePoints = player.getAttributePoints();
 		attributeReallocationPoints = player.getAttributeReallocationPoints();
 	}
@@ -91,7 +91,7 @@ public class SavedClassInformation {
 	public int getAttributeReallocationPoints() {
 		return attributeReallocationPoints;
 	}
-	
+
 	public Set<String> getSkillKeys() {
 		return skills.keySet();
 	}
@@ -112,7 +112,6 @@ public class SavedClassInformation {
 		skills.put(attribute, level);
 	}
 
-	
 	public Set<String> getAttributeKeys() {
 		return attributes.keySet();
 	}
@@ -145,11 +144,11 @@ public class SavedClassInformation {
 		/*
 		 * resets information which much be reset after everything is saved.
 		 */
-		player.clearSkillLevels();
+		player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
 		while (player.hasSkillBound(0))
 			player.unbindSkill(0);
-		player.clearAttributePoints();
-		
+		player.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
+
 		/*
 		 * reads this class info, applies it to the player. set class after
 		 * changing level so the player stats can be calculated based on new
@@ -160,8 +159,8 @@ public class SavedClassInformation {
 		player.setSkillPoints(skillPoints);
 		player.setAttributePoints(attributePoints);
 		player.setAttributeReallocationPoints(attributeReallocationPoints);
-		skills.keySet().forEach(id -> player.setSkillLevel(id, skills.get(id)));
-		attributes.keySet().forEach(id -> player.setAttribute(id, attributes.get(id)));
+		skills.forEach((id, level) -> player.setSkillLevel(id, level));
+		attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
 
 		/*
 		 * unload current class information and set the new profess once

@@ -1,8 +1,11 @@
 package net.Indyuce.mmocore.skill;
 
+import java.util.Optional;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -25,10 +28,13 @@ public class Fire_Berserker extends Skill implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void a(PlayerAttackEvent event) {
 		PlayerData data = event.getData().getMMOCore();
-		if (event.getPlayer().getFireTicks() > 0 && data.hasSkillUnlocked(this))
-			event.getAttack().multiplyDamage(1 + data.getProfess().getSkill(this).getModifier("extra", data.getSkillLevel(this)) / 100);
+		if (event.getPlayer().getFireTicks() > 0) {
+			Optional<SkillInfo> skill = data.getProfess().findSkill(this);
+			if (skill.isPresent())
+				event.getAttack().multiplyDamage(1 + skill.get().getModifier("extra", data.getSkillLevel(this)) / 100);
+		}
 	}
 }

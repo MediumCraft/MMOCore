@@ -101,7 +101,7 @@ public class AttributeView extends EditableInventory {
 					return;
 				}
 
-				playerData.getAttributes().getAttributeInstances().forEach(ins -> ins.setBase(0));
+				playerData.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
 				playerData.giveAttributePoints(spent);
 				playerData.giveAttributeReallocationPoints(-1);
 				MMOCore.plugin.configManager.getSimpleMessage("attribute-points-reallocated", "points", "" + playerData.getAttributePoints()).send(player);

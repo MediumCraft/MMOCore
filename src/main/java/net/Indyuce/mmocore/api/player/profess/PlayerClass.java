@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -274,8 +275,16 @@ public class PlayerClass extends PostLoadObject {
 		return getSkill(skill.getId());
 	}
 
+	/*
+	 * reduces map checkups when skills are being checked on events that are
+	 * commonly called like EntityDamageEvent or regen events.
+	 */
+	public Optional<SkillInfo> findSkill(Skill skill) {
+		return skills.containsKey(skill.getId()) ? Optional.of(skills.get(skill.getId())) : Optional.empty();
+	}
+
 	public SkillInfo getSkill(String id) {
-		return skills.get(id.toUpperCase());
+		return skills.get(id);
 	}
 
 	public Set<String> getEventTriggers() {

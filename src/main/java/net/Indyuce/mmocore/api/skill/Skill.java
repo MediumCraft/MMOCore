@@ -194,10 +194,6 @@ public abstract class Skill {
 			return modifiers.get(modifier).calculate(level);
 		}
 
-		public boolean isUnlocked(PlayerData profess) {
-			return profess.getLevel() >= level;
-		}
-
 		public List<String> calculateLore(PlayerData data) {
 			return calculateLore(data, data.getSkillLevel(skill));
 		}

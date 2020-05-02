@@ -71,7 +71,8 @@ public class SkillList extends EditableInventory {
 		if (function.equals("slot"))
 			return new InventoryPlaceholderItem(config) {
 				private final String none = ChatColor.translateAlternateColorCodes('&', config.getString("no-skill"));
-				private final Material emptyMaterial = Material.valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
+				private final Material emptyMaterial = Material
+						.valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
 
 				@Override
 				public Placeholders getPlaceholders(PluginInventory inv, int n) {
@@ -172,7 +173,8 @@ public class SkillList extends EditableInventory {
 
 			ItemStack item = cloneItem();
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', getName().replace("{skill}", skill.getSkill().getName()).replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)));
+			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', getName().replace("{skill}", skill.getSkill().getName())
+					.replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)));
 			meta.addItemFlags(ItemFlag.values());
 			meta.setLore(lore);
 			item.setItemMeta(meta);
@@ -227,7 +229,8 @@ public class SkillList extends EditableInventory {
 
 			for (Iterator<String> iterator = lore.iterator(); iterator.hasNext();) {
 				String next = iterator.next();
-				if ((next.startsWith("{unlocked}") && !unlocked) || (next.startsWith("{locked}") && unlocked) || (next.startsWith("{max_level}") && (!skill.hasMaxLevel() || skill.getMaxLevel() > inv.getPlayerData().getSkillLevel(skill.getSkill()))))
+				if ((next.startsWith("{unlocked}") && !unlocked) || (next.startsWith("{locked}") && unlocked) || (next.startsWith("{max_level}")
+						&& (!skill.hasMaxLevel() || skill.getMaxLevel() > inv.getPlayerData().getSkillLevel(skill.getSkill()))))
 					iterator.remove();
 			}
 
@@ -297,7 +300,8 @@ public class SkillList extends EditableInventory {
 		@Override
 		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
 
-			if (skillSlots.contains(event.getRawSlot()) && event.getRawSlot() != ((SkillItem) getEditable().getByFunction("skill")).selectedSkillSlot) {
+			if (skillSlots.contains(event.getRawSlot())
+					&& event.getRawSlot() != ((SkillItem) getEditable().getByFunction("skill")).selectedSkillSlot) {
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 2);
 				playerData.skillGuiDisplayOffset = (playerData.skillGuiDisplayOffset + (event.getRawSlot() - 13)) % skills.size();
 				open();
@@ -356,19 +360,11 @@ public class SkillList extends EditableInventory {
 							return;
 						}
 
-						if (!selected.isUnlocked(playerData)) {
+						if (!playerData.hasSkillUnlocked(selected)) {
 							MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
 							player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
 							return;
 						}
-
-						// if (playerData.getSkillLevel(selected.getSkill()) <
-						// 1) {
-						// player.sendMessage(MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill"));
-						// player.playSound(player.getLocation(),
-						// Sound.ENTITY_VILLAGER_NO, 1, 2);
-						// return;
-						// }
 
 						player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
 						playerData.setBoundSkill(index, selected);
@@ -381,7 +377,7 @@ public class SkillList extends EditableInventory {
 				 * upgrading a player skill
 				 */
 			} else if (item.getFunction().equals("upgrade")) {
-				if (!selected.isUnlocked(playerData)) {
+				if (!playerData.hasSkillUnlocked(selected)) {
 					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
 					return;
@@ -401,7 +397,8 @@ public class SkillList extends EditableInventory {
 
 				playerData.giveSkillPoints(-1);
 				playerData.setSkillLevel(selected.getSkill(), playerData.getSkillLevel(selected.getSkill()) + 1);
-				MMOCore.plugin.configManager.getSimpleMessage("upgrade-skill", "skill", selected.getSkill().getName(), "level", "" + playerData.getSkillLevel(selected.getSkill())).send(player);
+				MMOCore.plugin.configManager.getSimpleMessage("upgrade-skill", "skill", selected.getSkill().getName(), "level",
+						"" + playerData.getSkillLevel(selected.getSkill())).send(player);
 				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
 				open();
 			}

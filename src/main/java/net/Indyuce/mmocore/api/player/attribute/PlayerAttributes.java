@@ -22,7 +22,7 @@ import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerAttributes {
 	private final PlayerData data;
-	private final Map<String, AttributeInstance> extra = new HashMap<>();
+	private final Map<String, AttributeInstance> instances = new HashMap<>();
 
 	public PlayerAttributes(PlayerData data) {
 		this.data = data;
@@ -37,19 +37,19 @@ public class PlayerAttributes {
 				PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 				AttributeInstance ins = new AttributeInstance(attribute);
 				ins.setBase(config.getInt(key));
-				extra.put(id, ins);
+				instances.put(id, ins);
 			} catch (IllegalArgumentException exception) {
 				data.log(Level.WARNING, exception.getMessage());
 			}
 	}
 
 	public void save(ConfigurationSection config) {
-		extra.values().forEach(ins -> config.set(ins.id, ins.getBase()));
+		instances.values().forEach(ins -> config.set(ins.id, ins.getBase()));
 	}
 
 	public String toJsonString() {
 		JsonObject json = new JsonObject();
-		for (AttributeInstance ins : extra.values())
+		for (AttributeInstance ins : instances.values())
 			json.addProperty(ins.getId(), ins.getBase());
 		return json.toString();
 	}
@@ -65,7 +65,7 @@ public class PlayerAttributes {
 				PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 				AttributeInstance ins = new AttributeInstance(attribute);
 				ins.setBase(entry.getValue().getAsInt());
-				extra.put(id, ins);
+				instances.put(id, ins);
 			} catch (IllegalArgumentException exception) {
 				data.log(Level.WARNING, exception.getMessage());
 			}
@@ -80,22 +80,28 @@ public class PlayerAttributes {
 		return getInstance(attribute).getTotal();
 	}
 
-	public Collection<AttributeInstance> getAttributeInstances() {
-		return extra.values();
+	public Collection<AttributeInstance> getInstances() {
+		return instances.values();
+	}
+
+	public Map<String, Integer> mapPoints() {
+		Map<String, Integer> map = new HashMap<>();
+		instances.values().forEach(ins -> map.put(ins.id, ins.spent));
+		return map;
 	}
 
 	public AttributeInstance getInstance(PlayerAttribute attribute) {
-		if (extra.containsKey(attribute.getId()))
-			return extra.get(attribute.getId());
+		if (instances.containsKey(attribute.getId()))
+			return instances.get(attribute.getId());
 
 		AttributeInstance ins = new AttributeInstance(attribute);
-		extra.put(attribute.getId(), ins);
+		instances.put(attribute.getId(), ins);
 		return ins;
 	}
 
 	public int countSkillPoints() {
 		int n = 0;
-		for (AttributeInstance ins : extra.values())
+		for (AttributeInstance ins : instances.values())
 			n += ins.getBase();
 		return n;
 	}
@@ -129,7 +135,7 @@ public class PlayerAttributes {
 		 * and relative attributes which add X% and which must be applied
 		 * afterwards 2) the 'd' parameter lets you choose if the relative
 		 * attributes also apply on the base stat, or if they only apply on the
-		 * extra stat value
+		 * instances stat value
 		 */
 		public int getTotal() {
 			double d = spent;
@@ -197,7 +203,7 @@ public class PlayerAttributes {
 	}
 
 	public void setBaseAttribute(String id, int value) {
-		getAttributeInstances().forEach(ins -> {
+		getInstances().forEach(ins -> {
 			if (ins.getId().equals(id))
 				ins.setBase(value);
 		});

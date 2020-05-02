@@ -572,22 +572,23 @@ public class PlayerData extends OfflinePlayerData {
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
 
+	@Deprecated
 	public void setAttribute(PlayerAttribute attribute, int value) {
 		setAttribute(attribute.getId(), value);
 	}
 
+	@Deprecated
 	public void setAttribute(String id, int value) {
 		attributes.setBaseAttribute(id, value);
 	}
 
-	public void clearAttributePoints() {
-		attributes.getAttributeInstances().forEach(ins -> ins.setBase(0));
+	@Deprecated
+	public Map<String, Integer> mapAttributePoints() {
+		return getAttributes().mapPoints();
 	}
 
-	public Map<String, Integer> mapAttributePoints() {
-		Map<String, Integer> ap = new HashMap<String, Integer>();
-		attributes.getAttributeInstances().forEach(ins -> ap.put(ins.getId(), ins.getBase()));
-		return ap;
+	public int getSkillLevel(Skill skill) {
+		return skills.getOrDefault(skill.getId(), 1);
 	}
 
 	public void setSkillLevel(Skill skill, int level) {
@@ -598,24 +599,30 @@ public class PlayerData extends OfflinePlayerData {
 		skills.put(skill, level);
 	}
 
-	public void lockSkill(Skill skill) {
-		skills.remove(skill.getId());
+	public void resetSkillLevel(String skill) {
+		skills.remove(skill);
 	}
 
+	/*
+	 * better use getProfess().findSkill(skill).isPresent()
+	 */
+	@Deprecated
 	public boolean hasSkillUnlocked(Skill skill) {
-		return skills.containsKey(skill.getId());
+		return getProfess().hasSkill(skill.getId()) && hasSkillUnlocked(getProfess().getSkill(skill.getId()));
 	}
 
-	public int getSkillLevel(Skill skill) {
-		return skills.containsKey(skill.getId()) ? skills.get(skill.getId()) : 1;
+	/*
+	 * (bug fix) any skill, when the player has the right level is instantly
+	 * unlocked, therefore one must NOT check if the player has unlocked the
+	 * skill by checking if the skills map contains the skill id as key. this
+	 * only checks if the player has spent any skill point.
+	 */
+	public boolean hasSkillUnlocked(SkillInfo info) {
+		return getLevel() >= info.getUnlockLevel();
 	}
 
 	public Map<String, Integer> mapSkillLevels() {
 		return new HashMap<>(skills);
-	}
-
-	public void clearSkillLevels() {
-		skills.clear();
 	}
 
 	public void giveClassPoints(int value) {
@@ -713,6 +720,9 @@ public class PlayerData extends OfflinePlayerData {
 		SkillResult cast = skill.getSkill().whenCast(this, skill);
 		if (!cast.isSuccessful()) {
 			if (!skill.getSkill().isPassive()) {
+				if (cast.getCancelReason() == CancelReason.LOCKED)
+					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
+				
 				if (cast.getCancelReason() == CancelReason.MANA)
 					MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(player);
 

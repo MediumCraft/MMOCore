@@ -16,14 +16,17 @@ public class TargetSkillResult extends SkillResult {
 		super(data, skill);
 
 		if (isSuccessful()) {
-			MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(data.getPlayer(), range, entity -> MMOCoreUtils.canTarget(data, entity));
+			MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(data.getPlayer(), range,
+					entity -> MMOCoreUtils.canTarget(data, entity));
 			if (!result.hasHit())
-				abort(CancelReason.OTHER);
+				abort();
 			else
 				target = (LivingEntity) result.getHit();
 		}
 	}
 
+	// check skill result abort reason instead
+	@Deprecated
 	public boolean hasTarget() {
 		return target != null;
 	}

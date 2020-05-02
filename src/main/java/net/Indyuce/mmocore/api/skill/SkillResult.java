@@ -16,7 +16,7 @@ public class SkillResult {
 		level = data.getSkillLevel(skill.getSkill());
 		cooldown = (skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0);
 		mana = (skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0);
-		cancelReason = !data.hasSkillUnlocked(skill.getSkill()) ? CancelReason.LOCKED
+		cancelReason = !data.hasSkillUnlocked(skill) ? CancelReason.LOCKED
 				: cooldown > 0 ? CancelReason.COOLDOWN : mana > data.getMana() ? CancelReason.MANA : null;
 	}
 
