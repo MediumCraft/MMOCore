@@ -16,6 +16,7 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 	private static final HandlerList handlers = new HandlerList();
 
 	private final Block block;
+	private final BlockInfo info;
 	private final List<ItemStack> drops;
 	private final ExperienceInfo experience;
 
@@ -23,10 +24,23 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
 	public CustomBlockMineEvent(PlayerData player, Block block, BlockInfo info) {
 		super(player);
-		
+
 		this.block = block;
+		this.info = info;
 		this.drops = info.collectDrops(new LootBuilder(player, 0));
 		this.experience = info.hasExperience() ? info.getExperience().newInfo() : null;
+	}
+
+	public Block getBlock() {
+		return block;
+	}
+
+	public List<ItemStack> getDrops() {
+		return drops;
+	}
+
+	public BlockInfo getBlockInfo() {
+		return info;
 	}
 
 	public boolean hasGainedExperience() {
@@ -45,14 +59,6 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 	@Override
 	public void setCancelled(boolean value) {
 		cancelled = value;
-	}
-
-	public Block getBlock() {
-		return block;
-	}
-
-	public List<ItemStack> getDrops() {
-		return drops;
 	}
 
 	@Override

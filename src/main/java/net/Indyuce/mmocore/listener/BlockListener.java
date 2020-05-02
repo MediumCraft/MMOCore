@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
+import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
@@ -28,7 +30,7 @@ public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void a(BlockBreakEvent event) {
+	public void onCustomBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
@@ -123,12 +125,12 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void b(BlockPlaceEvent event) {
+	public void registerPlayerPlacedBlocksTag(BlockPlaceEvent event) {
 		event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 	}
 
 	@EventHandler
-	public void c1(BlockPistonExtendEvent event) {
+	public void blockPistonExtend(BlockPistonExtendEvent event) {
 		Block movedBlock = event.getBlock();
 		if (!movedBlock.hasMetadata("player_placed"))
 			return;
@@ -143,7 +145,7 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler
-	public void c2(BlockPistonRetractEvent event) {
+	public void blockPistonRetract(BlockPistonRetractEvent event) {
 		BlockFace direction = event.getDirection();
 		Block movedBlock = event.getBlock().getRelative(direction);
 		movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
@@ -152,6 +154,12 @@ public class BlockListener implements Listener {
 			movedBlock = block.getRelative(direction);
 			movedBlock.setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void handlePlayerStatistics(CustomBlockMineEvent event) {
+		if (event.getBlockInfo().getBlock() instanceof VanillaBlockType)
+			event.getPlayer().incrementStatistic(Statistic.MINE_BLOCK, ((VanillaBlockType) event.getBlockInfo().getBlock()).getType());
 	}
 
 	private Location getSafeDropLocation(Block block, boolean self) {
