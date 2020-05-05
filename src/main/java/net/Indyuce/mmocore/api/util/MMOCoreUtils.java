@@ -19,7 +19,6 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.version.VersionMaterial;
@@ -153,7 +152,7 @@ public class MMOCoreUtils {
 	public static boolean canTarget(PlayerData player, Entity target) {
 
 		// basic checks
-		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead() || MMOCore.plugin.entities.findCustom(target))
+		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead() || MMOLib.plugin.getEntities().findCustom(target))
 			return false;
 
 		// party check

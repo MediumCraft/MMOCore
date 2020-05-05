@@ -32,10 +32,8 @@ import net.Indyuce.mmocore.command.QuestsCommand;
 import net.Indyuce.mmocore.command.SkillsCommand;
 import net.Indyuce.mmocore.command.WaypointsCommand;
 import net.Indyuce.mmocore.command.WithdrawCommand;
-import net.Indyuce.mmocore.comp.ShopKeepersEntityHandler;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
-import net.Indyuce.mmocore.comp.entity.MyPetEntityHandler;
 import net.Indyuce.mmocore.comp.holograms.CMIPlugin;
 import net.Indyuce.mmocore.comp.holograms.HologramSupport;
 import net.Indyuce.mmocore.comp.holograms.HologramsPlugin;
@@ -72,7 +70,6 @@ import net.Indyuce.mmocore.manager.ConfigItemManager;
 import net.Indyuce.mmocore.manager.ConfigManager;
 import net.Indyuce.mmocore.manager.CustomBlockManager;
 import net.Indyuce.mmocore.manager.DropTableManager;
-import net.Indyuce.mmocore.manager.EntityManager;
 import net.Indyuce.mmocore.manager.ExperienceManager;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.LootChestManager;
@@ -119,7 +116,6 @@ public class MMOCore extends JavaPlugin {
 	public final PartyManager partyManager = new PartyManager();
 	public final QuestManager questManager = new QuestManager();
 	public final ProfessionManager professionManager = new ProfessionManager();
-	public final EntityManager entities = new EntityManager();
 	public final ExperienceManager experience = new ExperienceManager();
 	public final LootChestManager lootChests = new LootChestManager();
 
@@ -190,19 +186,9 @@ public class MMOCore extends JavaPlugin {
 			getLogger().log(Level.INFO, "Hooked onto Holograms");
 		}
 
-		if (Bukkit.getPluginManager().getPlugin("ShopKeepers") != null) {
-			entities.registerHandler(new ShopKeepersEntityHandler());
-			getLogger().log(Level.INFO, "Hooked onto ShopKeepers");
-		}
-
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
 			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
 			MMOCore.plugin.getLogger().log(Level.INFO, "Hooked onto MythicMobs");
-		}
-
-		if (Bukkit.getPluginManager().getPlugin("MyPet") != null) {
-			entities.registerHandler(new MyPetEntityHandler());
-			getLogger().log(Level.INFO, "Hooked onto MyPet");
 		}
 
 		/*
