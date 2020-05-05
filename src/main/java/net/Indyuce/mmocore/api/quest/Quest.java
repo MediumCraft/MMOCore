@@ -73,11 +73,7 @@ public class Quest extends PostLoadObject {
 	protected void whenPostLoaded(ConfigurationSection config) {
 		if (config.contains("parent"))
 			for (String parent : config.getStringList("parent"))
-				try {
-					parents.add(MMOCore.plugin.questManager.getOrThrow(parent));
-				} catch (NullPointerException exception) {
-					MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't find quest ID '" + parent + "'");
-				}
+				parents.add(MMOCore.plugin.questManager.getOrThrow(parent.toLowerCase().replace(" ", "-").replace("_", "-")));
 	}
 
 	public String getId() {
