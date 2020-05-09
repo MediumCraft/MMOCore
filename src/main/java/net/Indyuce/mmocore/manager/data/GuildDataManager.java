@@ -55,6 +55,7 @@ public abstract class GuildDataManager {
 		return guilds.values();
 	}
 
+	@Deprecated
 	public void reload() {
 		for (Guild guild : guilds.values())
 			save(guild);
@@ -75,9 +76,7 @@ public abstract class GuildDataManager {
 	private GuildConfiguration config;
 
 	public GuildConfiguration getConfig() {
-		if (config == null)
-			config = new GuildConfiguration();
-		return config;
+		return config == null ? config = new GuildConfiguration() : config;
 	}
 
 	public class GuildConfiguration {

@@ -282,6 +282,11 @@ public class MMOCore extends JavaPlugin {
 		 */
 		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player));
 
+		/*
+		 * load guild data after loading player data
+		 */
+		dataProvider.getGuildManager().load();
+
 		// commands
 		try {
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
