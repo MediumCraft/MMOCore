@@ -19,6 +19,7 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 public class Profession extends PostLoadObject {
 	private final String id, name;
 	private final ExpCurve expCurve;
+	private final int maxLevel;
 
 	/*
 	 * experience given to the main player level whenever he levels up this
@@ -37,6 +38,10 @@ public class Profession extends PostLoadObject {
 				? MMOCore.plugin.experience.getOrThrow(config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
 				: ExpCurve.DEFAULT;
 		experience = new LinearValue(config.getConfigurationSection("experience"));
+
+		maxLevel = config.contains("max-level")
+				? config.getInt("max-level")
+				: -1;
 
 		if (config.contains("exp-sources"))
 			for (String key : config.getStringList("exp-sources"))
@@ -117,6 +122,10 @@ public class Profession extends PostLoadObject {
 
 	public ExpCurve getExpCurve() {
 		return expCurve;
+	}
+
+	public int getMaxLevel() {
+		return maxLevel;
 	}
 
 	public int calculateExperience(int x) {

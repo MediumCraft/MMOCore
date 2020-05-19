@@ -113,7 +113,16 @@ public class PlayerProfessions {
 		giveExperience(profession, value, null);
 	}
 
+	public boolean hasReachedMaxLevel(Profession profession) {
+		return profession.getMaxLevel() > 0 && getLevel(profession) >= profession.getMaxLevel();
+	}
+
 	public void giveExperience(Profession profession, int value, Location loc) {
+		if(hasReachedMaxLevel(profession)) {
+			setExperience(profession, 0);
+			return;
+		}
+
 		value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
 
@@ -124,8 +133,19 @@ public class PlayerProfessions {
 						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
 
 		int needed, exp, level, oldLevel = getLevel(profession);
+
+		/*
+		 * loop for exp overload when leveling up,
+		 * will continue looping until exp is 0 or max level has been reached
+		 */
 		boolean check = false;
 		while ((exp = this.exp.get(profession.getId())) >= (needed = profession.getExpCurve().getExperience((level = getLevel(profession)) + 1))) {
+			if (hasReachedMaxLevel(profession)) {
+				setExperience(profession, 0);
+				check = true;
+				break;
+			}
+
 			this.exp.put(profession.getId(), exp - needed);
 			this.level.put(profession.getId(), level + 1);
 			check = true;
@@ -135,7 +155,7 @@ public class PlayerProfessions {
 		if (check) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
 			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
-			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level + 1), "profession", profession.getName())
+			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level), "profession", profession.getName())
 					.send(playerData.getPlayer());
 			playerData.getPlayer().playSound(playerData.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
 			playerData.getStats().updateStats();
