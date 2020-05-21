@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,11 +15,10 @@ import net.Indyuce.mmocore.api.quest.Quest;
 
 public class QuestManager extends MMOManager {
 	private final Map<String, Quest> quests = new LinkedHashMap<>();
-
+	
 	public void load(File file) {
 		if (file.isDirectory())
-			for (File subfile : file.listFiles())
-				load(subfile);
+			Arrays.asList(file.listFiles()).stream().sorted().forEach(subfile -> load(subfile));
 		else
 			try {
 				register(new Quest(file.getName().substring(0, file.getName().length() - 4), YamlConfiguration.loadConfiguration(file)));

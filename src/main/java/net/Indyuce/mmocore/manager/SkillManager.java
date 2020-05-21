@@ -33,11 +33,14 @@ public class SkillManager {
 
 		if (skills.isEmpty())
 			try {
+				JarFile jarFile = new JarFile(MMOCore.plugin.getJarFile());
 				JarEntry entry;
-				for (Enumeration<JarEntry> en = new JarFile(MMOCore.plugin.getJarFile()).entries(); en.hasMoreElements();)
-					if ((entry = en.nextElement()).getName().startsWith("net/Indyuce/mmocore/skill/") && !entry.isDirectory()
-							&& !entry.getName().contains("$"))
-						register((Skill) Class.forName(entry.getName().replace("/", ".").replace(".class", "")).newInstance());
+				for (Enumeration<JarEntry> en = jarFile.entries(); en.hasMoreElements();)
+					if ((entry = en.nextElement()).getName().startsWith("net/Indyuce/mmocore/skill/")
+							&& !entry.isDirectory() && !entry.getName().contains("$"))
+						register((Skill) Class.forName(entry.getName().replace("/", ".").replace(".class", ""))
+								.newInstance());
+				jarFile.close();
 			} catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException exception) {
 				exception.printStackTrace();
 				MMOCore.log(Level.WARNING, "Could not load skills! Careful with player data :(");

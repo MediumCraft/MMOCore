@@ -35,21 +35,21 @@ public class Profession extends PostLoadObject {
 		Validate.notNull(name, "Could not load name");
 
 		expCurve = config.contains("exp-curve")
-				? MMOCore.plugin.experience.getOrThrow(config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
+				? MMOCore.plugin.experience.getOrThrow(
+						config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
 				: ExpCurve.DEFAULT;
 		experience = new LinearValue(config.getConfigurationSection("experience"));
 
-		maxLevel = config.contains("max-level")
-				? config.getInt("max-level")
-				: -1;
+		maxLevel = config.getInt("max-level");
 
 		if (config.contains("exp-sources"))
 			for (String key : config.getStringList("exp-sources"))
 				try {
-					MMOCore.plugin.professionManager.registerExpSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
+					MMOCore.plugin.professionManager.registerExpSource(
+							MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.plugin.getLogger().log(Level.WARNING,
-							"Could not register exp source '" + key + "' from profession '" + id + "': " + exception.getMessage());
+					MMOCore.plugin.getLogger().log(Level.WARNING, "Could not register exp source '" + key
+							+ "' from profession '" + id + "': " + exception.getMessage());
 				}
 	}
 
@@ -68,14 +68,16 @@ public class Profession extends PostLoadObject {
 		if (config.contains("alchemy-experience")) {
 
 			MMOCore.plugin.alchemyManager.splash = 1 + config.getDouble("alchemy-experience.special.splash") / 100;
-			MMOCore.plugin.alchemyManager.lingering = 1 + config.getDouble("alchemy-experience.special.lingering") / 100;
+			MMOCore.plugin.alchemyManager.lingering = 1
+					+ config.getDouble("alchemy-experience.special.lingering") / 100;
 			MMOCore.plugin.alchemyManager.extend = 1 + config.getDouble("alchemy-experience.special.extend") / 100;
 			MMOCore.plugin.alchemyManager.upgrade = 1 + config.getDouble("alchemy-experience.special.upgrade") / 100;
 
 			for (String key : config.getConfigurationSection("alchemy-experience.effects").getKeys(false))
 				try {
 					PotionType type = PotionType.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
-					MMOCore.plugin.alchemyManager.registerBaseExperience(type, config.getDouble("alchemy-experience.effects." + key));
+					MMOCore.plugin.alchemyManager.registerBaseExperience(type,
+							config.getDouble("alchemy-experience.effects." + key));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read potion type from " + key);
 				}
@@ -84,8 +86,10 @@ public class Profession extends PostLoadObject {
 		if (config.contains("base-enchant-exp"))
 			for (String key : config.getConfigurationSection("base-enchant-exp").getKeys(false))
 				try {
-					Enchantment enchant = MMOLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
-					MMOCore.plugin.enchantManager.registerBaseExperience(enchant, config.getDouble("base-enchant-exp." + key));
+					Enchantment enchant = MMOLib.plugin.getVersion().getWrapper()
+							.getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
+					MMOCore.plugin.enchantManager.registerBaseExperience(enchant,
+							config.getDouble("base-enchant-exp." + key));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read enchant from " + key);
 				}
@@ -94,7 +98,8 @@ public class Profession extends PostLoadObject {
 			for (String key : config.getConfigurationSection("repair-exp").getKeys(false))
 				try {
 					Material material = Material.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
-					MMOCore.plugin.smithingManager.registerBaseExperience(material, config.getDouble("repair-exp." + key));
+					MMOCore.plugin.smithingManager.registerBaseExperience(material,
+							config.getDouble("repair-exp." + key));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read material from " + key);
 				}
@@ -126,6 +131,10 @@ public class Profession extends PostLoadObject {
 
 	public int getMaxLevel() {
 		return maxLevel;
+	}
+
+	public boolean hasMaxLevel() {
+		return maxLevel > 0;
 	}
 
 	public int calculateExperience(int x) {

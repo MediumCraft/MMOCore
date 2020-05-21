@@ -114,7 +114,7 @@ public class PlayerProfessions {
 	}
 
 	public boolean hasReachedMaxLevel(Profession profession) {
-		return profession.getMaxLevel() > 0 && getLevel(profession) >= profession.getMaxLevel();
+		return profession.hasMaxLevel() && getLevel(profession) >= profession.getMaxLevel();
 	}
 
 	public void giveExperience(Profession profession, int value, Location loc) {
