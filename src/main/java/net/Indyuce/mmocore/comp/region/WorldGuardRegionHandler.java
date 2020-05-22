@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.comp.worldguard;
+package net.Indyuce.mmocore.comp.region;
 
 import java.util.ArrayList;
 import java.util.List;

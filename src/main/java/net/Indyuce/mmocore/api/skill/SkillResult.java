@@ -1,7 +1,9 @@
 package net.Indyuce.mmocore.api.skill;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.comp.flags.FlagPlugin.CustomFlag;
 
 public class SkillResult {
 	private final SkillInfo skill;
@@ -17,7 +19,11 @@ public class SkillResult {
 		cooldown = (skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0);
 		mana = (skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0);
 		cancelReason = !data.hasSkillUnlocked(skill) ? CancelReason.LOCKED
-				: cooldown > 0 ? CancelReason.COOLDOWN : mana > data.getMana() ? CancelReason.MANA : null;
+				: cooldown > 0 ? CancelReason.COOLDOWN
+						: mana > data.getMana() ? CancelReason.MANA
+								: !MMOCore.plugin.flagPlugin.isFlagAllowed(data.getPlayer(), CustomFlag.SKILLS)
+										? CancelReason.FLAG
+										: null;
 	}
 
 	public SkillResult(PlayerData data, SkillInfo skill, CancelReason reason) {
@@ -70,6 +76,9 @@ public class SkillResult {
 	}
 
 	public enum CancelReason {
+
+		// skill flag
+		FLAG,
 
 		// not enough mana
 		MANA,

@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.comp.worldguard;
+package net.Indyuce.mmocore.comp.region;
 
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.load.MMOLoader;

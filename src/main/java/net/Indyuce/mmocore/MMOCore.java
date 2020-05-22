@@ -34,6 +34,10 @@ import net.Indyuce.mmocore.command.WaypointsCommand;
 import net.Indyuce.mmocore.command.WithdrawCommand;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
+import net.Indyuce.mmocore.comp.flags.DefaultFlags;
+import net.Indyuce.mmocore.comp.flags.FlagPlugin;
+import net.Indyuce.mmocore.comp.flags.ResidenceFlags;
+import net.Indyuce.mmocore.comp.flags.WorldGuardFlags;
 import net.Indyuce.mmocore.comp.holograms.CMIPlugin;
 import net.Indyuce.mmocore.comp.holograms.HologramSupport;
 import net.Indyuce.mmocore.comp.holograms.HologramsPlugin;
@@ -43,12 +47,12 @@ import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderAPIParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderParser;
+import net.Indyuce.mmocore.comp.region.DefaultRegionHandler;
+import net.Indyuce.mmocore.comp.region.RegionHandler;
+import net.Indyuce.mmocore.comp.region.WorldGuardMMOLoader;
+import net.Indyuce.mmocore.comp.region.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
-import net.Indyuce.mmocore.comp.worldguard.DefaultRegionHandler;
-import net.Indyuce.mmocore.comp.worldguard.RegionHandler;
-import net.Indyuce.mmocore.comp.worldguard.WorldGuardMMOLoader;
-import net.Indyuce.mmocore.comp.worldguard.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.listener.BlockListener;
 import net.Indyuce.mmocore.listener.GoldPouchesListener;
 import net.Indyuce.mmocore.listener.GuildListener;
@@ -103,11 +107,12 @@ public class MMOCore extends JavaPlugin {
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public InventoryManager inventoryManager;
-	public RegionHandler regionHandler;
 	public PlayerActionBar actionBarManager;
-	public final SkillManager skillManager = new SkillManager();
+	public RegionHandler regionHandler = new DefaultRegionHandler();
+	public FlagPlugin flagPlugin = new DefaultFlags();
 	public PlaceholderParser placeholderParser = new DefaultParser();
 	public DataProvider dataProvider = new YAMLDataProvider();
+	public final SkillManager skillManager = new SkillManager();
 	public final ClassManager classManager = new ClassManager();
 	public final DropTableManager dropTableManager = new DropTableManager();
 	public final CustomBlockManager mineManager = new CustomBlockManager();
@@ -171,9 +176,12 @@ public class MMOCore extends JavaPlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
 			regionHandler = new WorldGuardRegionHandler();
+			flagPlugin = new WorldGuardFlags();
 			getLogger().log(Level.INFO, "Hooked onto WorldGuard");
-		} else
-			regionHandler = new DefaultRegionHandler();
+		} else if (Bukkit.getPluginManager().getPlugin("Residence") != null) {
+			flagPlugin = new ResidenceFlags();
+			getLogger().log(Level.INFO, "Hooked onto Residence");
+		}
 
 		if (Bukkit.getPluginManager().getPlugin("HolographicDisplays") != null) {
 			hologramSupport = new HolographicDisplaysPlugin();

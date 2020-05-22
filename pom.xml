@@ -92,6 +92,13 @@
         <scope>system</scope>
         <systemPath>${basedir}/lib/spigot.jar</systemPath>
       </dependency>
+		<dependency>
+			<groupId>com.bekvon.bukkit</groupId>
+			<artifactId>Residence</artifactId>
+			<version>4.8.7.2</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/Residence.jar</systemPath>
+		</dependency>
       <dependency>
         <groupId>com.Zrips</groupId>
         <artifactId>CMI</artifactId>
