@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.comp.flags;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,6 +14,8 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
+
+import net.Indyuce.mmocore.MMOCore;
 
 public class WorldGuardFlags implements FlagPlugin {
 	private final WorldGuard worldguard;
@@ -30,7 +33,11 @@ public class WorldGuardFlags implements FlagPlugin {
 			try {
 				registry.register(flag);
 				flags.put(customFlag.getPath(), flag);
+				MMOCore.log(Level.INFO, "[FLAGDEBUG] Registered WG Flag\n"
+						+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
 			} catch (Exception exception) {
+				MMOCore.log(Level.SEVERE, "[FLAGDEBUG] FAILED to register WG Flag\n"
+						+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
 				exception.printStackTrace();
 			}
 		}
@@ -48,8 +55,14 @@ public class WorldGuardFlags implements FlagPlugin {
 
 	@Override
 	public boolean isFlagAllowed(Player player, CustomFlag customFlag) {
+		StateFlag flag = flags.get(customFlag.getPath());
+		if(flag == null) MMOCore.log(Level.SEVERE, "[FLAGDEBUG] Found Null value WG Flag\n"
+					+ " - Info{path=" + customFlag.getPath() + "}");
+		else MMOCore.log(Level.INFO, "[FLAGDEBUG] Checking WG Flag\n"
+				+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
+		
 		return getApplicableRegion(player.getLocation()).queryValue(worldguardPlugin.wrapPlayer(player),
-				flags.get(customFlag.getPath())) != StateFlag.State.DENY;
+				flag) != StateFlag.State.DENY;
 	}
 
 	private ApplicableRegionSet getApplicableRegion(Location loc) {
