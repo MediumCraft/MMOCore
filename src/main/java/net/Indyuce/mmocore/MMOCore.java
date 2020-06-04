@@ -151,6 +151,13 @@ public class MMOCore extends JavaPlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			loadManager.registerLoader(new MythicMobsMMOLoader());
+		
+		/*
+		 *  WorldGuard closes the flag registry after 'onLoad()',
+		 *  so it must be registered here or it will throw an IllegalStateException
+		 */
+		if(Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
+			flagPlugin = new WorldGuardFlags();
 	}
 
 	public void onEnable() {
@@ -176,7 +183,6 @@ public class MMOCore extends JavaPlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
 			regionHandler = new WorldGuardRegionHandler();
-			flagPlugin = new WorldGuardFlags();
 			getLogger().log(Level.INFO, "Hooked onto WorldGuard");
 		} else if (Bukkit.getPluginManager().getPlugin("Residence") != null) {
 			flagPlugin = new ResidenceFlags();
@@ -256,8 +262,8 @@ public class MMOCore extends JavaPlugin {
 		/*
 		 * enable debug mode for extra debug tools.
 		 */
-		if (getConfig().getBoolean("debug"))
-			new DebugMode();
+		if (getConfig().contains("debug"))
+			new DebugMode(getConfig().getInt("debug", 0));
 
 		if (configManager.overrideVanillaExp = getConfig().getBoolean("override-vanilla-exp"))
 			Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), this);
@@ -414,8 +420,17 @@ public class MMOCore extends JavaPlugin {
 		log(Level.INFO, message);
 	}
 
+	public static void debug(int value, String message) {
+		debug(value, Level.INFO, message);
+	}
+
 	public static void log(Level level, String message) {
 		plugin.getLogger().log(level, message);
+	}
+
+	public static void debug(int value, Level level, String message) {
+		if(DebugMode.level > (value - 1))
+			plugin.getLogger().log(level, message);
 	}
 
 	public File getJarFile() {

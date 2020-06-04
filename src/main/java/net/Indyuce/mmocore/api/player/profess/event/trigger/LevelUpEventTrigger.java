@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.player.profess.event.trigger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -22,9 +23,11 @@ public class LevelUpEventTrigger implements EventTriggerHandler {
 
 		if(event.hasProfession()) {
 			String prof = event.getProfession().getId().toLowerCase();
+			MMOCore.debug(2, "[DEBUG] Looking for triggers: level-up-" + prof);
 			processTrigger(player, profess, "level-up-" + prof);
 			processTrigger(player, profess, "level-up-" + prof + "-" + event.getNewLevel());
 		} else {
+			MMOCore.debug(2, "[DEBUG] Normal level up trigger.");
 			processTrigger(player, profess, "level-up");
 			processTrigger(player, profess, "level-up-" + event.getNewLevel());
 			if(profess.getMaxLevel() == event.getNewLevel())

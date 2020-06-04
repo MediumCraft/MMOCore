@@ -33,10 +33,10 @@ public class WorldGuardFlags implements FlagPlugin {
 			try {
 				registry.register(flag);
 				flags.put(customFlag.getPath(), flag);
-				MMOCore.log(Level.INFO, "[FLAGDEBUG] Registered WG Flag\n"
+				MMOCore.debug(1, "[FLAGDEBUG] Registered WG Flag\n"
 						+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
 			} catch (Exception exception) {
-				MMOCore.log(Level.SEVERE, "[FLAGDEBUG] FAILED to register WG Flag\n"
+				MMOCore.debug(1, Level.SEVERE, "[FLAGDEBUG] FAILED to register WG Flag\n"
 						+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
 				exception.printStackTrace();
 			}
@@ -55,14 +55,8 @@ public class WorldGuardFlags implements FlagPlugin {
 
 	@Override
 	public boolean isFlagAllowed(Player player, CustomFlag customFlag) {
-		StateFlag flag = flags.get(customFlag.getPath());
-		if(flag == null) MMOCore.log(Level.SEVERE, "[FLAGDEBUG] Found Null value WG Flag\n"
-					+ " - Info{path=" + customFlag.getPath() + "}");
-		else MMOCore.log(Level.INFO, "[FLAGDEBUG] Checking WG Flag\n"
-				+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
-		
 		return getApplicableRegion(player.getLocation()).queryValue(worldguardPlugin.wrapPlayer(player),
-				flag) != StateFlag.State.DENY;
+				flags.get(customFlag.getPath())) != StateFlag.State.DENY;
 	}
 
 	private ApplicableRegionSet getApplicableRegion(Location loc) {
