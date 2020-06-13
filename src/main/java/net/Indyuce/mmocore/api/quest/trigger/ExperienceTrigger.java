@@ -32,7 +32,7 @@ public class ExperienceTrigger extends Trigger {
 		if (profession == null)
 			player.giveExperience(amount.calculateInt(), EXPSource.QUEST);
 		else
-			player.getCollectionSkills().giveExperience(profession, amount.calculateInt());
+			player.getCollectionSkills().giveExperience(profession, amount.calculateInt(), EXPSource.QUEST);
 	}
 
 	/*

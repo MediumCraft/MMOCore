@@ -21,7 +21,7 @@ public class ExperienceCommandMap extends CommandMap {
 		super(parent, "exp");
 
 		addFloor(new ActionCommandMap(this, "set", (data, value) -> data.setExperience(value), (professions, profession, value) -> professions.setExperience(profession, value)));
-		addFloor(new ActionCommandMap(this, "give", (data, value) -> data.giveExperience(value, data.getPlayer().getLocation(), EXPSource.COMMAND), (professions, profession, value) -> professions.giveExperience(profession, value, professions.getPlayerData().getPlayer().getLocation())));
+		addFloor(new ActionCommandMap(this, "give", (data, value) -> data.giveExperience(value, data.getPlayer().getLocation(), EXPSource.COMMAND), (professions, profession, value) -> professions.giveExperience(profession, value, professions.getPlayerData().getPlayer().getLocation(), EXPSource.COMMAND)));
 	}
 
 	public class ActionCommandMap extends CommandEnd {

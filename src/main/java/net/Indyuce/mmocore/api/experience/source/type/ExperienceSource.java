@@ -47,7 +47,7 @@ public abstract class ExperienceSource<T> {
 
 	public void giveExperience(PlayerData player, int amount, Location location) {
 		if (hasProfession())
-			player.getCollectionSkills().giveExperience(profession, amount, location == null ? player.getPlayer().getLocation() : location);
+			player.getCollectionSkills().giveExperience(profession, amount, location == null ? player.getPlayer().getLocation() : location, EXPSource.SOURCE);
 		else
 			player.giveExperience(amount, location == null ? player.getPlayer().getLocation() : location, EXPSource.SOURCE);
 	}

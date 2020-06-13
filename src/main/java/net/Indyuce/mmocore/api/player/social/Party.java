@@ -54,6 +54,10 @@ public class Party {
 	}
 
 	public void removeMember(PlayerData data) {
+		removeMember(data, true);
+	}
+	
+	public void removeMember(PlayerData data, boolean notify) {
 		if (data.isOnline() && data.getPlayer().getOpenInventory() != null
 				&& data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
 			InventoryManager.PARTY_CREATION.newInventory(data).open();
@@ -72,7 +76,7 @@ public class Party {
 		// transfer ownership
 		if (owner.equals(data)) {
 			owner = members.get(0);
-			MMOCore.plugin.configManager.getSimpleMessage("transfer-party-ownership").send(owner.getPlayer());
+			if(notify) MMOCore.plugin.configManager.getSimpleMessage("transfer-party-ownership").send(owner.getPlayer());
 		}
 	}
 
