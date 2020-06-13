@@ -7,6 +7,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
@@ -30,6 +31,9 @@ public class ClassCommand extends BukkitCommand {
 		}
 
 		PlayerData data = PlayerData.get(player);
+		MMOCommandEvent event = new MMOCommandEvent(data, "class");
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if(event.isCancelled()) return true;
 		if (data.getProfess().getSubclasses().stream().filter(sub -> sub.getLevel() <= data.getLevel()).count() > 0)
 			InventoryManager.SUBCLASS_SELECT.newInventory(data).open();
 		else

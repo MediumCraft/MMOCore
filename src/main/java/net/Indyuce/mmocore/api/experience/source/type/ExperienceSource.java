@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.api.experience.source.type;
 
 import org.bukkit.Location;
 
+import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -48,6 +49,6 @@ public abstract class ExperienceSource<T> {
 		if (hasProfession())
 			player.getCollectionSkills().giveExperience(profession, amount, location == null ? player.getPlayer().getLocation() : location);
 		else
-			player.giveExperience(amount, location == null ? player.getPlayer().getLocation() : location);
+			player.giveExperience(amount, location == null ? player.getPlayer().getLocation() : location, EXPSource.SOURCE);
 	}
 }
