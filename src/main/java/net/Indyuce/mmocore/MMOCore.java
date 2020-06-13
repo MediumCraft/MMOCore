@@ -301,7 +301,9 @@ public class MMOCore extends JavaPlugin {
 		 */
 		dataProvider.getGuildManager().load();
 
-		// commands
+		/*
+		 * commands
+		 */
 		try {
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 
