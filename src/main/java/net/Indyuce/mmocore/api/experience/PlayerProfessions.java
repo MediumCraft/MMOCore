@@ -126,19 +126,18 @@ public class PlayerProfessions {
 
 		value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 
-		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
-		Bukkit.getPluginManager().callEvent(event);
-		if (event.isCancelled())
-			return;
-		
-		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
-
 		// display hologram
 		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
 				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
 						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
 
+		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			return;
+		
+		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
 		int needed, exp, level, oldLevel = getLevel(profession);
 
 		/*
