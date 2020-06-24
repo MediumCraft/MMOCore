@@ -51,8 +51,19 @@ public class SmeltItemExperienceSource extends SpecificExperienceSource<ItemStac
 	}
 
 	private Optional<Player> getNearbyPlayer(Location loc, double d) {
-		double d2 = d * d;
-		return loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < d2).findAny();
+		final double d2 = d * d;
+		final Player[] nearby = loc.getWorld().getPlayers().stream()
+				.filter(player -> player.getLocation().distanceSquared(loc) < d2).toArray(Player[]::new);
+		Player selected = null;
+		double lastDist = d2;
+		for(Player p : nearby) {
+			double currDist = p.getLocation().distance(loc);
+			if(currDist < lastDist) {
+				lastDist = currDist;
+				selected = p;
+			}
+		}
+		return Optional.ofNullable(selected);
 	}
 
 	@Override
