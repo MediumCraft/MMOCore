@@ -20,6 +20,7 @@ import net.Indyuce.mmocore.api.util.input.AnvilGUI;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
+import net.asangarin.hexcolors.ColorParse;
 
 public class ConfigManager {
 
@@ -155,7 +156,7 @@ public class ConfigManager {
 		String format = messages.getString(key, "");
 		for (int j = 0; j < placeholders.length - 1; j += 2)
 			format = format.replace("{" + placeholders[j] + "}", placeholders[j + 1]);
-		return new SimpleMessage(ChatColor.translateAlternateColorCodes('&', format));
+		return new SimpleMessage(new ColorParse('&', format).toChatColor());
 	}
 
 	public class SimpleMessage {

@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
@@ -20,6 +19,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.asangarin.hexcolors.ColorParse;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
@@ -138,6 +138,6 @@ public class ConfigItem {
 		for (String placeholder : placeholders.keySet())
 			if (string.contains("{" + placeholder + "}"))
 				string = string.replace("{" + placeholder + "}", "" + placeholders.get(placeholder));
-		return ChatColor.translateAlternateColorCodes('&', string);
+		return new ColorParse('&', string).toChatColor();
 	}
 }

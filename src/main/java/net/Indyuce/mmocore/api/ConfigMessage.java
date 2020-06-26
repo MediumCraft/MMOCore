@@ -3,11 +3,11 @@ package net.Indyuce.mmocore.api;
 import java.util.Collection;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.asangarin.hexcolors.ColorParse;
 import net.mmogroup.mmolib.MMOLib;
 
 public class ConfigMessage {
@@ -31,14 +31,14 @@ public class ConfigMessage {
 	}
 
 	public void send(CommandSender sender) {
-		messages.forEach(line -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
+		messages.forEach(line -> sender.sendMessage(new ColorParse('&', line).toChatColor()));
 	}
 
 	public void send(Collection<? extends Player> players) {
-		players.forEach(player -> messages.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', MMOCore.plugin.placeholderParser.parse(player, line)))));
+		players.forEach(player -> messages.forEach(line -> player.sendMessage(new ColorParse('&', MMOCore.plugin.placeholderParser.parse(player, line)).toChatColor())));
 	}
 
 	public void sendAsJSon(Player player) {
-		messages.forEach(line -> MMOLib.plugin.getNMS().sendJson(player, ChatColor.translateAlternateColorCodes('&', line)));
+		messages.forEach(line -> MMOLib.plugin.getNMS().sendJson(player, new ColorParse('&', line).toChatColor()));
 	}
 }
