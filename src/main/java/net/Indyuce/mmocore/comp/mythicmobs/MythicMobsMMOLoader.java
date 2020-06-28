@@ -7,6 +7,8 @@ import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicFactionExperienceSource;
+import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicFactionObjective;
 import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobExperienceSource;
 import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobObjective;
 import net.Indyuce.mmocore.comp.mythicmobs.load.MythicMobSkillTrigger;
@@ -28,6 +30,8 @@ public class MythicMobsMMOLoader extends MMOLoader {
 
 		if (config.getKey().equalsIgnoreCase("killmythicmob"))
 			return new KillMythicMobObjective(section, config);
+		if (config.getKey().equalsIgnoreCase("killmythicfaction"))
+			return new KillMythicFactionObjective(section, config);
 
 		return null;
 	}
@@ -37,6 +41,8 @@ public class MythicMobsMMOLoader extends MMOLoader {
 
 		if (config.getKey().equalsIgnoreCase("killmythicmob"))
 			return new KillMythicMobExperienceSource(profession, config);
+		if (config.getKey().equalsIgnoreCase("killmythicfaction"))
+			return new KillMythicFactionExperienceSource(profession, config);
 
 		return null;
 	}
