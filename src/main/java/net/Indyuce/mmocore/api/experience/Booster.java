@@ -4,10 +4,14 @@ import java.util.UUID;
 
 public class Booster {
 	private final UUID uuid = UUID.randomUUID();
-	private final long date = System.currentTimeMillis(), length;
+	private final long date = System.currentTimeMillis();
 	private final Profession profession;
 	private final double extra;
 	private final String author;
+
+	// length not final because boosters can stack, this allows to reduce the
+	// amount of boosters
+	private long length;
 
 	public Booster(double extra, long length) {
 		this(null, null, extra, length);
@@ -40,6 +44,10 @@ public class Booster {
 		return length;
 	}
 
+	public void addLength(long length) {
+		this.length += length;
+	}
+
 	public boolean hasProfession() {
 		return profession != null;
 	}
@@ -66,5 +74,9 @@ public class Booster {
 
 	public String getAuthor() {
 		return author;
+	}
+
+	public boolean canStackWith(Booster booster) {
+		return extra == booster.extra && (profession != null ? profession.equals(booster.getProfession()) : booster.getProfession() == null);
 	}
 }
