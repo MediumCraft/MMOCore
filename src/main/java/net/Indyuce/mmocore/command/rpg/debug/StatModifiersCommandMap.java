@@ -44,7 +44,7 @@ public class StatModifiersCommandMap extends CommandEnd {
 		StatInstance instance = data.getStats().getInstance(stat);
 		sender.sendMessage("Stat Modifiers (" + instance.getKeys().size() + "):");
 		for (String key : instance.getKeys()) {
-			StatModifier mod = instance.getByKey(key);
+			StatModifier mod = instance.getAttribute(key);
 			sender.sendMessage("- " + key + ": " + mod.getValue() + " " + mod.getType().name());
 		}
 
