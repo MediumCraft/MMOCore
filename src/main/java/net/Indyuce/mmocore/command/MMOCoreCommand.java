@@ -54,6 +54,7 @@ public class MMOCoreCommand extends CommandRoot implements CommandExecutor, TabC
 
 		CommandParser reader = readCommand(args);
 		List<String> list = reader.readTabCompletion();
-		return args[args.length - 1].isEmpty() ? list : list.stream().filter(string -> string.toLowerCase().startsWith(args[args.length - 1].toLowerCase())).collect(Collectors.toList());
+		return args[args.length - 1].isEmpty() ? list
+				: list.stream().filter(string -> string.toLowerCase().startsWith(args[args.length - 1].toLowerCase())).collect(Collectors.toList());
 	}
 }
