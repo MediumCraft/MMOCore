@@ -70,6 +70,8 @@ public class PlayerListener implements Listener {
 		PlayerData playerData = PlayerData.get(event.getPlayer());
 		if (playerData.hasParty())
 			playerData.getParty().removeMember(playerData);
+
+		MMOCore.plugin.dataProvider.getDataManager().remove(playerData);
 	}
 
 	/*

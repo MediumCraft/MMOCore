@@ -231,4 +231,10 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			return lastLogin;
 		}
 	}
+
+	@Override
+	public void remove(PlayerData data) {
+		saveData(data);
+		remove(data.getUniqueId());
+	}
 }

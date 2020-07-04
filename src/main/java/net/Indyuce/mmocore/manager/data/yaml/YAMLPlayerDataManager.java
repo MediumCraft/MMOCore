@@ -127,4 +127,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 	public OfflinePlayerData getOffline(UUID uuid) {
 		return isLoaded(uuid) ? get(uuid) : new YAMLOfflinePlayerData(uuid);
 	}
+
+	@Override
+	public void remove(PlayerData data) {}
 }
