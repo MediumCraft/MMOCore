@@ -24,9 +24,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.experience.ExpCurve;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.PostLoadObject;
-import net.Indyuce.mmocore.api.player.ExpCurve;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;

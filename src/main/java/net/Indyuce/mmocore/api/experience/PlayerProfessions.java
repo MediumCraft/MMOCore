@@ -161,7 +161,7 @@ public class PlayerProfessions {
 		if (check) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
 			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
-			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level), "profession", profession.getName())
+			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + level, "profession", profession.getName())
 					.send(playerData.getPlayer());
 			playerData.getPlayer().playSound(playerData.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
 			playerData.getStats().updateStats();

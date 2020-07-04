@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.player;
+package net.Indyuce.mmocore.api.experience;
 
 import java.io.BufferedReader;
 import java.io.File;

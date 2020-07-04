@@ -393,6 +393,10 @@ public class MMOCore extends JavaPlugin {
 
 		// experience must be loaded before professions and classes
 		experience.reload();
+		
+		// drop tables must be loaded before professions
+		dropTableManager.clear();
+		dropTableManager.reload();
 
 		professionManager.clear();
 		professionManager.reload();
@@ -401,9 +405,6 @@ public class MMOCore extends JavaPlugin {
 		classManager.reload();
 
 		inventoryManager = new InventoryManager();
-
-		dropTableManager.clear();
-		dropTableManager.reload();
 
 		questManager.clear();
 		questManager.reload();

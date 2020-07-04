@@ -11,7 +11,6 @@ import org.bukkit.potion.PotionType;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.load.PostLoadObject;
-import net.Indyuce.mmocore.api.player.ExpCurve;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMOLineConfig;
