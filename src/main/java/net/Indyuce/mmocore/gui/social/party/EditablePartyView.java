@@ -65,10 +65,11 @@ public class EditablePartyView extends EditableInventory {
 			/*
 			 * run async to save performance
 			 */
-			if (meta instanceof SkullMeta) {
-				((SkullMeta) meta).setOwningPlayer(member.getPlayer());
-				disp.setItemMeta(meta);
-			}
+			if (meta instanceof SkullMeta)
+				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+					((SkullMeta) meta).setOwningPlayer(member.getPlayer());
+					disp.setItemMeta(meta);
+				});
 
 			return NBTItem.get(disp).addTag(new ItemTag("uuid", member.getUniqueId().toString())).toItem();
 		}
