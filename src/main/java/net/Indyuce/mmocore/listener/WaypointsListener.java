@@ -33,6 +33,7 @@ public class WaypointsListener implements Listener {
 			return;
 		}
 
+		player.setSneaking(false);
 		InventoryManager.WAYPOINTS.newInventory(data, waypoint).open();
 	}
 }

@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.quest.trigger;
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.experience.ExperienceInfo;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -29,9 +30,9 @@ public class ExperienceTrigger extends Trigger {
 	@Override
 	public void apply(PlayerData player) {
 		if (profession == null)
-			player.giveExperience(amount.calculateInt());
+			player.giveExperience(amount.calculateInt(), EXPSource.QUEST);
 		else
-			player.getCollectionSkills().giveExperience(profession, amount.calculateInt());
+			player.getCollectionSkills().giveExperience(profession, amount.calculateInt(), EXPSource.QUEST);
 	}
 
 	/*

@@ -24,6 +24,7 @@ import org.bukkit.util.Vector;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
+import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
@@ -176,7 +177,7 @@ public class FishingListener implements Listener {
 					location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (random.nextDouble() - .5), 2, 4 * (random.nextDouble() - .5), .05);
 
 				if (MMOCore.plugin.professionManager.has("fishing"))
-					playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, location);
+					playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, location, EXPSource.FISHING);
 			}
 		}
 	}

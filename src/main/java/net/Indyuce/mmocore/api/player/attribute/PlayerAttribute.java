@@ -2,15 +2,13 @@ package net.Indyuce.mmocore.api.player.attribute;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.asangarin.hexcolors.ColorParse;
 import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerAttribute {
@@ -18,8 +16,8 @@ public class PlayerAttribute {
 	private final int max;
 
 	/*
-	 * used to store stats using StatType, but attributes also need to access non
-	 * basic MMOCore stats hence the string maps keys
+	 * used to store stats using StatType, but attributes also need to access
+	 * non basic MMOCore stats hence the string maps keys
 	 */
 	private final Map<String, StatModifier> buffs = new HashMap<>();
 
@@ -38,8 +36,7 @@ public class PlayerAttribute {
 					String stat = key.toUpperCase().replace("-", "_").replace(" ", "_");
 					buffs.put(stat, new StatModifier(config.getString("buff." + key)));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING,
-							"Could not load buff '" + key + "' from attribute '" + id + "': " + exception.getMessage());
+					MMOCore.log(Level.WARNING, "Could not load buff '" + key + "' from attribute '" + id + "': " + exception.getMessage());
 				}
 	}
 
@@ -48,7 +45,7 @@ public class PlayerAttribute {
 	}
 
 	public String getName() {
-		return ChatColor.translateAlternateColorCodes('&', name);
+		return new ColorParse('&', name).toChatColor();
 	}
 
 	public boolean hasMax() {
@@ -59,7 +56,7 @@ public class PlayerAttribute {
 		return max;
 	}
 
-	public Set<Entry<String, StatModifier>> getBuffs() {
-		return buffs.entrySet();
+	public Map<String, StatModifier> getBuffs() {
+		return buffs;
 	}
 }

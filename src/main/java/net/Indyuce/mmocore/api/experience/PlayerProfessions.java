@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
@@ -102,29 +103,28 @@ public class PlayerProfessions {
 		exp.put(profession.getId(), value);
 	}
 
-	public void giveLevels(Profession profession, int value) {
+	public void giveLevels(Profession profession, int value, EXPSource source) {
 		int total = 0, level = getLevel(profession);
 		while (value-- > 0)
 			total += profession.getExpCurve().getExperience(level + value + 1);
-		giveExperience(profession, total);
+		giveExperience(profession, total, source);
 	}
 
-	public void giveExperience(Profession profession, int value) {
-		giveExperience(profession, value, null);
+	public void giveExperience(Profession profession, int value, EXPSource source) {
+		giveExperience(profession, value, null, source);
 	}
 
 	public boolean hasReachedMaxLevel(Profession profession) {
 		return profession.hasMaxLevel() && getLevel(profession) >= profession.getMaxLevel();
 	}
 
-	public void giveExperience(Profession profession, int value, Location loc) {
+	public void giveExperience(Profession profession, int value, Location loc, EXPSource source) {
 		if(hasReachedMaxLevel(profession)) {
 			setExperience(profession, 0);
 			return;
 		}
 
 		value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
-		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
 
 		// display hologram
 		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
@@ -132,6 +132,12 @@ public class PlayerProfessions {
 				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
 						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
 
+		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled())
+			return;
+		
+		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
 		int needed, exp, level, oldLevel = getLevel(profession);
 
 		/*
@@ -155,7 +161,7 @@ public class PlayerProfessions {
 		if (check) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
 			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
-			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + (level), "profession", profession.getName())
+			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + level, "profession", profession.getName())
 					.send(playerData.getPlayer());
 			playerData.getPlayer().playSound(playerData.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
 			playerData.getStats().updateStats();

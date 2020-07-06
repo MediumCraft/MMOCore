@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +23,7 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import net.asangarin.hexcolors.ColorParse;
 import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
 
@@ -68,7 +68,7 @@ public class ClassSelect extends EditableInventory {
 			ItemMeta meta = item.getItemMeta();
 			if (hideFlags())
 				meta.addItemFlags(ItemFlag.values());
-			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name).replace("{name}", profess.getName()));
+			meta.setDisplayName(new ColorParse('&', name).toChatColor().replace("{name}", profess.getName()));
 			List<String> lore = new ArrayList<>(this.lore);
 
 			int index = lore.indexOf("{lore}");

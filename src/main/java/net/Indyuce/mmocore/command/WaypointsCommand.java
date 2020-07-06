@@ -1,10 +1,12 @@
 package net.Indyuce.mmocore.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
@@ -18,8 +20,12 @@ public class WaypointsCommand extends BukkitCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-		if (sender instanceof Player && sender.hasPermission("mmocore.waypoints"))
-			InventoryManager.WAYPOINTS.newInventory(PlayerData.get((Player) sender)).open();
+		if (sender instanceof Player && sender.hasPermission("mmocore.waypoints")) {
+			PlayerData data = PlayerData.get((Player) sender);
+			MMOCommandEvent event = new MMOCommandEvent(data, "waypoints");
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			if(!event.isCancelled()) InventoryManager.WAYPOINTS.newInventory(data).open();
+		}
 		return true;
 	}
 }

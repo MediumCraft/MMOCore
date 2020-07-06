@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.command.api.CommandEnd;
@@ -20,7 +21,7 @@ public class LevelCommandMap extends CommandMap {
 		super(parent, "level");
 
 		addFloor(new ActionCommandMap(this, "set", (data, value) -> data.setLevel(value), (professions, profession, value) -> professions.setLevel(profession, value)));
-		addFloor(new ActionCommandMap(this, "give", (data, value) -> data.giveLevels(value), (professions, profession, value) -> professions.giveLevels(profession, value)));
+		addFloor(new ActionCommandMap(this, "give", (data, value) -> data.giveLevels(value, EXPSource.COMMAND), (professions, profession, value) -> professions.giveLevels(profession, value, EXPSource.COMMAND)));
 	}
 
 	public class ActionCommandMap extends CommandEnd {

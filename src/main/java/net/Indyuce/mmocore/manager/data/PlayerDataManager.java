@@ -25,6 +25,10 @@ public abstract class PlayerDataManager {
 		return map.getOrDefault(uuid, PlayerData.NOT_LOADED);
 	}
 
+	public void remove(UUID uuid) {
+		map.remove(uuid);
+	}
+	
 	public abstract OfflinePlayerData getOffline(UUID uuid);
 
 	public void setup(Player player) {
@@ -54,7 +58,7 @@ public abstract class PlayerDataManager {
 	public boolean isLoaded(UUID uuid) {
 		return map.containsKey(uuid);
 	}
-
+	
 	public Collection<PlayerData> getLoaded() {
 		return map.values();
 	}
@@ -62,4 +66,6 @@ public abstract class PlayerDataManager {
 	public abstract void loadData(PlayerData data);
 
 	public abstract void saveData(PlayerData data);
+	
+	public abstract void remove(PlayerData data);
 }

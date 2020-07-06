@@ -1,9 +1,10 @@
 package net.Indyuce.mmocore.api.player.profess.resource;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
+import net.asangarin.hexcolors.ColorParse;
+import net.md_5.bungee.api.ChatColor;
 import net.mmogroup.mmolib.api.util.AltChar;
 
 public class ManaDisplayOptions {
@@ -21,15 +22,15 @@ public class ManaDisplayOptions {
 		Validate.notNull(name, "Could not load mana name");
 
 		Validate.notNull(config.getConfigurationSection("color"), "Could not find mana color config");
-		full = ChatColor.valueOf(config.getString("color.full", "NO_INPUT").toUpperCase().replace("-", "_").replace(" ", "_"));
-		half = ChatColor.valueOf(config.getString("color.half", "NO_INPUT").toUpperCase().replace("-", "_").replace(" ", "_"));
-		empty = ChatColor.valueOf(config.getString("color.empty", "NO_INPUT").toUpperCase().replace("-", "_").replace(" ", "_"));
+		full = ColorParse.getColor(config.getString("color.full", "NO_INPUT"));
+		half = ColorParse.getColor(config.getString("color.half", "NO_INPUT"));
+		empty = ColorParse.getColor(config.getString("color.empty", "NO_INPUT"));
 
 		String format = config.getString("char", "");
 		Validate.notEmpty(format, "Could not load mana bar character");
 		barCharacter = format.charAt(0);
 
-		icon = ChatColor.translateAlternateColorCodes('&', config.getString("icon", ""));
+		icon = new ColorParse('&', config.getString("icon", "")).toChatColor();
 		Validate.notEmpty(format, "Could not load mana action bar icon");
 	}
 

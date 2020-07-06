@@ -1,11 +1,13 @@
 package net.Indyuce.mmocore.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
@@ -24,7 +26,10 @@ public class AttributesCommand extends BukkitCommand {
 			return true;
 		}
 
-		InventoryManager.ATTRIBUTE_VIEW.newInventory(PlayerData.get((Player) sender)).open();
+		PlayerData data = PlayerData.get((Player) sender);
+		MMOCommandEvent event = new MMOCommandEvent(data, "attributes");
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if(!event.isCancelled()) InventoryManager.ATTRIBUTE_VIEW.newInventory(data).open();
 		return true;
 	}
 }

@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.event;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
@@ -11,19 +12,21 @@ public class PlayerExperienceGainEvent extends PlayerDataEvent implements Cancel
 
 	// if null, this is main experience
 	private final Profession profession;
+	private final EXPSource source;
 
 	private int experience;
 	private boolean cancelled;
 
-	public PlayerExperienceGainEvent(PlayerData player, int experience) {
-		this(player, null, experience);
+	public PlayerExperienceGainEvent(PlayerData player, int experience, EXPSource source) {
+		this(player, null, experience, source);
 	}
 
-	public PlayerExperienceGainEvent(PlayerData player, Profession profession, int experience) {
+	public PlayerExperienceGainEvent(PlayerData player, Profession profession, int experience, EXPSource source) {
 		super(player);
 
 		this.profession = profession;
 		this.experience = experience;
+		this.source = source;
 	}
 
 	public int getExperience() {
@@ -52,6 +55,10 @@ public class PlayerExperienceGainEvent extends PlayerDataEvent implements Cancel
 		return profession;
 	}
 
+	public EXPSource getSource() {
+		return source;
+	}
+	
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;

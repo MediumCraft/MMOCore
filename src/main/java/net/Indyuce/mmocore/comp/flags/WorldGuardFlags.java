@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.comp.flags;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,6 +14,8 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
+
+import net.Indyuce.mmocore.MMOCore;
 
 public class WorldGuardFlags implements FlagPlugin {
 	private final WorldGuard worldguard;
@@ -30,7 +33,11 @@ public class WorldGuardFlags implements FlagPlugin {
 			try {
 				registry.register(flag);
 				flags.put(customFlag.getPath(), flag);
+				MMOCore.debug(1, "[FLAGDEBUG] Registered WG Flag\n"
+						+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
 			} catch (Exception exception) {
+				MMOCore.debug(1, Level.SEVERE, "[FLAGDEBUG] FAILED to register WG Flag\n"
+						+ " - Info{name=" + flag.getName() + ",path=" + customFlag.getPath() + "}");
 				exception.printStackTrace();
 			}
 		}

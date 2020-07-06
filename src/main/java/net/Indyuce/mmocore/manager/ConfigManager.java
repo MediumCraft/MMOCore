@@ -20,6 +20,7 @@ import net.Indyuce.mmocore.api.util.input.AnvilGUI;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
+import net.asangarin.hexcolors.ColorParse;
 
 public class ConfigManager {
 
@@ -155,28 +156,32 @@ public class ConfigManager {
 		String format = messages.getString(key, "");
 		for (int j = 0; j < placeholders.length - 1; j += 2)
 			format = format.replace("{" + placeholders[j] + "}", placeholders[j + 1]);
-		return new SimpleMessage(ChatColor.translateAlternateColorCodes('&', format));
+		return new SimpleMessage(new ColorParse('&', format).toChatColor());
 	}
 
 	public class SimpleMessage {
 		private final String message;
+		private final boolean actionbar;
+		private final boolean hasPlaceholders;
 
 		public SimpleMessage(String message) {
-			this.message = message;
+			this.actionbar = message.startsWith("%");
+			this.message = actionbar ? message.substring(1) : message;
+			this.hasPlaceholders = this.message.contains("%");
 		}
 
 		public String message() {
-			return message.startsWith("%") ? message.substring(1) : message;
+			return message;
 		}
 
 		public boolean send(Player player) {
-			if (!message.isEmpty()) {
-				if (message.startsWith("%"))
-					PlayerData.get(player.getUniqueId()).displayActionBar(message.substring(1));
-				else
-					player.sendMessage(message);
+			String msg = hasPlaceholders ? MMOCore.plugin.placeholderParser.parse(player, message) : message;
+			
+			if (!msg.isEmpty()) {
+				if (actionbar) PlayerData.get(player.getUniqueId()).displayActionBar(msg);
+				else player.sendMessage(msg);
 			}
-			return !message.isEmpty();
+			return !msg.isEmpty();
 		}
 	}
 }

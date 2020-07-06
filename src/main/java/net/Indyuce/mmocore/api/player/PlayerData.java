@@ -29,6 +29,7 @@ import net.Indyuce.mmocore.api.event.PlayerCastSkillEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
+import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
@@ -245,11 +246,11 @@ public class PlayerData extends OfflinePlayerData {
 		getStats().updateStats();
 	}
 
-	public void giveLevels(int value) {
+	public void giveLevels(int value, EXPSource source) {
 		int total = 0;
 		while (value-- > 0)
 			total += getProfess().getExpCurve().getExperience(getLevel() + value + 1);
-		giveExperience(total);
+		giveExperience(total, source);
 	}
 
 	public void setExperience(int value) {
@@ -422,11 +423,11 @@ public class PlayerData extends OfflinePlayerData {
 		return getProfess().getMaxLevel() > 0 && getLevel() >= getProfess().getMaxLevel();
 	}
 
-	public void giveExperience(int value) {
-		giveExperience(value, null);
+	public void giveExperience(int value, EXPSource source) {
+		giveExperience(value, null, source);
 	}
 
-	public void giveExperience(int value, Location loc) {
+	public void giveExperience(int value, Location loc, EXPSource source) {
 		if (hasReachedMaxLevel()) {
 			setExperience(0);
 			return;
@@ -441,7 +442,7 @@ public class PlayerData extends OfflinePlayerData {
 		value = MMOCore.plugin.boosterManager.calculateExp(null, value);
 		value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
 
-		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value);
+		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
