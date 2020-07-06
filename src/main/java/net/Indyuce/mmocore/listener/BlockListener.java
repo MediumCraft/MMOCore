@@ -46,7 +46,7 @@ public class BlockListener implements Listener {
 			return;
 
 		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
-		if (info == null) {
+		if (info == null || !info.getBlock().breakRestrictions(block)) {
 			event.setCancelled(true);
 			return;
 		}

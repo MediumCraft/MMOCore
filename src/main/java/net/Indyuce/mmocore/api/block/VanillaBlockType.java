@@ -14,8 +14,8 @@ public class VanillaBlockType implements BlockType {
 	private final Material type;
 
 	/*
-	 * allows to plant back crops with a custom age so that it does not always
-	 * have to full grow again
+	 * allows to plant back crops with a custom age so that it does not always have
+	 * to full grow again
 	 */
 	private final int age;
 
@@ -51,5 +51,11 @@ public class VanillaBlockType implements BlockType {
 	@Override
 	public String generateKey() {
 		return "vanilla-block-" + type.name();
+	}
+
+	@Override
+	public boolean breakRestrictions(Block block) {
+		return age == 0
+				|| (block.getBlockData() instanceof Ageable && ((Ageable) block.getBlockData()).getAge() >= age);
 	}
 }

@@ -41,4 +41,9 @@ public class SkullBlockType implements BlockType {
 	public String generateKey() {
 		return "vanilla-skull-" + value;
 	}
+	
+	@Override
+	public boolean breakRestrictions(Block block) {
+		return true;
+	}
 }
