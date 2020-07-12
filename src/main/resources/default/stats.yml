@@ -9,7 +9,7 @@ default:
         base: 20
         per-level: 0
     MOVEMENT_SPEED:
-        base: .2
+        base: .1
         per-level: 0
     ARMOR:
         base: 0

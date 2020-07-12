@@ -61,13 +61,11 @@ public class PlayerStats {
 		map.getInstances().forEach(ins -> ins.removeIf(key -> key.equals("mmocoreClass")));
 
 		for (StatType stat : StatType.values()) {
-			double base = getBase(stat);
-			if (base == 0)
-				continue;
-
 			StatInstance instance = map.getInstance(stat.name());
-			if ((base -= instance.getVanilla()) != 0)
-				instance.addModifier("mmocoreClass", new StatModifier(base));
+			double total = getBase(stat) - instance.getVanilla();
+
+			if (total != 0)
+				instance.addModifier("mmocoreClass", new StatModifier(total));
 		}
 
 		map.updateAll();

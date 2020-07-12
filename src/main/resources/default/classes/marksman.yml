@@ -84,7 +84,7 @@ attributes:
         base: 18
         per-level: 0
     movement-speed:
-        base: .21
+        base: .105
         per-level: 0
 
 # Experience sources for main class experience.
