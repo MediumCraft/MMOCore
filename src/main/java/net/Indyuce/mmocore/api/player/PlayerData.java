@@ -88,7 +88,7 @@ public class PlayerData extends OfflinePlayerData {
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
 	private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
 
-	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut;
+	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut, lastLootChest;
 
 	/*
 	 * NON-FINAL player data stuff made public to facilitate field change
@@ -323,6 +323,19 @@ public class PlayerData extends OfflinePlayerData {
 
 	public long getWaypointCooldown() {
 		return Math.max(0, lastWaypoint + 5000 - System.currentTimeMillis());
+	}
+
+	/*
+	 * handles the per-player loot chest cooldown. that is to reduce the risk of
+	 * spawning multiple chests in a row around the same player which could
+	 * break the gameplay
+	 */
+	public boolean canSpawnLootChest() {
+		return lastLootChest + MMOCore.plugin.configManager.lootChestPlayerCooldown < System.currentTimeMillis();
+	}
+
+	public void applyLootChestCooldown() {
+		lastLootChest = System.currentTimeMillis();
 	}
 
 	public void heal(double heal) {
@@ -723,7 +736,7 @@ public class PlayerData extends OfflinePlayerData {
 			if (!skill.getSkill().isPassive()) {
 				if (cast.getCancelReason() == CancelReason.LOCKED)
 					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
-				
+
 				if (cast.getCancelReason() == CancelReason.MANA)
 					MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(player);
 

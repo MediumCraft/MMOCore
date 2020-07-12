@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.loot;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
@@ -109,6 +110,7 @@ public class LootChestRegion {
 	}
 
 	// TODO improve
+	// TODO stat to increase chance to get higher tiers?
 	public ChestTier rollTier() {
 
 		double s = 0;
@@ -116,7 +118,6 @@ public class LootChestRegion {
 			if (random.nextDouble() < tier.chance / (1 - s))
 				return tier;
 			s += tier.chance;
-
 		}
 
 		return tiers.stream().findAny().get();
@@ -165,5 +166,22 @@ public class LootChestRegion {
 
 	private boolean isSuitable(Location loc) {
 		return !loc.getBlock().getType().isSolid() && loc.clone().add(0, -1, 0).getBlock().getType().isSolid();
+	}
+
+	public class LootChestRunnable extends BukkitRunnable {
+		private final LootChestRegion region;
+
+		public LootChestRunnable(LootChestRegion region) {
+			this.region = region;
+
+			runTaskTimer(MMOCore.plugin, region.getChestSpawnPeriod() * 20, region.getChestSpawnPeriod() * 20);
+		}
+
+		@Override
+		public void run() {
+			Optional<PlayerData> found = region.getBounds().getPlayers().filter(data -> data.canSpawnLootChest()).findAny();
+			if (found.isPresent())
+				region.spawnChest(found.get());
+		}
 	}
 }

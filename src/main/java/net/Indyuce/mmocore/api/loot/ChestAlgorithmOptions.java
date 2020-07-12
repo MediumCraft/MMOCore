@@ -25,7 +25,7 @@ public class ChestAlgorithmOptions {
 	 * finder algorithm.
 	 */
 	public ChestAlgorithmOptions(ConfigurationSection config) {
-		Validate.notNull(config, "Config cannot be nulm");
+		Validate.notNull(config, "Config cannot be null");
 
 		minRange = config.getDouble("min-range", DEFAULT.minRange);
 		maxRange = config.getDouble("max-range", DEFAULT.maxRange);

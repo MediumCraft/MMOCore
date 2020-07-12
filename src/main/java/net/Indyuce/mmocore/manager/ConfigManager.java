@@ -28,7 +28,7 @@ public class ConfigManager {
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix, noSkillBoundPlaceholder;
 	public ChatColor staminaFull, staminaHalf, staminaEmpty;
-	public int combatLogTimer, lootChestExpireTime;
+	public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown;
 
 	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
@@ -87,7 +87,7 @@ public class ConfigManager {
 		loadDefaultFile("stats.yml");
 		loadDefaultFile("waypoints.yml");
 		loadDefaultFile("restrictions.yml");
-		// loadDefaultFile("chests.yml");
+		loadDefaultFile("loot-chests.yml");
 		loadDefaultFile("commands.yml");
 		loadDefaultFile("guilds.yml");
 
@@ -100,8 +100,9 @@ public class ConfigManager {
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
 		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
-		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer");
-		lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chest-expire-time"), 1) * 1000;
+		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000;
+		lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 1000;
+		lootChestPlayerCooldown = MMOCore.plugin.getConfig().getInt("player-cooldown") * 1000;
 		noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
 
 		staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
@@ -176,10 +177,12 @@ public class ConfigManager {
 
 		public boolean send(Player player) {
 			String msg = hasPlaceholders ? MMOCore.plugin.placeholderParser.parse(player, message) : message;
-			
+
 			if (!msg.isEmpty()) {
-				if (actionbar) PlayerData.get(player.getUniqueId()).displayActionBar(msg);
-				else player.sendMessage(msg);
+				if (actionbar)
+					PlayerData.get(player.getUniqueId()).displayActionBar(msg);
+				else
+					player.sendMessage(msg);
 			}
 			return !msg.isEmpty();
 		}

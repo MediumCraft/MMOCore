@@ -7,13 +7,13 @@ auto-save:
 
 # MySQL Support
 mysql:
-  enabled: false
-  database: minecraft
-  host: localhost
-  port: 3306
-  user: mmolover
-  pass: ILoveAria
-  flags: '?allowReconnect=true&useSSL=false'
+    enabled: false
+    database: minecraft
+    host: localhost
+    port: 3306
+    user: mmolover
+    pass: ILoveAria
+    flags: '?allowReconnect=true&useSSL=false'
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply.
@@ -32,9 +32,15 @@ lootsplosion:
     offset: .2
     height: .6
 
-# Time in seconds it takes for a loot chest to
-# expire after it was spawned. 600 is 10 minutes.
-loot-chest-expire-time: 600
+loot-chests:
+
+    # Time in seconds it takes for a loot chest to
+    # expire after it was spawned. 600 is 10 minutes.
+    chest-expire-time: 600
+    
+    # Interval in seconds before the same player
+    # spawns two loot chests in ANY region.
+    player-cooldown: 600
 
 # Settings for the default action bar
 action-bar:
@@ -110,7 +116,7 @@ use-chat-input: true
 # Prevents mobs spawned from spawners from giving XP points.
 prevent-spawner-xp: true
 
-#Timer for combat log to expire (in seconds)
+# Timer for combat log to expire (in seconds)
 combat-log:
     timer: 10
 

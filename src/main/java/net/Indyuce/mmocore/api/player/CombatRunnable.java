@@ -25,7 +25,7 @@ public class CombatRunnable extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		if (lastHit + (MMOCore.plugin.configManager.combatLogTimer * 1000) < System.currentTimeMillis()) {
+		if (lastHit + MMOCore.plugin.configManager.combatLogTimer < System.currentTimeMillis()) {
 			Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, false));
 			MMOCore.plugin.configManager.getSimpleMessage("leave-combat").send(player.getPlayer());
 			close();
