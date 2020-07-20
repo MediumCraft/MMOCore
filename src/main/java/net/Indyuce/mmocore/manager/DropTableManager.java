@@ -50,7 +50,7 @@ public class DropTableManager extends MMOManager {
 
 		if (obj instanceof ConfigurationSection) {
 			DropTable table = new DropTable((ConfigurationSection) obj);
-			table.postLoad();
+			Bukkit.getScheduler().runTask(MMOCore.plugin, () -> table.postLoad());
 			return table;
 		}
 
