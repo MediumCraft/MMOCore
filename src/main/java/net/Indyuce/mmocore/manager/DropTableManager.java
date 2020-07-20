@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -73,7 +74,7 @@ public class DropTableManager extends MMOManager {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load drop table file '" + file.getName() + "': " + exception.getMessage());
 			}
 
-		map.values().forEach(table -> table.postLoad());
+		Bukkit.getScheduler().runTask(MMOCore.plugin, () -> map.values().forEach(table -> table.postLoad()));
 	}
 
 	@Override

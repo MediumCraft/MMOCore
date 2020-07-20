@@ -1,28 +1,18 @@
 package net.Indyuce.mmocore.api.player.stats;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.player.MMOData;
 import net.mmogroup.mmolib.api.stat.StatInstance;
 import net.mmogroup.mmolib.api.stat.StatMap;
 import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerStats {
 	private final PlayerData data;
-	private final StatMap map;
 
 	/*
 	 * util class to manipulate more easily stat data from MMOLib
 	 */
 	public PlayerStats(PlayerData data) {
 		this.data = data;
-
-		map = MMOData.get(data.getPlayer()).setMMOCore(data).getStatMap();
-	}
-
-	@Deprecated
-	public PlayerStats(PlayerData data, StatMap map) {
-		this.data = data;
-		this.map = map;
 	}
 
 	public PlayerData getData() {
@@ -30,7 +20,7 @@ public class PlayerStats {
 	}
 
 	public StatMap getMap() {
-		return map;
+		return data.getMMOPlayerData().getStatMap();
 	}
 
 	public StatInstance getInstance(StatType stat) {
@@ -38,7 +28,7 @@ public class PlayerStats {
 	}
 
 	public StatInstance getInstance(String stat) {
-		return map.getInstance(stat);
+		return getMap().getInstance(stat);
 	}
 
 	/*
@@ -58,16 +48,16 @@ public class PlayerStats {
 	 * MMOLib. must be ran everytime the player levels up or changes class.
 	 */
 	public void updateStats() {
-		map.getInstances().forEach(ins -> ins.removeIf(key -> key.equals("mmocoreClass")));
+		getMap().getInstances().forEach(ins -> ins.removeIf(key -> key.equals("mmocoreClass")));
 
 		for (StatType stat : StatType.values()) {
-			StatInstance instance = map.getInstance(stat.name());
+			StatInstance instance = getMap().getInstance(stat.name());
 			double total = getBase(stat) - instance.getVanilla();
 
 			if (total != 0)
 				instance.addModifier("mmocoreClass", new StatModifier(total));
 		}
 
-		map.updateAll();
+		getMap().updateAll();
 	}
 }

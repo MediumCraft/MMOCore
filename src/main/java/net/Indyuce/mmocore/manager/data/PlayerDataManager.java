@@ -1,9 +1,8 @@
 package net.Indyuce.mmocore.manager.data;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -13,22 +12,25 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.mmogroup.mmolib.api.player.MMOPlayerData;
 
 public abstract class PlayerDataManager {
-	private final Map<UUID, PlayerData> map = new HashMap<>();
+	// private final Map<UUID, PlayerData> map = new HashMap<>();
 
 	public PlayerData get(OfflinePlayer player) {
 		return get(player.getUniqueId());
 	}
 
 	public PlayerData get(UUID uuid) {
-		return map.getOrDefault(uuid, PlayerData.NOT_LOADED);
+		PlayerData found = MMOPlayerData.get(uuid).getMMOCore();
+		return found == null ? PlayerData.NOT_LOADED : found;
 	}
 
 	public void remove(UUID uuid) {
-		map.remove(uuid);
+		if (MMOPlayerData.isLoaded(uuid))
+			MMOPlayerData.get(uuid).setMMOCore(null);
 	}
-	
+
 	public abstract OfflinePlayerData getOffline(UUID uuid);
 
 	public void setup(Player player) {
@@ -37,9 +39,9 @@ public abstract class PlayerDataManager {
 		 * setup playerData based on loadData method to support both MySQL and
 		 * YAML data storage
 		 */
-		if (!map.containsKey(player.getUniqueId())) {
-			PlayerData generated = new PlayerData(player);
-			map.put(player.getUniqueId(), generated);
+		MMOPlayerData mmoData = MMOPlayerData.get(player);
+		if (mmoData.getMMOCore() == null) {
+			PlayerData generated = new PlayerData(mmoData);
 
 			/*
 			 * loads player data and ONLY THEN refresh the player statistics and
@@ -51,21 +53,19 @@ public abstract class PlayerDataManager {
 				generated.getStats().updateStats();
 			});
 		}
-
-		get(player).setPlayer(player);
 	}
 
 	public boolean isLoaded(UUID uuid) {
-		return map.containsKey(uuid);
+		return MMOPlayerData.isLoaded(uuid) && MMOPlayerData.get(uuid).getMMOCore() != null;
 	}
-	
+
 	public Collection<PlayerData> getLoaded() {
-		return map.values();
+		return MMOPlayerData.getLoaded().stream().filter(data -> data.getMMOCore() != null).map(data -> data.getMMOCore()).collect(Collectors.toSet());
 	}
 
 	public abstract void loadData(PlayerData data);
 
 	public abstract void saveData(PlayerData data);
-	
+
 	public abstract void remove(PlayerData data);
 }

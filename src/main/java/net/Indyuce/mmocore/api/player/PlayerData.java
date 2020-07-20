@@ -53,8 +53,7 @@ import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.player.MMOData;
-import net.mmogroup.mmolib.api.stat.StatMap;
+import net.mmogroup.mmolib.api.player.MMOPlayerData;
 import net.mmogroup.mmolib.version.VersionSound;
 
 public class PlayerData extends OfflinePlayerData {
@@ -64,7 +63,7 @@ public class PlayerData extends OfflinePlayerData {
 	 * player is offline so the plugin can use #isOnline to check if the player
 	 * is online
 	 */
-	private Player player;
+	private final MMOPlayerData mmoData;
 
 	/*
 	 * 'profess' can be null, you need to retrieve the player class using the
@@ -88,7 +87,7 @@ public class PlayerData extends OfflinePlayerData {
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
 	private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
 
-	private long lastWaypoint, lastLogin, lastFriendRequest, actionBarTimeOut, lastLootChest;
+	private long lastWaypoint, lastFriendRequest, actionBarTimeOut, lastLootChest;
 
 	/*
 	 * NON-FINAL player data stuff made public to facilitate field change
@@ -98,12 +97,13 @@ public class PlayerData extends OfflinePlayerData {
 	public boolean nocd;
 	public CombatRunnable combat;
 
-	public PlayerData(Player player) {
-		super(player.getUniqueId());
+	public PlayerData(MMOPlayerData mmoData) {
+		super(mmoData.getUniqueId());
+		mmoData.setMMOCore(this);
 
-		setPlayer(player);
-		playerStats = new PlayerStats(this);
-		questData = new PlayerQuests(this);
+		this.mmoData = mmoData;
+		this.playerStats = new PlayerStats(this);
+		this.questData = new PlayerQuests(this);
 	}
 
 	/*
@@ -115,7 +115,10 @@ public class PlayerData extends OfflinePlayerData {
 	private PlayerData() {
 		super(UUID.randomUUID());
 
-		playerStats = new PlayerStats(this, new StatMap(new MMOData().setMMOCore(this)));
+		mmoData = new MMOPlayerData(null, null);
+		mmoData.setMMOCore(this);
+
+		playerStats = new PlayerStats(this);
 		questData = new PlayerQuests(this, null);
 	}
 
@@ -143,21 +146,8 @@ public class PlayerData extends OfflinePlayerData {
 			}
 	}
 
-	public static PlayerData get(OfflinePlayer player) {
-		return get(player.getUniqueId());
-	}
-
-	public static PlayerData get(UUID uuid) {
-		return MMOCore.plugin.dataProvider.getDataManager().get(uuid);
-	}
-
-	public static Collection<PlayerData> getAll() {
-		return MMOCore.plugin.dataProvider.getDataManager().getLoaded();
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-		this.lastLogin = System.currentTimeMillis();
+	public MMOPlayerData getMMOPlayerData() {
+		return mmoData;
 	}
 
 	public List<UUID> getFriends() {
@@ -173,12 +163,12 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public Player getPlayer() {
-		return player;
+		return mmoData.getPlayer();
 	}
 
 	@Override
 	public long getLastLogin() {
-		return lastLogin;
+		return mmoData.getLastLogin();
 	}
 
 	public long getLastFriendRequest() {
@@ -229,6 +219,10 @@ public class PlayerData extends OfflinePlayerData {
 		return attributeReallocationPoints;
 	}
 
+	public boolean isOnline() {
+		return mmoData.isOnline();
+	}
+
 	public boolean hasParty() {
 		return party != null;
 	}
@@ -237,9 +231,9 @@ public class PlayerData extends OfflinePlayerData {
 		return guild != null;
 	}
 
-	public boolean isOnline() {
-		return player.isOnline();
-	}
+	// public boolean isOnline() {
+	// return player.isOnline();
+	// }
 
 	public void setLevel(int level) {
 		this.level = Math.max(1, level);
@@ -260,8 +254,8 @@ public class PlayerData extends OfflinePlayerData {
 
 	public void refreshVanillaExp() {
 		if (MMOCore.plugin.configManager.overrideVanillaExp) {
-			player.setLevel(getLevel());
-			player.setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
+			getPlayer().setLevel(getLevel());
+			getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
 		}
 	}
 
@@ -339,8 +333,8 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void heal(double heal) {
-		double newest = Math.max(0, Math.min(player.getHealth() + heal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
-		if (player.getHealth() == newest)
+		double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		if (getPlayer().getHealth() == newest)
 			return;
 
 		PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.HEALTH, heal);
@@ -374,7 +368,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void log(Level level, String message) {
-		MMOCore.plugin.getLogger().log(level, "[Userdata:" + player.getName() + "] " + message);
+		MMOCore.plugin.getLogger().log(level, "[Userdata:" + getPlayer().getName() + "] " + message);
 	}
 
 	public void setLastFriendRequest(long ms) {
@@ -402,32 +396,33 @@ public class PlayerData extends OfflinePlayerData {
 		giveStellium(-waypoint.getStelliumCost());
 
 		new BukkitRunnable() {
-			int x = player.getLocation().getBlockX(), y = player.getLocation().getBlockY(), z = player.getLocation().getBlockZ(), t;
+			int x = getPlayer().getLocation().getBlockX(), y = getPlayer().getLocation().getBlockY(), z = getPlayer().getLocation().getBlockZ(), t;
 
 			public void run() {
-				if (player.getLocation().getBlockX() != x || player.getLocation().getBlockY() != y || player.getLocation().getBlockZ() != z) {
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, .5f);
-					MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(player);
+				if (getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y
+						|| getPlayer().getLocation().getBlockZ() != z) {
+					getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, .5f);
+					MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
 					giveStellium(waypoint.getStelliumCost());
 					cancel();
 					return;
 				}
 
-				MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(player);
+				MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(getPlayer());
 				if (t++ >= 100) {
-					player.teleport(waypoint.getLocation());
-					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
-					player.playSound(player.getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, .5f);
+					getPlayer().teleport(waypoint.getLocation());
+					getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
+					getPlayer().playSound(getPlayer().getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, .5f);
 					cancel();
 					return;
 				}
 
-				player.playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1, (float) (t / Math.PI * .015 + .5));
+				getPlayer().playSound(getPlayer().getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1, (float) (t / Math.PI * .015 + .5));
 				double r = Math.sin((double) t / 100 * Math.PI);
 				for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
 					MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE,
-							player.getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 1.25f,
-							Color.PURPLE);
+							getPlayer().getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r),
+							1.25f, Color.PURPLE);
 			}
 		}.runTaskTimer(MMOCore.plugin, 0, 1);
 	}
@@ -476,9 +471,9 @@ public class PlayerData extends OfflinePlayerData {
 
 		if (level > oldLevel) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
-			new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(player);
-			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-			new SmallParticleEffect(player, Particle.SPELL_INSTANT);
+			new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
+			getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+			new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
 			getStats().updateStats();
 		}
 
@@ -583,7 +578,7 @@ public class PlayerData extends OfflinePlayerData {
 
 	public void displayActionBar(String message) {
 		setActionBarTimeOut(60);
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+		getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
 
 	@Deprecated
@@ -735,13 +730,13 @@ public class PlayerData extends OfflinePlayerData {
 		if (!cast.isSuccessful()) {
 			if (!skill.getSkill().isPassive()) {
 				if (cast.getCancelReason() == CancelReason.LOCKED)
-					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
+					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(getPlayer());
 
 				if (cast.getCancelReason() == CancelReason.MANA)
-					MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(player);
+					MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(getPlayer());
 
 				if (cast.getCancelReason() == CancelReason.COOLDOWN)
-					MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(player);
+					MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(getPlayer());
 			}
 
 			return cast;
@@ -761,5 +756,17 @@ public class PlayerData extends OfflinePlayerData {
 	@Override
 	public boolean equals(Object obj) {
 		return obj != null && obj instanceof PlayerData && ((PlayerData) obj).getUniqueId().equals(getUniqueId());
+	}
+
+	public static PlayerData get(OfflinePlayer player) {
+		return get(player.getUniqueId());
+	}
+
+	public static PlayerData get(UUID uuid) {
+		return MMOCore.plugin.dataProvider.getDataManager().get(uuid);
+	}
+
+	public static Collection<PlayerData> getAll() {
+		return MMOCore.plugin.dataProvider.getDataManager().getLoaded();
 	}
 }
