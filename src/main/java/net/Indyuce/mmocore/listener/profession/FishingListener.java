@@ -41,7 +41,7 @@ public class FishingListener implements Listener {
 		Player player = event.getPlayer();
 		FishHook hook = event.getHook();
 
-		if (event.getState() == State.BITE && !fishing.contains(player.getUniqueId())) {
+		if (event.getState() == State.BITE && !fishing.contains(player.getUniqueId()) && !player.hasMetadata("NPC")) {
 
 			/*
 			 * checks for drop tables. if no drop table, just plain vanilla
@@ -118,7 +118,7 @@ public class FishingListener implements Listener {
 
 		@EventHandler
 		public void a(PlayerFishEvent event) {
-			if (event.getPlayer().equals(player) && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || (MMOLib.plugin.getVersion().isStrictlyHigher(1, 12) ? event.getState() == State.valueOf("REEL_IN") : false))) {
+			if (event.getPlayer().equals(player) && !player.hasMetadata("NPC") && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || (MMOLib.plugin.getVersion().isStrictlyHigher(1, 12) ? event.getState() == State.valueOf("REEL_IN") : false))) {
 
 				/*
 				 * lose the catch if the current fish is gone!
