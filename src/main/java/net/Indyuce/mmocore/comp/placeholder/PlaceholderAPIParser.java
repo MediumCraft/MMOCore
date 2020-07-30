@@ -3,10 +3,12 @@ package net.Indyuce.mmocore.comp.placeholder;
 import org.bukkit.OfflinePlayer;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class PlaceholderAPIParser implements PlaceholderParser {
 	public PlaceholderAPIParser() {
-		new RPGPlaceholders().register();
+		PlaceholderExpansion expansion = new RPGPlaceholders();
+		expansion.getPlaceholderAPI().getLocalExpansionManager().register(expansion);
 	}
 
 	@Override
