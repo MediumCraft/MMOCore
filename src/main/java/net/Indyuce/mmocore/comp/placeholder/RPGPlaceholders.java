@@ -1,9 +1,12 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
@@ -14,9 +17,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.mmogroup.mmolib.api.util.AltChar;
 
-public class RPGPlaceholders
-		extends PlaceholderExpansion /** implements Relational */
-{
+public class RPGPlaceholders extends PlaceholderExpansion {
 
 	@Override
 	public String getAuthor() {
@@ -34,7 +35,7 @@ public class RPGPlaceholders
 	}
 
 	@Override
-	public String onPlaceholderRequest(Player player, String identifier) {
+	public String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
 
 		if (identifier.equals("level"))
 			return "" + PlayerData.get(player).getLevel();
@@ -48,8 +49,10 @@ public class RPGPlaceholders
 		else if (identifier.equals("combat"))
 			return String.valueOf(PlayerData.get(player).isInCombat());
 
-		else if (identifier.equals("health"))
-			return StatType.MAX_HEALTH.format(player.getHealth());
+		else if (identifier.equals("health")) {
+			Validate.isTrue(player.isOnline(), "Player must be online");
+			return StatType.MAX_HEALTH.format(player.getPlayer().getHealth());
+		}
 
 		else if (identifier.equals("class"))
 			return PlayerData.get(player).getProfess().getName();
@@ -68,13 +71,15 @@ public class RPGPlaceholders
 			return playerData.hasSkillBound(slot) ? playerData.getBoundSkill(slot).getSkill().getName()
 					: MMOCore.plugin.configManager.noSkillBoundPlaceholder;
 		}
-		
+
 		else if (identifier.startsWith("profession_"))
 			return "" + PlayerData.get(player).getCollectionSkills()
 					.getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
 
-		else if (identifier.equals("max_health"))
-			return StatType.MAX_HEALTH.format(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+		else if (identifier.equals("max_health")) {
+			Validate.isTrue(player.isOnline(), "Player must be online");
+			return StatType.MAX_HEALTH.format(player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+		}
 
 		else if (identifier.equals("experience"))
 			return "" + PlayerData.get(player).getExperience();
@@ -95,15 +100,16 @@ public class RPGPlaceholders
 			return "" + PlayerData.get(player).getAttributeReallocationPoints();
 
 		else if (identifier.startsWith("attribute_"))
-			return String.valueOf(PlayerData.get(player).getAttributes()
-					.getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
+			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(
+					MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
 
 		else if (identifier.equals("mana"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getMana());
 
 		else if (identifier.equals("mana_bar")) {
 			PlayerData data = PlayerData.get(player);
-			return data.getProfess().getManaDisplay().generateBar(data.getMana(), data.getStats().getStat(StatType.MAX_MANA));
+			return data.getProfess().getManaDisplay().generateBar(data.getMana(),
+					data.getStats().getStat(StatType.MAX_MANA));
 		}
 
 		else if (identifier.equals("stamina"))
@@ -115,7 +121,8 @@ public class RPGPlaceholders
 			double ratio = 20 * data.getStamina() / data.getStats().getStat(StatType.MAX_STAMINA);
 			for (double j = 1; j < 20; j++)
 				format += (ratio >= j ? MMOCore.plugin.configManager.staminaFull
-						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty)
+						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf
+								: MMOCore.plugin.configManager.staminaEmpty)
 						+ AltChar.listSquare;
 			return format;
 		}
@@ -133,7 +140,8 @@ public class RPGPlaceholders
 			PlayerData data = PlayerData.get(player);
 			double ratio = 20 * data.getStellium() / data.getStats().getStat(StatType.MAX_STELLIUM);
 			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
+				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE)
+						+ AltChar.listSquare;
 			return format;
 		}
 
@@ -145,8 +153,8 @@ public class RPGPlaceholders
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = PlayerData.get(player).getQuestData();
 			return data.hasCurrent()
-					? MMOCore.plugin.configManager.decimal
-							.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100)
+					? MMOCore.plugin.configManager.decimal.format((int) (double) data.getCurrent().getObjectiveNumber()
+							/ data.getCurrent().getQuest().getObjectives().size() * 100)
 					: "0";
 		}
 

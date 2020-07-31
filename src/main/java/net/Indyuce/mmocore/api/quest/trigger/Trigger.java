@@ -10,7 +10,7 @@ public abstract class Trigger {
 	private final long delay;
 
 	public Trigger(MMOLineConfig config) {
-		delay = config.contains("delay") ? (long) (config.getDouble("delay") * 20) : 0;
+		delay = config.contains("delay") ? (long) (config.getDouble("delay") * 20.) : 0;
 	}
 
 	public boolean hasDelay() {
@@ -22,8 +22,16 @@ public abstract class Trigger {
 	}
 
 	public void schedule(PlayerData player) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> apply(player), delay);
+		if (delay <= 0)
+			apply(player);
+		else
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> apply(player), delay);
 	}
 
+	/*
+	 * this method must not be used directly when executing triggers after quest
+	 * objectives for example, because this method does NOT take into account
+	 * trigger delay
+	 */
 	public abstract void apply(PlayerData player);
 }

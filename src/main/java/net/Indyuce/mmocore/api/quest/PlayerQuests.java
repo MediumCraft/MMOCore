@@ -150,7 +150,7 @@ public class PlayerQuests {
 
 		// close current objective progress if quest is active
 		if (hasCurrent())
-			current.closeObjectiveProgress();
+			current.getProgress().close();
 
 		// apply newer quest
 		current = quest == null ? null : quest.generateNewProgress(playerData);

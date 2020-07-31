@@ -43,16 +43,12 @@ public class QuestProgress {
 		return quest.getObjectives().get(objective);
 	}
 
-	public void closeObjectiveProgress() {
-		objectiveProgress.close();
-	}
-
 	public void completeObjective() {
 		objective++;
-		closeObjectiveProgress();
+		objectiveProgress.close();
 
 		// apply triggers
-		objectiveProgress.getObjective().getTriggers().forEach(trigger -> trigger.apply(getPlayer()));
+		objectiveProgress.getObjective().getTriggers().forEach(trigger -> trigger.schedule(getPlayer()));
 
 		// end quest
 		if (objective >= quest.getObjectives().size())
