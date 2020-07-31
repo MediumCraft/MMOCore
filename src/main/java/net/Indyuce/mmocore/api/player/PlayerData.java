@@ -25,9 +25,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
-import net.Indyuce.mmocore.api.event.PlayerCastSkillEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
+import net.Indyuce.mmocore.api.event.PlayerPostCastSkillEvent;
+import net.Indyuce.mmocore.api.event.PlayerPreCastSkillEvent;
 import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
@@ -716,9 +717,9 @@ public class PlayerData extends OfflinePlayerData {
 
 	public SkillResult cast(SkillInfo skill) {
 
-		PlayerCastSkillEvent event = new PlayerCastSkillEvent(this, skill);
-		Bukkit.getPluginManager().callEvent(event);
-		if (event.isCancelled())
+		PlayerPreCastSkillEvent preEvent = new PlayerPreCastSkillEvent(this, skill);
+		Bukkit.getPluginManager().callEvent(preEvent);
+		if (preEvent.isCancelled())
 			return new SkillResult(this, skill, CancelReason.OTHER);
 
 		/*
@@ -739,6 +740,8 @@ public class PlayerData extends OfflinePlayerData {
 					MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(getPlayer());
 			}
 
+			PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast, false);
+			Bukkit.getPluginManager().callEvent(postEvent);
 			return cast;
 		}
 
@@ -750,6 +753,8 @@ public class PlayerData extends OfflinePlayerData {
 			giveMana(-cast.getManaCost());
 		}
 
+		PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast, true);
+		Bukkit.getPluginManager().callEvent(postEvent);
 		return cast;
 	}
 
