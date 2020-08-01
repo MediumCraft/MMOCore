@@ -146,12 +146,6 @@
 			<systemPath>${basedir}/lib/Citizens.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>me.clip</groupId>
-			<artifactId>placeholderapi</artifactId>
-			<version>2.10.3</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.41</version>
@@ -162,6 +156,11 @@
 			<version>2.10.7</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/PlaceholderAPI.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>19.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
