@@ -185,6 +185,6 @@ public class PlayerQuests {
 	}
 
 	public void resetBossBar() {
-		bossbar.removePlayer(playerData.getPlayer());
+		bossbar.removeAll();
 	}
 }
