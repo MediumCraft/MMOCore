@@ -72,7 +72,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 	@Override
 	public void saveData(PlayerData data) {
-		ConfigFile file = new ConfigFile(data.getPlayer());
+		ConfigFile file = new ConfigFile(data.getUniqueId());
 		FileConfiguration config = file.getConfig();
 
 		config.set("class-points", data.getClassPoints());
