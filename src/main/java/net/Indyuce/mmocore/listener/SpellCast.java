@@ -134,8 +134,9 @@ public class SpellCast implements Listener {
 
 		@Override
 		public void run() {
-			if (!playerData.isOnline() || playerData.getPlayer().isDead())
-				close();
+			if (!playerData.isOnline() || playerData.getPlayer().isDead()) {
+				close(); return;
+			}
 
 			if (j % 20 == 0)
 				playerData.displayActionBar(getFormat(playerData));
