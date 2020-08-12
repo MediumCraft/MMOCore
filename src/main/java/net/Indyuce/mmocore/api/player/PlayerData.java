@@ -53,7 +53,6 @@ import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.player.MMOPlayerData;
 import net.mmogroup.mmolib.version.VersionSound;
 
@@ -421,9 +420,9 @@ public class PlayerData extends OfflinePlayerData {
 				getPlayer().playSound(getPlayer().getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1, (float) (t / Math.PI * .015 + .5));
 				double r = Math.sin((double) t / 100 * Math.PI);
 				for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
-					MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE,
-							getPlayer().getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r),
-							1.25f, Color.PURPLE);
+					getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE,
+							getPlayer().getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 1,
+							new Particle.DustOptions(Color.PURPLE, 1.25f));
 			}
 		}.runTaskTimer(MMOCore.plugin, 0, 1);
 	}

@@ -6,7 +6,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.mmogroup.mmolib.MMOLib;
 
 public class LootColor extends BukkitRunnable {
 	private final Item item;
@@ -28,6 +27,6 @@ public class LootColor extends BukkitRunnable {
 			return;
 		}
 
-		MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE, item.getLocation(), 1.3f, color);
+		item.getWorld().spawnParticle(Particle.REDSTONE, item.getLocation(), 1, new Particle.DustOptions(color, 1.3f));
 	}
 }

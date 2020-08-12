@@ -50,7 +50,6 @@ public class PlayerStats {
 	 * used to update MMOCore stat modifiers due to class and send them over to
 	 * MMOLib. must be ran everytime the player levels up or changes class.
 	 */
-	@SuppressWarnings("deprecation")
 	public void updateStats() {
 		getMap().getInstances().forEach(ins -> ins.removeIf(key -> key.equals("mmocoreClass")));
 

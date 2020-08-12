@@ -17,7 +17,6 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
-import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
@@ -88,7 +87,7 @@ public class Ambers extends Skill implements Listener {
 
 			for (int j = 0; j < 5; j++)
 				loc.getWorld().spawnParticle(Particle.SPELL_MOB, loc, 0, 1, 0.647, 0, 1);
-			MMOLib.plugin.getVersion().getWrapper().spawnParticle(Particle.REDSTONE, loc, 1.3f, Color.ORANGE);
+			loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.ORANGE, 1.3f));
 		}
 	}
 }
