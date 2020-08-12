@@ -23,7 +23,7 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.asangarin.hexcolors.ColorParse;
+import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
 
@@ -68,7 +68,7 @@ public class ClassSelect extends EditableInventory {
 			ItemMeta meta = item.getItemMeta();
 			if (hideFlags())
 				meta.addItemFlags(ItemFlag.values());
-			meta.setDisplayName(new ColorParse('&', name).toChatColor().replace("{name}", profess.getName()));
+			meta.setDisplayName(MMOLib.plugin.parseColors(name).replace("{name}", profess.getName()));
 			List<String> lore = new ArrayList<>(this.lore);
 
 			int index = lore.indexOf("{lore}");

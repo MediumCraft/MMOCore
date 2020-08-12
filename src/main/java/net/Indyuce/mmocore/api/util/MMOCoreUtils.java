@@ -63,7 +63,7 @@ public class MMOCoreUtils {
 		int t = 0;
 		for (ItemStack item : items)
 			if (item != null && item.getType() != Material.AIR)
-				t += MMOLib.plugin.getNMS().getNBTItem(item).getInteger("RpgWorth") * item.getAmount();
+				t += MMOLib.plugin.getVersion().getWrapper().getNBTItem(item).getInteger("RpgWorth") * item.getAmount();
 		return t;
 	}
 

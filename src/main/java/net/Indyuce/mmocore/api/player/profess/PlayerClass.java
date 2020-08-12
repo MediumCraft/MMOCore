@@ -37,8 +37,8 @@ import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
-import net.asangarin.hexcolors.ColorParse;
 import net.md_5.bungee.api.ChatColor;
+import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
@@ -65,7 +65,7 @@ public class PlayerClass extends PostLoadObject {
 
 		this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
 
-		name = new ColorParse('&', config.getString("display.name")).toChatColor();
+		name = MMOLib.plugin.parseColors(config.getString("display.name"));
 		icon = MMOCoreUtils.readIcon(config.getString("display.item", "BARRIER"));
 
 		if (config.contains("display.texture") && icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())
@@ -83,9 +83,9 @@ public class PlayerClass extends PostLoadObject {
 			}
 
 		for (String string : config.getStringList("display.lore"))
-			description.add(ChatColor.GRAY + new ColorParse('&', string).toChatColor());
+			description.add(ChatColor.GRAY + MMOLib.plugin.parseColors(string));
 		for (String string : config.getStringList("display.attribute-lore"))
-			attrDescription.add(ChatColor.GRAY + new ColorParse('&', string).toChatColor());
+			attrDescription.add(ChatColor.GRAY + MMOLib.plugin.parseColors(string));
 		manaDisplay = config.contains("mana") ? new ManaDisplayOptions(config.getConfigurationSection("mana"))
 				: ManaDisplayOptions.DEFAULT;
 		maxLevel = config.getInt("max-level");

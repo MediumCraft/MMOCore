@@ -19,7 +19,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.asangarin.hexcolors.ColorParse;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
@@ -102,6 +101,7 @@ public class ConfigItem {
 		return build(1);
 	}
 
+	@SuppressWarnings("deprecation")
 	public ItemStack build(int amount) {
 		ItemStack item = getItem(amount);
 		ItemMeta meta = item.getItemMeta();
@@ -138,6 +138,6 @@ public class ConfigItem {
 		for (String placeholder : placeholders.keySet())
 			if (string.contains("{" + placeholder + "}"))
 				string = string.replace("{" + placeholder + "}", "" + placeholders.get(placeholder));
-		return new ColorParse('&', string).toChatColor();
+		return MMOLib.plugin.parseColors(string);
 	}
 }

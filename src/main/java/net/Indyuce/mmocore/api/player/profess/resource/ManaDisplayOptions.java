@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import net.asangarin.hexcolors.ColorParse;
 import net.md_5.bungee.api.ChatColor;
+import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.util.AltChar;
 
 public class ManaDisplayOptions {
@@ -30,7 +31,7 @@ public class ManaDisplayOptions {
 		Validate.notEmpty(format, "Could not load mana bar character");
 		barCharacter = format.charAt(0);
 
-		icon = new ColorParse('&', config.getString("icon", "")).toChatColor();
+		icon = MMOLib.plugin.parseColors(config.getString("icon", ""));
 		Validate.notEmpty(format, "Could not load mana action bar icon");
 	}
 

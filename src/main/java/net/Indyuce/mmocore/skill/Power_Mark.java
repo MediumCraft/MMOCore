@@ -47,7 +47,7 @@ public class Power_Mark extends Skill implements Listener {
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
 		PlayerData data = event.getData().getMMOCore();
-		if (!event.isWeapon() || !data.getProfess().hasSkill(this))
+		if (!event.getAttack().hasType(DamageType.WEAPON) || !data.getProfess().hasSkill(this))
 			return;
 
 		SkillResult cast = data.cast(this);

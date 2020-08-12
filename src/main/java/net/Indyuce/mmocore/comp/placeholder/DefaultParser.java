@@ -2,11 +2,12 @@ package net.Indyuce.mmocore.comp.placeholder;
 
 import org.bukkit.OfflinePlayer;
 
-import net.asangarin.hexcolors.ColorParse;
+import net.mmogroup.mmolib.MMOLib;
 
 public class DefaultParser implements PlaceholderParser {
+
 	@Override
 	public String parse(OfflinePlayer player, String string) {
-		return new ColorParse('&', string.replace("%player%", player.getName())).toChatColor();
+		return MMOLib.plugin.parseColors(string.replace("%player%", player.getName()));
 	}
 }

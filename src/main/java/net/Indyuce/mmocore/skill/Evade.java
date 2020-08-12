@@ -15,6 +15,7 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
+import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 import net.mmogroup.mmolib.version.VersionSound;
 
@@ -22,7 +23,8 @@ public class Evade extends Skill {
 	public Evade() {
 		super();
 		setMaterial(Material.LEATHER_BOOTS);
-		setLore("You become imune to damage for &8{duration} &7seconds.", "Cancels when dealing weapon damage.", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}");
+		setLore("You become imune to damage for &8{duration} &7seconds.", "Cancels when dealing weapon damage.", "", "&e{cooldown}s Cooldown",
+				"&9Costs {mana} {mana_name}");
 
 		addModifier("cooldown", new LinearValue(20, 0));
 		addModifier("mana", new LinearValue(8, 3));
@@ -65,7 +67,7 @@ public class Evade extends Skill {
 
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void b(PlayerAttackEvent event) {
-			if (event.isWeapon() && !event.isCancelled() && event.getData().getMMOCore().equals(data))
+			if (event.getAttack().hasType(DamageType.WEAPON) && !event.isCancelled() && event.getData().getMMOCore().equals(data))
 				close();
 		}
 

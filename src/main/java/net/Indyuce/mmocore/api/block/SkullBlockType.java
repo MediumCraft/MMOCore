@@ -19,7 +19,7 @@ public class SkullBlockType implements BlockType {
 	}
 
 	public SkullBlockType(Block block) {
-		value = MMOLib.plugin.getNMS().getSkullValue(block);
+		value = MMOLib.plugin.getVersion().getWrapper().getSkullValue(block);
 	}
 
 	public String getValue() {
@@ -34,7 +34,7 @@ public class SkullBlockType implements BlockType {
 		if (MMOCoreUtils.isPlayerHead(block.getBlockData().getMaterial()) && MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
 			loc.getBlock().setBlockData(block.getBlockData());
 
-		MMOLib.plugin.getNMS().setSkullValue(loc.getBlock(), value);
+		MMOLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
 	}
 
 	@Override

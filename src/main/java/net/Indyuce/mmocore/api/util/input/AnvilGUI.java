@@ -26,25 +26,25 @@ public class AnvilGUI extends PlayerInput {
 		paperMeta.setDisplayName(MMOCore.plugin.configManager.getSimpleMessage("player-input.anvil." + type.getLowerCaseName()).message());
 		paper.setItemMeta(paperMeta);
 
-		MMOLib.plugin.getNMS().handleInventoryCloseEvent(player);
-		MMOLib.plugin.getNMS().setActiveContainerDefault(player);
+		MMOLib.plugin.getVersion().getWrapper().handleInventoryCloseEvent(player);
+		MMOLib.plugin.getVersion().getWrapper().setActiveContainerDefault(player);
 
-		final Object container = MMOLib.plugin.getNMS().newContainerAnvil(player);
+		final Object container = MMOLib.plugin.getVersion().getWrapper().newContainerAnvil(player);
 
-		inventory = MMOLib.plugin.getNMS().toBukkitInventory(container);
+		inventory = MMOLib.plugin.getVersion().getWrapper().toBukkitInventory(container);
 		inventory.setItem(0, paper);
 
-		containerId = MMOLib.plugin.getNMS().getNextContainerId(player);
-		MMOLib.plugin.getNMS().sendPacketOpenWindow(player, containerId);
-		MMOLib.plugin.getNMS().setActiveContainer(player, container);
-		MMOLib.plugin.getNMS().setActiveContainerId(container, containerId);
-		MMOLib.plugin.getNMS().addActiveContainerSlotListener(container, player);
+		containerId = MMOLib.plugin.getVersion().getWrapper().getNextContainerId(player);
+		MMOLib.plugin.getVersion().getWrapper().sendPacketOpenWindow(player, containerId);
+		MMOLib.plugin.getVersion().getWrapper().setActiveContainer(player, container);
+		MMOLib.plugin.getVersion().getWrapper().setActiveContainerId(container, containerId);
+		MMOLib.plugin.getVersion().getWrapper().addActiveContainerSlotListener(container, player);
 	}
 
 	public void close() {
-		MMOLib.plugin.getNMS().handleInventoryCloseEvent(getPlayer());
-		MMOLib.plugin.getNMS().setActiveContainerDefault(getPlayer());
-		MMOLib.plugin.getNMS().sendPacketCloseWindow(getPlayer(), containerId);
+		MMOLib.plugin.getVersion().getWrapper().handleInventoryCloseEvent(getPlayer());
+		MMOLib.plugin.getVersion().getWrapper().setActiveContainerDefault(getPlayer());
+		MMOLib.plugin.getVersion().getWrapper().sendPacketCloseWindow(getPlayer(), containerId);
 
 		InventoryClickEvent.getHandlerList().unregister(this);
 		InventoryCloseEvent.getHandlerList().unregister(this);

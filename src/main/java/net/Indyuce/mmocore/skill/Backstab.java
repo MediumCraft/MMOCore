@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
 public class Backstab extends Skill {
@@ -28,7 +29,9 @@ public class Backstab extends Skill {
 	public void a(PlayerAttackEvent event) {
 		PlayerData data = event.getData().getMMOCore();
 		LivingEntity target = (LivingEntity) event.getEntity();
-		if (!event.isWeapon() || data.isInCombat() || event.getPlayer().getEyeLocation().getDirection().angle(target.getEyeLocation().getDirection()) > Math.PI / 6 || !data.getProfess().hasSkill(this))
+		if (data.isInCombat() || !event.getAttack().hasType(DamageType.WEAPON)
+				|| event.getPlayer().getEyeLocation().getDirection().angle(target.getEyeLocation().getDirection()) > Math.PI / 6
+				|| !data.getProfess().hasSkill(this))
 			return;
 
 		SkillResult cast = data.cast(this);

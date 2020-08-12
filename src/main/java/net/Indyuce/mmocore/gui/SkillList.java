@@ -27,7 +27,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.asangarin.hexcolors.ColorParse;
+import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
 
@@ -71,7 +71,7 @@ public class SkillList extends EditableInventory {
 
 		if (function.equals("slot"))
 			return new InventoryPlaceholderItem(config) {
-				private final String none = new ColorParse('&', config.getString("no-skill")).toChatColor();
+				private final String none = MMOLib.plugin.parseColors(config.getString("no-skill"));
 				private final Material emptyMaterial = Material
 						.valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
 
@@ -170,12 +170,12 @@ public class SkillList extends EditableInventory {
 				lore.add(index + j, skillLore.get(j));
 
 			for (int j = 0; j < lore.size(); j++)
-				lore.set(j, ChatColor.GRAY + new ColorParse('&', lore.get(j)).toChatColor());
+				lore.set(j, ChatColor.GRAY + MMOLib.plugin.parseColors(lore.get(j)));
 
 			ItemStack item = cloneItem();
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(new ColorParse('&', getName().replace("{skill}", skill.getSkill().getName())
-					.replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)).toChatColor());
+			meta.setDisplayName(MMOLib.plugin.parseColors(getName().replace("{skill}", skill.getSkill().getName())
+					.replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)));
 			meta.addItemFlags(ItemFlag.values());
 			meta.setLore(lore);
 			item.setItemMeta(meta);

@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.api.quest;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
-import net.asangarin.hexcolors.ColorParse;
+import net.mmogroup.mmolib.MMOLib;
 
 public class QuestProgress {
 	private final Quest quest;
@@ -60,6 +60,6 @@ public class QuestProgress {
 	}
 
 	public String getFormattedLore() {
-		return new ColorParse('&', objectiveProgress.formatLore(objectiveProgress.getObjective().getDefaultLore())).toChatColor();
+		return MMOLib.plugin.parseColors(objectiveProgress.formatLore(objectiveProgress.getObjective().getDefaultLore()));
 	}
 }

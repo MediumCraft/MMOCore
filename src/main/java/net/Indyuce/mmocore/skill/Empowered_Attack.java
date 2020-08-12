@@ -81,7 +81,7 @@ public class Empowered_Attack extends Skill {
 
 		@EventHandler
 		public void a(PlayerAttackEvent event) {
-			if (event.getPlayer().equals(player.getPlayer()) && event.isWeapon()) {
+			if (event.getPlayer().equals(player.getPlayer()) && event.getAttack().hasType(DamageType.WEAPON)) {
 				close();
 
 				Entity target = event.getEntity();

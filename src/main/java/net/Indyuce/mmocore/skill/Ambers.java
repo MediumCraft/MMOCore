@@ -18,6 +18,7 @@ import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
 public class Ambers extends Skill implements Listener {
@@ -38,7 +39,7 @@ public class Ambers extends Skill implements Listener {
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
 		PlayerData data = event.getData().getMMOCore();
-		if (event.isWeapon() || !data.getProfess().hasSkill(this))
+		if (!event.getAttack().hasType(DamageType.SKILL) || !data.getProfess().hasSkill(this))
 			return;
 
 		SkillResult cast = data.cast(this);

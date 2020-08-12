@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.asangarin.hexcolors.ColorParse;
 import net.mmogroup.mmolib.MMOLib;
 
 public class ConfigMessage {
@@ -31,14 +30,14 @@ public class ConfigMessage {
 	}
 
 	public void send(CommandSender sender) {
-		messages.forEach(line -> sender.sendMessage(new ColorParse('&', line).toChatColor()));
+		messages.forEach(line -> sender.sendMessage(MMOLib.plugin.parseColors(line)));
 	}
 
 	public void send(Collection<? extends Player> players) {
-		players.forEach(player -> messages.forEach(line -> player.sendMessage(new ColorParse('&', MMOCore.plugin.placeholderParser.parse(player, line)).toChatColor())));
+		players.forEach(player -> messages.forEach(line -> player.sendMessage(MMOCore.plugin.placeholderParser.parse(player, line))));
 	}
 
 	public void sendAsJSon(Player player) {
-		messages.forEach(line -> MMOLib.plugin.getNMS().sendJson(player, new ColorParse('&', line).toChatColor()));
+		messages.forEach(line -> MMOLib.plugin.getVersion().getWrapper().sendJson(player, MMOLib.plugin.parseColors(line)));
 	}
 }

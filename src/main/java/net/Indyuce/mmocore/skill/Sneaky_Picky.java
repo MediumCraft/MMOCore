@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
 public class Sneaky_Picky extends Skill {
@@ -27,7 +28,7 @@ public class Sneaky_Picky extends Skill {
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
 		PlayerData data = event.getData().getMMOCore();
-		if (!event.isWeapon() || data.isInCombat() || !data.getProfess().hasSkill(this))
+		if (!event.getAttack().hasType(DamageType.WEAPON) || data.isInCombat() || !data.getProfess().hasSkill(this))
 			return;
 
 		SkillResult cast = data.cast(this);

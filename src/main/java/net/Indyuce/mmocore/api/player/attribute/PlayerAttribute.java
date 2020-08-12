@@ -8,7 +8,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.asangarin.hexcolors.ColorParse;
+import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerAttribute {
@@ -25,9 +25,7 @@ public class PlayerAttribute {
 		Validate.notNull(config, "Could not load config");
 		id = config.getName().toLowerCase().replace("_", "-").replace(" ", "-");
 
-		name = config.getString("name");
-		Validate.isTrue(name != null && !name.isEmpty(), "Could not read name");
-
+		name = MMOLib.plugin.parseColors(config.getString("name", "Attribute"));
 		max = config.contains("max-points") ? Math.max(1, config.getInt("max-points")) : 0;
 
 		if (config.contains("buff"))
@@ -45,7 +43,7 @@ public class PlayerAttribute {
 	}
 
 	public String getName() {
-		return new ColorParse('&', name).toChatColor();
+		return name;
 	}
 
 	public boolean hasMax() {

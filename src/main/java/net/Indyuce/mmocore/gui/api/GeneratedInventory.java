@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.TriggerItem;
-import net.asangarin.hexcolors.ColorParse;
+import net.mmogroup.mmolib.MMOLib;
 
 public abstract class GeneratedInventory extends PluginInventory {
 	private final EditableInventory editable;
@@ -54,7 +54,7 @@ public abstract class GeneratedInventory extends PluginInventory {
 
 	@Override
 	public Inventory getInventory() {
-		Inventory inv = Bukkit.createInventory(this, editable.getSlots(), new ColorParse('&', calculateName()).toChatColor());
+		Inventory inv = Bukkit.createInventory(this, editable.getSlots(), MMOLib.plugin.parseColors(calculateName()));
 
 		for (InventoryItem item : editable.getItems())
 			if (item.canDisplay(this))
