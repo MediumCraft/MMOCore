@@ -38,7 +38,7 @@ public class Deep_Wound extends Skill {
 		target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 2, 2);
 		target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, target.getHeight() / 2, 0), 32, 0, 0, 0, .7);
 		target.getWorld().spawnParticle(Particle.BLOCK_CRACK, target.getLocation().add(0, target.getHeight() / 2, 0), 32, 0, 0, 0, 2,
-				Material.REDSTONE_BLOCK);
+				Material.REDSTONE_BLOCK.createBlockData());
 
 		double max = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		double ratio = (max - target.getHealth()) / max;
