@@ -24,7 +24,6 @@ import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
-import net.mmogroup.mmolib.MMOLib;
 
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
@@ -35,7 +34,7 @@ public class BlockListener implements Listener {
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		String savedData = MMOLib.plugin.getVersion().isStrictlyHigher(1, 12) ? event.getBlock().getBlockData().getAsString() : "";
+		String savedData = event.getBlock().getBlockData().getAsString();
 		Block block = event.getBlock();
 
 		/*
@@ -116,12 +115,8 @@ public class BlockListener implements Listener {
 		/*
 		 * enable block regen.
 		 */
-		if (info.hasRegen()) {
-			if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
-				MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()));
-			else
-				MMOCore.plugin.mineManager.initialize(info.startRegeneration(block.getLocation()));
-		}
+		if (info.hasRegen())
+			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()));
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

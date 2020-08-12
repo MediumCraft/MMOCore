@@ -94,10 +94,6 @@ public class BlockInfo {
 		return new RegeneratingBlock(data, loc, this);
 	}
 
-	public RegeneratingBlock startRegeneration(Location loc) {
-		return new RegeneratingBlock(null, loc, this);
-	}
-
 	public boolean hasExperience() {
 		return experience != null;
 	}

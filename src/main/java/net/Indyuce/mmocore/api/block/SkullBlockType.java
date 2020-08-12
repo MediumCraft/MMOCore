@@ -31,7 +31,7 @@ public class SkullBlockType implements BlockType {
 		loc.getBlock().setType(VersionMaterial.PLAYER_HEAD.toMaterial());
 
 		// save skull orientation if replaced block is a player head
-		if (MMOCoreUtils.isPlayerHead(block.getBlockData().getMaterial()) && MMOLib.plugin.getVersion().isStrictlyHigher(1, 12))
+		if (MMOCoreUtils.isPlayerHead(block.getBlockData().getMaterial()))
 			loc.getBlock().setBlockData(block.getBlockData());
 
 		MMOLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
@@ -41,7 +41,7 @@ public class SkullBlockType implements BlockType {
 	public String generateKey() {
 		return "vanilla-skull-" + value;
 	}
-	
+
 	@Override
 	public boolean breakRestrictions(Block block) {
 		return true;
