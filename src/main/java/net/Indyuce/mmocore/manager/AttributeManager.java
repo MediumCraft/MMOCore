@@ -23,7 +23,7 @@ public class AttributeManager extends MMOManager {
 	public Collection<PlayerAttribute> getAll() {
 		return map.values();
 	}
-
+ 
 	@Override
 	public void reload() {
 
