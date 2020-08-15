@@ -66,11 +66,10 @@ public class MMOLoadManager {
 				if (found != null)
 					return found;
 			} catch (IllegalArgumentException | JsonParseException | IndexOutOfBoundsException exception) {
-				throw new IllegalArgumentException("Could not load '" + config.toString() + "': " + exception.getMessage());
+				throw new IllegalArgumentException(exception.getMessage());
 			}
 		}
 
-		throw new IllegalArgumentException(
-				"Could not load '" + config.toString() + "': Could not find corresponding " + c.getSimpleName() + " in database");
+		throw new IllegalArgumentException("Could not find corresponding " + c.getSimpleName() + " in database");
 	}
 }
