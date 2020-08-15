@@ -46,7 +46,7 @@ public class PointsCommandTreeNode extends CommandTreeNode {
 
 			Player player = Bukkit.getPlayer(args[3]);
 			if (player == null) {
-				sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[2] + ".");
+				sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
 				return CommandResult.FAILURE;
 			}
 

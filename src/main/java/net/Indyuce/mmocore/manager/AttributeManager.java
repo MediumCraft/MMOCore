@@ -41,5 +41,4 @@ public class AttributeManager extends MMOManager {
 	public void clear() {
 		map.clear();
 	}
-
 }

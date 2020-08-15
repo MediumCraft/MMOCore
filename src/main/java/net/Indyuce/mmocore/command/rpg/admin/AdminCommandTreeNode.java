@@ -16,6 +16,7 @@ public class AdminCommandTreeNode extends CommandTreeNode {
 
 		addChild(new ExperienceCommandTreeNode(this));
 		addChild(new LevelCommandTreeNode(this));
+		addChild(new AttributeCommandTreeNode(this));
 
 		addChild(new PointsCommandTreeNode("skill", this, (data, points) -> data.setSkillPoints(points), (data, points) -> data.giveSkillPoints(points), (data) -> data.getSkillPoints()));
 		addChild(new PointsCommandTreeNode("class", this, (data, points) -> data.setClassPoints(points), (data, points) -> data.giveClassPoints(points), (data) -> data.getClassPoints()));
