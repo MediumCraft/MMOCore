@@ -59,8 +59,7 @@ public class MMOLoadManager {
 
 	private <T> T load(Class<T> c, MMOLineConfig config, Function<MMOLoader, T> func) {
 
-		for (MMOLoader loader : loaders) {
-
+		for (MMOLoader loader : loaders)
 			try {
 				T found = func.apply(loader);
 				if (found != null)
@@ -68,8 +67,7 @@ public class MMOLoadManager {
 			} catch (IllegalArgumentException | JsonParseException | IndexOutOfBoundsException exception) {
 				throw new IllegalArgumentException(exception.getMessage());
 			}
-		}
 
-		throw new IllegalArgumentException("Could not find corresponding " + c.getSimpleName() + " in database");
+		throw new IllegalArgumentException("Could not match any " + c.getSimpleName() + " to '" + config.getKey() + "' in database");
 	}
 }
