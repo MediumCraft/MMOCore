@@ -1,22 +1,24 @@
 package net.Indyuce.mmocore.command.rpg;
 
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.api.util.item.CurrencyItem;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
 import net.mmogroup.mmolib.api.util.SmartGive;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class CoinsCommandMap extends CommandEnd {
-	public CoinsCommandMap(CommandMap parent) {
-		super(parent, "coins");
+public class NoteCommandTreeNode extends CommandTreeNode {
+	public NoteCommandTreeNode(CommandTreeNode parent) {
+		super(parent, "note");
 
 		addParameter(Parameter.PLAYER);
-		addParameter(Parameter.AMOUNT);
+		addParameter(new Parameter("<worth>",
+				(explorer, list) -> list.addAll(Arrays.asList("10", "20", "30", "40", "50", "60", "70", "80", "90", "100"))));
 	}
 
 	@Override
@@ -30,16 +32,15 @@ public class CoinsCommandMap extends CommandEnd {
 			return CommandResult.FAILURE;
 		}
 
-		int amount;
+		int worth;
 		try {
-			amount = Integer.parseInt(args[2]);
-		} catch (Exception e) {
+			worth = Integer.parseInt(args[2]);
+		} catch (NumberFormatException exception) {
 			sender.sendMessage(ChatColor.RED + args[2] + " is not a valid number.");
 			return CommandResult.FAILURE;
 		}
 
-		new SmartGive(player).give(new CurrencyItem("GOLD_COIN", 1, amount).build());
+		new SmartGive(player).give(new CurrencyItem("NOTE", worth).build());
 		return CommandResult.SUCCESS;
 	}
-
 }

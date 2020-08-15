@@ -9,28 +9,29 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class PointsCommandMap extends CommandMap {
+public class ResourceCommandTreeNode extends CommandTreeNode {
 	private final String type;
-	private final Function<PlayerData, Integer> get;
+	private final Function<PlayerData, Double> get;
 
-	public PointsCommandMap(String type, CommandMap parent, BiConsumer<PlayerData, Integer> set, BiConsumer<PlayerData, Integer> give, Function<PlayerData, Integer> get) {
-		super(parent, type + "-points");
+	public ResourceCommandTreeNode(String type, CommandTreeNode parent, BiConsumer<PlayerData, Double> set, BiConsumer<PlayerData, Double> give,
+			BiConsumer<PlayerData, Double> take, Function<PlayerData, Double> get) {
+		super(parent, "resource-" + type);
 
 		this.type = type;
 		this.get = get;
 
-		addFloor(new ActionCommandMap(this, "set", set));
-		addFloor(new ActionCommandMap(this, "give", give));
+		addChild(new ActionCommandTreeNode(this, "set", set));
+		addChild(new ActionCommandTreeNode(this, "give", give));
+		addChild(new ActionCommandTreeNode(this, "take", take));
 	}
 
-	public class ActionCommandMap extends CommandEnd {
-		private final BiConsumer<PlayerData, Integer> action;
+	public class ActionCommandTreeNode extends CommandTreeNode {
+		private final BiConsumer<PlayerData, Double> action;
 
-		public ActionCommandMap(CommandMap parent, String type, BiConsumer<PlayerData, Integer> action) {
+		public ActionCommandTreeNode(CommandTreeNode parent, String type, BiConsumer<PlayerData, Double> action) {
 			super(parent, type);
 
 			this.action = action;
@@ -50,9 +51,9 @@ public class PointsCommandMap extends CommandMap {
 				return CommandResult.FAILURE;
 			}
 
-			int amount = 0;
+			double amount = 0;
 			try {
-				amount = Integer.parseInt(args[4]);
+				amount = Double.parseDouble(args[4]);
 			} catch (Exception e) {
 				sender.sendMessage(ChatColor.RED + args[4] + " is not a valid number.");
 				return CommandResult.FAILURE;
@@ -60,7 +61,8 @@ public class PointsCommandMap extends CommandMap {
 
 			PlayerData data = PlayerData.get(player);
 			action.accept(data, amount);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD + get.apply(data) + ChatColor.YELLOW + " " + type + " points.");
+			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD + get.apply(data)
+					+ ChatColor.YELLOW + " " + type + " points.");
 			return CommandResult.SUCCESS;
 		}
 	}

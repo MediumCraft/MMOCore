@@ -8,15 +8,15 @@ import org.bukkit.command.CommandSender;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Booster;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class RemoveCommandMap extends CommandEnd {
-	public RemoveCommandMap(CommandMap parent) {
+public class RemoveCommandTreeNode extends CommandTreeNode {
+	public RemoveCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "remove");
 
-		addParameter(new Parameter("<id>", (list) -> MMOCore.plugin.boosterManager.getBoosters().forEach(booster -> list.add("" + booster.getUniqueId().toString()))));
+		addParameter(new Parameter("<id>",
+				(explorer, list) -> MMOCore.plugin.boosterManager.getBoosters().forEach(booster -> list.add("" + booster.getUniqueId().toString()))));
 	}
 
 	@Override

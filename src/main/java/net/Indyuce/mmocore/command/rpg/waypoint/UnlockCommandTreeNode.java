@@ -8,15 +8,14 @@ import org.bukkit.entity.Player;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.Waypoint;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class UnlockCommandMap extends CommandEnd {
-	public UnlockCommandMap(CommandMap parent) {
+public class UnlockCommandTreeNode extends CommandTreeNode {
+	public UnlockCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "unlock");
 
-		addParameter(new Parameter("<waypoint>", (list) -> MMOCore.plugin.waypointManager.getAll().forEach(way -> list.add(way.getId()))));
+		addParameter(new Parameter("<waypoint>", (explorer, list) -> MMOCore.plugin.waypointManager.getAll().forEach(way -> list.add(way.getId()))));
 		addParameter(Parameter.PLAYER);
 	}
 
@@ -38,7 +37,8 @@ public class UnlockCommandMap extends CommandEnd {
 
 		Waypoint waypoint = MMOCore.plugin.waypointManager.get(args[2]);
 		PlayerData.get(player).unlockWaypoint(waypoint);
-		sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " successfully unlocked " + ChatColor.GOLD + waypoint.getId() + ChatColor.YELLOW + ".");
+		sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " successfully unlocked " + ChatColor.GOLD + waypoint.getId()
+				+ ChatColor.YELLOW + ".");
 		return CommandResult.SUCCESS;
 	}
 }

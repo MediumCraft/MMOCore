@@ -5,11 +5,10 @@ import org.bukkit.command.CommandSender;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
 
-public class ReloadCommandMap extends CommandEnd {
-	public ReloadCommandMap(CommandMap parent) {
+public class ReloadCommandTreeNode extends CommandTreeNode {
+	public ReloadCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "reload");
 	}
 

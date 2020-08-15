@@ -9,19 +9,18 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class ResetCommandMap extends CommandMap {
-	public ResetCommandMap(CommandMap parent) {
+public class ResetCommandTreeNode extends CommandTreeNode {
+	public ResetCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "reset");
 
-		addFloor(new ResetLevelsCommandMap(this));
-		addFloor(new ResetSkillsCommandMap(this));
-		addFloor(new ResetAllCommandMap(this));
-		addFloor(new ResetAttributesCommandMap(this));
-		addFloor(new ResetWaypointsCommandMap(this));
+		addChild(new ResetLevelsCommandTreeNode(this));
+		addChild(new ResetSkillsCommandTreeNode(this));
+		addChild(new ResetAllCommandTreeNode(this));
+		addChild(new ResetAttributesCommandTreeNode(this));
+		addChild(new ResetWaypointsCommandTreeNode(this));
 	}
 
 	@Override
@@ -29,8 +28,8 @@ public class ResetCommandMap extends CommandMap {
 		return CommandResult.THROW_USAGE;
 	}
 
-	public class ResetAllCommandMap extends CommandEnd {
-		public ResetAllCommandMap(CommandMap parent) {
+	public class ResetAllCommandTreeNode extends CommandTreeNode {
+		public ResetAllCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "all");
 
 			addParameter(Parameter.PLAYER);
@@ -72,8 +71,8 @@ public class ResetCommandMap extends CommandMap {
 		}
 	}
 
-	public class ResetWaypointsCommandMap extends CommandEnd {
-		public ResetWaypointsCommandMap(CommandMap parent) {
+	public class ResetWaypointsCommandTreeNode extends CommandTreeNode {
+		public ResetWaypointsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "waypoints");
 
 			addParameter(Parameter.PLAYER);
@@ -98,8 +97,8 @@ public class ResetCommandMap extends CommandMap {
 		}
 	}
 
-	public class ResetQuestsCommandMap extends CommandEnd {
-		public ResetQuestsCommandMap(CommandMap parent) {
+	public class ResetQuestsCommandTreeNode extends CommandTreeNode {
+		public ResetQuestsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "quests");
 
 			addParameter(Parameter.PLAYER);
@@ -123,8 +122,8 @@ public class ResetCommandMap extends CommandMap {
 		}
 	}
 
-	public class ResetSkillsCommandMap extends CommandEnd {
-		public ResetSkillsCommandMap(CommandMap parent) {
+	public class ResetSkillsCommandTreeNode extends CommandTreeNode {
+		public ResetSkillsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "skills");
 
 			addParameter(Parameter.PLAYER);
@@ -150,12 +149,12 @@ public class ResetCommandMap extends CommandMap {
 		}
 	}
 
-	public class ResetAttributesCommandMap extends CommandEnd {
-		public ResetAttributesCommandMap(CommandMap parent) {
+	public class ResetAttributesCommandTreeNode extends CommandTreeNode {
+		public ResetAttributesCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "attributes");
 
 			addParameter(Parameter.PLAYER);
-			addParameter(new Parameter("(-reallocate)", list -> list.add("-reallocate")));
+			addParameter(new Parameter("(-reallocate)", (explore, list) -> list.add("-reallocate")));
 		}
 
 		@Override
@@ -193,8 +192,8 @@ public class ResetCommandMap extends CommandMap {
 		}
 	}
 
-	public class ResetLevelsCommandMap extends CommandEnd {
-		public ResetLevelsCommandMap(CommandMap parent) {
+	public class ResetLevelsCommandTreeNode extends CommandTreeNode {
+		public ResetLevelsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "levels");
 
 			addParameter(Parameter.PLAYER);

@@ -9,16 +9,16 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.quest.Quest;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class StartCommandEnd extends CommandEnd {
-	public StartCommandEnd(CommandMap parent) {
+public class StartCommandTreeNode extends CommandTreeNode {
+	public StartCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "start");
 
 		addParameter(Parameter.PLAYER);
-		addParameter(Parameter.QUEST);
+		addParameter(MMOCoreCommandTreeRoot.QUEST);
 	}
 
 	@Override

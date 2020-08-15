@@ -6,19 +6,19 @@ import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
-import net.mmogroup.mmolib.api.stat.StatInstance;
-import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class StatModifiersCommandMap extends CommandEnd {
-	public StatModifiersCommandMap(CommandMap parent) {
-		super(parent, "statmods");
+public class StatValueCommandTreeNode extends CommandTreeNode {
+	public StatValueCommandTreeNode(CommandTreeNode parent) {
+		super(parent, "statvalue");
 
-		addParameter(new Parameter("<stat>", list -> {
+		addParameter(new Parameter("<stat>", (explorer, list) -> {
 			for (StatType stat : StatType.values())
 				list.add(stat.name());
+		}));
+		addParameter(new Parameter("(formatted)", (explorer, list) -> {
+			list.add("true");
 		}));
 	}
 
@@ -41,12 +41,12 @@ public class StatModifiersCommandMap extends CommandEnd {
 			return CommandResult.FAILURE;
 		}
 
-		StatInstance instance = data.getStats().getInstance(stat);
-		sender.sendMessage("Stat Modifiers (" + instance.getKeys().size() + "):");
-		for (String key : instance.getKeys()) {
-			StatModifier mod = instance.getAttribute(key);
-			sender.sendMessage("- " + key + ": " + mod.getValue() + " " + mod.getType().name());
-		}
+		if (args.length > 3 && args[3].equals("true"))
+			sender.sendMessage(DebugCommandTreeNode.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE + "): "
+					+ ChatColor.GREEN + stat.format(data.getStats().getStat(stat)) + ChatColor.WHITE + " *");
+		else
+			sender.sendMessage(DebugCommandTreeNode.commandPrefix + "Stat Value (" + ChatColor.BLUE + stat.name() + ChatColor.WHITE + "): "
+					+ ChatColor.GREEN + data.getStats().getStat(stat));
 
 		return CommandResult.SUCCESS;
 	}

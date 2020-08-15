@@ -25,7 +25,7 @@ import net.Indyuce.mmocore.command.ClassCommand;
 import net.Indyuce.mmocore.command.DepositCommand;
 import net.Indyuce.mmocore.command.FriendsCommand;
 import net.Indyuce.mmocore.command.GuildCommand;
-import net.Indyuce.mmocore.command.MMOCoreCommand;
+import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
 import net.Indyuce.mmocore.command.PartyCommand;
 import net.Indyuce.mmocore.command.PlayerStatsCommand;
 import net.Indyuce.mmocore.command.QuestsCommand;
@@ -341,7 +341,7 @@ public class MMOCore extends JavaPlugin {
 			ex.printStackTrace();
 		}
 
-		MMOCoreCommand mmoCoreCommand = new MMOCoreCommand();
+		MMOCoreCommandTreeRoot mmoCoreCommand = new MMOCoreCommandTreeRoot();
 		getCommand("mmocore").setExecutor(mmoCoreCommand);
 		getCommand("mmocore").setTabCompleter(mmoCoreCommand);
 

@@ -5,13 +5,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class OpenCommandMap extends CommandEnd {
-	public OpenCommandMap(CommandMap parent) {
+public class OpenCommandTreeNode extends CommandTreeNode {
+	public OpenCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "open");
 
 		addParameter(Parameter.PLAYER);

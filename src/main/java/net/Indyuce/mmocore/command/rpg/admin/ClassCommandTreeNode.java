@@ -8,16 +8,16 @@ import org.bukkit.entity.Player;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class ClassCommandMap extends CommandEnd {
-	public ClassCommandMap(CommandMap parent) {
+public class ClassCommandTreeNode extends CommandTreeNode {
+	public ClassCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "class");
 
 		addParameter(Parameter.PLAYER);
-		addParameter(new Parameter("<class>", (list) -> MMOCore.plugin.classManager.getAll().forEach(profess -> list.add(profess.getId()))));
+		addParameter(
+				new Parameter("<class>", (explorer, list) -> MMOCore.plugin.classManager.getAll().forEach(profess -> list.add(profess.getId()))));
 	}
 
 	@Override
@@ -41,7 +41,8 @@ public class ClassCommandMap extends CommandEnd {
 
 		PlayerData data = PlayerData.get(player);
 		data.setClass(profess);
-		sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now a " + ChatColor.GOLD + profess.getName() + ChatColor.YELLOW + ".");
+		sender.sendMessage(
+				ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now a " + ChatColor.GOLD + profess.getName() + ChatColor.YELLOW + ".");
 		return CommandResult.SUCCESS;
 	}
 }

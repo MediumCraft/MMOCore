@@ -11,17 +11,18 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.experience.Booster;
 import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class CreateCommandMap extends CommandEnd {
-	public CreateCommandMap(CommandMap parent) {
+public class CreateCommandTreeNode extends CommandTreeNode {
+	public CreateCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "create");
 
-		addParameter(Parameter.PROFESSION);
-		addParameter(new Parameter("<extra>", (list) -> list.addAll(Arrays.asList("0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"))));
-		addParameter(new Parameter("<length>", (list) -> list.addAll(Arrays.asList("60", "300", "3600", "43200", "86400"))));
+		addParameter(MMOCoreCommandTreeRoot.PROFESSION);
+		addParameter(new Parameter("<extra>",
+				(explorer, list) -> list.addAll(Arrays.asList("0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"))));
+		addParameter(new Parameter("<length>", (explorer, list) -> list.addAll(Arrays.asList("60", "300", "3600", "43200", "86400"))));
 		addParameter(Parameter.PLAYER_OPTIONAL);
 	}
 
@@ -61,7 +62,8 @@ public class CreateCommandMap extends CommandEnd {
 
 		Profession profession = MMOCore.plugin.professionManager.get(format);
 		MMOCore.plugin.boosterManager.register(new Booster(args.length > 5 ? args[5] : null, profession, extra, length));
-		new ConfigMessage("booster-skill").addPlaceholders("multiplier", "" + (1 + extra), "profession", profession.getName()).send(Bukkit.getOnlinePlayers());
+		new ConfigMessage("booster-skill").addPlaceholders("multiplier", "" + (1 + extra), "profession", profession.getName())
+				.send(Bukkit.getOnlinePlayers());
 		Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1));
 		return CommandResult.SUCCESS;
 	}

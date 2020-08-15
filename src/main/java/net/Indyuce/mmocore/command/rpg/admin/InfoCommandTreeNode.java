@@ -8,12 +8,11 @@ import org.bukkit.entity.Player;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.api.CommandEnd;
-import net.Indyuce.mmocore.command.api.CommandMap;
-import net.Indyuce.mmocore.command.api.Parameter;
+import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import net.mmogroup.mmolib.command.api.Parameter;
 
-public class InfoCommandMap extends CommandEnd {
-	public InfoCommandMap(CommandMap parent) {
+public class InfoCommandTreeNode extends CommandTreeNode {
+	public InfoCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "info");
 
 		addParameter(Parameter.PLAYER);
