@@ -9,18 +9,44 @@ public class Booster {
 	private final double extra;
 	private final String author;
 
-	// length not final because boosters can stack, this allows to reduce the
-	// amount of boosters
+	/**
+	 * Length is not final because boosters can stacks. This allows to reduce
+	 * the amount of boosters displayed in the main player menu
+	 */
 	private long length;
 
+	/**
+	 * @param extra
+	 *            1 for +100% experience, 3 for 300% etc.
+	 * @param length
+	 *            Booster length in milliseconds
+	 */
 	public Booster(double extra, long length) {
 		this(null, null, extra, length);
 	}
 
+	/**
+	 * @param author
+	 *            The booster creator
+	 * @param extra
+	 *            1 for +100% experience, 3 for 300% etc.
+	 * @param length
+	 *            Booster length in milliseconds
+	 */
 	public Booster(String author, double extra, long length) {
 		this(author, null, extra, length);
 	}
 
+	/**
+	 * @param author
+	 *            The booster creator
+	 * @param profession
+	 *            Either null for main level boosters or a specific profession
+	 * @param extra
+	 *            1 for +100% experience, 3 for 300% etc.
+	 * @param length
+	 *            Booster length in milliseconds
+	 */
 	public Booster(String author, Profession profession, double extra, long length) {
 		this.author = author;
 		this.length = length * 1000;
@@ -28,40 +54,8 @@ public class Booster {
 		this.extra = extra;
 	}
 
-	public boolean isTimedOut() {
-		return date + length < System.currentTimeMillis();
-	}
-
-	public long getLeft() {
-		return Math.max(0, date + length - System.currentTimeMillis());
-	}
-
-	public long getCreationDate() {
-		return date;
-	}
-
-	public long getLength() {
-		return length;
-	}
-
-	public void addLength(long length) {
-		this.length += length;
-	}
-
-	public boolean hasProfession() {
-		return profession != null;
-	}
-
-	public Profession getProfession() {
-		return profession;
-	}
-
 	public UUID getUniqueId() {
 		return uuid;
-	}
-
-	public double calculateExp(double exp) {
-		return exp * (1 + extra);
 	}
 
 	public double getExtra() {
@@ -74,6 +68,34 @@ public class Booster {
 
 	public String getAuthor() {
 		return author;
+	}
+
+	public long getCreationDate() {
+		return date;
+	}
+
+	public boolean hasProfession() {
+		return profession != null;
+	}
+
+	public Profession getProfession() {
+		return profession;
+	}
+
+	public boolean isTimedOut() {
+		return date + length < System.currentTimeMillis();
+	}
+
+	public long getLeft() {
+		return Math.max(0, date + length - System.currentTimeMillis());
+	}
+
+	public long getLength() {
+		return length;
+	}
+
+	public void addLength(long length) {
+		this.length += length;
 	}
 
 	public boolean canStackWith(Booster booster) {

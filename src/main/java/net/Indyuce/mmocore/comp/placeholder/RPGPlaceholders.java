@@ -100,16 +100,27 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return "" + PlayerData.get(player).getAttributeReallocationPoints();
 
 		else if (identifier.startsWith("attribute_"))
-			return String.valueOf(PlayerData.get(player).getAttributes().getAttribute(
-					MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
+			return String.valueOf(PlayerData.get(player).getAttributes()
+					.getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
 
 		else if (identifier.equals("mana"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getMana());
 
 		else if (identifier.equals("mana_bar")) {
 			PlayerData data = PlayerData.get(player);
-			return data.getProfess().getManaDisplay().generateBar(data.getMana(),
-					data.getStats().getStat(StatType.MAX_MANA));
+			return data.getProfess().getManaDisplay().generateBar(data.getMana(), data.getStats().getStat(StatType.MAX_MANA));
+		}
+
+		else if (identifier.startsWith("exp_multiplier_")) {
+			String format = identifier.substring(15).toLowerCase().replace("_", "-").replace(" ", "-");
+			Profession profession = format.equals("main") ? null : MMOCore.plugin.professionManager.get(format);
+			return MMOCore.plugin.configManager.decimal.format(MMOCore.plugin.boosterManager.getMultiplier(profession) * 100);
+		}
+
+		else if (identifier.startsWith("exp_boost_")) {
+			String format = identifier.substring(10).toLowerCase().replace("_", "-").replace(" ", "-");
+			Profession profession = format.equals("main") ? null : MMOCore.plugin.professionManager.get(format);
+			return MMOCore.plugin.configManager.decimal.format((MMOCore.plugin.boosterManager.getMultiplier(profession) - 1) * 100);
 		}
 
 		else if (identifier.equals("stamina"))
@@ -121,8 +132,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			double ratio = 20 * data.getStamina() / data.getStats().getStat(StatType.MAX_STAMINA);
 			for (double j = 1; j < 20; j++)
 				format += (ratio >= j ? MMOCore.plugin.configManager.staminaFull
-						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf
-								: MMOCore.plugin.configManager.staminaEmpty)
+						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty)
 						+ AltChar.listSquare;
 			return format;
 		}
@@ -140,8 +150,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			PlayerData data = PlayerData.get(player);
 			double ratio = 20 * data.getStellium() / data.getStats().getStat(StatType.MAX_STELLIUM);
 			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE)
-						+ AltChar.listSquare;
+				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
 			return format;
 		}
 
@@ -153,8 +162,8 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = PlayerData.get(player).getQuestData();
 			return data.hasCurrent()
-					? MMOCore.plugin.configManager.decimal.format((int) (double) data.getCurrent().getObjectiveNumber()
-							/ data.getCurrent().getQuest().getObjectives().size() * 100)
+					? MMOCore.plugin.configManager.decimal
+							.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100)
 					: "0";
 		}
 
