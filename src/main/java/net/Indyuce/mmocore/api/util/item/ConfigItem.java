@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mojang.authlib.GameProfile;
@@ -101,13 +102,12 @@ public class ConfigItem {
 		return build(1);
 	}
 
-	@SuppressWarnings("deprecation")
 	public ItemStack build(int amount) {
 		ItemStack item = getItem(amount);
 		ItemMeta meta = item.getItemMeta();
 
-		if (MMOLib.plugin.getVersion().getWrapper().isDamageable(item))
-			MMOLib.plugin.getVersion().getWrapper().applyDurability(item, meta, damage);
+		if (meta instanceof Damageable)
+			((Damageable) meta).setDamage(damage);
 
 		if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(modeldata);
