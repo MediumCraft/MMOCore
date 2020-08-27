@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.droptable.dropitem.fishing;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -23,6 +24,7 @@ public class FishingDropItem {
 		experience = new RandomAmount(config.getString("experience"));
 
 		weight = config.getInt("weight", 1);
+		Validate.isTrue(weight > 0, "A fishing drop table item cannot have 0 weight");
 
 		dropItem = MMOCore.plugin.loadManager.loadDropItem(config);
 	}

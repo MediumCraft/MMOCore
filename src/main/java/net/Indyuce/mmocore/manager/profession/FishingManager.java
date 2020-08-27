@@ -80,7 +80,7 @@ public class FishingManager extends MMOManager {
 							"Could not load item '" + str + "' from fishing drop table '" + id + "': " + exception.getMessage());
 				}
 
-			Validate.notEmpty(list, "The item list must not be empty.");
+			Validate.notEmpty(items, "The item list must not be empty.");
 		}
 
 		public boolean areConditionsMet(ConditionInstance entity) {
