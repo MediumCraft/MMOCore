@@ -36,18 +36,16 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
 
 	@Override
 	public boolean matches(PlayerData player, PotionMeta meta) {
-		return hasRightClass(player) && (types.isEmpty() || new ArrayList<>(types).stream().filter(type -> meta.getBasePotionData().getType() == type).count() > 0);
+		return hasRightClass(player)
+				&& (types.isEmpty() || new ArrayList<>(types).stream().filter(type -> meta.getBasePotionData().getType() == type).count() > 0);
 	}
 
 	@Override
 	public ExperienceManager<BrewPotionExperienceSource> newManager() {
 		return new ExperienceManager<BrewPotionExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGH)
+			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(BrewEvent event) {
-				if (event.isCancelled())
-					return;
-
 				Optional<Player> playerOpt = getNearbyPlayer(event.getBlock().getLocation(), 10);
 				if (!playerOpt.isPresent())
 					return;

@@ -12,8 +12,8 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
-import net.mmogroup.mmolib.api.MMOLineConfig;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class MineBlockExperienceSource extends SpecificExperienceSource<Material> {
 	public final Material material;
@@ -35,14 +35,14 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 	public ExperienceManager<MineBlockExperienceSource> newManager() {
 		return new ExperienceManager<MineBlockExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGHEST)
+			@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 			public void a(BlockBreakEvent event) {
-				if (event.isCancelled() || event.getPlayer().getGameMode() != GameMode.SURVIVAL)
+				if (event.getPlayer().getGameMode() != GameMode.SURVIVAL)
 					return;
+
 				PlayerData data = PlayerData.get(event.getPlayer());
-				
-				for (MineBlockExperienceSource source : getSources())
-				{
+
+				for (MineBlockExperienceSource source : getSources()) {
 					if (source.silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand()))
 						continue;
 					if (source.crop && !MMOLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
@@ -51,7 +51,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 						continue;
 
 					if (source.matches(data, event.getBlock().getType()))
-						source.giveExperience(data, event.getBlock().getLocation());
+						source.giveExperience(data, 1, event.getBlock().getLocation());
 				}
 			}
 		};

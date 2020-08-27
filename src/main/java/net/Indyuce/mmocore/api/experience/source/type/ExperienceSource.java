@@ -25,6 +25,7 @@ public abstract class ExperienceSource<T> {
 		this.profess = profess;
 	}
 
+	// TODO remove setter
 	public void setClass(PlayerClass profess) {
 		this.profess = profess;
 	}

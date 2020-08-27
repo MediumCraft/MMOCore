@@ -37,7 +37,7 @@ public class KillMythicFactionExperienceSource extends SpecificExperienceSource<
 						PlayerData data = PlayerData.get((Player) event.getKiller());
 						for (KillMythicFactionExperienceSource source : getSources())
 							if (source.matches(data, event.getMob().getFaction()))
-								source.giveExperience(data, event.getEntity().getLocation());
+								source.giveExperience(data, 1, event.getEntity().getLocation());
 					}
 				}, 2);
 			}

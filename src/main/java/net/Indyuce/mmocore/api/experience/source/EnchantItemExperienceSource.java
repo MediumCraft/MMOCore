@@ -35,16 +35,13 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 	public boolean matches(PlayerData player, Void v) {
 		return hasRightClass(player);
 	}
- 
+
 	@Override
 	public ExperienceManager<EnchantItemExperienceSource> newManager() {
 		return new ExperienceManager<EnchantItemExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGH)
+			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(EnchantItemEvent event) {
-				if (event.isCancelled())
-					return;
-
 				PlayerData player = PlayerData.get(event.getEnchanter());
 				for (EnchantItemExperienceSource source : getSources())
 					if (source.matches(player, null)) {

@@ -39,28 +39,29 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
 	public ExperienceManager<RepairItemExperienceSource> newManager() {
 		return new ExperienceManager<RepairItemExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGH)
+			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(InventoryClickEvent event) {
-				if (!event.isCancelled() && event.getInventory() != null && event.getInventory().getType() == InventoryType.ANVIL && event.getSlot() == 2) {
+				if (event.getInventory() != null && event.getInventory().getType() == InventoryType.ANVIL && event.getSlot() == 2) {
 
 					ItemStack item = event.getCurrentItem();
 					PlayerData data = PlayerData.get((Player) event.getWhoClicked());
-					
+
 					for (RepairItemExperienceSource source : getSources())
 						if (source.matches(data, item)) {
-							
-							if(!(event.getInventory() instanceof AnvilInventory))
+
+							if (!(event.getInventory() instanceof AnvilInventory))
 								return;
-							
-							if(((AnvilInventory) event.getInventory()).getRepairCost() >
-									((Player) event.getWhoClicked()).getLevel()) return;
-							
+
+							if (((AnvilInventory) event.getInventory()).getRepairCost() > ((Player) event.getWhoClicked()).getLevel())
+								return;
+
 							/*
 							 * make sure the items can actually be repaired
 							 * before getting the amount of durability repaired
 							 */
 							ItemStack old = event.getInventory().getItem(0);
-							if (old == null || old.getType() == Material.AIR) return;
+							if (old == null || old.getType() == Material.AIR)
+								return;
 							if (old.getType().getMaxDurability() < 30 || item.getType().getMaxDurability() < 10)
 								return;
 
@@ -72,7 +73,8 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
 							 * was repaired, substract damage from old item
 							 * durability.
 							 */
-							double exp = MMOCore.plugin.smithingManager.getBaseExperience(item.getType()) * Math.max(0, ((Damageable) old.getItemMeta()).getDamage() - ((Damageable) item.getItemMeta()).getDamage()) / 100;
+							double exp = MMOCore.plugin.smithingManager.getBaseExperience(item.getType())
+									* Math.max(0, ((Damageable) old.getItemMeta()).getDamage() - ((Damageable) item.getItemMeta()).getDamage()) / 100;
 							giveExperience(data, (int) exp, null);
 						}
 				}

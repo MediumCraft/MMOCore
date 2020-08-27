@@ -28,9 +28,9 @@ public class FishItemExperienceSource extends SpecificExperienceSource<ItemStack
 	public ExperienceManager<FishItemExperienceSource> newManager() {
 		return new ExperienceManager<FishItemExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGH)
+			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(PlayerFishEvent event) {
-				if (!event.isCancelled() && event.getState() == State.CAUGHT_FISH) {
+				if (event.getState() == State.CAUGHT_FISH) {
 					ItemStack caught = ((Item) event.getCaught()).getItemStack();
 					if (caught.hasItemMeta())
 						return;
@@ -38,7 +38,7 @@ public class FishItemExperienceSource extends SpecificExperienceSource<ItemStack
 					PlayerData data = PlayerData.get(event.getPlayer());
 					for (FishItemExperienceSource source : getSources())
 						if (source.matches(data, caught))
-							source.giveExperience(data, event.getHook().getLocation().add(0, 1.0f, 0));
+							source.giveExperience(data, caught.getAmount(), event.getHook().getLocation().add(0, 1.0f, 0));
 				}
 			}
 		};

@@ -30,35 +30,33 @@ public class SmeltItemExperienceSource extends SpecificExperienceSource<ItemStac
 	public ExperienceManager<SmeltItemExperienceSource> newManager() {
 		return new ExperienceManager<SmeltItemExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGH)
+			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(BlockCookEvent event) {
-				if (!event.isCancelled()) {
-					Optional<Player> player = getNearestPlayer(event.getBlock().getLocation(), 10);
-					if (!player.isPresent())
-						return;
+				Optional<Player> player = getNearestPlayer(event.getBlock().getLocation(), 10);
+				if (!player.isPresent())
+					return;
 
-					ItemStack caught = event.getResult();
-					if (caught.hasItemMeta())
-						return;
+				ItemStack caught = event.getResult();
+				if (caught.hasItemMeta())
+					return;
 
-					PlayerData data = PlayerData.get(player.get());
-					for (SmeltItemExperienceSource source : getSources())
-						if (source.matches(data, caught))
-							source.giveExperience(data, event.getBlock().getLocation());
-				}
+				PlayerData data = PlayerData.get(player.get());
+				for (SmeltItemExperienceSource source : getSources())
+					if (source.matches(data, caught))
+						source.giveExperience(data, 1, event.getBlock().getLocation());
 			}
 		};
 	}
 
 	private Optional<Player> getNearestPlayer(Location loc, double d) {
 		final double d2 = d * d;
-		final Player[] nearby = loc.getWorld().getPlayers().stream()
-				.filter(player -> player.getLocation().distanceSquared(loc) < d2).toArray(Player[]::new);
+		final Player[] nearby = loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < d2)
+				.toArray(Player[]::new);
 		Player selected = null;
 		double lastDist = d2;
-		for(Player p : nearby) {
+		for (Player p : nearby) {
 			double currDist = p.getLocation().distance(loc);
-			if(currDist < lastDist) {
+			if (currDist < lastDist) {
 				lastDist = currDist;
 				selected = p;
 			}

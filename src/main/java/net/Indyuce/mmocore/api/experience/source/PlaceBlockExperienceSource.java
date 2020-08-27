@@ -26,16 +26,16 @@ public class PlaceBlockExperienceSource extends SpecificExperienceSource<Materia
 	public ExperienceManager<PlaceBlockExperienceSource> newManager() {
 		return new ExperienceManager<PlaceBlockExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGHEST)
+			@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 			public void a(BlockPlaceEvent event) {
-				if (event.isCancelled() || event.getPlayer().getGameMode() != GameMode.SURVIVAL)
+				if (event.getPlayer().getGameMode() != GameMode.SURVIVAL)
 					return;
+
 				PlayerData data = PlayerData.get(event.getPlayer());
-				
-				for (PlaceBlockExperienceSource source : getSources()) {
+
+				for (PlaceBlockExperienceSource source : getSources())
 					if (source.matches(data, event.getBlock().getType()))
-						source.giveExperience(data, event.getBlock().getLocation());
-				}
+						source.giveExperience(data, 1, event.getBlock().getLocation());
 			}
 		};
 	}

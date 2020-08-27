@@ -10,9 +10,10 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
 	private final RandomAmount amount;
 
-	/*
-	 * not all experience sources have to specify a random experience amount e.g
-	 * ENCHANT and ALCHEMY experience depend on the enchanted item.
+	/**
+	 * Used to register experience sources with SPECIFIC experience outputs.
+	 * Other experience sources like ENCHANT have their exp output depend on the
+	 * enchanted item. ALCHEMY exp outputs depend on the potion crafted
 	 */
 	public SpecificExperienceSource(Profession profession, MMOLineConfig config) {
 		super(profession);
@@ -29,7 +30,18 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
 		return amount.calculateInt();
 	}
 
-	public void giveExperience(PlayerData player, Location loc) {
-		giveExperience(player, rollAmount(), loc);
+	/**
+	 * Used when a player needs to gain experience after performing the action
+	 * corresponding to this exp source
+	 * 
+	 * @param multiplier
+	 *            Used by the CraftItem experience source, multiplies the exp
+	 *            earned by a certain factor. When crafting an item, the
+	 *            multiplier is equal to the amount of items crafted
+	 * @param loc
+	 *            Location used to display the exp hologram
+	 */
+	public void giveExperience(PlayerData player, int multiplier, Location loc) {
+		giveExperience(player, rollAmount() * multiplier, loc);
 	}
 }

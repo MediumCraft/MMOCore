@@ -14,7 +14,7 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class CraftItemExperienceSource extends SpecificExperienceSource<Material> {
 	public final Material material;
-	
+
 	public CraftItemExperienceSource(Profession profession, MMOLineConfig config) {
 		super(profession, config);
 
@@ -26,15 +26,12 @@ public class CraftItemExperienceSource extends SpecificExperienceSource<Material
 	public ExperienceManager<CraftItemExperienceSource> newManager() {
 		return new ExperienceManager<CraftItemExperienceSource>() {
 
-			@EventHandler(priority = EventPriority.HIGH)
+			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(CraftItemEvent event) {
-				if (event.isCancelled())
-					return;
-
 				PlayerData data = PlayerData.get((Player) event.getWhoClicked());
 				for (CraftItemExperienceSource source : getSources())
 					if (source.matches(data, event.getInventory().getResult().getType()))
-						source.giveExperience(data, event.getInventory().getLocation());
+						source.giveExperience(data, event.getInventory().getResult().getAmount(), event.getInventory().getLocation());
 			}
 		};
 	}
