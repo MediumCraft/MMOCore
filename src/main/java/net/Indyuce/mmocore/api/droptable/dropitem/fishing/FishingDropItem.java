@@ -57,8 +57,7 @@ public class FishingDropItem {
 		return dropItem;
 	}
 
-	public ItemStack collect() {
-		LootBuilder builder = new LootBuilder(null, 0);
+	public ItemStack collect(LootBuilder builder) {
 		dropItem.collect(builder);
 		return builder.getLoot().stream().findAny().get();
 	}

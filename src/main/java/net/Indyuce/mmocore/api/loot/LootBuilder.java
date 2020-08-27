@@ -13,9 +13,16 @@ public class LootBuilder {
 
 	private double capacity;
 
-	/*
-	 * instance which saves what entity is currently rolling a loot table and
-	 * how much item capacity the table has left
+	/**
+	 * Used to create loot from a drop table
+	 * 
+	 * @param player
+	 *            Player looting
+	 * @param capacity
+	 *            Capacity is the maximum amount of item weight generated using
+	 *            this table. If capacity is set to 10, this table cannot drop
+	 *            an item with 5 weight and another with 6 weight at the saeme
+	 *            time.
 	 */
 	public LootBuilder(PlayerData player, double capacity) {
 		this.player = player;

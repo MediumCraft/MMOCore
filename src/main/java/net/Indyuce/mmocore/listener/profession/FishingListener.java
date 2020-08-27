@@ -25,6 +25,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
 import net.Indyuce.mmocore.api.experience.EXPSource;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
@@ -53,7 +54,8 @@ public class FishingListener implements Listener {
 
 			new FishingData(player, hook, table);
 			if (MMOCore.plugin.hasHolograms())
-				MMOCore.plugin.hologramSupport.displayIndicator(hook.getLocation(), MMOCore.plugin.configManager.getSimpleMessage("caught-fish").message());
+				MMOCore.plugin.hologramSupport.displayIndicator(hook.getLocation(),
+						MMOCore.plugin.configManager.getSimpleMessage("caught-fish").message());
 		}
 	}
 
@@ -124,7 +126,8 @@ public class FishingListener implements Listener {
 				/*
 				 * lose the catch if the current fish is gone!
 				 */
-				//TODO: Cancelling the event also cancels Rod damage (so it's technically unbreakable)
+				// TODO: Cancelling the event also cancels Rod damage (so it's
+				// technically unbreakable)
 				event.setCancelled(true);
 				if (isTimedOut()) {
 					close();
@@ -158,7 +161,7 @@ public class FishingListener implements Listener {
 				if (called.isCancelled())
 					return;
 
-				ItemStack collect = caught.collect();
+				ItemStack collect = caught.collect(new LootBuilder(playerData, 0));
 				if (collect == null) {
 					hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
 					return;
@@ -167,7 +170,8 @@ public class FishingListener implements Listener {
 				// calculate velocity
 				Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);
 				if (MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(location, MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
+					MMOCore.plugin.hologramSupport.displayIndicator(location,
+							MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
 				Vector vec = player.getLocation().subtract(hook.getLocation()).toVector();
 				vec.setY(vec.getY() * .031 + vec.length() * .05);
 				vec.setX(vec.getX() * .08);
@@ -175,10 +179,12 @@ public class FishingListener implements Listener {
 				item.setVelocity(vec);
 				player.getWorld().playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_HAT.toSound(), 1, 0);
 				for (int j = 0; j < 16; j++)
-					location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (random.nextDouble() - .5), 2, 4 * (random.nextDouble() - .5), .05);
+					location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (random.nextDouble() - .5), 2,
+							4 * (random.nextDouble() - .5), .05);
 
 				if (MMOCore.plugin.professionManager.has("fishing"))
-					playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, location, EXPSource.FISHING);
+					playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, location,
+							EXPSource.FISHING);
 			}
 		}
 	}
