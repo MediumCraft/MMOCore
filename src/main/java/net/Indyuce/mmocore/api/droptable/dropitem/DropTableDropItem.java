@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.api.droptable.dropitem;
 
+import net.Indyuce.mmocore.api.droptable.condition.Condition;
+import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -22,7 +24,8 @@ public class DropTableDropItem extends DropItem {
 
 	@Override
 	public void collect(LootBuilder builder) {
-		for (int j = 0; j < rollAmount(); j++)
-			builder.addLoot(dropTable.collect(builder));
+		if (dropTable.areConditionsMet(new ConditionInstance(builder.getEntity().getPlayer())))
+			for (int j = 0; j < rollAmount(); j++)
+				builder.addLoot(dropTable.collect(builder));
 	}
 }

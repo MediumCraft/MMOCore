@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.Indyuce.mmocore.api.droptable.condition.Condition;
+import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +20,7 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 public class DropTable extends PostLoadObject {
 	private final String id;
 	private final Set<DropItem> drops = new LinkedHashSet<>();
+	private final Set<Condition> conditions = new LinkedHashSet<>();
 
 	public DropTable(ConfigurationSection config) {
 		super(config);
@@ -37,15 +40,23 @@ public class DropTable extends PostLoadObject {
 	 */
 	@Override
 	protected void whenPostLoaded(ConfigurationSection config) {
-		List<String> list = config.getStringList("items");
-		Validate.notNull(list, "Could not find drop item list");
+		List<String> itemsList = config.getStringList("items");
+		List<String> conditionsList = config.getStringList("conditions");
+		Validate.notNull(itemsList, "Could not find drop item list");
 
-		for (String key : list)
+		for (String key : itemsList)
 			try {
 				drops.add(MMOCore.plugin.loadManager.loadDropItem(new MMOLineConfig(key)));
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING,
 						"Could not load drop item '" + key + "' from table '" + id + "': " + exception.getMessage());
+			}
+		for (String key : conditionsList)
+			try {
+				conditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
+			} catch (IllegalArgumentException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING,
+						"Could not load condition '" + key + "' from table '" + id + "': " + exception.getMessage());
 			}
 	}
 
@@ -68,5 +79,18 @@ public class DropTable extends PostLoadObject {
 			}
 
 		return builder.getLoot();
+	}
+
+	public Set<Condition> getConditions() {
+		return conditions;
+	}
+
+	public boolean areConditionsMet(ConditionInstance entity) {
+		for (Condition condition : this.getConditions()) {
+			if (!condition.isMet(entity)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
