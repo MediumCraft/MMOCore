@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.load;
 
+import net.Indyuce.mmocore.api.droptable.condition.LevelCondition;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.block.BlockType;
@@ -112,6 +113,9 @@ public class DefaultMMOLoader extends MMOLoader {
 
 		if (config.getKey().equals("biome"))
 			return new BiomeCondition(config);
+
+		if (config.getKey().equals("level"))
+			return new LevelCondition(config);
 
 		return null;
 	}
