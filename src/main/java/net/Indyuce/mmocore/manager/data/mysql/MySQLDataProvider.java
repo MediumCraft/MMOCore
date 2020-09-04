@@ -16,24 +16,29 @@ import net.Indyuce.mmocore.manager.data.yaml.YAMLGuildDataManager;
 public class MySQLDataProvider implements DataProvider {
 	private final MySQLPlayerDataManager playerManager = new MySQLPlayerDataManager(this);
 	private final YAMLGuildDataManager guildManager = new YAMLGuildDataManager();
-
-	private final Connection connection;
+	private final MySQLConfig config;
+	
+	private Connection connection;
 
 	public MySQLDataProvider() {
-		MySQLConfig config = new MySQLConfig(MMOCore.plugin.getConfig().getConfigurationSection("mysql"));
+		config = new MySQLConfig(MMOCore.plugin.getConfig().getConfigurationSection("mysql"));
+		initialize();
+
+		executeUpdate("CREATE TABLE IF NOT EXISTS mmocore_playerdata (uuid VARCHAR(36),class_points INT(11) DEFAULT 0,skill_points INT(11) DEFAULT 0,attribute_points INT(11) DEFAULT 0,attribute_realloc_points INT(11) DEFAULT 0,level INT(11) DEFAULT 0,experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,attributes JSON,professions JSON,quests JSON,waypoints JSON,friends JSON,skills JSON,bound_skills JSON,class_info JSON,PRIMARY KEY (uuid));");
+	}
+
+	private void initialize() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(config.getConnectionString(), config.getUser(), config.getPassword());
 		} catch (ClassNotFoundException | SQLException exception) {
 			throw new IllegalArgumentException("Could not initialize MySQL support: " + exception.getMessage());
 		}
-
-		executeUpdate("CREATE TABLE IF NOT EXISTS mmocore_playerdata (uuid VARCHAR(36),class_points INT(11) DEFAULT 0,skill_points INT(11) DEFAULT 0,attribute_points INT(11) DEFAULT 0,attribute_realloc_points INT(11) DEFAULT 0,level INT(11) DEFAULT 0,experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,attributes JSON,professions JSON,quests JSON,waypoints JSON,friends JSON,skills JSON,bound_skills JSON,class_info JSON,PRIMARY KEY (uuid));");
 	}
 
 	public ResultSet getResult(String sql) {
 		try {
-			return connection.prepareStatement(sql).executeQuery();
+			return getConnection().prepareStatement(sql).executeQuery();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 			return null;
@@ -42,10 +47,21 @@ public class MySQLDataProvider implements DataProvider {
 
 	public void executeUpdate(String sql) {
 		try {
-			connection.prepareStatement(sql).executeUpdate();
+			getConnection().prepareStatement(sql).executeUpdate();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
+	}
+
+	private Connection getConnection() {
+		try {
+			if(connection.isClosed())
+				initialize();
+		} catch (SQLException e) {
+			initialize();
+		}
+		
+		return connection;
 	}
 
 	@Override
