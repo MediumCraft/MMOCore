@@ -1,11 +1,10 @@
 package net.Indyuce.mmocore.api.droptable.dropitem;
 
-import net.Indyuce.mmocore.api.droptable.condition.Condition;
-import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
+import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
