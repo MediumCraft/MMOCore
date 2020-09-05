@@ -96,7 +96,7 @@ import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.mmogroup.mmolib.comp.Metrics;
 import net.mmogroup.mmolib.version.SpigotPlugin;
 
-public class MMOCore extends JavaPlugin {
+public class MMOCore extends JavaPlugin {//yikes
 	public static MMOCore plugin;
 
 	public ConfigManager configManager;
