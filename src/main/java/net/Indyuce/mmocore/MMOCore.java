@@ -98,7 +98,7 @@ import net.mmogroup.mmolib.version.SpigotPlugin;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
-
+ 
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
 	public RestrictionManager restrictionManager;
