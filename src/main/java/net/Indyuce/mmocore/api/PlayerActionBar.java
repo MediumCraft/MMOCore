@@ -31,7 +31,7 @@ public class PlayerActionBar extends BukkitRunnable {
 		for (PlayerData data : PlayerData.getAll()) 
 			if (data.isOnline() && !data.getPlayer().isDead() && !data.isCasting() && data.canSeeActionBar()) {
 				data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(MMOCore.plugin.placeholderParser.parse(data.getPlayer(),
-						MMOLib.plugin.parseColors(new String(format)
+						MMOLib.plugin.parseColors(new String(data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : format)
 								.replace("{health}", digit.format(data.getPlayer().getHealth()))
 								.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
 								.replace("{mana_icon}", data.getProfess().getManaDisplay().getIcon())
