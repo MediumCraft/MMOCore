@@ -62,7 +62,7 @@ public class BlockListener implements Listener {
 		}
 
 		ItemStack item = player.getInventory().getItemInMainHand();
-		BlockPermissions perms = MMOCore.plugin.restrictionManager.getPermissions(item.getType());
+		BlockPermissions perms = MMOCore.plugin.restrictionManager.getPermissions(item);
 		if (perms == null) {
 			event.setCancelled(true);
 			return;
