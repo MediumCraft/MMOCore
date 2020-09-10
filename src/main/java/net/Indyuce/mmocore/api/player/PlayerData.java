@@ -308,7 +308,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public boolean hasWaypoint(Waypoint waypoint) {
-		return waypoints.contains(waypoint.getId());
+		return waypoint.isDefault() ||  waypoints.contains(waypoint.getId());
 	}
 
 	public void unlockWaypoint(Waypoint waypoint) {

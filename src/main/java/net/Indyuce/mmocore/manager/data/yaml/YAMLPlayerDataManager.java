@@ -46,7 +46,6 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		data.getQuestData().updateBossBar();
 		if (config.contains("waypoints"))
 			data.getWaypoints().addAll(config.getStringList("waypoints"));
-		MMOCore.plugin.waypointManager.getDefault().forEach(waypoint -> data.getWaypoints().add(waypoint.getId()));
 		if (config.contains("friends"))
 			config.getStringList("friends").forEach(str -> data.getFriends().add(UUID.fromString(str)));
 		if (config.contains("skill"))
