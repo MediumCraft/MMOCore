@@ -1,1 +1,4 @@
-![eclipse_SEyunr6cEZ](/uploads/4537bd2ada7d70653c7e26a0efc88565/eclipse_SEyunr6cEZ.png)
+Private repository for MMOCore.
+
+Issues: https://git.lumine.io/mythiccraft/mmocore/-/issues  
+Wiki: https://git.lumine.io/mythiccraft/mmocore/-/wikis/home
