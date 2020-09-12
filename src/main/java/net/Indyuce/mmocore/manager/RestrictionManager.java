@@ -48,10 +48,11 @@ public class RestrictionManager {
 	// return breakBlackList.contains(s);
 	// }
 
-	public BlockPermissions getPermissions(ItemStack item) {
+	public Set<BlockPermissions> getPermissions(ItemStack item) {
+		Set<BlockPermissions> set = new HashSet<>();
 		for(ItemType type : map.keySet())
-			if(type.matches(item)) map.get(type);
-		return null;
+			if(type.matches(item)) set.add(map.get(type));
+		return set;
 	}
 
 	public class BlockPermissions extends PostLoadObject {
@@ -59,7 +60,7 @@ public class RestrictionManager {
 		private final ItemType tool;
 
 		private BlockPermissions parent;
-
+		
 		public BlockPermissions(ConfigurationSection config) {
 			super(config);
 
@@ -69,7 +70,7 @@ public class RestrictionManager {
 		@Override
 		protected void whenPostLoaded(ConfigurationSection config) {
 			if (config.contains("parent"))
-				parent = map.get(ItemType.fromString(config.getString("parent", "None")));
+				parent = map.get(ItemType.fromString(config.getString("parent")));
 			for (String key : config.getStringList("can-mine"))
 				mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)));
 		}

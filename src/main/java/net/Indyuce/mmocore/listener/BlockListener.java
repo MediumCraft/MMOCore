@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -62,13 +64,14 @@ public class BlockListener implements Listener {
 		}
 
 		ItemStack item = player.getInventory().getItemInMainHand();
-		BlockPermissions perms = MMOCore.plugin.restrictionManager.getPermissions(item);
-		if (perms == null) {
-			event.setCancelled(true);
-			return;
-		}
-
-		if (!perms.canMine(info.getBlock())) {
+		Set<BlockPermissions> perms = MMOCore.plugin.restrictionManager.getPermissions(item);
+		boolean check = false;
+		for(BlockPermissions perm : perms)
+			if(perm.canMine(info.getBlock())) {
+				check = true;
+				break;
+			}
+		if (!check) {
 			MMOCore.plugin.configManager.getSimpleMessage("cannot-break").send(player);
 			event.setCancelled(true);
 			return;
