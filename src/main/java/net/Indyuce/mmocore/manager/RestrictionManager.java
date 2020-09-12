@@ -33,7 +33,7 @@ public class RestrictionManager {
 			try {
 				perms.postLoad();
 			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "Could not load block perms " + perms.getTool().display() + ": " + exception.getMessage());
+				MMOCore.log(Level.WARNING, "Could not postload block perms " + perms.getTool().display() + ": " + exception.getMessage());
 			}
 	}
 
