@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,7 +48,10 @@ public class PartyListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void b(PlayerAttackEvent event) {
-		if (event.getEntity() instanceof Player) {
+            LivingEntity entity = event.getEntity();
+		if (entity instanceof Player) {
+		        if (entity.hasMetadata("NPC"))
+		            return;
 			PlayerData targetData = PlayerData.get((Player) event.getEntity());
 			if (targetData.hasParty() && targetData.getParty().getMembers().has(event.getData().getMMOCore()))
 				event.setCancelled(true);
