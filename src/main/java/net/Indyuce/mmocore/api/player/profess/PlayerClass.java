@@ -90,7 +90,7 @@ public class PlayerClass extends PostLoadObject {
 				: ManaDisplayOptions.DEFAULT;
 		maxLevel = config.getInt("max-level");
 		displayOrder = config.getInt("display.order");
-		actionBarFormat = config.getString("action-bar", "");
+		actionBarFormat = config.contains("action-bar", true) ? config.getString("action-bar") : null;
 
 		expCurve = config.contains("exp-curve")
 				? MMOCore.plugin.experience.getOrThrow(
@@ -329,6 +329,6 @@ public class PlayerClass extends PostLoadObject {
 	}
 
 	public boolean hasActionBar() {
-		return actionBarFormat.isEmpty();
+		return actionBarFormat == null;
 	}
 }
