@@ -329,6 +329,6 @@ public class PlayerClass extends PostLoadObject {
 	}
 
 	public boolean hasActionBar() {
-		return actionBarFormat == null;
+		return actionBarFormat != null;
 	}
 }
