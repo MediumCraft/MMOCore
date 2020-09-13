@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-import net.Indyuce.mmocore.api.player.profess.event.trigger.*;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,6 +19,12 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.AttackEventTrigger;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.BlockBrokenTrigger;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.BlockPlacedTrigger;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.ClassChosenEventTrigger;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.LevelUpEventTrigger;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.MultipleLevelUpEventTrigger;
 
 public class ClassManager extends MMOManager {
 	private final Map<String, PlayerClass> map = new HashMap<>();

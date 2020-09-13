@@ -11,9 +11,9 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
-import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.api.util.PostLoadObject;
 
 public class DropTable extends PostLoadObject {
 	private final String id;

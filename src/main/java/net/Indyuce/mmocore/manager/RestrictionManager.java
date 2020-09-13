@@ -12,8 +12,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockType;
-import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.api.util.PostLoadObject;
 
 public class RestrictionManager {
 	// private Set<String> breakBlackList = new HashSet<>();

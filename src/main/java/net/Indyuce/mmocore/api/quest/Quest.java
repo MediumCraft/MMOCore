@@ -13,10 +13,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.api.util.PostLoadObject;
 
 public class Quest extends PostLoadObject {
 	private final String id;

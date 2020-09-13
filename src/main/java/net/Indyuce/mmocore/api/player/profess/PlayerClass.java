@@ -26,7 +26,6 @@ import com.mojang.authlib.properties.Property;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.ExpCurve;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.api.load.PostLoadObject;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
@@ -40,6 +39,7 @@ import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
 import net.md_5.bungee.api.ChatColor;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.api.util.PostLoadObject;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class PlayerClass extends PostLoadObject {
