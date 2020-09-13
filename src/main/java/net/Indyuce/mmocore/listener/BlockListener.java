@@ -23,7 +23,6 @@ import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.manager.RestrictionManager.BlockPermissions;
 
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
@@ -62,13 +61,7 @@ public class BlockListener implements Listener {
 		}
 
 		ItemStack item = player.getInventory().getItemInMainHand();
-		BlockPermissions perms = MMOCore.plugin.restrictionManager.getPermissions(item.getType());
-		if (perms == null) {
-			event.setCancelled(true);
-			return;
-		}
-
-		if (!perms.canMine(info.getBlock())) {
+		if (!MMOCore.plugin.restrictionManager.checkPermissions(item, info.getBlock())) {
 			MMOCore.plugin.configManager.getSimpleMessage("cannot-break").send(player);
 			event.setCancelled(true);
 			return;

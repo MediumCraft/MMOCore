@@ -3,9 +3,7 @@ package net.Indyuce.mmocore.manager;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -27,10 +25,6 @@ public class WaypointManager {
 
 	public Collection<Waypoint> getAll() {
 		return waypoints.values();
-	}
-
-	public Set<Waypoint> getDefault() {
-		return getAll().stream().filter(waypoint -> waypoint.isDefault()).collect(Collectors.toSet());
 	}
 
 	public boolean has(String id) {

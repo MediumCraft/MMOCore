@@ -42,6 +42,6 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
 	 *            Location used to display the exp hologram
 	 */
 	public void giveExperience(PlayerData player, int multiplier, Location loc) {
-		giveExperience(player, rollAmount() * multiplier, loc);
+		super.giveExperience(player, rollAmount() * multiplier, loc);
 	}
 }

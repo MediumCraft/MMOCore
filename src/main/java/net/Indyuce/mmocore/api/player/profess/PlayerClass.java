@@ -43,7 +43,7 @@ import net.mmogroup.mmolib.api.util.PostLoadObject;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class PlayerClass extends PostLoadObject {
-	private final String name, id;
+	private final String name, id, actionBarFormat;
 	private final List<String> description = new ArrayList<>(), attrDescription = new ArrayList<>();
 	private final ItemStack icon;
 	private final Map<ClassOption, Boolean> options = new HashMap<>();
@@ -90,6 +90,7 @@ public class PlayerClass extends PostLoadObject {
 				: ManaDisplayOptions.DEFAULT;
 		maxLevel = config.getInt("max-level");
 		displayOrder = config.getInt("display.order");
+		actionBarFormat = config.contains("action-bar", true) ? config.getString("action-bar") : null;
 
 		expCurve = config.contains("exp-curve")
 				? MMOCore.plugin.experience.getOrThrow(
@@ -185,6 +186,7 @@ public class PlayerClass extends PostLoadObject {
 		displayOrder = 0;
 		expCurve = ExpCurve.DEFAULT;
 		castParticle = new CastingParticle(Particle.SPELL_INSTANT);
+		actionBarFormat = "";
 
 		this.icon = new ItemStack(material);
 		setOption(ClassOption.DISPLAY, false);
@@ -320,5 +322,13 @@ public class PlayerClass extends PostLoadObject {
 	@Override
 	public boolean equals(Object obj) {
 		return obj != null && obj instanceof PlayerClass && ((PlayerClass) obj).id.equals(id);
+	}
+
+	public String getActionBar() {
+		return actionBarFormat;
+	}
+
+	public boolean hasActionBar() {
+		return actionBarFormat != null;
 	}
 }

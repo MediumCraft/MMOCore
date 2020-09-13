@@ -1,7 +1,9 @@
 package net.Indyuce.mmocore.api.event;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -27,7 +29,8 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
 		this.block = block;
 		this.info = info;
-		this.drops = info.collectDrops(new LootBuilder(player, 0));
+		this.drops = (info.hasDropTable() && info.getDropTable().areConditionsMet(new ConditionInstance(player.getPlayer())))
+			? info.collectDrops(new LootBuilder(player, 0)) : new ArrayList<>();
 		this.experience = info.hasExperience() ? info.getExperience().newInfo() : null;
 	}
 

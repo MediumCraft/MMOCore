@@ -18,7 +18,16 @@ import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.mmogroup.mmolib.api.util.AltChar;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
-
+    @Override
+    public boolean persist(){
+        return true;
+    }
+    
+    @Override
+    public boolean canRegister(){
+        return true;
+    }
+    
 	@Override
 	public String getAuthor() {
 		return "Indyuce";
@@ -36,7 +45,6 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 	@Override
 	public String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
-
 		if (identifier.equals("level"))
 			return "" + PlayerData.get(player).getLevel();
 

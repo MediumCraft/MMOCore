@@ -6,67 +6,85 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockType;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.api.itemtype.ItemType;
 import net.mmogroup.mmolib.api.util.PostLoadObject;
 
 public class RestrictionManager {
-	// private Set<String> breakBlackList = new HashSet<>();
-	private final Map<Material, BlockPermissions> map = new HashMap<>();
+	private final Map<ItemType, ToolPermissions> map = new HashMap<>();
 
 	public RestrictionManager(FileConfiguration config) {
 
 		for (String key : config.getKeys(false))
 			try {
-				register(new BlockPermissions(config.getConfigurationSection(key)));
+				register(new ToolPermissions(config.getConfigurationSection(key)));
 			} catch (IllegalArgumentException exception) {
 				MMOCore.log(Level.WARNING, "Could not load block perms " + key + ": " + exception.getMessage());
 			}
 
-		for (BlockPermissions perms : map.values())
+		for (ToolPermissions perms : map.values())
 			try {
 				perms.postLoad();
 			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "Could not load block perms " + perms.getTool().name() + ": " + exception.getMessage());
+				MMOCore.log(Level.WARNING, "Could not postload block perms " + perms.getTool().display() + ": " + exception.getMessage());
 			}
 	}
 
-	public void register(BlockPermissions perms) {
+	public void register(ToolPermissions perms) {
 		if (perms.isValid())
 			map.put(perms.getTool(), perms);
-		// perms.getMinable().forEach(material ->
-		// breakBlackList.add(material));
 	}
 
-	// public boolean isBlackListed(String s) {
-	// return breakBlackList.contains(s);
-	// }
-
-	public BlockPermissions getPermissions(Material tool) {
-		return map.getOrDefault(tool, null);
+	/**
+	 * @param item
+	 *            The item used to break a block
+	 * @return A list of all the blocks an item is allowed to break.
+	 */
+	public Set<ToolPermissions> getPermissions(ItemStack item) {
+		Set<ToolPermissions> set = new HashSet<>();
+		for (ItemType type : map.keySet())
+			if (type.matches(item))
+				set.add(map.get(type));
+		return set;
 	}
 
-	public class BlockPermissions extends PostLoadObject {
+	/**
+	 * Performance method so that MMOCore does not have to fill in a set of
+	 * toolPermission instances.
+	 * 
+	 * @param item
+	 *            The item used to break a block
+	 * @return If the block can be broken by a certain item
+	 */
+	public boolean checkPermissions(ItemStack item, BlockType block) {
+		for (ItemType type : map.keySet())
+			if (type.matches(item) && map.get(type).canMine(block))
+				return true;
+		return false;
+	}
+
+	public class ToolPermissions extends PostLoadObject {
 		private final Set<BlockType> mineable = new HashSet<>();
-		private final Material tool;
+		private final ItemType tool;
 
-		private BlockPermissions parent;
+		private ToolPermissions parent;
 
-		public BlockPermissions(ConfigurationSection config) {
+		public ToolPermissions(ConfigurationSection config) {
 			super(config);
 
-			tool = Material.valueOf(config.getName());
+			tool = ItemType.fromString(config.getName());
 		}
 
 		@Override
 		protected void whenPostLoaded(ConfigurationSection config) {
 			if (config.contains("parent"))
-				parent = map.get(Material.valueOf(config.getString("parent", "None").toUpperCase().replace("-", "_").replace(" ", "_")));
+				parent = map.get(ItemType.fromString(config.getString("parent")));
 			for (String key : config.getStringList("can-mine"))
 				mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)));
 		}
@@ -85,7 +103,7 @@ public class RestrictionManager {
 			return parent != null && parent.canMine(type);
 		}
 
-		public Material getTool() {
+		public ItemType getTool() {
 			return tool;
 		}
 

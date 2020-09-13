@@ -91,8 +91,6 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 
 			PlayerData data = PlayerData.get(player);
 			data.getWaypoints().clear();
-			MMOCore.plugin.waypointManager.getAll().stream().filter(waypoint -> waypoint.isDefault())
-					.forEach(waypoint -> data.unlockWaypoint(waypoint));
 			return CommandResult.SUCCESS;
 		}
 	}
