@@ -29,9 +29,8 @@ public class MySQLDataProvider implements DataProvider {
 
 	private void initialize() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(config.getConnectionString(), config.getUser(), config.getPassword());
-		} catch (ClassNotFoundException | SQLException exception) {
+		} catch (SQLException exception) {
 			throw new IllegalArgumentException("Could not initialize MySQL support: " + exception.getMessage());
 		}
 	}
