@@ -16,11 +16,20 @@ mysql:
     flags: '?allowReconnect=true&useSSL=false'
 
 # The list of all conditions which must be met for the
-# BLOCK REGEN and BLOCK RESTRICTIONS to apply.
-# Set to 'custom-mine-conditions: []' for no condition.
+# BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
+# 'custom-mine-conditions: []' to disable custom mining entirely.
 custom-mine-conditions:
-- 'world{name="world1,world2,world_nether,world_the_end"}'
-- 'region{name="region1,region2,__global__"}'
+- 'world{name="world,world_nether,world_the_end"}'
+- 'region{name="example_region,example_region2,__global__"}'
+#
+# custom-mine-conditions:
+# - 'world{name="__global__"}'
+#
+# ^ will enable custom mining server wide
+
+# Set to true to prevent vanilla blocks from being
+# broken when custom mining conditions are met
+protect-custom-mine: false
 
 # Offset is the distance traveled on X and Y coordinates
 # Height is the Y velocity coordinate. Lootsplosions
@@ -51,6 +60,10 @@ action-bar:
     
     # The decimal format for stats (not including stat formats in stats.yml)
     decimal: "0.#"
+    
+    # The amount of miliseconds the bar will be faded
+    #out when displaying other action bars.
+    time-out: 60
     
     # The amount of ticks before updating the info
     ticks-to-update: 5

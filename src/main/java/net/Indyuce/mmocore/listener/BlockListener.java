@@ -36,19 +36,31 @@ public class BlockListener implements Listener {
 		String savedData = event.getBlock().getBlockData().getAsString();
 		Block block = event.getBlock();
 
+		final boolean regen = MMOCore.plugin.mineManager.isRegenerating(block);
+		if(regen && !MMOCore.plugin.mineManager.isBlockRegistered(block)) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		/*
 		 * if custom mining enabled, check for item breaking restrictions
 		 */
 		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player, block.getLocation());
 		if (!customMine)
 			return;
-
+		
 		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
-		if (info == null || !info.getBlock().breakRestrictions(block)) {
+		if (info == null) {
+			if(MMOCore.plugin.mineManager.shouldProtect())
+				event.setCancelled(true);
+			return;
+		}
+		
+		if(!info.getBlock().breakRestrictions(block)) {
 			event.setCancelled(true);
 			return;
 		}
-
+		
 		/*
 		 * calls the event and listen for cancel & for drops changes... also
 		 * allows to apply tool durability & enchants to drops, etc.
@@ -109,7 +121,7 @@ public class BlockListener implements Listener {
 		 * enable block regen.
 		 */
 		if (info.hasRegen())
-			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()));
+			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !regen);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

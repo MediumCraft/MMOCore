@@ -17,6 +17,6 @@ public class WorldCondition extends Condition {
 
 	@Override
 	public boolean isMet(ConditionInstance entity) {
-		return names.contains(entity.getEntity().getWorld().getName());
+		return names.contains(entity.getEntity().getWorld().getName()) || names.contains("__global__");
 	}
 }

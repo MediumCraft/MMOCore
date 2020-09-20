@@ -577,7 +577,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void displayActionBar(String message) {
-		setActionBarTimeOut(60);
+		setActionBarTimeOut(MMOCore.plugin.actionBarManager.getTimeOut());
 		getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
 

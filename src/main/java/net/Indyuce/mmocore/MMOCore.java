@@ -107,11 +107,11 @@ public class MMOCore extends JavaPlugin {
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public InventoryManager inventoryManager;
-	public PlayerActionBar actionBarManager;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
 	public FlagPlugin flagPlugin = new DefaultFlags();
 	public PlaceholderParser placeholderParser = new DefaultParser();
 	public DataProvider dataProvider = new YAMLDataProvider();
+	public final PlayerActionBar actionBarManager = new PlayerActionBar();
 	public final SkillManager skillManager = new SkillManager();
 	public final ClassManager classManager = new ClassManager();
 	public final DropTableManager dropTableManager = new DropTableManager();
@@ -250,12 +250,6 @@ public class MMOCore extends JavaPlugin {
 		saveDefaultConfig();
 		reloadPlugin();
 
-		/*
-		 * default action bar. only ran if the action bar is enabled
-		 */
-		if (getConfig().getBoolean("action-bar.enabled"))
-			new PlayerActionBar(getConfig().getConfigurationSection("action-bar"));
-
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
 			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
 
@@ -374,12 +368,14 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public void reloadPlugin() {
+		reloadConfig();
+		
 		configManager = new ConfigManager();
 
 		skillManager.reload();
 
 		mineManager.clear();
-		mineManager.reload();
+		mineManager.reload(getConfig().getBoolean("protect-custom-mine"));
 
 		fishingManager.clear();
 		alchemyManager.clear();
@@ -415,6 +411,9 @@ public class MMOCore extends JavaPlugin {
 		restrictionManager = new RestrictionManager(new ConfigFile("restrictions").getConfig());
 		requestManager = new RequestManager();
 		configItems = new ConfigItemManager(new ConfigFile("items").getConfig());
+
+		if(getConfig().isConfigurationSection("action-bar"))
+			actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
 
 		StatType.load();
 	}
