@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.gui.api.item;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 
@@ -10,8 +10,8 @@ public class NoPlaceholderItem extends InventoryPlaceholderItem {
 		super(config);
 	}
 
-	public NoPlaceholderItem(ItemStack stack, ConfigurationSection config) {
-		super(stack, config);
+	public NoPlaceholderItem(Material material, ConfigurationSection config) {
+		super(material, config);
 	}
 
 	@Override

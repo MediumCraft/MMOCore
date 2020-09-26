@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -17,26 +18,25 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.mmogroup.mmolib.MMOLib;
 
 public abstract class InventoryPlaceholderItem extends InventoryItem {
-	private final ItemStack stack;
+	private final Material material;
 	private final String name, texture;
 	private final List<String> lore;
 	private final int modelData;
 	private final boolean placeholders, hideFlags;
 
 	public InventoryPlaceholderItem(ConfigurationSection config) {
-		this(MMOCoreUtils.readIcon(config.getString("item")), config);
+		this(Material.valueOf(config.getString("item", "").toUpperCase().replace(" ", "_").replace("-", "_")), config);
 	}
 
-	public InventoryPlaceholderItem(ItemStack stack, ConfigurationSection config) {
+	public InventoryPlaceholderItem(Material material, ConfigurationSection config) {
 		super(config);
 
-		this.stack = stack;
+		this.material = material;
 		this.name = config.getString("name");
 		this.lore = config.getStringList("lore");
 		this.hideFlags = config.getBoolean("hide-flags");
@@ -45,8 +45,8 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 		this.modelData = config.getInt("custom-model-data");
 	}
 
-	public ItemStack cloneItem() {
-		return stack.clone();
+	public Material getMaterial() {
+		return material;
 	}
 
 	public boolean hideFlags() {
@@ -72,7 +72,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 	public int getModelData() {
 		return modelData;
 	}
-	
+
 	public boolean supportPlaceholders() {
 		return placeholders;
 	}
@@ -92,7 +92,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 	public ItemStack display(GeneratedInventory inv, int n) {
 
 		Placeholders placeholders = getPlaceholders(inv, n);
-		ItemStack item = cloneItem();
+		ItemStack item = new ItemStack(material);
 		ItemMeta meta = item.getItemMeta();
 
 		if (texture != null && meta instanceof SkullMeta)
@@ -112,7 +112,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 
 		if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(getModelData());
-		
+
 		item.setItemMeta(meta);
 		return item;
 	}

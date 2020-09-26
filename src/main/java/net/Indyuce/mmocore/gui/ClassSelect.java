@@ -46,7 +46,7 @@ public class ClassSelect extends EditableInventory {
 		private final List<String> lore;
 
 		public ClassItem(ConfigurationSection config) {
-			super(new ItemStack(Material.BARRIER), config);
+			super(Material.BARRIER, config);
 
 			this.name = config.getString("name");
 			this.lore = config.getStringList("lore");
