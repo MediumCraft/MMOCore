@@ -97,7 +97,8 @@ public class ClassSelect extends EditableInventory {
 	}
 
 	public class ProfessSelectionInventory extends GeneratedInventory {
-		private final List<PlayerClass> classes = MMOCore.plugin.classManager.getAll().stream().filter(c -> c.hasOption(ClassOption.DISPLAY)).sorted(Comparator.comparingInt(PlayerClass::getDisplayOrder)).collect(Collectors.toList());
+		private final List<PlayerClass> classes = MMOCore.plugin.classManager.getAll().stream().filter(c -> c.hasOption(ClassOption.DISPLAY))
+				.sorted(Comparator.comparingInt(PlayerClass::getDisplayOrder)).collect(Collectors.toList());
 
 		public ProfessSelectionInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
