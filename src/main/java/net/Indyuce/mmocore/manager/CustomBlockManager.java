@@ -16,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 
+import io.papermc.lib.PaperLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
@@ -91,9 +92,13 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	private void regen(RegeneratingBlock info, boolean shutdown) {
-		info.getRegeneratingBlock().getBlock().place(info.getLocation(), info);
-		info.getLocation().getBlock().getState().update();
-		if(!shutdown) active.remove(info);
+        Location infoLocation = info.getLocation();
+		// Get the chunk and load it async if needed.
+        PaperLib.getChunkAtAsync(infoLocation).whenComplete((chunk, ex) -> {
+                info.getRegeneratingBlock().getBlock().place(infoLocation, info);
+                info.getLocation().getBlock().getState().update();
+                if(!shutdown) active.remove(info);
+        });
 	}
 
 	/*
