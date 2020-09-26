@@ -15,6 +15,7 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 public class MineBlockObjective extends Objective {
 	private final Material block;
 	private final int required;
+	private final boolean playerPlaced;
 
 	public MineBlockObjective(ConfigurationSection section, MMOLineConfig config) {
 		super(section);
@@ -23,6 +24,7 @@ public class MineBlockObjective extends Objective {
 
 		block = Material.valueOf(config.getString("type").replace("-", "_").toUpperCase());
 		required = config.getInt("amount");
+		playerPlaced = config.getBoolean("player-placed", false);
 	}
 
 	@Override
@@ -39,6 +41,8 @@ public class MineBlockObjective extends Objective {
 
 		@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 		public void a(BlockBreakEvent event) {
+			if ((!playerPlaced) && event.getBlock().hasMetadata("player_placed"))
+				return;
 			if (event.getPlayer().equals(getQuestProgress().getPlayer().getPlayer()) && event.getBlock().getType() == block) {
 				count++;
 				getQuestProgress().getPlayer().getQuestData().updateBossBar();

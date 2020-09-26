@@ -65,7 +65,7 @@ public class PlayerClass extends PostLoadObject {
 
 		this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
 
-		name = MMOLib.plugin.parseColors(config.getString("display.name"));
+		name = MMOLib.plugin.parseColors(config.getString("display.name", "INVALID DISPLAY NAME"));
 		icon = MMOCoreUtils.readIcon(config.getString("display.item", "BARRIER"));
 
 		if (config.contains("display.texture") && icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())

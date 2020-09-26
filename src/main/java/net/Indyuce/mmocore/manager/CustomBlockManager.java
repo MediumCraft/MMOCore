@@ -49,6 +49,8 @@ public class CustomBlockManager extends MMOManager {
 	 */
 	private final List<Function<Block, Optional<BlockType>>> blockTypes = new ArrayList<>();
 
+	private boolean protect;
+
 	public CustomBlockManager() {
 		registerBlockType(block -> MMOCoreUtils.isPlayerHead(block.getType()) ? Optional.of(new SkullBlockType(block)) : Optional.empty());
 	}
@@ -61,6 +63,10 @@ public class CustomBlockManager extends MMOManager {
 		map.put(regen.getBlock().generateKey(), regen);
 	}
 
+	public boolean isBlockRegistered(Block block) {
+		return map.containsKey(findBlockType(block).generateKey());
+	}
+	
 	public BlockInfo getInfo(Block block) {
 		return map.getOrDefault(findBlockType(block).generateKey(), null);
 	}
@@ -75,17 +81,19 @@ public class CustomBlockManager extends MMOManager {
 		return new VanillaBlockType(block);
 	}
 
-	public void initialize(RegeneratingBlock info) {
-		active.add(info);
+	public void initialize(RegeneratingBlock info, boolean schedule) {
+		if(schedule) {
+			active.add(info);
+			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> regen(info, false), info.getRegeneratingBlock().getRegenerationInfo().getTime());
+		}
 		if (info.getRegeneratingBlock().getRegenerationInfo().hasTemporaryBlock())
 			info.getRegeneratingBlock().getRegenerationInfo().getTemporaryBlock().place(info.getLocation(), info);
-		Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> regen(info), info.getRegeneratingBlock().getRegenerationInfo().getTime());
 	}
 
-	private void regen(RegeneratingBlock info) {
+	private void regen(RegeneratingBlock info, boolean shutdown) {
 		info.getRegeneratingBlock().getBlock().place(info.getLocation(), info);
-		active.remove(info);
 		info.getLocation().getBlock().getState().update();
+		if(!shutdown) active.remove(info);
 	}
 
 	/*
@@ -93,7 +101,18 @@ public class CustomBlockManager extends MMOManager {
 	 * are reset and put back in place.
 	 */
 	public void resetRemainingBlocks() {
-		active.forEach(info -> regen(info));
+		active.forEach(info -> regen(info, true));
+	}
+	
+	public boolean isRegenerating(Block block) {
+		Location loc = block.getLocation();
+		for(RegeneratingBlock info : active)
+			if(info.getLocation().getBlockX() == loc.getBlockX()
+			&& info.getLocation().getBlockY() == loc.getBlockY()
+			&& info.getLocation().getBlockZ() == loc.getBlockZ())
+				return true;
+			
+		return false;
 	}
 
 	public boolean isEnabled(Entity entity) {
@@ -101,6 +120,8 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	public boolean isEnabled(Entity entity, Location loc) {
+		if(customMineConditions.isEmpty()) return false;
+		
 		ConditionInstance conditionEntity = new ConditionInstance(entity, loc);
 		for (Condition condition : customMineConditions)
 			if (!condition.isMet(conditionEntity))
@@ -117,7 +138,16 @@ public class CustomBlockManager extends MMOManager {
 				MMOCore.log(Level.WARNING, "Could not load custom block '" + key + "': " + exception.getMessage());
 			}
 	}
+	
+	public boolean shouldProtect() {
+		return protect;
+	}
 
+	public void reload(boolean protect) {
+		this.protect = protect;
+		reload();
+	}
+	
 	@Override
 	public void reload() {
 		customMineConditions.clear();

@@ -14,16 +14,23 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.mmogroup.mmolib.MMOLib;
 
 public class PlayerActionBar extends BukkitRunnable {
-	private final int ticks;
-	private final DecimalFormat digit;
-	private final String format;
+	boolean initialized = false;
 	
-	public PlayerActionBar(ConfigurationSection config) {
-		digit = new DecimalFormat(config.getString("decimal"), MMOCore.plugin.configManager.formatSymbols);
-		ticks = config.getInt("ticks-to-update");
-		format = config.getString("format");
-		
-		runTaskTimer(MMOCore.plugin, 0, ticks);
+	private ActionBarConfig config;
+	private DecimalFormat digit;
+	
+	public void reload(ConfigurationSection cfg) {		
+		config = new ActionBarConfig(cfg);
+		digit = new DecimalFormat(config.digit, MMOCore.plugin.configManager.formatSymbols);
+
+		if(!initialized && config.enabled) {
+			runTaskTimer(MMOCore.plugin, 0, config.ticks);
+			initialized = true;
+		}
+	}
+	
+	public long getTimeOut() {
+		return config.timeout;
 	}
 
 	@Override
@@ -31,7 +38,7 @@ public class PlayerActionBar extends BukkitRunnable {
 		for (PlayerData data : PlayerData.getAll()) 
 			if (data.isOnline() && !data.getPlayer().isDead() && !data.isCasting() && data.canSeeActionBar()) {
 				data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(MMOCore.plugin.placeholderParser.parse(data.getPlayer(),
-						MMOLib.plugin.parseColors(new String(data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : format)
+						MMOLib.plugin.parseColors(new String(data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : config.format)
 								.replace("{health}", digit.format(data.getPlayer().getHealth()))
 								.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
 								.replace("{mana_icon}", data.getProfess().getManaDisplay().getIcon())
@@ -47,5 +54,19 @@ public class PlayerActionBar extends BukkitRunnable {
 								.replace("{level}", "" + data.getLevel())
 								.replace("{name}", data.getPlayer().getDisplayName())))));
 			}
+	}
+	
+	private class ActionBarConfig {
+		private final boolean enabled;
+		private final int ticks, timeout;
+		private final String digit, format;
+		
+		private ActionBarConfig(ConfigurationSection config) {
+			enabled = config.getBoolean("enabled", false);
+			timeout = config.getInt("", 60);
+			digit = config.getString("decimal", "0.#");
+			ticks = config.getInt("ticks-to-update", 5);
+			format = config.getString("format", "please format me :c");
+		}
 	}
 }
