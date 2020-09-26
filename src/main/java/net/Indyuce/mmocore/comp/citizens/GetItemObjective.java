@@ -39,6 +39,7 @@ public class GetItemObjective extends Objective {
 		@EventHandler
 		public void a(CitizenInteractEvent event) {
 			Player player = event.getPlayer();
+			if(!getQuestProgress().getPlayer().isOnline()) return;
 			if (player.equals(getQuestProgress().getPlayer().getPlayer()) && event.getNPC().getId() == npcId && player.getInventory().getItemInMainHand() != null) {
 				ItemStack item = player.getInventory().getItemInMainHand();
 				if (item.getType() == material && item.getAmount() >= required) {
