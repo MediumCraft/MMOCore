@@ -1,11 +1,15 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.github.jasync.sql.db.QueryResult;
+import com.github.jasync.sql.db.ResultSet;
+import com.github.jasync.sql.db.mysql.MySQLConnection;
+import com.github.jasync.sql.db.mysql.MySQLConnectionBuilder;
+import com.github.jasync.sql.db.pool.ConnectionPool;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.manager.data.DataProvider;
@@ -18,49 +22,31 @@ public class MySQLDataProvider implements DataProvider {
 	private final YAMLGuildDataManager guildManager = new YAMLGuildDataManager();
 	private final MySQLConfig config;
 	
-	private Connection connection;
+	private ConnectionPool<MySQLConnection> connection;
 
 	public MySQLDataProvider() {
 		config = new MySQLConfig(MMOCore.plugin.getConfig().getConfigurationSection("mysql"));
-		initialize();
+		connection = MySQLConnectionBuilder.createConnectionPool(config.getConnectionString());
 
 		executeUpdate("CREATE TABLE IF NOT EXISTS mmocore_playerdata (uuid VARCHAR(36),class_points INT(11) DEFAULT 0,skill_points INT(11) DEFAULT 0,attribute_points INT(11) DEFAULT 0,attribute_realloc_points INT(11) DEFAULT 0,level INT(11) DEFAULT 0,experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,attributes JSON,professions JSON,quests JSON,waypoints JSON,friends JSON,skills JSON,bound_skills JSON,class_info JSON,PRIMARY KEY (uuid));");
 	}
 
-	private void initialize() {
-		try {
-			connection = DriverManager.getConnection(config.getConnectionString(), config.getUser(), config.getPassword());
-		} catch (SQLException exception) {
-			throw new IllegalArgumentException("Could not initialize MySQL support: " + exception.getMessage());
-		}
-	}
-
 	public ResultSet getResult(String sql) {
 		try {
-			return getConnection().prepareStatement(sql).executeQuery();
-		} catch (SQLException exception) {
-			exception.printStackTrace();
+			CompletableFuture<QueryResult> future = connection.sendPreparedStatement(sql);
+			return future.get().getRows();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
 
 	public void executeUpdate(String sql) {
 		try {
-			getConnection().prepareStatement(sql).executeUpdate();
-		} catch (SQLException exception) {
-			exception.printStackTrace();
+			connection.sendPreparedStatement(sql).get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
 		}
-	}
-
-	private Connection getConnection() {
-		try {
-			if(connection.isClosed())
-				initialize();
-		} catch (SQLException e) {
-			initialize();
-		}
-		
-		return connection;
 	}
 
 	@Override
@@ -74,28 +60,22 @@ public class MySQLDataProvider implements DataProvider {
 	}
 
 	public class MySQLConfig {
-		private final String database, hostname, userid, password, flags;
+		private final String db, host, user, pass;
 		private final int port;
 
 		public MySQLConfig(ConfigurationSection config) {
-			database = config.getString("database", "minecraft");
-			hostname = config.getString("host", "localhost");
+			db = config.getString("database", "minecraft");
+			host = config.getString("host", "localhost");
 			port = config.getInt("port", 3306);
-			userid = config.getString("user", "mmolover");
-			password = config.getString("pass", "ILoveAria");
-			flags = config.getString("flags", "?allowReconnect=true&useSSL=false");
+			user = config.getString("user", "mmolover");
+			pass = config.getString("pass", "ILoveAria");
 		}
 
 		public String getConnectionString() {
-			return "jdbc:mysql://" + hostname + ":" + port + "/" + database + flags;
-		}
-
-		public String getUser() {
-			return userid;
-		}
-
-		public String getPassword() {
-			return password;
+			StringBuilder sb = new StringBuilder("jdbc:mysql://");
+			sb.append(host).append(":").append(port).append("/").append(db)
+			.append("?user=").append(user).append("&password=").append(pass);
+			return sb.toString();
 		}
 	}
 }

@@ -14,15 +14,13 @@ public class MySQLTableEditor {
 	private final Table table;
 	private final UUID uuid;
 
-	private static final MySQLDataProvider dataProvider = (MySQLDataProvider) MMOCore.plugin.dataProvider;
-
 	public MySQLTableEditor(Table table, UUID uuid) {
 		this.table = table;
 		this.uuid = uuid;
 	}
 
 	public void updateData(String key, Object value) {
-		dataProvider.executeUpdate("INSERT INTO " + table + "(uuid, " + key + ") VALUES('" + uuid + "', '" + value + "') ON DUPLICATE KEY UPDATE " + key + "='" + value + "';");
+		((MySQLDataProvider) MMOCore.plugin.dataProvider).executeUpdate("INSERT INTO " + table + "(uuid, " + key + ") VALUES('" + uuid + "', '" + value + "') ON DUPLICATE KEY UPDATE " + key + "='" + value + "';");
 	}
 
 	public void updateJSONArray(String key, Collection<String> collection) {

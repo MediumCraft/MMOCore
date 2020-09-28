@@ -13,7 +13,6 @@ mysql:
     port: 3306
     user: mmolover
     pass: ILoveAria
-    flags: '?allowReconnect=true&useSSL=false'
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
