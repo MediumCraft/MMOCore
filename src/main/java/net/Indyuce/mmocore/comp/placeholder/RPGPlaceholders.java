@@ -45,6 +45,11 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 	@Override
 	public String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
+		if(identifier.equals("mana_icon"))
+			return PlayerData.get(player).getProfess().getManaDisplay().getIcon();
+		if(identifier.equals("mana_name"))
+			return PlayerData.get(player).getProfess().getManaDisplay().getName();
+		
 		if (identifier.equals("level"))
 			return "" + PlayerData.get(player).getLevel();
 
