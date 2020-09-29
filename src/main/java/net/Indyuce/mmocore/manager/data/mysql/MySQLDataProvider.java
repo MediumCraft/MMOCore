@@ -5,17 +5,16 @@ import java.util.concurrent.ExecutionException;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.github.jasync.sql.db.QueryResult;
-import com.github.jasync.sql.db.ResultSet;
-import com.github.jasync.sql.db.mysql.MySQLConnection;
-import com.github.jasync.sql.db.mysql.MySQLConnectionBuilder;
-import com.github.jasync.sql.db.pool.ConnectionPool;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.GuildDataManager;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.yaml.YAMLGuildDataManager;
+import net.mmogroup.mmolib.sql.QueryResult;
+import net.mmogroup.mmolib.sql.ResultSet;
+import net.mmogroup.mmolib.sql.mysql.MySQLConnection;
+import net.mmogroup.mmolib.sql.mysql.MySQLConnectionBuilder;
+import net.mmogroup.mmolib.sql.pool.ConnectionPool;
 
 public class MySQLDataProvider implements DataProvider {
 	private final MySQLPlayerDataManager playerManager = new MySQLPlayerDataManager(this);

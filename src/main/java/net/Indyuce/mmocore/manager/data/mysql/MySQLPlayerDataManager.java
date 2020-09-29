@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.Validate;
 
-import com.github.jasync.sql.db.ResultSet;
-import com.github.jasync.sql.db.RowData;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -24,6 +22,8 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.sql.ResultSet;
+import net.mmogroup.mmolib.sql.RowData;
 
 public class MySQLPlayerDataManager extends PlayerDataManager {
 	private final MySQLDataProvider provider;

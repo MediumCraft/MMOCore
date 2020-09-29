@@ -4,7 +4,7 @@
   <groupId>net.Indyuce</groupId>
   <artifactId>MMOCore</artifactId>
   <name>MMOCore</name>
-  <version>1.4.6</version>
+  <version>1.4.7</version>
   <description>Offer your players a brand new RPG experience.</description>
   <build>
     <resources>
