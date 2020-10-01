@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.manager.data.mysql;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -27,7 +28,7 @@ public class MySQLDataProvider implements DataProvider {
 		config = new MySQLConfig(MMOCore.plugin.getConfig().getConfigurationSection("mysql"));
 		connection = MySQLConnectionBuilder.createConnectionPool(config.getConnectionString());
 
-		executeUpdate("CREATE TABLE IF NOT EXISTS mmocore_playerdata (uuid VARCHAR(36),class_points INT(11) DEFAULT 0,skill_points INT(11) DEFAULT 0,attribute_points INT(11) DEFAULT 0,attribute_realloc_points INT(11) DEFAULT 0,level INT(11) DEFAULT 0,experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,attributes JSON,professions JSON,quests JSON,waypoints JSON,friends JSON,skills JSON,bound_skills JSON,class_info JSON,PRIMARY KEY (uuid));");
+		executeUpdate("CREATE TABLE IF NOT EXISTS mmocore_playerdata (uuid VARCHAR(36),class_points INT(11) DEFAULT 0,skill_points INT(11) DEFAULT 0,attribute_points INT(11) DEFAULT 0,attribute_realloc_points INT(11) DEFAULT 0,level INT(11) DEFAULT 1,experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,attributes JSON,professions JSON,quests JSON,waypoints JSON,friends JSON,skills JSON,bound_skills JSON,class_info JSON,PRIMARY KEY (uuid));");
 	}
 
 	public ResultSet getResult(String sql) {
@@ -35,6 +36,7 @@ public class MySQLDataProvider implements DataProvider {
 			CompletableFuture<QueryResult> future = connection.sendPreparedStatement(sql);
 			return future.get().getRows();
 		} catch (InterruptedException | ExecutionException e) {
+			MMOCore.log(Level.SEVERE, "MySQL Operation Failed!");
 			e.printStackTrace();
 			return null;
 		}
@@ -44,6 +46,7 @@ public class MySQLDataProvider implements DataProvider {
 		try {
 			connection.sendPreparedStatement(sql).get();
 		} catch (InterruptedException | ExecutionException e) {
+			MMOCore.log(Level.SEVERE, "MySQL Operation Failed!");
 			e.printStackTrace();
 		}
 	}

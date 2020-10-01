@@ -161,12 +161,15 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public void onEnable() {
-
 		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
-
+		saveDefaultConfig();
+				
 		if (getConfig().contains("mysql") && getConfig().getBoolean("mysql.enabled"))
 			dataProvider = new MySQLDataProvider();
+
+		if(getConfig().isConfigurationSection("default-playerdata"))
+			dataProvider.getDataManager().setDefaults(getConfig().getConfigurationSection("default-playerdata"));
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
@@ -247,7 +250,6 @@ public class MMOCore extends JavaPlugin {
 			return;
 		}
 
-		saveDefaultConfig();
 		reloadPlugin();
 
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))

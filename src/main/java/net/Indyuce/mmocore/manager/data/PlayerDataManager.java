@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import lombok.Getter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
@@ -16,6 +18,7 @@ import net.mmogroup.mmolib.api.player.MMOPlayerData;
 
 public abstract class PlayerDataManager {
 	// private final Map<UUID, PlayerData> map = new HashMap<>();
+	private DefaultPlayerData defaults = new DefaultPlayerData();
 
 	public PlayerData get(OfflinePlayer player) {
 		return get(player.getUniqueId());
@@ -48,7 +51,7 @@ public abstract class PlayerDataManager {
 			 * calls the load event on the MAIN thread
 			 */
 			Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-				loadData(generated);
+				loadData(generated, defaults);
 				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(generated)));
 				generated.getStats().updateStats();
 			});
@@ -63,9 +66,35 @@ public abstract class PlayerDataManager {
 		return MMOPlayerData.getLoaded().stream().filter(data -> data.getMMOCore() != null).map(data -> data.getMMOCore()).collect(Collectors.toSet());
 	}
 
-	public abstract void loadData(PlayerData data);
+	public abstract void loadData(PlayerData data, DefaultPlayerData defaults);
 
 	public abstract void saveData(PlayerData data);
 
 	public abstract void remove(PlayerData data);
+	
+	public void setDefaults(ConfigurationSection config) {
+		defaults = new DefaultPlayerData(config);
+	}
+	
+	@Getter
+	public class DefaultPlayerData {
+		private final int level, classPoints, skillPoints,
+		attributePoints, attrReallocPoints;
+
+		public DefaultPlayerData(ConfigurationSection config) {
+			level = config.getInt("level", 1);
+			classPoints = config.getInt("class-points");
+			skillPoints = config.getInt("skill-points");
+			attributePoints = config.getInt("attribute-points");
+			attrReallocPoints = config.getInt("attribute-realloc-points");
+		}
+
+		public DefaultPlayerData() {
+			level = 1;
+			classPoints = 0;
+			skillPoints = 0;
+			attributePoints = 0;
+			attrReallocPoints = 0;
+		}
+	}
 }

@@ -33,18 +33,25 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 	}
 
 	@Override
-	public void loadData(PlayerData data) {
+	public void loadData(PlayerData data, DefaultPlayerData defaults) {
 		ResultSet result = provider
 				.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';");
-		if (result == null) {
-			MMOCore.log(Level.SEVERE,
-					"Failed to load playerdata of '" + data.getPlayer().getName() + "' from MySQL server");
+		
+		// player data not initialized yet
+		if (result.size() < 1) {
+			data.setLevel(defaults.getLevel());
+			data.setClassPoints(defaults.getClassPoints());
+			data.setSkillPoints(defaults.getSkillPoints());
+			data.setAttributePoints(defaults.getAttributePoints());
+			data.setAttributeReallocationPoints(defaults.getAttrReallocPoints());
+			data.setExperience(0);
+			data.setMana(data.getStats().getStat(StatType.MAX_MANA));
+			data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
+			data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+			data.getQuestData().updateBossBar();
+			
 			return;
 		}
-
-		// player data not initialized yet
-		if (result.size() < 1)
-			return;
 
 		RowData row = result.get(0);
 
@@ -66,9 +73,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			data.getAttributes().load(row.getString("attributes"));
 		if (!isEmpty(row.getString("professions")))
 			data.getCollectionSkills().load(row.getString("professions"));
-		String quests = row.getString("quests");
-		if (!isEmpty(quests))
-			data.getQuestData().load(quests);
+		if (!isEmpty(row.getString("quests")))
+			data.getQuestData().load(row.getString("quests"));
 		data.getQuestData().updateBossBar();
 		if (!isEmpty(row.getString("waypoints")))
 			data.getWaypoints().addAll(getJSONArray(row.getString("waypoints")));
@@ -191,10 +197,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 				
 				level = row.getInt("level");
 				lastLogin = row.getLong("last_login");
-				profess = row.getString("class").equalsIgnoreCase("null")
-						? MMOCore.plugin.classManager.getDefaultClass()
+				profess = isEmpty(row.getString("class")) ? MMOCore.plugin.classManager.getDefaultClass()
 						: MMOCore.plugin.classManager.get(row.getString("class"));
-				if (!row.getString("friends").equalsIgnoreCase("null"))
+				if (!isEmpty(row.getString("friends")))
 					getJSONArray(row.getString("friends")).forEach(str -> friends.add(UUID.fromString(str)));
 				else
 					friends = new ArrayList<UUID>();

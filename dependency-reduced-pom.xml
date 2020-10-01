@@ -44,10 +44,6 @@
               <pattern>io.papermc.lib</pattern>
               <shadedPattern>net.indyuce.mmocore.shaded.paperlib</shadedPattern>
             </relocation>
-            <relocation>
-              <pattern>com.github.jasync.sql.db</pattern>
-              <shadedPattern>eu.asangarin.sqltest</shadedPattern>
-            </relocation>
           </relocations>
         </configuration>
       </plugin>
@@ -88,6 +84,12 @@
       <groupId>com.sk89q.worldguard</groupId>
       <artifactId>worldguard-bukkit</artifactId>
       <version>7.0.2-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.12</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
