@@ -64,10 +64,6 @@ public class CustomBlockManager extends MMOManager {
 		map.put(regen.getBlock().generateKey(), regen);
 	}
 
-	public boolean isBlockRegistered(Block block) {
-		return map.containsKey(findBlockType(block).generateKey());
-	}
-
 	public BlockInfo getInfo(Block block) {
 		return map.getOrDefault(findBlockType(block).generateKey(), null);
 	}
