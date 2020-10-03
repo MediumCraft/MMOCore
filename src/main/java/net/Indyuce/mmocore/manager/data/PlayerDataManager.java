@@ -17,8 +17,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.mmogroup.mmolib.api.player.MMOPlayerData;
 
 public abstract class PlayerDataManager {
-	// private final Map<UUID, PlayerData> map = new HashMap<>();
-	private DefaultPlayerData defaults = new DefaultPlayerData();
+	private DefaultPlayerData defaultData = new DefaultPlayerData();
 
 	public PlayerData get(OfflinePlayer player) {
 		return get(player.getUniqueId());
@@ -39,7 +38,7 @@ public abstract class PlayerDataManager {
 	public void setup(Player player) {
 
 		/*
-		 * setup playerData based on loadData method to support both MySQL and
+		 * Setup playerData based on loadData method to support both MySQL and
 		 * YAML data storage
 		 */
 		MMOPlayerData mmoData = MMOPlayerData.get(player);
@@ -47,15 +46,23 @@ public abstract class PlayerDataManager {
 			PlayerData generated = new PlayerData(mmoData);
 
 			/*
-			 * loads player data and ONLY THEN refresh the player statistics and
+			 * Loads player data and ONLY THEN refresh the player statistics and
 			 * calls the load event on the MAIN thread
 			 */
 			Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-				loadData(generated, defaults);
+				loadData(generated);
 				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(generated)));
 				generated.getStats().updateStats();
 			});
 		}
+	}
+
+	public DefaultPlayerData getDefaultData() {
+		return defaultData;
+	}
+
+	public void loadDefaultData(ConfigurationSection config) {
+		defaultData = new DefaultPlayerData(config);
 	}
 
 	public boolean isLoaded(UUID uuid) {
@@ -63,23 +70,19 @@ public abstract class PlayerDataManager {
 	}
 
 	public Collection<PlayerData> getLoaded() {
-		return MMOPlayerData.getLoaded().stream().filter(data -> data.getMMOCore() != null).map(data -> data.getMMOCore()).collect(Collectors.toSet());
+		return MMOPlayerData.getLoaded().stream().filter(data -> data.getMMOCore() != null).map(data -> data.getMMOCore())
+				.collect(Collectors.toSet());
 	}
 
-	public abstract void loadData(PlayerData data, DefaultPlayerData defaults);
+	public abstract void loadData(PlayerData data);
 
 	public abstract void saveData(PlayerData data);
 
 	public abstract void remove(PlayerData data);
-	
-	public void setDefaults(ConfigurationSection config) {
-		defaults = new DefaultPlayerData(config);
-	}
-	
+
 	@Getter
 	public class DefaultPlayerData {
-		private final int level, classPoints, skillPoints,
-		attributePoints, attrReallocPoints;
+		private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;
 
 		public DefaultPlayerData(ConfigurationSection config) {
 			level = config.getInt("level", 1);
@@ -95,6 +98,26 @@ public abstract class PlayerDataManager {
 			skillPoints = 0;
 			attributePoints = 0;
 			attrReallocPoints = 0;
+		}
+
+		public int getLevel() {
+			return level;
+		}
+
+		public int getSkillPoints() {
+			return skillPoints;
+		}
+
+		public int getClassPoints() {
+			return classPoints;
+		}
+
+		public int getAttributeReallocationPoints() {
+			return attrReallocPoints;
+		}
+
+		public int getAttributePoints() {
+			return attributePoints;
 		}
 	}
 }

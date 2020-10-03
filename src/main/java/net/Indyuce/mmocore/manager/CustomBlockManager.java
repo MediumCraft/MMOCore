@@ -67,7 +67,7 @@ public class CustomBlockManager extends MMOManager {
 	public boolean isBlockRegistered(Block block) {
 		return map.containsKey(findBlockType(block).generateKey());
 	}
-	
+
 	public BlockInfo getInfo(Block block) {
 		return map.getOrDefault(findBlockType(block).generateKey(), null);
 	}
@@ -82,41 +82,59 @@ public class CustomBlockManager extends MMOManager {
 		return new VanillaBlockType(block);
 	}
 
-	public void initialize(RegeneratingBlock info, boolean schedule) {
-		if(schedule) {
-			active.add(info);
-			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> regen(info, false), info.getRegeneratingBlock().getRegenerationInfo().getTime());
-		}
+	public void initialize(RegeneratingBlock info) {
+		// if (schedule) {
+		active.add(info);
+		Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> regen(info, false), info.getRegeneratingBlock().getRegenerationInfo().getTime());
+		// }
 		if (info.getRegeneratingBlock().getRegenerationInfo().hasTemporaryBlock())
 			info.getRegeneratingBlock().getRegenerationInfo().getTemporaryBlock().place(info.getLocation(), info);
 	}
 
+	/**
+	 * Called when a block regens, either due to regen timer or because the
+	 * server shuts down.
+	 * 
+	 * @param info
+	 *            Block which must be regened
+	 * @param shutdown
+	 *            Must be set to true if the server is shutting down. When the
+	 *            server shuts down, it iterates through active blocks. This
+	 *            prevents any issue when editing lists being iterated
+	 */
 	private void regen(RegeneratingBlock info, boolean shutdown) {
-        Location infoLocation = info.getLocation();
+		Location infoLocation = info.getLocation();
+
 		// Get the chunk and load it async if needed.
-        PaperLib.getChunkAtAsync(infoLocation).whenComplete((chunk, ex) -> {
-                info.getRegeneratingBlock().getBlock().place(infoLocation, info);
-                info.getLocation().getBlock().getState().update();
-                if(!shutdown) active.remove(info);
-        });
+		PaperLib.getChunkAtAsync(infoLocation).whenComplete((chunk, ex) -> {
+			info.getRegeneratingBlock().getBlock().place(infoLocation, info);
+			info.getLocation().getBlock().getState().update();
+			if (!shutdown)
+				active.remove(info);
+		});
 	}
 
-	/*
-	 * called when the server disables so every mined block which was in timer
+	/**
+	 * Called when the server disables so every mined block which was in timer
 	 * are reset and put back in place.
 	 */
 	public void resetRemainingBlocks() {
 		active.forEach(info -> regen(info, true));
 	}
-	
-	public boolean isRegenerating(Block block) {
+
+	/**
+	 * @param block
+	 *            Potentially vanilla block being broken by a player
+	 * @return Returns if the block being broken is a temporary block. If it is,
+	 *         players should not be able to break it
+	 */
+	public boolean isTemporaryBlock(Block block) {
 		Location loc = block.getLocation();
-		for(RegeneratingBlock info : active)
-			if(info.getLocation().getBlockX() == loc.getBlockX()
-			&& info.getLocation().getBlockY() == loc.getBlockY()
-			&& info.getLocation().getBlockZ() == loc.getBlockZ())
+		for (RegeneratingBlock info : active)
+			if (info.getLocation().getBlockX() == loc.getBlockX() && info.getLocation().getBlockY() == loc.getBlockY()
+					&& info.getLocation().getBlockZ() == loc.getBlockZ())
 				return true;
-			
+
 		return false;
 	}
 
@@ -125,8 +143,9 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	public boolean isEnabled(Entity entity, Location loc) {
-		if(customMineConditions.isEmpty()) return false;
-		
+		if (customMineConditions.isEmpty())
+			return false;
+
 		ConditionInstance conditionEntity = new ConditionInstance(entity, loc);
 		for (Condition condition : customMineConditions)
 			if (!condition.isMet(conditionEntity))
@@ -143,19 +162,19 @@ public class CustomBlockManager extends MMOManager {
 				MMOCore.log(Level.WARNING, "Could not load custom block '" + key + "': " + exception.getMessage());
 			}
 	}
-	
+
+	/**
+	 * @return If block breaking should be denied in custom mining regions
+	 */
 	public boolean shouldProtect() {
 		return protect;
 	}
 
-	public void reload(boolean protect) {
-		this.protect = protect;
-		reload();
-	}
-	
 	@Override
 	public void reload() {
 		customMineConditions.clear();
+
+		this.protect = MMOCore.plugin.getConfig().getBoolean("protect-custom-mine");
 
 		for (String key : MMOCore.plugin.getConfig().getStringList("custom-mine-conditions"))
 			try {

@@ -33,23 +33,22 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 	}
 
 	@Override
-	public void loadData(PlayerData data, DefaultPlayerData defaults) {
-		ResultSet result = provider
-				.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';");
-		
+	public void loadData(PlayerData data) {
+		ResultSet result = provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';");
+
 		// player data not initialized yet
 		if (result.size() < 1) {
-			data.setLevel(defaults.getLevel());
-			data.setClassPoints(defaults.getClassPoints());
-			data.setSkillPoints(defaults.getSkillPoints());
-			data.setAttributePoints(defaults.getAttributePoints());
-			data.setAttributeReallocationPoints(defaults.getAttrReallocPoints());
+			data.setLevel(getDefaultData().getLevel());
+			data.setClassPoints(getDefaultData().getClassPoints());
+			data.setSkillPoints(getDefaultData().getSkillPoints());
+			data.setAttributePoints(getDefaultData().getAttributePoints());
+			data.setAttributeReallocationPoints(getDefaultData().getAttributeReallocationPoints());
 			data.setExperience(0);
 			data.setMana(data.getStats().getStat(StatType.MAX_MANA));
 			data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
 			data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
 			data.getQuestData().updateBossBar();
-			
+
 			return;
 		}
 
@@ -67,8 +66,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
 		data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
 		if (!isEmpty(row.getString("guild")))
-			data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(),
-					row.getString("guild")));
+			data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), row.getString("guild")));
 		if (!isEmpty(row.getString("attributes")))
 			data.getAttributes().load(row.getString("attributes"));
 		if (!isEmpty(row.getString("professions")))
@@ -97,16 +95,14 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 					Validate.notNull(profess, "Could not find class '" + entry.getKey() + "'");
 					data.applyClassInfo(profess, new SavedClassInformation(entry.getValue().getAsJsonObject()));
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING,
-							"Could not load class info '" + entry.getKey() + "': " + exception.getMessage());
+					MMOCore.log(Level.WARNING, "Could not load class info '" + entry.getKey() + "': " + exception.getMessage());
 				}
 			}
 		}
 	}
 
 	private boolean isEmpty(String s) {
-		return s.equalsIgnoreCase("null") || s.equalsIgnoreCase("{}") || s.equalsIgnoreCase("[]")
-				|| s.equalsIgnoreCase("");
+		return s.equalsIgnoreCase("null") || s.equalsIgnoreCase("{}") || s.equalsIgnoreCase("[]") || s.equalsIgnoreCase("");
 	}
 
 	@Override
@@ -124,10 +120,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		sql.updateData("guild", data.hasGuild() ? data.getGuild().getId() : null);
 
 		sql.updateJSONArray("waypoints", data.getWaypoints());
-		sql.updateJSONArray("friends",
-				data.getFriends().stream().map(uuid -> uuid.toString()).collect(Collectors.toList()));
-		sql.updateJSONArray("bound_skills",
-				data.getBoundSkills().stream().map(skill -> skill.getSkill().getId()).collect(Collectors.toList()));
+		sql.updateJSONArray("friends", data.getFriends().stream().map(uuid -> uuid.toString()).collect(Collectors.toList()));
+		sql.updateJSONArray("bound_skills", data.getBoundSkills().stream().map(skill -> skill.getSkill().getId()).collect(Collectors.toList()));
 
 		sql.updateJSONObject("skills", data.mapSkillLevels().entrySet());
 
@@ -194,7 +188,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 				friends = new ArrayList<UUID>();
 			} else {
 				RowData row = result.get(0);
-				
+
 				level = row.getInt("level");
 				lastLogin = row.getLong("last_login");
 				profess = isEmpty(row.getString("class")) ? MMOCore.plugin.classManager.getDefaultClass()

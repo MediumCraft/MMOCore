@@ -21,14 +21,14 @@ import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 public class YAMLPlayerDataManager extends PlayerDataManager {
 
 	@Override
-	public void loadData(PlayerData data, DefaultPlayerData defaults) {
+	public void loadData(PlayerData data) {
 		FileConfiguration config = new ConfigFile(data.getPlayer()).getConfig();
 
-		data.setClassPoints(config.getInt("class-points", defaults.getClassPoints()));
-		data.setSkillPoints(config.getInt("skill-points", defaults.getSkillPoints()));
-		data.setAttributePoints(config.getInt("attribute-points", defaults.getAttributePoints()));
-		data.setAttributeReallocationPoints(config.getInt("attribute-realloc-points", defaults.getAttrReallocPoints()));
-		data.setLevel(config.getInt("level", defaults.getLevel()));
+		data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
+		data.setSkillPoints(config.getInt("skill-points", getDefaultData().getSkillPoints()));
+		data.setAttributePoints(config.getInt("attribute-points", getDefaultData().getAttributePoints()));
+		data.setAttributeReallocationPoints(config.getInt("attribute-realloc-points", getDefaultData().getAttributeReallocationPoints()));
+		data.setLevel(config.getInt("level", getDefaultData().getLevel()));
 		data.setExperience(config.getInt("experience"));
 		if (config.contains("class"))
 			data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));

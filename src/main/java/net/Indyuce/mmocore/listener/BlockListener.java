@@ -36,33 +36,47 @@ public class BlockListener implements Listener {
 		String savedData = event.getBlock().getBlockData().getAsString();
 		Block block = event.getBlock();
 
-		final boolean regen = MMOCore.plugin.mineManager.isRegenerating(block);
-		if(regen && !MMOCore.plugin.mineManager.isBlockRegistered(block)) {
-			event.setCancelled(true);
-			return;
-		}
-		
 		/*
-		 * if custom mining enabled, check for item breaking restrictions
+		 * Check for custom mining in the current region first.
 		 */
 		boolean customMine = MMOCore.plugin.mineManager.isEnabled(player, block.getLocation());
 		if (!customMine)
 			return;
-		
-		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
-		if (info == null) {
-			if(MMOCore.plugin.mineManager.shouldProtect())
-				event.setCancelled(true);
-			return;
-		}
-		
-		if(!info.getBlock().breakRestrictions(block)) {
+
+		/*
+		 * If the block is a temporary block, immediately cancel the break event
+		 */
+		if (MMOCore.plugin.mineManager.isTemporaryBlock(block)) {
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		/*
-		 * calls the event and listen for cancel & for drops changes... also
+		 * Check if the block has exp or drop tables
+		 */
+		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
+		if (info == null) {
+
+			/*
+			 * If players are prevented from breaking blocks in custom mining
+			 * regions
+			 */
+			if (MMOCore.plugin.mineManager.shouldProtect())
+				event.setCancelled(true);
+
+			return;
+		}
+
+		/*
+		 * Extra breaking conditions.
+		 */
+		if (!info.getBlock().breakRestrictions(block)) {
+			event.setCancelled(true);
+			return;
+		}
+
+		/*
+		 * Calls the event and listen for cancel & for drops changes... also
 		 * allows to apply tool durability & enchants to drops, etc.
 		 */
 		CustomBlockMineEvent called = new CustomBlockMineEvent(PlayerData.get(player), block, info);
@@ -80,7 +94,7 @@ public class BlockListener implements Listener {
 		}
 
 		/*
-		 * remove vanilla drops if needed
+		 * Remove vanilla drops if needed
 		 */
 		if (!info.hasVanillaDrops()) {
 			// event.setDropItems(false); // May not work
@@ -89,7 +103,7 @@ public class BlockListener implements Listener {
 		}
 
 		/*
-		 * apply triggers, add experience info to the event so the other events
+		 * Apply triggers, add experience info to the event so the other events
 		 * can give exp to other TOOLS and display HOLOGRAMS
 		 */
 		if (info.hasTriggers() && !block.hasMetadata("player_placed")) {
@@ -107,7 +121,7 @@ public class BlockListener implements Listener {
 		}
 
 		/*
-		 * apply drop tables
+		 * Apply drop tables
 		 */
 		if (info.hasDropTable()) {
 			Location dropLocation = getSafeDropLocation(block,
@@ -118,10 +132,10 @@ public class BlockListener implements Listener {
 		}
 
 		/*
-		 * enable block regen.
+		 * Finally enable block regen.
 		 */
 		if (info.hasRegen())
-			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !regen);
+			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()));
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

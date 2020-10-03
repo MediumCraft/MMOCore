@@ -169,7 +169,7 @@ public class MMOCore extends JavaPlugin {
 			dataProvider = new MySQLDataProvider();
 
 		if(getConfig().isConfigurationSection("default-playerdata"))
-			dataProvider.getDataManager().setDefaults(getConfig().getConfigurationSection("default-playerdata"));
+			dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
 			economy = new VaultEconomy();
@@ -377,7 +377,7 @@ public class MMOCore extends JavaPlugin {
 		skillManager.reload();
 
 		mineManager.clear();
-		mineManager.reload(getConfig().getBoolean("protect-custom-mine"));
+		mineManager.reload();
 
 		fishingManager.clear();
 		alchemyManager.clear();
