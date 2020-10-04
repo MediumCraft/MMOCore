@@ -30,22 +30,24 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class CustomBlockManager extends MMOManager {
 
-	/*
-	 * registered block infos
+	/**
+	 * Registered block infos
 	 */
 	private final Map<String, BlockInfo> map = new HashMap<>();
 
-	/*
-	 * blocks that are regenerating and that must be refreshed whenever the
+	/**
+	 * Blocks that are regenerating and that must be refreshed whenever the
 	 * server reloads or shuts down not to hurt the world map
 	 */
 	private final Set<RegeneratingBlock> active = new HashSet<>();
 
-	/* list in which both block regen and block permissions are enabled. */
+	/**
+	 * Stores conditions which must be met to apply custom mining
+	 */
 	private final List<Condition> customMineConditions = new ArrayList<>();
 
-	/*
-	 * list of functions which let MMOCore recognize what block a player is
+	/**
+	 * List of functions which let MMOCore recognize what block a player is
 	 * currently breaking
 	 */
 	private final List<Function<Block, Optional<BlockType>>> blockTypes = new ArrayList<>();
@@ -78,11 +80,23 @@ public class CustomBlockManager extends MMOManager {
 		return new VanillaBlockType(block);
 	}
 
-	public void initialize(RegeneratingBlock info) {
-		// if (schedule) {
-		active.add(info);
-		Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> regen(info, false), info.getRegeneratingBlock().getRegenerationInfo().getTime());
-		// }
+	/**
+	 * Used when a block is being broken and MMOCore needs to regen it after X
+	 * seconds. Also places the temporary block at the block location
+	 * 
+	 * @param info
+	 *            Block info
+	 * @param scheduleRegen
+	 *            If block regeneration should be scheduled or not. If the block
+	 *            broken is a temporary block and is part of a "block chain", no
+	 *            regen should be scheduled as there is already one
+	 */
+	public void initialize(RegeneratingBlock info, boolean scheduleRegen) {
+		if (scheduleRegen) {
+			active.add(info);
+			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> regen(info, false), info.getRegeneratingBlock().getRegenerationInfo().getTime());
+		}
+
 		if (info.getRegeneratingBlock().getRegenerationInfo().hasTemporaryBlock())
 			info.getRegeneratingBlock().getRegenerationInfo().getTemporaryBlock().place(info.getLocation(), info);
 	}

@@ -46,7 +46,9 @@ public class BlockListener implements Listener {
 		/*
 		 * If the block is a temporary block, immediately cancel the break event
 		 */
-		if (MMOCore.plugin.mineManager.isTemporaryBlock(block)) {
+		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
+		boolean temporaryBlock = MMOCore.plugin.mineManager.isTemporaryBlock(block);
+		if (temporaryBlock && info == null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -54,7 +56,6 @@ public class BlockListener implements Listener {
 		/*
 		 * Check if the block has exp or drop tables
 		 */
-		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
 		if (info == null) {
 
 			/*
@@ -109,15 +110,6 @@ public class BlockListener implements Listener {
 		if (info.hasTriggers() && !block.hasMetadata("player_placed")) {
 			PlayerData playerData = PlayerData.get(player);
 			info.getTriggers().forEach(trigger -> trigger.apply(playerData));
-			/**
-			 * if (!block.hasMetadata("player_placed") && info.hasExperience()
-			 * && MMOCore.plugin.hasHolograms())
-			 * MMOCore.plugin.hologramSupport.displayIndicator(block.getLocation().add(.5,
-			 * 1.5, .5),
-			 * MMOCore.plugin.configManager.getSimpleMessage("exp-hologram",
-			 * "exp", "" + called.getGainedExperience().getValue()).message(),
-			 * player);
-			 */
 		}
 
 		/*
@@ -135,7 +127,7 @@ public class BlockListener implements Listener {
 		 * Finally enable block regen.
 		 */
 		if (info.hasRegen())
-			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()));
+			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !temporaryBlock);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
