@@ -132,7 +132,13 @@
 			<version>1.0.5</version>
 			<scope>compile</scope>
 		</dependency>
-
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+        
 		<!-- Other Plugins -->
 		<dependency>
 			<groupId>com.bekvon.bukkit</groupId>
@@ -194,12 +200,6 @@
 			<version>2.10.7</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/PlaceholderAPI.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
