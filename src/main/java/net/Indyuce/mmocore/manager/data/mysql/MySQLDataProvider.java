@@ -1,54 +1,23 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-
-import org.bukkit.configuration.ConfigurationSection;
-
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.GuildDataManager;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.yaml.YAMLGuildDataManager;
-import net.mmogroup.mmolib.sql.QueryResult;
-import net.mmogroup.mmolib.sql.ResultSet;
-import net.mmogroup.mmolib.sql.mysql.MySQLConnection;
-import net.mmogroup.mmolib.sql.mysql.MySQLConnectionBuilder;
-import net.mmogroup.mmolib.sql.pool.ConnectionPool;
+import net.mmogroup.mmolib.sql.MMODataSource;
 
-public class MySQLDataProvider implements DataProvider {
+public class MySQLDataProvider extends MMODataSource implements DataProvider {
 	private final MySQLPlayerDataManager playerManager = new MySQLPlayerDataManager(this);
 	private final YAMLGuildDataManager guildManager = new YAMLGuildDataManager();
-	private final MySQLConfig config;
 	
-	private ConnectionPool<MySQLConnection> connection;
-
-	public MySQLDataProvider() {
-		config = new MySQLConfig(MMOCore.plugin.getConfig().getConfigurationSection("mysql"));
-		connection = MySQLConnectionBuilder.createConnectionPool(config.getConnectionString());
-
-		executeUpdate("CREATE TABLE IF NOT EXISTS mmocore_playerdata (uuid VARCHAR(36),class_points INT(11) DEFAULT 0,skill_points INT(11) DEFAULT 0,attribute_points INT(11) DEFAULT 0,attribute_realloc_points INT(11) DEFAULT 0,level INT(11) DEFAULT 1,experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,attributes JSON,professions JSON,quests JSON,waypoints JSON,friends JSON,skills JSON,bound_skills JSON,class_info JSON,PRIMARY KEY (uuid));");
-	}
-
-	public ResultSet getResult(String sql) {
-		try {
-			CompletableFuture<QueryResult> future = connection.sendPreparedStatement(sql);
-			return future.get().getRows();
-		} catch (InterruptedException | ExecutionException e) {
-			MMOCore.log(Level.SEVERE, "MySQL Operation Failed!");
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public void executeUpdate(String sql) {
-		try {
-			connection.sendPreparedStatement(sql).get();
-		} catch (InterruptedException | ExecutionException e) {
-			MMOCore.log(Level.SEVERE, "MySQL Operation Failed!");
-			e.printStackTrace();
-		}
+	@Override
+	public void load() {
+		executeUpdateAsync("CREATE TABLE IF NOT EXISTS mmocore_playerdata"
+			+ "(uuid VARCHAR(36),class_points INT(11) DEFAULT 0,skill_points INT(11)"
+			+ "DEFAULT 0,attribute_points INT(11) DEFAULT 0,attribute_realloc_points INT(11)"
+			+ "DEFAULT 0,level INT(11) DEFAULT 1,experience INT(11) DEFAULT 0,class VARCHAR(20),"
+			+ "guild VARCHAR(20),last_login LONG,attributes JSON,professions JSON,quests JSON,waypoints"
+			+ "JSON,friends JSON,skills JSON,bound_skills JSON,class_info JSON,PRIMARY KEY (uuid));");
 	}
 
 	@Override
@@ -59,25 +28,5 @@ public class MySQLDataProvider implements DataProvider {
 	@Override
 	public GuildDataManager getGuildManager() {
 		return guildManager;
-	}
-
-	public class MySQLConfig {
-		private final String db, host, user, pass;
-		private final int port;
-
-		public MySQLConfig(ConfigurationSection config) {
-			db = config.getString("database", "minecraft");
-			host = config.getString("host", "localhost");
-			port = config.getInt("port", 3306);
-			user = config.getString("user", "mmolover");
-			pass = config.getString("pass", "ILoveAria");
-		}
-
-		public String getConnectionString() {
-			StringBuilder sb = new StringBuilder("jdbc:mysql://");
-			sb.append(host).append(":").append(port).append("/").append(db)
-			.append("?user=").append(user).append("&password=").append(pass);
-			return sb.toString();
-		}
 	}
 }

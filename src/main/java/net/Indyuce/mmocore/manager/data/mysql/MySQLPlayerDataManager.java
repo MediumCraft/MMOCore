@@ -1,10 +1,13 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -22,8 +25,6 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
 import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.sql.ResultSet;
-import net.mmogroup.mmolib.sql.RowData;
 
 public class MySQLPlayerDataManager extends PlayerDataManager {
 	private final MySQLDataProvider provider;
@@ -34,70 +35,70 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
 	@Override
 	public void loadData(PlayerData data) {
-		ResultSet result = provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';");
+		try {
+			ResultSet result = provider.getResultAsync("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';").get();
+			if (!result.first()) {
+				data.setLevel(getDefaultData().getLevel());
+				data.setClassPoints(getDefaultData().getClassPoints());
+				data.setSkillPoints(getDefaultData().getSkillPoints());
+				data.setAttributePoints(getDefaultData().getAttributePoints());
+				data.setAttributeReallocationPoints(getDefaultData().getAttributeReallocationPoints());
+				data.setExperience(0);
+				data.setMana(data.getStats().getStat(StatType.MAX_MANA));
+				data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
+				data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+				data.getQuestData().updateBossBar();
 
-		// player data not initialized yet
-		if (result.size() < 1) {
-			data.setLevel(getDefaultData().getLevel());
-			data.setClassPoints(getDefaultData().getClassPoints());
-			data.setSkillPoints(getDefaultData().getSkillPoints());
-			data.setAttributePoints(getDefaultData().getAttributePoints());
-			data.setAttributeReallocationPoints(getDefaultData().getAttributeReallocationPoints());
-			data.setExperience(0);
+				return;
+			}
+
+			data.setClassPoints(result.getInt("class_points"));
+			data.setSkillPoints(result.getInt("skill_points"));
+			data.setAttributePoints(result.getInt("attribute_points"));
+			data.setAttributeReallocationPoints(result.getInt("attribute_realloc_points"));
+			data.setLevel(result.getInt("level"));
+			data.setExperience(result.getInt("experience"));
+			if (!isEmpty(result.getString("class")))
+				data.setClass(MMOCore.plugin.classManager.get(result.getString("class")));
 			data.setMana(data.getStats().getStat(StatType.MAX_MANA));
 			data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
 			data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+			if (!isEmpty(result.getString("guild")))
+				data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), result.getString("guild")));
+			if (!isEmpty(result.getString("attributes")))
+				data.getAttributes().load(result.getString("attributes"));
+			if (!isEmpty(result.getString("professions")))
+				data.getCollectionSkills().load(result.getString("professions"));
+			if (!isEmpty(result.getString("quests")))
+				data.getQuestData().load(result.getString("quests"));
 			data.getQuestData().updateBossBar();
-
-			return;
-		}
-
-		RowData row = result.get(0);
-
-		data.setClassPoints(row.getInt("class_points"));
-		data.setSkillPoints(row.getInt("skill_points"));
-		data.setAttributePoints(row.getInt("attribute_points"));
-		data.setAttributeReallocationPoints(row.getInt("attribute_realloc_points"));
-		data.setLevel(row.getInt("level"));
-		data.setExperience(row.getInt("experience"));
-		if (!isEmpty(row.getString("class")))
-			data.setClass(MMOCore.plugin.classManager.get(row.getString("class")));
-		data.setMana(data.getStats().getStat(StatType.MAX_MANA));
-		data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
-		data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
-		if (!isEmpty(row.getString("guild")))
-			data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), row.getString("guild")));
-		if (!isEmpty(row.getString("attributes")))
-			data.getAttributes().load(row.getString("attributes"));
-		if (!isEmpty(row.getString("professions")))
-			data.getCollectionSkills().load(row.getString("professions"));
-		if (!isEmpty(row.getString("quests")))
-			data.getQuestData().load(row.getString("quests"));
-		data.getQuestData().updateBossBar();
-		if (!isEmpty(row.getString("waypoints")))
-			data.getWaypoints().addAll(getJSONArray(row.getString("waypoints")));
-		if (!isEmpty(row.getString("friends")))
-			getJSONArray(row.getString("friends")).forEach(str -> data.getFriends().add(UUID.fromString(str)));
-		if (!isEmpty(row.getString("skills"))) {
-			JsonObject object = MMOLib.plugin.getJson().parse(row.getString("skills"), JsonObject.class);
-			for (Entry<String, JsonElement> entry : object.entrySet())
-				data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
-		}
-		if (!isEmpty(row.getString("bound_skills")))
-			for (String skill : getJSONArray(row.getString("bound_skills")))
-				if (data.getProfess().hasSkill(skill))
-					data.getBoundSkills().add(data.getProfess().getSkill(skill));
-		if (!isEmpty(row.getString("class_info"))) {
-			JsonObject object = MMOLib.plugin.getJson().parse(row.getString("class_info"), JsonObject.class);
-			for (Entry<String, JsonElement> entry : object.entrySet()) {
-				try {
-					PlayerClass profess = MMOCore.plugin.classManager.get(entry.getKey());
-					Validate.notNull(profess, "Could not find class '" + entry.getKey() + "'");
-					data.applyClassInfo(profess, new SavedClassInformation(entry.getValue().getAsJsonObject()));
-				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "Could not load class info '" + entry.getKey() + "': " + exception.getMessage());
+			if (!isEmpty(result.getString("waypoints")))
+				data.getWaypoints().addAll(getJSONArray(result.getString("waypoints")));
+			if (!isEmpty(result.getString("friends")))
+				getJSONArray(result.getString("friends")).forEach(str -> data.getFriends().add(UUID.fromString(str)));
+			if (!isEmpty(result.getString("skills"))) {
+				JsonObject object = MMOLib.plugin.getJson().parse(result.getString("skills"), JsonObject.class);
+				for (Entry<String, JsonElement> entry : object.entrySet())
+					data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
+			}
+			if (!isEmpty(result.getString("bound_skills")))
+				for (String skill : getJSONArray(result.getString("bound_skills")))
+					if (data.getProfess().hasSkill(skill))
+						data.getBoundSkills().add(data.getProfess().getSkill(skill));
+			if (!isEmpty(result.getString("class_info"))) {
+				JsonObject object = MMOLib.plugin.getJson().parse(result.getString("class_info"), JsonObject.class);
+				for (Entry<String, JsonElement> entry : object.entrySet()) {
+					try {
+						PlayerClass profess = MMOCore.plugin.classManager.get(entry.getKey());
+						Validate.notNull(profess, "Could not find class '" + entry.getKey() + "'");
+						data.applyClassInfo(profess, new SavedClassInformation(entry.getValue().getAsJsonObject()));
+					} catch (IllegalArgumentException exception) {
+						MMOCore.log(Level.WARNING, "Could not load class info '" + entry.getKey() + "': " + exception.getMessage());
+					}
 				}
 			}
+		} catch (SQLException | InterruptedException | ExecutionException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -180,23 +181,25 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		public MySQLOfflinePlayerData(UUID uuid) {
 			super(uuid);
 
-			ResultSet result = provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + uuid + "';");
-			if (result.size() < 1) {
-				level = 0;
-				lastLogin = 0;
-				profess = MMOCore.plugin.classManager.getDefaultClass();
-				friends = new ArrayList<UUID>();
-			} else {
-				RowData row = result.get(0);
-
-				level = row.getInt("level");
-				lastLogin = row.getLong("last_login");
-				profess = isEmpty(row.getString("class")) ? MMOCore.plugin.classManager.getDefaultClass()
-						: MMOCore.plugin.classManager.get(row.getString("class"));
-				if (!isEmpty(row.getString("friends")))
-					getJSONArray(row.getString("friends")).forEach(str -> friends.add(UUID.fromString(str)));
-				else
+			try {
+				ResultSet result = provider.getResultAsync("SELECT * FROM mmocore_playerdata WHERE uuid = '" + uuid + "';").get();
+				if (!result.first()) {
+					level = 0;
+					lastLogin = 0;
+					profess = MMOCore.plugin.classManager.getDefaultClass();
 					friends = new ArrayList<UUID>();
+				} else {
+					level = result.getInt("level");
+					lastLogin = result.getLong("last_login");
+					profess = isEmpty(result.getString("class")) ? MMOCore.plugin.classManager.getDefaultClass()
+							: MMOCore.plugin.classManager.get(result.getString("class"));
+					if (!isEmpty(result.getString("friends")))
+						getJSONArray(result.getString("friends")).forEach(str -> friends.add(UUID.fromString(str)));
+					else
+						friends = new ArrayList<UUID>();
+				}
+			} catch (SQLException | InterruptedException | ExecutionException e) {
+				e.printStackTrace();
 			}
 		}
 
