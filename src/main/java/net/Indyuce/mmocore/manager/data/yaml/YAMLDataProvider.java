@@ -17,4 +17,7 @@ public class YAMLDataProvider implements DataProvider {
 	public GuildDataManager getGuildManager() {
 		return guildManager;
 	}
+
+	@Override
+	public void close() {}
 }

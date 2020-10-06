@@ -11,7 +11,7 @@ import net.mmogroup.mmolib.sql.MMODataSource;
 public class MySQLDataProvider extends MMODataSource implements DataProvider {
 	private final MySQLPlayerDataManager playerManager = new MySQLPlayerDataManager(this);
 	private final YAMLGuildDataManager guildManager = new YAMLGuildDataManager();
-
+	
 	public MySQLDataProvider(FileConfiguration config) {
 		this.setup(config);
 	}

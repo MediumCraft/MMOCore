@@ -11,4 +11,5 @@ public interface DataProvider {
 
 	PlayerDataManager getDataManager();
 	GuildDataManager getGuildManager();
+	void close();
 }

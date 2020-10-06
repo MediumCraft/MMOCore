@@ -363,7 +363,8 @@ public class MMOCore extends JavaPlugin {
 
 		for (Guild guild : dataProvider.getGuildManager().getAll())
 			dataProvider.getGuildManager().save(guild);
-
+		dataProvider.close();
+		
 		mineManager.resetRemainingBlocks();
 
 		lootChests.getActive().forEach(chest -> chest.unregister(false));
