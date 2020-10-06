@@ -206,7 +206,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		@Override
 		public void removeFriend(UUID uuid) {
 			friends.remove(uuid);
-			new MySQLTableEditor(Table.PLAYERDATA, uuid).updateData("friends",
+			new MySQLTableEditor(Table.PLAYERDATA, uuid).updateDataAsync("friends",
 					friends.stream().map(friend -> friend.toString()).collect(Collectors.toList()));
 		}
 

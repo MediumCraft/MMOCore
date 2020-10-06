@@ -21,6 +21,11 @@ public class MySQLTableEditor {
 	}
 
 	public void updateData(String key, Object value) {
+		((MySQLDataProvider) MMOCore.plugin.dataProvider).executeUpdate("INSERT INTO " + table + "(uuid, " + key
+				+ ") VALUES('" + uuid + "', '" + value + "') ON DUPLICATE KEY UPDATE " + key + "='" + value + "';");
+	}
+
+	public void updateDataAsync(String key, Object value) {
 		try {
 			((MySQLDataProvider) MMOCore.plugin.dataProvider).executeUpdateAsync("INSERT INTO " + table + "(uuid, " + key
 					+ ") VALUES('" + uuid + "', '" + value + "') ON DUPLICATE KEY UPDATE " + key + "='" + value + "';").get();

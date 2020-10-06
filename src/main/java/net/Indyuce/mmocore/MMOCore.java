@@ -165,8 +165,8 @@ public class MMOCore extends JavaPlugin {
 		new Metrics(this);
 		saveDefaultConfig();
 				
-		if (getConfig().contains("mysql") && getConfig().getBoolean("mysql.enabled"))
-			dataProvider = new MySQLDataProvider();
+		if (getConfig().isConfigurationSection("mysql") && getConfig().getBoolean("mysql.enabled"))
+			dataProvider = new MySQLDataProvider(getConfig());
 
 		if(getConfig().isConfigurationSection("default-playerdata"))
 			dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
