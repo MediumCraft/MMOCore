@@ -4,7 +4,7 @@
   <groupId>net.Indyuce</groupId>
   <artifactId>MMOCore</artifactId>
   <name>MMOCore</name>
-  <version>1.4.7</version>
+  <version>1.4.9</version>
   <description>Offer your players a brand new RPG experience.</description>
   <build>
     <resources>
@@ -75,6 +75,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.12</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.github.MilkBowl</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
@@ -84,12 +90,6 @@
       <groupId>com.sk89q.worldguard</groupId>
       <artifactId>worldguard-bukkit</artifactId>
       <version>7.0.2-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.12</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
