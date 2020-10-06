@@ -37,6 +37,7 @@ public class KillMobObjective extends Objective {
 
 		@EventHandler
 		public void a(EntityKillEntityEvent event) {
+			if(!getPlayer().isOnline()) return;
 			if (event.getTarget().getType() == type && event.getEntity().equals(getPlayer().getPlayer())) {
 				count++;
 				getQuestProgress().getPlayer().getQuestData().updateBossBar();

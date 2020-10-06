@@ -48,8 +48,12 @@ public abstract class ExperienceSource<T> {
 
 	public void giveExperience(PlayerData player, int amount, Location location) {
 		if (hasProfession())
-			player.getCollectionSkills().giveExperience(profession, amount, location == null ? player.getPlayer().getLocation() : location, EXPSource.SOURCE);
+			player.getCollectionSkills().giveExperience(profession, amount, location == null ? getPlayerLocation(player) : location, EXPSource.SOURCE);
 		else
-			player.giveExperience(amount, location == null ? player.getPlayer().getLocation() : location, EXPSource.SOURCE);
+			player.giveExperience(amount, location == null ? getPlayerLocation(player) : location, EXPSource.SOURCE);
+	}
+	
+	private Location getPlayerLocation(PlayerData player) {
+		return player.isOnline() ? player.getPlayer().getLocation() : null;
 	}
 }

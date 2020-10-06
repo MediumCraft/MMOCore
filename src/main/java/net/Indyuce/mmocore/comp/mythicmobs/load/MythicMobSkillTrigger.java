@@ -28,6 +28,7 @@ public class MythicMobSkillTrigger extends Trigger {
 
 	@Override
 	public void apply(PlayerData player) {
+		if(!player.isOnline()) return;
 		List<Entity> targets = new ArrayList<>();
 		targets.add(player.getPlayer());
 		MythicMobs.inst().getAPIHelper().castSkill(player.getPlayer(), this.skill.getInternalName(), player.getPlayer(), player.getPlayer().getEyeLocation(), targets, null, 1);

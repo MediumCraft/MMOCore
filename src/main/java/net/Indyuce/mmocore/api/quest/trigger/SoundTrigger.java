@@ -21,6 +21,7 @@ public class SoundTrigger extends Trigger {
 
 	@Override
 	public void apply(PlayerData player) {
+		if(!player.isOnline()) return;
 		player.getPlayer().playSound(player.getPlayer().getLocation(), sound, vol, pitch);
 	}
 }

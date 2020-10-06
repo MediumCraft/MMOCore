@@ -28,9 +28,14 @@ public class PartyInvite extends Request {
 	}
 
 	public void accept() {
-		party.removeLastInvite(getCreator().getPlayer());
-		party.getMembers().forEach(member -> MMOCore.plugin.configManager.getSimpleMessage("party-joined-other", "player", target.getPlayer().getName()).send(member.getPlayer()));
-		MMOCore.plugin.configManager.getSimpleMessage("party-joined", "owner", party.getOwner().getPlayer().getName()).send(target.getPlayer());
+		if(getCreator().isOnline())
+			party.removeLastInvite(getCreator().getPlayer());
+		party.getMembers().forEach(member -> {
+			if(member.isOnline() && target.isOnline())
+				MMOCore.plugin.configManager.getSimpleMessage("party-joined-other", "player", target.getPlayer().getName()).send(member.getPlayer());
+			});
+		if(party.getOwner().isOnline() && target.isOnline())
+			MMOCore.plugin.configManager.getSimpleMessage("party-joined", "owner", party.getOwner().getPlayer().getName()).send(target.getPlayer());
 		party.addMember(target);
 		InventoryManager.PARTY_VIEW.newInventory(target).open();
 		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());

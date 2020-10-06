@@ -109,7 +109,8 @@ public class EditableFriendList extends EditableInventory {
 			PlayerData data = PlayerData.get(friend);
 
 			Placeholders holders = new Placeholders();
-			holders.register("name", data.getPlayer().getName());
+			if(data.isOnline())
+				holders.register("name", data.getPlayer().getName());
 			holders.register("class", data.getProfess().getName());
 			holders.register("level", data.getLevel());
 			holders.register("online_since", new DelayFormat(2).format(System.currentTimeMillis() - data.getLastLogin()));

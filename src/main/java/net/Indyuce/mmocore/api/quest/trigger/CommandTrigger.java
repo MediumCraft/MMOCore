@@ -19,6 +19,7 @@ public class CommandTrigger extends Trigger {
 
 	@Override
 	public void apply(PlayerData player) {
+		if(!player.isOnline()) return;
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), format(player.getPlayer()));
 	}
 

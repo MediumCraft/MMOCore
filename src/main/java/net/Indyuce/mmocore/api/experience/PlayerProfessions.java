@@ -127,7 +127,7 @@ public class PlayerProfessions {
 		value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 
 		// display hologram
-		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
+		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms") && playerData.isOnline())
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
 				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
 						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
@@ -158,7 +158,7 @@ public class PlayerProfessions {
 			playerData.giveExperience((int) profession.getExperience().calculate(level), null);
 		}
 
-		if (check) {
+		if (check && playerData.isOnline()) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
 			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
 			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + level, "profession", profession.getName())
@@ -171,7 +171,8 @@ public class PlayerProfessions {
 		int chars = (int) ((double) exp / needed * 20);
 		for (int j = 0; j < 20; j++)
 			bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
-		MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio",
+		if(playerData.isOnline())
+			MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio",
 				MMOCore.plugin.configManager.decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
 }

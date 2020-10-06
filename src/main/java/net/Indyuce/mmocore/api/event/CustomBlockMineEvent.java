@@ -29,8 +29,9 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
 		this.block = block;
 		this.info = info;
-		this.drops = (info.hasDropTable() && info.getDropTable().areConditionsMet(new ConditionInstance(player.getPlayer())))
-			? info.collectDrops(new LootBuilder(player, 0)) : new ArrayList<>();
+		this.drops = (info.hasDropTable() && player.isOnline()
+				&& info.getDropTable().areConditionsMet(new ConditionInstance(player.getPlayer())))
+					? info.collectDrops(new LootBuilder(player, 0)) : new ArrayList<>();
 		this.experience = info.hasExperience() ? info.getExperience().newInfo() : null;
 	}
 

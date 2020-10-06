@@ -254,6 +254,7 @@ public class PlayerData extends OfflinePlayerData {
 
 	public void refreshVanillaExp() {
 		if (MMOCore.plugin.configManager.overrideVanillaExp) {
+			if(!isOnline()) return;
 			getPlayer().setLevel(getLevel());
 			getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
 		}
@@ -333,6 +334,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void heal(double heal) {
+		if(!isOnline()) return;
 		double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		if (getPlayer().getHealth() == newest)
 			return;
@@ -368,7 +370,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void log(Level level, String message) {
-		MMOCore.plugin.getLogger().log(level, "[Userdata:" + getPlayer().getName() + "] " + message);
+		MMOCore.plugin.getLogger().log(level, "[Userdata:" + (isOnline() ? getPlayer().getName() : "Offline Player") + "] " + message);
 	}
 
 	public void setLastFriendRequest(long ms) {
@@ -376,6 +378,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void sendFriendRequest(PlayerData target) {
+		if(!isOnline() || !target.isOnline()) return;
 		setLastFriendRequest(System.currentTimeMillis());
 
 		FriendRequest request = new FriendRequest(this, target);
@@ -395,10 +398,12 @@ public class PlayerData extends OfflinePlayerData {
 
 		giveStellium(-waypoint.getStelliumCost());
 
+		if(!isOnline()) return;
 		new BukkitRunnable() {
 			int x = getPlayer().getLocation().getBlockX(), y = getPlayer().getLocation().getBlockY(), z = getPlayer().getLocation().getBlockZ(), t;
 
 			public void run() {
+				if(!isOnline()) return;
 				if (getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y
 						|| getPlayer().getLocation().getBlockZ() != z) {
 					getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, .5f);
@@ -442,7 +447,7 @@ public class PlayerData extends OfflinePlayerData {
 		}
 
 		// display hologram
-		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms"))
+		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms") && isOnline())
 			if (loc != null && MMOCore.plugin.hologramSupport != null)
 				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
 						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
@@ -471,9 +476,11 @@ public class PlayerData extends OfflinePlayerData {
 
 		if (level > oldLevel) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
-			new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
-			getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-			new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
+			if(isOnline()) {
+				new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
+				getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+				new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
+			}
 			getStats().updateStats();
 		}
 
@@ -577,6 +584,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void displayActionBar(String message) {
+		if(!isOnline()) return;
 		setActionBarTimeOut(MMOCore.plugin.actionBarManager.getTimeOut());
 		getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
@@ -728,7 +736,7 @@ public class PlayerData extends OfflinePlayerData {
 		 */
 		SkillResult cast = skill.getSkill().whenCast(this, skill);
 		if (!cast.isSuccessful()) {
-			if (!skill.getSkill().isPassive()) {
+			if (!skill.getSkill().isPassive() && isOnline()) {				
 				if (cast.getCancelReason() == CancelReason.LOCKED)
 					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(getPlayer());
 

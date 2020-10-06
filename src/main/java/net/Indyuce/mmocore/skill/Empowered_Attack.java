@@ -45,7 +45,8 @@ public class Empowered_Attack extends Skill {
 		if (!cast.isSuccessful())
 			return cast;
 
-		data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
+		if(data.isOnline())
+			data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
 		new EmpoweredAttack(data, cast.getModifier("extra"), cast.getModifier("ratio"), cast.getModifier("radius"));
 		return cast;
 	}
@@ -69,7 +70,8 @@ public class Empowered_Attack extends Skill {
 			this.r = ratio / 100;
 			this.rad = radius;
 
-			new SmallParticleEffect(player.getPlayer(), Particle.FIREWORKS_SPARK);
+			if(player.isOnline())
+				new SmallParticleEffect(player.getPlayer(), Particle.FIREWORKS_SPARK);
 
 			Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> close(), 80);
@@ -81,6 +83,7 @@ public class Empowered_Attack extends Skill {
 
 		@EventHandler
 		public void a(PlayerAttackEvent event) {
+			if(!player.isOnline()) return;
 			if (event.getPlayer().equals(player.getPlayer()) && event.getAttack().hasType(DamageType.WEAPON)) {
 				close();
 

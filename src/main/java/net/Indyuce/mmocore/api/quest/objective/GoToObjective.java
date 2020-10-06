@@ -46,7 +46,7 @@ public class GoToObjective extends Objective {
 				return;
 
 			Player player = event.getPlayer();
-			if (player.equals(getPlayer().getPlayer()))
+			if (getPlayer().isOnline() && player.equals(getPlayer().getPlayer()))
 				if (player.getWorld().equals(loc.getWorld()) && player.getLocation().distanceSquared(loc) < rangeSquared)
 					getQuestProgress().completeObjective();
 		}

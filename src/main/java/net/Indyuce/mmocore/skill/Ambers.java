@@ -70,6 +70,7 @@ public class Ambers extends Skill implements Listener {
 
 		@Override
 		public void run() {
+			if(!data.isOnline()) return;
 			if (j++ > 66 || !data.getPlayer().getWorld().equals(loc.getWorld())) {
 				cancel();
 				return;

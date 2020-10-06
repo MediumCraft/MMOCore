@@ -17,6 +17,7 @@ public class DeathExperienceLoss implements Listener {
 		PlayerData data = PlayerData.get(event.getEntity());
 		int loss = (int) (data.getExperience() * this.loss);
 		data.setExperience(data.getExperience() - loss);
-		new ConfigMessage("death-exp-loss").addPlaceholders("loss", "" + loss).send(data.getPlayer());
+		if(data.isOnline())
+			new ConfigMessage("death-exp-loss").addPlaceholders("loss", "" + loss).send(data.getPlayer());
 	}
 }

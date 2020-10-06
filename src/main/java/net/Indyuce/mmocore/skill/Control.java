@@ -40,7 +40,8 @@ public class Control extends Skill {
 		if (!cast.isSuccessful())
 			return cast;
 
-		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
+		if(data.isOnline())
+			data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
 		cast.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 2, 0));
 		new TelekinesyRunnable(data, cast.getTarget(), cast.getModifier("knockback") / 100, cast.getModifier("duration"));
 		return cast;
@@ -67,6 +68,7 @@ public class Control extends Skill {
 
 		@EventHandler
 		public void a(PlayerInteractEvent event) {
+			if(!data.isOnline()) return;
 			if (event.getPlayer().equals(data.getPlayer()) && event.getAction().name().contains("LEFT_CLICK")) {
 				Vector vec = data.getPlayer().getEyeLocation().getDirection().multiply(3 * f);
 				vec.setY(Math.max(.5, vec.getY() / 2));

@@ -36,7 +36,7 @@ public class Telekinesy extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		TargetSkillResult cast = new TargetSkillResult(data, skill, 7);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || !data.isOnline())
 			return cast;
 
 		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
@@ -67,6 +67,7 @@ public class Telekinesy extends Skill {
 
 		@EventHandler
 		public void a(PlayerInteractEvent event) {
+			if(!data.isOnline()) return;
 			if (event.getPlayer().equals(data.getPlayer()) && event.getAction().name().contains("LEFT_CLICK")) {
 				entity.setVelocity(data.getPlayer().getEyeLocation().getDirection().multiply(1.5 * f));
 				entity.getWorld().playSound(entity.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 2, 1);

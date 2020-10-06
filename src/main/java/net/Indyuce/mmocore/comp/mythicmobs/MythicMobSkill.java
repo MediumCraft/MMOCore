@@ -62,7 +62,7 @@ public class MythicMobSkill extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		SkillResult cast = new SkillResult(data, skill);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || !data.isOnline())
 			return cast;
 
 		List<Entity> targets = new ArrayList<>();

@@ -66,6 +66,7 @@ public class SpellCast implements Listener {
 		@EventHandler(ignoreCancelled = false)
 		public void onSkillCast(PlayerItemHeldEvent event) {
 			Player player = event.getPlayer();
+			if(!playerData.isOnline()) return;
 			if (!event.getPlayer().equals(playerData.getPlayer()))
 				return;
 
@@ -92,6 +93,7 @@ public class SpellCast implements Listener {
 		@EventHandler
 		public void stopCasting(PlayerSwapHandItemsEvent event) {
 			Player player = event.getPlayer();
+			if(!playerData.isOnline()) return;
 			if (event.getPlayer().equals(playerData.getPlayer()) && !player.isSneaking()) {
 				player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1, 2);
 				MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(playerData.getPlayer());
@@ -107,6 +109,7 @@ public class SpellCast implements Listener {
 
 		private String getFormat(PlayerData data) {
 			String str = "";
+			if(!data.isOnline()) return str;
 			for (int j = 0; j < data.getBoundSkills().size(); j++) {
 				SkillInfo skill = data.getBoundSkill(j);
 				str += (str.isEmpty() ? "" : split)

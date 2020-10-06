@@ -43,6 +43,7 @@ public class Combo_Attack extends Skill {
 
 			@Override
 			public void run() {
+				if(!data.isOnline()) return;
 				if (c++ > count) {
 					cancel();
 					return;

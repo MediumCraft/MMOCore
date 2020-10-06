@@ -37,7 +37,7 @@ public class Fireball extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		SkillResult cast = new SkillResult(data, skill);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || !data.isOnline())
 			return cast;
 
 		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, 1);

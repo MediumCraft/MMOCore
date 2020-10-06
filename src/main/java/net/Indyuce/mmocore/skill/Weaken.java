@@ -35,7 +35,7 @@ public class Weaken extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		TargetSkillResult cast = new TargetSkillResult(data, skill, 7);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || !data.isOnline())
 			return cast;
 
 		LivingEntity target = cast.getTarget();

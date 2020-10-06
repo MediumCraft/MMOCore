@@ -99,7 +99,7 @@ public class Power_Mark extends Skill implements Listener {
 
 		@Override
 		public void run() {
-
+			if(!data.isOnline()) return;
 			if (j++ > duration * 20) {
 				unregister();
 

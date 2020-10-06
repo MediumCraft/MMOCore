@@ -38,6 +38,7 @@ public class KillMythicFactionObjective extends Objective {
 
 		@EventHandler
 		public void a(MythicMobDeathEvent event) {
+			if(!getQuestProgress().getPlayer().isOnline()) return;
 			if (event.getKiller() instanceof Player
 					&& event.getKiller().equals(getQuestProgress().getPlayer().getPlayer())
 					&& event.getMob().hasFaction() && event.getMob().getFaction().equals(factionName)) {

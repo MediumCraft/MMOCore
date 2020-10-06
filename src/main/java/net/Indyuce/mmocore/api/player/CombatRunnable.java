@@ -14,7 +14,8 @@ public class CombatRunnable extends BukkitRunnable {
 	public CombatRunnable(PlayerData player) {
 		this.player = player;
 
-		MMOCore.plugin.configManager.getSimpleMessage("now-in-combat").send(player.getPlayer());
+		if(player.isOnline())
+			MMOCore.plugin.configManager.getSimpleMessage("now-in-combat").send(player.getPlayer());
 		Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, true));
 		runTaskTimer(MMOCore.plugin, 20, 20);
 	}

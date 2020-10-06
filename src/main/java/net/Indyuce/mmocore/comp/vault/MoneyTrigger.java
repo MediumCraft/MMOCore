@@ -26,7 +26,7 @@ public class MoneyTrigger extends Trigger {
 		 * instanced when the plugin loads and the economy has not been loaded
 		 * yet.
 		 */
-		if (!MMOCore.plugin.economy.isValid())
+		if (!MMOCore.plugin.economy.isValid() || !player.isOnline())
 			return;
 
 		if (operation == Operation.GIVE)

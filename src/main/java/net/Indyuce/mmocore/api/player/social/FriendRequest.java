@@ -20,6 +20,7 @@ public class FriendRequest extends Request {
 
 	public void deny() {
 		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
+		if(!target.isOnline()) return;
 		target.getPlayer().playSound(target.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 	}
 
@@ -27,8 +28,10 @@ public class FriendRequest extends Request {
 		getCreator().setLastFriendRequest(0);
 		getCreator().addFriend(target.getUniqueId());
 		target.addFriend(getCreator().getUniqueId());
-		MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", target.getPlayer().getName()).send(getCreator().getPlayer());
-		MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", getCreator().getPlayer().getName()).send(target.getPlayer());
+		if(target.isOnline() && getCreator().isOnline()) {
+			MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", target.getPlayer().getName()).send(getCreator().getPlayer());
+			MMOCore.plugin.configManager.getSimpleMessage("now-friends", "player", getCreator().getPlayer().getName()).send(target.getPlayer());
+		}
 		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
 	}
 }

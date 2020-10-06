@@ -58,6 +58,7 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
 							return;
 
 						PlayerData data = PlayerData.get(playerOpt.get());
+						if(!data.isOnline()) return;
 						for (BrewPotionExperienceSource source : getSources())
 							if (source.matches(data, (PotionMeta) brewn.getItemMeta()))
 								new PotionUpgrade(found, brewn).process(data.getPlayer());

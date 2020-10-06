@@ -33,7 +33,8 @@ public class PlayerQuests {
 		this.playerData = playerData;
 		
 		bossbar = MMOLib.plugin.getVersion().getWrapper().createBossBar(new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()), "", BarColor.PURPLE, BarStyle.SEGMENTED_20, new BarFlag[0]);
-		bossbar.addPlayer(playerData.getPlayer());
+		if(playerData.isOnline())
+			bossbar.addPlayer(playerData.getPlayer());
 	}
 
 	@Deprecated

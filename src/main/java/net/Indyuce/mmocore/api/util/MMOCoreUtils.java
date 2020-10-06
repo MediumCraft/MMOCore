@@ -150,6 +150,7 @@ public class MMOCoreUtils {
 
 	// TODO worldguard flags support for no target
 	public static boolean canTarget(PlayerData player, Entity target) {
+		if(!player.isOnline()) return false;
 
 		// basic checks
 		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead() || MMOLib.plugin.getEntities().findCustom(target))

@@ -41,6 +41,7 @@ public class MineBlockObjective extends Objective {
 
 		@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 		public void a(BlockBreakEvent event) {
+			if(!getQuestProgress().getPlayer().isOnline()) return;
 			if ((!playerPlaced) && event.getBlock().hasMetadata("player_placed"))
 				return;
 			if (event.getPlayer().equals(getQuestProgress().getPlayer().getPlayer()) && event.getBlock().getType() == block) {
@@ -53,6 +54,7 @@ public class MineBlockObjective extends Objective {
 
 		@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 		public void b(CustomBlockMineEvent event) {
+			if(!getQuestProgress().getPlayer().isOnline()) return;
 			if (event.getPlayer().equals(getQuestProgress().getPlayer().getPlayer()) && event.getBlock().getType() == block) {
 				count++;
 				getQuestProgress().getPlayer().getQuestData().updateBossBar();

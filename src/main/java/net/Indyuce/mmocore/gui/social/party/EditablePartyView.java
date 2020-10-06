@@ -48,7 +48,8 @@ public class EditablePartyView extends EditableInventory {
 			PlayerData member = inv.getPlayerData().getParty().getMembers().get(n);
 
 			Placeholders holders = new Placeholders();
-			holders.register("name", member.getPlayer().getName());
+			if(member.isOnline())
+				holders.register("name", member.getPlayer().getName());
 			holders.register("class", member.getProfess().getName());
 			holders.register("level", "" + member.getLevel());
 			holders.register("since", new DelayFormat(2).format(System.currentTimeMillis() - member.getLastLogin()));
@@ -67,6 +68,7 @@ public class EditablePartyView extends EditableInventory {
 			 */
 			if (meta instanceof SkullMeta)
 				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+					if(!member.isOnline()) return;
 					((SkullMeta) meta).setOwningPlayer(member.getPlayer());
 					disp.setItemMeta(meta);
 				});

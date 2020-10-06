@@ -294,7 +294,8 @@ public class PlayerStats extends EditableInventory {
 			holders.register("attribute_points", "" + data.getAttributePoints());
 			holders.register("progress", bar);
 			holders.register("next_level", "" + nextLevelExp);
-			holders.register("player", "" + data.getPlayer().getName());
+			if(data.isOnline())
+				holders.register("player", "" + data.getPlayer().getName());
 			holders.register("class", "" + data.getProfess().getName());
 
 			return holders;

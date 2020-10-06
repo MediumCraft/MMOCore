@@ -40,7 +40,7 @@ public class Ice_Spikes extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		LocationSkillResult cast = new LocationSkillResult(data, skill, 20);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || !data.isOnline())
 			return cast;
 
 		Location loc = cast.getHit();

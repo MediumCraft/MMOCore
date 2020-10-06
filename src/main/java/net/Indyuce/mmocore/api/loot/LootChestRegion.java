@@ -76,7 +76,7 @@ public class LootChestRegion {
 	}
 
 	public void spawnChest(PlayerData player) {
-
+		if(!player.isOnline()) return;
 		// first randomly determine the chest tier
 		ChestTier tier = rollTier();
 

@@ -27,7 +27,7 @@ public class Warp extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		WarpCast cast = new WarpCast(data, skill);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || !data.isOnline())
 			return cast;
 
 		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 2);
@@ -52,7 +52,8 @@ public class Warp extends Skill {
 
 		public WarpCast(PlayerData data, SkillInfo skill) {
 			super(data, skill);
-			if (isSuccessful() && (block = data.getPlayer().getTargetBlock(null, (int) getModifier("range"))) == null)
+			if(!data.isOnline()) abort();
+			else if (isSuccessful() && (block = data.getPlayer().getTargetBlock(null, (int) getModifier("range"))) == null)
 				abort();
 		}
 	}

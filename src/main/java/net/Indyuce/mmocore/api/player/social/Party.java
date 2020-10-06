@@ -76,7 +76,7 @@ public class Party {
 		// transfer ownership
 		if (owner.equals(data)) {
 			owner = members.get(0);
-			if(notify) MMOCore.plugin.configManager.getSimpleMessage("transfer-party-ownership").send(owner.getPlayer());
+			if(notify && owner.isOnline()) MMOCore.plugin.configManager.getSimpleMessage("transfer-party-ownership").send(owner.getPlayer());
 		}
 	}
 
@@ -100,8 +100,9 @@ public class Party {
 	public void sendPartyInvite(PlayerData inviter, PlayerData target) {
 		invites.put(target.getUniqueId(), System.currentTimeMillis());
 		Request request = new PartyInvite(this, inviter, target);
-		new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
-				.sendAsJSon(target.getPlayer());
+		if(inviter.isOnline() && target.isOnline())
+			new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
+					.sendAsJSon(target.getPlayer());
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 

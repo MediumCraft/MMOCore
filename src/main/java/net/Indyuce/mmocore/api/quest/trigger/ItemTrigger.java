@@ -22,6 +22,7 @@ public class ItemTrigger extends Trigger {
 
 	@Override
 	public void apply(PlayerData player) {
+		if(!player.isOnline()) return;
 		new SmartGive(player.getPlayer()).give(new ItemStack(material, amount));
 	}
 }

@@ -35,7 +35,7 @@ public class Fire_Storm extends Skill {
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		TargetSkillResult cast = new TargetSkillResult(data, skill, 20);
-		if (!cast.isSuccessful())
+		if (!cast.isSuccessful() || !data.isOnline())
 			return cast;
 
 		LivingEntity target = cast.getTarget();

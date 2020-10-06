@@ -18,6 +18,7 @@ public class MessageTrigger extends Trigger {
 
 	@Override
 	public void apply(PlayerData player) {
+		if(!player.isOnline()) return;
 		player.getPlayer().sendMessage(format(player.getPlayer()));
 	}
 

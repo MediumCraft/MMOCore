@@ -76,12 +76,15 @@ public class Fire_Rage extends Skill {
 			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> close(), (long) (cast.getModifier("duration") * 20));
 			runTaskTimer(MMOCore.plugin, 0, 1);
 
-			data.getPlayer().removePotionEffect(PotionEffectType.SLOW);
-			data.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (cast.getModifier("duration") * 20), 1));
+			if(data.isOnline()) {
+				data.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+				data.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (cast.getModifier("duration") * 20), 1));
+			}
 		}
 
 		@EventHandler
 		public void a(PlayerInteractEvent event) {
+			if(!data.isOnline()) return;
 			if (event.getPlayer().equals(data.getPlayer()) && event.getAction().name().contains("LEFT_CLICK") && (System.currentTimeMillis() - last) > timeOut) {
 				last = System.currentTimeMillis();
 				castEffect();
@@ -92,6 +95,7 @@ public class Fire_Rage extends Skill {
 		}
 
 		private void castEffect() {
+			if(!data.isOnline()) return;
 			VectorRotation rotation = new VectorRotation(data.getPlayer().getEyeLocation());
 			for (double a = 0; a < Math.PI * 2; a += Math.PI / 13) {
 				Vector vec = rotation.rotate(new Vector(Math.cos(a), Math.sin(a), 0)).add(data.getPlayer().getEyeLocation().getDirection().multiply(.5)).multiply(.3);
@@ -108,6 +112,7 @@ public class Fire_Rage extends Skill {
 		}
 
 		private void fireball(boolean last) {
+			if(!data.isOnline()) return;
 			if (last) {
 				data.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 				data.getPlayer().removePotionEffect(PotionEffectType.SLOW);

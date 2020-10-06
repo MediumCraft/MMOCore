@@ -36,9 +36,10 @@ public class Evade extends Skill {
 		SkillResult cast = new SkillResult(data, skill);
 		if (!cast.isSuccessful())
 			return cast;
-
-		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, 2);
-		new SmallParticleEffect(data.getPlayer(), Particle.CLOUD);
+		if(data.isOnline()) {
+			data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, 2);
+			new SmallParticleEffect(data.getPlayer(), Particle.CLOUD);
+		}
 		new EvadeSkill(data, cast.getModifier("duration"));
 		return cast;
 	}
@@ -61,6 +62,7 @@ public class Evade extends Skill {
 
 		@EventHandler(priority = EventPriority.LOW)
 		public void a(EntityDamageEvent event) {
+			if(!data.isOnline()) return;
 			if (event.getEntity().equals(data.getPlayer()))
 				event.setCancelled(true);
 		}

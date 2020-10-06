@@ -32,6 +32,7 @@ public class TalktoCitizenObjective extends Objective {
 
 		@EventHandler
 		public void a(CitizenInteractEvent event) {
+			if(!getQuestProgress().getPlayer().isOnline()) return;
 			if (event.getPlayer().equals(getQuestProgress().getPlayer().getPlayer()) && event.getNPC().getId() == id)
 				getQuestProgress().completeObjective();
 		}
