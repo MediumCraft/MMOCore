@@ -14,10 +14,11 @@ public class CombatRunnable extends BukkitRunnable {
 	public CombatRunnable(PlayerData player) {
 		this.player = player;
 
-		if(player.isOnline())
+		if (player.isOnline()) {
 			MMOCore.plugin.configManager.getSimpleMessage("now-in-combat").send(player.getPlayer());
-		Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, true));
-		runTaskTimer(MMOCore.plugin, 20, 20);
+			Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, true));
+			runTaskTimer(MMOCore.plugin, 20, 20);
+		}
 	}
 
 	public void update() {
@@ -26,7 +27,10 @@ public class CombatRunnable extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		if(!player.isOnline()) { close(); return; }
+		if (!player.isOnline()) {
+			close();
+			return;
+		}
 		if (lastHit + MMOCore.plugin.configManager.combatLogTimer < System.currentTimeMillis()) {
 			Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, false));
 			MMOCore.plugin.configManager.getSimpleMessage("leave-combat").send(player.getPlayer());
