@@ -1,15 +1,21 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 
+import com.google.common.base.Enums;
+import com.google.common.base.Optional;
+
 import io.lumine.xikage.mythicmobs.MythicMobs;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
@@ -17,9 +23,11 @@ import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.comp.anticheat.CheatType;
 
 public class MythicMobSkill extends Skill {
 	private final io.lumine.xikage.mythicmobs.skills.Skill skill;
+	private final Map<CheatType, Integer> antiCheat = new HashMap<>();
 
 	// private final BiFunction<PlayerDataManager, SkillInfo, SkillResult> cast;
 
@@ -29,7 +37,7 @@ public class MythicMobSkill extends Skill {
 		String mmId = config.getString("mythicmobs-skill-id");
 		Validate.notNull(mmId, "Could not find MM skill ID");
 
-		Optional<io.lumine.xikage.mythicmobs.skills.Skill> opt = MythicMobs.inst().getSkillManager().getSkill(mmId);
+		java.util.Optional<io.lumine.xikage.mythicmobs.skills.Skill> opt = MythicMobs.inst().getSkillManager().getSkill(mmId);
 		Validate.isTrue(opt.isPresent(), "Could not find MM skill " + mmId);
 		skill = opt.get();
 
@@ -45,6 +53,14 @@ public class MythicMobSkill extends Skill {
 			if (mod instanceof ConfigurationSection)
 				addModifier(key, readLinearValue((ConfigurationSection) mod));
 		}
+
+		if (config.isConfigurationSection("disable-anti-cheat"))
+			for(String key : config.getConfigurationSection("").getKeys(false)) {
+				Optional<CheatType> optional = Enums.getIfPresent(CheatType.class, "");
+				if(optional.isPresent() && config.isInt("disable-anti-cheat." + key))
+					antiCheat.put(optional.get(), config.getInt("disable-anti-cheat." + key));
+				else MMOCore.log(Level.WARNING, "Invalid Anti-Cheat configuration for '" + id + "'!");
+			}
 
 		// cast = config.getBoolean("target") ? (data, info) -> new
 		// TargetSkillResult(data, info, def(config.getDouble("range"), 50)) :
@@ -71,12 +87,13 @@ public class MythicMobSkill extends Skill {
 		targets.add(data.getPlayer());
 
 		/*
-		 * cache placeholders so they can be retrieved later by MythicMobs math
-		 * formulas
+		 * cache placeholders so they can be retrieved later by MythicMobs math formulas
 		 */
 		data.getSkillData().cacheModifiers(this, cast);
 
-		if (!MythicMobs.inst().getAPIHelper().castSkill(data.getPlayer(), this.skill.getInternalName(), data.getPlayer(), data.getPlayer().getEyeLocation(), targets, null, 1))
+		if(MMOCore.plugin.hasAntiCheat()) MMOCore.plugin.antiCheatSupport.disableAntiCheat(data.getPlayer(), antiCheat);
+		if (!MythicMobs.inst().getAPIHelper().castSkill(data.getPlayer(), this.skill.getInternalName(),
+				data.getPlayer(), data.getPlayer().getEyeLocation(), targets, null, 1))
 			cast.abort(CancelReason.OTHER);
 
 		return cast;

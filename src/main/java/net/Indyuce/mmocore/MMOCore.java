@@ -32,6 +32,8 @@ import net.Indyuce.mmocore.command.QuestsCommand;
 import net.Indyuce.mmocore.command.SkillsCommand;
 import net.Indyuce.mmocore.command.WaypointsCommand;
 import net.Indyuce.mmocore.command.WithdrawCommand;
+import net.Indyuce.mmocore.comp.anticheat.AntiCheatSupport;
+import net.Indyuce.mmocore.comp.anticheat.SpartanPlugin;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
 import net.Indyuce.mmocore.comp.flags.DefaultFlags;
@@ -98,7 +100,7 @@ import net.mmogroup.mmolib.version.SpigotPlugin;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
-   
+
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
 	public RestrictionManager restrictionManager;
@@ -106,6 +108,7 @@ public class MMOCore extends JavaPlugin {
 	public ConfigItemManager configItems;
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
+	public AntiCheatSupport antiCheatSupport;
 	public InventoryManager inventoryManager;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
 	public FlagPlugin flagPlugin = new DefaultFlags();
@@ -151,12 +154,12 @@ public class MMOCore extends JavaPlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			loadManager.registerLoader(new MythicMobsMMOLoader());
-		
+
 		/*
-		 *  WorldGuard closes the flag registry after 'onLoad()',
-		 *  so it must be registered here or it will throw an IllegalStateException
+		 * WorldGuard closes the flag registry after 'onLoad()', so it must be
+		 * registered here or it will throw an IllegalStateException
 		 */
-		if(Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
+		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
 			flagPlugin = new WorldGuardFlags();
 	}
 
@@ -164,11 +167,11 @@ public class MMOCore extends JavaPlugin {
 		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
 		saveDefaultConfig();
-				
+
 		if (getConfig().isConfigurationSection("mysql") && getConfig().getBoolean("mysql.enabled"))
 			dataProvider = new MySQLDataProvider(getConfig());
 
-		if(getConfig().isConfigurationSection("default-playerdata"))
+		if (getConfig().isConfigurationSection("default-playerdata"))
 			dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
 
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
@@ -203,14 +206,19 @@ public class MMOCore extends JavaPlugin {
 			getLogger().log(Level.INFO, "Hooked onto Holograms");
 		}
 
+		if (Bukkit.getPluginManager().getPlugin("Spartan") != null) {
+			antiCheatSupport = new SpartanPlugin();
+			getLogger().log(Level.INFO, "Hooked onto Spartan");
+		}
+
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
 			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
 			MMOCore.plugin.getLogger().log(Level.INFO, "Hooked onto MythicMobs");
 		}
 
 		/*
-		 * resource regeneration. must check if entity is dead otherwise regen
-		 * will make the 'respawn' button glitched plus HURT entity effect bug
+		 * resource regeneration. must check if entity is dead otherwise regen will make
+		 * the 'respawn' button glitched plus HURT entity effect bug
 		 */
 		new BukkitRunnable() {
 			public void run() {
@@ -225,9 +233,8 @@ public class MMOCore extends JavaPlugin {
 		}.runTaskTimer(MMOCore.plugin, 100, 20);
 
 		/*
-		 * clean active loot chests every 5 minutes. cannot register this
-		 * runnable in the loot chest manager because it is instanced when the
-		 * plugin loads
+		 * clean active loot chests every 5 minutes. cannot register this runnable in
+		 * the loot chest manager because it is instanced when the plugin loads
 		 */
 		new BukkitRunnable() {
 			public void run() {
@@ -238,14 +245,16 @@ public class MMOCore extends JavaPlugin {
 		}.runTaskTimer(this, 5 * 60 * 20, 5 * 60 * 20);
 
 		/*
-		 * For the sake of the lord, make sure they aren't using MMOItems Mana
-		 * and Stamina Addon...This should prevent a couple error reports
-		 * produced by people not reading the installation guide...
+		 * For the sake of the lord, make sure they aren't using MMOItems Mana and
+		 * Stamina Addon...This should prevent a couple error reports produced by people
+		 * not reading the installation guide...
 		 */
 		if (Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
-			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "MMOCore is not meant to be used with MMOItems ManaAndStamina");
+			getLogger().log(Level.SEVERE,
+					ChatColor.DARK_RED + "MMOCore is not meant to be used with MMOItems ManaAndStamina");
 			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "Please read the installation guide!");
-			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with MMOItems ManaAndStamina");
+			Bukkit.broadcastMessage(
+					ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with MMOItems ManaAndStamina");
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
 			return;
 		}
@@ -253,7 +262,8 @@ public class MMOCore extends JavaPlugin {
 		reloadPlugin();
 
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
-			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
+			Bukkit.getPluginManager().registerEvents(
+					new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
 
 		/*
 		 * enable debug mode for extra debug tools.
@@ -285,10 +295,9 @@ public class MMOCore extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlayerCollectStats(), this);
 
 		/*
-		 * initialize player data from all online players. this is very
-		 * important to do that after registering all the professses otherwise
-		 * the player datas can't recognize what profess the player has and
-		 * professes will be lost
+		 * initialize player data from all online players. this is very important to do
+		 * that after registering all the professses otherwise the player datas can't
+		 * recognize what profess the player has and professes will be lost
 		 */
 		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player));
 
@@ -364,7 +373,7 @@ public class MMOCore extends JavaPlugin {
 		for (Guild guild : dataProvider.getGuildManager().getAll())
 			dataProvider.getGuildManager().save(guild);
 		dataProvider.close();
-		
+
 		mineManager.resetRemainingBlocks();
 
 		lootChests.getActive().forEach(chest -> chest.unregister(false));
@@ -372,7 +381,7 @@ public class MMOCore extends JavaPlugin {
 
 	public void reloadPlugin() {
 		reloadConfig();
-		
+
 		configManager = new ConfigManager();
 
 		skillManager.reload();
@@ -392,7 +401,7 @@ public class MMOCore extends JavaPlugin {
 
 		// experience must be loaded before professions and classes
 		experience.reload();
-		
+
 		// drop tables must be loaded before professions
 		dropTableManager.clear();
 		dropTableManager.reload();
@@ -415,7 +424,7 @@ public class MMOCore extends JavaPlugin {
 		requestManager = new RequestManager();
 		configItems = new ConfigItemManager(new ConfigFile("items").getConfig());
 
-		if(getConfig().isConfigurationSection("action-bar"))
+		if (getConfig().isConfigurationSection("action-bar"))
 			actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
 
 		StatType.load();
@@ -434,12 +443,16 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public static void debug(int value, Level level, String message) {
-		if(DebugMode.level > (value - 1))
+		if (DebugMode.level > (value - 1))
 			plugin.getLogger().log(level, message);
 	}
 
 	public File getJarFile() {
 		return getFile();
+	}
+
+	public boolean hasAntiCheat() {
+		return antiCheatSupport != null;
 	}
 
 	public boolean hasHolograms() {

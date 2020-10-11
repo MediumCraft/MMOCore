@@ -201,5 +201,12 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/PlaceholderAPI.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>me.vagdedes</groupId>
+			<artifactId>spartan</artifactId>
+			<version>Univsersal</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/SpartanAPI.jar</systemPath>
+		</dependency>
 	</dependencies>
 </project>
