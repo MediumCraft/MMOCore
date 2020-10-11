@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -62,11 +61,25 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("combat"))
 			return String.valueOf(PlayerData.get(player).isInCombat());
 
-		else if (identifier.equals("health")) {
-			Validate.isTrue(player.isOnline(), "Player must be online");
+		else if (identifier.equals("health") && player.isOnline()) {
 			return StatType.MAX_HEALTH.format(player.getPlayer().getHealth());
 		}
 
+		else if (identifier.equals("max_health") && player.isOnline()) {
+			return StatType.MAX_HEALTH.format(player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+		}
+
+		else if(identifier.equals("health_bar") && player.isOnline()) {
+			StringBuilder format = new StringBuilder();
+			double ratio = 20 * player.getPlayer().getHealth()
+				/ player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			for (double j = 1; j < 20; j++)
+				format.append((ratio >= j ? ChatColor.RED
+						: ratio >= j - .5 ? ChatColor.DARK_RED : ChatColor.DARK_GRAY)
+						+ AltChar.listSquare);
+			return format.toString();
+		}
+		
 		else if (identifier.equals("class"))
 			return PlayerData.get(player).getProfess().getName();
 
@@ -88,11 +101,6 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.startsWith("profession_"))
 			return "" + PlayerData.get(player).getCollectionSkills()
 					.getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
-
-		else if (identifier.equals("max_health")) {
-			Validate.isTrue(player.isOnline(), "Player must be online");
-			return StatType.MAX_HEALTH.format(player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-		}
 
 		else if (identifier.equals("experience"))
 			return "" + PlayerData.get(player).getExperience();
