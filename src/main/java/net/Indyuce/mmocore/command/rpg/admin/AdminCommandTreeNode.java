@@ -7,12 +7,13 @@ import net.mmogroup.mmolib.command.api.CommandTreeNode;
 public class AdminCommandTreeNode extends CommandTreeNode {
 	public AdminCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "admin");
-
+		
 		addChild(new HideActionBarCommandTreeNode(this));
 		addChild(new NoCooldownCommandTreeNode(this));
 		addChild(new ResetCommandTreeNode(this));
 		addChild(new InfoCommandTreeNode(this));
 		addChild(new ClassCommandTreeNode(this));
+		addChild(new ForceClassCommandTreeNode(this));
 
 		addChild(new ExperienceCommandTreeNode(this));
 		addChild(new LevelCommandTreeNode(this));

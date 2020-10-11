@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.manager.data.PlayerDataManager.DefaultPlayerData;
 
 public class SavedClassInformation {
 	private final int level, experience, skillPoints, attributePoints, attributeReallocationPoints;
@@ -53,23 +54,26 @@ public class SavedClassInformation {
 	}
 
 	public SavedClassInformation(PlayerData player) {
-		level = player.getLevel();
-		skillPoints = player.getSkillPoints();
-		experience = player.getExperience();
-		skills = player.mapSkillLevels();
-		attributes = player.getAttributes().mapPoints();
-		attributePoints = player.getAttributePoints();
-		attributeReallocationPoints = player.getAttributeReallocationPoints();
+		this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(),
+			player.getAttributeReallocationPoints(), player.mapSkillLevels(), player.getAttributes().mapPoints());
+	}
+
+	public SavedClassInformation(DefaultPlayerData data) {
+		this(data.getLevel(), 0, data.getSkillPoints(), data.getAttributePoints(), data.getAttrReallocPoints());
 	}
 
 	public SavedClassInformation(int level, int experience, int skillPoints, int attributePoints, int attributeReallocationPoints) {
-		this.level = level;
-		this.experience = experience;
-		this.skillPoints = skillPoints;
-		this.attributePoints = attributePoints;
-		this.attributeReallocationPoints = attributeReallocationPoints;
-		attributes = new HashMap<>();
-		skills = new HashMap<>();
+		this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, new HashMap<>(), new HashMap<>());
+	}
+
+	private SavedClassInformation(int l, int e, int sp, int ap, int arp, Map<String, Integer> a, Map<String, Integer> s) {
+		this.level = l;
+		this.experience = e;
+		this.skillPoints = sp;
+		this.attributePoints = ap;
+		this.attributeReallocationPoints = arp;
+		this.attributes = a;
+		this.skills = s;
 	}
 
 	public int getLevel() {

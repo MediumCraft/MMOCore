@@ -43,7 +43,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 								data.setClassPoints(getDefaultData().getClassPoints());
 								data.setSkillPoints(getDefaultData().getSkillPoints());
 								data.setAttributePoints(getDefaultData().getAttributePoints());
-								data.setAttributeReallocationPoints(getDefaultData().getAttributeReallocationPoints());
+								data.setAttributeReallocationPoints(getDefaultData().getAttrReallocPoints());
 								data.setExperience(0);
 								data.setMana(data.getStats().getStat(StatType.MAX_MANA));
 								data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));

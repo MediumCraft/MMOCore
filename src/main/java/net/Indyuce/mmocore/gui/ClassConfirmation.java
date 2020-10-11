@@ -92,7 +92,9 @@ public class ClassConfirmation extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			return inv.getPlayerData().hasSavedClass(((ClassConfirmationInventory) inv).profess) ? unlocked.display(inv, n) : locked.display(inv, n);
+			return inv.getPlayerData().hasSavedClass(((ClassConfirmationInventory) inv).profess)
+					? unlocked.display(inv, n)
+					: locked.display(inv, n);
 		}
 
 		@Override
@@ -105,7 +107,8 @@ public class ClassConfirmation extends EditableInventory {
 		private final PlayerClass profess;
 		private final PluginInventory last;
 
-		public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
+		public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess,
+				PluginInventory last) {
 			super(playerData, editable);
 
 			this.profess = profess;
@@ -128,7 +131,8 @@ public class ClassConfirmation extends EditableInventory {
 					return;
 
 				playerData.giveClassPoints(-1);
-				(playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess) : new SavedClassInformation(1, 0, 0, 0, 0)).load(profess, playerData);
+				(playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess) : new SavedClassInformation(
+					MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
 				while (playerData.hasSkillBound(0))
 					playerData.unbindSkill(0);
 				MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);

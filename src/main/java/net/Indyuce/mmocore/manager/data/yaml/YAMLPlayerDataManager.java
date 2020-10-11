@@ -27,7 +27,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
 		data.setSkillPoints(config.getInt("skill-points", getDefaultData().getSkillPoints()));
 		data.setAttributePoints(config.getInt("attribute-points", getDefaultData().getAttributePoints()));
-		data.setAttributeReallocationPoints(config.getInt("attribute-realloc-points", getDefaultData().getAttributeReallocationPoints()));
+		data.setAttributeReallocationPoints(config.getInt("attribute-realloc-points", getDefaultData().getAttrReallocPoints()));
 		data.setLevel(config.getInt("level", getDefaultData().getLevel()));
 		data.setExperience(config.getInt("experience"));
 		if (config.contains("class"))

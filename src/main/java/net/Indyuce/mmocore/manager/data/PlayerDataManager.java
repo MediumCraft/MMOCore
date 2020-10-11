@@ -99,25 +99,5 @@ public abstract class PlayerDataManager {
 			attributePoints = 0;
 			attrReallocPoints = 0;
 		}
-
-		public int getLevel() {
-			return level;
-		}
-
-		public int getSkillPoints() {
-			return skillPoints;
-		}
-
-		public int getClassPoints() {
-			return classPoints;
-		}
-
-		public int getAttributeReallocationPoints() {
-			return attrReallocPoints;
-		}
-
-		public int getAttributePoints() {
-			return attributePoints;
-		}
 	}
 }
