@@ -56,7 +56,7 @@ public class MythicMobSkill extends Skill {
 
 		if (config.isConfigurationSection("disable-anti-cheat"))
 			for(String key : config.getConfigurationSection("").getKeys(false)) {
-				Optional<CheatType> optional = Enums.getIfPresent(CheatType.class, "");
+				Optional<CheatType> optional = Enums.getIfPresent(CheatType.class, key.toUpperCase());
 				if(optional.isPresent() && config.isInt("disable-anti-cheat." + key))
 					antiCheat.put(optional.get(), config.getInt("disable-anti-cheat." + key));
 				else MMOCore.log(Level.WARNING, "Invalid Anti-Cheat configuration for '" + id + "'!");
