@@ -37,6 +37,7 @@ import net.Indyuce.mmocore.api.quest.trigger.ItemTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.MessageTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.SoundTrigger;
+import net.Indyuce.mmocore.api.quest.trigger.StaminaTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StelliumTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.mmogroup.mmolib.api.MMOLineConfig;
@@ -54,6 +55,9 @@ public class DefaultMMOLoader extends MMOLoader {
 		if (config.getKey().equals("mana"))
 			return new ManaTrigger(config);
 
+		if (config.getKey().equals("stamina"))
+			return new StaminaTrigger(config);
+		
 		if (config.getKey().equals("stellium"))
 			return new StelliumTrigger(config);
 
