@@ -116,9 +116,9 @@ public abstract class Skill {
 	}
 
 	public void update(FileConfiguration config) {
-		name = config.getString("name");
+		name = config.getString("name", "INVALID NAME");
 		lore = config.getStringList("lore");
-		icon = MMOCoreUtils.readIcon(config.getString("material"));
+		icon = MMOCoreUtils.readIcon(config.getString("material", "DIRT"));
 
 		for (String modifier : modifiers.keySet())
 			if (config.contains(modifier))
