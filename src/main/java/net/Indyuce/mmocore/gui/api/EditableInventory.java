@@ -83,7 +83,7 @@ public abstract class EditableInventory {
 		String function = config.contains("function") ? config.getString("function").toLowerCase() : "";
 
 		if (function.startsWith("trigger:"))
-			return new TriggerItem(config, function.substring("trigger:".length()));
+			return new TriggerItem(config, function.substring(8));
 
 		return load(function, config);
 	}
