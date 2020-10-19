@@ -38,11 +38,15 @@ public class ResourceHandler {
 		this.resource = resource;
 		offCombatOnly = config.getBoolean("off-combat");
 
-		Validate.isTrue(config.contains("type"), "Could not find resource regen scaling type");
-		type = HandlerType.valueOf(config.getString("type").toUpperCase());
+		if(config.contains("type")) {
+			Validate.isTrue(config.contains("type"), "Could not find resource regen scaling type");
+			type = HandlerType.valueOf(config.getString("type").toUpperCase());
+		} else type = null;
 
-		Validate.notNull(config.getConfigurationSection("value"), "Could not find resource regen value config section");
-		scalar = new LinearValue(config.getConfigurationSection("value"));
+		if(type != null) {
+			Validate.notNull(config.getConfigurationSection("value"), "Could not find resource regen value config section");
+			scalar = new LinearValue(config.getConfigurationSection("value"));
+		} else scalar = null;
 	}
 
 	public ResourceHandler(PlayerResource resource, HandlerType type, LinearValue scalar, boolean offCombatOnly) {
@@ -56,22 +60,20 @@ public class ResourceHandler {
 	 * REGENERATION FORMULAS HERE.
 	 */
 	public double getRegen(PlayerData player) {
-
 		double d = 0;
 
 		// base resource regeneration = value of the corresponding regen stat
 		if (!player.isInCombat() || !player.getProfess().hasOption(resource.getOffCombatRegen()))
 			d += player.getStats().getStat(resource.getRegenStat());
-
+		
 		// extra resource regeneration based on CLASS, scales on LEVEL
 		if (type != null && (!player.isInCombat() || !offCombatOnly))
 			d = this.scalar.calculate(player.getLevel()) / 100 * type.getScaling(player, resource);
-
+		
 		return d;
 	}
 
 	public enum HandlerType {
-
 		/*
 		 * resource regeneration scales on max resource
 		 */
