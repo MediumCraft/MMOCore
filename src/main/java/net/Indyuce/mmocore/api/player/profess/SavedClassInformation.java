@@ -55,7 +55,7 @@ public class SavedClassInformation {
 
 	public SavedClassInformation(PlayerData player) {
 		this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(),
-			player.getAttributeReallocationPoints(), player.mapSkillLevels(), player.getAttributes().mapPoints());
+			player.getAttributeReallocationPoints(), player.getAttributes().mapPoints(), player.mapSkillLevels());
 	}
 
 	public SavedClassInformation(DefaultPlayerData data) {
@@ -129,7 +129,7 @@ public class SavedClassInformation {
 	}
 
 	public void registerAttributeLevel(PlayerAttribute attribute, int level) {
-		registerSkillLevel(attribute.getId(), level);
+		registerAttributeLevel(attribute.getId(), level);
 	}
 
 	public void registerAttributeLevel(String attribute, int level) {
