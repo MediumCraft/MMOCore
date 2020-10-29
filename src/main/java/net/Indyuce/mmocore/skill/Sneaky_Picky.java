@@ -1,11 +1,14 @@
 package net.Indyuce.mmocore.skill;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
@@ -13,7 +16,7 @@ import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.mmogroup.mmolib.api.DamageType;
 import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
 
-public class Sneaky_Picky extends Skill {
+public class Sneaky_Picky extends Skill implements Listener {
 	public Sneaky_Picky() {
 		super();
 		setMaterial(Material.DIAMOND_SWORD);
@@ -23,6 +26,8 @@ public class Sneaky_Picky extends Skill {
 		addModifier("cooldown", new LinearValue(0, 0));
 		addModifier("mana", new LinearValue(8, 1));
 		addModifier("extra", new LinearValue(50, 20));
+
+		Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 	}
 
 	@EventHandler
