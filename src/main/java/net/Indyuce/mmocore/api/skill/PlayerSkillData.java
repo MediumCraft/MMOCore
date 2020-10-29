@@ -67,8 +67,19 @@ public class PlayerSkillData {
 		cacheModifier(mmSkill, "level", cast.getLevel());
 	}
 
+	public void cacheModifiers(String skill, SkillResult cast) {
+		for (String modifier : cast.getSkill().getModifiers())
+			cacheModifier(skill, modifier, cast.getModifier(modifier));
+
+		cacheModifier(skill, "level", cast.getLevel());
+	}
+
 	public void cacheModifier(MythicMobSkill skill, String name, double value) {
-		cache.put(skill.getInternalName() + "." + name, new CachedModifier(value));
+		cacheModifier(skill.getInternalName(), name, value);
+	}
+	
+	public void cacheModifier(String skill, String name, double value) {
+		cache.put(skill + "." + name, new CachedModifier(value));
 	}
 
 	public void refresh() {
