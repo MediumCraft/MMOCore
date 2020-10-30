@@ -54,8 +54,8 @@ public class SavedClassInformation {
 	}
 
 	public SavedClassInformation(PlayerData player) {
-		this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(),
-			player.getAttributeReallocationPoints(), player.getAttributes().mapPoints(), player.mapSkillLevels());
+		this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(), player.getAttributeReallocationPoints(),
+				player.getAttributes().mapPoints(), player.mapSkillLevels());
 	}
 
 	public SavedClassInformation(DefaultPlayerData data) {
@@ -66,14 +66,15 @@ public class SavedClassInformation {
 		this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, new HashMap<>(), new HashMap<>());
 	}
 
-	private SavedClassInformation(int l, int e, int sp, int ap, int arp, Map<String, Integer> a, Map<String, Integer> s) {
-		this.level = l;
-		this.experience = e;
-		this.skillPoints = sp;
-		this.attributePoints = ap;
-		this.attributeReallocationPoints = arp;
-		this.attributes = a;
-		this.skills = s;
+	private SavedClassInformation(int level, int experience, int skillPoints, int attributePoints, int attributeReallocationPoints,
+			Map<String, Integer> attributes, Map<String, Integer> skills) {
+		this.level = level;
+		this.experience = experience;
+		this.skillPoints = skillPoints;
+		this.attributePoints = attributePoints;
+		this.attributeReallocationPoints = attributeReallocationPoints;
+		this.attributes = attributes;
+		this.skills = skills;
 	}
 
 	public int getLevel() {

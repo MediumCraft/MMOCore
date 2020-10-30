@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import lombok.Getter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
@@ -80,7 +79,6 @@ public abstract class PlayerDataManager {
 
 	public abstract void remove(PlayerData data);
 
-	@Getter
 	public class DefaultPlayerData {
 		private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;
 
@@ -98,6 +96,26 @@ public abstract class PlayerDataManager {
 			skillPoints = 0;
 			attributePoints = 0;
 			attrReallocPoints = 0;
+		}
+
+		public int getLevel() {
+			return level;
+		}
+
+		public int getSkillPoints() {
+			return skillPoints;
+		}
+
+		public int getClassPoints() {
+			return classPoints;
+		}
+
+		public int getAttrReallocPoints() {
+			return attrReallocPoints;
+		}
+
+		public int getAttributePoints() {
+			return attributePoints;
 		}
 	}
 }
