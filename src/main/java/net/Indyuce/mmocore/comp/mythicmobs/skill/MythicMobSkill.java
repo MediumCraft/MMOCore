@@ -68,7 +68,7 @@ public class MythicMobSkill extends Skill {
 			Optional<PassiveSkillType> passiveType = Enums.getIfPresent(PassiveSkillType.class, config.getString("passive-type").toUpperCase());
 			Validate.isTrue(passiveType.isPresent(), "Invalid passive skill type");
 			setPassive();
-			Bukkit.getPluginManager().registerEvents(passiveType.get().getListener(this), MMOCore.plugin);
+			Bukkit.getPluginManager().registerEvents(passiveType.get().getHandler(this), MMOCore.plugin);
 		}
 
 		// cast = config.getBoolean("target") ? (data, info) -> new
