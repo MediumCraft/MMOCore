@@ -99,6 +99,11 @@ public class PlayerProfessions {
 		level.put(profession.getId(), value);
 	}
 
+	public void takeLevels(Profession profession, int value) {
+		int current = level.getOrDefault(profession.getId(), 1);
+		level.put(profession.getId(), Math.max(1, current - value));
+	}
+
 	public void setExperience(Profession profession, int value) {
 		exp.put(profession.getId(), value);
 	}

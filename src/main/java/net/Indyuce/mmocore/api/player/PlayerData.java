@@ -240,6 +240,11 @@ public class PlayerData extends OfflinePlayerData {
 		getStats().updateStats();
 	}
 
+	public void takeLevels(int value) {
+		this.level = Math.max(1, level - value);
+		getStats().updateStats();
+	}
+
 	public void giveLevels(int value, EXPSource source) {
 		int total = 0;
 		while (value-- > 0)

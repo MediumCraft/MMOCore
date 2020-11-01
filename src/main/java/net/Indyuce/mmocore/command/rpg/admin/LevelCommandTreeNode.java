@@ -24,6 +24,8 @@ public class LevelCommandTreeNode extends CommandTreeNode {
 				(professions, profession, value) -> professions.setLevel(profession, value)));
 		addChild(new ActionCommandTreeNode(this, "give", (data, value) -> data.giveLevels(value, EXPSource.COMMAND),
 				(professions, profession, value) -> professions.giveLevels(profession, value, EXPSource.COMMAND)));
+		addChild(new ActionCommandTreeNode(this, "take", (data, value) -> data.takeLevels(value),
+				(professions, profession, value) -> professions.takeLevels(profession, value)));
 	}
 
 	public class ActionCommandTreeNode extends CommandTreeNode {
