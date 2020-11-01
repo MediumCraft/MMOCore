@@ -181,7 +181,9 @@ public class PlayerStats extends EditableInventory {
 
 					holders.register("author", boost.hasAuthor() ? boost.getAuthor() : "Server");
 					holders.register("value", (int) (boost.getExtra() * 100));
-					holders.register("left", new DelayFormat(2).format(boost.getLeft()));
+					holders.register("left", boost.isTimedOut() ?
+						MMOCore.plugin.configManager.getSimpleMessage("booster-expired").message()
+						: new DelayFormat(2).format(boost.getLeft()));
 
 					return holders;
 				}
@@ -199,7 +201,9 @@ public class PlayerStats extends EditableInventory {
 					holders.register("author", boost.hasAuthor() ? boost.getAuthor() : "Server");
 					holders.register("profession", boost.getProfession().getName());
 					holders.register("value", (int) (boost.getExtra() * 100));
-					holders.register("left", new DelayFormat(2).format(boost.getLeft()));
+					holders.register("left", boost.isTimedOut() ?
+							MMOCore.plugin.configManager.getSimpleMessage("booster-expired").message()
+							: new DelayFormat(2).format(boost.getLeft()));
 
 					return holders;
 				}
@@ -274,7 +278,6 @@ public class PlayerStats extends EditableInventory {
 
 		@Override
 		public Placeholders getPlaceholders(PluginInventory inv, int n) {
-
 			PlayerData data = inv.getPlayerData();
 			Placeholders holders = new Placeholders();
 

@@ -25,6 +25,7 @@ booster-skill:
 - '&e'
 - '&eA &6{multiplier}x&e &6{profession} &eEXP multiplier is now active!'
 - '&e'
+booster-expired: '&cExpired!'
 
 # Fishing Profession
 caught-fish: '&cYou caught a fish!'
