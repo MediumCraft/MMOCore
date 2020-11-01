@@ -20,21 +20,25 @@ public class MultipleLevelUpEventTrigger implements EventTriggerHandler {
     public void a(PlayerLevelUpEvent event) {
         PlayerData player = event.getData();
         PlayerClass profess = player.getProfess();
-        for (String t : profess.getEventTriggers()){
-            if (t.startsWith("level-up-multiple")) {
-                String[] split = t.split("-");
-                double multiple = Double.parseDouble(split[split.length-1]);
-                if (event.getNewLevel()/multiple % 1 == 0) {
-                    DecimalFormat f = new DecimalFormat("#");
-                    if (event.hasProfession()) {
-                        processTrigger(player, profess, "level-up-multiple-" + event.getProfession().getId().toLowerCase() + "-" + f.format(multiple));
-                    } else {
-                        processTrigger(player, profess, "level-up-multiple-" + f.format(multiple));
-                    }
-                }
-            }
-        }
 
+		for(int i = event.getOldLevel(); i < event.getNewLevel(); i++) {
+			int level = i + 1;
+
+	        for (String t : profess.getEventTriggers()){
+	            if (t.startsWith("level-up-multiple")) {
+	                String[] split = t.split("-");
+	                double multiple = Double.parseDouble(split[split.length-1]);
+	                if (level / multiple % 1 == 0) {
+	                    DecimalFormat f = new DecimalFormat("#");
+	                    if (event.hasProfession()) {
+	                        processTrigger(player, profess, "level-up-multiple-" + event.getProfession().getId().toLowerCase() + "-" + f.format(multiple));
+	                    } else {
+	                        processTrigger(player, profess, "level-up-multiple-" + f.format(multiple));
+	                    }
+	                }
+	            }
+	        }
+		}
     }
 
     public void processTrigger(PlayerData player, PlayerClass profess, String trigger) {
