@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.api.load;
 
-import net.Indyuce.mmocore.api.droptable.condition.LevelCondition;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.block.BlockType;
@@ -8,6 +7,8 @@ import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.api.droptable.condition.BiomeCondition;
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
+import net.Indyuce.mmocore.api.droptable.condition.LevelCondition;
+import net.Indyuce.mmocore.api.droptable.condition.PermissionCondition;
 import net.Indyuce.mmocore.api.droptable.condition.WorldCondition;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropTableDropItem;
@@ -120,6 +121,9 @@ public class DefaultMMOLoader extends MMOLoader {
 
 		if (config.getKey().equals("level"))
 			return new LevelCondition(config);
+		
+		if (config.getKey().equals("permission"))
+			return new PermissionCondition(config);
 
 		return null;
 	}
