@@ -74,6 +74,7 @@ public class SkillList extends EditableInventory {
 				private final String none = MMOLib.plugin.parseColors(config.getString("no-skill"));
 				private final Material emptyMaterial = Material
 						.valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
+				private final int emptyCMD = config.getInt("empty-custom-model-data", getModelData());
 
 				@Override
 				public Placeholders getPlaceholders(PluginInventory inv, int n) {
@@ -93,8 +94,15 @@ public class SkillList extends EditableInventory {
 				@Override
 				public ItemStack display(GeneratedInventory inv, int n) {
 					ItemStack item = super.display(inv, n);
-					if (!inv.getPlayerData().hasSkillBound(n))
+					if (!inv.getPlayerData().hasSkillBound(n)) {
 						item.setType(emptyMaterial);
+
+						if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
+							ItemMeta meta = item.getItemMeta();
+							meta.setCustomModelData(emptyCMD);
+							item.setItemMeta(meta);
+						}
+					}
 					return item;
 				}
 
@@ -178,6 +186,8 @@ public class SkillList extends EditableInventory {
 					.replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)));
 			meta.addItemFlags(ItemFlag.values());
 			meta.setLore(lore);
+			if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
+				meta.setCustomModelData(getModelData());
 			item.setItemMeta(meta);
 
 			return NBTItem.get(item).addTag(new ItemTag("skillId", skill.getSkill().getId())).toItem();
