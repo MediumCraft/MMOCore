@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.manager.social;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.Indyuce.mmocore.api.experience.Booster;
 import net.Indyuce.mmocore.api.experience.Profession;
@@ -33,6 +34,7 @@ public class BoosterManager {
 	}
 
 	public Booster get(int index) {
+		flush();
 		return map.get(index);
 	}
 
@@ -70,5 +72,11 @@ public class BoosterManager {
 	 */
 	public List<Booster> getBoosters() {
 		return map;
+	}
+	/**
+	 * @return Same as getBoosters() but does not include timed out boosters
+	 */
+	public List<Booster> getActiveBoosters() {
+		return map.stream().filter((b) -> !b.isTimedOut()).collect(Collectors.toList());
 	}
 }
