@@ -44,11 +44,7 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
-					<junitArtifactName>junit:junit</junitArtifactName>
 					<encoding>UTF-8</encoding>
-					<inputEncoding>UTF-8</inputEncoding>
-					<outputEncoding>UTF-8</outputEncoding>
-					<argLine>-ea -Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
