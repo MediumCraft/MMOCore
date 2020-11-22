@@ -1,8 +1,10 @@
 /bin/
+/.m2/
 /target/
 /.settings/
 /.idea/
 .classpath
 .project
-/MMOCore.eml
-/MMOCore.iml
+MMOCore.eml
+MMOCore.iml
+dependency-reduced-pom.xml
