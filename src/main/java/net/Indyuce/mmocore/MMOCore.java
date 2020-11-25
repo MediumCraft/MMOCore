@@ -1,17 +1,5 @@
 package net.Indyuce.mmocore;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandMap;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.loot.LootChest;
@@ -97,6 +85,17 @@ import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
 import net.mmogroup.mmolib.comp.Metrics;
 import net.mmogroup.mmolib.version.SpigotPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.logging.Level;
 
 public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
@@ -109,7 +108,6 @@ public class MMOCore extends JavaPlugin {
 	public VaultEconomy economy;
 	public HologramSupport hologramSupport;
 	public AntiCheatSupport antiCheatSupport;
-	public InventoryManager inventoryManager;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
 	public FlagPlugin flagPlugin = new DefaultFlags();
 	public PlaceholderParser placeholderParser = new DefaultParser();
@@ -268,8 +266,10 @@ public class MMOCore extends JavaPlugin {
 		/*
 		 * enable debug mode for extra debug tools.
 		 */
-		if (getConfig().contains("debug"))
-			new DebugMode(getConfig().getInt("debug", 0));
+		if (getConfig().contains("debug")) {
+			DebugMode.setLevel(getConfig().getInt("debug", 0));
+			DebugMode.enableActionBar();
+		}
 
 		if (configManager.overrideVanillaExp = getConfig().getBoolean("override-vanilla-exp"))
 			Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), this);
@@ -412,7 +412,7 @@ public class MMOCore extends JavaPlugin {
 		classManager.clear();
 		classManager.reload();
 
-		inventoryManager = new InventoryManager();
+		InventoryManager.load();
 
 		questManager.clear();
 		questManager.reload();

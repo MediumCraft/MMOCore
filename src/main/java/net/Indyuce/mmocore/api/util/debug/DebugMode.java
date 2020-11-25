@@ -14,8 +14,11 @@ public class DebugMode {
 	 */
 	public static int level = 0;
 	
-	public DebugMode(int i) {
+	public static void setLevel(int i) {
 		level = i;
+	}
+
+	public static void enableActionBar() {
 		if (level > 2 && MMOCore.plugin.getConfig().getBoolean("debug-action-bar.enabled"))
 			new ActionBarRunnable().runTaskTimer(MMOCore.plugin, 0, 10);
 	}
