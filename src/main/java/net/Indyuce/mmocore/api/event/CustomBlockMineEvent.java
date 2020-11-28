@@ -22,9 +22,10 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 	private final List<ItemStack> drops;
 	private final ExperienceInfo experience;
 
+	private boolean canBreak;
 	private boolean cancelled = false;
 
-	public CustomBlockMineEvent(PlayerData player, Block block, BlockInfo info) {
+	public CustomBlockMineEvent(PlayerData player, Block block, BlockInfo info, boolean canBreak) {
 		super(player);
 
 		this.block = block;
@@ -33,6 +34,7 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 				&& info.getDropTable().areConditionsMet(new ConditionInstance(player.getPlayer())))
 					? info.collectDrops(new LootBuilder(player, 0)) : new ArrayList<>();
 		this.experience = info.hasExperience() ? info.getExperience().newInfo() : null;
+		this.canBreak = canBreak;
 	}
 
 	public Block getBlock() {
@@ -53,6 +55,14 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
 	public ExperienceInfo getGainedExperience() {
 		return experience;
+	}
+
+	public boolean canBreak() {
+		return canBreak;
+	}
+
+	public void setCanBreak(boolean value) {
+		canBreak = value;
 	}
 
 	@Override

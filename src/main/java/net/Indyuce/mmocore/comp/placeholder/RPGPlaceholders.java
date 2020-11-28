@@ -1,12 +1,5 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
@@ -15,6 +8,12 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.mmogroup.mmolib.api.util.AltChar;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
     @Override
@@ -74,9 +73,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			double ratio = 20 * player.getPlayer().getHealth()
 				/ player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			for (double j = 1; j < 20; j++)
-				format.append((ratio >= j ? ChatColor.RED
-						: ratio >= j - .5 ? ChatColor.DARK_RED : ChatColor.DARK_GRAY)
-						+ AltChar.listSquare);
+				format.append(ratio >= j ? ChatColor.RED : ratio >= j - .5 ? ChatColor.DARK_RED : ChatColor.DARK_GRAY).append(AltChar.listSquare);
 			return format.toString();
 		}
 		
@@ -97,6 +94,14 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return playerData.hasSkillBound(slot) ? playerData.getBoundSkill(slot).getSkill().getName()
 					: MMOCore.plugin.configManager.noSkillBoundPlaceholder;
 		}
+
+		else if (identifier.startsWith("profession_experience_"))
+			return "" + PlayerData.get(player).getCollectionSkills()
+					.getExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase());
+
+		else if (identifier.startsWith("profession_next_level_"))
+			return "" + PlayerData.get(player).getCollectionSkills()
+					.getLevelUpExperience(identifier.substring(21).replace(" ", "-").replace("_", "-").toLowerCase());
 
 		else if (identifier.startsWith("profession_"))
 			return "" + PlayerData.get(player).getCollectionSkills()
@@ -148,14 +153,12 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStamina());
 
 		else if (identifier.equals("stamina_bar")) {
-			String format = "";
+			StringBuilder format = new StringBuilder();
 			PlayerData data = PlayerData.get(player);
 			double ratio = 20 * data.getStamina() / data.getStats().getStat(StatType.MAX_STAMINA);
 			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? MMOCore.plugin.configManager.staminaFull
-						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty)
-						+ AltChar.listSquare;
-			return format;
+				format.append(ratio >= j ? MMOCore.plugin.configManager.staminaFull : ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty).append(AltChar.listSquare);
+			return format.toString();
 		}
 
 		else if (identifier.startsWith("stat_")) {
@@ -167,12 +170,12 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStellium());
 
 		else if (identifier.equals("stellium_bar")) {
-			String format = "";
+			StringBuilder format = new StringBuilder();
 			PlayerData data = PlayerData.get(player);
 			double ratio = 20 * data.getStellium() / data.getStats().getStat(StatType.MAX_STELLIUM);
 			for (double j = 1; j < 20; j++)
-				format += (ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE) + AltChar.listSquare;
-			return format;
+				format.append(ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE).append(AltChar.listSquare);
+			return format.toString();
 		}
 
 		else if (identifier.equals("quest")) {

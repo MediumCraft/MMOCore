@@ -76,20 +76,21 @@ public class BlockListener implements Listener {
 			return;
 		}
 
+		boolean canBreak = true;
+		ItemStack item = player.getInventory().getItemInMainHand();
+		if (!MMOCore.plugin.restrictionManager.checkPermissions(item, info.getBlock())) {
+			MMOCore.plugin.configManager.getSimpleMessage("cannot-break").send(player);
+			canBreak = false;
+		}
+
 		/*
 		 * Calls the event and listen for cancel & for drops changes... also
 		 * allows to apply tool durability & enchants to drops, etc.
 		 */
-		CustomBlockMineEvent called = new CustomBlockMineEvent(PlayerData.get(player), block, info);
+		CustomBlockMineEvent called = new CustomBlockMineEvent(PlayerData.get(player), block, info, canBreak);
 		Bukkit.getPluginManager().callEvent(called);
-		if (called.isCancelled()) {
-			event.setCancelled(true);
-			return;
-		}
 
-		ItemStack item = player.getInventory().getItemInMainHand();
-		if (!MMOCore.plugin.restrictionManager.checkPermissions(item, info.getBlock())) {
-			MMOCore.plugin.configManager.getSimpleMessage("cannot-break").send(player);
+		if(called.isCancelled() || !called.canBreak()) {
 			event.setCancelled(true);
 			return;
 		}
@@ -141,7 +142,7 @@ public class BlockListener implements Listener {
 		if (!movedBlock.hasMetadata("player_placed"))
 			return;
 		BlockFace direction = event.getDirection();
-		movedBlock = movedBlock.getRelative(direction, 2);
+		//movedBlock = movedBlock.getRelative(direction, 2);
 
 		for (Block b : event.getBlocks())
 			if (b.hasMetadata("player_placed")) {

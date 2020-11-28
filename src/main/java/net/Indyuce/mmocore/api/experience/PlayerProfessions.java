@@ -76,7 +76,7 @@ public class PlayerProfessions {
 	}
 
 	public int getLevel(String profession) {
-		return Math.max(1, level.containsKey(profession) ? level.get(profession) : 1);
+		return Math.max(1, level.getOrDefault(profession, 1));
 	}
 
 	public int getLevel(Profession profession) {
@@ -84,7 +84,7 @@ public class PlayerProfessions {
 	}
 
 	public int getExperience(String id) {
-		return exp.containsKey(id) ? exp.get(id) : 0;
+		return exp.getOrDefault(id, 0);
 	}
 
 	public int getExperience(Profession profession) {
@@ -93,6 +93,11 @@ public class PlayerProfessions {
 
 	public int getLevelUpExperience(Profession profession) {
 		return profession.getExpCurve().getExperience(getLevel(profession) + 1);
+	}
+
+	public int getLevelUpExperience(String id) {
+		if(!MMOCore.plugin.professionManager.has(id)) return 0;
+		return MMOCore.plugin.professionManager.get(id).getExpCurve().getExperience(getLevel(id) + 1);
 	}
 
 	public void setLevel(Profession profession, int value) {
