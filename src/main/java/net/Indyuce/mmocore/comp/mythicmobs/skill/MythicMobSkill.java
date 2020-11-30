@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
+import net.mmogroup.mmolib.api.util.EnumUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
-
-import com.google.common.base.Enums;
-import com.google.common.base.Optional;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.Indyuce.mmocore.MMOCore;
@@ -38,7 +37,7 @@ public class MythicMobSkill extends Skill {
 		String mmId = config.getString("mythicmobs-skill-id");
 		Validate.notNull(mmId, "Could not find MM skill ID");
 
-		java.util.Optional<io.lumine.xikage.mythicmobs.skills.Skill> opt = MythicMobs.inst().getSkillManager().getSkill(mmId);
+		Optional<io.lumine.xikage.mythicmobs.skills.Skill> opt = MythicMobs.inst().getSkillManager().getSkill(mmId);
 		Validate.isTrue(opt.isPresent(), "Could not find MM skill " + mmId);
 		skill = opt.get();
 
@@ -57,7 +56,7 @@ public class MythicMobSkill extends Skill {
 
 		if (config.isConfigurationSection("disable-anti-cheat"))
 			for (String key : config.getKeys(false)) {
-				Optional<CheatType> cheatType = Enums.getIfPresent(CheatType.class, key.toUpperCase());
+				Optional<CheatType> cheatType = EnumUtils.getIfPresent(CheatType.class, key.toUpperCase());
 				if (cheatType.isPresent() && config.isInt("disable-anti-cheat." + key))
 					antiCheat.put(cheatType.get(), config.getInt("disable-anti-cheat." + key));
 				else
@@ -65,7 +64,7 @@ public class MythicMobSkill extends Skill {
 			}
 
 		if (config.isString("passive-type")) {
-			Optional<PassiveSkillType> passiveType = Enums.getIfPresent(PassiveSkillType.class, config.getString("passive-type").toUpperCase());
+			Optional<PassiveSkillType> passiveType = EnumUtils.getIfPresent(PassiveSkillType.class, config.getString("passive-type").toUpperCase());
 			Validate.isTrue(passiveType.isPresent(), "Invalid passive skill type");
 			setPassive();
 			Bukkit.getPluginManager().registerEvents(passiveType.get().getHandler(this), MMOCore.plugin);

@@ -21,7 +21,7 @@ public class TargetSkillResult extends SkillResult {
 			if (!result.hasHit())
 				abort();
 			else
-				target = (LivingEntity) result.getHit();
+				target = result.getHit();
 		}
 	}
 

@@ -113,7 +113,7 @@ public class PlayerAttributes {
 		private final Map<String, StatModifier> map = new HashMap<>();
 
 		public AttributeInstance(PlayerAttribute attribute) {
-			id = new String(attribute.getId());
+			id = attribute.getId();
 		}
 
 		public int getBase() {

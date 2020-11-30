@@ -18,7 +18,7 @@ public class ActionBarRunnable extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		Bukkit.getOnlinePlayers().forEach(player -> sendActionBar(player));
+		Bukkit.getOnlinePlayers().forEach(this::sendActionBar);
 	}
 
 	private void sendActionBar(Player player) {

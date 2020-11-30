@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -41,10 +42,7 @@ public class MMOCoreUtils {
 			if (isLastSpace && ch >= 'a' && ch <= 'z') {
 				builder.setCharAt(item, (char) (ch + ('A' - 'a')));
 				isLastSpace = false;
-			} else if (ch != ' ')
-				isLastSpace = false;
-			else
-				isLastSpace = true;
+			} else isLastSpace = ch == ' ';
 		}
 		return builder.toString();
 	}
@@ -54,7 +52,7 @@ public class MMOCoreUtils {
 	}
 
 	public static ItemStack readIcon(String string) throws IllegalArgumentException {
-		String[] split = string.split("\\:");
+		String[] split = string.split(":");
 		Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
 		return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
 	}
@@ -72,8 +70,8 @@ public class MMOCoreUtils {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
 			dataOutput.writeInt(items.length);
-			for (int i = 0; i < items.length; i++)
-				dataOutput.writeObject(items[i]);
+			for (ItemStack item : items)
+				dataOutput.writeObject(item);
 			dataOutput.close();
 			return Base64Coder.encodeLines(outputStream.toByteArray());
 		} catch (Exception e) {
@@ -104,7 +102,7 @@ public class MMOCoreUtils {
 		if (input > 3999)
 			return ">3999";
 
-		String result = "";
+		StringBuilder result = new StringBuilder();
 
 		for (int j = 0; j < romanChars.length; j++) {
 			int i = romanChars.length - j - 1;
@@ -112,12 +110,12 @@ public class MMOCoreUtils {
 			String c = romanChars[i];
 
 			while (input >= q) {
-				result += c;
+				result.append(c);
 				input -= q;
 			}
 		}
 
-		return result;
+		return result.toString();
 	}
 
 	/*
@@ -142,8 +140,7 @@ public class MMOCoreUtils {
 
 		for (int x = -1; x < 2; x++)
 			for (int z = -1; z < 2; z++)
-				for (Entity entity : loc.getWorld().getChunkAt(cx + x, cz + z).getEntities())
-					entities.add(entity);
+				entities.addAll(Arrays.asList(loc.getWorld().getChunkAt(cx + x, cz + z).getEntities()));
 
 		return entities;
 	}
@@ -159,8 +156,7 @@ public class MMOCoreUtils {
 		// party check
 		if (target instanceof Player) {
 			PlayerData targetData = PlayerData.get((Player) target);
-			if (targetData.hasParty() && targetData.getParty().getMembers().has(player))
-				return false;
+			return !targetData.hasParty() || !targetData.getParty().getMembers().has(player);
 		}
 
 		return true;

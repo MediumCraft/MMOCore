@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.api.skill;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -126,12 +125,10 @@ public class PlayerSkillData {
 	 * skill was cast
 	 */
 	public void refresh() {
-		for (Iterator<CachedModifier> iterator = cache.values().iterator(); iterator.hasNext();)
-			if (iterator.next().isTimedOut())
-				iterator.remove();
+		cache.values().removeIf(CachedModifier::isTimedOut);
 	}
 
-	public class CachedModifier {
+	public static class CachedModifier {
 		private final long date = System.currentTimeMillis();
 		private final double value;
 

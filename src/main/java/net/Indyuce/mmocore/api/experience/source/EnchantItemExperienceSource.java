@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.api.experience.source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,7 +26,7 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 		super(profession);
 
 		if (config.contains("enchant"))
-			for (String key : config.getString("enchant").split("\\,"))
+			for (String key : config.getString("enchant").split(","))
 				enchants.add(MMOLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_")));
 	}
 
@@ -48,9 +47,7 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 						Map<Enchantment, Integer> ench = new HashMap<>(event.getEnchantsToAdd());
 
 						if (!source.enchants.isEmpty())
-							for (Iterator<Enchantment> iterator = ench.keySet().iterator(); iterator.hasNext();)
-								if (!source.enchants.contains(iterator.next()))
-									iterator.remove();
+							ench.keySet().removeIf(enchantment -> !source.enchants.contains(enchantment));
 
 						if (ench.isEmpty())
 							continue;

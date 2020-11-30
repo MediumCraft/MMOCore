@@ -11,7 +11,7 @@ public class AlchemyManager extends MMOManager {
 	public double splash, lingering, upgrade, extend;
 
 	// private Map<PotionEffectType, Double> custom = new HashMap<>();
-	private Map<PotionType, Double> base = new HashMap<>();
+	private final Map<PotionType, Double> base = new HashMap<>();
 
 	// public double getWeight(PotionEffectType type) {
 	// return custom.containsKey(type) ? custom.get(type) : 0;

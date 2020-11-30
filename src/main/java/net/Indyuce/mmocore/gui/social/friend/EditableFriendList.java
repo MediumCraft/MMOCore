@@ -66,7 +66,7 @@ public class EditableFriendList extends EditableInventory {
 		return new FriendListInventory(data, this);
 	}
 
-	public class OfflineFriendItem extends InventoryPlaceholderItem {
+	public static class OfflineFriendItem extends InventoryPlaceholderItem {
 		public OfflineFriendItem(ConfigurationSection config) {
 			super(config);
 		}
@@ -98,7 +98,7 @@ public class EditableFriendList extends EditableInventory {
 		}
 	}
 
-	public class OnlineFriendItem extends InventoryPlaceholderItem {
+	public static class OnlineFriendItem extends InventoryPlaceholderItem {
 		public OnlineFriendItem(ConfigurationSection config) {
 			super(config);
 		}
@@ -134,7 +134,7 @@ public class EditableFriendList extends EditableInventory {
 		}
 	}
 
-	public class FriendItem extends NoPlaceholderItem {
+	public static class FriendItem extends NoPlaceholderItem {
 		private final OnlineFriendItem online;
 		private final OfflineFriendItem offline;
 

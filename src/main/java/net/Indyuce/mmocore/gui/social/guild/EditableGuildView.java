@@ -39,7 +39,7 @@ public class EditableGuildView extends EditableInventory {
 		return function.equals("member") ? new MemberItem(config) : (function.equals("next") || function.equals("previous") || function.equals("disband") || function.equals("invite")) ? new ConditionalItem(function, config) : new NoPlaceholderItem(config);
 	}
 
-	public class MemberDisplayItem extends InventoryPlaceholderItem {
+	public static class MemberDisplayItem extends InventoryPlaceholderItem {
 		public MemberDisplayItem(ConfigurationSection config) {
 			super(config);
 		}
@@ -123,7 +123,8 @@ public class EditableGuildView extends EditableInventory {
 			GuildViewInventory inv = (GuildViewInventory) invpar;
 
 			if (function.equals("next"))
-				if (inv.getPage() == (int) Math.ceil((inv.getPlayerData().getGuild().getMembers().count() + 20) / inv.getByFunction("member").getSlots().size()))
+				if (inv.getPage() == (inv.getPlayerData().getGuild().getMembers().count() + 20)
+						/ inv.getByFunction("member").getSlots().size())
 					return null;
 			if (function.equals("previous") && inv.getPage() == 1)
 				return null;
@@ -144,7 +145,8 @@ public class EditableGuildView extends EditableInventory {
 		public GuildViewInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
 
-			maxpages = (int) Math.ceil((playerData.getGuild().getMembers().count() + 20) / editable.getByFunction("member").getSlots().size());
+			maxpages = (playerData.getGuild().getMembers().count() + 20)
+					/ editable.getByFunction("member").getSlots().size();
 		}
 
 		@Override
@@ -186,7 +188,7 @@ public class EditableGuildView extends EditableInventory {
 				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
 					return;
 
-				/**
+				/*
 				 * if (playerData.getGuild().getMembers().count() >= max) {
 				 * MMOCore.plugin.configManager.getSimpleMessage("guild-is-full").send(player);
 				 * player.playSound(player.getLocation(),

@@ -1,13 +1,8 @@
 package net.Indyuce.mmocore.api.loot;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.logging.Level;
-
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.LootChestSpawnEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,9 +12,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.LootChestSpawnEvent;
-import net.Indyuce.mmocore.api.player.PlayerData;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.logging.Level;
 
 public class LootChestRegion {
 	private final String id;
@@ -120,7 +119,7 @@ public class LootChestRegion {
 			s += tier.chance;
 		}
 
-		return tiers.stream().findAny().get();
+		return tiers.stream().findAny().orElse(null);
 	}
 
 	public Location getRandomLocation(Location center) {
@@ -168,7 +167,7 @@ public class LootChestRegion {
 		return !loc.getBlock().getType().isSolid() && loc.clone().add(0, -1, 0).getBlock().getType().isSolid();
 	}
 
-	public class LootChestRunnable extends BukkitRunnable {
+	public static class LootChestRunnable extends BukkitRunnable {
 		private final LootChestRegion region;
 
 		public LootChestRunnable(LootChestRegion region) {
@@ -179,9 +178,8 @@ public class LootChestRegion {
 
 		@Override
 		public void run() {
-			Optional<PlayerData> found = region.getBounds().getPlayers().filter(data -> data.canSpawnLootChest()).findAny();
-			if (found.isPresent())
-				region.spawnChest(found.get());
+			Optional<PlayerData> found = region.getBounds().getPlayers().filter(PlayerData::canSpawnLootChest).findAny();
+			found.ifPresent(region::spawnChest);
 		}
 	}
 }

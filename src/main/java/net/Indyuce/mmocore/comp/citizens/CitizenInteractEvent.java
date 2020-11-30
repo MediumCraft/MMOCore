@@ -9,7 +9,7 @@ import net.citizensnpcs.api.npc.NPC;
 public class CitizenInteractEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
 
-	private NPC npc;
+	private final NPC npc;
 
 	public CitizenInteractEvent(Player who, NPC npc) {
 		super(who);

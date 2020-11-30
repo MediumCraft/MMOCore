@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.manager.social;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,11 +41,7 @@ public class BoosterManager {
 	 * Cleans timed out boosters from the MMOCore registry
 	 */
 	public void flush() {
-		for (Iterator<Booster> iterator = map.iterator(); iterator.hasNext();) {
-			Booster next = iterator.next();
-			if (next.isTimedOut())
-				iterator.remove();
-		}
+		map.removeIf(Booster::isTimedOut);
 	}
 
 	/**

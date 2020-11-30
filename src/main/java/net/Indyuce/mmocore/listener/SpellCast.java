@@ -63,7 +63,7 @@ public class SpellCast implements Listener {
 			runTaskTimer(MMOCore.plugin, 0, 1);
 		}
 
-		@EventHandler(ignoreCancelled = false)
+		@EventHandler()
 		public void onSkillCast(PlayerItemHeldEvent event) {
 			Player player = event.getPlayer();
 			if(!playerData.isOnline()) return;
@@ -108,18 +108,17 @@ public class SpellCast implements Listener {
 		}
 
 		private String getFormat(PlayerData data) {
-			String str = "";
-			if(!data.isOnline()) return str;
+			StringBuilder str = new StringBuilder();
+			if(!data.isOnline()) return str.toString();
 			for (int j = 0; j < data.getBoundSkills().size(); j++) {
 				SkillInfo skill = data.getBoundSkill(j);
-				str += (str.isEmpty() ? "" : split)
-						+ (onCooldown(data, skill) ? onCooldown.replace("{cooldown}", "" + data.getSkillData().getCooldown(skill) / 1000)
-								: noMana(data, skill) ? noMana : ready)
-										.replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0)))
-										.replace("{skill}", data.getBoundSkill(j).getSkill().getName());
+				str.append((str.length() == 0) ? "" : split).append((onCooldown(data, skill)
+					? onCooldown .replace("{cooldown}", "" + data.getSkillData().getCooldown(skill) / 1000)
+					: noMana(data, skill) ? noMana : ready).replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot()
+						<= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName()));
 			}
 
-			return str;
+			return str.toString();
 		}
 
 		/*

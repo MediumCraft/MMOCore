@@ -32,7 +32,7 @@ import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
 import net.mmogroup.mmolib.version.VersionSound;
 
 public class FishingListener implements Listener {
-	private Set<UUID> fishing = new HashSet<>();
+	private final Set<UUID> fishing = new HashSet<>();
 
 	private static final Random random = new Random();
 

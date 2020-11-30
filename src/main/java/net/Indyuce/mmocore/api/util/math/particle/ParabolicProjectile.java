@@ -18,7 +18,7 @@ public class ParabolicProjectile extends BukkitRunnable {
 	private final int speed;
 
 	// calculation
-	private Location loc;
+	private final Location loc;
 	private int j;
 
 	// private static final Random random = new Random();

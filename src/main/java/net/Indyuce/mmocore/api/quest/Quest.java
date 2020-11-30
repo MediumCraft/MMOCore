@@ -117,7 +117,7 @@ public class Quest extends PostLoadObject {
 	}
 
 	public int getLevelRestriction(Profession profession) {
-		return profession == null ? mainLevelRestriction : levelRestrictions.containsKey(profession) ? levelRestrictions.get(profession) : 0;
+		return profession == null ? mainLevelRestriction : levelRestrictions.getOrDefault(profession, 0);
 	}
 
 	public QuestProgress generateNewProgress(PlayerData player) {
@@ -130,6 +130,6 @@ public class Quest extends PostLoadObject {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj != null && obj instanceof Quest && ((Quest) obj).id.equals(id);
+		return obj instanceof Quest && ((Quest) obj).id.equals(id);
 	}
 }

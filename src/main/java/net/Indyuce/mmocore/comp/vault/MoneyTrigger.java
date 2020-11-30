@@ -42,6 +42,6 @@ public class MoneyTrigger extends Trigger {
 	public enum Operation {
 		GIVE,
 		SET,
-		TAKE;
+		TAKE
 	}
 }

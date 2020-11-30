@@ -1,18 +1,5 @@
 package net.Indyuce.mmocore.manager;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Consumer;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -21,7 +8,20 @@ import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.mmogroup.mmolib.MMOLib;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Consumer;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.List;
+import java.util.logging.Level;
+
+@SuppressWarnings("ALL")
 public class ConfigManager {
 
 	public boolean overrideVanillaExp, hotbarSwap;
@@ -99,7 +99,7 @@ public class ConfigManager {
 		hotbarSwap = MMOCore.plugin.getConfig().getBoolean("hotbar-swap");
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
-		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator"), ','));
+		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator")));
 		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000;
 		lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 1000;
 		lootChestPlayerCooldown = MMOCore.plugin.getConfig().getInt("player-cooldown") * 1000;
@@ -123,8 +123,8 @@ public class ConfigManager {
 		return new DecimalFormat(pattern, formatSymbols);
 	}
 
-	private char getFirstChar(String str, char defaultChar) {
-		return str == null || str.isEmpty() ? defaultChar : str.charAt(0);
+	private char getFirstChar(String str) {
+		return str == null || str.isEmpty() ? ',' : str.charAt(0);
 	}
 
 	public PlayerInput newPlayerInput(Player player, InputType type, Consumer<String> output) {
@@ -136,11 +136,12 @@ public class ConfigManager {
 	}
 
 	public void loadDefaultFile(String path, String name) {
-		File folder = new File(MMOCore.plugin.getDataFolder() + (path.isEmpty() ? "" : "/" + path));
+		String newPath = path.isEmpty() ? "" : "/" + path;
+		File folder = new File(MMOCore.plugin.getDataFolder() + (newPath));
 		if (!folder.exists())
 			folder.mkdir();
 
-		File file = new File(MMOCore.plugin.getDataFolder() + (path.isEmpty() ? "" : "/" + path), name);
+		File file = new File(MMOCore.plugin.getDataFolder() + (newPath), name);
 		if (!file.exists())
 			try {
 				Files.copy(MMOCore.plugin.getResource("default/" + (path.isEmpty() ? "" : path + "/") + name), file.getAbsoluteFile().toPath());
@@ -160,7 +161,7 @@ public class ConfigManager {
 		return new SimpleMessage(MMOLib.plugin.parseColors(format));
 	}
 
-	public class SimpleMessage {
+	public static class SimpleMessage {
 		private final String message;
 		private final boolean actionbar;
 		private final boolean hasPlaceholders;

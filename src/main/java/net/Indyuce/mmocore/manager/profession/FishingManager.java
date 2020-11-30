@@ -43,16 +43,14 @@ public class FishingManager extends MMOManager {
 		return null;
 	}
 
-	public class FishingDropTable {
-		private final String id;
-
+	public static class FishingDropTable {
 		private final Set<Condition> conditions = new HashSet<>();
 		private final List<FishingDropItem> items = new ArrayList<>();
 		private int maxWeight = 0;
 
 		public FishingDropTable(ConfigurationSection section) {
 			Validate.notNull(section, "Could not load config");
-			this.id = section.getName();
+			final String id = section.getName();
 
 			if (section.contains("conditions")) {
 				List<String> list = section.getStringList("conditions");
@@ -111,7 +109,6 @@ public class FishingManager extends MMOManager {
 	@Override
 	public void reload() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

@@ -6,5 +6,5 @@ public enum EXPSource {
 	VANILLA,
 	QUEST,
 	FISHING,
-	OTHER;
+	OTHER
 }

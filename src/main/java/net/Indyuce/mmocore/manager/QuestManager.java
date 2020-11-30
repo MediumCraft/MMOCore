@@ -18,7 +18,7 @@ public class QuestManager extends MMOManager {
 	
 	public void load(File file) {
 		if (file.isDirectory())
-			Arrays.asList(file.listFiles()).stream().sorted().forEach(subfile -> load(subfile));
+			Arrays.stream(file.listFiles()).sorted().forEach(this::load);
 		else
 			try {
 				register(new Quest(file.getName().substring(0, file.getName().length() - 4), YamlConfiguration.loadConfiguration(file)));

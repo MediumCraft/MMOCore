@@ -22,6 +22,7 @@ import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 
+@SuppressWarnings("ALL")
 public class PlayerProfessions {
 	private final Map<String, Integer> exp = new HashMap<>();
 	private final Map<String, Integer> level = new HashMap<>();
@@ -177,12 +178,12 @@ public class PlayerProfessions {
 			playerData.getStats().updateStats();
 		}
 
-		String bar = "" + ChatColor.BOLD;
+		StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
 		int chars = (int) ((double) exp / needed * 20);
 		for (int j = 0; j < 20; j++)
-			bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
+			bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 		if(playerData.isOnline())
-			MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar, "ratio",
+			MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
 				MMOCore.plugin.configManager.decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
 }

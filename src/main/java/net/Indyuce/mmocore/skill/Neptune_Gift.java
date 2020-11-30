@@ -33,8 +33,7 @@ public class Neptune_Gift extends Skill implements Listener {
 		PlayerData data = event.getData();
 		if (event.getPlayer().getLocation().getBlock().getType() == Material.WATER) {
 			Optional<SkillInfo> skill = data.getProfess().findSkill(this);
-			if (skill.isPresent())
-				event.setAmount(event.getAmount() * (1 + skill.get().getModifier("extra", data.getSkillLevel(this)) / 100));
+			skill.ifPresent(skillInfo -> event.setAmount(event.getAmount() * (1 + skillInfo.getModifier("extra", data.getSkillLevel(this)) / 100)));
 		}
 	}
 }

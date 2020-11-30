@@ -28,7 +28,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 		return CommandResult.THROW_USAGE;
 	}
 
-	public class ResetAllCommandTreeNode extends CommandTreeNode {
+	public static class ResetAllCommandTreeNode extends CommandTreeNode {
 		public ResetAllCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "all");
 
@@ -53,7 +53,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 				data.getCollectionSkills().setExperience(profession, 0);
 				data.getCollectionSkills().setLevel(profession, 0);
 			}
-			MMOCore.plugin.classManager.getAll().forEach(profess -> data.unloadClassInfo(profess));
+			MMOCore.plugin.classManager.getAll().forEach(data::unloadClassInfo);
 			data.setClassPoints(0);
 			data.setSkillPoints(0);
 
@@ -71,7 +71,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 		}
 	}
 
-	public class ResetWaypointsCommandTreeNode extends CommandTreeNode {
+	public static class ResetWaypointsCommandTreeNode extends CommandTreeNode {
 		public ResetWaypointsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "waypoints");
 
@@ -95,7 +95,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 		}
 	}
 
-	public class ResetQuestsCommandTreeNode extends CommandTreeNode {
+	public static class ResetQuestsCommandTreeNode extends CommandTreeNode {
 		public ResetQuestsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "quests");
 
@@ -120,7 +120,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 		}
 	}
 
-	public class ResetSkillsCommandTreeNode extends CommandTreeNode {
+	public static class ResetSkillsCommandTreeNode extends CommandTreeNode {
 		public ResetSkillsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "skills");
 
@@ -190,7 +190,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 		}
 	}
 
-	public class ResetLevelsCommandTreeNode extends CommandTreeNode {
+	public static class ResetLevelsCommandTreeNode extends CommandTreeNode {
 		public ResetLevelsCommandTreeNode(CommandTreeNode parent) {
 			super(parent, "levels");
 

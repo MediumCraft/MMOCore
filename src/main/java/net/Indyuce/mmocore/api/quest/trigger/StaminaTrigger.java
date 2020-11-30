@@ -41,6 +41,6 @@ public class StaminaTrigger extends Trigger {
 	public enum Operation {
 		GIVE,
 		SET,
-		TAKE;
+		TAKE
 	}
 }

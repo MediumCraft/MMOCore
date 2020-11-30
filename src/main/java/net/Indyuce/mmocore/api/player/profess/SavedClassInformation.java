@@ -164,7 +164,7 @@ public class SavedClassInformation {
 		player.setSkillPoints(skillPoints);
 		player.setAttributePoints(attributePoints);
 		player.setAttributeReallocationPoints(attributeReallocationPoints);
-		skills.forEach((id, level) -> player.setSkillLevel(id, level));
+		skills.forEach(player::setSkillLevel);
 		attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
 
 		/*

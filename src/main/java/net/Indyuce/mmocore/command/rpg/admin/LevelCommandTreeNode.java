@@ -20,15 +20,12 @@ public class LevelCommandTreeNode extends CommandTreeNode {
 	public LevelCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "level");
 
-		addChild(new ActionCommandTreeNode(this, "set", (data, value) -> data.setLevel(value),
-				(professions, profession, value) -> professions.setLevel(profession, value)));
-		addChild(new ActionCommandTreeNode(this, "give", (data, value) -> data.giveLevels(value, EXPSource.COMMAND),
-				(professions, profession, value) -> professions.giveLevels(profession, value, EXPSource.COMMAND)));
-		addChild(new ActionCommandTreeNode(this, "take", (data, value) -> data.takeLevels(value),
-				(professions, profession, value) -> professions.takeLevels(profession, value)));
+		addChild(new ActionCommandTreeNode(this, "set", PlayerData::setLevel, PlayerProfessions::setLevel));
+		addChild(new ActionCommandTreeNode(this, "give", (data, value) -> data.giveLevels(value, EXPSource.COMMAND), (professions, profession, value) -> professions.giveLevels(profession, value, EXPSource.COMMAND)));
+		addChild(new ActionCommandTreeNode(this, "take", PlayerData::takeLevels, PlayerProfessions::takeLevels));
 	}
 
-	public class ActionCommandTreeNode extends CommandTreeNode {
+	public static class ActionCommandTreeNode extends CommandTreeNode {
 		private final BiConsumer<PlayerData, Integer> main;
 		private final TriConsumer<PlayerProfessions, Profession, Integer> profession;
 
@@ -55,7 +52,7 @@ public class LevelCommandTreeNode extends CommandTreeNode {
 				return CommandResult.FAILURE;
 			}
 
-			int amount = 0;
+			int amount;
 			try {
 				amount = Integer.parseInt(args[5]);
 			} catch (NumberFormatException exception) {

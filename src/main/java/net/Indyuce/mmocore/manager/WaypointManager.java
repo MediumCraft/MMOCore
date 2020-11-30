@@ -12,7 +12,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.Waypoint;
 
 public class WaypointManager {
-	private Map<String, Waypoint> waypoints = new LinkedHashMap<>();
+	private final Map<String, Waypoint> waypoints = new LinkedHashMap<>();
 
 	public WaypointManager(FileConfiguration config) {
 		for (String key : config.getKeys(false))

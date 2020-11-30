@@ -21,7 +21,7 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
 		MMOCore.plugin.reloadConfig();
 		MMOCore.plugin.reloadPlugin();
 		
-		PlayerData.getAll().forEach(data -> data.update());
+		PlayerData.getAll().forEach(PlayerData::update);
 
 		ms = System.currentTimeMillis() - ms;
 		sender.sendMessage(ChatColor.YELLOW + MMOCore.plugin.getName() + " " + MMOCore.plugin.getDescription().getVersion() + " successfully reloaded.");

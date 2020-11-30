@@ -24,7 +24,7 @@ public class MMDropTableDropItem extends DropItem {
 		String id = config.getString("id");
 
 		try {
-			dropTable = MythicMobs.inst().getDropManager().getDropTable(id).get();
+			dropTable = MythicMobs.inst().getDropManager().getDropTable(id).orElse(null);
 		} catch (NoSuchElementException exception) {
 			throw new IllegalArgumentException("Could not find MM drop table with ID '" + id + "'");
 		}

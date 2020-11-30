@@ -43,7 +43,7 @@ public class AttributeView extends EditableInventory {
 		return new SkillViewerInventory(data, this);
 	}
 
-	public class AttributeItem extends InventoryPlaceholderItem {
+	public static class AttributeItem extends InventoryPlaceholderItem {
 		private final PlayerAttribute attribute;
 
 		public AttributeItem(String function, ConfigurationSection config) {

@@ -24,7 +24,7 @@ public class Placeholders {
 
 		while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
 			String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
-			str = str.replace("{" + holder + "}", placeholders.containsKey(holder) ? placeholders.get(holder) : "PHE");
+			str = str.replace("{" + holder + "}", placeholders.getOrDefault(holder, "PHE"));
 		}
 		return str;
 	}

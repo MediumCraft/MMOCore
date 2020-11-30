@@ -48,11 +48,10 @@ public class Ambers extends Skill implements Listener {
 		Location loc = event.getEntity().getLocation();
 		double a = random.nextDouble() * 2 * Math.PI;
 
-		new Amber(data, loc.add(0, event.getEntity().getHeight() / 2, 0), loc.clone().add(4 * Math.cos(a), 0, 4 * Math.sin(a)),
-				cast.getModifier("percent"));
+		new Amber(data, loc.add(0, event.getEntity().getHeight() / 2, 0), loc.clone().add(4 * Math.cos(a), 0, 4 * Math.sin(a)), cast.getModifier("percent"));
 	}
 
-	public class Amber extends BukkitRunnable {
+	public static class Amber extends BukkitRunnable {
 		private final Location loc;
 		private final PlayerData data;
 		private final double percent;

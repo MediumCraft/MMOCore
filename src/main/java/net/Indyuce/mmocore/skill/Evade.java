@@ -44,7 +44,7 @@ public class Evade extends Skill {
 		return cast;
 	}
 
-	private class EvadeSkill extends BukkitRunnable implements Listener {
+	private static class EvadeSkill extends BukkitRunnable implements Listener {
 		private final PlayerData data;
 
 		public EvadeSkill(PlayerData data, double duration) {
@@ -52,7 +52,7 @@ public class Evade extends Skill {
 
 			Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
 			runTaskTimer(MMOCore.plugin, 0, 1);
-			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> close(), (long) (duration * 20));
+			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, this::close, (long) (duration * 20));
 		}
 
 		private void close() {

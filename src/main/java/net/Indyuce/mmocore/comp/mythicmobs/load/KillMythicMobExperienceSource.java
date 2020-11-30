@@ -27,17 +27,14 @@ public class KillMythicMobExperienceSource extends SpecificExperienceSource<Stri
 		return new ExperienceManager<KillMythicMobExperienceSource>() {
 			@EventHandler
 			public void a(MythicMobDeathEvent event) {
-				Bukkit.getScheduler().runTaskLater(MMOCore.plugin, new Runnable() {
-					@Override
-					public void run() {
-						if (!event.getEntity().isDead()) return;
-						if (!(event.getKiller() instanceof Player) || event.getKiller().hasMetadata("NPC")) return;
+				Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> {
+					if (!event.getEntity().isDead()) return;
+					if (!(event.getKiller() instanceof Player) || event.getKiller().hasMetadata("NPC")) return;
 
-						PlayerData data = PlayerData.get((Player) event.getKiller());
-						for (KillMythicMobExperienceSource source : getSources())
-							if (source.matches(data, event.getMobType().getInternalName()))
-								source.giveExperience(data, 1, event.getEntity().getLocation());
-					}
+					PlayerData data = PlayerData.get((Player) event.getKiller());
+					for (KillMythicMobExperienceSource source : getSources())
+						if (source.matches(data, event.getMobType().getInternalName()))
+							source.giveExperience(data, 1, event.getEntity().getLocation());
 				}, 2);
 			}
 		};

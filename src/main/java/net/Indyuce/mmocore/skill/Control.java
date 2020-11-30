@@ -47,7 +47,7 @@ public class Control extends Skill {
 		return cast;
 	}
 
-	public class TelekinesyRunnable extends BukkitRunnable implements Listener {
+	public static class TelekinesyRunnable extends BukkitRunnable implements Listener {
 		private final LivingEntity entity;
 		private final PlayerData data;
 

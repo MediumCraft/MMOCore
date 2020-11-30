@@ -27,7 +27,7 @@ public class GoldPouch extends PluginInventory {
 
 	@Override
 	public Inventory getInventory() {
-		Inventory inv = (Inventory) Bukkit.createInventory(this, 18, ChatColor.UNDERLINE + "Gold Pouch");
+		Inventory inv = Bukkit.createInventory(this, 18, ChatColor.UNDERLINE + "Gold Pouch");
 		inv.setContents(MMOCoreUtils.itemStackArrayFromBase64(nbt.getString("RpgPouchInventory")));
 		return inv;
 	}

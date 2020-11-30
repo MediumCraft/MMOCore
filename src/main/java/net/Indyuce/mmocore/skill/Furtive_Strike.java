@@ -42,7 +42,7 @@ public class Furtive_Strike extends Skill {
 		double damage = cast.getModifier("damage");
 
 		double radius = cast.getModifier("radius");
-		if (target.getNearbyEntities(radius, radius, radius).stream().filter(entity -> !entity.equals(data.getPlayer())).count() == 0) {
+		if (target.getNearbyEntities(radius, radius, radius).stream().allMatch(entity -> entity.equals(data.getPlayer()))) {
 			new SmallParticleEffect(target, Particle.SPELL_WITCH);
 			damage *= 1 + cast.getModifier("extra") / 100;
 		}

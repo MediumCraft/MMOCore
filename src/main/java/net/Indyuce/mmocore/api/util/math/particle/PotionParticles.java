@@ -10,7 +10,7 @@ import net.Indyuce.mmocore.MMOCore;
 
 public class PotionParticles extends BukkitRunnable {
 	private double r, g, b;
-	private ThrownPotion potion;
+	private final ThrownPotion potion;
 	private boolean valid = true;
 
 	public PotionParticles(ThrownPotion potion) {

@@ -69,7 +69,7 @@ public abstract class PlayerDataManager {
 	}
 
 	public Collection<PlayerData> getLoaded() {
-		return MMOPlayerData.getLoaded().stream().filter(data -> data.getMMOCore() != null).map(data -> data.getMMOCore())
+		return MMOPlayerData.getLoaded().stream().filter(data -> data.getMMOCore() != null).map(MMOPlayerData::getMMOCore)
 				.collect(Collectors.toSet());
 	}
 
@@ -79,7 +79,7 @@ public abstract class PlayerDataManager {
 
 	public abstract void remove(PlayerData data);
 
-	public class DefaultPlayerData {
+	public static class DefaultPlayerData {
 		private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;
 
 		public DefaultPlayerData(ConfigurationSection config) {

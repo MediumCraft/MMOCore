@@ -236,7 +236,7 @@ public class PlayerStats extends EditableInventory {
 		return item;
 	}
 
-	public class PartyMoraleItem extends InventoryPlaceholderItem {
+	public static class PartyMoraleItem extends InventoryPlaceholderItem {
 		public PartyMoraleItem(ConfigurationSection config) {
 			super(config);
 		}
@@ -260,7 +260,7 @@ public class PlayerStats extends EditableInventory {
 
 	}
 
-	public class PlayerProfileItem extends InventoryPlaceholderItem {
+	public static class PlayerProfileItem extends InventoryPlaceholderItem {
 		public PlayerProfileItem(ConfigurationSection config) {
 			super(config);
 		}
@@ -284,10 +284,10 @@ public class PlayerStats extends EditableInventory {
 			int nextLevelExp = inv.getPlayerData().getLevelUpExperience();
 			double ratio = (double) data.getExperience() / (double) nextLevelExp;
 
-			String bar = "" + ChatColor.BOLD;
+			StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
 			int chars = (int) (ratio * 20);
 			for (int j = 0; j < 20; j++)
-				bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
+				bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 
 			holders.register("percent", decimal.format(ratio * 100));
 			holders.register("exp", "" + data.getExperience());
@@ -295,7 +295,7 @@ public class PlayerStats extends EditableInventory {
 			holders.register("class_points", "" + data.getClassPoints());
 			holders.register("skill_points", "" + data.getSkillPoints());
 			holders.register("attribute_points", "" + data.getAttributePoints());
-			holders.register("progress", bar);
+			holders.register("progress", bar.toString());
 			holders.register("next_level", "" + nextLevelExp);
 			if(data.isOnline())
 				holders.register("player", "" + data.getPlayer().getName());

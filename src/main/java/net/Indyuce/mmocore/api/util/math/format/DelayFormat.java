@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.api.util.math.format;
 
 public class DelayFormat {
-	private int display = charArray.length;
+	private int display;
 
-	private static final long[] millisArray = { 31557081600l, 2629756800l, 86400000l, 3600000l, 60000l, 1000l };
+	private static final long[] millisArray = {31557081600L, 2629756800L, 86400000L, 3600000L, 60000L, 1000L};
 	private static final String[] charArray = { "y", "M", "d", "h", "m", "s" };
 
 	public DelayFormat() {
@@ -15,15 +15,15 @@ public class DelayFormat {
 	}
 
 	public String format(long ms) {
-		String format = "";
+		StringBuilder format = new StringBuilder();
 
 		for (int j = 0; j < charArray.length && display > 0; j++)
 			if (ms > millisArray[j]) {
-				format += (ms / millisArray[j]) + charArray[j] + " ";
+				format.append(ms / millisArray[j]).append(charArray[j]).append(" ");
 				ms = ms % millisArray[j];
 				display--;
 			}
 
-		return format.equals("") ? "Now!" : format.substring(0, format.length() - 1);
+		return format.toString().equals("") ? "Now!" : format.substring(0, format.length() - 1);
 	}
 }

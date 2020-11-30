@@ -99,7 +99,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 			applyTexture(texture, (SkullMeta) meta);
 
 		if (hasName())
-			meta.setDisplayName(placeholders.apply(inv.getPlayer(), new String(getName())));
+			meta.setDisplayName(placeholders.apply(inv.getPlayer(), getName()));
 
 		if (hideFlags())
 			meta.addItemFlags(ItemFlag.values());

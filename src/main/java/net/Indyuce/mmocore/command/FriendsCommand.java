@@ -46,7 +46,7 @@ public class FriendsCommand extends BukkitCommand {
 			}
 
 			Request request = MMOCore.plugin.requestManager.getRequest(uuid);
-			if (request == null || !(request instanceof FriendRequest))
+			if (!(request instanceof FriendRequest))
 				return true;
 
 			if (request.isTimedOut()) {
@@ -60,9 +60,9 @@ public class FriendsCommand extends BukkitCommand {
 			}
 
 			if (args[0].equalsIgnoreCase("accept"))
-				((FriendRequest) request).accept();
+				request.accept();
 			if (args[0].equalsIgnoreCase("deny"))
-				((FriendRequest) request).deny();
+				request.deny();
 			return true;
 		}
 

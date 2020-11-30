@@ -17,9 +17,7 @@ public class StatValueCommandTreeNode extends CommandTreeNode {
 			for (StatType stat : StatType.values())
 				list.add(stat.name());
 		}));
-		addParameter(new Parameter("(formatted)", (explorer, list) -> {
-			list.add("true");
-		}));
+		addParameter(new Parameter("(formatted)", (explorer, list) -> list.add("true")));
 	}
 
 	@Override

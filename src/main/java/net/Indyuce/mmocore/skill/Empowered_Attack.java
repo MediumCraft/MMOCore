@@ -74,7 +74,7 @@ public class Empowered_Attack extends Skill {
 				new SmallParticleEffect(player.getPlayer(), Particle.FIREWORKS_SPARK);
 
 			Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> close(), 80);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, this::close, 80);
 		}
 
 		private void close() {

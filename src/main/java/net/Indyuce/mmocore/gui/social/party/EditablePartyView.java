@@ -38,7 +38,7 @@ public class EditablePartyView extends EditableInventory {
 		return function.equals("member") ? new MemberItem(config) : new NoPlaceholderItem(config);
 	}
 
-	public class MemberDisplayItem extends InventoryPlaceholderItem {
+	public static class MemberDisplayItem extends InventoryPlaceholderItem {
 		public MemberDisplayItem(ConfigurationSection config) {
 			super(config);
 		}
@@ -77,7 +77,7 @@ public class EditablePartyView extends EditableInventory {
 		}
 	}
 
-	public class MemberItem extends InventoryItem {
+	public static class MemberItem extends InventoryItem {
 		private final InventoryPlaceholderItem empty;
 		private final MemberDisplayItem member;
 

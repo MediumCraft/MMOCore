@@ -14,11 +14,11 @@ public class RegionCondition extends Condition {
 		super(config);
 
 		config.validate("name");
-		names = Arrays.asList(config.getString("name").split("\\,"));
+		names = Arrays.asList(config.getString("name").split(","));
 	}
 
 	@Override
 	public boolean isMet(ConditionInstance entity) {
-		return entity.getRegionStream().filter(str -> names.contains(str)).count() > 0;
+		return entity.getRegionStream().anyMatch(names::contains);
 	}
 }

@@ -52,7 +52,7 @@ public class Weaken extends Skill {
 		return new Vector(Math.cos(a), .8, Math.sin(a)).normalize().multiply(.4);
 	}
 
-	public class Weakened implements Listener {
+	public static class Weakened implements Listener {
 		private final Entity entity;
 		private final double c;
 

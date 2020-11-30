@@ -51,7 +51,7 @@ public class ResourceCommandTreeNode extends CommandTreeNode {
 				return CommandResult.FAILURE;
 			}
 
-			double amount = 0;
+			double amount;
 			try {
 				amount = Double.parseDouble(args[4]);
 			} catch (Exception e) {

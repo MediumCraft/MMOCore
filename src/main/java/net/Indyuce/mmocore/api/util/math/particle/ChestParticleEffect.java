@@ -49,9 +49,9 @@ public enum ChestParticleEffect {
 		}.runTaskTimer(MMOCore.plugin, 0, 1);
 	});
 
-	private BiConsumer<Location, Particle> func;
+	private final BiConsumer<Location, Particle> func;
 
-	private ChestParticleEffect(BiConsumer<Location, Particle> func) {
+	ChestParticleEffect(BiConsumer<Location, Particle> func) {
 		this.func = func;
 	}
 

@@ -30,14 +30,14 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
 		super(profession);
 
 		if (config.contains("effect"))
-			for (String key : config.getString("effect").split("\\,"))
+			for (String key : config.getString("effect").split(","))
 				types.add(PotionType.valueOf(key.toUpperCase().replace("-", "_")));
 	}
 
 	@Override
 	public boolean matches(PlayerData player, PotionMeta meta) {
 		return hasRightClass(player)
-				&& (types.isEmpty() || new ArrayList<>(types).stream().filter(type -> meta.getBasePotionData().getType() == type).count() > 0);
+				&& (types.isEmpty() || new ArrayList<>(types).stream().anyMatch(type -> meta.getBasePotionData().getType() == type));
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
 
 			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(BrewEvent event) {
-				Optional<Player> playerOpt = getNearbyPlayer(event.getBlock().getLocation(), 10);
+				Optional<Player> playerOpt = getNearbyPlayer(event.getBlock().getLocation());
 				if (!playerOpt.isPresent())
 					return;
 
@@ -76,9 +76,8 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
 		return null;
 	}
 
-	private Optional<Player> getNearbyPlayer(Location loc, double d) {
-		double d2 = d * d;
-		return loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < d2).findAny();
+	private Optional<Player> getNearbyPlayer(Location loc) {
+		return loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < 100).findAny();
 	}
 
 	public class PotionUpgrade {

@@ -1,4 +1,4 @@
-name: ${project.name}
+name: MMOCore
 version: ${project.version}
 main: net.Indyuce.mmocore.MMOCore
 author: Indyuce

@@ -32,7 +32,7 @@ public class StartCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		Quest quest = null;
+		Quest quest;
 		try {
 			quest = MMOCore.plugin.questManager.get(args[3].replace("_", "-").toLowerCase());
 		} catch (Exception exception) {

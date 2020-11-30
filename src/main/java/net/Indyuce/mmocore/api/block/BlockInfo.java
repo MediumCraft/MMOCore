@@ -55,7 +55,7 @@ public class BlockInfo {
 		}
 
 		Optional<Trigger> opt = triggers.stream().filter(trigger -> (trigger instanceof ExperienceTrigger)).findFirst();
-		experience = opt.isPresent() ? (ExperienceTrigger) opt.get() : null;
+		experience = (ExperienceTrigger) opt.orElse(null);
 	}
 
 	public boolean hasVanillaDrops() {
@@ -110,7 +110,7 @@ public class BlockInfo {
 		return triggers;
 	}
 
-	public class RegeneratingBlock {
+	public static class RegeneratingBlock {
 		private final BlockData data;
 		private final Location loc;
 		private final BlockInfo regenerating;

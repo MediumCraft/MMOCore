@@ -77,7 +77,7 @@ public class LootChest {
 			effectRunnable.cancel();
 	}
 
-	public class ReplacedBlock {
+	public static class ReplacedBlock {
 		private final Material material;
 		private final BlockData data;
 		private final Location loc;

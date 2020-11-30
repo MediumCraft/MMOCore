@@ -405,7 +405,10 @@ public class PlayerData extends OfflinePlayerData {
 
 		if(!isOnline()) return;
 		new BukkitRunnable() {
-			int x = getPlayer().getLocation().getBlockX(), y = getPlayer().getLocation().getBlockY(), z = getPlayer().getLocation().getBlockZ(), t;
+			final int x = getPlayer().getLocation().getBlockX();
+			final int y = getPlayer().getLocation().getBlockY();
+			final int z = getPlayer().getLocation().getBlockZ();
+			int t;
 
 			public void run() {
 				if(!isOnline()) return;
@@ -772,7 +775,7 @@ public class PlayerData extends OfflinePlayerData {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj != null && obj instanceof PlayerData && ((PlayerData) obj).getUniqueId().equals(getUniqueId());
+		return obj instanceof PlayerData && ((PlayerData) obj).getUniqueId().equals(getUniqueId());
 	}
 
 	public static PlayerData get(OfflinePlayer player) {

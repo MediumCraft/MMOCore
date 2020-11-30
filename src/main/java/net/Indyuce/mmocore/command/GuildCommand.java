@@ -47,7 +47,7 @@ public class GuildCommand extends BukkitCommand {
 			}
 
 			Request request = MMOCore.plugin.requestManager.getRequest(uuid);
-			if (request == null || !(request instanceof GuildInvite))
+			if (!(request instanceof GuildInvite))
 				return true;
 
 			if (request.isTimedOut()) {
@@ -61,9 +61,9 @@ public class GuildCommand extends BukkitCommand {
 			}
 
 			if (args[0].equalsIgnoreCase("accept"))
-				((GuildInvite) request).accept();
+				request.accept();
 			if (args[0].equalsIgnoreCase("deny"))
-				((GuildInvite) request).deny();
+				request.deny();
 			return true;
 		}
 

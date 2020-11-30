@@ -28,7 +28,7 @@ public class Waypoint {
 		stellium = section.getDouble("stellium");
 		radiusSquared = Math.pow(section.getDouble("radius"), 2);
 		def = section.getBoolean("default");
-		sneak = section.contains("sneak") ? section.getBoolean("sneak") : true;
+		sneak = !section.contains("sneak") || section.getBoolean("sneak");
 		dynamic = section.getBoolean("dynamic");
 	}
 
@@ -75,7 +75,7 @@ public class Waypoint {
 	}
 
 	private Location readLocation(String string) {
-		String[] split = string.split("\\ ");
+		String[] split = string.split(" ");
 
 		World world = Bukkit.getWorld(split[0]);
 		Validate.notNull(world, "Could not find world " + world);

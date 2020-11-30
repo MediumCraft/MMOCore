@@ -35,7 +35,7 @@ public class PartyManager extends MMOManager {
 
 	public void unregisterParty(Party party) {
 		// IMPORTANT: clears all party stats before unregistering the party
-		party.getMembers().forEach(member -> party.removeMember(member));
+		party.getMembers().forEach(party::removeMember);
 		parties.remove(party);
 	}
 

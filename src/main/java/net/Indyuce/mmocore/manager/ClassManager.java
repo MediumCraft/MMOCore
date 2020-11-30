@@ -112,7 +112,7 @@ public class ClassManager extends MMOManager {
 	@Override
 	public void clear() {
 		map.clear();
-		triggerHandlers.forEach(handler -> HandlerList.unregisterAll(handler));
+		triggerHandlers.forEach(HandlerList::unregisterAll);
 
 		/*
 		 * do not clear the list of trigger listeners, since it's only setup

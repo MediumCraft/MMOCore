@@ -87,11 +87,12 @@ public enum StatType {
 	private LinearValue defaultInfo;
 	private DecimalFormat format;
 
-	private StatType() {
+	StatType() {
 		// completely custom stat.
 	}
 
-	private StatType(String profession) {
+	@SuppressWarnings("SameParameterValue")
+	StatType(String profession) {
 		this.profession = profession;
 	}
 

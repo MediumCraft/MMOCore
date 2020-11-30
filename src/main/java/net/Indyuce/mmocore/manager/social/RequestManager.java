@@ -17,7 +17,7 @@ public class RequestManager {
 	 * flush friend requests every 5 minutes so there is no memory overleak
 	 */
 	public RequestManager() {
-		Bukkit.getScheduler().runTaskTimer(MMOCore.plugin, () -> flushRequests(), 60 * 20, 60 * 20 * 5);
+		Bukkit.getScheduler().runTaskTimer(MMOCore.plugin, this::flushRequests, 60 * 20, 60 * 20 * 5);
 	}
 
 	public Request getRequest(UUID uuid) {
@@ -42,10 +42,6 @@ public class RequestManager {
 	}
 
 	public void flushRequests() {
-		for (Iterator<Request> iterator = requests.iterator(); iterator.hasNext();) {
-			Request next = iterator.next();
-			if (next.isTimedOut())
-				iterator.remove();
-		}
+		requests.removeIf(Request::isTimedOut);
 	}
 }

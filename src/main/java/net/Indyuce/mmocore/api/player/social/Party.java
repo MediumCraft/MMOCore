@@ -115,7 +115,7 @@ public class Party {
 	 * this class makes controling entries and departures and APPLYING PARTY
 	 * STAT ATTRIBUTES much easier
 	 */
-	public class PartyMembers {
+	public static class PartyMembers {
 		private final List<PlayerData> members = new ArrayList<>();
 
 		public PlayerData get(int count) {
@@ -129,13 +129,13 @@ public class Party {
 		public void add(PlayerData player) {
 			members.add(player);
 
-			members.forEach(member -> applyAttributes(member));
+			members.forEach(this::applyAttributes);
 		}
 
 		public void remove(PlayerData player) {
 			members.remove(player);
 
-			members.forEach(member -> applyAttributes(member));
+			members.forEach(this::applyAttributes);
 			clearAttributes(player);
 		}
 

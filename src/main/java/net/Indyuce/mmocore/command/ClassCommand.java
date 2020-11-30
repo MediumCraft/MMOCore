@@ -34,7 +34,7 @@ public class ClassCommand extends BukkitCommand {
 		MMOCommandEvent event = new MMOCommandEvent(data, "class");
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(event.isCancelled()) return true;
-		if (data.getProfess().getSubclasses().stream().filter(sub -> sub.getLevel() <= data.getLevel()).count() > 0)
+		if (data.getProfess().getSubclasses().stream().anyMatch(sub -> sub.getLevel() <= data.getLevel()))
 			InventoryManager.SUBCLASS_SELECT.newInventory(data).open();
 		else
 			InventoryManager.CLASS_SELECT.newInventory(data).open();

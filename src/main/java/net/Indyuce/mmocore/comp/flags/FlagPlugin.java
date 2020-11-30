@@ -6,11 +6,11 @@ import org.bukkit.entity.Player;
 public interface FlagPlugin {
 //	public boolean isPvpAllowed(Location loc);
 
-	public boolean isFlagAllowed(Player player, CustomFlag flag);
+	boolean isFlagAllowed(Player player, CustomFlag flag);
 
-	public boolean isFlagAllowed(Location loc, CustomFlag flag);
+	boolean isFlagAllowed(Location loc, CustomFlag flag);
 
-	public enum CustomFlag {
+	enum CustomFlag {
 		SKILLS;
 
 		public String getPath() {

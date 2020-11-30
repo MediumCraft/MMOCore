@@ -321,7 +321,7 @@ public class PlayerClass extends PostLoadObject {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj != null && obj instanceof PlayerClass && ((PlayerClass) obj).id.equals(id);
+		return obj instanceof PlayerClass && ((PlayerClass) obj).id.equals(id);
 	}
 
 	public String getActionBar() {

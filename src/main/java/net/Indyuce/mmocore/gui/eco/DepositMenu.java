@@ -70,7 +70,6 @@ public class DepositMenu extends PluginInventory {
 		int worth = NBTItem.get(event.getCurrentItem()).getInteger("RpgWorth");
 		if (worth < 1) {
 			event.setCancelled(true);
-			return;
 		}
 
 		// in deposit menu

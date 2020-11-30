@@ -37,7 +37,7 @@ public class Combo_Attack extends Skill {
 		new BukkitRunnable() {
 			final int count = (int) cast.getModifier("count");
 			final double damage = cast.getModifier("damage") / count;
-			LivingEntity target = cast.getTarget();
+			final LivingEntity target = cast.getTarget();
 
 			int c;
 

@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -238,12 +237,7 @@ public class SkillList extends EditableInventory {
 
 			boolean unlocked = skill.getUnlockLevel() <= inv.getPlayerData().getLevel();
 
-			for (Iterator<String> iterator = lore.iterator(); iterator.hasNext();) {
-				String next = iterator.next();
-				if ((next.startsWith("{unlocked}") && !unlocked) || (next.startsWith("{locked}") && unlocked) || (next.startsWith("{max_level}")
-						&& (!skill.hasMaxLevel() || skill.getMaxLevel() > inv.getPlayerData().getSkillLevel(skill.getSkill()))))
-					iterator.remove();
-			}
+			lore.removeIf(next -> (next.startsWith("{unlocked}") && !unlocked) || (next.startsWith("{locked}") && unlocked) || (next.startsWith("{max_level}") && (!skill.hasMaxLevel() || skill.getMaxLevel() > inv.getPlayerData().getSkillLevel(skill.getSkill()))));
 
 			for (int j = 0; j < lore.size(); j++)
 				lore.set(j, ChatColor.GRAY + holders.apply(inv.getPlayer(), lore.get(j)));
@@ -253,7 +247,7 @@ public class SkillList extends EditableInventory {
 			 */
 			ItemStack item = skill.getSkill().getIcon();
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(holders.apply(inv.getPlayer(), new String(getName())));
+			meta.setDisplayName(holders.apply(inv.getPlayer(), getName()));
 			meta.addItemFlags(ItemFlag.values());
 			meta.setLore(lore);
 			item.setItemMeta(meta);

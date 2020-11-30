@@ -1,14 +1,13 @@
 package net.Indyuce.mmocore.comp.mythicmobs.skill;
 
-import java.util.Arrays;
-
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Listener;
-
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Listener;
+
+import java.util.Collections;
 
 public abstract class PassiveMythicMobSkillHandler implements Listener {
 	protected final MythicMobSkill skill;
@@ -35,7 +34,7 @@ public abstract class PassiveMythicMobSkillHandler implements Listener {
 		data.getSkillData().cacheModifiers(skill.getInternalName(), cast);
 		if (MMOCore.plugin.hasAntiCheat())
 			MMOCore.plugin.antiCheatSupport.disableAntiCheat(data.getPlayer(), skill.getAntiCheat());
-		MythicMobs.inst().getAPIHelper().castSkill(data.getPlayer(), skill.getInternalName(), target, data.getPlayer().getEyeLocation(),
-				Arrays.asList(data.getPlayer()), null, 1);
+		MythicMobs.inst().getAPIHelper().castSkill(data.getPlayer(), skill.getInternalName(), target,
+				data.getPlayer().getEyeLocation(), Collections.singletonList(data.getPlayer()), null, 1);
 	}
 }

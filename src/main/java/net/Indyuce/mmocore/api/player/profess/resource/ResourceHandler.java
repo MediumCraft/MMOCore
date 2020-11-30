@@ -89,7 +89,7 @@ public class ResourceHandler {
 
 		private final BiFunction<PlayerData, PlayerResource, Double> calculation;
 
-		private HandlerType(BiFunction<PlayerData, PlayerResource, Double> calculation) {
+		HandlerType(BiFunction<PlayerData, PlayerResource, Double> calculation) {
 			this.calculation = calculation;
 		}
 

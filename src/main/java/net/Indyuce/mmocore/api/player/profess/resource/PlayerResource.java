@@ -12,21 +12,20 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 public enum PlayerResource {
 
 	HEALTH(StatType.HEALTH_REGENERATION, ClassOption.OFF_COMBAT_HEALTH_REGEN, (data) -> data.getPlayer().getHealth(),
-			(data) -> data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), (data, d) -> data.heal(d)),
-	MANA(StatType.MANA_REGENERATION, ClassOption.OFF_COMBAT_MANA_REGEN, (data) -> data.getMana(),
-			(data) -> data.getStats().getStat(StatType.MAX_MANA), (data, d) -> data.giveMana(d)),
-	STAMINA(StatType.STAMINA_REGENERATION, ClassOption.OFF_COMBAT_STAMINA_REGEN, (data) -> data.getStamina(),
-			(data) -> data.getStats().getStat(StatType.MAX_STAMINA), (data, d) -> data.giveStamina(d)),
-	STELLIUM(StatType.STELLIUM_REGENERATION, ClassOption.OFF_COMBAT_STELLIUM_REGEN, (data) -> data.getStellium(),
-			(data) -> data.getStats().getStat(StatType.MAX_STELLIUM), (data, d) -> data.giveStellium(d));
+			(data) -> data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), PlayerData::heal),
+	MANA(StatType.MANA_REGENERATION, ClassOption.OFF_COMBAT_MANA_REGEN, PlayerData::getMana,
+			(data) -> data.getStats().getStat(StatType.MAX_MANA), PlayerData::giveMana),
+	STAMINA(StatType.STAMINA_REGENERATION, ClassOption.OFF_COMBAT_STAMINA_REGEN, PlayerData::getStamina,
+			(data) -> data.getStats().getStat(StatType.MAX_STAMINA), PlayerData::giveStamina),
+	STELLIUM(StatType.STELLIUM_REGENERATION, ClassOption.OFF_COMBAT_STELLIUM_REGEN, PlayerData::getStellium,
+			(data) -> data.getStats().getStat(StatType.MAX_STELLIUM), PlayerData::giveStellium);
 
 	private final StatType regenStat;
 	private final ClassOption offCombatRegen;
 	private final Function<PlayerData, Double> current, max;
 	private final BiConsumer<PlayerData, Double> regen;
 
-	private PlayerResource(StatType regenStat, ClassOption offCombatRegen, Function<PlayerData, Double> current, Function<PlayerData, Double> max,
-			BiConsumer<PlayerData, Double> regen) {
+	PlayerResource(StatType regenStat, ClassOption offCombatRegen, Function<PlayerData, Double> current, Function<PlayerData, Double> max, BiConsumer<PlayerData, Double> regen) {
 		this.regenStat = regenStat;
 		this.offCombatRegen = offCombatRegen;
 		this.current = current;

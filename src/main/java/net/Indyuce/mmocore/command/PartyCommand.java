@@ -47,7 +47,7 @@ public class PartyCommand extends BukkitCommand {
 			}
 
 			Request request = MMOCore.plugin.requestManager.getRequest(uuid);
-			if (request == null || !(request instanceof PartyInvite))
+			if (!(request instanceof PartyInvite))
 				return true;
 
 			if (request.isTimedOut()) {
@@ -61,9 +61,9 @@ public class PartyCommand extends BukkitCommand {
 			}
 
 			if (args[0].equalsIgnoreCase("accept"))
-				((PartyInvite) request).accept();
+				request.accept();
 			if (args[0].equalsIgnoreCase("deny"))
-				((PartyInvite) request).deny();
+				request.deny();
 			return true;
 		}
 

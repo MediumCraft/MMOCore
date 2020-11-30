@@ -50,7 +50,7 @@ public class PointsCommandTreeNode extends CommandTreeNode {
 				return CommandResult.FAILURE;
 			}
 
-			int amount = 0;
+			int amount;
 			try {
 				amount = Integer.parseInt(args[4]);
 			} catch (Exception e) {

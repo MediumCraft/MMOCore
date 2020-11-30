@@ -61,7 +61,9 @@ public class Power_Mark extends Skill implements Listener {
 		private final PlayerData data;
 		private final Location loc;
 
-		private double duration, ratio, stun;
+		private final double duration;
+		private final double ratio;
+		private double stun;
 
 		private double accumulate;
 		private int j;

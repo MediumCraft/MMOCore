@@ -50,13 +50,13 @@ public class ClassConfirmation extends EditableInventory {
 			int nextLevelExp = inv.getPlayerData().getLevelUpExperience();
 			double ratio = (double) info.getExperience() / (double) nextLevelExp;
 
-			String bar = "" + ChatColor.BOLD;
+			StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
 			int chars = (int) (ratio * 20);
 			for (int j = 0; j < 20; j++)
-				bar += (j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "") + "|";
+				bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 
 			holders.register("percent", decimal.format(ratio * 100));
-			holders.register("progress", bar);
+			holders.register("progress", bar.toString());
 			holders.register("class", profess.getName());
 			holders.register("unlocked_skills", info.getSkillKeys().size());
 			holders.register("class_skills", profess.getSkills().size());

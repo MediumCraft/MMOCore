@@ -22,11 +22,11 @@ public enum ClassOption {
 
 	private final boolean def;
 
-	private ClassOption() {
+	ClassOption() {
 		this(false);
 	}
 
-	private ClassOption(boolean def) {
+	ClassOption(boolean def) {
 		this.def = def;
 	}
 

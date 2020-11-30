@@ -12,7 +12,7 @@ public class PlayerStats {
 	/**
 	 * Utilclass to easily manipulate the MMOLib stat map
 	 * 
-	 * @param data
+	 * @param data Playerdata
 	 */
 	public PlayerStats(PlayerData data) {
 		this.data = data;

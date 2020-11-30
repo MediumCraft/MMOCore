@@ -52,7 +52,7 @@ public class Fire_Rage extends Skill {
 		return cast;
 	}
 
-	public class Rage extends BukkitRunnable implements Listener {
+	public static class Rage extends BukkitRunnable implements Listener {
 		private final PlayerData data;
 		private final int count, ignite;
 		private final double damage;
@@ -73,7 +73,7 @@ public class Fire_Rage extends Skill {
 			c = count = (int) cast.getModifier("count");
 
 			Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
-			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> close(), (long) (cast.getModifier("duration") * 20));
+			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, this::close, (long) (cast.getModifier("duration") * 20));
 			runTaskTimer(MMOCore.plugin, 0, 1);
 
 			if(data.isOnline()) {
@@ -121,8 +121,8 @@ public class Fire_Rage extends Skill {
 			data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, last ? 0 : 1);
 			new BukkitRunnable() {
 				int j = 0;
-				Vector vec = data.getPlayer().getEyeLocation().getDirection();
-				Location loc = data.getPlayer().getLocation().add(0, 1.3, 0);
+				final Vector vec = data.getPlayer().getEyeLocation().getDirection();
+				final Location loc = data.getPlayer().getLocation().add(0, 1.3, 0);
 
 				public void run() {
 					if (j++ > 40)
@@ -140,7 +140,7 @@ public class Fire_Rage extends Skill {
 							loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 							loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 							loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
-							target.setFireTicks((int) (target.getFireTicks() + ignite));
+							target.setFireTicks(target.getFireTicks() + ignite);
 							MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
 							cancel();
 						}

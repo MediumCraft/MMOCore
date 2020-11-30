@@ -1,26 +1,23 @@
 package net.Indyuce.mmocore.api.quest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.mmogroup.mmolib.MMOLib;
+import org.bukkit.NamespacedKey;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
-
-import org.bukkit.NamespacedKey;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
-import org.bukkit.configuration.ConfigurationSection;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.MMOLib;
 
 public class PlayerQuests {
 	private final PlayerData playerData;
@@ -32,7 +29,9 @@ public class PlayerQuests {
 	public PlayerQuests(PlayerData playerData) {
 		this.playerData = playerData;
 		
-		bossbar = MMOLib.plugin.getVersion().getWrapper().createBossBar(new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()), "", BarColor.PURPLE, BarStyle.SEGMENTED_20, new BarFlag[0]);
+		bossbar = MMOLib.plugin.getVersion().getWrapper().createBossBar(
+			new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()),
+				"", BarColor.PURPLE, BarStyle.SEGMENTED_20);
 		if(playerData.isOnline())
 			bossbar.addPlayer(playerData.getPlayer());
 	}

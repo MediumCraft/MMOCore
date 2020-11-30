@@ -12,7 +12,7 @@ public class WorldCondition extends Condition {
 		super(config);
 
 		config.validate("name");
-		names = Arrays.asList(config.getString("name").split("\\,"));
+		names = Arrays.asList(config.getString("name").split(","));
 	}
 
 	@Override

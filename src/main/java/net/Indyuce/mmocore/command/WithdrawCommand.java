@@ -34,7 +34,7 @@ public class WithdrawCommand extends BukkitCommand {
 			return true;
 		}
 
-		int amount = 0;
+		int amount;
 		try {
 			amount = Integer.parseInt(amountArgument);
 			Validate.isTrue(amount >= 0);

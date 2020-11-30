@@ -40,7 +40,7 @@ public class Withdraw implements Listener {
 		withdrawing.add(player.getUniqueId());
 		MMOCore.plugin.configManager.getSimpleMessage("withdrawing").send(player);
 		Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
-		Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> close(), 20 * 20);
+		Bukkit.getScheduler().runTaskLater(MMOCore.plugin, this::close, 20 * 20);
 	}
 
 	public void close() {

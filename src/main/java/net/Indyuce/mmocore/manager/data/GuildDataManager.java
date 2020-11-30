@@ -79,7 +79,7 @@ public abstract class GuildDataManager {
 		return config == null ? config = new GuildConfiguration() : config;
 	}
 
-	public class GuildConfiguration {
+	public static class GuildConfiguration {
 		private final String prefix;
 		private final boolean uppercaseTags;
 		private final NamingRules tagRules, nameRules;
@@ -109,7 +109,7 @@ public abstract class GuildDataManager {
 			return nameRules;
 		}
 
-		public class NamingRules {
+		public static class NamingRules {
 			private final String regex;
 			private final int min, max;
 

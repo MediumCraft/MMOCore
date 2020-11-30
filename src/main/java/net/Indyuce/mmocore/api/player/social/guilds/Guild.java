@@ -21,7 +21,9 @@ import net.Indyuce.mmocore.manager.InventoryManager;
 public class Guild {
 	private final GuildMembers members = new GuildMembers();
 	private final Map<UUID, Long> invites = new HashMap<>();
-	private String guildId, guildName, guildTag;
+	private final String guildId;
+	private final String guildName;
+	private final String guildTag;
 
 	/*
 	 * owner changes when the old owner leaves guild
@@ -122,7 +124,7 @@ public class Guild {
 		MMOCore.plugin.requestManager.registerRequest(request);
 	}
 	
-	public class GuildMembers {
+	public static class GuildMembers {
 		private final List<UUID> members = new ArrayList<>();
 
 		public UUID get(int count) {

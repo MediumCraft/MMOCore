@@ -24,7 +24,7 @@ public class PlayerChangeClassEvent extends PlayerDataEvent implements Cancellab
 	}
 
 	public boolean isSubclass() {
-		return getData().getProfess().getSubclasses().stream().filter(sub -> sub.getProfess().equals(newClass)).count() > 0;
+		return getData().getProfess().getSubclasses().stream().anyMatch(sub -> sub.getProfess().equals(newClass));
 	}
 
 	@Override

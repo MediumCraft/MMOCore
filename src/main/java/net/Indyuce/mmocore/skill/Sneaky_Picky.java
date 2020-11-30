@@ -43,7 +43,7 @@ public class Sneaky_Picky extends Skill implements Listener {
 		data.cast(cast.getInfo());
 
 		event.getAttack().multiplyDamage(1 + cast.getModifier("extra") / 100);
-		LivingEntity target = (LivingEntity) event.getEntity();
+		LivingEntity target = event.getEntity();
 		target.getWorld().spawnParticle(Particle.SMOKE_NORMAL, target.getLocation().add(0, target.getHeight() / 2, 0), 64, 0, 0, 0, .05);
 		target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 2);
 	}

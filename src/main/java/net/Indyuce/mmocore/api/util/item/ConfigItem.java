@@ -63,6 +63,7 @@ public class ConfigItem {
 		damage = cache.damage;
 		texture = cache.texture;
 		modeldata = cache.modeldata;
+		unbreakable = cache.unbreakable;
 	}
 
 	public ItemStack getItem(int amount) {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import net.mmogroup.mmolib.api.util.PostLoadObject;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 
@@ -66,12 +67,12 @@ public class ProfessionManager extends MMOManager {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load profession " + file.getName() + ": " + exception.getMessage());
 			}
 
-		getAll().forEach(profession -> profession.postLoad());
+		getAll().forEach(PostLoadObject::postLoad);
 	}
 
 	@Override
 	public void clear() {
-		managers.values().forEach(manager -> HandlerList.unregisterAll(manager));
+		managers.values().forEach(HandlerList::unregisterAll);
 		managers.clear();
 		professions.clear();
 	}

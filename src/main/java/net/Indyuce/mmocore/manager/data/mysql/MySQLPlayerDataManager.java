@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.manager.data.mysql;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
@@ -134,7 +135,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
 		sql.updateJSONArray("waypoints", data.getWaypoints());
 		sql.updateJSONArray("friends",
-				data.getFriends().stream().map(uuid -> uuid.toString()).collect(Collectors.toList()));
+				data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
 		sql.updateJSONArray("bound_skills",
 				data.getBoundSkills().stream().map(skill -> skill.getSkill().getId()).collect(Collectors.toList()));
 
@@ -178,12 +179,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 	}
 
 	private Collection<String> getJSONArray(String json) {
-		Collection<String> collection = new ArrayList<String>();
-
-		for (String s : MMOLib.plugin.getJson().parse(json, String[].class))
-			collection.add(s);
-
-		return collection;
+		return new ArrayList<>(Arrays.asList(MMOLib.plugin.getJson().parse(json, String[].class)));
 	}
 
 	public class MySQLOfflinePlayerData extends OfflinePlayerData {
@@ -202,7 +198,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 							level = 0;
 							lastLogin = 0;
 							profess = MMOCore.plugin.classManager.getDefaultClass();
-							friends = new ArrayList<UUID>();
+							friends = new ArrayList<>();
 						} else {
 							level = result.getInt("level");
 							lastLogin = result.getLong("last_login");
@@ -212,7 +208,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 								getJSONArray(result.getString("friends"))
 										.forEach(str -> friends.add(UUID.fromString(str)));
 							else
-								friends = new ArrayList<UUID>();
+								friends = new ArrayList<>();
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -227,7 +223,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		public void removeFriend(UUID uuid) {
 			friends.remove(uuid);
 			new MySQLTableEditor(Table.PLAYERDATA, uuid).updateDataAsync("friends",
-					friends.stream().map(friend -> friend.toString()).collect(Collectors.toList()));
+					friends.stream().map(UUID::toString).collect(Collectors.toList()));
 		}
 
 		@Override

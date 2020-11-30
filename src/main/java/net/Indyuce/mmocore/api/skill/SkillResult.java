@@ -90,6 +90,6 @@ public class SkillResult {
 		LOCKED,
 
 		// no reason specified
-		OTHER;
+		OTHER
 	}
 }

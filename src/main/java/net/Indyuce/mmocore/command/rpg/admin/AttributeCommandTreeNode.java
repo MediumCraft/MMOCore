@@ -52,7 +52,7 @@ public class AttributeCommandTreeNode extends CommandTreeNode {
 			}
 			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(format);
 
-			int amount = 0;
+			int amount;
 			try {
 				amount = Integer.parseInt(args[5]);
 			} catch (Exception e) {

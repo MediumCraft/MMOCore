@@ -32,7 +32,7 @@ public class SmeltItemExperienceSource extends SpecificExperienceSource<ItemStac
 
 			@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 			public void a(BlockCookEvent event) {
-				Optional<Player> player = getNearestPlayer(event.getBlock().getLocation(), 10);
+				Optional<Player> player = getNearestPlayer(event.getBlock().getLocation());
 				if (!player.isPresent())
 					return;
 
@@ -48,12 +48,11 @@ public class SmeltItemExperienceSource extends SpecificExperienceSource<ItemStac
 		};
 	}
 
-	private Optional<Player> getNearestPlayer(Location loc, double d) {
-		final double d2 = d * d;
-		final Player[] nearby = loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < d2)
+	private Optional<Player> getNearestPlayer(Location loc) {
+		final Player[] nearby = loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < 100)
 				.toArray(Player[]::new);
 		Player selected = null;
-		double lastDist = d2;
+		double lastDist = 100;
 		for (Player p : nearby) {
 			double currDist = p.getLocation().distance(loc);
 			if (currDist < lastDist) {

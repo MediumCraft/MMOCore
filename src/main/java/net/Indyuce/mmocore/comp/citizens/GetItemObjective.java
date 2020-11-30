@@ -13,8 +13,9 @@ import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class GetItemObjective extends Objective {
-	private Material material;
-	private int required, npcId;
+	private final Material material;
+	private final int required;
+	private final int npcId;
 
 	public GetItemObjective(ConfigurationSection section, MMOLineConfig config) {
 		super(section);

@@ -12,8 +12,9 @@ import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
 import net.Indyuce.mmocore.api.util.item.CurrencyItem;
 
 public class CurrencyItemDrop extends Drop implements IMultiDrop {
-	private String key;
-	private int minw, maxw;
+	private final String key;
+	private final int minw;
+	private final int maxw;
 
 	private static final Random random = new Random();
 

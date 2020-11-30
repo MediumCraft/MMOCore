@@ -30,17 +30,14 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
 		return new ExperienceManager<KillMobExperienceSource>() {
 			@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 			public void a(EntityKillEntityEvent event) {
-				Bukkit.getScheduler().runTaskLater(MMOCore.plugin, new Runnable() {
-					@Override
-					public void run() {
-						if (event.getTarget().isDead() && event.getEntity() instanceof Player && !event.getEntity().hasMetadata("NPC")
-								&& !event.getTarget().hasMetadata("spawner_spawned")) {
-							PlayerData data = PlayerData.get((Player) event.getEntity());
+				Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> {
+					if (event.getTarget().isDead() && event.getEntity() instanceof Player && !event.getEntity().hasMetadata("NPC")
+							&& !event.getTarget().hasMetadata("spawner_spawned")) {
+						PlayerData data = PlayerData.get((Player) event.getEntity());
 
-							for (KillMobExperienceSource source : getSources())
-								if (source.matches(data, event.getTarget()))
-									source.giveExperience(data, 1, event.getTarget().getLocation());
-						}
+						for (KillMobExperienceSource source : getSources())
+							if (source.matches(data, event.getTarget()))
+								source.giveExperience(data, 1, event.getTarget().getLocation());
 					}
 				}, 2);
 			}

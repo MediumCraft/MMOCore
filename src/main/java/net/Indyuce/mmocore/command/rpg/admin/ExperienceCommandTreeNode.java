@@ -20,15 +20,11 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 	public ExperienceCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "exp");
 
-		addChild(new ActionCommandTreeNode(this, "set", (data, value) -> data.setExperience(value),
-				(professions, profession, value) -> professions.setExperience(profession, value)));
-		addChild(new ActionCommandTreeNode(this, "give",
-				(data, value) -> data.giveExperience(value, data.getPlayer().getLocation(), EXPSource.COMMAND),
-				(professions, profession, value) -> professions.giveExperience(profession, value,
-						professions.getPlayerData().getPlayer().getLocation(), EXPSource.COMMAND)));
+		addChild(new ActionCommandTreeNode(this, "set", PlayerData::setExperience, PlayerProfessions::setExperience));
+		addChild(new ActionCommandTreeNode(this, "give", (data, value) -> data.giveExperience(value, data.getPlayer().getLocation(), EXPSource.COMMAND), (professions, profession, value) -> professions.giveExperience(profession, value, professions.getPlayerData().getPlayer().getLocation(), EXPSource.COMMAND)));
 	}
 
-	public class ActionCommandTreeNode extends CommandTreeNode {
+	public static class ActionCommandTreeNode extends CommandTreeNode {
 		private final BiConsumer<PlayerData, Integer> main;
 		private final TriConsumer<PlayerProfessions, Profession, Integer> profession;
 
@@ -55,7 +51,7 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 				return CommandResult.FAILURE;
 			}
 
-			int amount = 0;
+			int amount;
 			try {
 				amount = Integer.parseInt(args[5]);
 			} catch (NumberFormatException exception) {

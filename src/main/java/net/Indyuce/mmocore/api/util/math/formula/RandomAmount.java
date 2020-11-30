@@ -13,7 +13,7 @@ public class RandomAmount {
 	}
 
 	public RandomAmount(String value) {
-		String[] split = value.split("\\-");
+		String[] split = value.split("-");
 		min = Double.parseDouble(split[0]);
 		max = split.length > 1 ? Double.parseDouble(split[1]) : 0;
 	}

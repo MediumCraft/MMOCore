@@ -49,7 +49,7 @@ public class Human_Shield extends Skill {
 		return cast;
 	}
 
-	public class HumanShield extends BukkitRunnable implements Listener {
+	public static class HumanShield extends BukkitRunnable implements Listener {
 		private final PlayerData data;
 		private final Player target;
 		private final double r, rd, d, l;

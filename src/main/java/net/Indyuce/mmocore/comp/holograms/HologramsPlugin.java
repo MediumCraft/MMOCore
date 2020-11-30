@@ -15,7 +15,7 @@ import com.sainttx.holograms.api.line.TextLine;
 import net.Indyuce.mmocore.MMOCore;
 
 public class HologramsPlugin extends HologramSupport {
-	private HologramManager hologramManager = JavaPlugin.getPlugin(HologramPlugin.class).getHologramManager();
+	private final HologramManager hologramManager = JavaPlugin.getPlugin(HologramPlugin.class).getHologramManager();
 
 	@Override
 	public void displayIndicator(Location loc, String message, Player player) {

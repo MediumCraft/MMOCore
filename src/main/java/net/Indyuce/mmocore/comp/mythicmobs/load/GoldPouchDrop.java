@@ -19,7 +19,8 @@ import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
 
 public class GoldPouchDrop extends Drop implements IMultiDrop {
-	private int min, max;
+	private final int min;
+	private final int max;
 
 	private static final Random random = new Random();
 
@@ -58,8 +59,8 @@ public class GoldPouchDrop extends Drop implements IMultiDrop {
 
 	private int getAvailableSlot(ItemStack[] content) {
 		int slot;
-		while (content[slot = random.nextInt(content.length)] != null && content[slot].getType() != Material.AIR)
-			continue;
+		while (content[slot = random.nextInt(content.length)] != null)
+			if(content[slot].getType() == Material.AIR) break;
 		return slot;
 	}
 }

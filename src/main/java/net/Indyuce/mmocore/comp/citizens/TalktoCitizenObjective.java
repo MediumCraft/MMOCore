@@ -10,7 +10,7 @@ import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class TalktoCitizenObjective extends Objective {
-	private int id;
+	private final int id;
 
 	public TalktoCitizenObjective(ConfigurationSection section, MMOLineConfig config) {
 		super(section);

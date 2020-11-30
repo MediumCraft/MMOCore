@@ -40,7 +40,7 @@ public class RegionBounds {
 	}
 
 	public Stream<PlayerData> getPlayers() {
-		return world.getPlayers().stream().filter(player -> isInRegion(player)).map(player -> PlayerData.get(player));
+		return world.getPlayers().stream().filter(this::isInRegion).map(PlayerData::get);
 	}
 
 	public boolean isInRegion(Player player) {

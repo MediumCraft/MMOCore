@@ -83,12 +83,12 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		config.set("experience", data.getExperience());
 		config.set("class", data.getProfess().getId());
 		config.set("waypoints", new ArrayList<>(data.getWaypoints()));
-		config.set("friends", data.getFriends().stream().map(uuid -> uuid.toString()).collect(Collectors.toList()));
+		config.set("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
 		config.set("last-login", data.getLastLogin());
 		config.set("guild", data.hasGuild() ? data.getGuild().getId() : null);
 
 		config.set("skill", null);
-		data.mapSkillLevels().entrySet().forEach(entry -> config.set("skill." + entry.getKey(), entry.getValue()));
+		data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
 
 		List<String> boundSkills = new ArrayList<>();
 		data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getId()));

@@ -61,12 +61,12 @@ public class ManaDisplayOptions {
 	}
 
 	public String generateBar(double mana, double max) {
-		String format = "";
+		StringBuilder format = new StringBuilder();
 		double ratio = 20 * mana / max;
 
 		for (double j = 1; j < 20; j++)
-			format += "" + (ratio >= j ? full : ratio >= j - .5 ? half : empty) + barCharacter;
+			format.append(ratio >= j ? full : ratio >= j - .5 ? half : empty).append(barCharacter);
 
-		return format;
+		return format.toString();
 	}
 }
