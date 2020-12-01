@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.command.rpg.admin;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -60,8 +61,8 @@ public class PointsCommandTreeNode extends CommandTreeNode {
 
 			PlayerData data = PlayerData.get(player);
 			action.accept(data, amount);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD + get.apply(data)
-					+ ChatColor.YELLOW + " " + type + " points.");
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.POINTS, ChatColor.GOLD + player.getName()
+				+ ChatColor.YELLOW + " now has " + ChatColor.GOLD + get.apply(data) + ChatColor.YELLOW + " " + type + " points.");
 			return CommandResult.SUCCESS;
 		}
 	}

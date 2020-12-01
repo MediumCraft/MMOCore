@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -62,8 +63,8 @@ public class AttributeCommandTreeNode extends CommandTreeNode {
 
 			AttributeInstance instance = PlayerData.get(player).getAttributes().getInstance(attribute);
 			instance.setBase(Math.min(attribute.getMax(), instance.getBase() + c * amount));
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD + instance.getBase()
-					+ ChatColor.YELLOW + " " + attribute.getName() + ".");
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.ATTRIBUTE, ChatColor.GOLD + player.getName() + ChatColor.YELLOW
+					+ " now has " + ChatColor.GOLD + instance.getBase() + ChatColor.YELLOW + " " + attribute.getName() + ".");
 			return CommandResult.SUCCESS;
 		}
 	}

@@ -166,6 +166,13 @@ public class MMOCore extends JavaPlugin {
 		new Metrics(this);
 		saveDefaultConfig();
 
+		final int configVersion = getConfig().contains("config-version", true) ? getConfig().getInt("config-version") : -1;
+		final int defConfigVersion = getConfig().getDefaults().getInt("config-version");
+		if(configVersion != defConfigVersion) {
+			getLogger().warning("You may be using an outdated config.yml!");
+			getLogger().warning("(Your config version: '" + configVersion + "' | Expected config version: '" + defConfigVersion + "')");
+		}
+
 		if (getConfig().isConfigurationSection("mysql") && getConfig().getBoolean("mysql.enabled"))
 			dataProvider = new MySQLDataProvider(getConfig());
 

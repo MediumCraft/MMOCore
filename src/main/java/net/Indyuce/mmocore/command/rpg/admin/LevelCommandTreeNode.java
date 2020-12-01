@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.command.rpg.admin;
 
 import java.util.function.BiConsumer;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -63,8 +64,9 @@ public class LevelCommandTreeNode extends CommandTreeNode {
 			PlayerData data = PlayerData.get(player);
 			if (args[4].equalsIgnoreCase("main")) {
 				main.accept(data, amount);
-				sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now Lvl " + ChatColor.GOLD + data.getLevel()
-						+ ChatColor.YELLOW + ".");
+
+				CommandVerbose.verbose(sender, CommandVerbose.CommandType.LEVEL, ChatColor.GOLD + player.getName()
+					+ ChatColor.YELLOW + " is now Lvl " + ChatColor.GOLD + data.getLevel() + ChatColor.YELLOW + ".");
 				return CommandResult.SUCCESS;
 			}
 
@@ -76,7 +78,8 @@ public class LevelCommandTreeNode extends CommandTreeNode {
 
 			Profession profession = MMOCore.plugin.professionManager.get(format);
 			this.profession.accept(data.getCollectionSkills(), profession, amount);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now Lvl " + ChatColor.GOLD
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.LEVEL,
+					ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now Lvl " + ChatColor.GOLD
 					+ data.getCollectionSkills().getLevel(profession) + ChatColor.YELLOW + " in " + profession.getName() + ".");
 			return CommandResult.SUCCESS;
 		}

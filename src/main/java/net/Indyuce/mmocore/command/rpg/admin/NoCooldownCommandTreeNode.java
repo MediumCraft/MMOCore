@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +30,8 @@ public class NoCooldownCommandTreeNode extends CommandTreeNode {
 
 		PlayerData data = PlayerData.get(player);
 		data.nocd = !data.nocd;
-		sender.sendMessage(ChatColor.YELLOW + "NoCD " + (data.nocd ? "enabled" : "disabled") + " for " + player.getName() + ".");
+		CommandVerbose.verbose(sender, CommandVerbose.CommandType.NOCD,
+			ChatColor.YELLOW + "NoCD " + (data.nocd ? "enabled" : "disabled") + " for " + player.getName() + ".");
 		return CommandResult.SUCCESS;
 	}
 }

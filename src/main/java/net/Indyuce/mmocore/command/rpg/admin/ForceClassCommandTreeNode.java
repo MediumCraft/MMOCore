@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -41,8 +42,8 @@ public class ForceClassCommandTreeNode extends CommandTreeNode {
 
 		PlayerData data = PlayerData.get(player);
 		data.setClass(profess);
-		sender.sendMessage(
-				ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now a " + ChatColor.GOLD + profess.getName() + ChatColor.YELLOW + ".");
+		CommandVerbose.verbose(sender, CommandVerbose.CommandType.CLASS, ChatColor.GOLD + player.getName()
+			+ ChatColor.YELLOW + " is now a " + ChatColor.GOLD + profess.getName() + ChatColor.YELLOW + ".");
 		return CommandResult.SUCCESS;
 	}
 }

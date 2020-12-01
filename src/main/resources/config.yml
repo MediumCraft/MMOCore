@@ -1,3 +1,15 @@
+#
+# ███    ███ ███    ███  ██████   ██████  ██████  ██████  ███████
+# ████  ████ ████  ████ ██    ██ ██      ██    ██ ██   ██ ██
+# ██ ████ ██ ██ ████ ██ ██    ██ ██      ██    ██ ██████  █████
+# ██  ██  ██ ██  ██  ██ ██    ██ ██      ██    ██ ██   ██ ██
+# ██      ██ ██      ██  ██████   ██████  ██████  ██   ██ ███████
+#
+# a Spigot Plugin by Team Requiem
+
+# DO NOT TOUCH
+config-version: 2
+
 # Auto-Save feature automatically saves playerdata
 # (class, level, etc.) and guild data
 # (guild names, members, etc.) at a set interval.
@@ -151,3 +163,21 @@ resource-bar-colors:
     stamina-whole: 'GREEN'
     stamina-half: 'DARK_GREEN'
     stamina-empty: 'WHITE'
+
+# Whether or not the admin commands should display
+# the result of the command when ran.
+# For Example: "Players Level is now 10."
+# Accepted Values:
+# true - Always verbose
+# player - Only verbose when ran from a player
+# console - Only verbose when ran from console
+# false - Never verbose
+command-verbose:
+    attribute: true
+    class: true
+    experience: true
+    level: true
+    nocd: true
+    points: true
+    reset: true
+    resource: true

@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -66,7 +67,8 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 				data.unbindSkill(0);
 			data.getQuestData().resetFinishedQuests();
 			data.getQuestData().start(null);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s data was succesfully reset.");
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
+					ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s data was succesfully reset.");
 			return CommandResult.SUCCESS;
 		}
 	}
@@ -142,7 +144,8 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 			data.mapSkillLevels().forEach((skill, level) -> data.resetSkillLevel(skill));
 			while (data.hasSkillBound(0))
 				data.unbindSkill(0);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill data was succesfully reset.");
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
+					ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill data was succesfully reset.");
 			return CommandResult.SUCCESS;
 		}
 	}
@@ -180,12 +183,14 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 				}
 
 				data.giveAttributePoints(points);
-				sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute points spendings were successfully reset.");
+				CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
+						ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute points spendings were successfully reset.");
 				return CommandResult.SUCCESS;
 			}
 
 			data.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attributes were succesfully reset.");
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
+					ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attributes were succesfully reset.");
 			return CommandResult.SUCCESS;
 		}
 	}
@@ -215,7 +220,8 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 				data.getCollectionSkills().setExperience(profession, 0);
 				data.getCollectionSkills().setLevel(profession, 0);
 			}
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s levels were succesfully reset.");
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
+					ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s levels were succesfully reset.");
 
 			return CommandResult.SUCCESS;
 		}

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.command.rpg.admin;
 
 import java.util.function.BiConsumer;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -62,8 +63,8 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 			PlayerData data = PlayerData.get(player);
 			if (args[4].equalsIgnoreCase("main")) {
 				main.accept(data, amount);
-				sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD + data.getExperience()
-						+ ChatColor.YELLOW + " EXP.");
+				CommandVerbose.verbose(sender, CommandVerbose.CommandType.EXPERIENCE, ChatColor.GOLD + player.getName()
+					+ ChatColor.YELLOW + " now has " + ChatColor.GOLD + data.getExperience() + ChatColor.YELLOW + " EXP.");
 				return CommandResult.SUCCESS;
 			}
 
@@ -75,8 +76,8 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 
 			Profession profession = MMOCore.plugin.professionManager.get(format);
 			this.profession.accept(data.getCollectionSkills(), profession, amount);
-			sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD
-					+ data.getCollectionSkills().getExperience(profession) + ChatColor.YELLOW + " EXP in " + profession.getName() + ".");
+			CommandVerbose.verbose(sender, CommandVerbose.CommandType.EXPERIENCE, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has "
+				+ ChatColor.GOLD + data.getCollectionSkills().getExperience(profession) + ChatColor.YELLOW + " EXP in " + profession.getName() + ".");
 			return CommandResult.SUCCESS;
 		}
 	}

@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.api.util.input.AnvilGUI;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
+import net.Indyuce.mmocore.command.CommandVerbose;
 import net.mmogroup.mmolib.MMOLib;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,8 +22,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.logging.Level;
 
-@SuppressWarnings("ALL")
 public class ConfigManager {
+	public final CommandVerbose commandVerbose = new CommandVerbose();
 
 	public boolean overrideVanillaExp, hotbarSwap;
 	public double expPartyBuff, regenPartyBuff;
@@ -33,8 +34,8 @@ public class ConfigManager {
 	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
 
-	private FileConfiguration messages;
-	private boolean chatInput;
+	private final FileConfiguration messages;
+	private final boolean chatInput;
 
 	/*
 	 * the instance must be created after the other managers since all it does
@@ -42,7 +43,6 @@ public class ConfigManager {
 	 * already loaded based on the config
 	 */
 	public ConfigManager() {
-
 		// loadDefaultFile("recipes", "brewing.yml");
 		// loadDefaultFile("recipes", "furnace.yml");
 
@@ -91,10 +91,8 @@ public class ConfigManager {
 		loadDefaultFile("commands.yml");
 		loadDefaultFile("guilds.yml");
 
-		loadOptions();
-	}
+		commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));
 
-	public void loadOptions() {
 		messages = new ConfigFile("messages").getConfig();
 		hotbarSwap = MMOCore.plugin.getConfig().getBoolean("hotbar-swap");
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");

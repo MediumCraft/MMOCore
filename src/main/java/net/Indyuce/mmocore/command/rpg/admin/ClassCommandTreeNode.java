@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -59,8 +60,8 @@ public class ClassCommandTreeNode extends CommandTreeNode {
 			data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
 		}
 
-		sender.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now a " + ChatColor.GOLD
-				+ profess.getName() + ChatColor.YELLOW + ".");
+		CommandVerbose.verbose(sender, CommandVerbose.CommandType.CLASS, ChatColor.GOLD + player.getName()
+				+ ChatColor.YELLOW + " is now a " + ChatColor.GOLD + profess.getName() + ChatColor.YELLOW + ".");
 		return CommandResult.SUCCESS;
 	}
 }
