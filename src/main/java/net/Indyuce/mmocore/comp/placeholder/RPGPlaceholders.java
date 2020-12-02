@@ -41,10 +41,9 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		return MMOCore.plugin.getDescription().getVersion();
 	}
 
+	@SuppressWarnings("DuplicateExpressions")
 	@Override
 	public String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
-		final String subIdent = identifier.substring(10).toLowerCase().replace("_", "-");
-
 		if(identifier.equals("mana_icon"))
 			return PlayerData.get(player).getProfess().getManaDisplay().getIcon();
 		if(identifier.equals("mana_name"))
@@ -129,7 +128,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.startsWith("attribute_"))
 			return String.valueOf(PlayerData.get(player).getAttributes()
-					.getAttribute(MMOCore.plugin.attributeManager.get(subIdent)));
+					.getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
 
 		else if (identifier.equals("mana"))
 			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getMana());
@@ -146,7 +145,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.startsWith("exp_boost_")) {
-			String format = subIdent.replace(" ", "-");
+			String format = identifier.substring(10).toLowerCase().replace("_", "-").replace(" ", "-");
 			Profession profession = format.equals("main") ? null : MMOCore.plugin.professionManager.get(format);
 			return MMOCore.plugin.configManager.decimal.format((MMOCore.plugin.boosterManager.getMultiplier(profession) - 1) * 100);
 		}
