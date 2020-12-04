@@ -16,14 +16,14 @@ import net.mmogroup.mmolib.api.MMOLineConfig;
 
 public class GoToObjective extends Objective {
 	private final Location loc;
-	private final int rangeSquared;
+	private final double range;
 
 	public GoToObjective(ConfigurationSection section, MMOLineConfig config) {
 		super(section);
 
 		config.validate("range", "world", "x", "y", "z");
 
-		rangeSquared = config.getInt("range") ^ 2;
+		range = config.getDouble("range");
 
 		World world = Bukkit.getWorld(config.getString("world"));
 		Validate.notNull(world, "Could not find world " + config.getString("world"));
@@ -46,9 +46,10 @@ public class GoToObjective extends Objective {
 				return;
 
 			Player player = event.getPlayer();
-			if (getPlayer().isOnline() && player.equals(getPlayer().getPlayer()))
-				if (player.getWorld().equals(loc.getWorld()) && player.getLocation().distanceSquared(loc) < rangeSquared)
+			if (getPlayer().isOnline() && player.equals(getPlayer().getPlayer())) {
+				if (player.getWorld().equals(loc.getWorld()) && ((player.getLocation().distance(loc) - 0.5d) < range))
 					getQuestProgress().completeObjective();
+			}
 		}
 
 		@Override
