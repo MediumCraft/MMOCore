@@ -24,7 +24,6 @@ public class GoToObjective extends Objective {
 		config.validate("range", "world", "x", "y", "z");
 
 		range = config.getDouble("range");
-
 		World world = Bukkit.getWorld(config.getString("world"));
 		Validate.notNull(world, "Could not find world " + config.getString("world"));
 		loc = new Location(world, config.getInt("x"), config.getInt("y"), config.getInt("z"));
