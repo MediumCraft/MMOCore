@@ -32,7 +32,7 @@ public class Sneaky_Picky extends Skill implements Listener {
 
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData().getMMOCore();
+		PlayerData data = PlayerData.get(event.getData().getUniqueId());
 		if (!event.getAttack().hasType(DamageType.WEAPON) || data.isInCombat() || !data.getProfess().hasSkill(this))
 			return;
 

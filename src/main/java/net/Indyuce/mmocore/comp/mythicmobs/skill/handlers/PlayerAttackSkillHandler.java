@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.comp.mythicmobs.skill.handlers;
 
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.event.EventHandler;
 
 import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
@@ -17,6 +18,6 @@ public class PlayerAttackSkillHandler extends PassiveMythicMobSkillHandler {
 
 	@EventHandler
 	private void event(PlayerAttackEvent e) {
-		castSkill(e.getData().getMMOCore(), e.getEntity());
+		castSkill(PlayerData.get(e.getData().getUniqueId()), e.getEntity());
 	}
 }

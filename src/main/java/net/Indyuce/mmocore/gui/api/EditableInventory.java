@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.mmogroup.mmolib.MMOLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,7 +26,7 @@ public abstract class EditableInventory {
 	 */
 	private final Set<InventoryItem> items = new LinkedHashSet<>();
 
-	protected static final DecimalFormat decimal = MMOCore.plugin.configManager.decimal;
+	protected static final DecimalFormat decimal = MMOLib.plugin.getMMOConfig().decimal;
 
 	public EditableInventory(String id) {
 		this.id = id;

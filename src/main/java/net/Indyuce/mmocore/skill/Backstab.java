@@ -32,7 +32,7 @@ public class Backstab extends Skill implements Listener {
 
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData().getMMOCore();
+		PlayerData data = PlayerData.get(event.getData().getUniqueId());
 		LivingEntity target = event.getEntity();
 		if (data.isInCombat() || !event.getAttack().hasType(DamageType.WEAPON)
 				|| event.getPlayer().getEyeLocation().getDirection().angle(target.getEyeLocation().getDirection()) > Math.PI / 6

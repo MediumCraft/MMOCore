@@ -24,7 +24,7 @@ public class ListCommandTreeNode extends CommandTreeNode {
 		for (Booster booster : MMOCore.plugin.boosterManager.getBoosters())
 			if (!booster.isTimedOut())
 				MMOLib.plugin.getVersion().getWrapper().sendJson((Player) sender, "{\"text\":\"" + ChatColor.YELLOW + "- " + ChatColor.GOLD
-						+ MMOCore.plugin.configManager.decimal.format((1 + booster.getExtra())) + "x" + ChatColor.YELLOW + " Booster - "
+						+ MMOLib.plugin.getMMOConfig().decimal.format((1 + booster.getExtra())) + "x" + ChatColor.YELLOW + " Booster - "
 						+ ChatColor.GOLD + (!booster.hasProfession() ? "ExploreAttributesCommand" : booster.getProfession().getName())
 						+ ChatColor.YELLOW + " - " + ChatColor.GOLD
 						+ new DelayFormat().format(booster.getCreationDate() + booster.getLength() - System.currentTimeMillis())

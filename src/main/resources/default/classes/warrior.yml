@@ -107,7 +107,7 @@ attributes:
         base: 24
         per-level: 0.5
     movement-speed:
-        base: .905
+        base: .12
         per-level: 0
     attack-damage:
         base: 2

@@ -11,7 +11,6 @@ import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.ExpCurve;
-import net.Indyuce.mmoitems.MMOItems;
 
 public class ExperienceManager {
 	private final Map<String, ExpCurve> expCurves = new HashMap<>();
@@ -40,7 +39,7 @@ public class ExperienceManager {
 				ExpCurve curve = new ExpCurve(file);
 				expCurves.put(curve.getId(), curve);
 			} catch (IllegalArgumentException | IOException exception) {
-				MMOItems.plugin.getLogger().log(Level.WARNING, "Could not load exp curve '" + file.getName() + "': " + exception.getMessage());
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp curve '" + file.getName() + "': " + exception.getMessage());
 			}
 	}
 }

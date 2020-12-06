@@ -28,7 +28,7 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.LOW)
 	public void a(PlayerJoinEvent event) {
-		MMOCore.plugin.dataProvider.getDataManager().setup(event.getPlayer());
+		MMOCore.plugin.dataProvider.getDataManager().setup(event.getPlayer().getUniqueId());
 	}
 
 	/*

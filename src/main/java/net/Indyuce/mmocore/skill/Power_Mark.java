@@ -46,7 +46,7 @@ public class Power_Mark extends Skill implements Listener {
 
 	@EventHandler
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData().getMMOCore();
+		PlayerData data = PlayerData.get(event.getData().getUniqueId());
 		if (!event.getAttack().hasType(DamageType.WEAPON) || !data.getProfess().hasSkill(this))
 			return;
 
@@ -89,7 +89,7 @@ public class Power_Mark extends Skill implements Listener {
 
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void stackDamage(PlayerAttackEvent event) {
-			if (!event.isCancelled() && j < 20 * (duration - 2) && radiusCheck(event.getEntity().getLocation()) && event.getData().getMMOCore().equals(data)) {
+			if (!event.isCancelled() && j < 20 * (duration - 2) && radiusCheck(event.getEntity().getLocation()) && PlayerData.get(event.getData().getUniqueId()).equals(data)) {
 				accumulate += event.getAttack().getDamage() * ratio;
 				new ParabolicProjectile(event.getEntity().getLocation().add(0, event.getEntity().getHeight() / 2, 0), loc, () -> loc.getWorld().playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1), Color.PURPLE);
 			}

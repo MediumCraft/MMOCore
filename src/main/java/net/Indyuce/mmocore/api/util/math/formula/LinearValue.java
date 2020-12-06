@@ -1,8 +1,7 @@
 package net.Indyuce.mmocore.api.util.math.formula;
 
+import net.mmogroup.mmolib.MMOLib;
 import org.bukkit.configuration.ConfigurationSection;
-
-import net.Indyuce.mmocore.MMOCore;
 
 public class LinearValue {
 	private final double base, perLevel, min, max;
@@ -75,17 +74,15 @@ public class LinearValue {
 	}
 
 	public String getDisplay(int level) {
-		return MMOCore.plugin.configManager.decimals.format(calculate(level));
+		return MMOLib.plugin.getMMOConfig().decimals.format(calculate(level));
 	}
 
 	public double calculate(int level) {
 		double value = base + perLevel * (level - 1);
 
-		if (hasmin)
-			value = Math.max(min, value);
+		if (hasmin) value = Math.max(min, value);
 
-		if (hasmax)
-			value = Math.min(max, value);
+		if (hasmax) value = Math.min(max, value);
 
 		return value;
 	}

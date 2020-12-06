@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.mmogroup.mmolib.MMOLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -184,6 +185,6 @@ public class PlayerProfessions {
 			bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 		if(playerData.isOnline())
 			MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
-				MMOCore.plugin.configManager.decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
+				MMOLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
 }

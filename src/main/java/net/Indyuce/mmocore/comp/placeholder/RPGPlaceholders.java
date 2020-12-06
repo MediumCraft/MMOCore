@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.util.AltChar;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,7 +56,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("level_percent")) {
 			PlayerData playerData = PlayerData.get(player);
 			double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
-			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
+			return MMOLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		}
 
 		else if (identifier.equals("combat"))
@@ -86,7 +87,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			String name = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
 			Profession profession = MMOCore.plugin.professionManager.get(name);
 			double current = professions.getExperience(profession), next = professions.getLevelUpExperience(profession);
-			return MMOCore.plugin.configManager.decimal.format(current / next * 100);
+			return MMOLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		}
 
 		else if (identifier.startsWith("bound_")) {
@@ -131,7 +132,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 					.getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
 
 		else if (identifier.equals("mana"))
-			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getMana());
+			return MMOLib.plugin.getMMOConfig().decimal.format(PlayerData.get(player).getMana());
 
 		else if (identifier.equals("mana_bar")) {
 			PlayerData data = PlayerData.get(player);
@@ -141,17 +142,17 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.startsWith("exp_multiplier_")) {
 			String format = identifier.substring(15).toLowerCase().replace("_", "-").replace(" ", "-");
 			Profession profession = format.equals("main") ? null : MMOCore.plugin.professionManager.get(format);
-			return MMOCore.plugin.configManager.decimal.format(MMOCore.plugin.boosterManager.getMultiplier(profession) * 100);
+			return MMOLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.boosterManager.getMultiplier(profession) * 100);
 		}
 
 		else if (identifier.startsWith("exp_boost_")) {
 			String format = identifier.substring(10).toLowerCase().replace("_", "-").replace(" ", "-");
 			Profession profession = format.equals("main") ? null : MMOCore.plugin.professionManager.get(format);
-			return MMOCore.plugin.configManager.decimal.format((MMOCore.plugin.boosterManager.getMultiplier(profession) - 1) * 100);
+			return MMOLib.plugin.getMMOConfig().decimal.format((MMOCore.plugin.boosterManager.getMultiplier(profession) - 1) * 100);
 		}
 
 		else if (identifier.equals("stamina"))
-			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStamina());
+			return MMOLib.plugin.getMMOConfig().decimal.format(PlayerData.get(player).getStamina());
 
 		else if (identifier.equals("stamina_bar")) {
 			StringBuilder format = new StringBuilder();
@@ -168,7 +169,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.equals("stellium"))
-			return MMOCore.plugin.configManager.decimal.format(PlayerData.get(player).getStellium());
+			return MMOLib.plugin.getMMOConfig().decimal.format(PlayerData.get(player).getStellium());
 
 		else if (identifier.equals("stellium_bar")) {
 			StringBuilder format = new StringBuilder();
@@ -187,7 +188,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = PlayerData.get(player).getQuestData();
 			return data.hasCurrent()
-					? MMOCore.plugin.configManager.decimal
+					? MMOLib.plugin.getMMOConfig().decimal
 							.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100)
 					: "0";
 		}

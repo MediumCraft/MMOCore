@@ -99,7 +99,6 @@ public class PlayerData extends OfflinePlayerData {
 
 	public PlayerData(MMOPlayerData mmoData) {
 		super(mmoData.getUniqueId());
-		mmoData.setMMOCore(this);
 
 		this.mmoData = mmoData;
 		this.playerStats = new PlayerStats(this);
@@ -116,8 +115,6 @@ public class PlayerData extends OfflinePlayerData {
 		super(UUID.randomUUID());
 
 		mmoData = new MMOPlayerData(null, null);
-		mmoData.setMMOCore(this);
-
 		playerStats = new PlayerStats(this);
 		questData = new PlayerQuests(this, null);
 	}

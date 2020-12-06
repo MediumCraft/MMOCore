@@ -30,7 +30,7 @@ public class Fire_Berserker extends Skill implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void a(PlayerAttackEvent event) {
-		PlayerData data = event.getData().getMMOCore();
+		PlayerData data = PlayerData.get(event.getData().getUniqueId());
 		if (event.getPlayer().getFireTicks() > 0) {
 			Optional<SkillInfo> skill = data.getProfess().findSkill(this);
 			skill.ifPresent(skillInfo -> event.getAttack().multiplyDamage(1 + skillInfo.getModifier("extra", data.getSkillLevel(this)) / 100));

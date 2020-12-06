@@ -306,7 +306,7 @@ public class MMOCore extends JavaPlugin {
 		 * that after registering all the professses otherwise the player datas can't
 		 * recognize what profess the player has and professes will be lost
 		 */
-		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player));
+		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player.getUniqueId()));
 
 		/*
 		 * load guild data after loading player data

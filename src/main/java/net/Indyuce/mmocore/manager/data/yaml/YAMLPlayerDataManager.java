@@ -22,7 +22,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 	@Override
 	public void loadData(PlayerData data) {
-		FileConfiguration config = new ConfigFile(data.getPlayer()).getConfig();
+		FileConfiguration config = new ConfigFile(data.getUniqueId()).getConfig();
 
 		data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
 		data.setSkillPoints(config.getInt("skill-points", getDefaultData().getSkillPoints()));

@@ -21,7 +21,7 @@ public class PlayerActionBar extends BukkitRunnable {
 	
 	public void reload(ConfigurationSection cfg) {		
 		config = new ActionBarConfig(cfg);
-		digit = new DecimalFormat(config.digit, MMOCore.plugin.configManager.formatSymbols);
+		digit = new DecimalFormat(config.digit, MMOLib.plugin.getMMOConfig().formatSymbols);
 
 		if(!initialized && config.enabled) {
 			runTaskTimer(MMOCore.plugin, 0, config.ticks);

@@ -17,8 +17,6 @@ import org.bukkit.util.Consumer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -30,9 +28,6 @@ public class ConfigManager {
 	public String partyChatPrefix, noSkillBoundPlaceholder;
 	public ChatColor staminaFull, staminaHalf, staminaEmpty;
 	public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown;
-
-	public final DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-	public final DecimalFormat decimal = new DecimalFormat("0.#", formatSymbols), decimals = new DecimalFormat("0.##", formatSymbols);
 
 	private final FileConfiguration messages;
 	private final boolean chatInput;
@@ -97,7 +92,6 @@ public class ConfigManager {
 		hotbarSwap = MMOCore.plugin.getConfig().getBoolean("hotbar-swap");
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
-		formatSymbols.setDecimalSeparator(getFirstChar(MMOCore.plugin.getConfig().getString("number-format.decimal-separator")));
 		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000;
 		lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 1000;
 		lootChestPlayerCooldown = MMOCore.plugin.getConfig().getInt("player-cooldown") * 1000;
@@ -115,14 +109,6 @@ public class ConfigManager {
 			MMOCore.log(Level.WARNING, "Could not read resource bar color from '" + key + "': using default.");
 			return defaultColor;
 		}
-	}
-
-	public DecimalFormat newFormat(String pattern) {
-		return new DecimalFormat(pattern, formatSymbols);
-	}
-
-	private char getFirstChar(String str) {
-		return str == null || str.isEmpty() ? ',' : str.charAt(0);
 	}
 
 	public PlayerInput newPlayerInput(Player player, InputType type, Consumer<String> output) {

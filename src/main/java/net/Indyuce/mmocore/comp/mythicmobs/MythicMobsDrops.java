@@ -1,22 +1,17 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicDropLoadEvent;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicReloadedEvent;
 import io.lumine.xikage.mythicmobs.skills.placeholders.Placeholder;
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.comp.mythicmobs.load.CurrencyItemDrop;
 import net.Indyuce.mmocore.comp.mythicmobs.load.GoldPouchDrop;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class MythicMobsDrops implements Listener {
 	public MythicMobsDrops() {
-		if (MMOCore.plugin.getConfig().getBoolean("lootsplosion.enabled"))
-			Bukkit.getPluginManager().registerEvents(new Lootsplosion(), MMOCore.plugin);
 		registerPlaceholders();
 	}
 

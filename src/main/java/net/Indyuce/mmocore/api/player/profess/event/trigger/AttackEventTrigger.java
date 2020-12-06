@@ -18,7 +18,7 @@ public class AttackEventTrigger implements EventTriggerHandler {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void a(PlayerAttackEvent event) {
-		PlayerData player = event.getData().getMMOCore();
+		PlayerData player = PlayerData.get(event.getData().getUniqueId());
 		PlayerClass profess = player.getProfess();
 
 		for (DamageType type : event.getAttack().getTypes()) {

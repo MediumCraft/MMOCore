@@ -1,13 +1,13 @@
 package net.Indyuce.mmocore.api.player.stats;
 
-import java.text.DecimalFormat;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.mmogroup.mmolib.MMOLib;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.text.DecimalFormat;
 
 public enum StatType {
 
@@ -51,7 +51,7 @@ public enum StatType {
 	PROJECTILE_DAMAGE,
 	WEAPON_DAMAGE,
 	SKILL_DAMAGE,
-	
+
 	PVP_DAMAGE,
 	PVE_DAMAGE,
 
@@ -124,7 +124,7 @@ public enum StatType {
 		FileConfiguration config = new ConfigFile("stats").getConfig();
 		for (StatType stat : values()) {
 			stat.defaultInfo = config.contains("default." + stat.name()) ? new LinearValue(config.getConfigurationSection("default." + stat.name())) : new LinearValue(0, 0);
-			stat.format = MMOCore.plugin.configManager.newFormat(config.contains("decimal-format." + stat.name()) ? config.getString("decimal-format." + stat.name()) : "0.#");
+			stat.format = MMOLib.plugin.getMMOConfig().newFormat(config.contains("decimal-format." + stat.name()) ? config.getString("decimal-format." + stat.name()) : "0.#");
 		}
 	}
 }
