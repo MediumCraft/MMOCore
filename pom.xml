@@ -111,7 +111,8 @@
 			<groupId>net.Indyuce</groupId>
 			<artifactId>MMOLib</artifactId>
 			<version>1.6</version>
-			<scope>compile</scope>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/MMOLib.jar</systemPath>
 		</dependency>
 
 		<!-- APIs -->
