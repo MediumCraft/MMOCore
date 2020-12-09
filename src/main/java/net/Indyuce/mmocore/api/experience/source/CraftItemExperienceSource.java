@@ -37,10 +37,6 @@ public class CraftItemExperienceSource extends SpecificExperienceSource<Material
 		};
 	}
 
-	private void debug(Object s1, Object s2) {
-		System.out.println("[DEBUG] " + s1 + ": " + s2);
-	}
-
 	@Override
 	public boolean matches(PlayerData player, Material obj) {
 		return material == obj && hasRightClass(player);
