@@ -52,7 +52,6 @@ import net.Indyuce.mmocore.listener.PlayerListener;
 import net.Indyuce.mmocore.listener.SpellCast;
 import net.Indyuce.mmocore.listener.WaypointsListener;
 import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
-import net.Indyuce.mmocore.listener.option.HealthScale;
 import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
 import net.Indyuce.mmocore.listener.option.RedirectVanillaExp;
 import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
@@ -147,8 +146,7 @@ public class MMOCore extends JavaPlugin {
 		if (Bukkit.getPluginManager().getPlugin("Citizens") != null)
 			loadManager.registerLoader(new CitizensMMOLoader());
 
-		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
-			loadManager.registerLoader(new VaultMMOLoader());
+		if (Bukkit.getPluginManager().getPlugin("Vault") != null) loadManager.registerLoader(new VaultMMOLoader());
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			loadManager.registerLoader(new MythicMobsMMOLoader());
@@ -157,8 +155,7 @@ public class MMOCore extends JavaPlugin {
 		 * WorldGuard closes the flag registry after 'onLoad()', so it must be
 		 * registered here or it will throw an IllegalStateException
 		 */
-		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
-			flagPlugin = new WorldGuardFlags();
+		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) flagPlugin = new WorldGuardFlags();
 	}
 
 	public void onEnable() {
@@ -168,7 +165,7 @@ public class MMOCore extends JavaPlugin {
 
 		final int configVersion = getConfig().contains("config-version", true) ? getConfig().getInt("config-version") : -1;
 		final int defConfigVersion = getConfig().getDefaults().getInt("config-version");
-		if(configVersion != defConfigVersion) {
+		if (configVersion != defConfigVersion) {
 			getLogger().warning("You may be using an outdated config.yml!");
 			getLogger().warning("(Your config version: '" + configVersion + "' | Expected config version: '" + defConfigVersion + "')");
 		}
@@ -179,8 +176,7 @@ public class MMOCore extends JavaPlugin {
 		if (getConfig().isConfigurationSection("default-playerdata"))
 			dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
 
-		if (Bukkit.getPluginManager().getPlugin("Vault") != null)
-			economy = new VaultEconomy();
+		if (Bukkit.getPluginManager().getPlugin("Vault") != null) economy = new VaultEconomy();
 
 		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			placeholderParser = new PlaceholderAPIParser();
@@ -231,8 +227,7 @@ public class MMOCore extends JavaPlugin {
 					if (player.isOnline() && !player.getPlayer().isDead())
 						for (PlayerResource resource : PlayerResource.values()) {
 							double d = player.getProfess().getHandler(resource).getRegen(player);
-							if (d != 0)
-								resource.regen(player, d);
+							if (d != 0) resource.regen(player, d);
 						}
 			}
 		}.runTaskTimer(MMOCore.plugin, 100, 20);
@@ -244,8 +239,7 @@ public class MMOCore extends JavaPlugin {
 		new BukkitRunnable() {
 			public void run() {
 				for (LootChest chest : new HashSet<>(lootChests.getActive()))
-					if (chest.shouldExpire())
-						chest.unregister(false);
+					if (chest.shouldExpire()) chest.unregister(false);
 			}
 		}.runTaskTimer(this, 5 * 60 * 20, 5 * 60 * 20);
 
@@ -255,11 +249,9 @@ public class MMOCore extends JavaPlugin {
 		 * not reading the installation guide...
 		 */
 		if (Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
-			getLogger().log(Level.SEVERE,
-					ChatColor.DARK_RED + "MMOCore is not meant to be used with MMOItems ManaAndStamina");
+			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "MMOCore is not meant to be used with MMOItems ManaAndStamina");
 			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "Please read the installation guide!");
-			Bukkit.broadcastMessage(
-					ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with MMOItems ManaAndStamina");
+			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with MMOItems ManaAndStamina");
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
 			return;
 		}
@@ -267,8 +259,7 @@ public class MMOCore extends JavaPlugin {
 		reloadPlugin();
 
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
-			Bukkit.getPluginManager().registerEvents(
-					new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
+			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
 
 		/*
 		 * enable debug mode for extra debug tools.
@@ -280,9 +271,6 @@ public class MMOCore extends JavaPlugin {
 
 		if (configManager.overrideVanillaExp = getConfig().getBoolean("override-vanilla-exp"))
 			Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), this);
-
-		if (getConfig().getBoolean("health-scale.enabled"))
-			Bukkit.getPluginManager().registerEvents(new HealthScale(), this);
 
 		if (getConfig().getBoolean("prevent-spawner-xp"))
 			Bukkit.getPluginManager().registerEvents(new NoSpawnerEXP(), this);
@@ -449,8 +437,7 @@ public class MMOCore extends JavaPlugin {
 	}
 
 	public static void debug(int value, Level level, String message) {
-		if (DebugMode.level > (value - 1))
-			plugin.getLogger().log(level, message);
+		if (DebugMode.level > (value - 1)) plugin.getLogger().log(level, message);
 	}
 
 	public File getJarFile() {
