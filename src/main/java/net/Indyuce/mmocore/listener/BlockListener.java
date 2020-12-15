@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.listener;
 
+import net.mmogroup.mmolib.UtilityMethods;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -121,7 +122,7 @@ public class BlockListener implements Listener {
 					!block.getType().isSolid() || !(info.regenerates() && info.getRegenerationInfo().hasTemporaryBlock()));
 			for (ItemStack drop : called.getDrops())
 				if (drop.getType() != Material.AIR && drop.getAmount() > 0)
-					block.getWorld().dropItemNaturally(dropLocation, drop);
+					UtilityMethods.dropItemNaturally(dropLocation, drop);
 		}
 
 		/*
