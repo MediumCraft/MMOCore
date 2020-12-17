@@ -28,7 +28,8 @@ public class CraftItemExperienceSource extends SpecificExperienceSource<Material
 		return new ExperienceManager<CraftItemExperienceSource>() {
 			@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 			public void a(CraftItemEvent event) {
-				if(event.getAction() == InventoryAction.NOTHING) return;
+				if(event.getAction() == InventoryAction.NOTHING ||
+						event.getInventory().getResult() == null) return;
 				PlayerData data = PlayerData.get((Player) event.getWhoClicked());
 				for (CraftItemExperienceSource source : getSources())
 					if (source.matches(data, event.getInventory().getResult().getType()))

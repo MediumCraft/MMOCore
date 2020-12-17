@@ -136,10 +136,15 @@ public class PlayerData extends OfflinePlayerData {
 			try {
 				boundSkills.set(j, getProfess().getSkill(boundSkills.get(j).getSkill()));
 				j++;
-			} catch (NullPointerException notFound) {
+			} catch (NullPointerException npe1) {
 				boundSkills.remove(j);
-				MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId() + " in class "
-						+ getProfess().getId() + " while refreshing player data.");
+				try {
+					MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId() + " in class "
+							+ getProfess().getId() + " while refreshing player data.");
+				} catch (NullPointerException npe2) {
+					MMOCore.log(Level.SEVERE, "[Userdata] Could not find unidentified skill in class "
+							+ getProfess().getId() + " while refreshing player data.");
+				}
 			}
 	}
 
