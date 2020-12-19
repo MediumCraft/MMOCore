@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.util.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -28,6 +29,8 @@ public class ConfigManager {
 	public String partyChatPrefix, noSkillBoundPlaceholder;
 	public ChatColor staminaFull, staminaHalf, staminaEmpty;
 	public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown;
+	public SwapAction normalSwapAction, sneakingSwapAction;
+	public boolean canCreativeCast;
 
 	private final FileConfiguration messages;
 	private final boolean chatInput;
@@ -100,6 +103,14 @@ public class ConfigManager {
 		staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
 		staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
 		staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
+
+		normalSwapAction = EnumUtils.getIfPresent(SwapAction.class,
+				MMOCore.plugin.getConfig().getString("swap-keybind.normal")
+						.toUpperCase()).orElse(SwapAction.VANILLA);
+		sneakingSwapAction = EnumUtils.getIfPresent(SwapAction.class,
+				MMOCore.plugin.getConfig().getString("swap-keybind.sneaking")
+						.toUpperCase()).orElse(SwapAction.VANILLA);
+		canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
 	}
 
 	private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {
@@ -171,5 +182,11 @@ public class ConfigManager {
 			}
 			return !msg.isEmpty();
 		}
+	}
+
+	public enum SwapAction {
+		VANILLA,
+		SPELL_CAST,
+		HOTBAR_SWAP
 	}
 }

@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.listener;
 
+import net.Indyuce.mmocore.manager.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -20,9 +21,11 @@ public class SpellCast implements Listener {
 	@EventHandler
 	public void a(PlayerSwapHandItemsEvent event) {
 		Player player = event.getPlayer();
-		if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR)
-			return;
+		ConfigManager.SwapAction action = player.isSneaking()
+			? MMOCore.plugin.configManager.sneakingSwapAction
+				: MMOCore.plugin.configManager.normalSwapAction;
 
+		if(action == ConfigManager.SwapAction.VANILLA) return;
 		PlayerData playerData = PlayerData.get(player);
 		event.setCancelled(true);
 
@@ -30,7 +33,7 @@ public class SpellCast implements Listener {
 		 * hotbar swap feature only if the player is sneaking while entering
 		 * skill casting mode
 		 */
-		if (player.isSneaking() && MMOCore.plugin.configManager.hotbarSwap) {
+		if (action == ConfigManager.SwapAction.HOTBAR_SWAP) {
 			player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
 			for (int j = 0; j < 9; j++) {
 				ItemStack replaced = player.getInventory().getItem(j + 9 * 3);
@@ -40,7 +43,8 @@ public class SpellCast implements Listener {
 			return;
 		}
 
-		if (!playerData.isCasting() && playerData.getBoundSkills().size() > 0) {
+		if (!((!MMOCore.plugin.configManager.canCreativeCast && player.getGameMode() == GameMode.CREATIVE) || player.getGameMode() == GameMode.SPECTATOR)
+			&& !playerData.isCasting() && playerData.getBoundSkills().size() > 0) {
 			playerData.skillCasting = new SkillCasting(playerData);
 			player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 2);
 		}
@@ -93,7 +97,10 @@ public class SpellCast implements Listener {
 		@EventHandler
 		public void stopCasting(PlayerSwapHandItemsEvent event) {
 			Player player = event.getPlayer();
-			if(!playerData.isOnline()) return;
+			ConfigManager.SwapAction action = player.isSneaking()
+					? MMOCore.plugin.configManager.sneakingSwapAction
+					: MMOCore.plugin.configManager.normalSwapAction;
+			if(action != ConfigManager.SwapAction.SPELL_CAST || !playerData.isOnline()) return;
 			if (event.getPlayer().equals(playerData.getPlayer()) && !player.isSneaking()) {
 				player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1, 2);
 				MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(playerData.getPlayer());
