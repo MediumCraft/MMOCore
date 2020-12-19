@@ -1,9 +1,8 @@
 package net.Indyuce.mmocore.api.player.social;
 
-import org.bukkit.Sound;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import org.bukkit.Sound;
 
 public class FriendRequest extends Request {
 	private final PlayerData target;

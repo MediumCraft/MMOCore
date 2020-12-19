@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.manager.SoundManager;
 import net.mmogroup.mmolib.api.item.ItemTag;
 import net.mmogroup.mmolib.api.item.NBTItem;
 import org.apache.commons.lang.Validate;
@@ -237,7 +238,7 @@ public class QuestViewer extends EditableInventory {
 					if (playerData.getQuestData().hasCurrent(quest)) {
 						if (event.getAction() == InventoryAction.PICKUP_HALF) {
 							playerData.getQuestData().start(null);
-							player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+							MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.CANCEL_QUEST);
 							MMOCore.plugin.configManager.getSimpleMessage("cancel-quest").send(player);
 							open();
 						}
@@ -295,7 +296,7 @@ public class QuestViewer extends EditableInventory {
 				 * eventually start a new quest.
 				 */
 				MMOCore.plugin.configManager.getSimpleMessage("start-quest", "quest", quest.getName()).send(player);
-				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+				MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.START_QUEST);
 				playerData.getQuestData().start(quest);
 				open();
 			}

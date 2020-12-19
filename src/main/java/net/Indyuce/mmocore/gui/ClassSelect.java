@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -117,14 +118,14 @@ public class ClassSelect extends EditableInventory {
 					return;
 
 				if (playerData.getClassPoints() < 1) {
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+					MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.CANT_SELECT_CLASS);
 					new ConfigMessage("cant-choose-new-class").send(player);
 					return;
 				}
 
 				PlayerClass profess = MMOCore.plugin.classManager.get(tag);
 				if (profess.equals(playerData.getProfess())) {
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+					MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.CANT_SELECT_CLASS);
 					MMOCore.plugin.configManager.getSimpleMessage("already-on-class", "class", profess.getName()).send(player);
 					return;
 				}

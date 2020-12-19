@@ -70,6 +70,7 @@ import net.Indyuce.mmocore.manager.MMOLoadManager;
 import net.Indyuce.mmocore.manager.QuestManager;
 import net.Indyuce.mmocore.manager.RestrictionManager;
 import net.Indyuce.mmocore.manager.SkillManager;
+import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.manager.WaypointManager;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
@@ -102,6 +103,7 @@ public class MMOCore extends JavaPlugin {
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
 	public RestrictionManager restrictionManager;
+	public SoundManager soundManager;
 	public RequestManager requestManager;
 	public ConfigItemManager configItems;
 	public VaultEconomy economy;
@@ -419,6 +421,7 @@ public class MMOCore extends JavaPlugin {
 		waypointManager = new WaypointManager(new ConfigFile("waypoints").getConfig());
 		restrictionManager = new RestrictionManager(new ConfigFile("restrictions").getConfig());
 		requestManager = new RequestManager();
+		soundManager = new SoundManager(new ConfigFile("sounds").getConfig());
 		configItems = new ConfigItemManager(new ConfigFile("items").getConfig());
 
 		if (getConfig().isConfigurationSection("action-bar"))

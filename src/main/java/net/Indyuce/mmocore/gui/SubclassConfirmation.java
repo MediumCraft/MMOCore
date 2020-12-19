@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -68,7 +69,7 @@ public class SubclassConfirmation extends EditableInventory {
 
 				playerData.setClass(profess);
 				MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
-				player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
+				MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SELECT_CLASS);
 				player.closeInventory();
 			}
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -120,7 +121,7 @@ public class SubclassSelect extends EditableInventory {
 
 				if (playerData.getClassPoints() < 1) {
 					player.closeInventory();
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.CANT_SELECT_CLASS);
 					new ConfigMessage("cant-choose-new-class").send(player);
 					return;
 				}

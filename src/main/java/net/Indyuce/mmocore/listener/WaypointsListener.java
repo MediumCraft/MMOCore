@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +29,7 @@ public class WaypointsListener implements Listener {
 			data.unlockWaypoint(waypoint);
 			new SmallParticleEffect(player, Particle.SPELL_WITCH);
 			MMOCore.plugin.configManager.getSimpleMessage("new-waypoint", "waypoint", waypoint.getName()).send(player);
-			player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1.2f);
+			MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.WARP_UNLOCK);
 			return;
 		}
 

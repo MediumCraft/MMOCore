@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -136,7 +137,7 @@ public class ClassConfirmation extends EditableInventory {
 				while (playerData.hasSkillBound(0))
 					playerData.unbindSkill(0);
 				MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
-				player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
+				MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SELECT_CLASS);
 				player.closeInventory();
 			}
 		}

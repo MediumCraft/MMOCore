@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -416,7 +416,7 @@ public class PlayerData extends OfflinePlayerData {
 				if(!isOnline()) return;
 				if (getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y
 						|| getPlayer().getLocation().getBlockZ() != z) {
-					getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, .5f);
+					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_CANCELLED);
 					MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
 					giveStellium(waypoint.getStelliumCost());
 					cancel();
@@ -427,12 +427,12 @@ public class PlayerData extends OfflinePlayerData {
 				if (t++ >= 100) {
 					getPlayer().teleport(waypoint.getLocation());
 					getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
-					getPlayer().playSound(getPlayer().getLocation(), VersionSound.ENTITY_ENDERMAN_TELEPORT.toSound(), 1, .5f);
+					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_TELEPORT);
 					cancel();
 					return;
 				}
 
-				getPlayer().playSound(getPlayer().getLocation(), VersionSound.BLOCK_NOTE_BLOCK_BELL.toSound(), 1, (float) (t / Math.PI * .015 + .5));
+				MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_CHARGE, 1, (float) (t / Math.PI * .015 + .5));
 				double r = Math.sin((double) t / 100 * Math.PI);
 				for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
 					getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE,
@@ -488,7 +488,7 @@ public class PlayerData extends OfflinePlayerData {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
 			if(isOnline()) {
 				new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
-				getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+				MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.LEVEL_UP);
 				new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
 			}
 			getStats().updateStats();

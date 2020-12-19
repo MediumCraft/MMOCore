@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -89,13 +90,13 @@ public class AttributeView extends EditableInventory {
 				int spent = playerData.getAttributes().countSkillPoints();
 				if (spent < 1) {
 					MMOCore.plugin.configManager.getSimpleMessage("no-attribute-points-spent").send(player);
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.NOT_ENOUGH_POINTS);
 					return;
 				}
 
 				if (playerData.getAttributeReallocationPoints() < 1) {
 					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-reallocation-point").send(player);
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.NOT_ENOUGH_POINTS);
 					return;
 				}
 
@@ -103,7 +104,7 @@ public class AttributeView extends EditableInventory {
 				playerData.giveAttributePoints(spent);
 				playerData.giveAttributeReallocationPoints(-1);
 				MMOCore.plugin.configManager.getSimpleMessage("attribute-points-reallocated", "points", "" + playerData.getAttributePoints()).send(player);
-				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+				MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.RESET_ATTRIBUTES);
 				open();
 			}
 
@@ -112,21 +113,21 @@ public class AttributeView extends EditableInventory {
 
 				if (playerData.getAttributePoints() < 1) {
 					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point").send(player);
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.NOT_ENOUGH_POINTS);
 					return;
 				}
 
 				AttributeInstance ins = playerData.getAttributes().getInstance(attribute);
 				if (attribute.hasMax() && ins.getBase() >= attribute.getMax()) {
 					MMOCore.plugin.configManager.getSimpleMessage("attribute-max-points-hit").send(player);
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.NOT_ENOUGH_POINTS);
 					return;
 				}
 
 				ins.addBase(1);
 				playerData.giveAttributePoints(-1);
 				MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", "" + ins.getBase()).send(player);
-				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+				MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.LEVEL_ATTRIBUTE);
 				open();
 			}
 		}

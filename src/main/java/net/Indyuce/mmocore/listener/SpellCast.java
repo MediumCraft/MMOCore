@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
 import net.Indyuce.mmocore.manager.ConfigManager;
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -34,7 +35,7 @@ public class SpellCast implements Listener {
 		 * skill casting mode
 		 */
 		if (action == ConfigManager.SwapAction.HOTBAR_SWAP) {
-			player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
+			MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.HOTBAR_SWAP);
 			for (int j = 0; j < 9; j++) {
 				ItemStack replaced = player.getInventory().getItem(j + 9 * 3);
 				player.getInventory().setItem(j + 9 * 3, player.getInventory().getItem(j));
@@ -46,7 +47,7 @@ public class SpellCast implements Listener {
 		if (!((!MMOCore.plugin.configManager.canCreativeCast && player.getGameMode() == GameMode.CREATIVE) || player.getGameMode() == GameMode.SPECTATOR)
 			&& !playerData.isCasting() && playerData.getBoundSkills().size() > 0) {
 			playerData.skillCasting = new SkillCasting(playerData);
-			player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 2);
+			MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SPELL_CAST_BEGIN);
 		}
 	}
 
@@ -102,7 +103,7 @@ public class SpellCast implements Listener {
 					: MMOCore.plugin.configManager.normalSwapAction;
 			if(action != ConfigManager.SwapAction.SPELL_CAST || !playerData.isOnline()) return;
 			if (event.getPlayer().equals(playerData.getPlayer()) && !player.isSneaking()) {
-				player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1, 2);
+				MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SPELL_CAST_END);
 				MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(playerData.getPlayer());
 				close();
 			}

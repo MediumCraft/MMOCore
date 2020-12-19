@@ -84,6 +84,7 @@ public class ConfigManager {
 		loadDefaultFile("stats.yml");
 		loadDefaultFile("waypoints.yml");
 		loadDefaultFile("restrictions.yml");
+		loadDefaultFile("sounds.yml");
 		loadDefaultFile("loot-chests.yml");
 		loadDefaultFile("commands.yml");
 		loadDefaultFile("guilds.yml");

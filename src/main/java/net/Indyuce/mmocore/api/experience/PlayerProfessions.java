@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.Indyuce.mmocore.manager.SoundManager;
 import net.mmogroup.mmolib.MMOLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.gson.Gson;
@@ -175,7 +175,7 @@ public class PlayerProfessions {
 			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
 			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + level, "profession", profession.getName())
 					.send(playerData.getPlayer());
-			playerData.getPlayer().playSound(playerData.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
+			MMOCore.plugin.soundManager.play(playerData.getPlayer(), SoundManager.SoundEvent.LEVEL_UP);
 			playerData.getStats().updateStats();
 		}
 
