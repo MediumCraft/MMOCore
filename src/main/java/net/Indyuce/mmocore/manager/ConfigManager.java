@@ -24,13 +24,12 @@ import java.util.logging.Level;
 public class ConfigManager {
 	public final CommandVerbose commandVerbose = new CommandVerbose();
 
-	public boolean overrideVanillaExp, hotbarSwap;
+	public boolean overrideVanillaExp, canCreativeCast;
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix, noSkillBoundPlaceholder;
 	public ChatColor staminaFull, staminaHalf, staminaEmpty;
 	public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown;
 	public SwapAction normalSwapAction, sneakingSwapAction;
-	public boolean canCreativeCast;
 
 	private final FileConfiguration messages;
 	private final boolean chatInput;
@@ -92,7 +91,6 @@ public class ConfigManager {
 		commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));
 
 		messages = new ConfigFile("messages").getConfig();
-		hotbarSwap = MMOCore.plugin.getConfig().getBoolean("hotbar-swap");
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
 		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000;
