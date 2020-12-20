@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import net.mmogroup.mmolib.UtilityMethods;
+import net.mmogroup.mmolib.api.condition.BlockCondition;
+import net.mmogroup.mmolib.api.condition.MMOCondition;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -24,6 +28,7 @@ public class BlockInfo {
 	private final boolean vanillaDrops;
 	private final List<Trigger> triggers = new ArrayList<>();
 	private final RegenInfo regen;
+	private final List<BlockCondition> conditions = new ArrayList<>();
 
 	/*
 	 * saved separately because MMOCore needs to display the experience gained,
@@ -56,6 +61,13 @@ public class BlockInfo {
 
 		Optional<Trigger> opt = triggers.stream().filter(trigger -> (trigger instanceof ExperienceTrigger)).findFirst();
 		experience = (ExperienceTrigger) opt.orElse(null);
+
+		if(config.isList("conditions"))
+			for(String key : config.getStringList("conditions")) {
+				MMOCondition condition = UtilityMethods.getCondition(key);
+				if(condition instanceof BlockCondition) conditions.add((BlockCondition) condition);
+			}
+
 	}
 
 	public boolean hasVanillaDrops() {
@@ -108,6 +120,13 @@ public class BlockInfo {
 
 	public List<Trigger> getTriggers() {
 		return triggers;
+	}
+
+	public boolean checkConditions(Block block) {
+		for(BlockCondition condition : conditions)
+			if(!condition.check(block)) return false;
+
+		return true;
 	}
 
 	public static class RegeneratingBlock {
