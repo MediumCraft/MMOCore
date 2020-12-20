@@ -102,7 +102,7 @@ public class SpellCast implements Listener {
 					? MMOCore.plugin.configManager.sneakingSwapAction
 					: MMOCore.plugin.configManager.normalSwapAction;
 			if(action != ConfigManager.SwapAction.SPELL_CAST || !playerData.isOnline()) return;
-			if (event.getPlayer().equals(playerData.getPlayer()) && !player.isSneaking()) {
+			if (event.getPlayer().equals(playerData.getPlayer())) {
 				MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SPELL_CAST_END);
 				MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(playerData.getPlayer());
 				close();
