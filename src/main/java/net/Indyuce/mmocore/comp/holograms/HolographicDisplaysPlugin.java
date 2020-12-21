@@ -14,8 +14,8 @@ public class HolographicDisplaysPlugin extends HologramSupport {
 	public void displayIndicator(Location loc, String format, Player player) {
 		Hologram hologram = HologramsAPI.createHologram(MMOCore.plugin, loc);
 		hologram.appendTextLine(format);
-		if (player != null)
-			hologram.getVisibilityManager().hideTo(player);
+		// if (player != null)
+		// hologram.getVisibilityManager().hideTo(player);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, hologram::delete, 20);
 	}
 }

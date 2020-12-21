@@ -141,8 +141,8 @@ public class PlayerData extends OfflinePlayerData {
 					MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId() + " in class "
 							+ getProfess().getId() + " while refreshing player data.");
 				} catch (NullPointerException npe2) {
-					MMOCore.log(Level.SEVERE, "[Userdata] Could not find unidentified skill in class "
-							+ getProfess().getId() + " while refreshing player data.");
+					MMOCore.log(Level.SEVERE,
+							"[Userdata] Could not find unidentified skill in class " + getProfess().getId() + " while refreshing player data.");
 				}
 			}
 	}
@@ -260,7 +260,8 @@ public class PlayerData extends OfflinePlayerData {
 
 	public void refreshVanillaExp() {
 		if (MMOCore.plugin.configManager.overrideVanillaExp) {
-			if(!isOnline()) return;
+			if (!isOnline())
+				return;
 			getPlayer().setLevel(getLevel());
 			getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
 		}
@@ -315,7 +316,7 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public boolean hasWaypoint(Waypoint waypoint) {
-		return waypoint.isDefault() ||  waypoints.contains(waypoint.getId());
+		return waypoint.isDefault() || waypoints.contains(waypoint.getId());
 	}
 
 	public void unlockWaypoint(Waypoint waypoint) {
@@ -340,7 +341,8 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void heal(double heal) {
-		if(!isOnline()) return;
+		if (!isOnline())
+			return;
 		double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		if (getPlayer().getHealth() == newest)
 			return;
@@ -384,7 +386,8 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void sendFriendRequest(PlayerData target) {
-		if(!isOnline() || !target.isOnline()) return;
+		if (!isOnline() || !target.isOnline())
+			return;
 		setLastFriendRequest(System.currentTimeMillis());
 
 		FriendRequest request = new FriendRequest(this, target);
@@ -404,7 +407,8 @@ public class PlayerData extends OfflinePlayerData {
 
 		giveStellium(-waypoint.getStelliumCost());
 
-		if(!isOnline()) return;
+		if (!isOnline())
+			return;
 		new BukkitRunnable() {
 			final int x = getPlayer().getLocation().getBlockX();
 			final int y = getPlayer().getLocation().getBlockY();
@@ -412,7 +416,8 @@ public class PlayerData extends OfflinePlayerData {
 			int t;
 
 			public void run() {
-				if(!isOnline()) return;
+				if (!isOnline())
+					return;
 				if (getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y
 						|| getPlayer().getLocation().getBlockZ() != z) {
 					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_CANCELLED);
@@ -485,7 +490,7 @@ public class PlayerData extends OfflinePlayerData {
 
 		if (level > oldLevel) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
-			if(isOnline()) {
+			if (isOnline()) {
 				new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
 				MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.LEVEL_UP);
 				new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
@@ -593,7 +598,8 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void displayActionBar(String message) {
-		if(!isOnline()) return;
+		if (!isOnline())
+			return;
 		setActionBarTimeOut(MMOCore.plugin.actionBarManager.getTimeOut());
 		getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
@@ -745,7 +751,7 @@ public class PlayerData extends OfflinePlayerData {
 		 */
 		SkillResult cast = skill.getSkill().whenCast(this, skill);
 		if (!cast.isSuccessful()) {
-			if (!skill.getSkill().isPassive() && isOnline()) {				
+			if (!skill.getSkill().isPassive() && isOnline()) {
 				if (cast.getCancelReason() == CancelReason.LOCKED)
 					MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(getPlayer());
 
