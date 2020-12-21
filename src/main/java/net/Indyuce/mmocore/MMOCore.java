@@ -352,7 +352,7 @@ public class MMOCore extends JavaPlugin {
 			new BukkitRunnable() {
 				public void run() {
 					for (PlayerData loaded : PlayerData.getAll())
-						dataProvider.getDataManager().saveData(loaded);
+						if(loaded.isFullyLoaded()) dataProvider.getDataManager().saveData(loaded);
 
 					for (Guild guild : dataProvider.getGuildManager().getAll())
 						dataProvider.getGuildManager().save(guild);
@@ -363,6 +363,7 @@ public class MMOCore extends JavaPlugin {
 
 	public void onDisable() {
 		for (PlayerData data : PlayerData.getAll()) {
+			if(!data.isFullyLoaded()) return;
 			data.getQuestData().resetBossBar();
 			dataProvider.getDataManager().saveData(data);
 		}

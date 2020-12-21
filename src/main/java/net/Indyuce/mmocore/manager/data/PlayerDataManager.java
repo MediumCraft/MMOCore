@@ -47,8 +47,12 @@ public abstract class PlayerDataManager {
 			 */
 			Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
 				PlayerData loaded = PlayerData.get(uuid);
+				if(!loaded.isOnline()) return;
 				loadData(loaded);
-				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(loaded)));
+				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> {
+					if(loaded.isOnline())
+						Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(loaded));
+				});
 				loaded.getStats().updateStats();
 			});
 		}
