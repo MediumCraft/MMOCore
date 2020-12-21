@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-import net.Indyuce.mmocore.api.droptable.condition.Condition;
-import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.droptable.condition.Condition;
+import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.mmogroup.mmolib.api.MMOLineConfig;
@@ -86,11 +86,9 @@ public class DropTable extends PostLoadObject {
 	}
 
 	public boolean areConditionsMet(ConditionInstance entity) {
-		for (Condition condition : this.getConditions()) {
-			if (!condition.isMet(entity)) {
+		for (Condition condition : conditions)
+			if (!condition.isMet(entity))
 				return false;
-			}
-		}
 		return true;
 	}
 }

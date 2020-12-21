@@ -26,18 +26,18 @@ mysql:
     user: mmolover
     pass: ILoveAria
     properties:
-      cachePrepStmts: true
-      prepStmtCacheSize: 250
-      prepStmtCacheSqlLimit: 2048
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
 
 # The default values for all playerdata
 # All new players will start with these values
 default-playerdata:
-  level: 1
-  class-points: 0
-  skill-points: 0
-  attribute-points: 0
-  attribute-realloc-points: 0
+    level: 1
+    class-points: 0
+    skill-points: 0
+    attribute-points: 0
+    attribute-realloc-points: 0
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
@@ -56,6 +56,7 @@ custom-mine-conditions:
 protect-custom-mine: false
 
 loot-chests:
+
     # Time in seconds it takes for a loot chest to
     # expire after it was spawned. 600 is 10 minutes.
     chest-expire-time: 600
