@@ -105,6 +105,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 									}
 								}
 							}
+							data.setFullyLoaded();
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -249,7 +250,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
 	@Override
 	public void remove(PlayerData data) {
-		saveData(data);
+		if(data.isFullyLoaded()) saveData(data);
 		remove(data.getUniqueId());
 	}
 }

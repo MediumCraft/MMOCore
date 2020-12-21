@@ -67,6 +67,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "Could not load class info '" + key + "': " + exception.getMessage());
 				}
+		data.setFullyLoaded();
 	}
 
 	@Override

@@ -97,6 +97,8 @@ public class PlayerData extends OfflinePlayerData {
 	public boolean nocd;
 	public CombatRunnable combat;
 
+	private boolean fullyLoaded = false;
+
 	public PlayerData(MMOPlayerData mmoData) {
 		super(mmoData.getUniqueId());
 
@@ -575,6 +577,14 @@ public class PlayerData extends OfflinePlayerData {
 
 	public void setStellium(double amount) {
 		stellium = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_STELLIUM)));
+	}
+
+	public boolean isFullyLoaded() {
+		return fullyLoaded;
+	}
+
+	public void setFullyLoaded() {
+		this.fullyLoaded = true;
 	}
 
 	public boolean isCasting() {
