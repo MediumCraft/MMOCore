@@ -1,8 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
-import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -17,6 +15,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.manager.SoundManager;
 
 public class SubclassConfirmation extends EditableInventory {
 	public SubclassConfirmation() {

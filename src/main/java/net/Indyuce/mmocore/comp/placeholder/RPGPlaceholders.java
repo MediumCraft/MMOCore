@@ -1,5 +1,12 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
@@ -9,12 +16,6 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.util.AltChar;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
     @Override
@@ -103,7 +104,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.startsWith("profession_next_level_"))
 			return "" + PlayerData.get(player).getCollectionSkills()
-					.getLevelUpExperience(identifier.substring(21).replace(" ", "-").replace("_", "-").toLowerCase());
+					.getLevelUpExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase());
 
 		else if (identifier.startsWith("profession_"))
 			return "" + PlayerData.get(player).getCollectionSkills()

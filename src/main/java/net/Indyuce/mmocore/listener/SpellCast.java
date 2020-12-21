@@ -1,10 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
-import net.Indyuce.mmocore.manager.ConfigManager;
-import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -17,6 +14,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.manager.ConfigManager;
+import net.Indyuce.mmocore.manager.SoundManager;
 
 public class SpellCast implements Listener {
 	@EventHandler

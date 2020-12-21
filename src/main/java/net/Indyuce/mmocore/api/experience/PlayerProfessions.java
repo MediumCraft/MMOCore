@@ -23,7 +23,6 @@ import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 
-@SuppressWarnings("ALL")
 public class PlayerProfessions {
 	private final Map<String, Integer> exp = new HashMap<>();
 	private final Map<String, Integer> level = new HashMap<>();
@@ -98,8 +97,7 @@ public class PlayerProfessions {
 	}
 
 	public int getLevelUpExperience(String id) {
-		if(!MMOCore.plugin.professionManager.has(id)) return 0;
-		return MMOCore.plugin.professionManager.get(id).getExpCurve().getExperience(getLevel(id) + 1);
+		return MMOCore.plugin.professionManager.has(id) ? MMOCore.plugin.professionManager.get(id).getExpCurve().getExperience(getLevel(id) + 1) : 0;
 	}
 
 	public void setLevel(Profession profession, int value) {
@@ -131,7 +129,7 @@ public class PlayerProfessions {
 	}
 
 	public void giveExperience(Profession profession, int value, Location loc, EXPSource source) {
-		if(hasReachedMaxLevel(profession)) {
+		if (hasReachedMaxLevel(profession)) {
 			setExperience(profession, 0);
 			return;
 		}
@@ -148,13 +146,13 @@ public class PlayerProfessions {
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
-		
+
 		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
 		int needed, exp, level, oldLevel = getLevel(profession);
 
 		/*
-		 * loop for exp overload when leveling up,
-		 * will continue looping until exp is 0 or max level has been reached
+		 * loop for exp overload when leveling up, will continue looping until
+		 * exp is 0 or max level has been reached
 		 */
 		boolean check = false;
 		while ((exp = this.exp.get(profession.getId())) >= (needed = profession.getExpCurve().getExperience((level = getLevel(profession)) + 1))) {
@@ -183,8 +181,8 @@ public class PlayerProfessions {
 		int chars = (int) ((double) exp / needed * 20);
 		for (int j = 0; j < 20; j++)
 			bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
-		if(playerData.isOnline())
+		if (playerData.isOnline())
 			MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
-				MMOLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
+					MMOLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
 }

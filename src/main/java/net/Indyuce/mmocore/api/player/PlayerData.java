@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -51,10 +50,10 @@ import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
+import net.Indyuce.mmocore.manager.SoundManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.mmogroup.mmolib.api.player.MMOPlayerData;
-import net.mmogroup.mmolib.version.VersionSound;
 
 public class PlayerData extends OfflinePlayerData {
 

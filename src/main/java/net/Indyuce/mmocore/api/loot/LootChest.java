@@ -1,10 +1,8 @@
 package net.Indyuce.mmocore.api.loot;
 
-import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.BlockData;
@@ -12,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.manager.SoundManager;
 
 public class LootChest {
 	private final ChestTier tier;
