@@ -49,7 +49,7 @@ public class BlockListener implements Listener {
 		 */
 		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
 		boolean temporaryBlock = MMOCore.plugin.mineManager.isTemporaryBlock(block);
-		if ((temporaryBlock && info == null) || !info.checkConditions(block)) {
+		if ((temporaryBlock && info == null) || (info != null && !info.checkConditions(block))) {
 			event.setCancelled(true);
 			return;
 		}
