@@ -49,11 +49,12 @@ public class BlockListener implements Listener {
 
 		/*
 		 * If the block is a temporary block placed by block regen, immediately
-		 * cancel the break event
+		 * cancel the break event; also check for extra config provided block
+		 * conditions
 		 */
 		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
 		boolean temporaryBlock = MMOCore.plugin.mineManager.isTemporaryBlock(block);
-		if ((temporaryBlock && info == null) || !info.checkConditions(block)) {
+		if ((temporaryBlock && info == null) || (info != null && !info.checkConditions(block))) {
 			event.setCancelled(true);
 			return;
 		}

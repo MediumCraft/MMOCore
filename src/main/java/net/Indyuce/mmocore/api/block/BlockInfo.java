@@ -26,8 +26,8 @@ public class BlockInfo {
 	private final BlockType block;
 	private final DropTable table;
 	private final boolean vanillaDrops;
-	private final List<Trigger> triggers = new ArrayList<>();
 	private final RegenInfo regen;
+	private final List<Trigger> triggers = new ArrayList<>();
 	private final List<BlockCondition> conditions = new ArrayList<>();
 
 	/*

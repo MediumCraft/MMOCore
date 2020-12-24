@@ -18,16 +18,16 @@ import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.util.AltChar;
 
 public class RPGPlaceholders extends PlaceholderExpansion {
-    @Override
-    public boolean persist(){
-        return true;
-    }
-    
-    @Override
-    public boolean canRegister(){
-        return true;
-    }
-    
+	@Override
+	public boolean persist() {
+		return true;
+	}
+
+	@Override
+	public boolean canRegister() {
+		return true;
+	}
+
 	@Override
 	public String getAuthor() {
 		return "Indyuce";
@@ -46,22 +46,20 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 	@SuppressWarnings("DuplicateExpressions")
 	@Override
 	public String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
-		if(identifier.equals("mana_icon"))
-			return PlayerData.get(player).getProfess().getManaDisplay().getIcon();
-		if(identifier.equals("mana_name"))
-			return PlayerData.get(player).getProfess().getManaDisplay().getName();
-		
+		PlayerData playerData = PlayerData.get(player);
+
+		if (identifier.equals("mana_icon"))
+			return playerData.getProfess().getManaDisplay().getIcon();
+		if (identifier.equals("mana_name"))
+			return playerData.getProfess().getManaDisplay().getName();
+
 		if (identifier.equals("level"))
-			return "" + PlayerData.get(player).getLevel();
+			return "" + playerData.getLevel();
 
 		else if (identifier.equals("level_percent")) {
-			PlayerData playerData = PlayerData.get(player);
 			double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
 			return MMOLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		}
-
-		else if (identifier.equals("combat"))
-			return String.valueOf(PlayerData.get(player).isInCombat());
 
 		else if (identifier.equals("health") && player.isOnline()) {
 			return StatType.MAX_HEALTH.format(player.getPlayer().getHealth());
@@ -71,73 +69,76 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return StatType.MAX_HEALTH.format(player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 		}
 
-		else if(identifier.equals("health_bar") && player.isOnline()) {
+		else if (identifier.equals("health_bar") && player.isOnline()) {
 			StringBuilder format = new StringBuilder();
-			double ratio = 20 * player.getPlayer().getHealth()
-				/ player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			double ratio = 20 * player.getPlayer().getHealth() / player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			for (double j = 1; j < 20; j++)
 				format.append(ratio >= j ? ChatColor.RED : ratio >= j - .5 ? ChatColor.DARK_RED : ChatColor.DARK_GRAY).append(AltChar.listSquare);
 			return format.toString();
 		}
-		
+
 		else if (identifier.equals("class"))
-			return PlayerData.get(player).getProfess().getName();
+			return playerData.getProfess().getName();
 
 		else if (identifier.startsWith("profession_percent_")) {
-			PlayerProfessions professions = PlayerData.get(player).getCollectionSkills();
+			PlayerProfessions professions = playerData.getCollectionSkills();
 			String name = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
 			Profession profession = MMOCore.plugin.professionManager.get(name);
 			double current = professions.getExperience(profession), next = professions.getLevelUpExperience(profession);
 			return MMOLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		}
 
+		else if (identifier.startsWith("is_casting")) {
+			return String.valueOf(playerData.isCasting());
+		} else if (identifier.startsWith("in_combat")) {
+			return String.valueOf(playerData.isInCombat());
+		}
+
 		else if (identifier.startsWith("bound_")) {
 			int slot = Math.max(0, Integer.parseInt(identifier.substring(6)) - 1);
-			PlayerData playerData = PlayerData.get(player);
 			return playerData.hasSkillBound(slot) ? playerData.getBoundSkill(slot).getSkill().getName()
 					: MMOCore.plugin.configManager.noSkillBoundPlaceholder;
 		}
 
 		else if (identifier.startsWith("profession_experience_"))
-			return "" + PlayerData.get(player).getCollectionSkills()
-					.getExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase());
+			return String.valueOf(
+					playerData.getCollectionSkills().getExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase()));
 
 		else if (identifier.startsWith("profession_next_level_"))
 			return "" + PlayerData.get(player).getCollectionSkills()
 					.getLevelUpExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase());
 
 		else if (identifier.startsWith("profession_"))
-			return "" + PlayerData.get(player).getCollectionSkills()
-					.getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase());
+			return String
+					.valueOf(playerData.getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase()));
 
 		else if (identifier.equals("experience"))
-			return "" + PlayerData.get(player).getExperience();
+			return String.valueOf(playerData.getExperience());
 
 		else if (identifier.equals("next_level"))
-			return "" + PlayerData.get(player).getLevelUpExperience();
+			return String.valueOf(playerData.getLevelUpExperience());
 
 		else if (identifier.equals("class_points"))
-			return "" + PlayerData.get(player).getClassPoints();
+			return String.valueOf(playerData.getClassPoints());
 
 		else if (identifier.equals("skill_points"))
-			return "" + PlayerData.get(player).getSkillPoints();
+			return String.valueOf(playerData.getSkillPoints());
 
 		else if (identifier.equals("attribute_points"))
-			return "" + PlayerData.get(player).getAttributePoints();
+			return String.valueOf(playerData.getAttributePoints());
 
 		else if (identifier.equals("attribute_reallocation_points"))
-			return "" + PlayerData.get(player).getAttributeReallocationPoints();
+			return String.valueOf(playerData.getAttributeReallocationPoints());
 
 		else if (identifier.startsWith("attribute_"))
-			return String.valueOf(PlayerData.get(player).getAttributes()
+			return String.valueOf(playerData.getAttributes()
 					.getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
 
 		else if (identifier.equals("mana"))
-			return MMOLib.plugin.getMMOConfig().decimal.format(PlayerData.get(player).getMana());
+			return MMOLib.plugin.getMMOConfig().decimal.format(playerData.getMana());
 
 		else if (identifier.equals("mana_bar")) {
-			PlayerData data = PlayerData.get(player);
-			return data.getProfess().getManaDisplay().generateBar(data.getMana(), data.getStats().getStat(StatType.MAX_MANA));
+			return playerData.getProfess().getManaDisplay().generateBar(playerData.getMana(), playerData.getStats().getStat(StatType.MAX_MANA));
 		}
 
 		else if (identifier.startsWith("exp_multiplier_")) {
@@ -153,68 +154,65 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.equals("stamina"))
-			return MMOLib.plugin.getMMOConfig().decimal.format(PlayerData.get(player).getStamina());
+			return MMOLib.plugin.getMMOConfig().decimal.format(playerData.getStamina());
 
 		else if (identifier.equals("stamina_bar")) {
 			StringBuilder format = new StringBuilder();
-			PlayerData data = PlayerData.get(player);
-			double ratio = 20 * data.getStamina() / data.getStats().getStat(StatType.MAX_STAMINA);
+			double ratio = 20 * playerData.getStamina() / playerData.getStats().getStat(StatType.MAX_STAMINA);
 			for (double j = 1; j < 20; j++)
-				format.append(ratio >= j ? MMOCore.plugin.configManager.staminaFull : ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty).append(AltChar.listSquare);
+				format.append(ratio >= j ? MMOCore.plugin.configManager.staminaFull
+						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty)
+						.append(AltChar.listSquare);
 			return format.toString();
 		}
 
 		else if (identifier.startsWith("stat_")) {
 			StatType type = StatType.valueOf(identifier.substring(5).toUpperCase());
-			return type == null ? "Invalid Stat" : type.format(PlayerData.get(player).getStats().getStat(type));
+			return type == null ? "Invalid Stat" : type.format(playerData.getStats().getStat(type));
 		}
 
 		else if (identifier.equals("stellium"))
-			return MMOLib.plugin.getMMOConfig().decimal.format(PlayerData.get(player).getStellium());
+			return MMOLib.plugin.getMMOConfig().decimal.format(playerData.getStellium());
 
 		else if (identifier.equals("stellium_bar")) {
 			StringBuilder format = new StringBuilder();
-			PlayerData data = PlayerData.get(player);
-			double ratio = 20 * data.getStellium() / data.getStats().getStat(StatType.MAX_STELLIUM);
+			double ratio = 20 * playerData.getStellium() / playerData.getStats().getStat(StatType.MAX_STELLIUM);
 			for (double j = 1; j < 20; j++)
 				format.append(ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE).append(AltChar.listSquare);
 			return format.toString();
 		}
 
 		else if (identifier.equals("quest")) {
-			PlayerQuests data = PlayerData.get(player).getQuestData();
+			PlayerQuests data = playerData.getQuestData();
 			return data.hasCurrent() ? data.getCurrent().getQuest().getName() : "None";
 		}
 
 		else if (identifier.equals("quest_progress")) {
-			PlayerQuests data = PlayerData.get(player).getQuestData();
-			return data.hasCurrent()
-					? MMOLib.plugin.getMMOConfig().decimal
-							.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100)
-					: "0";
+			PlayerQuests data = playerData.getQuestData();
+			return data.hasCurrent() ? MMOLib.plugin.getMMOConfig().decimal
+					.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100) : "0";
 		}
 
 		else if (identifier.equals("quest_objective")) {
-			PlayerQuests data = PlayerData.get(player).getQuestData();
+			PlayerQuests data = playerData.getQuestData();
 			return data.hasCurrent() ? data.getCurrent().getFormattedLore() : "None";
 		}
 
 		else if (identifier.startsWith("guild_")) {
 			String placeholder = identifier.substring(6);
-			PlayerData data = PlayerData.get(player);
-			if (data.getGuild() == null)
+			if (playerData.getGuild() == null)
 				return "";
 
 			if (placeholder.equalsIgnoreCase("name"))
-				return data.getGuild().getName();
+				return playerData.getGuild().getName();
 			else if (placeholder.equalsIgnoreCase("tag"))
-				return data.getGuild().getTag();
+				return playerData.getGuild().getTag();
 			else if (placeholder.equalsIgnoreCase("leader"))
-				return Bukkit.getOfflinePlayer(data.getGuild().getOwner()).getName();
+				return Bukkit.getOfflinePlayer(playerData.getGuild().getOwner()).getName();
 			else if (placeholder.equalsIgnoreCase("members"))
-				return "" + data.getGuild().getMembers().count();
+				return "" + playerData.getGuild().getMembers().count();
 			else if (placeholder.equalsIgnoreCase("online_members"))
-				return "" + data.getGuild().getMembers().countOnline();
+				return "" + playerData.getGuild().getMembers().countOnline();
 		}
 
 		return null;
