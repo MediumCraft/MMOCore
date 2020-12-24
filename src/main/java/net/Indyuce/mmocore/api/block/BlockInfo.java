@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import net.mmogroup.mmolib.UtilityMethods;
-import net.mmogroup.mmolib.api.condition.BlockCondition;
-import net.mmogroup.mmolib.api.condition.MMOCondition;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -20,7 +17,10 @@ import net.Indyuce.mmocore.api.droptable.DropTable;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.mmogroup.mmolib.UtilityMethods;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.api.condition.BlockCondition;
+import net.mmogroup.mmolib.api.condition.MMOCondition;
 
 public class BlockInfo {
 	private final BlockType block;
@@ -62,10 +62,11 @@ public class BlockInfo {
 		Optional<Trigger> opt = triggers.stream().filter(trigger -> (trigger instanceof ExperienceTrigger)).findFirst();
 		experience = (ExperienceTrigger) opt.orElse(null);
 
-		if(config.isList("conditions"))
-			for(String key : config.getStringList("conditions")) {
+		if (config.isList("conditions"))
+			for (String key : config.getStringList("conditions")) {
 				MMOCondition condition = UtilityMethods.getCondition(key);
-				if(condition instanceof BlockCondition) conditions.add((BlockCondition) condition);
+				if (condition instanceof BlockCondition)
+					conditions.add((BlockCondition) condition);
 			}
 
 	}
@@ -123,9 +124,9 @@ public class BlockInfo {
 	}
 
 	public boolean checkConditions(Block block) {
-		for(BlockCondition condition : conditions)
-			if(!condition.check(block)) return false;
-
+		for (BlockCondition condition : conditions)
+			if (!condition.check(block))
+				return false;
 		return true;
 	}
 

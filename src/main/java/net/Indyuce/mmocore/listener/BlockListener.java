@@ -30,6 +30,7 @@ import net.mmogroup.mmolib.UtilityMethods;
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onCustomBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
@@ -47,7 +48,8 @@ public class BlockListener implements Listener {
 			return;
 
 		/*
-		 * If the block is a temporary block, immediately cancel the break event
+		 * If the block is a temporary block placed by block regen, immediately
+		 * cancel the break event
 		 */
 		BlockInfo info = MMOCore.plugin.mineManager.getInfo(block);
 		boolean temporaryBlock = MMOCore.plugin.mineManager.isTemporaryBlock(block);
@@ -56,9 +58,6 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		/*
-		 * Check if the block has exp or drop tables
-		 */
 		if (info == null) {
 
 			/*
@@ -104,7 +103,6 @@ public class BlockListener implements Listener {
 		 * on block/tool broken yet simple compatibility stuff
 		 */
 		if (!info.hasVanillaDrops()) {
-			// event.setDropItems(false); // May not work
 			event.setCancelled(true);
 			event.getBlock().setType(Material.AIR);
 			Bukkit.getPluginManager().callEvent(new PlayerItemDamageEvent(player, item, 1));

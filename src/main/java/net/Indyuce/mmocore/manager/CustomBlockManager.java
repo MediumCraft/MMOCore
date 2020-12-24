@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -66,7 +68,14 @@ public class CustomBlockManager extends MMOManager {
 		map.put(regen.getBlock().generateKey(), regen);
 	}
 
-	public BlockInfo getInfo(Block block) {
+	/**
+	 * Checks if the behaviour of a block was changed by a specific profession
+	 * (different drop tables, block regen..)
+	 * 
+	 * @param  block Block to check
+	 * @return       The new block behaviour or null if no new behaviour
+	 */
+	public @Nullable BlockInfo getInfo(Block block) {
 		return map.getOrDefault(findBlockType(block).generateKey(), null);
 	}
 
@@ -84,12 +93,11 @@ public class CustomBlockManager extends MMOManager {
 	 * Used when a block is being broken and MMOCore needs to regen it after X
 	 * seconds. Also places the temporary block at the block location
 	 * 
-	 * @param info
-	 *            Block info
-	 * @param scheduleRegen
-	 *            If block regeneration should be scheduled or not. If the block
-	 *            broken is a temporary block and is part of a "block chain", no
-	 *            regen should be scheduled as there is already one
+	 * @param info          Block info
+	 * @param scheduleRegen If block regeneration should be scheduled or not. If
+	 *                      the block broken is a temporary block and is part of
+	 *                      a "block chain", no regen should be scheduled as
+	 *                      there is already one
 	 */
 	public void initialize(RegeneratingBlock info, boolean scheduleRegen) {
 		if (scheduleRegen) {
@@ -105,12 +113,10 @@ public class CustomBlockManager extends MMOManager {
 	 * Called when a block regens, either due to regen timer or because the
 	 * server shuts down.
 	 * 
-	 * @param info
-	 *            Block which must be regened
-	 * @param shutdown
-	 *            Must be set to true if the server is shutting down. When the
-	 *            server shuts down, it iterates through active blocks. This
-	 *            prevents any issue when editing lists being iterated
+	 * @param info     Block which must be regened
+	 * @param shutdown Must be set to true if the server is shutting down. When
+	 *                 the server shuts down, it iterates through active blocks.
+	 *                 This prevents any issue when editing lists being iterated
 	 */
 	private void regen(RegeneratingBlock info, boolean shutdown) {
 		Location infoLocation = info.getLocation();
@@ -133,10 +139,9 @@ public class CustomBlockManager extends MMOManager {
 	}
 
 	/**
-	 * @param block
-	 *            Potentially vanilla block being broken by a player
-	 * @return Returns if the block being broken is a temporary block. If it is,
-	 *         players should not be able to break it
+	 * @param  block Potentially vanilla block being broken by a player
+	 * @return       Returns if the block being broken is a temporary block. If
+	 *               it is, players should not be able to break it
 	 */
 	public boolean isTemporaryBlock(Block block) {
 		Location loc = block.getLocation();

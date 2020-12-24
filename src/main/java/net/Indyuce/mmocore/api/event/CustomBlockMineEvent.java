@@ -3,13 +3,13 @@ package net.Indyuce.mmocore.api.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.block.BlockInfo;
+import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.experience.ExperienceInfo;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -22,6 +22,7 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 	private final List<ItemStack> drops;
 	private final ExperienceInfo experience;
 
+	@Deprecated
 	private boolean canBreak;
 	private boolean cancelled = false;
 
@@ -30,9 +31,9 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
 		this.block = block;
 		this.info = info;
-		this.drops = (info.hasDropTable() && player.isOnline()
-				&& info.getDropTable().areConditionsMet(new ConditionInstance(player.getPlayer())))
-					? info.collectDrops(new LootBuilder(player, 0)) : new ArrayList<>();
+		this.drops = (info.hasDropTable() && player.isOnline() && info.getDropTable().areConditionsMet(new ConditionInstance(player.getPlayer())))
+				? info.collectDrops(new LootBuilder(player, 0))
+				: new ArrayList<>();
 		this.experience = info.hasExperience() ? info.getExperience().newInfo() : null;
 		this.canBreak = canBreak;
 	}
@@ -57,10 +58,12 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 		return experience;
 	}
 
+	@Deprecated
 	public boolean canBreak() {
 		return canBreak;
 	}
 
+	@Deprecated
 	public void setCanBreak(boolean value) {
 		canBreak = value;
 	}
