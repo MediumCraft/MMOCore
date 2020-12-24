@@ -57,6 +57,7 @@ casting:
     split: '&7 &7 - &7 '
     no-longer: '%&cYou cancelled skill casting.'
     no-mana: '&cYou do not have enough mana!'
+    no-stamina: '&cYou do not have enough stamina!'
     on-cooldown: '&cThis skill is on cooldown.'
 
 # Combat Log
