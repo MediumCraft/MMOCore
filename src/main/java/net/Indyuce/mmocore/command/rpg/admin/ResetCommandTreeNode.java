@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
-import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +9,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
+import net.Indyuce.mmocore.command.CommandVerbose;
 import net.mmogroup.mmolib.command.api.CommandTreeNode;
 import net.mmogroup.mmolib.command.api.Parameter;
 
@@ -48,20 +48,14 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			data.setLevel(1);
+			MMOCore.plugin.dataProvider.getDataManager().getDefaultData().apply(data);
 			data.setExperience(0);
 			for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
 				data.getCollectionSkills().setExperience(profession, 0);
 				data.getCollectionSkills().setLevel(profession, 0);
 			}
 			MMOCore.plugin.classManager.getAll().forEach(data::unloadClassInfo);
-			data.setClassPoints(0);
-			data.setSkillPoints(0);
-
-			data.setAttributePoints(0);
-			data.setAttributeReallocationPoints(0);
 			data.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
-
 			data.mapSkillLevels().forEach((skill, level) -> data.resetSkillLevel(skill));
 			while (data.hasSkillBound(0))
 				data.unbindSkill(0);
@@ -214,7 +208,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			data.setLevel(1);
+			data.setLevel(MMOCore.plugin.dataProvider.getDataManager().getDefaultData().getLevel());
 			data.setExperience(0);
 			for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
 				data.getCollectionSkills().setExperience(profession, 0);
