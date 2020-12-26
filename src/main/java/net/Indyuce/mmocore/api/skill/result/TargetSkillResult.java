@@ -12,12 +12,27 @@ import net.mmogroup.mmolib.api.MMORayTraceResult;
 public class TargetSkillResult extends SkillResult {
 	private LivingEntity target;
 
+	/**
+	 * @param data  Player casting the skill
+	 * @param skill Skill being cast
+	 * @param range Skill raycast range
+	 */
 	public TargetSkillResult(PlayerData data, SkillInfo skill, double range) {
+		this(data, skill, range, false);
+	}
+
+	/**
+	 * @param data  Player casting the skill
+	 * @param skill Skill being cast
+	 * @param range Skill raycast range
+	 * @param buff  If the skill is a buff ie if it can be cast on party members
+	 */
+	public TargetSkillResult(PlayerData data, SkillInfo skill, double range, boolean buff) {
 		super(data, skill);
 
 		if (isSuccessful()) {
 			MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(data.getPlayer(), range,
-					entity -> MMOCoreUtils.canTarget(data, entity));
+					entity -> MMOCoreUtils.canTarget(data, entity, buff));
 			if (!result.hasHit())
 				abort();
 			else

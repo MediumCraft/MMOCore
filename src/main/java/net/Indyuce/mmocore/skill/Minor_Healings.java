@@ -26,7 +26,7 @@ public class Minor_Healings extends Skill {
 
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
-		SkillResult cast = data.getPlayer().isSneaking() ? new SkillResult(data, skill) : new TargetSkillResult(data, skill, 50);
+		SkillResult cast = data.getPlayer().isSneaking() ? new SkillResult(data, skill) : new TargetSkillResult(data, skill, 50, true);
 		if (!cast.isSuccessful())
 			return cast;
 

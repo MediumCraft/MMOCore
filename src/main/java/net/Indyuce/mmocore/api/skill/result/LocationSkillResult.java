@@ -12,19 +12,34 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 public class LocationSkillResult extends SkillResult {
 	private Location loc;
 
-	/*
-	 * this SkillResult is only available for 1.13+ users.
+	/**
+	 * @param data  Player casting the skill
+	 * @param skill Skill being cast
+	 * @param range Skill raycast range
 	 */
 	public LocationSkillResult(PlayerData data, SkillInfo skill, double range) {
+		this(data, skill, range, false);
+	}
+
+	/**
+	 * @param data  Player casting the skill
+	 * @param skill Skill being cast
+	 * @param range Skill raycast range
+	 * @param buff  If the skill is a buff ie if it can be cast on party members
+	 */
+	public LocationSkillResult(PlayerData data, SkillInfo skill, double range, boolean buff) {
 		super(data, skill);
 
 		if (isSuccessful()) {
 
-			RayTraceResult result = data.getPlayer().getWorld().rayTrace(data.getPlayer().getEyeLocation(), data.getPlayer().getEyeLocation().getDirection(), range, FluidCollisionMode.ALWAYS, true, 1.0D, entity -> MMOCoreUtils.canTarget(data, entity));
+			RayTraceResult result = data.getPlayer().getWorld().rayTrace(data.getPlayer().getEyeLocation(),
+					data.getPlayer().getEyeLocation().getDirection(), range, FluidCollisionMode.ALWAYS, true, 1.0D,
+					entity -> MMOCoreUtils.canTarget(data, entity, buff));
 			if (result == null)
 				abort(CancelReason.OTHER);
 			else
-				loc = result.getHitBlock() != null ? result.getHitBlock().getLocation() : result.getHitEntity() != null ? result.getHitEntity().getLocation() : null;
+				loc = result.getHitBlock() != null ? result.getHitBlock().getLocation()
+						: result.getHitEntity() != null ? result.getHitEntity().getLocation() : null;
 		}
 	}
 

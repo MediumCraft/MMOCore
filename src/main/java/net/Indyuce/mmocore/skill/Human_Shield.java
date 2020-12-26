@@ -35,7 +35,7 @@ public class Human_Shield extends Skill {
 
 	@Override
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
-		TargetSkillResult cast = new TargetSkillResult(data, skill, 7);
+		TargetSkillResult cast = new TargetSkillResult(data, skill, 7, true);
 		if (!cast.isSuccessful())
 			return cast;
 

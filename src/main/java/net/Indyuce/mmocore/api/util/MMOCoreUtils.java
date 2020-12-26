@@ -42,7 +42,8 @@ public class MMOCoreUtils {
 			if (isLastSpace && ch >= 'a' && ch <= 'z') {
 				builder.setCharAt(item, (char) (ch + ('A' - 'a')));
 				isLastSpace = false;
-			} else isLastSpace = ch == ' ';
+			} else
+				isLastSpace = ch == ' ';
 		}
 		return builder.toString();
 	}
@@ -145,16 +146,37 @@ public class MMOCoreUtils {
 		return entities;
 	}
 
-	// TODO worldguard flags support for no target
+	/**
+	 * @param  player Player casting a spell/basic attack
+	 * @param  target The target entity
+	 * @return        If the player can target the entity given the attack type
+	 *                (buff or attack)
+	 */
 	public static boolean canTarget(PlayerData player, Entity target) {
-		if(!player.isOnline()) return false;
+		return canTarget(player, target, false);
+	}
+
+	/**
+	 * @param  player Player casting a spell/basic attack
+	 * @param  target The target entity
+	 * @param  buff   Used when the attack is not an attack but a positive buff.
+	 *                Buffs or heals can be applied on party members, whereas
+	 *                attacks can't target party members.
+	 * @return        If the player can target the entity given the attack type
+	 *                (buff or attack)
+	 */
+	// TODO worldguard flags support for no target
+	public static boolean canTarget(PlayerData player, Entity target, boolean buff) {
+		if (!player.isOnline())
+			return false;
 
 		// basic checks
-		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead() || MMOLib.plugin.getEntities().findCustom(target))
+		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead()
+				|| MMOLib.plugin.getEntities().findCustom(target))
 			return false;
 
 		// party check
-		if (target instanceof Player) {
+		if (!buff && target instanceof Player) {
 			PlayerData targetData = PlayerData.get((Player) target);
 			return !targetData.hasParty() || !targetData.getParty().getMembers().has(player);
 		}
