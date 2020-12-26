@@ -755,9 +755,9 @@ public class PlayerData extends OfflinePlayerData {
 			return new SkillResult(this, skill, CancelReason.OTHER);
 
 		/*
-		 * skill, mana and cooldown requirements are all calculated in the
+		 * skill, mana stamina aand cooldown requirements are all calculated in the
 		 * SkillResult instances. this cast(SkillResult) method only applies
-		 * cooldown, reduces mana and send messages
+		 * cooldown, reduces mana and/or stamina and send messages
 		 */
 		SkillResult cast = skill.getSkill().whenCast(this, skill);
 		if (!cast.isSuccessful()) {
@@ -767,6 +767,9 @@ public class PlayerData extends OfflinePlayerData {
 
 				if (cast.getCancelReason() == CancelReason.MANA)
 					MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(getPlayer());
+
+				if (cast.getCancelReason() == CancelReason.STAMINA)
+					MMOCore.plugin.configManager.getSimpleMessage("casting.no-stamina").send(getPlayer());
 
 				if (cast.getCancelReason() == CancelReason.COOLDOWN)
 					MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(getPlayer());
@@ -783,6 +786,7 @@ public class PlayerData extends OfflinePlayerData {
 
 			skillData.setLastCast(cast.getSkill(), System.currentTimeMillis() - (long) flatCooldownReduction);
 			giveMana(-cast.getManaCost());
+			giveStamina(-cast.getStaminaCost());
 		}
 
 		PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast, true);

@@ -8,7 +8,7 @@ import net.Indyuce.mmocore.comp.flags.FlagPlugin.CustomFlag;
 public class SkillResult {
 	private final SkillInfo skill;
 	private final int level;
-	private final double mana, cooldown;
+	private final double mana, cooldown, stamina;
 
 	private CancelReason cancelReason;
 
@@ -18,12 +18,14 @@ public class SkillResult {
 		level = data.getSkillLevel(skill.getSkill());
 		cooldown = (skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0);
 		mana = (skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0);
+		stamina = (skill.getSkill().hasModifier("stamina") ? skill.getModifier("stamina", level) : 0);
 		cancelReason = !data.hasSkillUnlocked(skill) ? CancelReason.LOCKED
 				: cooldown > 0 ? CancelReason.COOLDOWN
 						: mana > data.getMana() ? CancelReason.MANA
-								: !MMOCore.plugin.flagPlugin.isFlagAllowed(data.getPlayer(), CustomFlag.SKILLS)
-										? CancelReason.FLAG
-										: null;
+								: stamina > data.getStamina() ? CancelReason.STAMINA
+									: !MMOCore.plugin.flagPlugin.isFlagAllowed(data.getPlayer(), CustomFlag.SKILLS)
+											? CancelReason.FLAG
+											: null;
 	}
 
 	public SkillResult(PlayerData data, SkillInfo skill, CancelReason reason) {
@@ -33,6 +35,7 @@ public class SkillResult {
 		level = data.getSkillLevel(skill.getSkill());
 		cooldown = skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0;
 		mana = skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0;
+		stamina = (skill.getSkill().hasModifier("stamina") ? skill.getModifier("stamina", level) : 0);
 	}
 
 	public Skill getSkill() {
@@ -45,6 +48,10 @@ public class SkillResult {
 
 	public int getLevel() {
 		return level;
+	}
+
+	public double getStaminaCost() {
+		return stamina;
 	}
 
 	public double getManaCost() {
@@ -82,6 +89,9 @@ public class SkillResult {
 
 		// not enough mana
 		MANA,
+
+		// not enough stamina
+		STAMINA,
 
 		// skill still on cooldown
 		COOLDOWN,
