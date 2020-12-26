@@ -1,22 +1,23 @@
 package net.Indyuce.mmocore.manager.data;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
-import net.Indyuce.mmocore.api.player.OfflinePlayerData;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.player.MMOPlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
+
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
+import net.Indyuce.mmocore.api.player.OfflinePlayerData;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.mmogroup.mmolib.api.player.MMOPlayerData;
+
 public abstract class PlayerDataManager {
 	private final static Map<UUID, PlayerData> data = new HashMap<>();
-	private DefaultPlayerData defaultData = new DefaultPlayerData();
+	private DefaultPlayerData defaultData = new DefaultPlayerData(1, 0, 0, 0, 0);
 
 	public PlayerData get(OfflinePlayer player) {
 		return get(player.getUniqueId());
@@ -47,10 +48,11 @@ public abstract class PlayerDataManager {
 			 */
 			Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
 				PlayerData loaded = PlayerData.get(uuid);
-				if(!loaded.isOnline()) return;
+				if (!loaded.isOnline())
+					return;
 				loadData(loaded);
 				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> {
-					if(loaded.isOnline())
+					if (loaded.isOnline())
 						Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(loaded));
 				});
 				loaded.getStats().updateStats();
@@ -92,12 +94,12 @@ public abstract class PlayerDataManager {
 			attrReallocPoints = config.getInt("attribute-realloc-points");
 		}
 
-		public DefaultPlayerData() {
-			level = 1;
-			classPoints = 0;
-			skillPoints = 0;
-			attributePoints = 0;
-			attrReallocPoints = 0;
+		public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints) {
+			this.level = level;
+			this.classPoints = classPoints;
+			this.skillPoints = skillPoints;
+			this.attributePoints = attributePoints;
+			this.attrReallocPoints = attrReallocPoints;
 		}
 
 		public int getLevel() {
@@ -118,6 +120,14 @@ public abstract class PlayerDataManager {
 
 		public int getAttributePoints() {
 			return attributePoints;
+		}
+
+		public void apply(PlayerData player) {
+			player.setLevel(level);
+			player.setClassPoints(classPoints);
+			player.setSkillPoints(skillPoints);
+			player.setAttributePoints(attributePoints);
+			player.setAttributeReallocationPoints(attrReallocPoints);
 		}
 	}
 }

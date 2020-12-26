@@ -29,10 +29,10 @@ public class SavedClassInformation {
 
 		attributes = new HashMap<>();
 		if (config.contains("attribute"))
-			config.getConfigurationSection("attribute").getKeys(false).forEach(key -> attributes.put(key, config.getInt(key)));
+			config.getConfigurationSection("attribute").getKeys(false).forEach(key -> attributes.put(key, config.getInt("attribute." + key)));
 		skills = new HashMap<>();
 		if (config.contains("skill"))
-			config.getConfigurationSection("skill").getKeys(false).forEach(key -> skills.put(key, config.getInt(key)));
+			config.getConfigurationSection("skill").getKeys(false).forEach(key -> skills.put(key, config.getInt("skill." + key)));
 	}
 
 	public SavedClassInformation(JsonObject json) {
@@ -150,9 +150,9 @@ public class SavedClassInformation {
 		 * resets information which much be reset after everything is saved.
 		 */
 		player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
+		player.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
 		while (player.hasSkillBound(0))
 			player.unbindSkill(0);
-		player.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
 
 		/*
 		 * reads this class info, applies it to the player. set class after
@@ -164,6 +164,7 @@ public class SavedClassInformation {
 		player.setSkillPoints(skillPoints);
 		player.setAttributePoints(attributePoints);
 		player.setAttributeReallocationPoints(attributeReallocationPoints);
+
 		skills.forEach(player::setSkillLevel);
 		attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
 

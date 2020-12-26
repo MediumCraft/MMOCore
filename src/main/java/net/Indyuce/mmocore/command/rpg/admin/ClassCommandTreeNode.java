@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
-import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -12,6 +11,7 @@ import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.command.CommandVerbose;
 import net.mmogroup.mmolib.command.api.CommandTreeNode;
 import net.mmogroup.mmolib.command.api.Parameter;
 
@@ -20,8 +20,8 @@ public class ClassCommandTreeNode extends CommandTreeNode {
 		super(parent, "class");
 
 		addParameter(Parameter.PLAYER);
-		addParameter(new Parameter("<class>", (explorer, list) -> MMOCore.plugin.classManager.getAll()
-				.forEach(profess -> list.add(profess.getId()))));
+		addParameter(
+				new Parameter("<class>", (explorer, list) -> MMOCore.plugin.classManager.getAll().forEach(profess -> list.add(profess.getId()))));
 	}
 
 	@Override
@@ -42,26 +42,24 @@ public class ClassCommandTreeNode extends CommandTreeNode {
 		}
 
 		PlayerClass profess = MMOCore.plugin.classManager.get(format);
-
 		PlayerData data = PlayerData.get(player);
+		if (data.getProfess().equals(profess))
+			return CommandResult.SUCCESS;
+
 		PlayerChangeClassEvent called = new PlayerChangeClassEvent(data, profess);
 		Bukkit.getPluginManager().callEvent(called);
 		if (called.isCancelled())
 			return CommandResult.SUCCESS;
 
-		data.giveClassPoints(-1);
-		(data.hasSavedClass(profess) ? data.getClassInfo(profess) : new SavedClassInformation(
-			MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, data);
-		while (data.hasSkillBound(0))
-			data.unbindSkill(0);
+		(data.hasSavedClass(profess) ? data.getClassInfo(profess)
+				: new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, data);
 		if (data.isOnline()) {
-			MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName())
-					.send(data.getPlayer());
+			MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(data.getPlayer());
 			data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
 		}
 
-		CommandVerbose.verbose(sender, CommandVerbose.CommandType.CLASS, ChatColor.GOLD + player.getName()
-				+ ChatColor.YELLOW + " is now a " + ChatColor.GOLD + profess.getName() + ChatColor.YELLOW + ".");
+		CommandVerbose.verbose(sender, CommandVerbose.CommandType.CLASS,
+				ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " is now a " + ChatColor.GOLD + profess.getName() + ChatColor.YELLOW + ".");
 		return CommandResult.SUCCESS;
 	}
 }
