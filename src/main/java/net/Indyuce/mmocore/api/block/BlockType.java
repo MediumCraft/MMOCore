@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 
 public interface BlockType {
 	void place(Location loc, RegeneratingBlock regenerating);
+	void regen(Location loc, RegeneratingBlock regenerating);
 
 	/**
 	 * Generates a key used to store the BlockInfo instance in the manager map,

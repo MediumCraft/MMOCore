@@ -1,13 +1,12 @@
 package net.Indyuce.mmocore.api.block;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-
 import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.mmogroup.mmolib.MMOLib;
 import net.mmogroup.mmolib.api.MMOLineConfig;
 import net.mmogroup.mmolib.version.VersionMaterial;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 public class SkullBlockType implements BlockType {
 	private final String value;
@@ -36,6 +35,15 @@ public class SkullBlockType implements BlockType {
 
 		MMOLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
 	}
+
+	@Override
+	public void regen(Location loc, RegeneratingBlock block) {
+		// This makes sure that if a skull loses it's original rotation
+		// it can revert back to it when the base block is regenerated
+		loc.getBlock().setBlockData(block.getBlockData());
+		MMOLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
+	}
+
 
 	@Override
 	public String generateKey() {

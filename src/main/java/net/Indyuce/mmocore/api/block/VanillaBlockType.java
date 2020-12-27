@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.block;
 
+import net.mmogroup.mmolib.MMOLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,6 +47,12 @@ public class VanillaBlockType implements BlockType {
 			((Ageable) state).setAge(age);
 			loc.getBlock().setBlockData(state);
 		}
+	}
+
+	@Override
+	public void regen(Location loc, RegeneratingBlock block) {
+		// Sets the original blocks old data (only when regenerating)
+		loc.getBlock().setBlockData(block.getBlockData());
 	}
 
 	@Override

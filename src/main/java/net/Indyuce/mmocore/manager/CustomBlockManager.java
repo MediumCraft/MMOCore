@@ -124,6 +124,7 @@ public class CustomBlockManager extends MMOManager {
 		// Get the chunk and load it async if needed.
 		PaperLib.getChunkAtAsync(infoLocation).whenComplete((chunk, ex) -> {
 			info.getRegeneratingBlock().getBlock().place(infoLocation, info);
+			info.getRegeneratingBlock().getBlock().regen(infoLocation, info);
 			info.getLocation().getBlock().getState().update();
 			if (!shutdown)
 				active.remove(info);
