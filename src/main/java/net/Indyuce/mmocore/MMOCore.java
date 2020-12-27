@@ -136,6 +136,8 @@ public class MMOCore extends JavaPlugin {
 
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 
+	public boolean shouldDebugSQL = false;
+
 	public void onLoad() {
 		plugin = this;
 
@@ -174,6 +176,7 @@ public class MMOCore extends JavaPlugin {
 
 		if (getConfig().isConfigurationSection("mysql") && getConfig().getBoolean("mysql.enabled"))
 			dataProvider = new MySQLDataProvider(getConfig());
+		shouldDebugSQL = getConfig().getBoolean("mysql.debug");
 
 		if (getConfig().isConfigurationSection("default-playerdata"))
 			dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
@@ -461,5 +464,10 @@ public class MMOCore extends JavaPlugin {
 
 	public boolean hasEconomy() {
 		return economy != null && economy.isValid();
+	}
+
+	public static void sqlDebug(String s) {
+		if(!MMOCore.plugin.shouldDebugSQL) return;
+		MMOCore.plugin.getLogger().warning("- [SQL Debug] " + s);
 	}
 }

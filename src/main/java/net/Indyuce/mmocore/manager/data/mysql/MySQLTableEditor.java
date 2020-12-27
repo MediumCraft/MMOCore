@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -23,15 +22,6 @@ public class MySQLTableEditor {
 	public void updateData(String key, Object value) {
 		((MySQLDataProvider) MMOCore.plugin.dataProvider).executeUpdate("INSERT INTO " + table + "(uuid, " + key
 				+ ") VALUES('" + uuid + "', '" + value + "') ON DUPLICATE KEY UPDATE " + key + "='" + value + "';");
-	}
-
-	public void updateDataAsync(String key, Object value) {
-		try {
-			((MySQLDataProvider) MMOCore.plugin.dataProvider).executeUpdateAsync("INSERT INTO " + table + "(uuid, " + key
-					+ ") VALUES('" + uuid + "', '" + value + "') ON DUPLICATE KEY UPDATE " + key + "='" + value + "';").get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void updateJSONArray(String key, Collection<String> collection) {
