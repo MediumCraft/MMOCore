@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.api.block;
 
-import net.mmogroup.mmolib.MMOLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,8 +14,8 @@ public class VanillaBlockType implements BlockType {
 	private final Material type;
 
 	/*
-	 * allows to plant back crops with a custom age so that it does not always have
-	 * to full grow again
+	 * allows to plant back crops with a custom age so that it does not always
+	 * have to full grow again
 	 */
 	private final int age;
 
@@ -39,10 +38,11 @@ public class VanillaBlockType implements BlockType {
 	}
 
 	@Override
-	public void place(Location loc, RegeneratingBlock block) {
-		loc.getBlock().setType(type);
+	public void place(RegeneratingBlock block) {
+		Location loc = block.getLocation();
+		block.getLocation().getBlock().setType(type);
 
-		BlockData state = loc.getBlock().getBlockData();
+		BlockData state = block.getLocation().getBlock().getBlockData();
 		if (age > 0 && state instanceof Ageable) {
 			((Ageable) state).setAge(age);
 			loc.getBlock().setBlockData(state);
@@ -50,7 +50,9 @@ public class VanillaBlockType implements BlockType {
 	}
 
 	@Override
-	public void regen(Location loc, RegeneratingBlock block) {
+	public void regenerate(RegeneratingBlock block) {
+		Location loc = block.getLocation();
+		loc.getBlock().setType(type);
 		// Sets the original blocks old data (only when regenerating)
 		loc.getBlock().setBlockData(block.getBlockData());
 	}
@@ -62,7 +64,6 @@ public class VanillaBlockType implements BlockType {
 
 	@Override
 	public boolean breakRestrictions(Block block) {
-		return age == 0
-				|| (block.getBlockData() instanceof Ageable && ((Ageable) block.getBlockData()).getAge() >= age);
+		return age == 0 || (block.getBlockData() instanceof Ageable && ((Ageable) block.getBlockData()).getAge() >= age);
 	}
 }
