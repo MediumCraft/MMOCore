@@ -5,8 +5,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
@@ -17,6 +19,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -126,8 +129,6 @@ public class FishingListener implements Listener {
 				/*
 				 * lose the catch if the current fish is gone!
 				 */
-				// TODO: Cancelling the event also cancels Rod damage (so it's
-				// technically unbreakable)
 				event.setCancelled(true);
 				if (isTimedOut()) {
 					close();
@@ -149,6 +150,9 @@ public class FishingListener implements Listener {
 				 * successfully pulls the fish
 				 */
 				close();
+
+				ItemStack mainhand = player.getInventory().getItem(EquipmentSlot.HAND);
+				MMOCoreUtils.decreaseDurability(player, (mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND);
 
 				if (!isCrit() && random.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
 					player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));
