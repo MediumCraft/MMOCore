@@ -156,16 +156,16 @@ public class FishingListener implements Listener {
 					return;
 				}
 
-				CustomPlayerFishEvent called = new CustomPlayerFishEvent(playerData, caught.getDropItem());
-				Bukkit.getPluginManager().callEvent(called);
-				if (called.isCancelled())
-					return;
-
 				ItemStack collect = caught.collect(new LootBuilder(playerData, 0));
 				if (collect == null) {
 					hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
 					return;
 				}
+
+				CustomPlayerFishEvent called = new CustomPlayerFishEvent(playerData, collect);
+				Bukkit.getPluginManager().callEvent(called);
+				if (called.isCancelled())
+					return;
 
 				// calculate velocity
 				Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);

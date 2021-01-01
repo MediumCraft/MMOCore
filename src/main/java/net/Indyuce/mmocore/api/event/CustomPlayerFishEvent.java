@@ -2,25 +2,29 @@ package net.Indyuce.mmocore.api.event;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class CustomPlayerFishEvent extends PlayerDataEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 
-	private final DropItem caught;
+	private ItemStack caught;
 
 	private boolean cancelled = false;
 
-	public CustomPlayerFishEvent(PlayerData player, DropItem caught) {
+	public CustomPlayerFishEvent(PlayerData player, ItemStack caught) {
 		super(player);
-		
+
 		this.caught = caught;
 	}
 
-	public DropItem getCaught() {
+	public ItemStack getCaught() {
 		return caught;
+	}
+
+	public void setCaught(ItemStack caught) {
+		this.caught = caught;
 	}
 
 	@Override
