@@ -152,7 +152,7 @@ public class FishingListener implements Listener {
 				close();
 
 				ItemStack mainhand = player.getInventory().getItem(EquipmentSlot.HAND);
-				MMOCoreUtils.decreaseDurability(player, (mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND);
+				MMOCoreUtils.decreaseDurability(player, (mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND, 1);
 
 				if (!isCrit() && random.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
 					player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));

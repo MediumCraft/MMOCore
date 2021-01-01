@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.listener;
 
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,7 +16,6 @@ import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -27,6 +25,7 @@ import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.mmogroup.mmolib.UtilityMethods;
 
 public class BlockListener implements Listener {
@@ -108,7 +107,7 @@ public class BlockListener implements Listener {
 		if (!info.hasVanillaDrops()) {
 			event.setCancelled(true);
 			event.getBlock().setType(Material.AIR);
-			MMOCoreUtils.decreaseDurability(player, EquipmentSlot.HAND);
+			MMOCoreUtils.decreaseDurability(player, EquipmentSlot.HAND, 1);
 		}
 
 		/*

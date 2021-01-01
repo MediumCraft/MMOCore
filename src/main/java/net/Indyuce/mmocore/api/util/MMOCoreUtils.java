@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.mmogroup.mmolib.api.item.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,6 +27,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.mmogroup.mmolib.MMOLib;
+import net.mmogroup.mmolib.api.item.NBTItem;
 import net.mmogroup.mmolib.version.VersionMaterial;
 
 public class MMOCoreUtils {
@@ -201,20 +201,30 @@ public class MMOCoreUtils {
 			target.setHealth(target.getHealth() + gain);
 	}
 
-	public static void decreaseDurability(Player player, EquipmentSlot slot) {
+	/**
+	 * Method used when mining a custom block or fishing, as the corresponding
+	 * interaction event is cancelled durability is not handled. This method is
+	 * needed and actually calls a damage event so that MMOItems can listen to
+	 * it
+	 * 
+	 * @param player Player holding the item with durability
+	 * @param slot   The slot of the item with durability
+	 * @param damage Damage that needs to be applied
+	 */
+	public static void decreaseDurability(Player player, EquipmentSlot slot, int damage) {
 		ItemStack item = player.getInventory().getItem(slot);
 
-		PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, item, 1);
+		PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, item, damage);
 		Bukkit.getPluginManager().callEvent(event);
-		if(event.isCancelled())
+		if (event.isCancelled())
 			return;
 
 		NBTItem nbt = NBTItem.get(item);
 		if (!nbt.getBoolean("Unbreakable") && item.hasItemMeta() && item.getItemMeta() instanceof Damageable) {
 			ItemMeta meta = item.getItemMeta();
-			((Damageable) meta).setDamage(((Damageable) meta).getDamage() + 1);
+			((Damageable) meta).setDamage(((Damageable) meta).getDamage() + damage);
 			item.setItemMeta(meta);
-			if(((Damageable) meta).getDamage() >= item.getType().getMaxDurability()) {
+			if (((Damageable) meta).getDamage() >= item.getType().getMaxDurability()) {
 				player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1F, 1F);
 				player.getInventory().setItem(slot, null);
 			}
