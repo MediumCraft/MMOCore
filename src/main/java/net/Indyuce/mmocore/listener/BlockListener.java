@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.listener;
 
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,6 +18,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -106,7 +108,7 @@ public class BlockListener implements Listener {
 		if (!info.hasVanillaDrops()) {
 			event.setCancelled(true);
 			event.getBlock().setType(Material.AIR);
-			Bukkit.getPluginManager().callEvent(new PlayerItemDamageEvent(player, item, 1));
+			MMOCoreUtils.decreaseDurability(player, EquipmentSlot.HAND);
 		}
 
 		/*
