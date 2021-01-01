@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
-import net.Indyuce.mmocore.api.experience.ExperienceInfo;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
@@ -20,7 +19,6 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 	private final Block block;
 	private final BlockInfo info;
 	private final List<ItemStack> drops;
-	private final ExperienceInfo experience;
 
 	@Deprecated
 	private boolean canBreak;
@@ -34,7 +32,6 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 		this.drops = (info.hasDropTable() && player.isOnline() && info.getDropTable().areConditionsMet(new ConditionInstance(player.getPlayer())))
 				? info.collectDrops(new LootBuilder(player, 0))
 				: new ArrayList<>();
-		this.experience = info.hasExperience() ? info.getExperience().newInfo() : null;
 		this.canBreak = canBreak;
 	}
 
@@ -48,14 +45,6 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
 	public BlockInfo getBlockInfo() {
 		return info;
-	}
-
-	public boolean hasGainedExperience() {
-		return experience != null;
-	}
-
-	public ExperienceInfo getGainedExperience() {
-		return experience;
 	}
 
 	@Deprecated

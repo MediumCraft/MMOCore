@@ -23,6 +23,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
+import net.Indyuce.mmocore.api.block.BlockInfo.BlockInfoOption;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -104,7 +105,7 @@ public class BlockListener implements Listener {
 		 * MMOItems durability. It does not apply specific durability loss based
 		 * on block/tool broken yet simple compatibility stuff
 		 */
-		if (!info.hasVanillaDrops()) {
+		if (!info.getOption(BlockInfoOption.VANILLA_DROPS)) {
 			event.setCancelled(true);
 			event.getBlock().setType(Material.AIR);
 			MMOCoreUtils.decreaseDurability(player, EquipmentSlot.HAND, 1);

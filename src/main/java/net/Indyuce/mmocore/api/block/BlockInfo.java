@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.api.block;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.logging.Level;
 
-import net.mmogroup.mmolib.api.condition.type.BlockCondition;
-import net.mmogroup.mmolib.api.condition.type.MMOCondition;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -17,24 +16,19 @@ import org.bukkit.inventory.ItemStack;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
-import net.Indyuce.mmocore.api.quest.trigger.ExperienceTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.mmogroup.mmolib.UtilityMethods;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import net.mmogroup.mmolib.api.condition.type.BlockCondition;
+import net.mmogroup.mmolib.api.condition.type.MMOCondition;
 
 public class BlockInfo {
 	private final BlockType block;
 	private final DropTable table;
-	private final boolean vanillaDrops;
 	private final RegenInfo regen;
 	private final List<Trigger> triggers = new ArrayList<>();
 	private final List<BlockCondition> conditions = new ArrayList<>();
-
-	/*
-	 * saved separately because MMOCore needs to display the experience gained,
-	 * since it requires a steam call it is better to cache right off the start
-	 */
-	private final ExperienceTrigger experience;
+	private final Map<BlockInfoOption, Boolean> options = new HashMap<>();
 
 	public BlockInfo(ConfigurationSection config) {
 		Validate.notNull(config, "Could not load config");
@@ -42,9 +36,18 @@ public class BlockInfo {
 
 		block = MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(config.getString("material")));
 		table = config.contains("drop-table") ? MMOCore.plugin.dropTableManager.loadDropTable(config.get("drop-table")) : null;
-		vanillaDrops = config.getBoolean("vanilla-drops", true);
 
 		regen = config.contains("regen") ? new RegenInfo(config.getConfigurationSection("regen")) : null;
+
+		if (config.contains("options"))
+			for (String key : config.getConfigurationSection("options").getKeys(false))
+				try {
+					BlockInfoOption option = BlockInfoOption.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
+					options.put(option, config.getBoolean("options." + key));
+				} catch (IllegalArgumentException exception) {
+					MMOCore.plugin.getLogger().log(Level.WARNING,
+							"Could not load option '" + key + "' from block info '" + block.generateKey() + "': " + exception.getMessage());
+				}
 
 		if (config.contains("triggers")) {
 			List<String> list = config.getStringList("triggers");
@@ -59,9 +62,6 @@ public class BlockInfo {
 				}
 		}
 
-		Optional<Trigger> opt = triggers.stream().filter(trigger -> (trigger instanceof ExperienceTrigger)).findFirst();
-		experience = (ExperienceTrigger) opt.orElse(null);
-
 		if (config.isList("conditions"))
 			for (String key : config.getStringList("conditions")) {
 				MMOCondition condition = UtilityMethods.getCondition(key);
@@ -71,8 +71,8 @@ public class BlockInfo {
 
 	}
 
-	public boolean hasVanillaDrops() {
-		return vanillaDrops;
+	public boolean getOption(BlockInfoOption option) {
+		return options.getOrDefault(option, option.getDefault());
 	}
 
 	public BlockType getBlock() {
@@ -107,14 +107,6 @@ public class BlockInfo {
 		return new RegeneratingBlock(data, loc, this);
 	}
 
-	public boolean hasExperience() {
-		return experience != null;
-	}
-
-	public ExperienceTrigger getExperience() {
-		return experience;
-	}
-
 	public boolean hasTriggers() {
 		return !triggers.isEmpty();
 	}
@@ -128,6 +120,29 @@ public class BlockInfo {
 			if (!condition.check(block))
 				return false;
 		return true;
+	}
+
+	public static enum BlockInfoOption {
+
+		/**
+		 * When disabled, removes the vanilla drops when a block is mined
+		 */
+		VANILLA_DROPS(true),
+
+		/**
+		 * When disabled, removes exp holograms when mined
+		 */
+		EXP_HOLOGRAMS(true);
+
+		private final boolean def;
+
+		private BlockInfoOption(boolean def) {
+			this.def = def;
+		}
+
+		public boolean getDefault() {
+			return def;
+		}
 	}
 
 	public static class RegeneratingBlock {
