@@ -8,7 +8,7 @@
 # a Spigot Plugin by Team Requiem
 
 # DO NOT TOUCH
-config-version: 5
+config-version: 6
 
 # Auto-Save feature automatically saves playerdata
 # (class, level, etc.) and guild data
@@ -113,15 +113,16 @@ vanilla-exp-redirection:
 # Requires a SERVER reload when changed.
 override-vanilla-exp: true
 
+# If main class experience holograms should be displayed
+# whenever a player earns main class exp
+display-main-class-exp-holograms: true 
+
 # Requires a SERVER reload when changed.
 death-exp-loss:
     enabled: false
     
     # Percentage of current EXP you lose when dying.
     percent: 30
-
-# Allows to toggle exp hologram from gaining experience
-display-exp-holograms: true
 
 # Put the "value" of the action you want.
 # If the value is invalid or empty it will

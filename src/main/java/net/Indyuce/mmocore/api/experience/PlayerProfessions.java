@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.Indyuce.mmocore.manager.SoundManager;
-import net.mmogroup.mmolib.MMOLib;
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,6 +22,8 @@ import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.manager.SoundManager;
+import net.mmogroup.mmolib.MMOLib;
 
 public class PlayerProfessions {
 	private final Map<String, Integer> exp = new HashMap<>();
@@ -121,14 +123,14 @@ public class PlayerProfessions {
 	}
 
 	public void giveExperience(Profession profession, int value, EXPSource source) {
-		giveExperience(profession, value, null, source);
+		giveExperience(profession, value, source, null);
 	}
 
 	public boolean hasReachedMaxLevel(Profession profession) {
 		return profession.hasMaxLevel() && getLevel(profession) >= profession.getMaxLevel();
 	}
 
-	public void giveExperience(Profession profession, int value, Location loc, EXPSource source) {
+	public void giveExperience(Profession profession, int value, EXPSource source, @Nullable Location hologramLocation) {
 		if (hasReachedMaxLevel(profession)) {
 			setExperience(profession, 0);
 			return;
@@ -137,10 +139,9 @@ public class PlayerProfessions {
 		value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 
 		// display hologram
-		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms") && playerData.isOnline())
-			if (loc != null && MMOCore.plugin.hasHolograms())
-				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
-						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
+		if (hologramLocation != null && playerData.isOnline() && MMOCore.plugin.hasHolograms())
+			MMOCore.plugin.hologramSupport.displayIndicator(hologramLocation.add(.5, 1.5, .5),
+					MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), playerData.getPlayer());
 
 		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
 		Bukkit.getPluginManager().callEvent(event);

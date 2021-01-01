@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public abstract class HologramSupport {
+
 	/**
 	 * Displays a message using a hologram
 	 * 

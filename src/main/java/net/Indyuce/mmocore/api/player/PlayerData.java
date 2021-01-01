@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -453,20 +455,29 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public void giveExperience(int value, EXPSource source) {
-		giveExperience(value, null, source);
+		giveExperience(value, source, null);
 	}
 
-	public void giveExperience(int value, Location loc, EXPSource source) {
+	/**
+	 * Called when giving experience to a player
+	 * 
+	 * @param value  Experience to give the player
+	 * @param source How the player earned experience
+	 * @param loc    Location used to display the hologram. If it's null, no
+	 *               hologram will be displayed
+	 */
+	public void giveExperience(int value, EXPSource source, @Nullable Location hologramLocation) {
 		if (hasReachedMaxLevel()) {
 			setExperience(0);
 			return;
 		}
 
-		// display hologram
-		if (MMOCore.plugin.getConfig().getBoolean("display-exp-holograms") && isOnline())
-			if (loc != null && MMOCore.plugin.hasHolograms())
-				MMOCore.plugin.hologramSupport.displayIndicator(loc.add(.5, 1.5, .5),
-						MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
+		/*
+		 * Handle experience hologram
+		 */
+		if (hologramLocation != null && isOnline() && MMOCore.plugin.hasHolograms())
+			MMOCore.plugin.hologramSupport.displayIndicator(hologramLocation.add(.5, 1.5, .5),
+					MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message(), getPlayer());
 
 		value = MMOCore.plugin.boosterManager.calculateExp(null, value);
 		value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
@@ -755,8 +766,8 @@ public class PlayerData extends OfflinePlayerData {
 			return new SkillResult(this, skill, CancelReason.OTHER);
 
 		/*
-		 * skill, mana stamina aand cooldown requirements are all calculated in the
-		 * SkillResult instances. this cast(SkillResult) method only applies
+		 * skill, mana stamina aand cooldown requirements are all calculated in
+		 * the SkillResult instances. this cast(SkillResult) method only applies
 		 * cooldown, reduces mana and/or stamina and send messages
 		 */
 		SkillResult cast = skill.getSkill().whenCast(this, skill);

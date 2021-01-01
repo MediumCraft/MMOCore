@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,6 +30,7 @@ import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
 import net.mmogroup.mmolib.version.VersionSound;
 
@@ -47,10 +47,9 @@ public class FishingListener implements Listener {
 		if (event.getState() == State.BITE && !fishing.contains(player.getUniqueId()) && !player.hasMetadata("NPC")) {
 
 			/*
-			 * checks for drop tables. if no drop table, just plain vanilla
+			 * Checks for drop tables. If no drop table, just plain vanilla
 			 * fishing OTHERWISE initialize fishing, register other listener.
 			 */
-
 			FishingDropTable table = MMOCore.plugin.fishingManager.calculateDropTable(player);
 			if (table == null)
 				return;
@@ -127,7 +126,7 @@ public class FishingListener implements Listener {
 					&& (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || event.getState() == State.REEL_IN)) {
 
 				/*
-				 * lose the catch if the current fish is gone!
+				 * Lose the catch if the current fish is gone!
 				 */
 				event.setCancelled(true);
 				if (isTimedOut()) {
@@ -140,19 +139,20 @@ public class FishingListener implements Listener {
 					criticalFish();
 
 				/*
-				 * checks for enough pulls. if not, return and wait for next
+				 * Checks for enough pulls. if not, return and wait for next
 				 * fish event.
 				 */
 				if (!pull())
 					return;
 
 				/*
-				 * successfully pulls the fish
+				 * Successfully pulls the fish
 				 */
 				close();
 
 				ItemStack mainhand = player.getInventory().getItem(EquipmentSlot.HAND);
-				MMOCoreUtils.decreaseDurability(player, (mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND, 1);
+				MMOCoreUtils.decreaseDurability(player,
+						(mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND, 1);
 
 				if (!isCrit() && random.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
 					player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));
@@ -187,8 +187,8 @@ public class FishingListener implements Listener {
 							4 * (random.nextDouble() - .5), .05);
 
 				if (MMOCore.plugin.professionManager.has("fishing"))
-					playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, location,
-							EXPSource.FISHING);
+					playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, EXPSource.FISHING,
+							location);
 			}
 		}
 	}
