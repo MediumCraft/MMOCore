@@ -28,7 +28,8 @@ on-mine:
         drop-table:
             items:
             - 'vanilla{type=DIAMOND} 1 1-4'
-        vanilla-drops: false
+        options:
+            vanilla-drops: false
         regen:
             time: 20
             # Stone block skull texture
@@ -41,7 +42,8 @@ on-mine:
         drop-table:
             items:
             - 'vanilla{type=EMERALD} 1 1-9'
-        vanilla-drops: false
+        options:
+            vanilla-drops: false
         regen:
             time: 2000
             temp-block: vanilla{type=STONE}
@@ -65,8 +67,9 @@ on-mine:
         triggers:
         - 'exp{profession=mining;amount=20}'
         
-        # Set to false if you want to disable vanila drops.
-        vanilla-drops: false
+        options:
+            # Set to false if you want to disable vanila drops.
+            vanilla-drops: false
         
         regen:
         
