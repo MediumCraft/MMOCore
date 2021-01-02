@@ -132,7 +132,6 @@ public class MMOCoreUtils {
 	 * chunk (worst case border of 4 chunks), the entity will still be included
 	 */
 	public static List<Entity> getNearbyChunkEntities(Location loc) {
-
 		/*
 		 * another method to save performance is if an entity bounding box
 		 * calculation is made twice in the same tick then the method does not
@@ -191,7 +190,6 @@ public class MMOCoreUtils {
 	}
 
 	public static void heal(LivingEntity target, double value) {
-
 		double max = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		double gain = Math.min(max, target.getHealth() + value) - target.getHealth();
 
@@ -220,7 +218,7 @@ public class MMOCoreUtils {
 			return;
 
 		NBTItem nbt = NBTItem.get(item);
-		if (!nbt.getBoolean("Unbreakable") && item.hasItemMeta() && item.getItemMeta() instanceof Damageable) {
+		if (!nbt.getBoolean("Unbreakable") && item.getItemMeta() instanceof Damageable) {
 			ItemMeta meta = item.getItemMeta();
 			((Damageable) meta).setDamage(((Damageable) meta).getDamage() + damage);
 			item.setItemMeta(meta);
