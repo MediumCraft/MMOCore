@@ -101,9 +101,9 @@ public class BlockListener implements Listener {
 		}
 
 		/*
-		 * Remove vanilla drops if needed and casts an ItemDamageEvent to handle
-		 * MMOItems durability. It does not apply specific durability loss based
-		 * on block/tool broken yet simple compatibility stuff
+		 * Remove vanilla drops if needed and
+		 * decreases the durability of the item
+		 * used to mine the block.
 		 */
 		if (!info.getOption(BlockInfoOption.VANILLA_DROPS)) {
 			event.setCancelled(true);
