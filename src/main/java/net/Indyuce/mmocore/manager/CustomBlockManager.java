@@ -1,23 +1,5 @@
 package net.Indyuce.mmocore.manager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.logging.Level;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
-
 import io.papermc.lib.PaperLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
@@ -29,6 +11,16 @@ import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.mmogroup.mmolib.api.MMOLineConfig;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Function;
+import java.util.logging.Level;
 
 public class CustomBlockManager extends MMOManager {
 
@@ -187,8 +179,6 @@ public class CustomBlockManager extends MMOManager {
 	@Override
 	public void reload() {
 		customMineConditions.clear();
-
-		this.protect = MMOCore.plugin.getConfig().getBoolean("protect-custom-mine");
 
 		for (String key : MMOCore.plugin.getConfig().getStringList("custom-mine-conditions"))
 			try {
