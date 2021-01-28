@@ -28,6 +28,10 @@ public class PartyInvite extends Request {
 	}
 
 	public void accept() {
+		if(party.getMembers().count() >= 4) {
+			MMOCore.plugin.configManager.getSimpleMessage("party-is-full").send(target.getPlayer());
+			return;
+		}
 		if(getCreator().isOnline())
 			party.removeLastInvite(getCreator().getPlayer());
 		party.getMembers().forEach(member -> {
