@@ -180,6 +180,8 @@ public class CustomBlockManager extends MMOManager {
 	public void reload() {
 		customMineConditions.clear();
 
+		this.protect = MMOCore.plugin.getConfig().getBoolean("protect-custom-mine");
+
 		for (String key : MMOCore.plugin.getConfig().getStringList("custom-mine-conditions"))
 			try {
 				customMineConditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
