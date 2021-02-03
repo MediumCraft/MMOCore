@@ -1,11 +1,10 @@
 package net.Indyuce.mmocore.api.loot;
 
-import org.bukkit.configuration.ConfigurationSection;
-
+import io.lumine.mythic.lib.api.math.ScalingFormula;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.DropTable;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.math.ScalingFormula;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class ChestTier {
 	private final TierEffect effect;

@@ -18,7 +18,7 @@ import net.Indyuce.mmocore.api.load.DefaultMMOLoader;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class MMOLoadManager {
 	private final List<MMOLoader> loaders = new ArrayList<>();

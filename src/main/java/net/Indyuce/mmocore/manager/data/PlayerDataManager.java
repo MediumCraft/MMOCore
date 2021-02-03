@@ -13,7 +13,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.player.MMOPlayerData;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 
 public abstract class PlayerDataManager {
 	private final static Map<UUID, PlayerData> data = new HashMap<>();

@@ -1,5 +1,17 @@
 package net.Indyuce.mmocore.skill;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.AttackResult;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.api.MMORayTraceResult;
+import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionSound;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -7,19 +19,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill;
-import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.AttackResult;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.api.MMORayTraceResult;
-import net.mmogroup.mmolib.version.VersionMaterial;
-import net.mmogroup.mmolib.version.VersionSound;
 
 public class Fireball extends Skill {
 	public Fireball() {
@@ -60,13 +59,13 @@ public class Fireball extends Skill {
 				loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
 
 				for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-					if (MMOLib.plugin.getVersion().getWrapper().isInBoundingBox(target, loc) && MMOCoreUtils.canTarget(data, target)) {
+					if (MythicLib.plugin.getVersion().getWrapper().isInBoundingBox(target, loc) && MMOCoreUtils.canTarget(data, target)) {
 						loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 						loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 						loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
 						target.setFireTicks((int) (target.getFireTicks() + cast.getModifier("ignite") * 20));
 						double damage = cast.getModifier("damage");
-						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
+						MythicLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
 
 						new BukkitRunnable() {
 							int i = 0;
@@ -82,9 +81,9 @@ public class Fireball extends Skill {
 								Vector dir = randomDirection();
 								loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1.5f);
 
-								MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(loc, dir, range, entity -> MMOCoreUtils.canTarget(data, entity));
+								MMORayTraceResult result = MythicLib.plugin.getVersion().getWrapper().rayTrace(loc, dir, range, entity -> MMOCoreUtils.canTarget(data, entity));
 								if (result.hasHit())
-									MMOLib.plugin.getDamage().damage(data.getPlayer(), result.getHit(), new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
+									MythicLib.plugin.getDamage().damage(data.getPlayer(), result.getHit(), new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
 								result.draw(loc.clone(), dir, 8, tick -> tick.getWorld().spawnParticle(Particle.FLAME, tick, 0));
 
 							}

@@ -1,18 +1,17 @@
 package net.Indyuce.mmocore.gui.api;
 
-import java.text.DecimalFormat;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.logging.Level;
-
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.TriggerItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.TriggerItem;
+import java.text.DecimalFormat;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.logging.Level;
 
 public abstract class EditableInventory {
 	private final String id;
@@ -26,7 +25,7 @@ public abstract class EditableInventory {
 	 */
 	private final Set<InventoryItem> items = new LinkedHashSet<>();
 
-	protected static final DecimalFormat decimal = MMOLib.plugin.getMMOConfig().decimal;
+	protected static final DecimalFormat decimal = MythicLib.plugin.getMMOConfig().decimal;
 
 	public EditableInventory(String id) {
 		this.id = id;

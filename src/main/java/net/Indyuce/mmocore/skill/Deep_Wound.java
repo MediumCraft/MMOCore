@@ -11,9 +11,9 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.result.TargetSkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.AttackResult;
-import net.mmogroup.mmolib.api.DamageType;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.AttackResult;
+import io.lumine.mythic.lib.api.DamageType;
 
 public class Deep_Wound extends Skill {
 	public Deep_Wound() {
@@ -44,7 +44,7 @@ public class Deep_Wound extends Skill {
 		double ratio = (max - target.getHealth()) / max;
 
 		double damage = cast.getModifier("damage") * (1 + cast.getModifier("extra") * ratio / 100);
-		MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PHYSICAL));
+		MythicLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PHYSICAL));
 		return cast;
 	}
 }

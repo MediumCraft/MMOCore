@@ -1,36 +1,10 @@
 package net.Indyuce.mmocore.api.player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Particle;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
-import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
-import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
-import net.Indyuce.mmocore.api.event.PlayerPostCastSkillEvent;
-import net.Indyuce.mmocore.api.event.PlayerPreCastSkillEvent;
-import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
+import net.Indyuce.mmocore.api.event.*;
 import net.Indyuce.mmocore.api.experience.EXPSource;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
@@ -55,7 +29,17 @@ import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.mmogroup.mmolib.api.player.MMOPlayerData;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.logging.Level;
+
 
 public class PlayerData extends OfflinePlayerData {
 

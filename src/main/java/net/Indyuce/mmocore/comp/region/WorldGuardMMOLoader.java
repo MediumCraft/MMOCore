@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.comp.region;
 
 import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.load.MMOLoader;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class WorldGuardMMOLoader extends MMOLoader {
 

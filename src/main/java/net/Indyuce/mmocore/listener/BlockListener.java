@@ -27,7 +27,7 @@ import net.Indyuce.mmocore.api.block.BlockInfo.BlockInfoOption;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.mmogroup.mmolib.UtilityMethods;
+import io.lumine.mythic.lib.UtilityMethods;
 
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };

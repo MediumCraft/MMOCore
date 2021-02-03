@@ -4,7 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class CitizensMMOLoader extends MMOLoader {
 

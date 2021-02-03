@@ -14,8 +14,8 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
-import net.mmogroup.mmolib.command.api.Parameter;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
 
 public class ExperienceCommandTreeNode extends CommandTreeNode {
 	public ExperienceCommandTreeNode(CommandTreeNode parent) {

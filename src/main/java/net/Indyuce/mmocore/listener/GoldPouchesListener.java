@@ -9,7 +9,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.gui.eco.GoldPouch;
-import net.mmogroup.mmolib.api.item.NBTItem;
+import io.lumine.mythic.lib.api.item.NBTItem;
 
 public class GoldPouchesListener implements Listener {
 	@EventHandler

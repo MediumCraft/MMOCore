@@ -1,7 +1,18 @@
 package net.Indyuce.mmocore.gui.social.party;
 
-import java.util.UUID;
-
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
+import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.PluginInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
+import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,19 +25,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.mmogroup.mmolib.api.item.ItemTag;
-import net.mmogroup.mmolib.api.item.NBTItem;
+import java.util.UUID;
+
+
 
 public class EditablePartyView extends EditableInventory {
 	public EditablePartyView() {

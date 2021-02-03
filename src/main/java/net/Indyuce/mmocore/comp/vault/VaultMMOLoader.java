@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.comp.vault;
 
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class VaultMMOLoader extends MMOLoader {
 

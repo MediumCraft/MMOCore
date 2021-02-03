@@ -10,7 +10,7 @@ import io.lumine.xikage.mythicmobs.drops.DropTable;
 import io.lumine.xikage.mythicmobs.drops.IItemDrop;
 import io.lumine.xikage.mythicmobs.drops.LootBag;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class MMDropTableDropItem extends DropItem {
 	private final DropTable dropTable;

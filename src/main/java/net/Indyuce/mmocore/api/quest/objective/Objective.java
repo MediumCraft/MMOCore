@@ -12,7 +12,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public abstract class Objective {
 	private final String id, lore;

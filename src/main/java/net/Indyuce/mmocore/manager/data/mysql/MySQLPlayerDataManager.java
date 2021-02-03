@@ -10,7 +10,7 @@ import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 import org.apache.commons.lang.Validate;
 
 import java.sql.SQLException;
@@ -76,7 +76,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 				if (!isEmpty(result.getString("friends")))
 					getJSONArray(result.getString("friends")).forEach(str -> data.getFriends().add(UUID.fromString(str)));
 				if (!isEmpty(result.getString("skills"))) {
-					JsonObject object = MMOLib.plugin.getJson().parse(result.getString("skills"), JsonObject.class);
+					JsonObject object = MythicLib.plugin.getJson().parse(result.getString("skills"), JsonObject.class);
 					for (Entry<String, JsonElement> entry : object.entrySet())
 						data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
 				}
@@ -85,7 +85,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 						if (data.getProfess().hasSkill(skill))
 							data.getBoundSkills().add(data.getProfess().getSkill(skill));
 				if (!isEmpty(result.getString("class_info"))) {
-					JsonObject object = MMOLib.plugin.getJson().parse(result.getString("class_info"), JsonObject.class);
+					JsonObject object = MythicLib.plugin.getJson().parse(result.getString("class_info"), JsonObject.class);
 					for (Entry<String, JsonElement> entry : object.entrySet()) {
 						try {
 							PlayerClass profess = MMOCore.plugin.classManager.get(entry.getKey());
@@ -172,7 +172,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 	}
 
 	private Collection<String> getJSONArray(String json) {
-		return new ArrayList<>(Arrays.asList(MMOLib.plugin.getJson().parse(json, String[].class)));
+		return new ArrayList<>(Arrays.asList(MythicLib.plugin.getJson().parse(json, String[].class)));
 	}
 
 	public class MySQLOfflinePlayerData extends OfflinePlayerData {

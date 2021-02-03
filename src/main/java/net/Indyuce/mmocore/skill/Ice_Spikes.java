@@ -18,10 +18,10 @@ import net.Indyuce.mmocore.api.skill.result.LocationSkillResult;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.Line3D;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.AttackResult;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.AttackResult;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class Ice_Spikes extends Skill {
 	private static final double radius = 3;
@@ -66,7 +66,7 @@ public class Ice_Spikes extends Skill {
 				Line3D line = new Line3D(loc.toVector(), loc.toVector().add(new Vector(0, 1, 0)));
 				for (Entity entity : MMOCoreUtils.getNearbyChunkEntities(loc1))
 					if (line.distanceSquared(entity.getLocation().toVector()) < radius && Math.abs(entity.getLocation().getY() - loc1.getY()) < 10 && MMOCoreUtils.canTarget(data, entity)) {
-						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(damage, DamageType.SKILL, DamageType.MAGIC));
+						MythicLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(damage, DamageType.SKILL, DamageType.MAGIC));
 						((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, slow, 0));
 					}
 			}

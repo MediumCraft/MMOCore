@@ -12,9 +12,9 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.result.TargetSkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.AttackResult;
-import net.mmogroup.mmolib.api.DamageType;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.AttackResult;
+import io.lumine.mythic.lib.api.DamageType;
 
 public class Combo_Attack extends Skill {
 	public Combo_Attack() {
@@ -51,7 +51,7 @@ public class Combo_Attack extends Skill {
 
 				target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, 1, 2);
 				target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, target.getHeight() / 2, 0), 24, 0, 0, 0, .7);
-				MMOLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PHYSICAL));
+				MythicLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PHYSICAL));
 			}
 		}.runTaskTimer(MMOCore.plugin, 0, 5);
 		return cast;

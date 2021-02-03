@@ -19,8 +19,8 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.mmogroup.mmolib.api.item.ItemTag;
-import net.mmogroup.mmolib.api.item.NBTItem;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
 
 public class WaypointViewer extends EditableInventory {
 	public WaypointViewer() {

@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.command.rpg.booster;
 
 import org.bukkit.command.CommandSender;
 
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
 
 public class BoosterCommandTreeNode extends CommandTreeNode {
 	public BoosterCommandTreeNode(CommandTreeNode parent) {

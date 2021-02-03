@@ -9,7 +9,7 @@ import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class KillMythicMobObjective extends Objective {
 	private final String internalName;

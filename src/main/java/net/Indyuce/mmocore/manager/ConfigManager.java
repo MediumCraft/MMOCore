@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.util.EnumUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -8,8 +10,6 @@ import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.command.CommandVerbose;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.util.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -152,7 +152,7 @@ public class ConfigManager {
 		String format = messages.getString(key, "");
 		for (int j = 0; j < placeholders.length - 1; j += 2)
 			format = format.replace("{" + placeholders[j] + "}", placeholders[j + 1]);
-		return new SimpleMessage(MMOLib.plugin.parseColors(format));
+		return new SimpleMessage(MythicLib.plugin.parseColors(format));
 	}
 
 	public static class SimpleMessage {

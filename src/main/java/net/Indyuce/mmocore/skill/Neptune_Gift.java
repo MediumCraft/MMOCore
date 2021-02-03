@@ -12,7 +12,7 @@ import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class Neptune_Gift extends Skill implements Listener {
 	public Neptune_Gift() {

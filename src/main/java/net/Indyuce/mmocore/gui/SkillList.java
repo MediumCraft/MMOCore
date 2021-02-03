@@ -26,9 +26,9 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.item.ItemTag;
-import net.mmogroup.mmolib.api.item.NBTItem;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
 
 public class SkillList extends EditableInventory {
 	public SkillList() {
@@ -70,7 +70,7 @@ public class SkillList extends EditableInventory {
 
 		if (function.equals("slot"))
 			return new InventoryPlaceholderItem(config) {
-				private final String none = MMOLib.plugin.parseColors(config.getString("no-skill"));
+				private final String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
 				private final Material emptyMaterial = Material
 						.valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
 				private final int emptyCMD = config.getInt("empty-custom-model-data", getModelData());
@@ -96,7 +96,7 @@ public class SkillList extends EditableInventory {
 					if (!inv.getPlayerData().hasSkillBound(n)) {
 						item.setType(emptyMaterial);
 
-						if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
+						if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
 							ItemMeta meta = item.getItemMeta();
 							meta.setCustomModelData(emptyCMD);
 							item.setItemMeta(meta);
@@ -177,15 +177,15 @@ public class SkillList extends EditableInventory {
 				lore.add(index + j, skillLore.get(j));
 
 			for (int j = 0; j < lore.size(); j++)
-				lore.set(j, ChatColor.GRAY + MMOLib.plugin.parseColors(lore.get(j)));
+				lore.set(j, ChatColor.GRAY + MythicLib.plugin.parseColors(lore.get(j)));
 
 			ItemStack item = new ItemStack(getMaterial());
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(MMOLib.plugin.parseColors(getName().replace("{skill}", skill.getSkill().getName())
+			meta.setDisplayName(MythicLib.plugin.parseColors(getName().replace("{skill}", skill.getSkill().getName())
 					.replace("{roman}", MMOCoreUtils.intToRoman(skillLevel)).replace("{level}", "" + skillLevel)));
 			meta.addItemFlags(ItemFlag.values());
 			meta.setLore(lore);
-			if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
+			if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
 				meta.setCustomModelData(getModelData());
 			item.setItemMeta(meta);
 

@@ -6,8 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
-import net.mmogroup.mmolib.command.api.Parameter;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
 
 public class OpenCommandTreeNode extends CommandTreeNode {
 	public OpenCommandTreeNode(CommandTreeNode parent) {

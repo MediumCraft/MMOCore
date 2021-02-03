@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.command;
 
+import io.lumine.mythic.lib.api.util.EnumUtils;
 import net.Indyuce.mmocore.MMOCore;
-import net.mmogroup.mmolib.api.util.EnumUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

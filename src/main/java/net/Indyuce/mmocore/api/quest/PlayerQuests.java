@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -29,7 +29,7 @@ public class PlayerQuests {
 	public PlayerQuests(PlayerData playerData) {
 		this.playerData = playerData;
 		
-		bossbar = MMOLib.plugin.getVersion().getWrapper().createBossBar(
+		bossbar = MythicLib.plugin.getVersion().getWrapper().createBossBar(
 			new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()),
 				"", BarColor.PURPLE, BarStyle.SEGMENTED_20);
 		if(playerData.isOnline())

@@ -1,28 +1,11 @@
 package net.Indyuce.mmocore.api.player.profess;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.ExpCurve;
 import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
@@ -37,10 +20,17 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
 import net.md_5.bungee.api.ChatColor;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.MMOLineConfig;
-import net.mmogroup.mmolib.api.util.PostLoadObject;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.logging.Level;
 
 public class PlayerClass extends PostLoadObject {
 	private final String name, id, actionBarFormat;
@@ -65,7 +55,7 @@ public class PlayerClass extends PostLoadObject {
 
 		this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
 
-		name = MMOLib.plugin.parseColors(config.getString("display.name", "INVALID DISPLAY NAME"));
+		name = MythicLib.plugin.parseColors(config.getString("display.name", "INVALID DISPLAY NAME"));
 		icon = MMOCoreUtils.readIcon(config.getString("display.item", "BARRIER"));
 
 		if (config.contains("display.texture") && icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())
@@ -83,9 +73,9 @@ public class PlayerClass extends PostLoadObject {
 			}
 
 		for (String string : config.getStringList("display.lore"))
-			description.add(ChatColor.GRAY + MMOLib.plugin.parseColors(string));
+			description.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));
 		for (String string : config.getStringList("display.attribute-lore"))
-			attrDescription.add(ChatColor.GRAY + MMOLib.plugin.parseColors(string));
+			attrDescription.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));
 		manaDisplay = config.contains("mana") ? new ManaDisplayOptions(config.getConfigurationSection("mana"))
 				: ManaDisplayOptions.DEFAULT;
 		maxLevel = config.getInt("max-level");

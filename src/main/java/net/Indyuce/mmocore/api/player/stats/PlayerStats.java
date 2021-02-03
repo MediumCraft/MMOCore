@@ -1,10 +1,10 @@
 package net.Indyuce.mmocore.api.player.stats;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.stat.StatInstance;
+import io.lumine.mythic.lib.api.stat.StatMap;
+import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.stat.StatInstance;
-import net.mmogroup.mmolib.api.stat.StatMap;
-import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerStats {
 	private final PlayerData data;
@@ -61,6 +61,6 @@ public class PlayerStats {
 				instance.addModifier("mmocoreClass", new StatModifier(total));
 		}
 
-		MMOLib.plugin.getStats().runUpdates(getMap());
+		MythicLib.plugin.getStats().runUpdates(getMap());
 	}
 }

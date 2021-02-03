@@ -20,10 +20,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.item.ItemTag;
-import net.mmogroup.mmolib.api.item.NBTItem;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class ConfigItem {
 	private final String name, id, texture;
@@ -110,7 +110,7 @@ public class ConfigItem {
 		if (meta instanceof Damageable)
 			((Damageable) meta).setDamage(damage);
 
-		if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
+		if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(modeldata);
 
 		if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial() && texture != null)
@@ -139,6 +139,6 @@ public class ConfigItem {
 		for (String placeholder : placeholders.keySet())
 			if (string.contains("{" + placeholder + "}"))
 				string = string.replace("{" + placeholder + "}", "" + placeholders.get(placeholder));
-		return MMOLib.plugin.parseColors(string);
+		return MythicLib.plugin.parseColors(string);
 	}
 }

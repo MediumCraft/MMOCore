@@ -1,12 +1,7 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.util.AltChar;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
@@ -14,8 +9,13 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.util.AltChar;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 
 public class RPGPlaceholders extends PlaceholderExpansion {
 	@Override
@@ -58,7 +58,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.equals("level_percent")) {
 			double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
-			return MMOLib.plugin.getMMOConfig().decimal.format(current / next * 100);
+			return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		}
 
 		else if (identifier.equals("health") && player.isOnline()) {
@@ -85,7 +85,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			String name = identifier.substring(19).replace(" ", "-").replace("_", "-").toLowerCase();
 			Profession profession = MMOCore.plugin.professionManager.get(name);
 			double current = professions.getExperience(profession), next = professions.getLevelUpExperience(profession);
-			return MMOLib.plugin.getMMOConfig().decimal.format(current / next * 100);
+			return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		}
 
 		else if (identifier.startsWith("is_casting")) {
@@ -135,7 +135,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 					.getAttribute(MMOCore.plugin.attributeManager.get(identifier.substring(10).toLowerCase().replace("_", "-"))));
 
 		else if (identifier.equals("mana"))
-			return MMOLib.plugin.getMMOConfig().decimal.format(playerData.getMana());
+			return MythicLib.plugin.getMMOConfig().decimal.format(playerData.getMana());
 
 		else if (identifier.equals("mana_bar")) {
 			return playerData.getProfess().getManaDisplay().generateBar(playerData.getMana(), playerData.getStats().getStat(StatType.MAX_MANA));
@@ -144,17 +144,17 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.startsWith("exp_multiplier_")) {
 			String format = identifier.substring(15).toLowerCase().replace("_", "-").replace(" ", "-");
 			Profession profession = format.equals("main") ? null : MMOCore.plugin.professionManager.get(format);
-			return MMOLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.boosterManager.getMultiplier(profession) * 100);
+			return MythicLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.boosterManager.getMultiplier(profession) * 100);
 		}
 
 		else if (identifier.startsWith("exp_boost_")) {
 			String format = identifier.substring(10).toLowerCase().replace("_", "-").replace(" ", "-");
 			Profession profession = format.equals("main") ? null : MMOCore.plugin.professionManager.get(format);
-			return MMOLib.plugin.getMMOConfig().decimal.format((MMOCore.plugin.boosterManager.getMultiplier(profession) - 1) * 100);
+			return MythicLib.plugin.getMMOConfig().decimal.format((MMOCore.plugin.boosterManager.getMultiplier(profession) - 1) * 100);
 		}
 
 		else if (identifier.equals("stamina"))
-			return MMOLib.plugin.getMMOConfig().decimal.format(playerData.getStamina());
+			return MythicLib.plugin.getMMOConfig().decimal.format(playerData.getStamina());
 
 		else if (identifier.equals("stamina_bar")) {
 			StringBuilder format = new StringBuilder();
@@ -172,7 +172,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.equals("stellium"))
-			return MMOLib.plugin.getMMOConfig().decimal.format(playerData.getStellium());
+			return MythicLib.plugin.getMMOConfig().decimal.format(playerData.getStellium());
 
 		else if (identifier.equals("stellium_bar")) {
 			StringBuilder format = new StringBuilder();
@@ -189,7 +189,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = playerData.getQuestData();
-			return data.hasCurrent() ? MMOLib.plugin.getMMOConfig().decimal
+			return data.hasCurrent() ? MythicLib.plugin.getMMOConfig().decimal
 					.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100) : "0";
 		}
 

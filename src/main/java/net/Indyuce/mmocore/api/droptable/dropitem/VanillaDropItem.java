@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.api.loot.LootBuilder;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class VanillaDropItem extends DropItem {
 	private final Material material;

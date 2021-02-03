@@ -1,24 +1,22 @@
 package net.Indyuce.mmocore.api.player.attribute;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import io.lumine.mythic.lib.api.stat.modifier.Closable;
+import io.lumine.mythic.lib.api.stat.modifier.ModifierType;
+import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.stat.modifier.Closable;
-import net.mmogroup.mmolib.api.stat.modifier.ModifierType;
-import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
 
 public class PlayerAttributes {
 	private final PlayerData data;

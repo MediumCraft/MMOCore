@@ -22,11 +22,11 @@ import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.VectorRotation;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.AttackResult;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.version.VersionMaterial;
-import net.mmogroup.mmolib.version.VersionSound;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.AttackResult;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionSound;
 
 public class Fire_Rage extends Skill {
 	public Fire_Rage() {
@@ -136,12 +136,12 @@ public class Fire_Rage extends Skill {
 					loc.getWorld().spawnParticle(Particle.LAVA, loc, 0);
 
 					for (Entity target : MMOCoreUtils.getNearbyChunkEntities(loc))
-						if (MMOLib.plugin.getVersion().getWrapper().isInBoundingBox(target, loc) && MMOCoreUtils.canTarget(data, target)) {
+						if (MythicLib.plugin.getVersion().getWrapper().isInBoundingBox(target, loc) && MMOCoreUtils.canTarget(data, target)) {
 							loc.getWorld().spawnParticle(Particle.LAVA, loc, 8);
 							loc.getWorld().spawnParticle(Particle.FLAME, loc, 32, 0, 0, 0, .1);
 							loc.getWorld().playSound(loc, Sound.ENTITY_BLAZE_HURT, 2, 1);
 							target.setFireTicks(target.getFireTicks() + ignite);
-							MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
+							MythicLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
 							cancel();
 						}
 				}

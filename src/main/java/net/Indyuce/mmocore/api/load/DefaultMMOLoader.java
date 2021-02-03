@@ -41,7 +41,7 @@ import net.Indyuce.mmocore.api.quest.trigger.SoundTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StaminaTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StelliumTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class DefaultMMOLoader extends MMOLoader {
 

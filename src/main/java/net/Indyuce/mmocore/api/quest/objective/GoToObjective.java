@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class GoToObjective extends Objective {
 	private final Location loc;

@@ -5,9 +5,9 @@ import org.bukkit.block.Block;
 
 import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.MMOLineConfig;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class SkullBlockType implements BlockType {
 	private final String value;
@@ -19,7 +19,7 @@ public class SkullBlockType implements BlockType {
 	}
 
 	public SkullBlockType(Block block) {
-		value = MMOLib.plugin.getVersion().getWrapper().getSkullValue(block);
+		value = MythicLib.plugin.getVersion().getWrapper().getSkullValue(block);
 	}
 
 	public String getValue() {
@@ -35,7 +35,7 @@ public class SkullBlockType implements BlockType {
 		if (MMOCoreUtils.isPlayerHead(block.getBlockData().getMaterial()))
 			loc.getBlock().setBlockData(block.getBlockData());
 
-		MMOLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
+		MythicLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class SkullBlockType implements BlockType {
 		// This makes sure that if a skull loses its original rotation
 		// it can revert back to it when the base block is regenerated
 		loc.getBlock().setBlockData(block.getBlockData());
-		MMOLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
+		MythicLib.plugin.getVersion().getWrapper().setSkullValue(loc.getBlock(), value);
 	}
 
 	@Override

@@ -26,9 +26,9 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.item.NBTItem;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class MMOCoreUtils {
 	public static boolean pluginItem(ItemStack item) {
@@ -61,14 +61,14 @@ public class MMOCoreUtils {
 	public static ItemStack readIcon(String string) throws IllegalArgumentException {
 		String[] split = string.split(":");
 		Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
-		return split.length > 1 ? MMOLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
+		return split.length > 1 ? MythicLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
 	}
 
 	public static int getWorth(ItemStack[] items) {
 		int t = 0;
 		for (ItemStack item : items)
 			if (item != null && item.getType() != Material.AIR)
-				t += MMOLib.plugin.getVersion().getWrapper().getNBTItem(item).getInteger("RpgWorth") * item.getAmount();
+				t += MythicLib.plugin.getVersion().getWrapper().getNBTItem(item).getInteger("RpgWorth") * item.getAmount();
 		return t;
 	}
 
@@ -177,7 +177,7 @@ public class MMOCoreUtils {
 
 		// basic checks
 		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead()
-				|| MMOLib.plugin.getEntities().findCustom(target))
+				|| MythicLib.plugin.getEntities().findCustom(target))
 			return false;
 
 		// party check

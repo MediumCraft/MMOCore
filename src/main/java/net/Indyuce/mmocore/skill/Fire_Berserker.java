@@ -12,7 +12,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 
 public class Fire_Berserker extends Skill implements Listener {
 	public Fire_Berserker() {

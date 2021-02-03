@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
+import io.lumine.mythic.lib.sql.MMODataSource;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.GuildDataManager;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.yaml.YAMLGuildDataManager;
-import net.mmogroup.mmolib.sql.MMODataSource;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class MySQLDataProvider extends MMODataSource implements DataProvider {
 	private final MySQLPlayerDataManager playerManager = new MySQLPlayerDataManager(this);

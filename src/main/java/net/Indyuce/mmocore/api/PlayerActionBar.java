@@ -11,7 +11,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 
 public class PlayerActionBar extends BukkitRunnable {
 	boolean initialized = false;
@@ -21,7 +21,7 @@ public class PlayerActionBar extends BukkitRunnable {
 	
 	public void reload(ConfigurationSection cfg) {		
 		config = new ActionBarConfig(cfg);
-		digit = new DecimalFormat(config.digit, MMOLib.plugin.getMMOConfig().formatSymbols);
+		digit = new DecimalFormat(config.digit, MythicLib.plugin.getMMOConfig().formatSymbols);
 
 		if(!initialized && config.enabled) {
 			runTaskTimer(MMOCore.plugin, 0, config.ticks);
@@ -38,7 +38,7 @@ public class PlayerActionBar extends BukkitRunnable {
 		for (PlayerData data : PlayerData.getAll()) 
 			if (data.isOnline() && !data.getPlayer().isDead() && !data.isCasting() && data.canSeeActionBar()) {
 				data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(MMOCore.plugin.placeholderParser.parse(data.getPlayer(),
-						MMOLib.plugin.parseColors((data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : config.format)
+						MythicLib.plugin.parseColors((data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : config.format)
 								.replace("{health}", digit.format(data.getPlayer().getHealth()))
 								.replace("{max_health}", "" + StatType.MAX_HEALTH.format(data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
 								.replace("{mana_icon}", data.getProfess().getManaDisplay().getIcon())

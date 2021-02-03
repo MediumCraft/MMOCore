@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.api.player.profess.resource;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.util.AltChar;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.util.AltChar;
 
 public class ManaDisplayOptions {
 	private final ChatColor full, half, empty;
@@ -30,7 +30,7 @@ public class ManaDisplayOptions {
 		Validate.notEmpty(format, "Could not load mana bar character");
 		barCharacter = format.charAt(0);
 
-		icon = MMOLib.plugin.parseColors(config.getString("icon", ""));
+		icon = MythicLib.plugin.parseColors(config.getString("icon", ""));
 		Validate.notEmpty(format, "Could not load mana action bar icon");
 	}
 

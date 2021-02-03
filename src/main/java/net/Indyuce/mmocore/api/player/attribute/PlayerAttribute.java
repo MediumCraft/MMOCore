@@ -1,15 +1,14 @@
 package net.Indyuce.mmocore.api.player.attribute;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
+import net.Indyuce.mmocore.MMOCore;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class PlayerAttribute {
 	private final String id, name;
@@ -25,7 +24,7 @@ public class PlayerAttribute {
 		Validate.notNull(config, "Could not load config");
 		id = config.getName().toLowerCase().replace("_", "-").replace(" ", "-");
 
-		name = MMOLib.plugin.parseColors(config.getString("name", "Attribute"));
+		name = MythicLib.plugin.parseColors(config.getString("name", "Attribute"));
 		max = config.contains("max-points") ? Math.max(1, config.getInt("max-points")) : 0;
 
 		if (config.contains("buff"))

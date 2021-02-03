@@ -17,7 +17,7 @@ import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.manager.MMOManager;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class FishingManager extends MMOManager {
 	private final Set<FishingDropTable> tables = new LinkedHashSet<>();

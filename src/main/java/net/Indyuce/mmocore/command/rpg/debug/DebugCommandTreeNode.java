@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.command.rpg.debug;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
 
 public class DebugCommandTreeNode extends CommandTreeNode {
 	public static final String commandPrefix = ChatColor.YELLOW + "[" + ChatColor.RED + "DEBUG" + ChatColor.GOLD + "] " + ChatColor.RESET;

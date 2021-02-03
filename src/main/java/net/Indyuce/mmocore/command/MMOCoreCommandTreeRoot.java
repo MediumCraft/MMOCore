@@ -1,8 +1,7 @@
 package net.Indyuce.mmocore.command;
 
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.TabCompleter;
-
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeRoot;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.command.rpg.CoinsCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.NoteCommandTreeNode;
@@ -12,8 +11,8 @@ import net.Indyuce.mmocore.command.rpg.booster.BoosterCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.debug.DebugCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.quest.QuestCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.waypoint.WaypointsCommandTreeNode;
-import net.mmogroup.mmolib.command.api.CommandTreeRoot;
-import net.mmogroup.mmolib.command.api.Parameter;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
 
 public class MMOCoreCommandTreeRoot extends CommandTreeRoot implements CommandExecutor, TabCompleter {
 	public static final Parameter PROFESSION = new Parameter("<profession/main>", (explorer, list) -> {

@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.command.rpg.waypoint;
 
 import org.bukkit.command.CommandSender;
 
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
 
 public class WaypointsCommandTreeNode extends CommandTreeNode {
 	public WaypointsCommandTreeNode(CommandTreeNode parent) {

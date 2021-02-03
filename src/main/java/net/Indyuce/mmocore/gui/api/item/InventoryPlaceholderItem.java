@@ -20,7 +20,7 @@ import com.mojang.authlib.properties.Property;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 
 public abstract class InventoryPlaceholderItem extends InventoryItem {
 	private final Material material;
@@ -110,7 +110,7 @@ public abstract class InventoryPlaceholderItem extends InventoryItem {
 			meta.setLore(lore);
 		}
 
-		if (MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
+		if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(getModelData());
 
 		item.setItemMeta(meta);

@@ -4,7 +4,7 @@ import java.util.Random;
 
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public abstract class DropItem {
 	protected static final Random random = new Random();

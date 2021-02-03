@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.api.droptable.condition;
 
 import org.bukkit.entity.Player;
 
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class PermissionCondition extends Condition {
     private final String perm;

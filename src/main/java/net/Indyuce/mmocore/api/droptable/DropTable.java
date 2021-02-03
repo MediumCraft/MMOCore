@@ -14,8 +14,8 @@ import net.Indyuce.mmocore.api.droptable.condition.Condition;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
-import net.mmogroup.mmolib.api.MMOLineConfig;
-import net.mmogroup.mmolib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.util.PostLoadObject;
 
 public class DropTable extends PostLoadObject {
 	private final String id;

@@ -8,7 +8,7 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 
 import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class VanillaBlockType implements BlockType {
 	private final Material type;

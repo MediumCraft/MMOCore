@@ -7,9 +7,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.item.ItemTag;
-import net.mmogroup.mmolib.api.item.NBTItem;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
 
 public class CurrencyItem extends ConfigItem {
 	private final int worth, amount;
@@ -36,7 +36,7 @@ public class CurrencyItem extends ConfigItem {
 		getLore().forEach(line -> lore.add(format(line)));
 		meta.setLore(lore);
 
-		if(MMOLib.plugin.getVersion().isStrictlyHigher(1, 13))
+		if(MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
 			meta.setCustomModelData(getModelData());
 		
 		item.setItemMeta(meta);

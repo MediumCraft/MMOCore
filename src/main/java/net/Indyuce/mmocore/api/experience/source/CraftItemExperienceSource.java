@@ -10,7 +10,7 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.bukkit.event.inventory.InventoryAction;
 
 public class CraftItemExperienceSource extends SpecificExperienceSource<Material> {

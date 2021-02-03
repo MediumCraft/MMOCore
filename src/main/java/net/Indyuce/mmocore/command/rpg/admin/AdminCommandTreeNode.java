@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.command.rpg.admin;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.command.CommandSender;
 
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
 
 public class AdminCommandTreeNode extends CommandTreeNode {
 	public AdminCommandTreeNode(CommandTreeNode parent) {

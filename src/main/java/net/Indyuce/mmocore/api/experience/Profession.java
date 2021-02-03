@@ -13,9 +13,9 @@ import org.bukkit.potion.PotionType;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.MMOLineConfig;
-import net.mmogroup.mmolib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.util.PostLoadObject;
 
 public class Profession extends PostLoadObject {
 	private final String id, name;
@@ -94,7 +94,7 @@ public class Profession extends PostLoadObject {
 		if (config.contains("base-enchant-exp"))
 			for (String key : config.getConfigurationSection("base-enchant-exp").getKeys(false))
 				try {
-					Enchantment enchant = MMOLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
+					Enchantment enchant = MythicLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
 					MMOCore.plugin.enchantManager.registerBaseExperience(enchant, config.getDouble("base-enchant-exp." + key));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read enchant from " + key);

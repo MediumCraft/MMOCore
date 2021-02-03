@@ -18,7 +18,7 @@ import net.Indyuce.mmocore.api.skill.result.TargetSkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class Weaken extends Skill {
 	public Weaken() {

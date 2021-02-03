@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.api.droptable.condition;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.bukkit.entity.Player;
 
 public class LevelCondition extends Condition {

@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.api.quest;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 
 public class QuestProgress {
 	private final Quest quest;
@@ -60,6 +60,6 @@ public class QuestProgress {
 	}
 
 	public String getFormattedLore() {
-		return MMOLib.plugin.parseColors(objectiveProgress.formatLore(objectiveProgress.getObjective().getDefaultLore()));
+		return MythicLib.plugin.parseColors(objectiveProgress.formatLore(objectiveProgress.getObjective().getDefaultLore()));
 	}
 }

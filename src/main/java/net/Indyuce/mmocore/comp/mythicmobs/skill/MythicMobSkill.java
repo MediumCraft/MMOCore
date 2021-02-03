@@ -1,19 +1,6 @@
 package net.Indyuce.mmocore.comp.mythicmobs.skill;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Level;
-
-import net.mmogroup.mmolib.api.util.EnumUtils;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-
+import io.lumine.mythic.lib.api.util.EnumUtils;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -24,6 +11,14 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.comp.anticheat.CheatType;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
+
+import java.util.*;
+import java.util.logging.Level;
 
 public class MythicMobSkill extends Skill {
 	private final io.lumine.xikage.mythicmobs.skills.Skill skill;

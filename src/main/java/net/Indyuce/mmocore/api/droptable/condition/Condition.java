@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.api.droptable.condition;
 
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public abstract class Condition {
 	private final String id;

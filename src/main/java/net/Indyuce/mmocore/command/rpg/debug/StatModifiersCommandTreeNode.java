@@ -1,15 +1,15 @@
 package net.Indyuce.mmocore.command.rpg.debug;
 
+import io.lumine.mythic.lib.api.stat.StatInstance;
+import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.stats.StatType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.mmogroup.mmolib.api.stat.StatInstance;
-import net.mmogroup.mmolib.api.stat.modifier.StatModifier;
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
-import net.mmogroup.mmolib.command.api.Parameter;
 
 public class StatModifiersCommandTreeNode extends CommandTreeNode {
 	public StatModifiersCommandTreeNode(CommandTreeNode parent) {

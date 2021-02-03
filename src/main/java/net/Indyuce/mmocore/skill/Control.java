@@ -19,8 +19,8 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.result.TargetSkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.version.VersionMaterial;
-import net.mmogroup.mmolib.version.VersionSound;
+import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionSound;
 
 public class Control extends Skill {
 	public Control() {

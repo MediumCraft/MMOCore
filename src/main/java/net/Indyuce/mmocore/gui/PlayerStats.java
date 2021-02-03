@@ -21,7 +21,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.mmogroup.mmolib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class PlayerStats extends EditableInventory {
 	public PlayerStats() {

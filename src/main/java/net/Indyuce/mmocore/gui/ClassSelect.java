@@ -23,9 +23,9 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.SoundManager;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.item.ItemTag;
-import net.mmogroup.mmolib.api.item.NBTItem;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
 
 public class ClassSelect extends EditableInventory {
 	public ClassSelect() {
@@ -68,7 +68,7 @@ public class ClassSelect extends EditableInventory {
 			ItemMeta meta = item.getItemMeta();
 			if (hideFlags())
 				meta.addItemFlags(ItemFlag.values());
-			meta.setDisplayName(MMOLib.plugin.parseColors(name).replace("{name}", profess.getName()));
+			meta.setDisplayName(MythicLib.plugin.parseColors(name).replace("{name}", profess.getName()));
 			List<String> lore = new ArrayList<>(this.lore);
 
 			int index = lore.indexOf("{lore}");

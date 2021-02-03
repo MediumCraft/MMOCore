@@ -1,14 +1,13 @@
 package net.Indyuce.mmocore.command.rpg.waypoint;
 
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.Waypoint;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.Waypoint;
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
-import net.mmogroup.mmolib.command.api.Parameter;
 
 public class TeleportCommandTreeNode extends CommandTreeNode {
 	public TeleportCommandTreeNode(CommandTreeNode parent) {

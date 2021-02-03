@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 
 import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
 import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicMobSkillHandler;
-import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 
 public class PlayerAttackSkillHandler extends PassiveMythicMobSkillHandler {
 	/**

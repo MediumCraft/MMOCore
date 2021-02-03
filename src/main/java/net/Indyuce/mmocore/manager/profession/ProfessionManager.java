@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import net.mmogroup.mmolib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.api.util.PostLoadObject;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 

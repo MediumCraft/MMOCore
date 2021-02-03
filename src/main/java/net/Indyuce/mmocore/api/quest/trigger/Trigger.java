@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public abstract class Trigger {
 	private final long delay;

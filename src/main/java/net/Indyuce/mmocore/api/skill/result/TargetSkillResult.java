@@ -6,8 +6,8 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.MMORayTraceResult;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.MMORayTraceResult;
 
 public class TargetSkillResult extends SkillResult {
 	private LivingEntity target;
@@ -31,7 +31,7 @@ public class TargetSkillResult extends SkillResult {
 		super(data, skill);
 
 		if (isSuccessful()) {
-			MMORayTraceResult result = MMOLib.plugin.getVersion().getWrapper().rayTrace(data.getPlayer(), range,
+			MMORayTraceResult result = MythicLib.plugin.getVersion().getWrapper().rayTrace(data.getPlayer(), range,
 					entity -> MMOCoreUtils.canTarget(data, entity, buff));
 			if (!result.hasHit())
 				abort();

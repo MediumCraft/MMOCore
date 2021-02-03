@@ -22,12 +22,12 @@ import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.AttackResult;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
-import net.mmogroup.mmolib.version.VersionMaterial;
-import net.mmogroup.mmolib.version.VersionSound;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.AttackResult;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionSound;
 
 public class Power_Mark extends Skill implements Listener {
 	public Power_Mark() {
@@ -117,7 +117,7 @@ public class Power_Mark extends Skill implements Listener {
 				for (Entity entity : MMOCoreUtils.getNearbyChunkEntities(loc))
 					if (entity.getLocation().distanceSquared(loc) < 25 && MMOCoreUtils.canTarget(data, entity)) {
 						((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (stun * 20), 10, false, false));
-						MMOLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(accumulate, DamageType.SKILL, DamageType.MAGIC));
+						MythicLib.plugin.getDamage().damage(data.getPlayer(), (LivingEntity) entity, new AttackResult(accumulate, DamageType.SKILL, DamageType.MAGIC));
 						entity.setVelocity(format(entity.getLocation().subtract(loc).toVector().setY(0)).setY(.3));
 					}
 				return;

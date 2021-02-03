@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.api.util.math.formula;
 
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class LinearValue {
@@ -74,7 +74,7 @@ public class LinearValue {
 	}
 
 	public String getDisplay(int level) {
-		return MMOLib.plugin.getMMOConfig().decimals.format(calculate(level));
+		return MythicLib.plugin.getMMOConfig().decimals.format(calculate(level));
 	}
 
 	public double calculate(int level) {

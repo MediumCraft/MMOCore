@@ -13,8 +13,8 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 
 public class Backstab extends Skill implements Listener {
 	public Backstab() {

@@ -1,11 +1,13 @@
 package net.Indyuce.mmocore.api.block;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
+import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.condition.type.BlockCondition;
+import io.lumine.mythic.lib.api.condition.type.MMOCondition;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.droptable.DropTable;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -13,14 +15,11 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.droptable.DropTable;
-import net.Indyuce.mmocore.api.loot.LootBuilder;
-import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.mmogroup.mmolib.UtilityMethods;
-import net.mmogroup.mmolib.api.MMOLineConfig;
-import net.mmogroup.mmolib.api.condition.type.BlockCondition;
-import net.mmogroup.mmolib.api.condition.type.MMOCondition;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class BlockInfo {
 	private final BlockType block;

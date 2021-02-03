@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Booster;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
 
 public class ListCommandTreeNode extends CommandTreeNode {
 	public ListCommandTreeNode(CommandTreeNode parent) {
@@ -23,8 +23,8 @@ public class ListCommandTreeNode extends CommandTreeNode {
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
 		for (Booster booster : MMOCore.plugin.boosterManager.getBoosters())
 			if (!booster.isTimedOut())
-				MMOLib.plugin.getVersion().getWrapper().sendJson((Player) sender, "{\"text\":\"" + ChatColor.YELLOW + "- " + ChatColor.GOLD
-						+ MMOLib.plugin.getMMOConfig().decimal.format((1 + booster.getExtra())) + "x" + ChatColor.YELLOW + " Booster - "
+				MythicLib.plugin.getVersion().getWrapper().sendJson((Player) sender, "{\"text\":\"" + ChatColor.YELLOW + "- " + ChatColor.GOLD
+						+ MythicLib.plugin.getMMOConfig().decimal.format((1 + booster.getExtra())) + "x" + ChatColor.YELLOW + " Booster - "
 						+ ChatColor.GOLD + (!booster.hasProfession() ? "ExploreAttributesCommand" : booster.getProfession().getName())
 						+ ChatColor.YELLOW + " - " + ChatColor.GOLD
 						+ new DelayFormat().format(booster.getCreationDate() + booster.getLength() - System.currentTimeMillis())

@@ -10,8 +10,8 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
 import net.Indyuce.mmocore.command.CommandVerbose;
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
-import net.mmogroup.mmolib.command.api.Parameter;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
 
 public class ResetCommandTreeNode extends CommandTreeNode {
 	public ResetCommandTreeNode(CommandTreeNode parent) {

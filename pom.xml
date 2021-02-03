@@ -84,6 +84,10 @@
 			<url>https://jitpack.io</url>
 		</repository>
 		<repository>
+			<id>lumine-repo</id>
+			<url>https://mvn.lumine.io/repository/maven-public/</url>
+		</repository>
+		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
@@ -107,12 +111,18 @@
 		</dependency>
 
 		<!-- MMOs -->
-		<dependency>
+		<!--<dependency>
 			<groupId>net.Indyuce</groupId>
 			<artifactId>MMOLib</artifactId>
 			<version>1.7.3</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/MMOLib.jar</systemPath>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>io.lumine</groupId>
+			<artifactId>MythicLib</artifactId>
+			<version>0.0.1-20210203.081118-2</version>
 		</dependency>
 
 		<!-- APIs -->

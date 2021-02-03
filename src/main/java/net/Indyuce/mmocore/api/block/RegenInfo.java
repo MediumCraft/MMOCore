@@ -4,7 +4,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class RegenInfo {
 	private final BlockType temporary;

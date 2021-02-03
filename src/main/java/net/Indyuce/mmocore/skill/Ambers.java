@@ -17,8 +17,8 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 
 public class Ambers extends Skill implements Listener {
 	public Ambers() {

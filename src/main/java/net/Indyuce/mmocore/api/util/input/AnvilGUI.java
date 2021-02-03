@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Consumer;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 
 public class AnvilGUI extends PlayerInput {
 	private final int containerId;
@@ -26,25 +26,25 @@ public class AnvilGUI extends PlayerInput {
 		paperMeta.setDisplayName(MMOCore.plugin.configManager.getSimpleMessage("player-input.anvil." + type.getLowerCaseName()).message());
 		paper.setItemMeta(paperMeta);
 
-		MMOLib.plugin.getVersion().getWrapper().handleInventoryCloseEvent(player);
-		MMOLib.plugin.getVersion().getWrapper().setActiveContainerDefault(player);
+		MythicLib.plugin.getVersion().getWrapper().handleInventoryCloseEvent(player);
+		MythicLib.plugin.getVersion().getWrapper().setActiveContainerDefault(player);
 
-		final Object container = MMOLib.plugin.getVersion().getWrapper().newContainerAnvil(player);
+		final Object container = MythicLib.plugin.getVersion().getWrapper().newContainerAnvil(player);
 
-		inventory = MMOLib.plugin.getVersion().getWrapper().toBukkitInventory(container);
+		inventory = MythicLib.plugin.getVersion().getWrapper().toBukkitInventory(container);
 		inventory.setItem(0, paper);
 
-		containerId = MMOLib.plugin.getVersion().getWrapper().getNextContainerId(player);
-		MMOLib.plugin.getVersion().getWrapper().sendPacketOpenWindow(player, containerId);
-		MMOLib.plugin.getVersion().getWrapper().setActiveContainer(player, container);
-		MMOLib.plugin.getVersion().getWrapper().setActiveContainerId(container, containerId);
-		MMOLib.plugin.getVersion().getWrapper().addActiveContainerSlotListener(container, player);
+		containerId = MythicLib.plugin.getVersion().getWrapper().getNextContainerId(player);
+		MythicLib.plugin.getVersion().getWrapper().sendPacketOpenWindow(player, containerId);
+		MythicLib.plugin.getVersion().getWrapper().setActiveContainer(player, container);
+		MythicLib.plugin.getVersion().getWrapper().setActiveContainerId(container, containerId);
+		MythicLib.plugin.getVersion().getWrapper().addActiveContainerSlotListener(container, player);
 	}
 
 	public void close() {
-		MMOLib.plugin.getVersion().getWrapper().handleInventoryCloseEvent(getPlayer());
-		MMOLib.plugin.getVersion().getWrapper().setActiveContainerDefault(getPlayer());
-		MMOLib.plugin.getVersion().getWrapper().sendPacketCloseWindow(getPlayer(), containerId);
+		MythicLib.plugin.getVersion().getWrapper().handleInventoryCloseEvent(getPlayer());
+		MythicLib.plugin.getVersion().getWrapper().setActiveContainerDefault(getPlayer());
+		MythicLib.plugin.getVersion().getWrapper().sendPacketCloseWindow(getPlayer(), containerId);
 
 		InventoryClickEvent.getHandlerList().unregister(this);
 		InventoryCloseEvent.getHandlerList().unregister(this);

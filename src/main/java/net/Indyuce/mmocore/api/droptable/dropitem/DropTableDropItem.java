@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.api.droptable.DropTable;
 import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class DropTableDropItem extends DropItem {
 	private final DropTable dropTable;

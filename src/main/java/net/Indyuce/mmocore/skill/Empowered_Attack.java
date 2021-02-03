@@ -1,5 +1,18 @@
 package net.Indyuce.mmocore.skill;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.AttackResult;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VersionSound;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -9,20 +22,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill;
-import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.AttackResult;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
-import net.mmogroup.mmolib.version.VersionMaterial;
-import net.mmogroup.mmolib.version.VersionSound;
 
 public class Empowered_Attack extends Skill {
 	private static final double perb = 5;
@@ -109,7 +108,7 @@ public class Empowered_Attack extends Skill {
 				for (Entity entity : target.getNearbyEntities(rad, rad, rad))
 					if (MMOCoreUtils.canTarget(player, entity)) {
 						drawVector(src, entity.getLocation().add(0, entity.getHeight() / 2, 0).subtract(src).toVector());
-						MMOLib.plugin.getDamage().damage(player.getPlayer(), (LivingEntity) entity, new AttackResult(sweep, DamageType.SKILL, DamageType.PHYSICAL));
+						MythicLib.plugin.getDamage().damage(player.getPlayer(), (LivingEntity) entity, new AttackResult(sweep, DamageType.SKILL, DamageType.PHYSICAL));
 					}
 
 				/*

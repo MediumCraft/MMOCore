@@ -11,7 +11,7 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
-import net.mmogroup.mmolib.version.VersionSound;
+import io.lumine.mythic.lib.version.VersionSound;
 
 public class Warp extends Skill {
 	public Warp() {

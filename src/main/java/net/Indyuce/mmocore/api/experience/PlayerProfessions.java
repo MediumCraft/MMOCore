@@ -23,7 +23,7 @@ import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.manager.SoundManager;
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 
 public class PlayerProfessions {
 	private final Map<String, Integer> exp = new HashMap<>();
@@ -184,6 +184,6 @@ public class PlayerProfessions {
 			bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 		if (playerData.isOnline())
 			MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
-					MMOLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
+					MythicLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
 }

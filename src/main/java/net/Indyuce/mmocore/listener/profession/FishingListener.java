@@ -32,7 +32,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
-import net.mmogroup.mmolib.version.VersionSound;
+import io.lumine.mythic.lib.version.VersionSound;
 
 public class FishingListener implements Listener {
 	private final Set<UUID> fishing = new HashSet<>();

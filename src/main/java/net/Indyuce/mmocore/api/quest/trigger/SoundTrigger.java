@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.api.quest.trigger;
 import org.bukkit.Sound;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class SoundTrigger extends Trigger {
 	private final Sound sound;

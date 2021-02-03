@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.api.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class FishingDropItem {
 	private final RandomAmount experience, tugs;

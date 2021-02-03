@@ -1,20 +1,19 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.itemtype.ItemType;
+import io.lumine.mythic.lib.api.util.PostLoadObject;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.block.BlockType;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.block.BlockType;
-import net.mmogroup.mmolib.api.MMOLineConfig;
-import net.mmogroup.mmolib.api.itemtype.ItemType;
-import net.mmogroup.mmolib.api.util.PostLoadObject;
 
 public class RestrictionManager {
 	private final Map<ItemType, ToolPermissions> map = new HashMap<>();

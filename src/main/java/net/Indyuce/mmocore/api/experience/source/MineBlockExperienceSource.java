@@ -12,8 +12,8 @@ import net.Indyuce.mmocore.api.experience.Profession;
 import net.Indyuce.mmocore.api.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceManager;
-import net.mmogroup.mmolib.MMOLib;
-import net.mmogroup.mmolib.api.MMOLineConfig;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class MineBlockExperienceSource extends SpecificExperienceSource<Material> {
 	public final Material material;
@@ -45,7 +45,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 				for (MineBlockExperienceSource source : getSources()) {
 					if (source.silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand()))
 						continue;
-					if (source.crop && !MMOLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
+					if (source.crop && !MythicLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
 						continue;
 					if ((!source.playerPlaced) && event.getBlock().hasMetadata("player_placed"))
 						continue;

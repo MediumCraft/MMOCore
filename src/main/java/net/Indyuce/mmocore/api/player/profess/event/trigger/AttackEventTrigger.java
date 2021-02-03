@@ -6,8 +6,8 @@ import org.bukkit.event.EventPriority;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
-import net.mmogroup.mmolib.api.DamageType;
-import net.mmogroup.mmolib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 
 public class AttackEventTrigger implements EventTriggerHandler {
 

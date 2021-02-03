@@ -2,12 +2,12 @@ package net.Indyuce.mmocore.comp.placeholder;
 
 import org.bukkit.OfflinePlayer;
 
-import net.mmogroup.mmolib.MMOLib;
+import io.lumine.mythic.lib.MythicLib;
 
 public class DefaultParser implements PlaceholderParser {
 
 	@Override
 	public String parse(OfflinePlayer player, String string) {
-		return MMOLib.plugin.parseColors(string.replace("%player%", player.getName()));
+		return MythicLib.plugin.parseColors(string.replace("%player%", player.getName()));
 	}
 }

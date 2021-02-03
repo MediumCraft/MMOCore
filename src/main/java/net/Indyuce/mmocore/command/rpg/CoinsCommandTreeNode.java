@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.command.rpg;
 
+import io.lumine.mythic.lib.api.util.SmartGive;
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
+import net.Indyuce.mmocore.api.util.item.CurrencyItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.api.util.item.CurrencyItem;
-import net.mmogroup.mmolib.api.util.SmartGive;
-import net.mmogroup.mmolib.command.api.CommandTreeNode;
-import net.mmogroup.mmolib.command.api.Parameter;
 
 public class CoinsCommandTreeNode extends CommandTreeNode {
 	public CoinsCommandTreeNode(CommandTreeNode parent) {
