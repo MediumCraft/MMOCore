@@ -13,6 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 public class RPGPlaceholders extends PlaceholderExpansion {
@@ -43,7 +45,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 	@SuppressWarnings("DuplicateExpressions")
 	@Override
-	public String onRequest(OfflinePlayer player, String identifier) {
+	public String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
 		PlayerData playerData = PlayerData.get(player);
 
 		if (identifier.equals("mana_icon"))

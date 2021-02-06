@@ -12,7 +12,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -21,21 +20,15 @@ import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
 
-    /*
-    	We load our player data.
-     */
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void playerLoadingEvent(PlayerJoinEvent e) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				MMOCore.plugin.dataProvider.getDataManager().setup(e.getPlayer().getUniqueId());
-			}
-		}.runTaskAsynchronously(MMOCore.plugin);
+	/*
+	 * initialize player data
+	 */
+	@EventHandler(priority = EventPriority.LOW)
+	public void a(PlayerJoinEvent event) {
+		MMOCore.plugin.dataProvider.getDataManager().setup(event.getPlayer().getUniqueId());
 	}
 
 	/*
