@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.gui;
 
+import net.Indyuce.mmocore.api.event.PlayerAttributeUseEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -127,6 +129,10 @@ public class AttributeView extends EditableInventory {
 				playerData.giveAttributePoints(-1);
 				MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", "" + ins.getBase()).send(player);
 				MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.LEVEL_ATTRIBUTE);
+
+				PlayerAttributeUseEvent playerAttributeUseEvent = new PlayerAttributeUseEvent(playerData);
+				Bukkit.getServer().getPluginManager().callEvent(playerAttributeUseEvent);
+
 				open();
 			}
 		}
