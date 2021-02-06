@@ -92,16 +92,11 @@ public class PlayerData extends OfflinePlayerData {
 		this.questData = new PlayerQuests(this);
 	}
 
-	/*
-	 * easily solves some issues where other plugins use PlayerData.get
-	 */
-	public static final PlayerData NOT_LOADED = new PlayerData();
-
 	@Deprecated
 	private PlayerData() {
 		super(UUID.randomUUID());
 
-		mmoData = new MMOPlayerData(null, null);
+		mmoData = new MMOPlayerData();
 		playerStats = new PlayerStats(this);
 		questData = new PlayerQuests(this, null);
 	}
@@ -447,7 +442,7 @@ public class PlayerData extends OfflinePlayerData {
 	 * 
 	 * @param value  Experience to give the player
 	 * @param source How the player earned experience
-	 * @param loc    Location used to display the hologram. If it's null, no
+	 * @param hologramLocation    Location used to display the hologram. If it's null, no
 	 *               hologram will be displayed
 	 */
 	public void giveExperience(int value, EXPSource source, @Nullable Location hologramLocation) {
@@ -787,6 +782,11 @@ public class PlayerData extends OfflinePlayerData {
 		PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast, true);
 		Bukkit.getPluginManager().callEvent(postEvent);
 		return cast;
+	}
+
+	@Override
+	public int hashCode() {
+		return mmoData.hashCode();
 	}
 
 	@Override

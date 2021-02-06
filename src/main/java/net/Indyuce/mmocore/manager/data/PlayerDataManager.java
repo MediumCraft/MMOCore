@@ -1,9 +1,6 @@
 package net.Indyuce.mmocore.manager.data;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,9 +11,11 @@ import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class PlayerDataManager {
-	private final static Map<UUID, PlayerData> data = new HashMap<>();
+	private final static Map<UUID, PlayerData> data = Collections.synchronizedMap(new HashMap<>());
+
 	private DefaultPlayerData defaultData = new DefaultPlayerData(1, 0, 0, 0, 0);
 
 	public PlayerData get(OfflinePlayer player) {
@@ -33,33 +32,28 @@ public abstract class PlayerDataManager {
 
 	public abstract OfflinePlayerData getOffline(UUID uuid);
 
-	public PlayerData setup(UUID uuid) {
-		/*
-		 * Setup playerData based on loadData method to support both MySQL and
-		 * YAML data storage
-		 */
-		PlayerData playerData = data.get(uuid);
-		if (playerData == null) {
-			playerData = data.put(uuid, new PlayerData(MMOPlayerData.get(uuid)));
+	public PlayerData setup(UUID uniqueId) {
+		return data.compute(uniqueId, (uuid, searchData) -> {
+			if (searchData == null) {
+				PlayerData playerData = new PlayerData(MMOPlayerData.get(uniqueId));
 
-			/*
-			 * Loads player data and ONLY THEN refresh the player statistics and
-			 * calls the load event on the MAIN thread
-			 */
-			Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-				PlayerData loaded = PlayerData.get(uuid);
-				if (!loaded.isOnline())
-					return;
-				loadData(loaded);
-				Bukkit.getScheduler().runTask(MMOCore.plugin, () -> {
-					if (loaded.isOnline())
-						Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(loaded));
-				});
-				loaded.getStats().updateStats();
-			});
-		}
-		return playerData;
+				loadData(playerData);
+				playerData.getStats().updateStats();
+
+				// We call the player data load event. TODO: Convert this event to async.
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(playerData));
+					}
+				}.runTask(MMOCore.plugin);
+
+				return playerData;
+			} else return searchData;
+
+		});
 	}
+
 
 	public DefaultPlayerData getDefaultData() {
 		return defaultData;
