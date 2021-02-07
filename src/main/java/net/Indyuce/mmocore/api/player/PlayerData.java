@@ -101,7 +101,7 @@ public class PlayerData extends OfflinePlayerData {
 	private PlayerData() {
 		super(UUID.randomUUID());
 
-		mmoData = new MMOPlayerData(null, null);
+		mmoData = new MMOPlayerData(null);
 		playerStats = new PlayerStats(this);
 		questData = new PlayerQuests(this, null);
 	}
@@ -447,7 +447,7 @@ public class PlayerData extends OfflinePlayerData {
 	 * 
 	 * @param value  Experience to give the player
 	 * @param source How the player earned experience
-	 * @param loc    Location used to display the hologram. If it's null, no
+	 * @param hologramLocation    Location used to display the hologram. If it's null, no
 	 *               hologram will be displayed
 	 */
 	public void giveExperience(int value, EXPSource source, @Nullable Location hologramLocation) {
