@@ -130,7 +130,7 @@ public class PlayerData extends OfflinePlayerData {
 							+ getProfess().getId() + " while refreshing player data.");
 				} catch (NullPointerException npe2) {
 					MMOCore.log(Level.SEVERE,
-							"[Userdata] Could not find unidentified skill in class " + getProfess().getId() + " while refreshing player data.");
+							"[Userdata] Could not find unidentified skill in the class " + getProfess().getId() + " while refreshing player data.");
 				}
 			}
 	}
