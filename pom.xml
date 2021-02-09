@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.Indyuce</groupId>
 	<artifactId>MMOCore</artifactId>
-	<version>1.6.2</version>
+	<version>1.7.0</version>
 	<name>MMOCore</name>
-	<description>Offer your players a brand new RPG experience.</description>
+	<description>Offer your players a brand new RPG experience!</description>
 
 	<properties>
 		<downloadSources>false</downloadSources>
@@ -122,7 +122,7 @@
 		<dependency>
 			<groupId>io.lumine</groupId>
 			<artifactId>MythicLib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 

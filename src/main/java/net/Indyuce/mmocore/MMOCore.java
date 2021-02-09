@@ -2,6 +2,7 @@ package net.Indyuce.mmocore;
 
 import io.lumine.mythic.lib.comp.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
+import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.loot.LootChest;
@@ -62,7 +63,7 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.logging.Level;
 
-public class MMOCore extends JavaPlugin {
+public class MMOCore extends LuminePlugin {
 	public static MMOCore plugin;
 
 	public ConfigManager configManager;
@@ -103,7 +104,7 @@ public class MMOCore extends JavaPlugin {
 
 	public boolean shouldDebugSQL = false;
 
-	public void onLoad() {
+	public void load() {
 		plugin = this;
 
 		/*
@@ -127,7 +128,7 @@ public class MMOCore extends JavaPlugin {
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) flagPlugin = new WorldGuardFlags();
 	}
 
-	public void onEnable() {
+	public void enable() {
 		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
 		saveDefaultConfig();
@@ -329,7 +330,7 @@ public class MMOCore extends JavaPlugin {
 		}
 	}
 
-	public void onDisable() {
+	public void disable() {
 		for (PlayerData data : PlayerData.getAll()) {
 			if(!data.isFullyLoaded()) return;
 			data.getQuestData().resetBossBar();
