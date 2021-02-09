@@ -93,20 +93,6 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	/*
-	 * easily solves some issues where other plugins use PlayerData.get
-	 */
-	public static final PlayerData NOT_LOADED = new PlayerData();
-
-	@Deprecated
-	private PlayerData() {
-		super(UUID.randomUUID());
-
-		mmoData = new MMOPlayerData(null);
-		playerStats = new PlayerStats(this);
-		questData = new PlayerQuests(this, null);
-	}
-
-	/*
 	 * update all references after /mmocore reload so there can be garbage
 	 * collection with old plugin objects like class or skill instances.
 	 */
@@ -130,7 +116,7 @@ public class PlayerData extends OfflinePlayerData {
 							+ getProfess().getId() + " while refreshing player data.");
 				} catch (NullPointerException npe2) {
 					MMOCore.log(Level.SEVERE,
-							"[Userdata] Could not find unidentified skill in the class " + getProfess().getId() + " while refreshing player data.");
+							"[Userdata] Could not find unidentified skill in class " + getProfess().getId() + " while refreshing player data.");
 				}
 			}
 	}
@@ -787,6 +773,11 @@ public class PlayerData extends OfflinePlayerData {
 		PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast, true);
 		Bukkit.getPluginManager().callEvent(postEvent);
 		return cast;
+	}
+
+	@Override
+	public int hashCode() {
+		return mmoData.hashCode();
 	}
 
 	@Override
