@@ -1,11 +1,9 @@
 package net.Indyuce.mmocore.api.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.version.VersionMaterial;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,10 +23,11 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.item.NBTItem;
-import io.lumine.mythic.lib.version.VersionMaterial;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MMOCoreUtils {
 	public static boolean pluginItem(ItemStack item) {
@@ -211,13 +210,18 @@ public class MMOCoreUtils {
 	 */
 	public static void decreaseDurability(Player player, EquipmentSlot slot, int damage) {
 		ItemStack item = player.getInventory().getItem(slot);
+		NBTItem nbt = NBTItem.get(item);
+
+		if(!nbt.hasTag("MMOITEMS_MAX_DURABILITY")){
+			return;
+		}
 
 		PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, item, damage);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
 
-		NBTItem nbt = NBTItem.get(item);
+
 		if (!nbt.getBoolean("Unbreakable") && item.getItemMeta() instanceof Damageable) {
 			ItemMeta meta = item.getItemMeta();
 			((Damageable) meta).setDamage(((Damageable) meta).getDamage() + damage);

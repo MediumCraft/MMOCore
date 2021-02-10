@@ -24,7 +24,7 @@ public class MythicMobSkill extends Skill {
 	private final io.lumine.xikage.mythicmobs.skills.Skill skill;
 	private final Map<CheatType, Integer> antiCheat = new HashMap<>();
 
-	// private final BiFunction<PlayerDataManager, SkillInfo, SkillResult> cast;
+	//private final BiFunction<PlayerDataManager, SkillInfo, SkillResult> cast;
 
 	public MythicMobSkill(String id, FileConfiguration config) {
 		super(id);
