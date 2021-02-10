@@ -136,9 +136,9 @@ public class BlockListener implements Listener {
 		 * Finally enable block regen.
 		 */
 		if (info.hasRegen()) {
-			Schedulers.sync().run(()-> {
+			Schedulers.sync().runLater(()-> {
 				MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !temporaryBlock);
-			});
+			}, 1);
 
 		}
 	}
