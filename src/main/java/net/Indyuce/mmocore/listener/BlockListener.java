@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.listener;
 
+import io.lumine.mythic.utils.Schedulers;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -134,8 +135,12 @@ public class BlockListener implements Listener {
 		/*
 		 * Finally enable block regen.
 		 */
-		if (info.hasRegen())
-			MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !temporaryBlock);
+		if (info.hasRegen()) {
+			Schedulers.async().runLater(()-> {
+				MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !temporaryBlock);
+			}, 1);
+
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
