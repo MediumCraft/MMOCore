@@ -130,7 +130,7 @@ public abstract class Skill {
 	}
 
 	/*
-	 * not overriden for passive skills therefore not abstract.
+	 * not overridden for passive skills therefore not abstract.
 	 */
 	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
 		return new SkillResult(data, skill);
