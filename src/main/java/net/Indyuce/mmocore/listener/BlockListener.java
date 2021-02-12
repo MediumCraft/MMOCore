@@ -1,34 +1,25 @@
 package net.Indyuce.mmocore.listener;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.utils.Schedulers;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Statistic;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.block.BlockInfo;
+import net.Indyuce.mmocore.api.block.BlockInfo.BlockInfoOption;
+import net.Indyuce.mmocore.api.block.VanillaBlockType;
+import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.block.BlockInfo;
-import net.Indyuce.mmocore.api.block.VanillaBlockType;
-import net.Indyuce.mmocore.api.block.BlockInfo.BlockInfoOption;
-import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import io.lumine.mythic.lib.UtilityMethods;
 
 public class BlockListener implements Listener {
 	private static final BlockFace[] order = { BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH };
@@ -146,7 +137,10 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void registerPlayerPlacedBlocksTag(BlockPlaceEvent event) {
 		event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
+
 	}
+
+
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void blockPistonExtend(BlockPistonExtendEvent event) {
