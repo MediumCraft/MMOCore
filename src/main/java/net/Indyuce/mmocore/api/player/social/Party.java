@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import net.Indyuce.mmocore.api.experience.EXPSource;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;

@@ -66,7 +66,7 @@ public class PlayerData extends OfflinePlayerData {
 	private final List<UUID> friends = new ArrayList<>();
 	private final Set<String> waypoints = new HashSet<>();
 	private final Map<String, Integer> skills = new HashMap<>();
-	private final List<SkillInfo> boundSkills = new ArrayList<>(5);
+	private final List<SkillInfo> boundSkills = new ArrayList<>();
 	private final PlayerProfessions collectSkills = new PlayerProfessions(this);
 	private final PlayerSkillData skillData = new PlayerSkillData(this);
 	private final PlayerAttributes attributes = new PlayerAttributes(this);
@@ -688,12 +688,14 @@ public class PlayerData extends OfflinePlayerData {
 	}
 
 	public SkillInfo getBoundSkill(int slot) {
-		slot = Math.max(0, slot);
 		return slot >= boundSkills.size() ? null : boundSkills.get(slot);
 	}
 
 	public void setBoundSkill(int slot, SkillInfo skill) {
-		boundSkills.set(Math.min(5, Math.max(0, slot)), skill);
+		if (boundSkills.size() < 6)
+			boundSkills.add(skill);
+		else
+			boundSkills.set(slot, skill);
 	}
 
 	public void unbindSkill(int slot) {
