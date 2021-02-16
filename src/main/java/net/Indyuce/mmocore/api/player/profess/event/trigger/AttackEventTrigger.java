@@ -18,6 +18,9 @@ public class AttackEventTrigger implements EventTriggerHandler {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void a(PlayerAttackEvent event) {
+		// We don't want players dying by themselves when using an enderpearl.
+		if(event.getPlayer().equals(event.getEntity())) return;
+
 		PlayerData player = PlayerData.get(event.getData().getUniqueId());
 		PlayerClass profess = player.getProfess();
 
