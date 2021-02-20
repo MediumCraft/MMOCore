@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.BlockInfo.BlockInfoOption;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
+import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -108,8 +109,10 @@ public class BlockListener implements Listener {
 		 * can give exp to other TOOLS and display HOLOGRAMS
 		 */
 		if (info.hasTriggers() && !block.hasMetadata("player_placed")) {
-			PlayerData playerData = PlayerData.get(player);
-			info.getTriggers().forEach(trigger -> trigger.apply(playerData));
+			if (!info.hasDropTable() || info.hasDropTable() && info.getDropTable().areConditionsMet(new ConditionInstance(player))) {
+				PlayerData playerData = PlayerData.get(player);
+				info.getTriggers().forEach(trigger -> trigger.apply(playerData));
+			}
 		}
 
 		/*
