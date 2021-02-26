@@ -19,7 +19,7 @@ public class PlayerDamageSkillHandler extends PassiveMythicMobSkillHandler {
 
 	@EventHandler
 	private void event(EntityDamageEvent e) {
-		if (e.getEntityType() == EntityType.PLAYER)
+		if (e.getEntityType() == EntityType.PLAYER && !e.getEntity().hasMetadata("NPC"))
 			castSkill(PlayerData.get((Player) e.getEntity()));
 	}	
 }
