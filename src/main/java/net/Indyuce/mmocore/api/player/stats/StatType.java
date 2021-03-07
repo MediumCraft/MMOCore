@@ -51,6 +51,7 @@ public enum StatType {
 	PROJECTILE_DAMAGE,
 	WEAPON_DAMAGE,
 	SKILL_DAMAGE,
+	UNDEAD_DAMAGE,
 
 	PVP_DAMAGE,
 	PVE_DAMAGE,
@@ -78,9 +79,7 @@ public enum StatType {
 	GATHERING_HASTE,
 
 	// chance of getting more crops when farming
-	LUCK_OF_THE_FIELD,
-
-	;
+	LUCK_OF_THE_FIELD;
 
 	private String profession;
 
