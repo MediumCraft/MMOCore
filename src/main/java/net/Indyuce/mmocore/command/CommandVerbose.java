@@ -30,7 +30,7 @@ public class CommandVerbose {
 	}
 
 	public void handle(CommandSender sender, CommandType cmd, String verbose) {
-		switch(values.getOrDefault(cmd, VerboseValue.TRUE)) {
+		switch(values.getOrDefault(cmd, VerboseValue.FALSE)) {
 			case FALSE:
 				return;
 			case TRUE:
