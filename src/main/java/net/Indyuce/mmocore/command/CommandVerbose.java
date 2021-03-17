@@ -34,15 +34,15 @@ public class CommandVerbose {
 			case FALSE:
 				return;
 			case TRUE:
-				sender.sendMessage(verbose);
+				//sender.sendMessage(verbose);
 				break;
 			case PLAYER:
 				if(sender instanceof Player)
-					sender.sendMessage(verbose);
+					//sender.sendMessage(verbose);
 				break;
 			case CONSOLE:
 				if(!(sender instanceof Player))
-					sender.sendMessage(verbose);
+					//sender.sendMessage(verbose);
 				break;
 		}
 	}
