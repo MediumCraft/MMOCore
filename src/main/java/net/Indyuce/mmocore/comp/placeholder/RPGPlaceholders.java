@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.comp.placeholder;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.util.AltChar;
+import io.lumine.utils.logging.Log;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.PlayerProfessions;
@@ -187,6 +188,8 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = playerData.getQuestData();
+			Log.info("Data current objective number: " + data.getCurrent().getObjectiveNumber());
+			Log.info("Total size of objective: "+ data.getCurrent().getQuest().getObjectives().size() * 100L);
 			return data.hasCurrent() ? MythicLib.plugin.getMMOConfig().decimal
 					.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100L) : "0";
 		}
