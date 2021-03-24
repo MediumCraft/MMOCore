@@ -188,7 +188,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = playerData.getQuestData();
 			return data.hasCurrent() ? MythicLib.plugin.getMMOConfig().decimal
-					.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100) : "0";
+					.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100L) : "0";
 		}
 
 		else if (identifier.equals("quest_objective")) {
