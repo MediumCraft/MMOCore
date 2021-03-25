@@ -192,7 +192,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			Log.info("Total size of objective: "+ data.getCurrent().getQuest().getObjectives().size() * 100L);
 
 			return data.hasCurrent() ? MythicLib.plugin.getMMOConfig().decimal
-					.format((int) (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100L) : "0";
+					.format( (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100L) : "0";
 		}
 
 		else if (identifier.equals("quest_objective")) {
