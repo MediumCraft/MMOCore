@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
 import io.lumine.mythic.lib.MythicLib;
 import org.apache.commons.lang.Validate;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			try {
 				MMOCore.sqlDebug("Loading data for: '" + data.getUniqueId() + "'...");
 
-				if (!result.first()) {
+				if (!result.next()) {
 					data.setLevel(getDefaultData().getLevel());
 					data.setClassPoints(getDefaultData().getClassPoints());
 					data.setSkillPoints(getDefaultData().getSkillPoints());
@@ -187,7 +188,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + uuid + "';", (result) -> {
 				try {
 					MMOCore.sqlDebug("Loading OFFLINE data for '" + uuid + "'.");
-					if (!result.first()) {
+					if (!result.next()) {
 						level = 0;
 						lastLogin = 0;
 						profess = MMOCore.plugin.classManager.getDefaultClass();
