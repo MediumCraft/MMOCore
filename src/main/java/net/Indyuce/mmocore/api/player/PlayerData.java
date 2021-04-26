@@ -517,6 +517,7 @@ public class PlayerData extends OfflinePlayerData {
 			return;
 
 		stamina = newest;
+
 	}
 
 	public void giveStellium(double amount) {
