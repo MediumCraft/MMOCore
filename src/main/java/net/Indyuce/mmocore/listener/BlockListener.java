@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.utils.Schedulers;
+import io.lumine.mythic.utils.Schedulers;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.BlockInfo.BlockInfoOption;

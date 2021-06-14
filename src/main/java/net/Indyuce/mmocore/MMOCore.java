@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.mythic.lib.comp.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
-import io.lumine.utils.plugin.LuminePlugin;
+import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.loot.LootChest;
