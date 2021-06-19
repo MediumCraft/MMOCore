@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.logging.Level;
 
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -167,6 +168,8 @@ public class MMOCore extends LuminePlugin {
 		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
 		saveDefaultConfig();
+
+		PaperLib.getMinecraftVersion();
 
 		final int configVersion = getConfig().contains("config-version", true) ? getConfig().getInt("config-version") : -1;
 		final int defConfigVersion = getConfig().getDefaults().getInt("config-version");

@@ -51,7 +51,7 @@ public class PlayerStats {
 	 * MMOLib. must be ran everytime the player levels up or changes class.
 	 */
 	public synchronized void updateStats() {
-		getMap().getInstances().forEach(ins -> ins.removeIf(key -> key.equals("mmocoreClass")));
+		getMap().getInstances().forEach(ins -> ins.remove("mmocoreClass"));
 
 		for (StatType stat : StatType.values()) {
 			StatInstance instance = getMap().getInstance(stat.name());
