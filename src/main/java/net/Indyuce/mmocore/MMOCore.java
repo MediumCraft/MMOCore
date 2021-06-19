@@ -169,8 +169,6 @@ public class MMOCore extends LuminePlugin {
 		new Metrics(this);
 		saveDefaultConfig();
 
-		PaperLib.getMinecraftVersion();
-
 		final int configVersion = getConfig().contains("config-version", true) ? getConfig().getInt("config-version") : -1;
 		final int defConfigVersion = getConfig().getDefaults().getInt("config-version");
 		if (configVersion != defConfigVersion) {
