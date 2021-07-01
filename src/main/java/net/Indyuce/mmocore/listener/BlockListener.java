@@ -146,10 +146,19 @@ public class BlockListener implements Listener {
 		}
 	}
 
+	/*
+	 * This is handled in a separate event because it
+	 * needs to happen AFTER it's already checked the tag
+	 */
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void unregisterPlayerPlacedBlocksTag(BlockBreakEvent event) {
+		if(event.getBlock().hasMetadata("player_placed"))
+			event.getBlock().removeMetadata("player_placed", MMOCore.plugin);
+	}
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void registerPlayerPlacedBlocksTag(BlockPlaceEvent event) {
 		event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
-
 	}
 
 
@@ -186,19 +195,15 @@ public class BlockListener implements Listener {
 	 * exp is not gained by these blocks
 	 */
 
-	private boolean protect;
-
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void cobblestoneGeneratorHandling(BlockFormEvent event) {
-		if(MMOCore.plugin.getConfig().contains("should-cobblestone-generators-give-exp")) {
-			this.protect = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
-		} else{ this.protect = false; }
+		if(event.getBlock().hasMetadata("player_placed"))
+			event.getBlock().removeMetadata("player_placed", MMOCore.plugin);
+		if(MMOCore.plugin.configManager.cobbleGeneratorXP) return;
 
-		if(!protect) {
-			if (event.getBlock().getType() == Material.WATER || event.getBlock().getType() == Material.LAVA)
-				if (event.getNewState().getType() == Material.COBBLESTONE || event.getNewState().getType() == Material.OBSIDIAN)
-					event.getNewState().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
-		}
+		if (event.getBlock().getType() == Material.WATER || event.getBlock().getType() == Material.LAVA)
+			if (event.getNewState().getType() == Material.COBBLESTONE || event.getNewState().getType() == Material.OBSIDIAN)
+				event.getNewState().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

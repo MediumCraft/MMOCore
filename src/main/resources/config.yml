@@ -58,6 +58,8 @@ custom-mine-conditions:
 # broken when custom mining conditions are met
 protect-custom-mine: false
 
+# Whether blocks generated with a "cobblegenerator" should
+# provide the player with experience points or not
 should-cobblestone-generators-give-exp: false
 
 loot-chests:

@@ -24,7 +24,7 @@ import java.util.logging.Level;
 public class ConfigManager {
 	public final CommandVerbose commandVerbose = new CommandVerbose();
 
-	public boolean overrideVanillaExp, canCreativeCast;
+	public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP;
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix, noSkillBoundPlaceholder;
 	public ChatColor staminaFull, staminaHalf, staminaEmpty;
@@ -94,22 +94,19 @@ public class ConfigManager {
 		messages = new ConfigFile("messages").getConfig();
 		chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
 		partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
-		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000;
-		lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 1000;
-		lootChestPlayerCooldown = MMOCore.plugin.getConfig().getInt("player-cooldown") * 1000;
+		combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000L;
+		lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 1000L;
+		lootChestPlayerCooldown = MMOCore.plugin.getConfig().getInt("player-cooldown") * 1000L;
 		noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
 
 		staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
 		staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
 		staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
 
-		normalSwapAction = EnumUtils.getIfPresent(SwapAction.class,
-				MMOCore.plugin.getConfig().getString("swap-keybind.normal")
-						.toUpperCase()).orElse(SwapAction.VANILLA);
-		sneakingSwapAction = EnumUtils.getIfPresent(SwapAction.class,
-				MMOCore.plugin.getConfig().getString("swap-keybind.sneaking")
-						.toUpperCase()).orElse(SwapAction.VANILLA);
+		normalSwapAction = EnumUtils.getIfPresent(SwapAction.class, MMOCore.plugin.getConfig().getString("swap-keybind.normal").toUpperCase()).orElse(SwapAction.VANILLA);
+		sneakingSwapAction = EnumUtils.getIfPresent(SwapAction.class, MMOCore.plugin.getConfig().getString("swap-keybind.sneaking").toUpperCase()).orElse(SwapAction.VANILLA);
 		canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
+		cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
 	}
 
 	private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {
@@ -132,16 +129,14 @@ public class ConfigManager {
 	public void loadDefaultFile(String path, String name) {
 		String newPath = path.isEmpty() ? "" : "/" + path;
 		File folder = new File(MMOCore.plugin.getDataFolder() + (newPath));
-		if (!folder.exists())
-			folder.mkdir();
+		if (!folder.exists()) folder.mkdir();
 
 		File file = new File(MMOCore.plugin.getDataFolder() + (newPath), name);
-		if (!file.exists())
-			try {
-				Files.copy(MMOCore.plugin.getResource("default/" + (path.isEmpty() ? "" : path + "/") + name), file.getAbsoluteFile().toPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		if (!file.exists()) try {
+			Files.copy(MMOCore.plugin.getResource("default/" + (path.isEmpty() ? "" : path + "/") + name), file.getAbsoluteFile().toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<String> getMessage(String key) {
@@ -174,10 +169,8 @@ public class ConfigManager {
 			String msg = hasPlaceholders ? MMOCore.plugin.placeholderParser.parse(player, message) : message;
 
 			if (!msg.isEmpty()) {
-				if (actionbar)
-					PlayerData.get(player.getUniqueId()).displayActionBar(msg);
-				else
-					player.sendMessage(msg);
+				if (actionbar) PlayerData.get(player.getUniqueId()).displayActionBar(msg);
+				else player.sendMessage(msg);
 			}
 			return !msg.isEmpty();
 		}
