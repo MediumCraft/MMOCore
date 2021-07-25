@@ -73,11 +73,6 @@
 	<repositories>
 
 		<repository>
-			<id>local-repo</id>
-			<url>file:${project.basedir}/local-repo</url>
-		</repository>
-
-		<repository>
 			<id>placeholderapi</id>
 			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
@@ -117,46 +112,6 @@
 			<artifactId>spigot-api</artifactId>
 			<version>1.17-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-1.16.5</artifactId>
-			<version>dev</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-1.16.2</artifactId>
-			<version>dev</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-1.16.1</artifactId>
-			<version>dev</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-1.15</artifactId>
-			<version>dev</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-1.14</artifactId>
-			<version>dev</version>
-			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 
 		<!-- Public repos -->
@@ -216,47 +171,52 @@
 		</dependency>
 
 		<!-- Local repo -->
-
 		<dependency>
 			<groupId>net.Indyuce.mmocore.lib</groupId>
 			<artifactId>Residence</artifactId>
 			<version>4.8.7.2</version>
-			<scope>provided</scope>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/Residence-4.8.7.2.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>net.Indyuce.mmocore.lib</groupId>
 			<artifactId>CMI</artifactId>
 			<version>8.6.5.0</version>
-			<scope>provided</scope>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/CMI-8.6.5.0.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>net.Indyuce.mmocore.lib</groupId>
 			<artifactId>Holograms</artifactId>
 			<version>2.9.1</version>
-			<scope>provided</scope>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/Holograms-2.9.1.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>net.Indyuce.mmocore.lib</groupId>
 			<artifactId>HolographicDisplays</artifactId>
 			<version>2.4.6</version>
-			<scope>provided</scope>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/HolographicDisplays-2.4.6.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>net.Indyuce.mmocore.lib</groupId>
 			<artifactId>Citizens</artifactId>
 			<version>2.0.25</version>
-			<scope>provided</scope>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/Citizens-2.0.25.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>net.Indyuce.mmocore.lib</groupId>
 			<artifactId>SpartanAPI</artifactId>
 			<version>1.0</version>
-			<scope>provided</scope>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/SpartanAPI-1.0.jar</systemPath>
 		</dependency>
 
 	</dependencies>
