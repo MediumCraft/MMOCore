@@ -42,7 +42,7 @@ public class AttributeView extends EditableInventory {
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
-		return new SkillViewerInventory(data, this);
+		return new AttributeViewerInventory(data, this);
 	}
 
 	public static class AttributeItem extends InventoryPlaceholderItem {
@@ -74,8 +74,8 @@ public class AttributeView extends EditableInventory {
 		}
 	}
 
-	public class SkillViewerInventory extends GeneratedInventory {
-		public SkillViewerInventory(PlayerData playerData, EditableInventory editable) {
+	public class AttributeViewerInventory extends GeneratedInventory {
+		public AttributeViewerInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
 		}
 
@@ -130,7 +130,7 @@ public class AttributeView extends EditableInventory {
 				MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", "" + ins.getBase()).send(player);
 				MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.LEVEL_ATTRIBUTE);
 
-				PlayerAttributeUseEvent playerAttributeUseEvent = new PlayerAttributeUseEvent(playerData);
+				PlayerAttributeUseEvent playerAttributeUseEvent = new PlayerAttributeUseEvent(playerData, attribute);
 				Bukkit.getServer().getPluginManager().callEvent(playerAttributeUseEvent);
 
 				open();

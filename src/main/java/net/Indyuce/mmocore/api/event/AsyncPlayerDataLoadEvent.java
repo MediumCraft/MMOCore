@@ -3,19 +3,16 @@ package net.Indyuce.mmocore.api.event;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.event.HandlerList;
 
-/**
- * @deprecated Use {@link AsyncPlayerDataLoadEvent} instead
- */
-@Deprecated
-public class PlayerDataLoadEvent extends PlayerDataEvent {
+public class AsyncPlayerDataLoadEvent extends PlayerDataEvent {
     private static final HandlerList handlers = new HandlerList();
 
     /**
      * Called when a player data is being loaded into the game.
+     * This event is called async.
      *
      * @param playerData Player data being loaded
      */
-    public PlayerDataLoadEvent(PlayerData playerData) {
+    public AsyncPlayerDataLoadEvent(PlayerData playerData) {
         super(playerData);
     }
 

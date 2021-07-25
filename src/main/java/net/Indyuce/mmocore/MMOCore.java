@@ -225,7 +225,7 @@ public class MMOCore extends LuminePlugin {
 		}
 
 		/*
-		 * resource regeneration. must check if entity is dead otherwise regen will make
+		 * Resource regeneration. Must check if entity is dead otherwise regen will make
 		 * the 'respawn' button glitched plus HURT entity effect bug
 		 */
 		new BukkitRunnable() {
@@ -240,7 +240,7 @@ public class MMOCore extends LuminePlugin {
 		}.runTaskTimer(MMOCore.plugin, 100, 20);
 
 		/*
-		 * clean active loot chests every 5 minutes. cannot register this runnable in
+		 * Clean active loot chests every 5 minutes. Cannot register this runnable in
 		 * the loot chest manager because it is instanced when the plugin loads
 		 */
 		new BukkitRunnable() {
@@ -255,7 +255,7 @@ public class MMOCore extends LuminePlugin {
 		 * Stamina Addon...This should prevent a couple error reports produced by people
 		 * not reading the installation guide...
 		 */
-		if (Bukkit.getPluginManager().getPlugin("MMOItemsMana") != null) {
+		if (Bukkit.getPluginManager().getPlugin("MMOMana") != null) {
 			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "MMOCore is not meant to be used with MMOItems ManaAndStamina");
 			getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "Please read the installation guide!");
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with MMOItems ManaAndStamina");
@@ -297,20 +297,16 @@ public class MMOCore extends LuminePlugin {
 		Bukkit.getPluginManager().registerEvents(new PlayerCollectStats(), this);
 
 		/*
-		 * initialize player data from all online players. this is very important to do
+		 * Initialize player data from all online players. This is very important to do
 		 * that after registering all the professses otherwise the player datas can't
 		 * recognize what profess the player has and professes will be lost
 		 */
 		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player.getUniqueId()));
 
-		/*
-		 * load guild data after loading player data
-		 */
+		// load guild data after loading player data
 		dataProvider.getGuildManager().load();
 
-		/*
-		 * commands
-		 */
+		// Command
 		try {
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 

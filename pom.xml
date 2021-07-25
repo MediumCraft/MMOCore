@@ -172,7 +172,7 @@
 
 		<!-- Local repo -->
 		<dependency>
-			<groupId>net.Indyuce.mmocore.lib</groupId>
+			<groupId>com.bekvon.bukkit.residence</groupId>
 			<artifactId>Residence</artifactId>
 			<version>4.8.7.2</version>
 			<scope>system</scope>
@@ -180,7 +180,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.Indyuce.mmocore.lib</groupId>
+			<groupId>com.Zrips.CMI</groupId>
 			<artifactId>CMI</artifactId>
 			<version>8.6.5.0</version>
 			<scope>system</scope>
@@ -188,7 +188,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.Indyuce.mmocore.lib</groupId>
+			<groupId>com.sainttx.holograms</groupId>
 			<artifactId>Holograms</artifactId>
 			<version>2.9.1</version>
 			<scope>system</scope>
@@ -196,7 +196,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.Indyuce.mmocore.lib</groupId>
+			<groupId>com.gmail.filoghost</groupId>
 			<artifactId>HolographicDisplays</artifactId>
 			<version>2.4.6</version>
 			<scope>system</scope>
@@ -204,7 +204,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.Indyuce.mmocore.lib</groupId>
+			<groupId>net.citizensnpcs</groupId>
 			<artifactId>Citizens</artifactId>
 			<version>2.0.25</version>
 			<scope>system</scope>
@@ -212,7 +212,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.Indyuce.mmocore.lib</groupId>
+			<groupId>me.vagdedes.spartan</groupId>
 			<artifactId>SpartanAPI</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>

@@ -1,44 +1,48 @@
 package net.Indyuce.mmocore.api.event;
 
-import org.bukkit.event.HandlerList;
-
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.skill.SkillResult;
+import org.bukkit.event.HandlerList;
 
 public class PlayerPostCastSkillEvent extends PlayerDataEvent {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private final SkillInfo skill;
-	private final SkillResult result;
-	private final boolean successful;
+    private final SkillInfo skill;
+    private final SkillResult result;
 
-	public PlayerPostCastSkillEvent(PlayerData playerData, SkillInfo skill, SkillResult result, boolean successful) {
-		super(playerData);
-		
-		this.skill = skill;
-		this.result = result;
-		this.successful = successful;
-	}
+    /**
+     * Called right after a player casts a skill.
+     *
+     * @param playerData Player casting the skill
+     * @param skill      Skill being cast
+     * @param result     SKill casting result
+     */
+    public PlayerPostCastSkillEvent(PlayerData playerData, SkillInfo skill, SkillResult result) {
+        super(playerData);
 
-	public SkillInfo getCast() {
-		return skill;
-	}
+        this.skill = skill;
+        this.result = result;
+    }
 
-	public SkillResult getResult() {
-		return result;
-	}
-	
-	public boolean wasSuccessful() {
-		return successful;
-	}
+    public SkillInfo getCast() {
+        return skill;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public SkillResult getResult() {
+        return result;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public boolean wasSuccessful() {
+        return result.isSuccessful();
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }
