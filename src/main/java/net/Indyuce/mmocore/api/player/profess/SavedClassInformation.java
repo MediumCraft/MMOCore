@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.gson.JsonElement;
@@ -143,7 +144,7 @@ public class SavedClassInformation {
 		 * saves current class info inside a SavedClassInformation, only if the
 		 * class is a real class and not the default one.
 		 */
-		if (!player.getProfess().hasOption(ClassOption.DEFAULT))
+		if (!player.getProfess().hasOption(ClassOption.DEFAULT) || MMOCore.plugin.configManager.saveDefaultClassInfo)
 			player.applyClassInfo(player.getProfess(), new SavedClassInformation(player));
 
 		/*

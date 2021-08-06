@@ -24,7 +24,7 @@ import java.util.logging.Level;
 public class ConfigManager {
 	public final CommandVerbose commandVerbose = new CommandVerbose();
 
-	public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP;
+	public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo;
 	public double expPartyBuff, regenPartyBuff;
 	public String partyChatPrefix, noSkillBoundPlaceholder;
 	public ChatColor staminaFull, staminaHalf, staminaEmpty;
@@ -107,6 +107,7 @@ public class ConfigManager {
 		sneakingSwapAction = EnumUtils.getIfPresent(SwapAction.class, MMOCore.plugin.getConfig().getString("swap-keybind.sneaking").toUpperCase()).orElse(SwapAction.VANILLA);
 		canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
 		cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
+		saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
 	}
 
 	private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {

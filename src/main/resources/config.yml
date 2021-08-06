@@ -162,6 +162,10 @@ prevent-spawner-xp: true
 combat-log:
     timer: 10
 
+# Whether or not the default class should save information (level,
+# skills, etc.) when selecting a new class
+save-default-class-info: false
+
 # Change this to the name of the color you want for
 # the different resource bar placeholders
 resource-bar-colors:
