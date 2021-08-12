@@ -2,7 +2,7 @@
 package net.Indyuce.mmocore.listener;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
@@ -19,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
 
@@ -70,16 +69,20 @@ public class PlayerListener implements Listener {
     }
 
     /**
-     * Warning: this really is not the best way to interface with MMOCore
-     * generation. Use instead PlayerRegenResourceEvent to be able to access
-     * directly the PlayerData without an extra map lookup.
+     * Using the Bukkit health update event is not a good way of interacting
+     * with MMOCore health regeneration. The PlayerResourceUpdateEvent
+     * should be heavily prioritized if possible.
+     * <p>
+     * This method makes sure that all the plugins which utilize this event
+     * can also communicate with MMOCore
      */
-    @Deprecated
     @EventHandler(priority = EventPriority.HIGH)
-    public void g(PlayerRegenResourceEvent event) {
+    public void g(PlayerResourceUpdateEvent event) {
         if (event.getResource() == PlayerResource.HEALTH) {
             EntityRegainHealthEvent bukkitEvent = new EntityRegainHealthEvent(event.getPlayer(), event.getAmount(), RegainReason.CUSTOM);
             Bukkit.getPluginManager().callEvent(bukkitEvent);
+
+            // Update event values
             event.setCancelled(bukkitEvent.isCancelled());
             event.setAmount(bukkitEvent.getAmount());
         }

@@ -1,10 +1,9 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
-import org.bukkit.Bukkit;
-
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.api.MMOLineConfig;
+import org.bukkit.Bukkit;
 
 public abstract class Trigger {
 	private final long delay;
@@ -28,10 +27,10 @@ public abstract class Trigger {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> apply(player), delay);
 	}
 
-	/*
-	 * this method must not be used directly when executing triggers after quest
+	/**
+	 * This method must not be used directly when executing triggers after quest
 	 * objectives for example, because this method does NOT take into account
-	 * trigger delay
+	 * trigger delay, {@link #schedule(PlayerData)} is used instead.
 	 */
 	public abstract void apply(PlayerData player);
 }

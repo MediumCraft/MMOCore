@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerRegenResourceEvent;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -29,7 +29,7 @@ public class Neptune_Gift extends Skill implements Listener {
 	}
 
 	@EventHandler
-	public void a(PlayerRegenResourceEvent event) {
+	public void a(PlayerResourceUpdateEvent event) {
 		PlayerData data = event.getData();
 		if (event.getPlayer().getLocation().getBlock().getType() == Material.WATER) {
 			Optional<SkillInfo> skill = data.getProfess().findSkill(this);

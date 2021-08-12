@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import org.bukkit.command.CommandSender;
-
 import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import org.bukkit.command.CommandSender;
 
 public class AdminCommandTreeNode extends CommandTreeNode {
 	public AdminCommandTreeNode(CommandTreeNode parent) {
@@ -25,10 +25,8 @@ public class AdminCommandTreeNode extends CommandTreeNode {
 		addChild(new PointsCommandTreeNode("attribute", this, PlayerData::setAttributePoints, PlayerData::giveAttributePoints, PlayerData::getAttributePoints));
 		addChild(new PointsCommandTreeNode("attr-realloc", this, PlayerData::setAttributeReallocationPoints, PlayerData::giveAttributeReallocationPoints, PlayerData::getAttributeReallocationPoints));
 
-		addChild(new ResourceCommandTreeNode("health", this, (data, value) -> data.getPlayer().setHealth(value), PlayerData::heal, (data, value) -> data.heal(-value), (data) -> data.getPlayer().getHealth()));
-		addChild(new ResourceCommandTreeNode("mana", this, PlayerData::setMana, PlayerData::giveMana, (data, value) -> data.giveMana(-value), PlayerData::getMana));
-		addChild(new ResourceCommandTreeNode("stamina", this, PlayerData::setStamina, PlayerData::giveStamina, (data, value) -> data.giveStamina(-value), PlayerData::getStamina));
-		addChild(new ResourceCommandTreeNode("stellium", this, PlayerData::setStellium, PlayerData::giveStellium, (data, value) -> data.giveStellium(-value), PlayerData::getStellium));
+		for (PlayerResource res : PlayerResource.values())
+			addChild(new ResourceCommandTreeNode(res.name().toLowerCase(), this, res));
 	}
 
 	@Override

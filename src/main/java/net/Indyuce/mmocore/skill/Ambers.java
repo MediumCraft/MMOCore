@@ -1,24 +1,19 @@
 package net.Indyuce.mmocore.skill;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
-
+import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
-import io.lumine.mythic.lib.api.DamageType;
-import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import org.bukkit.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Ambers extends Skill implements Listener {
 	public Ambers() {
@@ -79,7 +74,7 @@ public class Ambers extends Skill implements Listener {
 
 				data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
 				// data.getSkillData().ambers++;
-				data.giveMana((data.getStats().getStat(StatType.MAX_MANA) - data.getMana()) * percent);
+				data.giveMana((data.getStats().getStat(StatType.MAX_MANA) - data.getMana()) * percent, PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
 
 				cancel();
 				return;

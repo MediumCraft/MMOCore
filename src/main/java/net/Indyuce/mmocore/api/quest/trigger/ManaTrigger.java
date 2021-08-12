@@ -1,8 +1,9 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class ManaTrigger extends Trigger {
 	private final RandomAmount amount;
@@ -19,23 +20,17 @@ public class ManaTrigger extends Trigger {
 	@Override
 	public void apply(PlayerData player) {
 
-		/*
-		 * give mana
-		 */
+		// Give mana
 		if (operation == Operation.GIVE)
-			player.giveMana(amount.calculate());
+			player.giveMana(amount.calculate(), PlayerResourceUpdateEvent.UpdateReason.TRIGGER);
 
-		/*
-		 * set mana
-		 */
+			// Set mana
 		else if (operation == Operation.SET)
 			player.setMana(amount.calculate());
 
-		/*
-		 * take mana
-		 */
+			// Take mana
 		else
-			player.giveMana(-amount.calculate());
+			player.giveMana(-amount.calculate(), PlayerResourceUpdateEvent.UpdateReason.TRIGGER);
 	}
 
 	public enum Operation {

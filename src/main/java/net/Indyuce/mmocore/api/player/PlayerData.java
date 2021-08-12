@@ -317,19 +317,30 @@ public class PlayerData extends OfflinePlayerData {
         lastLootChest = System.currentTimeMillis();
     }
 
+    /**
+     * @deprecated Provide a heal reason with {@link #heal(double, PlayerResourceUpdateEvent.UpdateReason)}
+     */
+    @Deprecated
     public void heal(double heal) {
+        this.heal(heal, PlayerResourceUpdateEvent.UpdateReason.OTHER);
+    }
+
+    public void heal(double heal, PlayerResourceUpdateEvent.UpdateReason reason) {
         if (!isOnline())
             return;
+
+        // Avoid calling an useless event
         double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
         if (getPlayer().getHealth() == newest)
             return;
 
-        PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.HEALTH, heal);
+        PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.HEALTH, heal, reason);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-        getPlayer().setHealth(newest);
+        // Use updated amount from event
+        getPlayer().setHealth(getPlayer().getHealth() + event.getAmount());
     }
 
     public void addFriend(UUID uuid) {
@@ -373,6 +384,12 @@ public class PlayerData extends OfflinePlayerData {
         MMOCore.plugin.requestManager.registerRequest(request);
     }
 
+    /**
+     * Teleports the player to a specific waypoint. This applies
+     * the stellium waypoint cost and plays the teleport animation.
+     *
+     * @param waypoint Target waypoint
+     */
     public void warp(Waypoint waypoint) {
         if (!isOnline())
             return;
@@ -384,7 +401,7 @@ public class PlayerData extends OfflinePlayerData {
          */
         lastWaypoint = System.currentTimeMillis();
 
-        giveStellium(-waypoint.getStelliumCost());
+        giveStellium(-waypoint.getStelliumCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
 
         new BukkitRunnable() {
             final int x = getPlayer().getLocation().getBlockX();
@@ -399,7 +416,7 @@ public class PlayerData extends OfflinePlayerData {
                         || getPlayer().getLocation().getBlockZ() != z) {
                     MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_CANCELLED);
                     MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
-                    giveStellium(waypoint.getStelliumCost());
+                    giveStellium(waypoint.getStelliumCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
                     cancel();
                     return;
                 }
@@ -501,44 +518,76 @@ public class PlayerData extends OfflinePlayerData {
         return profess == null ? MMOCore.plugin.classManager.getDefaultClass() : profess;
     }
 
+    /**
+     * @deprecated Provide reason with {@link #giveMana(double, PlayerResourceUpdateEvent.UpdateReason)}
+     */
+    @Deprecated
     public void giveMana(double amount) {
+        giveMana(amount, PlayerResourceUpdateEvent.UpdateReason.OTHER);
+    }
+
+    public void giveMana(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
+
+        // Avoid calling useless event
         double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount));
         if (mana == newest)
             return;
 
-        PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.MANA, amount);
+        PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.MANA, amount, reason);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-        mana = newest;
+        // Use updated amount from Bukkit event
+        setMana(mana + event.getAmount());
     }
 
+    /**
+     * @deprecated Provide reason with {@link #giveStamina(double, PlayerResourceUpdateEvent.UpdateReason)}
+     */
+    @Deprecated
     public void giveStamina(double amount) {
+        giveStamina(amount, PlayerResourceUpdateEvent.UpdateReason.OTHER);
+    }
+
+    public void giveStamina(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
+
+        // Avoid calling useless event
         double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STAMINA), stamina + amount));
         if (stamina == newest)
             return;
 
-        PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.STAMINA, amount);
+        PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.STAMINA, amount, reason);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-        stamina = newest;
-
+        // Use updated amount from Bukkit event
+        setStamina(stamina + event.getAmount());
     }
 
+    /**
+     * @deprecated Provide reason with {@link #giveStellium(double, PlayerResourceUpdateEvent.UpdateReason)}
+     */
+    @Deprecated
     public void giveStellium(double amount) {
+        giveStellium(amount, PlayerResourceUpdateEvent.UpdateReason.OTHER);
+    }
+
+    public void giveStellium(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
+
+        // Avoid calling useless event
         double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STELLIUM), stellium + amount));
         if (stellium == newest)
             return;
 
-        PlayerRegenResourceEvent event = new PlayerRegenResourceEvent(this, PlayerResource.STELLIUM, amount);
+        PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.STELLIUM, amount, reason);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-        stellium = newest;
+        // Use updated amount from Bukkit event
+        setStellium(stellium + event.getAmount());
     }
 
     public double getMana() {
@@ -794,8 +843,8 @@ public class PlayerData extends OfflinePlayerData {
             flatCooldownReduction *= flatCooldownReduction > 0 ? skill.getModifier("cooldown", getSkillLevel(skill.getSkill())) * 1000 : 0;
 
             skillData.setLastCast(cast.getSkill(), System.currentTimeMillis() - (long) flatCooldownReduction);
-            giveMana(-cast.getManaCost());
-            giveStamina(-cast.getStaminaCost());
+            giveMana(-cast.getManaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
+            giveStamina(-cast.getStaminaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
         }
 
         PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast);

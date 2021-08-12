@@ -1,38 +1,35 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
+import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
+import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
-import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
-
 public class ResourceCommandTreeNode extends CommandTreeNode {
 	private final String type;
-	private final Function<PlayerData, Double> get;
+	private final PlayerResource resource;
 
-	public ResourceCommandTreeNode(String type, CommandTreeNode parent, BiConsumer<PlayerData, Double> set, BiConsumer<PlayerData, Double> give,
-			BiConsumer<PlayerData, Double> take, Function<PlayerData, Double> get) {
+	public ResourceCommandTreeNode(String type, CommandTreeNode parent, PlayerResource resource) {
 		super(parent, "resource-" + type);
 
 		this.type = type;
-		this.get = get;
+		this.resource = resource;
 
-		addChild(new ActionCommandTreeNode(this, "set", set));
-		addChild(new ActionCommandTreeNode(this, "give", give));
-		addChild(new ActionCommandTreeNode(this, "take", take));
+		addChild(new ActionCommandTreeNode(this, "set", ManaTrigger.Operation.SET));
+		addChild(new ActionCommandTreeNode(this, "give", ManaTrigger.Operation.GIVE));
+		addChild(new ActionCommandTreeNode(this, "take", ManaTrigger.Operation.TAKE));
 	}
 
 	public class ActionCommandTreeNode extends CommandTreeNode {
-		private final BiConsumer<PlayerData, Double> action;
+		private final ManaTrigger.Operation action;
 
-		public ActionCommandTreeNode(CommandTreeNode parent, String type, BiConsumer<PlayerData, Double> action) {
+		public ActionCommandTreeNode(CommandTreeNode parent, String type, ManaTrigger.Operation action) {
 			super(parent, type);
 
 			this.action = action;
@@ -61,10 +58,10 @@ public class ResourceCommandTreeNode extends CommandTreeNode {
 			}
 
 			PlayerData data = PlayerData.get(player);
-			action.accept(data, amount);
+			resource.getConsumer(action).accept(data, amount);
 			CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESOURCE,
-					ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD + get.apply(data)
-					+ ChatColor.YELLOW + " " + type + " points.");
+					ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " now has " + ChatColor.GOLD + resource.getCurrent(data)
+							+ ChatColor.YELLOW + " " + type + " points.");
 			return CommandResult.SUCCESS;
 		}
 	}

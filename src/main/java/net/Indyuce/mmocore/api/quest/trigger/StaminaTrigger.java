@@ -1,8 +1,10 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger.Operation;
+import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 
 public class StaminaTrigger extends Trigger {
 	private final RandomAmount amount;
@@ -19,28 +21,16 @@ public class StaminaTrigger extends Trigger {
 	@Override
 	public void apply(PlayerData player) {
 
-		/*
-		 * give mana
-		 */
+		// Give stamina
 		if (operation == Operation.GIVE)
-			player.giveStamina(amount.calculate());
+			player.giveStamina(amount.calculate(), PlayerResourceUpdateEvent.UpdateReason.TRIGGER);
 
-		/*
-		 * set mana
-		 */
+			// Set stamina
 		else if (operation == Operation.SET)
 			player.setStamina(amount.calculate());
 
-		/*
-		 * take mana
-		 */
+			// Take stamina
 		else
-			player.giveStamina(-amount.calculate());
-	}
-
-	public enum Operation {
-		GIVE,
-		SET,
-		TAKE
+			player.giveStamina(-amount.calculate(), PlayerResourceUpdateEvent.UpdateReason.TRIGGER);
 	}
 }
