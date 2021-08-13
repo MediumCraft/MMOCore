@@ -330,7 +330,8 @@ public class PlayerData extends OfflinePlayerData {
             return;
 
         // Avoid calling an useless event
-        double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        double max = getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, max));
         if (getPlayer().getHealth() == newest)
             return;
 
@@ -340,7 +341,7 @@ public class PlayerData extends OfflinePlayerData {
             return;
 
         // Use updated amount from event
-        getPlayer().setHealth(getPlayer().getHealth() + event.getAmount());
+        getPlayer().setHealth(Math.max(0, Math.min(getPlayer().getHealth() + event.getAmount(), max)));
     }
 
     public void addFriend(UUID uuid) {
@@ -529,7 +530,8 @@ public class PlayerData extends OfflinePlayerData {
     public void giveMana(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_MANA), mana + amount));
+        double max = getStats().getStat(StatType.MAX_MANA);
+        double newest = Math.max(0, Math.min(mana + amount, max));
         if (mana == newest)
             return;
 
@@ -539,7 +541,7 @@ public class PlayerData extends OfflinePlayerData {
             return;
 
         // Use updated amount from Bukkit event
-        setMana(mana + event.getAmount());
+        mana = Math.max(0, Math.min(mana + event.getAmount(), max));
     }
 
     /**
@@ -553,7 +555,8 @@ public class PlayerData extends OfflinePlayerData {
     public void giveStamina(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STAMINA), stamina + amount));
+        double max = getStats().getStat(StatType.MAX_STAMINA);
+        double newest = Math.max(0, Math.min(stamina + amount, max));
         if (stamina == newest)
             return;
 
@@ -564,6 +567,7 @@ public class PlayerData extends OfflinePlayerData {
 
         // Use updated amount from Bukkit event
         setStamina(stamina + event.getAmount());
+        stamina = Math.max(0, Math.min(stamina + event.getAmount(), max));
     }
 
     /**
@@ -577,7 +581,8 @@ public class PlayerData extends OfflinePlayerData {
     public void giveStellium(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double newest = Math.max(0, Math.min(getStats().getStat(StatType.MAX_STELLIUM), stellium + amount));
+        double max = getStats().getStat(StatType.MAX_STELLIUM);
+        double newest = Math.max(0, Math.min(stellium + amount, max));
         if (stellium == newest)
             return;
 
@@ -587,7 +592,7 @@ public class PlayerData extends OfflinePlayerData {
             return;
 
         // Use updated amount from Bukkit event
-        setStellium(stellium + event.getAmount());
+        stellium = Math.max(0, Math.min(stellium + event.getAmount(), max));
     }
 
     public double getMana() {
