@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.api.event;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.event.HandlerList;
 
-public class AsyncPlayerDataLoadEvent extends PlayerDataEvent {
+public class AsyncPlayerDataLoadEvent extends AsyncPlayerDataEvent {
     private static final HandlerList handlers = new HandlerList();
 
     /**
