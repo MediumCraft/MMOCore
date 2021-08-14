@@ -22,8 +22,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
-    // Player data loading
-    @EventHandler(priority = EventPriority.NORMAL)
+    /*
+     * Load player data. Event priority is set to LOW as most plugins
+     * do not change their priority which is NORMAL by default. Making
+     * it low is important because MMOCore is a core plugin so other plugins
+     * might rely on its data on startup.
+     */
+    @EventHandler(priority = EventPriority.LOW)
     public void playerLoadingEvent(PlayerJoinEvent event) {
         MMOCore.plugin.dataProvider.getDataManager().setup(event.getPlayer().getUniqueId());
     }
