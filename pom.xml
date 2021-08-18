@@ -91,16 +91,28 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
-
+		
 		<repository>
 			<id>sk89q-repo</id>
 			<url>https://maven.enginehub.org/repo/</url>
 		</repository>
-
+		
 		<repository>
 			<id>papermc</id>
 			<url>https://papermc.io/repo/repository/maven-public/</url>
 		</repository>
+		
+		<!-- holographic displays -->
+		<repository>
+		    <id>codemc-repo</id>
+		    <url>https://repo.codemc.io/repository/maven-public/</url>
+		</repository>
+		
+		<!-- citizens -->
+        <repository>
+            <id>citizens-repo</id>
+            <url>http://repo.citizensnpcs.co/</url>
+        </repository>
 
 	</repositories>
 
@@ -182,40 +194,35 @@
 			<groupId>com.Zrips.CMI</groupId>
 			<artifactId>CMI</artifactId>
 			<version>8.6.5.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/CMI.jar</systemPath>
+            <scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.sainttx.holograms</groupId>
 			<artifactId>Holograms</artifactId>
 			<version>2.9.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/Holograms.jar</systemPath>
+            <scope>provided</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>com.gmail.filoghost</groupId>
-			<artifactId>HolographicDisplays</artifactId>
-			<version>2.4.6</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/HolographicDisplays.jar</systemPath>
+		    <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+		    <artifactId>holographicdisplays-api</artifactId>
+		    <version>2.4.0</version>
+		    <scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>Citizens</artifactId>
 			<version>2.0.25</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/Citizens.jar</systemPath>
+            <scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>me.vagdedes.spartan</groupId>
 			<artifactId>SpartanAPI</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/SpartanAPI.jar</systemPath>
+            <scope>provided</scope>
 		</dependency>
 
 	</dependencies>
