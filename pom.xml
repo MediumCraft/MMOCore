@@ -176,7 +176,7 @@
 			<artifactId>Residence</artifactId>
 			<version>4.8.7.2</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/Residence-4.8.7.2.jar</systemPath>
+			<systemPath>${basedir}/lib/Residence.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -184,7 +184,7 @@
 			<artifactId>CMI</artifactId>
 			<version>8.6.5.0</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/CMI-8.6.5.0.jar</systemPath>
+			<systemPath>${basedir}/lib/CMI.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -192,7 +192,7 @@
 			<artifactId>Holograms</artifactId>
 			<version>2.9.1</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/Holograms-2.9.1.jar</systemPath>
+			<systemPath>${basedir}/lib/Holograms.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -200,7 +200,7 @@
 			<artifactId>HolographicDisplays</artifactId>
 			<version>2.4.6</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/HolographicDisplays-2.4.6.jar</systemPath>
+			<systemPath>${basedir}/lib/HolographicDisplays.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -208,7 +208,7 @@
 			<artifactId>Citizens</artifactId>
 			<version>2.0.25</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/Citizens-2.0.25.jar</systemPath>
+			<systemPath>${basedir}/lib/Citizens.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -216,7 +216,7 @@
 			<artifactId>SpartanAPI</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/SpartanAPI-1.0.jar</systemPath>
+			<systemPath>${basedir}/lib/SpartanAPI.jar</systemPath>
 		</dependency>
 
 	</dependencies>
