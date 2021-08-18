@@ -175,8 +175,7 @@
 			<groupId>com.bekvon.bukkit.residence</groupId>
 			<artifactId>Residence</artifactId>
 			<version>4.8.7.2</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/Residence.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
