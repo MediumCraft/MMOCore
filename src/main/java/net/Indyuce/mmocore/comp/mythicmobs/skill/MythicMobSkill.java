@@ -75,10 +75,6 @@ public class MythicMobSkill extends Skill {
         return antiCheat;
     }
 
-    public String getInternalName() {
-        return skill.getInternalName();
-    }
-
     public io.lumine.xikage.mythicmobs.skills.Skill getSkill() {
         return skill;
     }
@@ -94,7 +90,7 @@ public class MythicMobSkill extends Skill {
 
         AbstractEntity trigger = BukkitAdapter.adapt(caster.getPlayer());
         SkillCaster skillCaster = new GenericCaster(trigger);
-        io.lumine.xikage.mythicmobs.skills.SkillMetadata skillMeta = new io.lumine.xikage.mythicmobs.skills.SkillMetadata(SkillTrigger.API, skillCaster, trigger, BukkitAdapter.adapt(caster.getPlayer().getEyeLocation()), targetEntities, targetLocations, 1);
+        io.lumine.xikage.mythicmobs.skills.SkillMetadata skillMeta = new io.lumine.xikage.mythicmobs.skills.SkillMetadata(SkillTrigger.API, skillCaster, trigger, BukkitAdapter.adapt(caster.getPlayer().getLocation()), targetEntities, targetLocations, 1);
 
         // Disable anticheat
         if (MMOCore.plugin.hasAntiCheat())
