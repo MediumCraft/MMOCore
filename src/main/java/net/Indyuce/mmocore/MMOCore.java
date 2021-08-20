@@ -1,17 +1,5 @@
 package net.Indyuce.mmocore;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.logging.Level;
-
-import io.papermc.lib.PaperLib;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandMap;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import io.lumine.mythic.lib.comp.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
 import io.lumine.mythic.utils.plugin.LuminePlugin;
@@ -23,18 +11,7 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
-import net.Indyuce.mmocore.command.AttributesCommand;
-import net.Indyuce.mmocore.command.ClassCommand;
-import net.Indyuce.mmocore.command.DepositCommand;
-import net.Indyuce.mmocore.command.FriendsCommand;
-import net.Indyuce.mmocore.command.GuildCommand;
-import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
-import net.Indyuce.mmocore.command.PartyCommand;
-import net.Indyuce.mmocore.command.PlayerStatsCommand;
-import net.Indyuce.mmocore.command.QuestsCommand;
-import net.Indyuce.mmocore.command.SkillsCommand;
-import net.Indyuce.mmocore.command.WaypointsCommand;
-import net.Indyuce.mmocore.command.WithdrawCommand;
+import net.Indyuce.mmocore.command.*;
 import net.Indyuce.mmocore.comp.anticheat.AntiCheatSupport;
 import net.Indyuce.mmocore.comp.anticheat.SpartanPlugin;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
@@ -43,10 +20,6 @@ import net.Indyuce.mmocore.comp.flags.DefaultFlags;
 import net.Indyuce.mmocore.comp.flags.FlagPlugin;
 import net.Indyuce.mmocore.comp.flags.ResidenceFlags;
 import net.Indyuce.mmocore.comp.flags.WorldGuardFlags;
-import net.Indyuce.mmocore.comp.holograms.CMIPlugin;
-import net.Indyuce.mmocore.comp.holograms.HologramSupport;
-import net.Indyuce.mmocore.comp.holograms.HologramsPlugin;
-import net.Indyuce.mmocore.comp.holograms.HolographicDisplaysPlugin;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsDrops;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
@@ -58,46 +31,32 @@ import net.Indyuce.mmocore.comp.region.WorldGuardMMOLoader;
 import net.Indyuce.mmocore.comp.region.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
-import net.Indyuce.mmocore.listener.BlockListener;
-import net.Indyuce.mmocore.listener.GoldPouchesListener;
-import net.Indyuce.mmocore.listener.GuildListener;
-import net.Indyuce.mmocore.listener.LootableChestsListener;
-import net.Indyuce.mmocore.listener.PartyListener;
-import net.Indyuce.mmocore.listener.PlayerListener;
-import net.Indyuce.mmocore.listener.SpellCast;
-import net.Indyuce.mmocore.listener.WaypointsListener;
+import net.Indyuce.mmocore.listener.*;
 import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
 import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
 import net.Indyuce.mmocore.listener.option.RedirectVanillaExp;
 import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
-import net.Indyuce.mmocore.manager.AttributeManager;
-import net.Indyuce.mmocore.manager.ClassManager;
-import net.Indyuce.mmocore.manager.ConfigItemManager;
-import net.Indyuce.mmocore.manager.ConfigManager;
-import net.Indyuce.mmocore.manager.CustomBlockManager;
-import net.Indyuce.mmocore.manager.DropTableManager;
 import net.Indyuce.mmocore.manager.ExperienceManager;
-import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.manager.LootChestManager;
-import net.Indyuce.mmocore.manager.MMOLoadManager;
-import net.Indyuce.mmocore.manager.QuestManager;
-import net.Indyuce.mmocore.manager.RestrictionManager;
-import net.Indyuce.mmocore.manager.SkillManager;
-import net.Indyuce.mmocore.manager.SoundManager;
-import net.Indyuce.mmocore.manager.WaypointManager;
+import net.Indyuce.mmocore.manager.*;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
 import net.Indyuce.mmocore.manager.data.yaml.YAMLDataProvider;
-import net.Indyuce.mmocore.manager.profession.AlchemyManager;
-import net.Indyuce.mmocore.manager.profession.EnchantManager;
-import net.Indyuce.mmocore.manager.profession.FishingManager;
-import net.Indyuce.mmocore.manager.profession.ProfessionManager;
-import net.Indyuce.mmocore.manager.profession.SmithingManager;
+import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.logging.Level;
 
 public class MMOCore extends LuminePlugin {
 	public static MMOCore plugin;
@@ -109,7 +68,6 @@ public class MMOCore extends LuminePlugin {
 	public RequestManager requestManager;
 	public ConfigItemManager configItems;
 	public VaultEconomy economy;
-	public HologramSupport hologramSupport;
 	public AntiCheatSupport antiCheatSupport;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
 	public FlagPlugin flagPlugin = new DefaultFlags();
@@ -201,17 +159,6 @@ public class MMOCore extends LuminePlugin {
 		} else if (Bukkit.getPluginManager().getPlugin("Residence") != null) {
 			flagPlugin = new ResidenceFlags();
 			getLogger().log(Level.INFO, "Hooked onto Residence");
-		}
-
-		if (Bukkit.getPluginManager().getPlugin("HolographicDisplays") != null) {
-			hologramSupport = new HolographicDisplaysPlugin();
-			getLogger().log(Level.INFO, "Hooked onto HolographicDisplays");
-		} else if (Bukkit.getPluginManager().getPlugin("CMI") != null) {
-			hologramSupport = new CMIPlugin();
-			getLogger().log(Level.INFO, "Hooked onto CMI Holograms");
-		} else if (Bukkit.getPluginManager().getPlugin("Holograms") != null) {
-			hologramSupport = new HologramsPlugin();
-			getLogger().log(Level.INFO, "Hooked onto Holograms");
 		}
 
 		if (Bukkit.getPluginManager().getPlugin("Spartan") != null) {
@@ -454,10 +401,6 @@ public class MMOCore extends LuminePlugin {
 
 	public boolean hasAntiCheat() {
 		return antiCheatSupport != null;
-	}
-
-	public boolean hasHolograms() {
-		return hologramSupport != null;
 	}
 
 	public boolean hasEconomy() {
