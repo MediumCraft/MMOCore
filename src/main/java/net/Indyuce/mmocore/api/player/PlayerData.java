@@ -1,8 +1,6 @@
 package net.Indyuce.mmocore.api.player;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
-import io.lumine.mythic.utils.holograms.Hologram;
-import io.lumine.mythic.utils.serialize.Position;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
@@ -26,6 +24,7 @@ import net.Indyuce.mmocore.api.skill.Skill;
 import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.api.skill.SkillResult;
 import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
@@ -472,10 +471,8 @@ public class PlayerData extends OfflinePlayerData {
         }
 
         // Experience hologram
-        if (hologramLocation != null && isOnline()) {
-            Hologram holo = Hologram.create(Position.of(hologramLocation.add(.5, 1.5, .5)), Arrays.asList(MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message()));
-            Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> holo.despawn(), 20);
-        }
+        if (hologramLocation != null && isOnline())
+            MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
 
         value = MMOCore.plugin.boosterManager.calculateExp(null, value);
         value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;

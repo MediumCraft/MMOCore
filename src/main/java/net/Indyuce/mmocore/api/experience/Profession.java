@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.api.experience;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.Validate;
@@ -170,5 +171,18 @@ public class Profession extends PostLoadObject {
 		public boolean getDefault() {
 			return def;
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Profession that = (Profession) o;
+		return id.equals(that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

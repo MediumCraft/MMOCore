@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui.api.item;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -16,7 +17,7 @@ public class TriggerItem extends InventoryItem {
     }
 
     @Override
-    public Placeholders getPlaceholders(PluginInventory inv, int n) {
+    public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
         return new Placeholders();
     }
 

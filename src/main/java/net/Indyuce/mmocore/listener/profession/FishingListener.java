@@ -1,10 +1,15 @@
 package net.Indyuce.mmocore.listener.profession;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-
+import io.lumine.mythic.lib.version.VersionSound;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
+import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
+import net.Indyuce.mmocore.api.experience.EXPSource;
+import net.Indyuce.mmocore.api.loot.LootBuilder;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,16 +28,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
-import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
-import net.Indyuce.mmocore.api.experience.EXPSource;
-import net.Indyuce.mmocore.api.loot.LootBuilder;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
-import io.lumine.mythic.lib.version.VersionSound;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 
 public class FishingListener implements Listener {
 	private final Set<UUID> fishing = new HashSet<>();
@@ -55,9 +54,7 @@ public class FishingListener implements Listener {
 				return;
 
 			new FishingData(player, hook, table);
-			if (MMOCore.plugin.hasHolograms())
-				MMOCore.plugin.hologramSupport.displayIndicator(hook.getLocation().add(0, 1.25, 0),
-						MMOCore.plugin.configManager.getSimpleMessage("caught-fish").message());
+			MMOCoreUtils.displayIndicator(hook.getLocation().add(0, 1.25, 0), MMOCore.plugin.configManager.getSimpleMessage("caught-fish").message());
 		}
 	}
 
@@ -173,9 +170,8 @@ public class FishingListener implements Listener {
 
 				// calculate velocity
 				Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);
-				if (MMOCore.plugin.hasHolograms())
-					MMOCore.plugin.hologramSupport.displayIndicator(location.add(0, 1.25, 0),
-							MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
+				MMOCoreUtils.displayIndicator(location.add(0, 1.25, 0),
+						MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
 				Vector vec = player.getLocation().subtract(hook.getLocation()).toVector();
 				vec.setY(vec.getY() * .031 + vec.length() * .05);
 				vec.setX(vec.getX() * .08);

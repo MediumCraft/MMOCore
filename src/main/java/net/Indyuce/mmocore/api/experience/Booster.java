@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.experience;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Booster {
@@ -12,6 +13,8 @@ public class Booster {
 	/**
 	 * Length is not final because boosters can stacks. This allows to reduce
 	 * the amount of boosters displayed in the main player menu
+	 * 
+	 * See {@link net.Indyuce.mmocore.manager.social.BoosterManager#register(Booster)}
 	 */
 	private long length;
 
@@ -26,18 +29,19 @@ public class Booster {
 	}
 
 	/**
-	 * @param author
-	 *            The booster creator
-	 * @param extra
-	 *            1 for +100% experience, 3 for 300% etc.
-	 * @param length
-	 *            Booster length in milliseconds
+	 * Main class experience booster
+	 *
+	 * @param author The booster creator
+	 * @param extra  1 for +100% experience, 3 for 300% etc.
+	 * @param length Booster length in milliseconds
 	 */
 	public Booster(String author, double extra, long length) {
 		this(author, null, extra, length);
 	}
 
 	/**
+	 * Profession experience booster
+	 *
 	 * @param author
 	 *            The booster creator
 	 * @param profession
@@ -99,6 +103,19 @@ public class Booster {
 	}
 
 	public boolean canStackWith(Booster booster) {
-		return extra == booster.extra && (profession != null ? profession.equals(booster.getProfession()) : booster.getProfession() == null);
+		return extra == booster.extra && Objects.equals(profession, booster.profession);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Booster booster = (Booster) o;
+		return Objects.equals(uuid, booster.uuid);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(uuid);
 	}
 }

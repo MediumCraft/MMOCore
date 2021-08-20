@@ -4,13 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.utils.holograms.Hologram;
-import io.lumine.mythic.utils.serialize.Position;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Bukkit;
@@ -20,7 +19,6 @@ import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -139,10 +137,8 @@ public class PlayerProfessions {
 		value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 
 		// display hologram
-		if (hologramLocation != null && playerData.isOnline()) {
-			Hologram holo = Hologram.create(Position.of(hologramLocation.add(.5, 1.5, .5)), Arrays.asList(MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message()));
-			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> holo.despawn(), 20);
-		}
+		if (hologramLocation != null && playerData.isOnline())
+			MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
 
 		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
 		Bukkit.getPluginManager().callEvent(event);

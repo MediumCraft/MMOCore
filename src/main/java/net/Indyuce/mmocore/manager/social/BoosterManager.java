@@ -1,11 +1,12 @@
 package net.Indyuce.mmocore.manager.social;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import net.Indyuce.mmocore.api.experience.Booster;
 import net.Indyuce.mmocore.api.experience.Profession;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BoosterManager {
 	private final List<Booster> map = new ArrayList<>();
@@ -51,7 +52,7 @@ public class BoosterManager {
 		double d = 1;
 
 		for (Booster booster : map)
-			if (booster.getProfession() == profession && !booster.isTimedOut())
+			if (Objects.equals(profession, booster.getProfession()) && !booster.isTimedOut())
 				d += booster.getExtra();
 
 		return d;
@@ -68,8 +69,9 @@ public class BoosterManager {
 	public List<Booster> getBoosters() {
 		return map;
 	}
+
 	/**
-	 * @return Same as getBoosters() but does not include timed out boosters
+	 * @return Same as {@link #getBoosters()} but does not include timed out boosters
 	 */
 	public List<Booster> getActiveBoosters() {
 		return map.stream().filter((b) -> !b.isTimedOut()).collect(Collectors.toList());

@@ -3,6 +3,9 @@ package net.Indyuce.mmocore.api.util;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.utils.holograms.Hologram;
+import io.lumine.mythic.utils.serialize.Position;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,6 +54,20 @@ public class MMOCoreUtils {
 				isLastSpace = ch == ' ';
 		}
 		return builder.toString();
+	}
+
+	/**
+	 * Displays an in game indicator using a hologram. This uses
+	 * LumineUtils hologramFactory to summon holograms
+	 * <p>
+	 * The hologram despawns after 1sec
+	 *
+	 * @param loc     Target location
+	 * @param message Message to display
+	 */
+	public static void displayIndicator(Location loc, String message) {
+		Hologram holo = Hologram.create(Position.of(loc), Arrays.asList(message));
+		Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> holo.despawn(), 20);
 	}
 
 	public static boolean isPlayerHead(Material material) {
