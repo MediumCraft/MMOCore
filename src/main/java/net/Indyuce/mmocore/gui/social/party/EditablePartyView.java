@@ -14,6 +14,7 @@ import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -86,7 +87,7 @@ public class EditablePartyView extends EditableInventory {
 		private final MemberDisplayItem member;
 
 		public MemberItem(ConfigurationSection config) {
-			super(config);
+			super(Material.BARRIER, config);
 
 			Validate.notNull(config.contains("empty"), "Could not load empty config");
 			Validate.notNull(config.contains("member"), "Could not load member config");

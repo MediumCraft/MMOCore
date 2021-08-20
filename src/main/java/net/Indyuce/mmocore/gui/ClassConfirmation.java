@@ -15,6 +15,7 @@ import net.Indyuce.mmocore.manager.SoundManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -71,7 +72,7 @@ public class ClassConfirmation extends EditableInventory {
         private final InventoryItem unlocked, locked;
 
         public YesItem(ConfigurationSection config) {
-            super(config);
+            super(Material.BARRIER, config);
 
             Validate.isTrue(config.contains("unlocked"), "Could not load 'unlocked' config");
             Validate.isTrue(config.contains("locked"), "Could not load 'locked' config");

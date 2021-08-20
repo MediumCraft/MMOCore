@@ -97,7 +97,7 @@ public class WaypointViewer extends EditableInventory {
 		private final WaypointDisplayItem availWaypoint;
 
 		public WaypointItem(ConfigurationSection config) {
-			super(config);
+			super(Material.BARRIER, config);
 
 			Validate.notNull(config.getConfigurationSection("no-waypoint"), "Could not load 'no-waypoint' config");
 			Validate.notNull(config.getConfigurationSection("locked"), "Could not load 'locked' config");

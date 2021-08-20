@@ -48,7 +48,7 @@ public class InventoryManager {
 			try {
 				inv.reload(new ConfigFile("/gui", inv.getId()).getConfig());
 			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "[Inventories] Could not load inventory " + inv.getId() + ": " + exception.getMessage());
+				MMOCore.log(Level.WARNING, "Could not load inventory " + inv.getId() + ": " + exception.getMessage());
 			}
 		});
 	}

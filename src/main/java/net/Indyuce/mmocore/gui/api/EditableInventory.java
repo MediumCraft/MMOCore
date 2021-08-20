@@ -47,9 +47,10 @@ public abstract class EditableInventory {
 				try {
 					ConfigurationSection section = config.getConfigurationSection("items." + key);
 					Validate.notNull(section, "Could not load config");
-					items.add(loadInventoryItem(section));
+					InventoryItem loaded = loadInventoryItem(section);
+					items.add(loaded);
 				} catch (IllegalArgumentException exception) {
-					MMOCore.log(Level.WARNING, "[Inventories] Could not load item '" + key + "' from inventory '" + getId() + "': " + exception.getMessage());
+					MMOCore.log(Level.WARNING, "Could not load item '" + key + "' from inventory '" + getId() + "': " + exception.getMessage());
 				}
 		}
 	}

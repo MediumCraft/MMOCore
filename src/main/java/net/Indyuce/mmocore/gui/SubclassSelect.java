@@ -14,6 +14,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.SoundManager;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -42,7 +43,7 @@ public class SubclassSelect extends EditableInventory {
 		private final List<String> lore;
 
 		public ClassItem(ConfigurationSection config) {
-			super(config);
+			super(Material.BARRIER, config);
 
 			this.name = config.getString("name");
 			this.lore = config.getStringList("lore");
@@ -59,7 +60,6 @@ public class SubclassSelect extends EditableInventory {
 				return null;
 
 			PlayerClass profess = inv.subclasses.get(n).getProfess();
-
 
 			ItemStack item = profess.getIcon();
 			ItemMeta meta = item.getItemMeta();
