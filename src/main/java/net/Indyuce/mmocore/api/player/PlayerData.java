@@ -19,15 +19,15 @@ import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
-import net.Indyuce.mmocore.api.skill.PlayerSkillData;
-import net.Indyuce.mmocore.api.skill.Skill;
-import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
-import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.api.skill.SkillResult.CancelReason;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
+import net.Indyuce.mmocore.skill.PlayerSkillData;
+import net.Indyuce.mmocore.skill.Skill;
+import net.Indyuce.mmocore.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
+import net.Indyuce.mmocore.skill.metadata.SkillMetadata.CancelReason;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -641,7 +641,7 @@ public class PlayerData extends OfflinePlayerData {
 
     /**
      * @return If the action bar is not being used to display anything else
-     * i.e if the "general info" action bar can be displayed
+     *         i.e if the "general info" action bar can be displayed
      */
     public boolean canSeeActionBar() {
         return actionBarTimeOut < System.currentTimeMillis();
@@ -787,7 +787,7 @@ public class PlayerData extends OfflinePlayerData {
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
@@ -807,19 +807,19 @@ public class PlayerData extends OfflinePlayerData {
             combat = new CombatRunnable(this);
     }
 
-    public SkillResult cast(Skill skill) {
+    public SkillMetadata cast(Skill skill) {
         return cast(getProfess().getSkill(skill));
     }
 
-    public SkillResult cast(SkillInfo skill) {
+    public SkillMetadata cast(SkillInfo skill) {
 
         PlayerPreCastSkillEvent preEvent = new PlayerPreCastSkillEvent(this, skill);
         Bukkit.getPluginManager().callEvent(preEvent);
         if (preEvent.isCancelled())
-            return new SkillResult(this, skill, CancelReason.OTHER);
+            return new SkillMetadata(this, skill, CancelReason.OTHER);
 
         // Check for mana/stamina/cooldown and cast skill
-        SkillResult cast = skill.getSkill().whenCast(this, skill);
+        SkillMetadata cast = skill.getSkill().whenCast(this, skill);
 
         // Send failure messages
         if (!cast.isSuccessful()) {
@@ -828,7 +828,7 @@ public class PlayerData extends OfflinePlayerData {
                     MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(getPlayer());
 
                 if (cast.getCancelReason() == CancelReason.MANA)
-                    MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana").send(getPlayer());
+                    MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana", getProfess().getManaDisplay().getName()).send(getPlayer());
 
                 if (cast.getCancelReason() == CancelReason.STAMINA)
                     MMOCore.plugin.configManager.getSimpleMessage("casting.no-stamina").send(getPlayer());
