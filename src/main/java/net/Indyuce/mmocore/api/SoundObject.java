@@ -13,7 +13,7 @@ public class SoundObject {
 		if(split.length > 2) {
 			input = split[0];
 			volume = Float.parseFloat(split[1]);
-			pitch = Float.parseFloat(split[1]);
+			pitch = Float.parseFloat(split[2]);
 		} else {
 			volume = 1;
 			pitch = 1;

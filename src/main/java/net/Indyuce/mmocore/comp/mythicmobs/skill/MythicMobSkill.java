@@ -90,13 +90,16 @@ public class MythicMobSkill extends Skill {
 
         AbstractEntity trigger = BukkitAdapter.adapt(caster.getPlayer());
         SkillCaster skillCaster = new GenericCaster(trigger);
-        io.lumine.xikage.mythicmobs.skills.SkillMetadata skillMeta = new io.lumine.xikage.mythicmobs.skills.SkillMetadata(SkillTrigger.API, skillCaster, trigger, BukkitAdapter.adapt(caster.getPlayer().getLocation()), targetEntities, targetLocations, 1);
+        io.lumine.xikage.mythicmobs.skills.SkillMetadata skillMeta = new io.lumine.xikage.mythicmobs.skills.SkillMetadata(SkillTrigger.CAST, skillCaster, trigger, BukkitAdapter.adapt(caster.getPlayer().getLocation()), targetEntities, targetLocations, 1);
 
         // Disable anticheat
         if (MMOCore.plugin.hasAntiCheat())
             MMOCore.plugin.antiCheatSupport.disableAntiCheat(caster.getPlayer(), antiCheat);
 
-        if (this.skill.usable(skillMeta, SkillTrigger.API))
+        /*
+         * Yo is that me or the second argument is f***ing useless
+         */
+        if (this.skill.usable(skillMeta, SkillTrigger.CAST))
             this.skill.execute(skillMeta);
         else
             cast.abort();
