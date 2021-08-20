@@ -106,6 +106,9 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return "" + PlayerData.get(player).getCollectionSkills()
 					.getLevelUpExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase());
 
+		else if (identifier.startsWith("party_count"))
+			return playerData.hasParty() ? String.valueOf(playerData.getParty().getMembers().count()) : "0";
+
 		else if (identifier.startsWith("profession_"))
 			return String
 					.valueOf(playerData.getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase()));
