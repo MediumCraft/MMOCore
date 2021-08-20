@@ -9,8 +9,8 @@ import org.bukkit.command.CommandSender;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
-import net.Indyuce.mmocore.api.experience.Booster;
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.experience.Booster;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
 import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
 import io.lumine.mythic.lib.mmolibcommands.api.Parameter;

@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-import net.Indyuce.mmocore.api.experience.EXPSource;
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class PlayerExperienceGainEvent extends PlayerDataEvent implements Cancellable {

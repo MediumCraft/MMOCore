@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
 
-public class CustomBlockManager extends MMOManager {
+public class CustomBlockManager implements MMOManager {
 
 	/**
 	 * Registered block infos

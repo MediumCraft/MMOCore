@@ -26,7 +26,7 @@ import net.Indyuce.mmocore.api.player.profess.event.trigger.ClassChosenEventTrig
 import net.Indyuce.mmocore.api.player.profess.event.trigger.LevelUpEventTrigger;
 import net.Indyuce.mmocore.api.player.profess.event.trigger.MultipleLevelUpEventTrigger;
 
-public class ClassManager extends MMOManager {
+public class ClassManager implements MMOManager {
 	private final Map<String, PlayerClass> map = new HashMap<>();
 
 	/*

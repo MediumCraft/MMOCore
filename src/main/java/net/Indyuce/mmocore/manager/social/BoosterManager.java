@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.manager.social;
 
-import net.Indyuce.mmocore.api.experience.Booster;
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.experience.Booster;
+import net.Indyuce.mmocore.experience.Profession;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@ import org.bukkit.Material;
 
 import net.Indyuce.mmocore.manager.MMOManager;
 
-public class SmithingManager extends MMOManager {
+public class SmithingManager implements MMOManager {
 	private final Map<Material, Double> base = new HashMap<>();
 
 	public void registerBaseExperience(Material material, double value) {

@@ -95,8 +95,11 @@ public class MMOCore extends LuminePlugin {
 
 	public boolean shouldDebugSQL = false;
 
-	public void load() {
+	public MMOCore() {
 		plugin = this;
+	}
+
+	public void load() {
 
 		/*
 		 * register extra objective, drop items...

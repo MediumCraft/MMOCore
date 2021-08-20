@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.gui;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.Quest;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;

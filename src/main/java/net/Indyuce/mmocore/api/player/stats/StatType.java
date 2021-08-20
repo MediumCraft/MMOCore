@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.api.player.stats;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import io.lumine.mythic.lib.MythicLib;
 import org.bukkit.configuration.file.FileConfiguration;

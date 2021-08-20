@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
-public abstract class MMOManager {
-	public abstract void reload();
+public interface MMOManager {
+    void reload();
 
-	public abstract void clear();
+    void clear();
 }

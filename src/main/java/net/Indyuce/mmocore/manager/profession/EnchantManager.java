@@ -7,7 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 
 import net.Indyuce.mmocore.manager.MMOManager;
 
-public class EnchantManager extends MMOManager {
+public class EnchantManager implements MMOManager {
 	private final Map<Enchantment, Double> base = new HashMap<>();
 
 	public void registerBaseExperience(Enchantment enchant, double value) {

@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.load;
 
+import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.block.BlockType;
@@ -16,17 +17,16 @@ import net.Indyuce.mmocore.api.droptable.dropitem.GoldDropItem;
 import net.Indyuce.mmocore.api.droptable.dropitem.MMDropTableDropItem;
 import net.Indyuce.mmocore.api.droptable.dropitem.NoteDropItem;
 import net.Indyuce.mmocore.api.droptable.dropitem.VanillaDropItem;
-import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.experience.source.BrewPotionExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.CraftItemExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.EnchantItemExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.FishItemExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.KillMobExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.MineBlockExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.PlaceBlockExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.RepairItemExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.SmeltItemExperienceSource;
-import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.experience.source.BrewPotionExperienceSource;
+import net.Indyuce.mmocore.experience.source.CraftItemExperienceSource;
+import net.Indyuce.mmocore.experience.source.EnchantItemExperienceSource;
+import net.Indyuce.mmocore.experience.source.FishItemExperienceSource;
+import net.Indyuce.mmocore.experience.source.KillMobExperienceSource;
+import net.Indyuce.mmocore.experience.source.MineBlockExperienceSource;
+import net.Indyuce.mmocore.experience.source.PlaceBlockExperienceSource;
+import net.Indyuce.mmocore.experience.source.RepairItemExperienceSource;
+import net.Indyuce.mmocore.experience.source.SmeltItemExperienceSource;
+import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.quest.objective.ClickonObjective;
 import net.Indyuce.mmocore.api.quest.objective.GoToObjective;
 import net.Indyuce.mmocore.api.quest.objective.KillMobObjective;
@@ -129,33 +129,33 @@ public class DefaultMMOLoader extends MMOLoader {
 	}
 
 	@Override
-	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, Profession profession) {
+	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
 		if (config.getKey().equals("fishitem"))
-			return new FishItemExperienceSource(profession, config);
+			return new FishItemExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("killmob"))
-			return new KillMobExperienceSource(profession, config);
+			return new KillMobExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("mineblock"))
-			return new MineBlockExperienceSource(profession, config);
+			return new MineBlockExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("placeblock"))
-			return new PlaceBlockExperienceSource(profession, config);
+			return new PlaceBlockExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("brewpotion"))
-			return new BrewPotionExperienceSource(profession, config);
+			return new BrewPotionExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("smeltitem"))
-			return new SmeltItemExperienceSource(profession, config);
+			return new SmeltItemExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("enchantitem"))
-			return new EnchantItemExperienceSource(profession, config);
+			return new EnchantItemExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("repairitem"))
-			return new RepairItemExperienceSource(profession, config);
+			return new RepairItemExperienceSource(dispenser, config);
 
 		if (config.getKey().equals("craftitem"))
-			return new CraftItemExperienceSource(profession, config);
+			return new CraftItemExperienceSource(dispenser, config);
 
 		return null;
 	}

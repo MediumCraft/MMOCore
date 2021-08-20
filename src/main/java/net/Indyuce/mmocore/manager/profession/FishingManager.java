@@ -19,7 +19,7 @@ import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.manager.MMOManager;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
-public class FishingManager extends MMOManager {
+public class FishingManager implements MMOManager {
 	private final Set<FishingDropTable> tables = new LinkedHashSet<>();
 
 	private static final Random random = new Random();

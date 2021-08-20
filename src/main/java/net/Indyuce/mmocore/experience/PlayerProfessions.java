@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.experience;
+package net.Indyuce.mmocore.experience;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -128,7 +128,7 @@ public class PlayerProfessions {
 		return profession.hasMaxLevel() && getLevel(profession) >= profession.getMaxLevel();
 	}
 
-	public void giveExperience(Profession profession, int value, EXPSource source, @Nullable Location hologramLocation) {
+	public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation) {
 		if (hasReachedMaxLevel(profession)) {
 			setExperience(profession, 0);
 			return;
@@ -140,12 +140,12 @@ public class PlayerProfessions {
 		if (hologramLocation != null && playerData.isOnline())
 			MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
 
-		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
+		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, (int) value, source);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled())
 			return;
 
-		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + value : value);
+		exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + event.getExperience() : event.getExperience());
 		int needed, exp, level, oldLevel = getLevel(profession);
 
 		/*

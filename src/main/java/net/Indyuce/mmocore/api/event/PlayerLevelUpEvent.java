@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.api.event;
 
 import org.bukkit.event.HandlerList;
 
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class PlayerLevelUpEvent extends PlayerDataEvent {

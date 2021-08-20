@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.experience.ExpCurve;
+import net.Indyuce.mmocore.experience.ExpCurve;
 
 public class ExperienceManager {
 	private final Map<String, ExpCurve> expCurves = new HashMap<>();

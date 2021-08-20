@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.experience;
+package net.Indyuce.mmocore.experience;
 
 public enum EXPSource {
 	SOURCE,

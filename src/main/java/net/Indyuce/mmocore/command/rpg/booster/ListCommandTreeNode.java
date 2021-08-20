@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.experience.Booster;
+import net.Indyuce.mmocore.experience.Booster;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;

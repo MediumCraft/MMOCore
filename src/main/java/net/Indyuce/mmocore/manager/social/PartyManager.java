@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 
-public class PartyManager extends MMOManager {
+public class PartyManager implements MMOManager {
 	private final Set<Party> parties = new HashSet<>();
 	private final Map<StatType, StatModifier> buffs = new HashMap<>();
 

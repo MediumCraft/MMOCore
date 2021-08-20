@@ -9,9 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.experience.EXPSource;
-import net.Indyuce.mmocore.api.experience.PlayerProfessions;
-import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
 import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;

@@ -9,7 +9,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 
-public class AttributeManager extends MMOManager {
+public class AttributeManager implements MMOManager {
 	private final Map<String, PlayerAttribute> map = new HashMap<>();
 
 	public PlayerAttribute get(String id) {

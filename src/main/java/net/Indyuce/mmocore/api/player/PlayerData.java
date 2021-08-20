@@ -5,8 +5,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
 import net.Indyuce.mmocore.api.event.*;
-import net.Indyuce.mmocore.api.experience.EXPSource;
-import net.Indyuce.mmocore.api.experience.PlayerProfessions;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -21,6 +19,8 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.skill.CasterMetadata;
@@ -465,7 +465,7 @@ public class PlayerData extends OfflinePlayerData {
      * @param hologramLocation Location used to display the hologram. If it's null, no
      *                         hologram will be displayed
      */
-    public void giveExperience(int value, EXPSource source, @Nullable Location hologramLocation) {
+    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation) {
         if (hasReachedMaxLevel()) {
             setExperience(0);
             return;
@@ -478,7 +478,7 @@ public class PlayerData extends OfflinePlayerData {
         value = MMOCore.plugin.boosterManager.calculateExp(null, value);
         value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
 
-        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
+        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, (int) value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;

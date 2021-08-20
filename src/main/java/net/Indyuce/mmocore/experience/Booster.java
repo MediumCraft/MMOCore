@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.experience;
+package net.Indyuce.mmocore.experience;
 
 import java.util.Objects;
 import java.util.UUID;

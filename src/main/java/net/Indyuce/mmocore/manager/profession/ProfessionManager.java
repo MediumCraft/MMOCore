@@ -11,25 +11,25 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.experience.Profession;
+import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.MMOManager;
 
-public class ProfessionManager extends MMOManager {
+public class ProfessionManager implements MMOManager {
 
-	/*
-	 * loaded professions.
+	/**
+	 * Loaded professions.
 	 */
 	private final Map<String, Profession> professions = new HashMap<>();
 
-	/*
-	 * saves different experience sources based on experience source type.
+	/**
+	 * Saves different experience sources based on experience source type.
 	 */
-	private final Map<Class<?>, ExperienceManager<?>> managers = new HashMap<>();
+	private final Map<Class<?>, ExperienceSourceManager<?>> managers = new HashMap<>();
 
 	@SuppressWarnings("unchecked")
-	public <T> ExperienceManager<T> getManager(Class<T> t) {
-		return (ExperienceManager<T>) managers.get(t);
+	public <T> ExperienceSourceManager<T> getManager(Class<T> t) {
+		return (ExperienceSourceManager<T>) managers.get(t);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -38,7 +38,7 @@ public class ProfessionManager extends MMOManager {
 
 		if (!managers.containsKey(path))
 			managers.put(path, source.newManager());
-		getManager(path).register(source);
+		getManager(path).registerSource(source);
 	}
 
 	public void register(Profession profession) {

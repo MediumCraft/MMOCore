@@ -1,9 +1,10 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
+import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import org.bukkit.configuration.ConfigurationSection;
 
-import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.experience.Profession;
+import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
@@ -37,12 +38,12 @@ public class MythicMobsMMOLoader extends MMOLoader {
 	}
 
 	@Override
-	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, Profession profession) {
+	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
 
 		if (config.getKey().equalsIgnoreCase("killmythicmob"))
-			return new KillMythicMobExperienceSource(profession, config);
+			return new KillMythicMobExperienceSource(dispenser, config);
 		if (config.getKey().equalsIgnoreCase("killmythicfaction"))
-			return new KillMythicFactionExperienceSource(profession, config);
+			return new KillMythicFactionExperienceSource(dispenser, config);
 
 		return null;
 	}

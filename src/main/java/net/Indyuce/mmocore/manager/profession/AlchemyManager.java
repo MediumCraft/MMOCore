@@ -7,7 +7,7 @@ import org.bukkit.potion.PotionType;
 
 import net.Indyuce.mmocore.manager.MMOManager;
 
-public class AlchemyManager extends MMOManager {
+public class AlchemyManager implements MMOManager {
 	public double splash, lingering, upgrade, extend;
 
 	// private Map<PotionEffectType, Double> custom = new HashMap<>();

@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.Quest;
 
-public class QuestManager extends MMOManager {
+public class QuestManager implements MMOManager {
 	private final Map<String, Quest> quests = new LinkedHashMap<>();
 	
 	public void load(File file) {

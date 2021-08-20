@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.experience.Booster;
+import net.Indyuce.mmocore.experience.Booster;
 import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
 import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
 
