@@ -10,7 +10,6 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -43,7 +42,7 @@ public class PlayerStats extends EditableInventory {
 				@Override
 				public boolean canDisplay(PlayerStatsInventory inv) {
 					InventoryItem boost = inv.getByFunction("boost");
-					return boost != null && inv.boostOffset + boost.getSlots().size() < MMOCore.plugin.boosterManager.getBoosters().size();
+					return boost != null && inv.boostOffset + boost.getSlots().size() < MMOCore.plugin.boosterManager.getActive().size();
 				}
 			};
 
@@ -304,7 +303,7 @@ public class PlayerStats extends EditableInventory {
 		@Override
 		public ItemStack display(PlayerStatsInventory inv, int n) {
 			int offset = inv.boostOffset;
-			if (n + offset >= MMOCore.plugin.boosterManager.getBoosters().size())
+			if (n + offset >= MMOCore.plugin.boosterManager.getActive().size())
 				return noBoost.display(inv, n);
 
 			Booster boost = MMOCore.plugin.boosterManager.get(inv.boostOffset + n);

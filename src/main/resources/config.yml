@@ -45,14 +45,14 @@ default-playerdata:
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
 # 'custom-mine-conditions: []' to disable custom mining entirely.
-custom-mine-conditions:
-- 'world{name="world,world_nether,world_the_end"}'
-- 'region{name="example_region,example_region2,__global__"}'
 #
 # custom-mine-conditions:
 # - 'world{name="__global__"}'
 #
 # ^ will enable custom mining server wide
+custom-mine-conditions:
+    - 'world{name="world,world_nether,world_the_end"}'
+    - 'region{name="example_region,example_region2,__global__"}'
 
 # Set to true to prevent vanilla blocks from being
 # broken when custom mining conditions are met
@@ -121,14 +121,17 @@ vanilla-exp-redirection:
 # Requires a SERVER reload when changed.
 override-vanilla-exp: true
 
+# Check the target player's RPG profile when shift when shift right clicking.
+shift-click-player-profile-check: true
+
 # If main class experience holograms should be displayed
 # whenever a player earns main class exp
-display-main-class-exp-holograms: true 
+display-main-class-exp-holograms: true
 
 # Requires a SERVER reload when changed.
 death-exp-loss:
     enabled: false
-    
+
     # Percentage of current EXP you lose when dying.
     percent: 30
 

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.api.event;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.skill.list.Neptune_Gift;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
@@ -27,7 +28,7 @@ public class PlayerResourceUpdateEvent extends PlayerDataEvent implements Cancel
 	 * Called when a player gains some resource back. This can
 	 * be used to handle stats like health or mana regeneration.
 	 * <p>
-	 * Example use: {@link net.Indyuce.mmocore.skill.Neptune_Gift} which is a skill
+	 * Example use: {@link Neptune_Gift} which is a skill
 	 * that temporarily increases resource regeneration for a short amount of time.
 	 *
 	 * @param playerData Player regenerating

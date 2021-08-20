@@ -1,9 +1,10 @@
-package net.Indyuce.mmocore.api.skill;
+package net.Indyuce.mmocore.skill;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -133,12 +134,7 @@ public abstract class Skill {
         return current instanceof IntegerLinearValue ? new IntegerLinearValue(config) : new LinearValue(config);
     }
 
-    /*
-     * not overriden for passive skills therefore not abstract.
-     */
-    public SkillResult whenCast(PlayerData data, SkillInfo skill) {
-        return new SkillResult(data, skill);
-    }
+    public abstract SkillMetadata whenCast(CasterMetadata casterMeta, SkillInfo skill);
 
     public SkillInfo newSkillInfo(ConfigurationSection config) {
         return new SkillInfo(config);

@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.manager.ConfigManager;
 import net.Indyuce.mmocore.manager.SoundManager;
 

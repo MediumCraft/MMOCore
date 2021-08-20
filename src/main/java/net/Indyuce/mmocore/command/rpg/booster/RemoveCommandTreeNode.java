@@ -16,7 +16,7 @@ public class RemoveCommandTreeNode extends CommandTreeNode {
 		super(parent, "remove");
 
 		addParameter(new Parameter("<id>",
-				(explorer, list) -> MMOCore.plugin.boosterManager.getBoosters().forEach(booster -> list.add("" + booster.getUniqueId().toString()))));
+				(explorer, list) -> MMOCore.plugin.boosterManager.getActive().forEach(booster -> list.add("" + booster.getUniqueId().toString()))));
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class RemoveCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		for (Iterator<Booster> iterator = MMOCore.plugin.boosterManager.getBoosters().iterator(); iterator.hasNext();) {
+		for (Iterator<Booster> iterator = MMOCore.plugin.boosterManager.getActive().iterator(); iterator.hasNext();) {
 			Booster booster = iterator.next();
 			if (booster.getUniqueId().equals(uuid)) {
 				iterator.remove();

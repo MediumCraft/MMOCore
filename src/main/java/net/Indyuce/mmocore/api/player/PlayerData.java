@@ -23,6 +23,7 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
+import net.Indyuce.mmocore.skill.CasterMetadata;
 import net.Indyuce.mmocore.skill.PlayerSkillData;
 import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.skill.Skill.SkillInfo;
@@ -819,7 +820,8 @@ public class PlayerData extends OfflinePlayerData {
             return new SkillMetadata(this, skill, CancelReason.OTHER);
 
         // Check for mana/stamina/cooldown and cast skill
-        SkillMetadata cast = skill.getSkill().whenCast(this, skill);
+        CasterMetadata casterMeta = new CasterMetadata(this);
+        SkillMetadata cast = skill.getSkill().whenCast(casterMeta, skill);
 
         // Send failure messages
         if (!cast.isSuccessful()) {

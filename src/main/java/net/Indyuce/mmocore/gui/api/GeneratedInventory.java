@@ -1,16 +1,15 @@
 package net.Indyuce.mmocore.gui.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.lumine.mythic.lib.MythicLib;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.TriggerItem;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.TriggerItem;
-import io.lumine.mythic.lib.MythicLib;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GeneratedInventory extends PluginInventory {
 	private final EditableInventory editable;
@@ -44,9 +43,10 @@ public abstract class GeneratedInventory extends PluginInventory {
 		return null;
 	}
 
-	/*
-	 * this method must use an ordered collection because of GUI items
-	 * overriding possibilities.
+	/**
+	 * This method must use an ordered collection because
+	 * of GUI items overriding possibilities. Hence the use
+	 * of an array list instead of a set
 	 */
 	public void addLoaded(InventoryItem item) {
 		loaded.add(0, item);
@@ -66,7 +66,7 @@ public abstract class GeneratedInventory extends PluginInventory {
 	public void open() {
 
 		/*
-		 * very important, in order to prevent ghost items, the loaded items map
+		 * Very important, in order to prevent ghost items, the loaded items map
 		 * must be cleared when the inventory is updated or open at least twice
 		 */
 		loaded.clear();

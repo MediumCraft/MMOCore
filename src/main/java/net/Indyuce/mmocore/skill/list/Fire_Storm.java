@@ -1,5 +1,6 @@
-package net.Indyuce.mmocore.skill;
+package net.Indyuce.mmocore.skill.list;
 
+import net.Indyuce.mmocore.skill.CasterMetadata;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -10,14 +11,14 @@ import org.bukkit.util.Vector;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill;
-import net.Indyuce.mmocore.api.skill.SkillResult;
-import net.Indyuce.mmocore.api.skill.result.TargetSkillResult;
+import net.Indyuce.mmocore.skill.Skill;
+import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
+import net.Indyuce.mmocore.skill.metadata.TargetSkillMetadata;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.AttackResult;
-import io.lumine.mythic.lib.api.DamageType;
+import io.lumine.mythic.lib.damage.DamageType;;
 import io.lumine.mythic.lib.version.VersionSound;
 
 public class Fire_Storm extends Skill {
@@ -33,34 +34,34 @@ public class Fire_Storm extends Skill {
 	}
 
 	@Override
-	public SkillResult whenCast(PlayerData data, SkillInfo skill) {
-		TargetSkillResult cast = new TargetSkillResult(data, skill, 20);
-		if (!cast.isSuccessful() || !data.isOnline())
+	public SkillMetadata whenCast(CasterMetadata caster, SkillInfo skill) {
+		TargetSkillMetadata cast = new TargetSkillMetadata(caster, skill, 20);
+		if (!cast.isSuccessful() )
 			return cast;
 
 		LivingEntity target = cast.getTarget();
 
-		double damage = cast.getModifier("damage");
-		int ignite = (int) (20 * cast.getModifier("ignite"));
+		final double damage = cast.getModifier("damage");
+		final int ignite = (int) (20 * cast.getModifier("ignite"));
 
-		data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, 1);
+		caster.getPlayer().getWorld().playSound(caster.getPlayer().getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_BLAST.toSound(), 1, 1);
 		new BukkitRunnable() {
 			int j = 0;
 
 			@Override
 			public void run() {
-				if (j++ > 5 || data.getPlayer().isDead() || !data.getPlayer().isOnline() || target.isDead() || !data.getPlayer().getWorld().equals(target.getWorld())) {
+				if (j++ > 5 || caster.getPlayer().isDead() || !caster.getPlayer().isOnline() || target.isDead() || !caster.getPlayer().getWorld().equals(target.getWorld())) {
 					cancel();
 					return;
 				}
 
 				// TODO dynamic target location
 
-				data.getPlayer().getWorld().playSound(data.getPlayer().getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
-				new ParabolicProjectile(data.getPlayer().getLocation().add(0, 1, 0), target.getLocation().add(0, target.getHeight() / 2, 0), randomVector(data.getPlayer()), () -> {
+				caster.getPlayer().getWorld().playSound(caster.getPlayer().getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
+				new ParabolicProjectile(caster.getPlayer().getLocation().add(0, 1, 0), target.getLocation().add(0, target.getHeight() / 2, 0), randomVector(caster.getPlayer()), () -> {
 					target.getWorld().playSound(target.getLocation(), VersionSound.ENTITY_FIREWORK_ROCKET_TWINKLE.toSound(), 1, 2);
 					target.getWorld().spawnParticle(Particle.SMOKE_NORMAL, target.getLocation().add(0, target.getHeight() / 2, 0), 8, 0, 0, 0, .15);
-					MythicLib.plugin.getDamage().damage(data.getPlayer(), target, new AttackResult(damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC));
+					caster.attack(target, damage, DamageType.SKILL, DamageType.PROJECTILE, DamageType.MAGIC);
 					target.setFireTicks(ignite);
 
 				}, 2, Particle.FLAME);

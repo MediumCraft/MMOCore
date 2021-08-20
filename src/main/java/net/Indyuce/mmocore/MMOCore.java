@@ -32,10 +32,7 @@ import net.Indyuce.mmocore.comp.region.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
 import net.Indyuce.mmocore.listener.*;
-import net.Indyuce.mmocore.listener.option.DeathExperienceLoss;
-import net.Indyuce.mmocore.listener.option.NoSpawnerEXP;
-import net.Indyuce.mmocore.listener.option.RedirectVanillaExp;
-import net.Indyuce.mmocore.listener.option.VanillaExperienceOverride;
+import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
 import net.Indyuce.mmocore.manager.ExperienceManager;
@@ -231,6 +228,9 @@ public class MMOCore extends LuminePlugin {
 
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
+
+		if (getConfig().getBoolean("shift-click-player-profile-check"))
+			Bukkit.getPluginManager().registerEvents(new PlayerProfileCheck(), this);
 
 		Bukkit.getPluginManager().registerEvents(new WaypointsListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);

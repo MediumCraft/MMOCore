@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.api.event;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.skill.Skill.SkillInfo;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 

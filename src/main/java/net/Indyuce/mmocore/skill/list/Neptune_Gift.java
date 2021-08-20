@@ -1,7 +1,8 @@
-package net.Indyuce.mmocore.skill;
+package net.Indyuce.mmocore.skill.list;
 
 import java.util.Optional;
 
+import net.Indyuce.mmocore.skill.PassiveSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -10,11 +11,11 @@ import org.bukkit.event.Listener;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import io.lumine.mythic.lib.version.VersionMaterial;
 
-public class Neptune_Gift extends Skill implements Listener {
+public class Neptune_Gift extends PassiveSkill {
 	public Neptune_Gift() {
 		super("NEPTUNE_GIFT");
 		setName("Neptune's Gift");

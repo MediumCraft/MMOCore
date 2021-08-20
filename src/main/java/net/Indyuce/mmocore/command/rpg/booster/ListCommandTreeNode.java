@@ -21,7 +21,7 @@ public class ListCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
-		for (Booster booster : MMOCore.plugin.boosterManager.getBoosters())
+		for (Booster booster : MMOCore.plugin.boosterManager.getActive())
 			if (!booster.isTimedOut())
 				MythicLib.plugin.getVersion().getWrapper().sendJson((Player) sender, "{\"text\":\"" + ChatColor.YELLOW + "- " + ChatColor.GOLD
 						+ MythicLib.plugin.getMMOConfig().decimal.format((1 + booster.getExtra())) + "x" + ChatColor.YELLOW + " Booster - "

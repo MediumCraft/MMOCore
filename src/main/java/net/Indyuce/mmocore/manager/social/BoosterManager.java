@@ -41,7 +41,7 @@ public class BoosterManager {
 	/**
 	 * Cleans timed out boosters from the MMOCore registry
 	 */
-	public void flush() {
+	private void flush() {
 		map.removeIf(Booster::isTimedOut);
 	}
 
@@ -66,14 +66,7 @@ public class BoosterManager {
 	 * @return Collection of currently registered boosters. Some of them can be
 	 *         expired but are not unregistered yet!
 	 */
-	public List<Booster> getBoosters() {
-		return map;
-	}
-
-	/**
-	 * @return Same as {@link #getBoosters()} but does not include timed out boosters
-	 */
-	public List<Booster> getActiveBoosters() {
+	public List<Booster> getActive() {
 		return map.stream().filter((b) -> !b.isTimedOut()).collect(Collectors.toList());
 	}
 }

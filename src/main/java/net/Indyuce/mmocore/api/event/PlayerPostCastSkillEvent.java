@@ -1,15 +1,15 @@
 package net.Indyuce.mmocore.api.event;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
-import net.Indyuce.mmocore.api.skill.SkillResult;
+import net.Indyuce.mmocore.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
 import org.bukkit.event.HandlerList;
 
 public class PlayerPostCastSkillEvent extends PlayerDataEvent {
     private static final HandlerList handlers = new HandlerList();
 
     private final SkillInfo skill;
-    private final SkillResult result;
+    private final SkillMetadata result;
 
     /**
      * Called right after a player casts a skill.
@@ -18,7 +18,7 @@ public class PlayerPostCastSkillEvent extends PlayerDataEvent {
      * @param skill      Skill being cast
      * @param result     SKill casting result
      */
-    public PlayerPostCastSkillEvent(PlayerData playerData, SkillInfo skill, SkillResult result) {
+    public PlayerPostCastSkillEvent(PlayerData playerData, SkillInfo skill, SkillMetadata result) {
         super(playerData);
 
         this.skill = skill;
@@ -29,7 +29,7 @@ public class PlayerPostCastSkillEvent extends PlayerDataEvent {
         return skill;
     }
 
-    public SkillResult getResult() {
+    public SkillMetadata getResult() {
         return result;
     }
 

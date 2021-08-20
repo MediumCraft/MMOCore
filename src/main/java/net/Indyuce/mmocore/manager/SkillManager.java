@@ -17,7 +17,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
 
@@ -36,7 +36,7 @@ public class SkillManager {
 				JarFile jarFile = new JarFile(MMOCore.plugin.getJarFile());
 				JarEntry entry;
 				for (Enumeration<JarEntry> en = jarFile.entries(); en.hasMoreElements();)
-					if ((entry = en.nextElement()).getName().startsWith("net/Indyuce/mmocore/skill/")
+					if ((entry = en.nextElement()).getName().startsWith("net/Indyuce/mmocore/skill/list/")
 							&& !entry.isDirectory() && !entry.getName().contains("$"))
 						register((Skill) Class.forName(entry.getName().replace("/", ".").replace(".class", ""))
 								.newInstance());
