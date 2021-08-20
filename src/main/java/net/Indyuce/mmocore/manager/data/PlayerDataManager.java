@@ -32,8 +32,7 @@ public abstract class PlayerDataManager {
      * @return Player data, if it's loaded
      */
     public PlayerData get(UUID uuid) {
-        Validate.isTrue(data.containsKey(uuid), "Player data is not loaded");
-        return data.get(uuid);
+        return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
     }
 
     public void remove(UUID uuid) {

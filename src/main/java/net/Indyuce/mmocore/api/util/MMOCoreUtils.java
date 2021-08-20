@@ -168,10 +168,9 @@ public class MMOCoreUtils {
 	}
 
 	/**
-	 * @param  player Player casting a spell/basic attack
-	 * @param  target The target entity
-	 * @return        If the player can target the entity given the attack type
-	 *                (buff or attack)
+	 * @param player Player casting a spell/basic attack
+	 * @param target The target entity
+	 * @return If the player can attack the entity
 	 */
 	public static boolean canTarget(PlayerData player, Entity target) {
 		return canTarget(player, target, false);
@@ -188,15 +187,12 @@ public class MMOCoreUtils {
 	 */
 	// TODO worldguard flags support for no target
 	public static boolean canTarget(PlayerData player, Entity target, boolean buff) {
-		if (!player.isOnline())
+
+		// Basic checks
+		if (!player.isOnline() || !(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead() || MythicLib.plugin.getEntities().findCustom(target))
 			return false;
 
-		// basic checks
-		if (!(target instanceof LivingEntity) || player.getPlayer().equals(target) || target.isDead()
-				|| MythicLib.plugin.getEntities().findCustom(target))
-			return false;
-
-		// party check
+		// Party check
 		if (!buff && target instanceof Player) {
 			PlayerData targetData = PlayerData.get((Player) target);
 			return !targetData.hasParty() || !targetData.getParty().getMembers().has(player);
