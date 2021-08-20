@@ -1,12 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-
+import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.experience.Booster;
 import net.Indyuce.mmocore.api.experience.Profession;
@@ -18,10 +12,14 @@ import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import io.lumine.mythic.lib.version.VersionMaterial;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class PlayerStats extends EditableInventory {
 	public PlayerStats() {
@@ -35,7 +33,7 @@ public class PlayerStats extends EditableInventory {
 			return new BoostItem(config);
 
 		if (function.equals("boost-next"))
-			return new NoPlaceholderItem(config) {
+			return new SimplePlaceholderItem<PlayerStatsInventory>(config) {
 
 				@Override
 				public boolean hasDifferentDisplay() {
@@ -43,23 +41,18 @@ public class PlayerStats extends EditableInventory {
 				}
 
 				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
+				public boolean canDisplay(PlayerStatsInventory inv) {
 					InventoryItem boost = inv.getByFunction("boost");
-					return boost != null && ((PlayerStatsInventory) inv).boostOffset + boost.getSlots().size() < MMOCore.plugin.boosterManager.getBoosters().size();
+					return boost != null && inv.boostOffset + boost.getSlots().size() < MMOCore.plugin.boosterManager.getBoosters().size();
 				}
 			};
 
 		if (function.equals("boost-previous"))
-			return new NoPlaceholderItem(config) {
+			return new SimplePlaceholderItem<PlayerStatsInventory>(config) {
 
 				@Override
-				public boolean hasDifferentDisplay() {
-					return true;
-				}
-
-				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
-					return ((PlayerStatsInventory) inv).boostOffset > 0;
+				public boolean canDisplay(PlayerStatsInventory inv) {
+					return inv.boostOffset > 0;
 				}
 			};
 
@@ -71,10 +64,15 @@ public class PlayerStats extends EditableInventory {
 			Validate.isTrue(MMOCore.plugin.professionManager.has(id));
 			Profession profession = MMOCore.plugin.professionManager.get(id);
 
-			return new InventoryPlaceholderItem(config) {
+			return new InventoryItem(config) {
 
 				@Override
-				public Placeholders getPlaceholders(PluginInventory inv, int n) {
+				public boolean hasDifferentDisplay() {
+					return true;
+				}
+
+				@Override
+				public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 
 					Placeholders holders = new Placeholders();
 					net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.getPlayerData().getStats();
@@ -105,10 +103,15 @@ public class PlayerStats extends EditableInventory {
 			return new PlayerProfileItem(config);
 
 		if (function.equals("stats"))
-			return new InventoryPlaceholderItem(config) {
+			return new InventoryItem(config) {
 
 				@Override
-				public Placeholders getPlaceholders(PluginInventory inv, int n) {
+				public boolean hasDifferentDisplay() {
+					return true;
+				}
+
+				@Override
+				public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 
 					net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.getPlayerData().getStats();
 					Placeholders holders = new Placeholders();
@@ -127,7 +130,7 @@ public class PlayerStats extends EditableInventory {
 				}
 			};
 
-		return new NoPlaceholderItem(config);
+		return new SimplePlaceholderItem(config);
 	}
 
 	public PlayerStatsInventory newInventory(PlayerData data) {
@@ -160,89 +163,18 @@ public class PlayerStats extends EditableInventory {
 		}
 	}
 
-	public class BoostItem extends InventoryItem {
-		private final InventoryPlaceholderItem noBoost, mainLevel, profession;
-
-		public BoostItem(ConfigurationSection config) {
-			super(config);
-
-			ConfigurationSection noBoost = config.getConfigurationSection("no-boost");
-			Validate.notNull(noBoost, "Could not load 'no-boost' config");
-			this.noBoost = new NoPlaceholderItem(noBoost);
-
-			ConfigurationSection mainLevel = config.getConfigurationSection("main-level");
-			Validate.notNull(mainLevel, "Could not load 'main-level' config");
-			this.mainLevel = new InventoryPlaceholderItem(mainLevel) {
-
-				@Override
-				public Placeholders getPlaceholders(PluginInventory inv, int n) {
-					Placeholders holders = new Placeholders();
-					Booster boost = MMOCore.plugin.boosterManager.get(((PlayerStatsInventory) inv).boostOffset + n);
-
-					holders.register("author", boost.hasAuthor() ? boost.getAuthor() : "Server");
-					holders.register("value", (int) (boost.getExtra() * 100));
-					holders.register("left", boost.isTimedOut() ?
-						MMOCore.plugin.configManager.getSimpleMessage("booster-expired").message()
-						: new DelayFormat(2).format(boost.getLeft()));
-
-					return holders;
-				}
-			};
-
-			ConfigurationSection profession = config.getConfigurationSection("profession");
-			Validate.notNull(profession, "Could not load 'profession' config");
-			this.profession = new InventoryPlaceholderItem(profession) {
-
-				@Override
-				public Placeholders getPlaceholders(PluginInventory inv, int n) {
-					Placeholders holders = new Placeholders();
-					Booster boost = MMOCore.plugin.boosterManager.get(((PlayerStatsInventory) inv).boostOffset + n);
-
-					holders.register("author", boost.hasAuthor() ? boost.getAuthor() : "Server");
-					holders.register("profession", boost.getProfession().getName());
-					holders.register("value", (int) (boost.getExtra() * 100));
-					holders.register("left", boost.isTimedOut() ?
-							MMOCore.plugin.configManager.getSimpleMessage("booster-expired").message()
-							: new DelayFormat(2).format(boost.getLeft()));
-
-					return holders;
-				}
-			};
-		}
-
-		@Override
-		public boolean hasDifferentDisplay() {
-			return true;
-		}
-
-		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			int offset = ((PlayerStatsInventory) inv).boostOffset;
-			if (n + offset >= MMOCore.plugin.boosterManager.getBoosters().size())
-				return noBoost.display(inv, n);
-
-			Booster boost = MMOCore.plugin.boosterManager.get(((PlayerStatsInventory) inv).boostOffset + n);
-			return amount(boost.hasProfession() ? profession.display(inv, n) : mainLevel.display(inv, n), n + offset + 1);
-		}
-
-		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
-			return true;
-		}
-	}
-
 	private ItemStack amount(ItemStack item, int amount) {
 		item.setAmount(amount);
 		return item;
 	}
 
-	public static class PartyMoraleItem extends InventoryPlaceholderItem {
+	public static class PartyMoraleItem extends InventoryItem {
 		public PartyMoraleItem(ConfigurationSection config) {
 			super(config);
 		}
 
 		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
+		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 			Placeholders holders = new Placeholders();
 
 			int count = inv.getPlayerData().getParty().getMembers().count();
@@ -257,10 +189,9 @@ public class PlayerStats extends EditableInventory {
 		public boolean canDisplay(GeneratedInventory inv) {
 			return inv.getPlayerData().hasParty() && inv.getPlayerData().getParty().getMembers().count() > 1;
 		}
-
 	}
 
-	public static class PlayerProfileItem extends InventoryPlaceholderItem {
+	public static class PlayerProfileItem extends InventoryItem {
 		public PlayerProfileItem(ConfigurationSection config) {
 			super(config);
 		}
@@ -277,7 +208,7 @@ public class PlayerStats extends EditableInventory {
 		}
 
 		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
+		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 			PlayerData data = inv.getPlayerData();
 			Placeholders holders = new Placeholders();
 
@@ -297,11 +228,87 @@ public class PlayerStats extends EditableInventory {
 			holders.register("attribute_points", "" + data.getAttributePoints());
 			holders.register("progress", bar.toString());
 			holders.register("next_level", "" + nextLevelExp);
-			if(data.isOnline())
+			if (data.isOnline())
 				holders.register("player", "" + data.getPlayer().getName());
 			holders.register("class", "" + data.getProfess().getName());
 
 			return holders;
+		}
+	}
+
+	public class BoostItem extends SimplePlaceholderItem<PlayerStatsInventory> {
+		private final InventoryItem noBoost, mainLevel, profession;
+
+		public BoostItem(ConfigurationSection config) {
+			super(config);
+
+			ConfigurationSection noBoost = config.getConfigurationSection("no-boost");
+			Validate.notNull(noBoost, "Could not load 'no-boost' config");
+			this.noBoost = new SimplePlaceholderItem(noBoost);
+
+			ConfigurationSection mainLevel = config.getConfigurationSection("main-level");
+			Validate.notNull(mainLevel, "Could not load 'main-level' config");
+			this.mainLevel = new InventoryItem<PlayerStatsInventory>(mainLevel) {
+
+				@Override
+				public boolean hasDifferentDisplay() {
+					return true;
+				}
+
+				@Override
+				public Placeholders getPlaceholders(PlayerStatsInventory inv, int n) {
+					Placeholders holders = new Placeholders();
+					Booster boost = MMOCore.plugin.boosterManager.get(inv.boostOffset + n);
+
+					holders.register("author", boost.hasAuthor() ? boost.getAuthor() : "Server");
+					holders.register("value", (int) (boost.getExtra() * 100));
+					holders.register("left", boost.isTimedOut() ?
+							MMOCore.plugin.configManager.getSimpleMessage("booster-expired").message()
+							: new DelayFormat(2).format(boost.getLeft()));
+
+					return holders;
+				}
+			};
+
+			ConfigurationSection profession = config.getConfigurationSection("profession");
+			Validate.notNull(profession, "Could not load 'profession' config");
+			this.profession = new InventoryItem<PlayerStatsInventory>(profession) {
+
+				@Override
+				public boolean hasDifferentDisplay() {
+					return true;
+				}
+
+				@Override
+				public Placeholders getPlaceholders(PlayerStatsInventory inv, int n) {
+					Placeholders holders = new Placeholders();
+					Booster boost = MMOCore.plugin.boosterManager.get(inv.boostOffset + n);
+
+					holders.register("author", boost.hasAuthor() ? boost.getAuthor() : "Server");
+					holders.register("profession", boost.getProfession().getName());
+					holders.register("value", (int) (boost.getExtra() * 100));
+					holders.register("left", boost.isTimedOut() ?
+							MMOCore.plugin.configManager.getSimpleMessage("booster-expired").message()
+							: new DelayFormat(2).format(boost.getLeft()));
+
+					return holders;
+				}
+			};
+		}
+
+		@Override
+		public boolean hasDifferentDisplay() {
+			return true;
+		}
+
+		@Override
+		public ItemStack display(PlayerStatsInventory inv, int n) {
+			int offset = inv.boostOffset;
+			if (n + offset >= MMOCore.plugin.boosterManager.getBoosters().size())
+				return noBoost.display(inv, n);
+
+			Booster boost = MMOCore.plugin.boosterManager.get(inv.boostOffset + n);
+			return amount(boost.hasProfession() ? profession.display(inv, n) : mainLevel.display(inv, n), n + offset + 1);
 		}
 	}
 }

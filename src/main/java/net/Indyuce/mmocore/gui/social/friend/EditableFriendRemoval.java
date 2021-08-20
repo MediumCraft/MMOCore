@@ -1,19 +1,16 @@
 package net.Indyuce.mmocore.gui.social.friend;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class EditableFriendRemoval extends EditableInventory {
 	public EditableFriendRemoval() {
@@ -23,16 +20,16 @@ public class EditableFriendRemoval extends EditableInventory {
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
 
-		return new InventoryPlaceholderItem(config) {
+        return new InventoryItem<ClassConfirmationInventory>(config) {
 
-			@Override
-			public Placeholders getPlaceholders(PluginInventory inv, int n) {
-				Placeholders holders = new Placeholders();
-				holders.register("name", ((ClassConfirmationInventory) inv).friend.getName());
-				return holders;
-			}
-		};
-	}
+            @Override
+            public Placeholders getPlaceholders(ClassConfirmationInventory inv, int n) {
+                Placeholders holders = new Placeholders();
+                holders.register("name", inv.friend.getName());
+                return holders;
+            }
+        };
+    }
 
 	public GeneratedInventory newInventory(PlayerData data, OfflinePlayer friend, GeneratedInventory last) {
 		return new ClassConfirmationInventory(data, this, friend, last);

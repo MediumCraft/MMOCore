@@ -1,26 +1,23 @@
 package net.Indyuce.mmocore.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.Waypoint;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.Waypoint;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WaypointViewer extends EditableInventory {
 	public WaypointViewer() {
@@ -34,25 +31,24 @@ public class WaypointViewer extends EditableInventory {
 			return new WaypointItem(config);
 
 		if (function.equals("previous"))
-			return new NoPlaceholderItem(config) {
+			return new SimplePlaceholderItem<WaypointViewerInventory>(config) {
 
 				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
-					return ((WaypointViewerInventory) inv).page > 0;
+				public boolean canDisplay(WaypointViewerInventory inv) {
+					return inv.page > 0;
 				}
 			};
 
 		if (function.equals("next"))
-			return new NoPlaceholderItem(config) {
+			return new SimplePlaceholderItem<WaypointViewerInventory>(config) {
 
 				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
-					WaypointViewerInventory generated = (WaypointViewerInventory) inv;
-					return inv.getEditable().getByFunction("waypoint").getSlots().size() * (generated.page + 1) < generated.waypoints.size();
+				public boolean canDisplay(WaypointViewerInventory inv) {
+					return inv.getEditable().getByFunction("waypoint").getSlots().size() * (inv.page + 1) < inv.waypoints.size();
 				}
 			};
 
-		return new NoPlaceholderItem(config);
+		return new SimplePlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
@@ -63,7 +59,7 @@ public class WaypointViewer extends EditableInventory {
 		return new WaypointViewerInventory(data, this, waypoint);
 	}
 
-	public class WaypointDisplayItem extends InventoryPlaceholderItem {
+	public class WaypointDisplayItem extends InventoryItem<WaypointViewerInventory> {
 		private final Material notReady;
 
 		public WaypointDisplayItem(ConfigurationSection config) {
@@ -74,28 +70,21 @@ public class WaypointViewer extends EditableInventory {
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			WaypointViewerInventory generated = (WaypointViewerInventory) inv;
+		public ItemStack display(WaypointViewerInventory inv, int n) {
 			ItemStack disp = super.display(inv, n);
 
-			Waypoint waypoint = generated.waypoints.get(generated.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
-			if (inv.getPlayerData().getStellium() < waypoint.getStelliumCost() || (generated.current == null && !waypoint.isDynamic()))
+			Waypoint waypoint = inv.waypoints.get(inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
+			if (inv.getPlayerData().getStellium() < waypoint.getStelliumCost() || (inv.current == null && !waypoint.isDynamic()))
 				disp.setType(notReady);
 
 			return NBTItem.get(disp).addTag(new ItemTag("waypointId", waypoint.getId())).toItem();
 		}
 
 		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
-			return true;
-		}
-
-		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
-			WaypointViewerInventory generated = (WaypointViewerInventory) inv;
+		public Placeholders getPlaceholders(WaypointViewerInventory inv, int n) {
 			Placeholders holders = new Placeholders();
 
-			Waypoint waypoint = generated.waypoints.get(generated.page * generated.getByFunction("waypoint").getSlots().size() + n);
+			Waypoint waypoint = inv.waypoints.get(inv.page * inv.getByFunction("waypoint").getSlots().size() + n);
 			holders.register("name", waypoint.getName());
 			holders.register("stellium", decimal.format(waypoint.getStelliumCost()));
 
@@ -103,8 +92,8 @@ public class WaypointViewer extends EditableInventory {
 		}
 	}
 
-	public class WaypointItem extends InventoryItem {
-		private final InventoryPlaceholderItem noWaypoint, locked;
+	public class WaypointItem extends SimplePlaceholderItem<WaypointViewerInventory> {
+		private final SimplePlaceholderItem noWaypoint, locked;
 		private final WaypointDisplayItem availWaypoint;
 
 		public WaypointItem(ConfigurationSection config) {
@@ -114,30 +103,25 @@ public class WaypointViewer extends EditableInventory {
 			Validate.notNull(config.getConfigurationSection("locked"), "Could not load 'locked' config");
 			Validate.notNull(config.getConfigurationSection("display"), "Could not load 'display' config");
 
-			noWaypoint = new NoPlaceholderItem(config.getConfigurationSection("no-waypoint"));
-			locked = new NoPlaceholderItem(config.getConfigurationSection("locked"));
+			noWaypoint = new SimplePlaceholderItem(config.getConfigurationSection("no-waypoint"));
+			locked = new SimplePlaceholderItem(config.getConfigurationSection("locked"));
 			availWaypoint = new WaypointDisplayItem(config.getConfigurationSection("display"));
 		}
 
+		@Override
 		public boolean hasDifferentDisplay() {
 			return true;
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			WaypointViewerInventory generated = (WaypointViewerInventory) inv;
+		public ItemStack display(WaypointViewerInventory inv, int n) {
 
-			int index = generated.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n;
-			if (index >= generated.waypoints.size())
+			int index = inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n;
+			if (index >= inv.waypoints.size())
 				return noWaypoint.display(inv, n);
 
-			Waypoint waypoint = generated.waypoints.get(index);
+			Waypoint waypoint = inv.waypoints.get(index);
 			return inv.getPlayerData().hasWaypoint(waypoint) ? availWaypoint.display(inv, n) : locked.display(inv);
-		}
-
-		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
-			return true;
 		}
 	}
 

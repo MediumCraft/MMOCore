@@ -1,19 +1,18 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
-import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.data.GuildDataManager.GuildConfiguration.NamingRules;
+import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class EditableGuildCreation extends EditableInventory {
 	public EditableGuildCreation() {
@@ -22,8 +21,8 @@ public class EditableGuildCreation extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return new NoPlaceholderItem(config);
-	}
+        return new SimplePlaceholderItem(config);
+    }
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new GuildCreationInventory(data, this);

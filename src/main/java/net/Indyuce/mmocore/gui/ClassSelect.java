@@ -1,17 +1,8 @@
 package net.Indyuce.mmocore.gui;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -20,12 +11,20 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.SoundManager;
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClassSelect extends EditableInventory {
 	public ClassSelect() {
@@ -34,14 +33,14 @@ public class ClassSelect extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equals("class") ? new ClassItem(config) : new NoPlaceholderItem(config);
+		return function.equals("class") ? new ClassItem(config) : new SimplePlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new ProfessSelectionInventory(data, this);
 	}
 
-	public class ClassItem extends NoPlaceholderItem {
+	public class ClassItem extends SimplePlaceholderItem<ProfessSelectionInventory> {
 		private final String name;
 		private final List<String> lore;
 
@@ -57,13 +56,11 @@ public class ClassSelect extends EditableInventory {
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			ProfessSelectionInventory generated = (ProfessSelectionInventory) inv;
-
-			if (n >= generated.classes.size())
+		public ItemStack display(ProfessSelectionInventory inv, int n) {
+			if (n >= inv.classes.size())
 				return null;
 
-			PlayerClass profess = generated.classes.get(n);
+			PlayerClass profess = inv.classes.get(n);
 			ItemStack item = profess.getIcon();
 			ItemMeta meta = item.getItemMeta();
 			if (hideFlags())
@@ -88,11 +85,6 @@ public class ClassSelect extends EditableInventory {
 			meta.setLore(lore);
 			item.setItemMeta(meta);
 			return NBTItem.get(item).addTag(new ItemTag("classId", profess.getId())).toItem();
-		}
-
-		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
-			return true;
 		}
 	}
 

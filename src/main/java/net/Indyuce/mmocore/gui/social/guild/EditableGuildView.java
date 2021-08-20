@@ -1,7 +1,17 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
-import java.util.UUID;
-
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.OfflinePlayerData;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
+import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,20 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.OfflinePlayerData;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import java.util.UUID;
 
 public class EditableGuildView extends EditableInventory {
 	public EditableGuildView() {
@@ -36,16 +33,21 @@ public class EditableGuildView extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equals("member") ? new MemberItem(config) : (function.equals("next") || function.equals("previous") || function.equals("disband") || function.equals("invite")) ? new ConditionalItem(function, config) : new NoPlaceholderItem(config);
+		return function.equals("member") ? new MemberItem(config) : (function.equals("next") || function.equals("previous") || function.equals("disband") || function.equals("invite")) ? new ConditionalItem(function, config) : new SimplePlaceholderItem(config);
 	}
 
-	public static class MemberDisplayItem extends InventoryPlaceholderItem {
+	public static class MemberDisplayItem extends InventoryItem {
 		public MemberDisplayItem(ConfigurationSection config) {
 			super(config);
 		}
 
 		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
+		public boolean hasDifferentDisplay() {
+			return true;
+		}
+
+		@Override
+		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 			UUID uuid = inv.getPlayerData().getGuild().getMembers().get(n);
 			Placeholders holders = new Placeholders();
 			/*
@@ -79,8 +81,8 @@ public class EditableGuildView extends EditableInventory {
 		}
 	}
 
-	public class MemberItem extends InventoryItem {
-		private final InventoryPlaceholderItem empty;
+	public class MemberItem extends SimplePlaceholderItem<GuildViewInventory> {
+		private final InventoryItem empty;
 		private final MemberDisplayItem member;
 
 		public MemberItem(ConfigurationSection config) {
@@ -89,13 +91,13 @@ public class EditableGuildView extends EditableInventory {
 			Validate.notNull(config.contains("empty"), "Could not load empty config");
 			Validate.notNull(config.contains("member"), "Could not load member config");
 
-			empty = new NoPlaceholderItem(config.getConfigurationSection("empty"));
+			empty = new SimplePlaceholderItem(config.getConfigurationSection("empty"));
 			member = new MemberDisplayItem(config.getConfigurationSection("member"));
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			int index = n * ((GuildViewInventory) inv).getPage();
+		public ItemStack display(GuildViewInventory inv, int n) {
+			int index = n * inv.getPage();
 			return inv.getPlayerData().getGuild().getMembers().count() > index ? member.display(inv, index) : empty.display(inv, index);
 		}
 
@@ -103,14 +105,9 @@ public class EditableGuildView extends EditableInventory {
 		public boolean hasDifferentDisplay() {
 			return true;
 		}
-
-		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
-			return true;
-		}
 	}
 
-	public class ConditionalItem extends NoPlaceholderItem {
+	public class ConditionalItem extends SimplePlaceholderItem {
 		private final String function;
 
 		public ConditionalItem(String func, ConfigurationSection config) {

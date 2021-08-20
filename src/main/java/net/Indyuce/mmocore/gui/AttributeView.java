@@ -1,11 +1,7 @@
 package net.Indyuce.mmocore.gui;
 
-import net.Indyuce.mmocore.api.event.PlayerAttributeUseEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
-
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.PlayerAttributeUseEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
@@ -13,10 +9,12 @@ import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.SoundManager;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class AttributeView extends EditableInventory {
 	public AttributeView() {
@@ -26,10 +24,10 @@ public class AttributeView extends EditableInventory {
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
 		if (function.equalsIgnoreCase("reallocation"))
-			return new InventoryPlaceholderItem(config) {
+			return new InventoryItem(config) {
 
 				@Override
-				public Placeholders getPlaceholders(PluginInventory inv, int n) {
+				public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 					Placeholders holders = new Placeholders();
 					holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
 					holders.register("points", inv.getPlayerData().getAttributeReallocationPoints());
@@ -38,14 +36,14 @@ public class AttributeView extends EditableInventory {
 				}
 			};
 
-		return function.startsWith("attribute_") ? new AttributeItem(function, config) : new NoPlaceholderItem(config);
+		return function.startsWith("attribute_") ? new AttributeItem(function, config) : new SimplePlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new AttributeViewerInventory(data, this);
 	}
 
-	public static class AttributeItem extends InventoryPlaceholderItem {
+	public static class AttributeItem extends InventoryItem {
 		private final PlayerAttribute attribute;
 
 		public AttributeItem(String function, ConfigurationSection config) {
@@ -56,7 +54,7 @@ public class AttributeView extends EditableInventory {
 		}
 
 		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
+		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 			int total = inv.getPlayerData().getAttributes().getInstance(attribute).getTotal();
 
 			Placeholders holders = new Placeholders();

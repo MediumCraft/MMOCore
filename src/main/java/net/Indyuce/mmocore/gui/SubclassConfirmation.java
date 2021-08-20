@@ -1,9 +1,5 @@
 package net.Indyuce.mmocore.gui;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -12,10 +8,12 @@ import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.SoundManager;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class SubclassConfirmation extends EditableInventory {
 	public SubclassConfirmation() {
@@ -24,17 +22,17 @@ public class SubclassConfirmation extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equalsIgnoreCase("yes") ? new InventoryPlaceholderItem(config) {
+        return function.equalsIgnoreCase("yes") ? new InventoryItem<SubclassConfirmationInventory>(config) {
 
-			@Override
-			public Placeholders getPlaceholders(PluginInventory inv, int n) {
+            @Override
+            public Placeholders getPlaceholders(SubclassConfirmationInventory inv, int n) {
 
-				Placeholders holders = new Placeholders();
-				holders.register("class", ((SubclassConfirmationInventory) inv).profess.getName());
-				return holders;
-			}
-		} : new NoPlaceholderItem(config);
-	}
+                Placeholders holders = new Placeholders();
+                holders.register("class", inv.profess.getName());
+                return holders;
+            }
+        } : new SimplePlaceholderItem(config);
+    }
 
 	public GeneratedInventory newInventory(PlayerData data, PlayerClass profess, PluginInventory last) {
 		return new SubclassConfirmationInventory(data, this, profess, last);

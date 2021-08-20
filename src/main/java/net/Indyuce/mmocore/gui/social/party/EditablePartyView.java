@@ -10,9 +10,8 @@ import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +27,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.UUID;
 
 
-
 public class EditablePartyView extends EditableInventory {
 	public EditablePartyView() {
 		super("party-view");
@@ -36,20 +34,25 @@ public class EditablePartyView extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equals("member") ? new MemberItem(config) : new NoPlaceholderItem(config);
+		return function.equals("member") ? new MemberItem(config) : new SimplePlaceholderItem(config);
 	}
 
-	public static class MemberDisplayItem extends InventoryPlaceholderItem {
+	public static class MemberDisplayItem extends InventoryItem {
 		public MemberDisplayItem(ConfigurationSection config) {
 			super(config);
 		}
 
 		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
+		public boolean hasDifferentDisplay() {
+			return true;
+		}
+
+		@Override
+		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 			PlayerData member = inv.getPlayerData().getParty().getMembers().get(n);
 
 			Placeholders holders = new Placeholders();
-			if(member.isOnline())
+			if (member.isOnline())
 				holders.register("name", member.getPlayer().getName());
 			holders.register("class", member.getProfess().getName());
 			holders.register("level", "" + member.getLevel());
@@ -69,7 +72,7 @@ public class EditablePartyView extends EditableInventory {
 			 */
 			if (meta instanceof SkullMeta)
 				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-					if(!member.isOnline()) return;
+					if (!member.isOnline()) return;
 					((SkullMeta) meta).setOwningPlayer(member.getPlayer());
 					disp.setItemMeta(meta);
 				});
@@ -78,8 +81,8 @@ public class EditablePartyView extends EditableInventory {
 		}
 	}
 
-	public static class MemberItem extends InventoryItem {
-		private final InventoryPlaceholderItem empty;
+	public static class MemberItem extends SimplePlaceholderItem {
+		private final InventoryItem empty;
 		private final MemberDisplayItem member;
 
 		public MemberItem(ConfigurationSection config) {
@@ -88,7 +91,7 @@ public class EditablePartyView extends EditableInventory {
 			Validate.notNull(config.contains("empty"), "Could not load empty config");
 			Validate.notNull(config.contains("member"), "Could not load member config");
 
-			empty = new NoPlaceholderItem(config.getConfigurationSection("empty"));
+			empty = new SimplePlaceholderItem(config.getConfigurationSection("empty"));
 			member = new MemberDisplayItem(config.getConfigurationSection("member"));
 		}
 

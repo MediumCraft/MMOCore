@@ -1,16 +1,15 @@
 package net.Indyuce.mmocore.gui.social.party;
 
-import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class EditablePartyCreation extends EditableInventory {
 	public EditablePartyCreation() {
@@ -19,8 +18,8 @@ public class EditablePartyCreation extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return new NoPlaceholderItem(config);
-	}
+        return new SimplePlaceholderItem(config);
+    }
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new ClassConfirmationInventory(data, this);

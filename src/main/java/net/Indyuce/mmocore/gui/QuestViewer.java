@@ -1,10 +1,18 @@
 package net.Indyuce.mmocore.gui;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.experience.Profession;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.Quest;
+import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.manager.SoundManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,20 +22,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.experience.Profession;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.quest.Quest;
-import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.manager.SoundManager;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class QuestViewer extends EditableInventory {
 	public QuestViewer() {
@@ -39,35 +37,34 @@ public class QuestViewer extends EditableInventory {
 
 		if (function.equals("quest"))
 			return new QuestItem(config);
-		
+
 		if (function.equals("previous"))
-			return new NoPlaceholderItem(config) {
+			return new SimplePlaceholderItem<QuestInventory>(config) {
 
 				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
-					return ((QuestInventory) inv).page > 0;
+				public boolean canDisplay(QuestInventory inv) {
+					return inv.page > 0;
 				}
 			};
 
 		if (function.equals("next"))
-			return new NoPlaceholderItem(config) {
+			return new SimplePlaceholderItem<QuestInventory>(config) {
 
 				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
-					QuestInventory generated = (QuestInventory) inv;
-					return generated.perPage * (generated.page + 1) < generated.quests.size();
+				public boolean canDisplay(QuestInventory inv) {
+					return inv.perPage * (inv.page + 1) < inv.quests.size();
 				}
 			};
 
-		return new NoPlaceholderItem(config);
+		return new SimplePlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new QuestInventory(data, this);
 	}
 
-	public class QuestItem extends NoPlaceholderItem {
-		private final InventoryPlaceholderItem noQuest, locked;
+	public class QuestItem extends SimplePlaceholderItem {
+		private final SimplePlaceholderItem noQuest, locked;
 
 		private final String mainHit, mainNotHit, professionHit, professionNotHit;
 		private final SimpleDateFormat dateFormat;
@@ -78,8 +75,8 @@ public class QuestViewer extends EditableInventory {
 			Validate.isTrue(config.contains("no-quest"), "Could not load config 'no-quest'");
 			Validate.isTrue(config.contains("locked"), "Could not load config 'locked'");
 
-			locked = new NoPlaceholderItem(config.getConfigurationSection("locked"));
-			noQuest = new NoPlaceholderItem(config.getConfigurationSection("no-quest"));
+			locked = new SimplePlaceholderItem(config.getConfigurationSection("locked"));
+			noQuest = new SimplePlaceholderItem(config.getConfigurationSection("no-quest"));
 
 			Validate.isTrue(config.contains("date-format"), "Could not find date-format");
 			dateFormat = new SimpleDateFormat(config.getString("date-format"));

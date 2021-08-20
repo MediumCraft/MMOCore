@@ -1,14 +1,8 @@
 package net.Indyuce.mmocore.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -17,12 +11,17 @@ import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.SoundManager;
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SubclassSelect extends EditableInventory {
 	public SubclassSelect() {
@@ -31,14 +30,14 @@ public class SubclassSelect extends EditableInventory {
 
 	@Override
 	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equals("class") ? new ClassItem(config) : new NoPlaceholderItem(config);
+		return function.equals("class") ? new ClassItem(config) : new SimplePlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new SubclassSelectionInventory(data, this);
 	}
 
-	public class ClassItem extends InventoryItem {
+	public class ClassItem extends SimplePlaceholderItem<SubclassSelectionInventory> {
 		private final String name;
 		private final List<String> lore;
 
@@ -49,20 +48,19 @@ public class SubclassSelect extends EditableInventory {
 			this.lore = config.getStringList("lore");
 		}
 
+		@Override
 		public boolean hasDifferentDisplay() {
 			return true;
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			SubclassSelectionInventory generated = (SubclassSelectionInventory) inv;
-
-			if (n >= generated.subclasses.size())
+		public ItemStack display(SubclassSelectionInventory inv, int n) {
+			if (n >= inv.subclasses.size())
 				return null;
 
-			PlayerClass profess = generated.subclasses.get(n).getProfess();
-			
-			
+			PlayerClass profess = inv.subclasses.get(n).getProfess();
+
+
 			ItemStack item = profess.getIcon();
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(MythicLib.plugin.parseColors(name).replace("{name}", profess.getName()));
@@ -88,7 +86,7 @@ public class SubclassSelect extends EditableInventory {
 		}
 
 		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
+		public boolean canDisplay(SubclassSelectionInventory inv) {
 			return true;
 		}
 	}

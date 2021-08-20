@@ -1,8 +1,18 @@
 package net.Indyuce.mmocore.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.skill.Skill;
+import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,21 +24,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.skill.Skill;
-import net.Indyuce.mmocore.api.skill.Skill.SkillInfo;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.InventoryPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.NoPlaceholderItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SkillList extends EditableInventory {
 	public SkillList() {
@@ -48,11 +45,11 @@ public class SkillList extends EditableInventory {
 			return new LevelItem(config);
 
 		if (function.equals("upgrade"))
-			return new InventoryPlaceholderItem(config) {
+			return new InventoryItem<SkillViewerInventory>(config) {
 
 				@Override
-				public Placeholders getPlaceholders(PluginInventory inv, int n) {
-					Skill selected = ((SkillViewerInventory) inv).selected.getSkill();
+				public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+					Skill selected = inv.selected.getSkill();
 					Placeholders holders = new Placeholders();
 
 					holders.register("skill_caps", selected.getName().toUpperCase());
@@ -63,21 +60,21 @@ public class SkillList extends EditableInventory {
 				}
 
 				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
-					return !((SkillViewerInventory) inv).binding;
+				public boolean canDisplay(SkillViewerInventory inv) {
+					return !inv.binding;
 				}
 			};
 
 		if (function.equals("slot"))
-			return new InventoryPlaceholderItem(config) {
+			return new InventoryItem<SkillViewerInventory>(config) {
 				private final String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
 				private final Material emptyMaterial = Material
 						.valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
 				private final int emptyCMD = config.getInt("empty-custom-model-data", getModelData());
 
 				@Override
-				public Placeholders getPlaceholders(PluginInventory inv, int n) {
-					Skill selected = ((SkillViewerInventory) inv).selected.getSkill();
+				public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+					Skill selected = inv.selected.getSkill();
 					Skill skill = inv.getPlayerData().hasSkillBound(n) ? inv.getPlayerData().getBoundSkill(n).getSkill() : null;
 
 					Placeholders holders = new Placeholders();
@@ -91,7 +88,7 @@ public class SkillList extends EditableInventory {
 				}
 
 				@Override
-				public ItemStack display(GeneratedInventory inv, int n) {
+				public ItemStack display(SkillViewerInventory inv, int n) {
 					ItemStack item = super.display(inv, n);
 					if (!inv.getPlayerData().hasSkillBound(n)) {
 						item.setType(emptyMaterial);
@@ -106,8 +103,8 @@ public class SkillList extends EditableInventory {
 				}
 
 				@Override
-				public boolean canDisplay(GeneratedInventory inv) {
-					return ((SkillViewerInventory) inv).binding;
+				public boolean canDisplay(SkillViewerInventory inv) {
+					return inv.binding;
 				}
 
 				@Override
@@ -116,15 +113,15 @@ public class SkillList extends EditableInventory {
 				}
 			};
 
-		return new NoPlaceholderItem(config);
+		return new SimplePlaceholderItem(config);
 	}
 
 	public GeneratedInventory newInventory(PlayerData data) {
 		return new SkillViewerInventory(data, this);
 	}
 
-	public class SwitchItem extends NoPlaceholderItem {
-		private final InventoryPlaceholderItem binding, upgrading;
+	public class SwitchItem extends SimplePlaceholderItem<SkillViewerInventory> {
+		private final SimplePlaceholderItem binding, upgrading;
 
 		public SwitchItem(ConfigurationSection config) {
 			super(config);
@@ -132,22 +129,22 @@ public class SkillList extends EditableInventory {
 			Validate.isTrue(config.contains("binding"), "Config must have 'binding'");
 			Validate.isTrue(config.contains("upgrading"), "Config must have 'upgrading'");
 
-			binding = new NoPlaceholderItem(config.getConfigurationSection("binding"));
-			upgrading = new NoPlaceholderItem(config.getConfigurationSection("upgrading"));
+			binding = new SimplePlaceholderItem(config.getConfigurationSection("binding"));
+			upgrading = new SimplePlaceholderItem(config.getConfigurationSection("upgrading"));
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			return ((SkillViewerInventory) inv).binding ? upgrading.display(inv) : binding.display(inv);
+		public ItemStack display(SkillViewerInventory inv, int n) {
+			return inv.binding ? upgrading.display(inv) : binding.display(inv);
 		}
 
 		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
+		public boolean canDisplay(SkillViewerInventory inv) {
 			return true;
 		}
 	}
 
-	public class LevelItem extends InventoryPlaceholderItem {
+	public class LevelItem extends InventoryItem<SkillViewerInventory> {
 		private final int offset;
 
 		public LevelItem(ConfigurationSection config) {
@@ -162,9 +159,9 @@ public class SkillList extends EditableInventory {
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
+		public ItemStack display(SkillViewerInventory inv, int n) {
 
-			SkillInfo skill = ((SkillViewerInventory) inv).selected;
+			SkillInfo skill = inv.selected;
 			int skillLevel = inv.getPlayerData().getSkillLevel(skill.getSkill()) + n - offset;
 			if (skillLevel < 1)
 				return new ItemStack(Material.AIR);
@@ -193,17 +190,17 @@ public class SkillList extends EditableInventory {
 		}
 
 		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
-			return null;
+		public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+			return new Placeholders();
 		}
 
 		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
-			return !((SkillViewerInventory) inv).binding;
+		public boolean canDisplay(SkillViewerInventory inv) {
+			return !inv.binding;
 		}
 	}
 
-	public class SkillItem extends InventoryPlaceholderItem {
+	public class SkillItem extends InventoryItem<SkillViewerInventory> {
 		private final int selectedSkillSlot;
 
 		public SkillItem(ConfigurationSection config) {
@@ -218,13 +215,12 @@ public class SkillList extends EditableInventory {
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
+		public ItemStack display(SkillViewerInventory inv, int n) {
 
 			/*
 			 * calculate placeholders
 			 */
-			SkillViewerInventory viewer = (SkillViewerInventory) inv;
-			SkillInfo skill = viewer.skills.get(mod(n + inv.getPlayerData().skillGuiDisplayOffset, viewer.skills.size()));
+			SkillInfo skill = inv.skills.get(mod(n + inv.getPlayerData().skillGuiDisplayOffset, inv.skills.size()));
 			Placeholders holders = getPlaceholders(inv.getPlayerData(), skill);
 
 			List<String> lore = new ArrayList<>(getLore());
@@ -264,8 +260,8 @@ public class SkillList extends EditableInventory {
 		}
 
 		@Override
-		public Placeholders getPlaceholders(PluginInventory inv, int n) {
-			return null;
+		public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+			return new Placeholders();
 		}
 	}
 
