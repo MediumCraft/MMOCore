@@ -3,11 +3,8 @@ package net.Indyuce.mmocore.skill;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.lumine.mythic.utils.cooldown.CooldownMap;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.Skill.SkillInfo;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
-import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
 
 /**
  * Note: any method which return longs returns milliseconds.

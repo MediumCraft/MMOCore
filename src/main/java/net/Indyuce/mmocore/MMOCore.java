@@ -20,7 +20,7 @@ import net.Indyuce.mmocore.comp.flags.DefaultFlags;
 import net.Indyuce.mmocore.comp.flags.FlagPlugin;
 import net.Indyuce.mmocore.comp.flags.ResidenceFlags;
 import net.Indyuce.mmocore.comp.flags.WorldGuardFlags;
-import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsDrops;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderAPIParser;
@@ -167,7 +167,7 @@ public class MMOCore extends LuminePlugin {
 		}
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
-			Bukkit.getServer().getPluginManager().registerEvents(new MythicMobsDrops(), this);
+			Bukkit.getServer().getPluginManager().registerEvents(new MythicHook(), this);
 			MMOCore.plugin.getLogger().log(Level.INFO, "Hooked onto MythicMobs");
 		}
 

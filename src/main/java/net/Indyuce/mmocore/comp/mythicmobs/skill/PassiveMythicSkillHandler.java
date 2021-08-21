@@ -16,13 +16,13 @@ import org.bukkit.event.Listener;
 
 import java.util.HashSet;
 
-public abstract class PassiveMythicMobSkillHandler implements Listener {
-    protected final MythicMobSkill skill;
+public abstract class PassiveMythicSkillHandler implements Listener {
+    protected final MythicSkill skill;
 
     /**
      * Core class for all passive types
      */
-    protected PassiveMythicMobSkillHandler(MythicMobSkill skill) {
+    protected PassiveMythicSkillHandler(MythicSkill skill) {
         this.skill = skill;
     }
 

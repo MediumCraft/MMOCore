@@ -279,12 +279,17 @@ public class PlayerClass extends PostLoadObject {
         return getSkill(skill.getId());
     }
 
-    /*
-     * reduces map checkups when skills are being checked on events that are
+    /**
+     * Reduces map checkups when skills are being checked on events that are
      * commonly called like EntityDamageEvent or regen events.
+     * <p>
+     * Examples:
+     * - {@link net.Indyuce.mmocore.skill.list.Neptune_Gift}
+     * - {@link net.Indyuce.mmocore.skill.list.Fire_Berserker}
      */
     public Optional<SkillInfo> findSkill(Skill skill) {
-        return skills.containsKey(skill.getId()) ? Optional.of(skills.get(skill.getId())) : Optional.empty();
+        SkillInfo found = skills.get(skill.getId());
+        return found == null ? Optional.empty() : Optional.of(found);
     }
 
     public SkillInfo getSkill(String id) {

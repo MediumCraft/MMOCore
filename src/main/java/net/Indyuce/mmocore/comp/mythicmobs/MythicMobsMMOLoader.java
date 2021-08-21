@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.comp.mythicmobs;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import org.bukkit.configuration.ConfigurationSection;
 
-import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
@@ -12,7 +11,7 @@ import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicFactionExperienceSourc
 import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicFactionObjective;
 import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobExperienceSource;
 import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobObjective;
-import net.Indyuce.mmocore.comp.mythicmobs.load.MythicMobSkillTrigger;
+import net.Indyuce.mmocore.comp.mythicmobs.load.MythicSkillTrigger;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class MythicMobsMMOLoader extends MMOLoader {
@@ -21,7 +20,7 @@ public class MythicMobsMMOLoader extends MMOLoader {
 	public Trigger loadTrigger(MMOLineConfig config) {
 
 		if (config.getKey().equalsIgnoreCase("mmskill") || config.getKey().equalsIgnoreCase("mythicmobskill"))
-			return new MythicMobSkillTrigger(config);
+			return new MythicSkillTrigger(config);
 
 		return null;
 	}

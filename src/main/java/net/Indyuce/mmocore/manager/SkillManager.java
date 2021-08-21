@@ -19,7 +19,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicSkill;
 
 public class SkillManager {
 	private final Map<String, Skill> skills = new LinkedHashMap<>();
@@ -59,7 +59,7 @@ public class SkillManager {
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			for (File file : mythicMobs.listFiles()) {
 				try {
-					register(new MythicMobSkill(file.getName().substring(0, file.getName().length() - 4).toUpperCase(),
+					register(new MythicSkill(file.getName().substring(0, file.getName().length() - 4).toUpperCase(),
 							YamlConfiguration.loadConfiguration(file)));
 				} catch (Exception exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill from " + file.getName() + ": " + exception.getMessage());
@@ -67,7 +67,7 @@ public class SkillManager {
 			}
 
 		for (Skill skill : getAll())
-			if (!(skill instanceof MythicMobSkill)) {
+			if (!(skill instanceof MythicSkill)) {
 				File file = new File(MMOCore.plugin.getDataFolder() + "/skills", skill.getLowerCaseId() + ".yml");
 				ConfigFile config = new ConfigFile("/skills", skill.getLowerCaseId());
 

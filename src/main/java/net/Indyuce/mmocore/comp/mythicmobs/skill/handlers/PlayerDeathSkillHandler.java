@@ -6,14 +6,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicMobSkillHandler;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicSkill;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicSkillHandler;
 
-public class PlayerDeathSkillHandler extends PassiveMythicMobSkillHandler {
+public class PlayerDeathSkillHandler extends PassiveMythicSkillHandler {
 	/**
 	 * Used to handle passive skills which trigger when a player dies
 	 */
-	public PlayerDeathSkillHandler(MythicMobSkill skill) {
+	public PlayerDeathSkillHandler(MythicSkill skill) {
 		super(skill);
 	}
 

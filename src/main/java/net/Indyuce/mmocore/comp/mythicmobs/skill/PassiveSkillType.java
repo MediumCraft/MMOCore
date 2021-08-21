@@ -11,7 +11,7 @@ public enum PassiveSkillType {
 	PLAYER_LOGIN,
 	SHOOT_BOW;
 
-	public PassiveMythicMobSkillHandler getHandler(MythicMobSkill skill) {
+	public PassiveMythicSkillHandler getHandler(MythicSkill skill) {
 		if (this == PLAYER_ATTACK)
 			return new PlayerAttackSkillHandler(skill);
 		if (this == PLAYER_DAMAGE)

@@ -6,14 +6,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicMobSkillHandler;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicSkill;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicSkillHandler;
 
-public class PlayerDamageSkillHandler extends PassiveMythicMobSkillHandler {
+public class PlayerDamageSkillHandler extends PassiveMythicSkillHandler {
 	/**
 	 * Used to handle passive skills which trigger when a player takes damage
 	 */
-	public PlayerDamageSkillHandler(MythicMobSkill skill) {
+	public PlayerDamageSkillHandler(MythicSkill skill) {
 		super(skill);
 	}
 

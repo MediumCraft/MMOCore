@@ -27,11 +27,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 
-public class MythicMobSkill extends Skill {
+public class MythicSkill extends Skill {
     private final io.lumine.xikage.mythicmobs.skills.Skill skill;
     private final Map<CheatType, Integer> antiCheat = new HashMap<>();
 
-    public MythicMobSkill(String id, FileConfiguration config) {
+    public MythicSkill(String id, FileConfiguration config) {
         super(id);
 
         String mmId = config.getString("mythicmobs-skill-id");
@@ -85,6 +85,7 @@ public class MythicMobSkill extends Skill {
         if (!cast.isSuccessful() || isPassive())
             return cast;
 
+        // Gather MythicMobs skill info
         HashSet<AbstractEntity> targetEntities = new HashSet<>();
         HashSet<AbstractLocation> targetLocations = new HashSet<>();
 
@@ -96,9 +97,11 @@ public class MythicMobSkill extends Skill {
         if (MMOCore.plugin.hasAntiCheat())
             MMOCore.plugin.antiCheatSupport.disableAntiCheat(caster.getPlayer(), antiCheat);
 
-        /*
-         * Yo is that me or the second argument is f***ing useless
-         */
+        // Place cast skill info in a variable
+        skillMeta.getVariables().putObject("MMOCoreSkill", cast);
+        skillMeta.getVariables().putObject("MMOStatMap", caster.getStats());
+
+        //  Yo is that me or the second argument is f***ing useless
         if (this.skill.usable(skillMeta, SkillTrigger.CAST))
             this.skill.execute(skillMeta);
         else

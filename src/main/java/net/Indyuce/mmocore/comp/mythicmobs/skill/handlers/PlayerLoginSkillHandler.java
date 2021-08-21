@@ -5,16 +5,16 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import io.lumine.mythic.utils.Schedulers;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicMobSkillHandler;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicSkill;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicSkillHandler;
 
-public class PlayerLoginSkillHandler extends PassiveMythicMobSkillHandler {
+public class PlayerLoginSkillHandler extends PassiveMythicSkillHandler {
     /**
      * Used when a player logins
      *
      * @param skill
      */
-    public PlayerLoginSkillHandler(MythicMobSkill skill) {
+    public PlayerLoginSkillHandler(MythicSkill skill) {
         super(skill);
     }
 

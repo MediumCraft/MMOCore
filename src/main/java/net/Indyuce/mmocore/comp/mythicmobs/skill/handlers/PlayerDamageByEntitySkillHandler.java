@@ -2,19 +2,19 @@ package net.Indyuce.mmocore.comp.mythicmobs.skill.handlers;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicMobSkill;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicMobSkillHandler;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicSkill;
+import net.Indyuce.mmocore.comp.mythicmobs.skill.PassiveMythicSkillHandler;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class PlayerDamageByEntitySkillHandler extends PassiveMythicMobSkillHandler {
+public class PlayerDamageByEntitySkillHandler extends PassiveMythicSkillHandler {
 	/**
 	 * Used to handle passive skills which trigger when a player takes damage
 	 * from another entity
 	 */
-	public PlayerDamageByEntitySkillHandler(MythicMobSkill skill) {
+	public PlayerDamageByEntitySkillHandler(MythicSkill skill) {
 		super(skill);
 	}
 
