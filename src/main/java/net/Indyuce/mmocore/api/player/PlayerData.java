@@ -751,11 +751,12 @@ public class PlayerData extends OfflinePlayerData {
     public void setClass(PlayerClass profess) {
         this.profess = profess;
 
-        // for (Iterator<SkillInfo> iterator = boundSkills.iterator();
-        // iterator.hasNext();)
-        // if (!getProfess().hasSkill(iterator.next().getSkill()))
-        // iterator.remove();
+        // Clear old skills
+        for (Iterator<SkillInfo> iterator = boundSkills.iterator(); iterator.hasNext(); )
+            if (!getProfess().hasSkill(iterator.next().getSkill()))
+                iterator.remove();
 
+        // Update stats
         getStats().updateStats();
     }
 
