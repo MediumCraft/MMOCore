@@ -79,7 +79,7 @@ public class PlayerData extends OfflinePlayerData {
     // NON-FINAL player data stuff made public to facilitate field change
     public int skillGuiDisplayOffset;
     public SkillCasting skillCasting;
-    public boolean nocd;
+    public boolean noCooldown;
     public CombatRunnable combat;
 
     /**
@@ -845,7 +845,7 @@ public class PlayerData extends OfflinePlayerData {
         }
 
         // Apply cooldown, mana and stamina costs
-        if (!nocd) {
+        if (!noCooldown) {
             double flatCooldownReduction = Math.max(0, Math.min(1, getStats().getStat(StatType.COOLDOWN_REDUCTION) / 100));
             flatCooldownReduction *= flatCooldownReduction > 0 ? skill.getModifier("cooldown", getSkillLevel(skill.getSkill())) * 1000 : 0;
 

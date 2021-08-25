@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.loot.LootChest;
+import net.Indyuce.mmocore.loot.chest.LootChest;
 
 public class LootableChestsListener implements Listener {
 	@EventHandler

@@ -12,8 +12,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.loot.LootChest;
-import net.Indyuce.mmocore.api.loot.LootChestRegion;
+import net.Indyuce.mmocore.loot.chest.LootChest;
+import net.Indyuce.mmocore.loot.chest.LootChestRegion;
 
 public class LootChestManager {
 

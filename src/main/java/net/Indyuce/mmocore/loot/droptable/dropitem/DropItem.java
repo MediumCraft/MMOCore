@@ -1,8 +1,8 @@
-package net.Indyuce.mmocore.api.droptable.dropitem;
+package net.Indyuce.mmocore.loot.droptable.dropitem;
 
 import java.util.Random;
 
-import net.Indyuce.mmocore.api.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 

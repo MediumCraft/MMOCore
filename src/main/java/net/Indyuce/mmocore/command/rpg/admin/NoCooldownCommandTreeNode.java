@@ -29,9 +29,9 @@ public class NoCooldownCommandTreeNode extends CommandTreeNode {
 		}
 
 		PlayerData data = PlayerData.get(player);
-		data.nocd = !data.nocd;
+		data.noCooldown = !data.noCooldown;
 		CommandVerbose.verbose(sender, CommandVerbose.CommandType.NOCD,
-			ChatColor.YELLOW + "NoCD " + (data.nocd ? "enabled" : "disabled") + " for " + player.getName() + ".");
+			ChatColor.YELLOW + "NoCD " + (data.noCooldown ? "enabled" : "disabled") + " for " + player.getName() + ".");
 		return CommandResult.SUCCESS;
 	}
 }

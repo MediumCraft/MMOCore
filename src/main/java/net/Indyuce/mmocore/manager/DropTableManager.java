@@ -14,7 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.droptable.DropTable;
+import net.Indyuce.mmocore.loot.droptable.DropTable;
 
 public class DropTableManager implements MMOManager {
 	private final Map<String, DropTable> map = new HashMap<>();

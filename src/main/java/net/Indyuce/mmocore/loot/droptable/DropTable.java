@@ -1,19 +1,19 @@
-package net.Indyuce.mmocore.api.droptable;
+package net.Indyuce.mmocore.loot.droptable;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.Indyuce.mmocore.loot.droptable.condition.Condition;
+import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
+import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.droptable.condition.Condition;
-import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
-import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
-import net.Indyuce.mmocore.api.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.LootBuilder;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 

@@ -2,10 +2,10 @@ package net.Indyuce.mmocore.listener.profession;
 
 import io.lumine.mythic.lib.version.VersionSound;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
+import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
 import net.Indyuce.mmocore.experience.EXPSource;
-import net.Indyuce.mmocore.api.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;

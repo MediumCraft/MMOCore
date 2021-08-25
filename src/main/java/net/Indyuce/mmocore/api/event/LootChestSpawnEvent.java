@@ -3,8 +3,8 @@ package net.Indyuce.mmocore.api.event;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-import net.Indyuce.mmocore.api.loot.LootBuilder;
-import net.Indyuce.mmocore.api.loot.LootChest;
+import net.Indyuce.mmocore.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 public class LootChestSpawnEvent extends PlayerDataEvent implements Cancellable {

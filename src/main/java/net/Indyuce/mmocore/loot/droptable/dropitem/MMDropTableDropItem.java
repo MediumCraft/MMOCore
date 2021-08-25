@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.droptable.dropitem;
+package net.Indyuce.mmocore.loot.droptable.dropitem;
 
 import java.util.NoSuchElementException;
 
@@ -9,7 +9,7 @@ import io.lumine.xikage.mythicmobs.drops.DropMetadata;
 import io.lumine.xikage.mythicmobs.drops.DropTable;
 import io.lumine.xikage.mythicmobs.drops.IItemDrop;
 import io.lumine.xikage.mythicmobs.drops.LootBag;
-import net.Indyuce.mmocore.api.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.LootBuilder;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class MMDropTableDropItem extends DropItem {

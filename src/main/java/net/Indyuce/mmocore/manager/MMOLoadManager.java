@@ -11,8 +11,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.google.gson.JsonParseException;
 
 import net.Indyuce.mmocore.api.block.BlockType;
-import net.Indyuce.mmocore.api.droptable.condition.Condition;
-import net.Indyuce.mmocore.api.droptable.dropitem.DropItem;
+import net.Indyuce.mmocore.loot.droptable.condition.Condition;
+import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.load.DefaultMMOLoader;
 import net.Indyuce.mmocore.api.load.MMOLoader;

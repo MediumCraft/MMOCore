@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.droptable.condition;
+package net.Indyuce.mmocore.loot.droptable.condition;
 
 import java.util.List;
 import java.util.stream.Stream;

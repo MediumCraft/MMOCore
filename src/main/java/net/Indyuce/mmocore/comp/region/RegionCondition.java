@@ -3,8 +3,8 @@ package net.Indyuce.mmocore.comp.region;
 import java.util.Arrays;
 import java.util.List;
 
-import net.Indyuce.mmocore.api.droptable.condition.Condition;
-import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
+import net.Indyuce.mmocore.loot.droptable.condition.Condition;
+import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class RegionCondition extends Condition {

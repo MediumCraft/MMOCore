@@ -13,9 +13,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.droptable.condition.Condition;
-import net.Indyuce.mmocore.api.droptable.condition.ConditionInstance;
-import net.Indyuce.mmocore.api.droptable.dropitem.fishing.FishingDropItem;
+import net.Indyuce.mmocore.loot.droptable.condition.Condition;
+import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
+import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.manager.MMOManager;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
