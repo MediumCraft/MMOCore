@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
+import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicDropLoadEvent;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicReloadedEvent;
@@ -57,6 +58,15 @@ public class MythicHook implements Listener {
             Variable var = ((SkillMetadata) metadata).getVariables().get("MMOCoreSkill");
             net.Indyuce.mmocore.skill.metadata.SkillMetadata cast = (net.Indyuce.mmocore.skill.metadata.SkillMetadata) var.get();
             return String.valueOf((int) cast.getModifier(arg));
+        }));
+
+        MythicMobs.inst().getPlaceholderManager().register("stat", Placeholder.meta((metadata, arg) -> {
+            if (!(metadata instanceof SkillMetadata))
+                throw new RuntimeException("Cannot use this placeholder outside of skill");
+
+            Variable var = ((SkillMetadata) metadata).getVariables().get("MMOStatMap");
+            StatMap.CachedStatMap statMap = (StatMap.CachedStatMap) var.get();
+            return String.valueOf(statMap.getStat(arg.toUpperCase()));
         }));
 
         MythicMobs.inst().getPlaceholderManager().register("mana", Placeholder.meta((metadata, arg) -> String.valueOf((int) PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getMana())));
