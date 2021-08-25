@@ -2,9 +2,9 @@ package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -45,7 +45,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
                         continue;
                     if (source.crop && !MythicLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
                         continue;
-                    if ((!source.playerPlaced) && event.getBlock().hasMetadata("player_placed"))
+                    if (!source.playerPlaced && event.getBlock().hasMetadata("player_placed"))
                         continue;
 
                     if (source.matches(data, event.getBlock().getType()))

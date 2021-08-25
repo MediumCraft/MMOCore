@@ -2,13 +2,13 @@ package net.Indyuce.mmocore.listener.profession;
 
 import io.lumine.mythic.lib.version.VersionSound;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
-import net.Indyuce.mmocore.experience.EXPSource;
-import net.Indyuce.mmocore.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,158 +34,164 @@ import java.util.Set;
 import java.util.UUID;
 
 public class FishingListener implements Listener {
-	private final Set<UUID> fishing = new HashSet<>();
+    private final Set<UUID> fishing = new HashSet<>();
 
-	private static final Random random = new Random();
+    private static final Random random = new Random();
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void a(PlayerFishEvent event) {
-		Player player = event.getPlayer();
-		FishHook hook = event.getHook();
+    @EventHandler(priority = EventPriority.LOW)
+    public void a(PlayerFishEvent event) {
+        Player player = event.getPlayer();
+        FishHook hook = event.getHook();
 
-		if (event.getState() == State.BITE && !fishing.contains(player.getUniqueId()) && !player.hasMetadata("NPC")) {
+        if (event.getState() == State.BITE && !fishing.contains(player.getUniqueId()) && !player.hasMetadata("NPC")) {
 
-			/*
-			 * Checks for drop tables. If no drop table, just plain vanilla
-			 * fishing OTHERWISE initialize fishing, register other listener.
-			 */
-			FishingDropTable table = MMOCore.plugin.fishingManager.calculateDropTable(player);
-			if (table == null)
-				return;
+            /*
+             * Checks for drop tables. If no drop table, just plain vanilla
+             * fishing OTHERWISE initialize fishing, register other listener.
+             */
+            FishingDropTable table = MMOCore.plugin.fishingManager.calculateDropTable(player);
+            if (table == null)
+                return;
 
-			new FishingData(player, hook, table);
-			MMOCoreUtils.displayIndicator(hook.getLocation().add(0, 1.25, 0), MMOCore.plugin.configManager.getSimpleMessage("caught-fish").message());
-		}
-	}
+            new FishingData(player, hook, table);
+            MMOCoreUtils.displayIndicator(hook.getLocation().add(0, 1.25, 0), MMOCore.plugin.configManager.getSimpleMessage("caught-fish").message());
+        }
+    }
 
-	public class FishingData extends BukkitRunnable implements Listener {
-		private final Location location;
-		private final FishingDropItem caught;
-		private final PlayerData playerData;
-		private final Player player;
-		private final FishHook hook;
+    public class FishingData extends BukkitRunnable implements Listener {
+        private final Location location;
+        private final FishingDropItem caught;
+        private final PlayerData playerData;
+        private final Player player;
+        private final FishHook hook;
 
-		private final int total, exp;
+        private final int total, exp;
 
-		private int pulls;
-		private long last = System.currentTimeMillis();
+        private int pulls;
 
-		public FishingData(Player player, FishHook hook, FishingDropTable table) {
-			this.location = hook.getLocation();
-			this.caught = table.getRandomItem();
-			this.playerData = PlayerData.get(this.player = player);
-			this.hook = hook;
+        /**
+         * Used to track the last time the player swung the fishing rod.
+         * If the player does not swing the rod at least once every second,
+         * the fish will go away and drops will be lost.
+         */
+        private long last = System.currentTimeMillis();
 
-			this.total = (int) (caught.rollTugs() * (1 - PlayerData.get(player).getStats().getStat(StatType.FISHING_STRENGTH) / 100));
-			this.exp = caught.rollExperience();
+        private static final long TIME_OUT = 1000;
 
-			fishing.add(player.getUniqueId());
-			runTaskTimer(MMOCore.plugin, 0, 2);
-			Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
-		}
+        public FishingData(Player player, FishHook hook, FishingDropTable table) {
+            this.location = hook.getLocation();
+            this.caught = table.getRandomItem();
+            this.playerData = PlayerData.get(this.player = player);
+            this.hook = hook;
 
-		public void criticalFish() {
-			pulls = total + 2;
-		}
+            this.total = (int) (caught.rollTugs() * (1 - PlayerData.get(player).getStats().getStat(StatType.FISHING_STRENGTH) / 100));
+            this.exp = caught.rollExperience();
 
-		public boolean isTimedOut() {
-			return last + 1000 < System.currentTimeMillis();
-		}
+            fishing.add(player.getUniqueId());
+            runTaskTimer(MMOCore.plugin, 0, 2);
+            Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
+        }
 
-		public boolean pull() {
-			last = System.currentTimeMillis();
-			return pulls++ > total;
-		}
+        public void criticalFish() {
+            pulls = total + 2;
+        }
 
-		public boolean isCrit() {
-			return pulls > total + 1;
-		}
+        public boolean isTimedOut() {
+            return last + TIME_OUT < System.currentTimeMillis();
+        }
 
-		public void close() {
-			fishing.remove(player.getUniqueId());
-			hook.remove();
+        /**
+         * @return If the fish is weak enough to be looted by the player.
+         */
+        public boolean pull() {
+            last = System.currentTimeMillis();
+            return pulls++ > total;
+        }
 
-			HandlerList.unregisterAll(this);
-			cancel();
-		}
+        /**
+         * Critical fish's means you catch the fish on the very first try
+         */
+        public boolean isCrit() {
+            return pulls > total + 1;
+        }
 
-		@Override
-		public void run() {
-			if (isTimedOut())
-				close();
+        private void close() {
+            fishing.remove(player.getUniqueId());
+            hook.remove();
 
-			location.getWorld().spawnParticle(Particle.CRIT, location, 0, 2 * (random.nextDouble() - .5), 3, 2 * (random.nextDouble() - .5), .6);
-		}
+            HandlerList.unregisterAll(this);
+            cancel();
+        }
 
-		@EventHandler
-		public void a(PlayerFishEvent event) {
-			if (event.getPlayer().equals(player) && !player.hasMetadata("NPC")
-					&& (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || event.getState() == State.REEL_IN)) {
+        @Override
+        public void run() {
+            if (isTimedOut())
+                close();
 
-				/*
-				 * Lose the catch if the current fish is gone!
-				 */
-				event.setCancelled(true);
-				if (isTimedOut()) {
-					close();
-					hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, hook.getLocation(), 16, 0, 0, 0, .1);
-					return;
-				}
+            location.getWorld().spawnParticle(Particle.CRIT, location, 0, 2 * (random.nextDouble() - .5), 3, 2 * (random.nextDouble() - .5), .6);
+        }
 
-				if (pulls == 0 && random.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_CHANCE) / 100)
-					criticalFish();
+        @EventHandler
+        public void a(PlayerFishEvent event) {
+            if (event.getPlayer().equals(player) && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || event.getState() == State.REEL_IN)) {
 
-				/*
-				 * Checks for enough pulls. if not, return and wait for next
-				 * fish event.
-				 */
-				if (!pull())
-					return;
+                // Lose the catch if the current fish is gone!
+                event.setCancelled(true);
+                if (isTimedOut()) {
+                    close();
+                    hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, hook.getLocation(), 16, 0, 0, 0, .1);
+                    return;
+                }
 
-				/*
-				 * Successfully pulls the fish
-				 */
-				close();
+                if (pulls == 0 && random.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_CHANCE) / 100)
+                    criticalFish();
 
-				ItemStack mainhand = player.getInventory().getItem(EquipmentSlot.HAND);
-				MMOCoreUtils.decreaseDurability(player,
-						(mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND, 1);
+                // Check if enough pulls; if not, wait till the next fish event
+                if (!pull())
+                    return;
 
-				if (!isCrit() && random.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
-					player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));
-					hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
-					return;
-				}
+                // The fish is successfully looted from here
+                close();
 
-				ItemStack collect = caught.collect(new LootBuilder(playerData, 0));
-				if (collect == null) {
-					hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
-					return;
-				}
+                ItemStack mainhand = player.getInventory().getItem(EquipmentSlot.HAND);
+                MMOCoreUtils.decreaseDurability(player,
+                        (mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND, 1);
 
-				CustomPlayerFishEvent called = new CustomPlayerFishEvent(playerData, collect);
-				Bukkit.getPluginManager().callEvent(called);
-				if (called.isCancelled())
-					return;
+                if (!isCrit() && random.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
+                    player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));
+                    hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
+                    return;
+                }
 
-				// calculate velocity
-				Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);
-				MMOCoreUtils.displayIndicator(location.add(0, 1.25, 0),
-						MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
-				Vector vec = player.getLocation().subtract(hook.getLocation()).toVector();
-				vec.setY(vec.getY() * .031 + vec.length() * .05);
-				vec.setX(vec.getX() * .08);
-				vec.setZ(vec.getZ() * .08);
-				item.setVelocity(vec);
-				player.getWorld().playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_HAT.toSound(), 1, 0);
-				for (int j = 0; j < 16; j++)
-					location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (random.nextDouble() - .5), 2,
-							4 * (random.nextDouble() - .5), .05);
+                ItemStack collect = caught.collect(new LootBuilder(playerData, 0));
+                if (collect == null) {
+                    hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
+                    return;
+                }
 
-				if (MMOCore.plugin.professionManager.has("fishing"))
-					playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, EXPSource.FISHING,
-							location);
-			}
-		}
-	}
+                CustomPlayerFishEvent called = new CustomPlayerFishEvent(playerData, collect);
+                Bukkit.getPluginManager().callEvent(called);
+                if (called.isCancelled())
+                    return;
+
+                // Calculate yeet velocity
+                Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);
+                MMOCoreUtils.displayIndicator(location.add(0, 1.25, 0),
+                        MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
+                Vector vec = player.getLocation().subtract(hook.getLocation()).toVector();
+                vec.setY(vec.getY() * .031 + vec.length() * .05);
+                vec.setX(vec.getX() * .08);
+                vec.setZ(vec.getZ() * .08);
+                item.setVelocity(vec);
+                player.getWorld().playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_HAT.toSound(), 1, 0);
+                for (int j = 0; j < 16; j++)
+                    location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (random.nextDouble() - .5), 2,
+                            4 * (random.nextDouble() - .5), .05);
+
+                if (MMOCore.plugin.professionManager.has("fishing"))
+                    playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, EXPSource.FISHING,
+                            location);
+            }
+        }
+    }
 }
