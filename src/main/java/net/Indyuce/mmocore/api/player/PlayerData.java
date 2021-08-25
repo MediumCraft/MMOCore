@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -104,6 +105,7 @@ public class PlayerData extends OfflinePlayerData {
 
         try {
             profess = profess == null ? null : MMOCore.plugin.classManager.get(profess.getId());
+            getStats().updateStats();
         } catch (NullPointerException exception) {
             MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
         }
@@ -516,6 +518,7 @@ public class PlayerData extends OfflinePlayerData {
     }
 
     @Override
+    @NotNull
     public PlayerClass getProfess() {
         return profess == null ? MMOCore.plugin.classManager.getDefaultClass() : profess;
     }
