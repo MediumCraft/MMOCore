@@ -102,12 +102,6 @@
 			<url>https://papermc.io/repo/repository/maven-public/</url>
 		</repository>
 		
-		<!-- holographic displays -->
-		<repository>
-		    <id>codemc-repo</id>
-		    <url>https://repo.codemc.io/repository/maven-public/</url>
-		</repository>
-
 	</repositories>
 
 	<dependencies>
@@ -176,7 +170,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Local repo -->
 		<dependency>
 			<groupId>com.bekvon.bukkit.residence</groupId>
 			<artifactId>Residence</artifactId>
