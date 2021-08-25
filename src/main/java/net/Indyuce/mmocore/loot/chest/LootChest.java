@@ -56,8 +56,11 @@ public class LootChest {
     }
 
     /**
-     * @param player If a player just the chest. It's set to false
-     *               when a loot chest expires or when MMOCore disables.
+     * @param player If a player triggered the unregistration of that chest by
+     *               opening and then closing it for the first time. It's set
+     *               to false when a loot chest expires or when MMOCore disables.
+     *               <p>
+     *               When no player is closing the chest, its content should be lost
      */
     public void unregister(boolean player) {
 
@@ -89,10 +92,6 @@ public class LootChest {
             this.material = block.getType();
             this.data = block.getBlockData();
             this.loc = block.getLocation();
-        }
-
-        public Location getLocoation() {
-            return loc;
         }
 
         public boolean matches(Location loc) {
