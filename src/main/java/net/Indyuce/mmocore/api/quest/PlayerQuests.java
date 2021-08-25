@@ -3,9 +3,9 @@ package net.Indyuce.mmocore.api.quest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.MythicLib;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -20,171 +20,171 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public class PlayerQuests {
-	private final PlayerData playerData;
-	private final BossBar bossbar;
-	private final Map<String, Long> finished = new HashMap<>();
+    private final PlayerData playerData;
+    private final BossBar bossbar;
+    private final Map<String, Long> finished = new HashMap<>();
 
-	private QuestProgress current;
+    private QuestProgress current;
 
-	public PlayerQuests(PlayerData playerData) {
-		this.playerData = playerData;
-		
-		bossbar = MythicLib.plugin.getVersion().getWrapper().createBossBar(
-			new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()),
-				"", BarColor.PURPLE, BarStyle.SEGMENTED_20);
-		if(playerData.isOnline())
-			bossbar.addPlayer(playerData.getPlayer());
-	}
+    public PlayerQuests(PlayerData playerData) {
+        this.playerData = playerData;
 
-	@Deprecated
-	public PlayerQuests(PlayerData playerData, BossBar bar) {
-		this.playerData = playerData;
-		this.bossbar = bar;
-	}
+        bossbar = MythicLib.plugin.getVersion().getWrapper().createBossBar(
+                new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()),
+                "", BarColor.PURPLE, BarStyle.SEGMENTED_20);
+        if (playerData.isOnline())
+            bossbar.addPlayer(playerData.getPlayer());
+    }
 
-	public PlayerQuests load(ConfigurationSection config) {
-		if (config.contains("current"))
-			try {
-				current = MMOCore.plugin.questManager.get(config.getString("current.id")).generateNewProgress(playerData, config.getInt("current.objective"));
-			} catch (Exception e) {
-				playerData.log(Level.WARNING, "Couldn't load current quest progress (ID '" + config.getString("current.id") + "')");
-			}
+    @Deprecated
+    public PlayerQuests(PlayerData playerData, BossBar bar) {
+        this.playerData = playerData;
+        this.bossbar = bar;
+    }
 
-		if (config.contains("finished"))
-			for (String key : config.getConfigurationSection("finished").getKeys(false))
-				finished.put(key, config.getLong("finished." + key));
+    public PlayerQuests load(ConfigurationSection config) {
+        if (config.contains("current"))
+            try {
+                current = MMOCore.plugin.questManager.get(config.getString("current.id")).generateNewProgress(playerData, config.getInt("current.objective"));
+            } catch (Exception e) {
+                playerData.log(Level.WARNING, "Couldn't load current quest progress (ID '" + config.getString("current.id") + "')");
+            }
 
-		/*
-		 * must update the boss bar once the instance is loaded, otherwise it
-		 * won't detect the current quest. THE BOSS BAR UPDATE is in the player
-		 * data class, this way it is still set invisible even if the player has
-		 * no quest data
-		 */
+        if (config.contains("finished"))
+            for (String key : config.getConfigurationSection("finished").getKeys(false))
+                finished.put(key, config.getLong("finished." + key));
 
-		return this;
-	}
+        /*
+         * must update the boss bar once the instance is loaded, otherwise it
+         * won't detect the current quest. THE BOSS BAR UPDATE is in the player
+         * data class, this way it is still set invisible even if the player has
+         * no quest data
+         */
 
-	public void save(ConfigurationSection config) {
-		if (current != null) {
-			config.set("current.id", current.getQuest().getId());
-			config.set("current.objective", current.getObjectiveNumber());
-		} else
-			config.set("current", null);
+        return this;
+    }
 
-		for (String key : finished.keySet())
-			config.set("finished." + key, finished.get(key));
-	}
+    public void save(ConfigurationSection config) {
+        if (current != null) {
+            config.set("current.id", current.getQuest().getId());
+            config.set("current.objective", current.getObjectiveNumber());
+        } else
+            config.set("current", null);
 
-	public String toJsonString() {
-		JsonObject json = new JsonObject();
-		if(current != null) {
-			JsonObject cur = new JsonObject();
-			cur.addProperty("id", current.getQuest().getId());
-			cur.addProperty("objective", current.getObjectiveNumber());
-			json.add("current", cur);
-		}
-		
-		JsonObject fin = new JsonObject();
-		for (String key : finished.keySet())
-			fin.addProperty(key, finished.get(key));
-		
-		if(finished.size() != 0)
-			json.add("finished", fin);
-		return json.toString();
-	}
+        for (String key : finished.keySet())
+            config.set("finished." + key, finished.get(key));
+    }
 
-	public void load(String json) {
-		Gson parser = new Gson();
-		JsonObject jo = parser.fromJson(json, JsonObject.class);
-		if(jo.has("current")) {
-			JsonObject cur = jo.getAsJsonObject("current");
-			try {
-				current = MMOCore.plugin.questManager.get(cur.get("id").getAsString()).generateNewProgress(playerData, cur.get("objective").getAsInt());
-			} catch (Exception e) {
-				playerData.log(Level.WARNING, "Couldn't load current quest progress (ID '" + cur.get("id").getAsString() + "')");
-			}
-		}
-		if(jo.has("finished")) {
-			for (Entry<String, JsonElement> entry : jo.getAsJsonObject("finished").entrySet())
-				finished.put(entry.getKey(), entry.getValue().getAsLong());
-		}
-		
-		for(Entry<String, Long> entry : finished.entrySet())
-			MMOCore.log("Finished: (" + entry.getKey() + ") - at: " + entry.getValue());
-	}
-	
-	public QuestProgress getCurrent() {
-		return current;
-	}
+    public String toJsonString() {
+        JsonObject json = new JsonObject();
+        if (current != null) {
+            JsonObject cur = new JsonObject();
+            cur.addProperty("id", current.getQuest().getId());
+            cur.addProperty("objective", current.getObjectiveNumber());
+            json.add("current", cur);
+        }
 
-	public boolean hasCurrent() {
-		return current != null;
-	}
+        JsonObject fin = new JsonObject();
+        for (String key : finished.keySet())
+            fin.addProperty(key, finished.get(key));
 
-	public Set<String> getFinishedQuests() {
-		return finished.keySet();
-	}
+        if (finished.size() != 0)
+            json.add("finished", fin);
+        return json.toString();
+    }
 
-	public boolean hasCurrent(Quest quest) {
-		return hasCurrent() && current.getQuest().equals(quest);
-	}
+    public void load(String json) {
+        Gson parser = new Gson();
+        JsonObject jo = parser.fromJson(json, JsonObject.class);
+        if (jo.has("current")) {
+            JsonObject cur = jo.getAsJsonObject("current");
+            try {
+                current = MMOCore.plugin.questManager.get(cur.get("id").getAsString()).generateNewProgress(playerData, cur.get("objective").getAsInt());
+            } catch (Exception e) {
+                playerData.log(Level.WARNING, "Couldn't load current quest progress (ID '" + cur.get("id").getAsString() + "')");
+            }
+        }
+        if (jo.has("finished")) {
+            for (Entry<String, JsonElement> entry : jo.getAsJsonObject("finished").entrySet())
+                finished.put(entry.getKey(), entry.getValue().getAsLong());
+        }
 
-	public boolean hasFinished(Quest quest) {
-		return finished.containsKey(quest.getId());
-	}
+        for (Entry<String, Long> entry : finished.entrySet())
+            MMOCore.log("Finished: (" + entry.getKey() + ") - at: " + entry.getValue());
+    }
 
-	public void finishCurrent() {
-		finished.put(current.getQuest().getId(), System.currentTimeMillis());
-		start(null);
-	}
+    public QuestProgress getCurrent() {
+        return current;
+    }
 
-	public void resetFinishedQuests() {
-		finished.clear();
-	}
+    public boolean hasCurrent() {
+        return current != null;
+    }
 
-	public Date getFinishDate(Quest quest) {
-		return new Date(finished.get(quest.getId()));
-	}
+    public Set<String> getFinishedQuests() {
+        return finished.keySet();
+    }
 
-	public void start(Quest quest) {
+    public boolean hasCurrent(Quest quest) {
+        return hasCurrent() && current.getQuest().equals(quest);
+    }
 
-		// close current objective progress if quest is active
-		if (hasCurrent())
-			current.getProgress().close();
+    public boolean hasFinished(Quest quest) {
+        return finished.containsKey(quest.getId());
+    }
 
-		// apply newer quest
-		current = quest == null ? null : quest.generateNewProgress(playerData);
-		updateBossBar();
-	}
+    public void finishCurrent() {
+        finished.put(current.getQuest().getId(), System.currentTimeMillis());
+        start(null);
+    }
 
-	public boolean checkCooldownAvailability(Quest quest) {
-		return (finished.get(quest.getId()) + quest.getDelayMillis()) < System.currentTimeMillis();
-	}
+    public void resetFinishedQuests() {
+        finished.clear();
+    }
 
-	public long getDelayFeft(Quest quest) {
-		return Math.max(finished.get(quest.getId()) + quest.getDelayMillis() - System.currentTimeMillis(), 0);
-	}
+    public Date getFinishDate(Quest quest) {
+        return new Date(finished.get(quest.getId()));
+    }
 
-	public boolean checkParentAvailability(Quest quest) {
-		for (Quest parent : quest.getParents())
-			if (!hasFinished(parent))
-				return false;
-		return true;
-	}
+    public void start(Quest quest) {
 
-	public void updateBossBar() {
-		if (!hasCurrent()) {
-			bossbar.setVisible(false);
-			return;
-		}
+        // close current objective progress if quest is active
+        if (hasCurrent())
+            current.getProgress().close();
 
-		bossbar.setVisible(true);
-		bossbar.setColor(current.getProgress().getObjective().getBarColor());
-		bossbar.setTitle(current.getFormattedLore());
-		bossbar.setProgress((double) current.getObjectiveNumber() / current.getQuest().getObjectives().size());
-	}
+        // apply newer quest
+        current = quest == null ? null : quest.generateNewProgress(playerData);
+        updateBossBar();
+    }
 
-	public void resetBossBar() {
-		bossbar.removeAll();
-	}
+    public boolean checkCooldownAvailability(Quest quest) {
+        return (finished.get(quest.getId()) + quest.getDelayMillis()) < System.currentTimeMillis();
+    }
+
+    public long getDelayFeft(Quest quest) {
+        return Math.max(finished.get(quest.getId()) + quest.getDelayMillis() - System.currentTimeMillis(), 0);
+    }
+
+    public boolean checkParentAvailability(Quest quest) {
+        for (Quest parent : quest.getParents())
+            if (!hasFinished(parent))
+                return false;
+        return true;
+    }
+
+    public void updateBossBar() {
+        if (!hasCurrent() || !current.getProgress().getObjective().hasLore()) {
+            bossbar.setVisible(false);
+            return;
+        }
+
+        bossbar.setVisible(true);
+        bossbar.setColor(current.getProgress().getObjective().getBarColor());
+        bossbar.setTitle(current.getFormattedLore());
+        bossbar.setProgress((double) current.getObjectiveNumber() / current.getQuest().getObjectives().size());
+    }
+
+    public void resetBossBar() {
+        bossbar.removeAll();
+    }
 }
