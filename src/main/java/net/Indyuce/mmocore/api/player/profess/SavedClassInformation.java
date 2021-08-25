@@ -175,5 +175,8 @@ public class SavedClassInformation {
 		 */
 		player.setClass(profess);
 		player.unloadClassInfo(profess);
+
+		// Updates level on exp bar
+		player.refreshVanillaExp();
 	}
 }
