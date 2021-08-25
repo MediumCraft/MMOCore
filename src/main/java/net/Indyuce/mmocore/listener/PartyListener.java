@@ -43,9 +43,12 @@ public class PartyListener implements Listener {
 		});
 	}
 
-	/*
-	 * cancel damage of players from the same party
+	/**
+	 * Cancel damage of players from the same party
+	 *
+	 * @deprecated This should be useful with the {@link io.lumine.mythic.lib.comp.target.TargetRestriction} update
 	 */
+	@Deprecated
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void b(PlayerAttackEvent event) {
 		LivingEntity entity = event.getEntity();

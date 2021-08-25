@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.listener.option;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.comp.target.InteractionType;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import org.bukkit.entity.EntityType;
@@ -13,7 +14,7 @@ public class PlayerProfileCheck implements Listener {
 
     @EventHandler
     public void a(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked().getType() != EntityType.PLAYER || MythicLib.plugin.getEntities().findCustom(event.getRightClicked()))
+        if (event.getRightClicked().getType() != EntityType.PLAYER || !MythicLib.plugin.getEntities().canTarget(event.getPlayer(), event.getRightClicked(), InteractionType.SUPPORT_ACTION))
             return;
 
         /*

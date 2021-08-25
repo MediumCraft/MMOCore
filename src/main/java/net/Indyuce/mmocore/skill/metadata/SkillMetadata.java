@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.skill.metadata;
 
-import net.Indyuce.mmocore.MMOCore;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.comp.flags.CustomFlag;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.comp.flags.FlagPlugin.CustomFlag;
 import net.Indyuce.mmocore.skill.CasterMetadata;
 import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.skill.Skill.SkillInfo;
@@ -30,7 +30,7 @@ public class SkillMetadata {
                 : mana > data.getMana() ? CancelReason.MANA
                 : stamina > data.getStamina() ? CancelReason.STAMINA
                 : !data.isOnline() ? CancelReason.OTHER
-                : !MMOCore.plugin.flagPlugin.isFlagAllowed(data.getPlayer(), CustomFlag.SKILLS) ? CancelReason.FLAG
+                : !MythicLib.plugin.getFlags().isFlagAllowed(data.getPlayer(), CustomFlag.MMO_ABILITIES) ? CancelReason.FLAG
                 : null;
     }
 

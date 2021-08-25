@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.skill.list;
 
+import io.lumine.mythic.lib.comp.target.InteractionType;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -35,7 +36,7 @@ public class Human_Shield extends Skill {
 
     @Override
     public SkillMetadata whenCast(CasterMetadata caster, SkillInfo skill) {
-        TargetSkillMetadata cast = new TargetSkillMetadata(caster, skill, 7, true);
+        TargetSkillMetadata cast = new TargetSkillMetadata(caster, skill, 7, InteractionType.SUPPORT_SKILL);
         if (!cast.isSuccessful())
             return cast;
 

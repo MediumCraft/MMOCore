@@ -1,159 +1,162 @@
 package net.Indyuce.mmocore.api.player.social;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import org.bukkit.entity.Player;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView.PartyViewInventory;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import org.bukkit.entity.Player;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 public class Party {
-	private final PartyMembers members = new PartyMembers();
-	private final Map<UUID, Long> invites = new HashMap<>();
+    private final PartyMembers members = new PartyMembers();
+    private final Map<UUID, Long> invites = new HashMap<>();
 
-	// used to check if two parties are the same
-	private final UUID id = UUID.randomUUID();
+    // used to check if two parties are the same
+    private final UUID id = UUID.randomUUID();
 
-	/*
-	 * owner changes when the old owner leaves party
-	 */
-	private PlayerData owner;
+    /*
+     * owner changes when the old owner leaves party
+     */
+    private PlayerData owner;
 
-	public Party(PlayerData owner) {
-		this.owner = owner;
-		addMember(owner);
-	}
+    public Party(PlayerData owner) {
+        this.owner = owner;
+        addMember(owner);
+    }
 
-	public UUID getUniqueId() {
-		return id;
-	}
-	
-	public PlayerData getOwner() {
-		return owner;
-	}
+    public UUID getUniqueId() {
+        return id;
+    }
 
-	public PartyMembers getMembers() {
-		return members;
-	}
+    public PlayerData getOwner() {
+        return owner;
+    }
 
-	public long getLastInvite(Player player) {
-		return invites.containsKey(player.getUniqueId()) ? invites.get(player.getUniqueId()) : 0;
-	}
+    public PartyMembers getMembers() {
+        return members;
+    }
 
-	public void removeLastInvite(Player player) {
-		invites.remove(player.getUniqueId());
-	}
+    public long getLastInvite(Player player) {
+        return invites.containsKey(player.getUniqueId()) ? invites.get(player.getUniqueId()) : 0;
+    }
 
-	public void removeMember(PlayerData data) {
-		removeMember(data, true);
-	}
-	
-	public void removeMember(PlayerData data, boolean notify) {
-		if (data.isOnline() && data.getPlayer().getOpenInventory() != null
-				&& data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
-			InventoryManager.PARTY_CREATION.newInventory(data).open();
+    public void removeLastInvite(Player player) {
+        invites.remove(player.getUniqueId());
+    }
 
-		members.remove(data);
-		data.setParty(null);
+    public void removeMember(PlayerData data) {
+        removeMember(data, true);
+    }
 
-		reopenInventories();
+    public void removeMember(PlayerData data, boolean notify) {
+        if (data.isOnline() && data.getPlayer().getOpenInventory() != null
+                && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
+            InventoryManager.PARTY_CREATION.newInventory(data).open();
 
-		// disband the party if no member left
-		if (members.count() < 1) {
-			MMOCore.plugin.partyManager.unregisterParty(this);
-			return;
-		}
+        members.remove(data);
+        data.setParty(null);
 
-		// transfer ownership
-		if (owner.equals(data)) {
-			owner = members.get(0);
-			if(notify && owner.isOnline()) MMOCore.plugin.configManager.getSimpleMessage("transfer-party-ownership").send(owner.getPlayer());
-		}
-	}
+        reopenInventories();
 
-	public void addMember(PlayerData data) {
-		if (data.hasParty())
-			data.getParty().removeMember(data);
+        // disband the party if no member left
+        if (members.count() < 1) {
+            MMOCore.plugin.partyManager.unregisterParty(this);
+            return;
+        }
 
-		data.setParty(this);
-		members.add(data);
+        // transfer ownership
+        if (owner.equals(data)) {
+            owner = members.get(0);
+            if (notify && owner.isOnline())
+                MMOCore.plugin.configManager.getSimpleMessage("transfer-party-ownership").send(owner.getPlayer());
+        }
+    }
 
-		reopenInventories();
-	}
+    public void addMember(PlayerData data) {
+        if (data.hasParty())
+            data.getParty().removeMember(data);
 
-	public void reopenInventories() {
-		for (PlayerData member : members.members)
-			if (member.isOnline() && member.getPlayer().getOpenInventory() != null
-					&& member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
-				((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
-	}
+        data.setParty(this);
+        members.add(data);
 
-	public void sendPartyInvite(PlayerData inviter, PlayerData target) {
-		invites.put(target.getUniqueId(), System.currentTimeMillis());
-		Request request = new PartyInvite(this, inviter, target);
-		if(inviter.isOnline() && target.isOnline())
-			new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
-					.sendAsJSon(target.getPlayer());
-		MMOCore.plugin.requestManager.registerRequest(request);
-	}
+        reopenInventories();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Party && ((Party) obj).getUniqueId().equals(getUniqueId());
-	}
+    public void reopenInventories() {
+        for (PlayerData member : members.members)
+            if (member.isOnline() && member.getPlayer().getOpenInventory() != null
+                    && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
+                ((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
+    }
 
-	/*
-	 * this class makes controling entries and departures and APPLYING PARTY
-	 * STAT ATTRIBUTES much easier
-	 */
-	public static class PartyMembers {
-		private final List<PlayerData> members = new ArrayList<>();
+    public void sendPartyInvite(PlayerData inviter, PlayerData target) {
+        invites.put(target.getUniqueId(), System.currentTimeMillis());
+        Request request = new PartyInvite(this, inviter, target);
+        if (inviter.isOnline() && target.isOnline())
+            new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
+                    .sendAsJSon(target.getPlayer());
+        MMOCore.plugin.requestManager.registerRequest(request);
+    }
 
-		public PlayerData get(int count) {
-			return members.get(count);
-		}
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Party && ((Party) obj).getUniqueId().equals(getUniqueId());
+    }
 
-		public boolean has(PlayerData player) {
-			return members.contains(player);
-		}
+    /*
+     * this class makes controling entries and departures and APPLYING PARTY
+     * STAT ATTRIBUTES much easier
+     */
+    public static class PartyMembers {
+        private final List<PlayerData> members = new ArrayList<>();
 
-		public void add(PlayerData player) {
-			members.add(player);
+        public PlayerData get(int count) {
+            return members.get(count);
+        }
 
-			members.forEach(this::applyAttributes);
-		}
+        public boolean has(PlayerData player) {
+            return members.contains(player);
+        }
 
-		public void remove(PlayerData player) {
-			members.remove(player);
+        public boolean has(Player player) {
+            for (PlayerData member : members)
+                if (member.getUniqueId().equals(player.getUniqueId()))
+                    return true;
+            return false;
+        }
 
-			members.forEach(this::applyAttributes);
-			clearAttributes(player);
-		}
+        public void add(PlayerData player) {
+            members.add(player);
 
-		public void forEach(Consumer<? super PlayerData> action) {
-			members.forEach(action);
-		}
+            members.forEach(this::applyAttributes);
+        }
 
-		public int count() {
-			return members.size();
-		}
+        public void remove(PlayerData player) {
+            members.remove(player);
 
-		private void applyAttributes(PlayerData player) {
-			MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("mmocoreParty",
-					MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
-		}
+            members.forEach(this::applyAttributes);
+            clearAttributes(player);
+        }
 
-		private void clearAttributes(PlayerData player) {
-			MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).remove("mmocoreParty"));
-		}
-	}
+        public void forEach(Consumer<? super PlayerData> action) {
+            members.forEach(action);
+        }
+
+        public int count() {
+            return members.size();
+        }
+
+        private void applyAttributes(PlayerData player) {
+            MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("mmocoreParty",
+                    MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
+        }
+
+        private void clearAttributes(PlayerData player) {
+            MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).remove("mmocoreParty"));
+        }
+    }
 }

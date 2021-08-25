@@ -1,10 +1,12 @@
 package net.Indyuce.mmocore;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.comp.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
 import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
+import net.Indyuce.mmocore.comp.MMOCoreTargetRestriction;
 import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
@@ -16,10 +18,6 @@ import net.Indyuce.mmocore.comp.anticheat.AntiCheatSupport;
 import net.Indyuce.mmocore.comp.anticheat.SpartanPlugin;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
-import net.Indyuce.mmocore.comp.flags.DefaultFlags;
-import net.Indyuce.mmocore.comp.flags.FlagPlugin;
-import net.Indyuce.mmocore.comp.flags.ResidenceFlags;
-import net.Indyuce.mmocore.comp.flags.WorldGuardFlags;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
@@ -67,7 +65,6 @@ public class MMOCore extends LuminePlugin {
 	public VaultEconomy economy;
 	public AntiCheatSupport antiCheatSupport;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
-	public FlagPlugin flagPlugin = new DefaultFlags();
 	public PlaceholderParser placeholderParser = new DefaultParser();
 	public DataProvider dataProvider = new YAMLDataProvider();
 	public final PlayerActionBar actionBarManager = new PlayerActionBar();
@@ -101,6 +98,9 @@ public class MMOCore extends LuminePlugin {
 
 	public void load() {
 
+		// Register target restrictions due to MMOCore in MythicLib
+		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
+
 		/*
 		 * register extra objective, drop items...
 		 */
@@ -119,7 +119,7 @@ public class MMOCore extends LuminePlugin {
 		 * WorldGuard closes the flag registry after 'onLoad()', so it must be
 		 * registered here or it will throw an IllegalStateException
 		 */
-		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) flagPlugin = new WorldGuardFlags();
+	//	if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) flagPlugin = new WorldGuardFlags();
 	}
 
 	public void enable() {
@@ -156,9 +156,6 @@ public class MMOCore extends LuminePlugin {
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
 			regionHandler = new WorldGuardRegionHandler();
 			getLogger().log(Level.INFO, "Hooked onto WorldGuard");
-		} else if (Bukkit.getPluginManager().getPlugin("Residence") != null) {
-			flagPlugin = new ResidenceFlags();
-			getLogger().log(Level.INFO, "Hooked onto Residence");
 		}
 
 		if (Bukkit.getPluginManager().getPlugin("Spartan") != null) {

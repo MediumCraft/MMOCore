@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.skill.list;
 
+import io.lumine.mythic.lib.comp.target.InteractionType;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.skill.CasterMetadata;
@@ -25,7 +26,7 @@ public class Minor_Healings extends Skill {
 
     @Override
     public SkillMetadata whenCast(CasterMetadata caster, SkillInfo skill) {
-        SkillMetadata cast = caster.getPlayer().isSneaking() ? new SkillMetadata(caster, skill) : new TargetSkillMetadata(caster, skill, 50, true);
+        SkillMetadata cast = caster.getPlayer().isSneaking() ? new SkillMetadata(caster, skill) : new TargetSkillMetadata(caster, skill, 50, InteractionType.SUPPORT_SKILL);
         if (!cast.isSuccessful())
             return cast;
 
