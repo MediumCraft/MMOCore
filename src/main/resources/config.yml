@@ -14,33 +14,33 @@ config-version: 7
 # (class, level, etc.) and guild data
 # (guild names, members, etc.) at a set interval.
 auto-save:
-    enabled: true
-    interval: 1800 # In seconds (1800 = 30 minutes)
+  enabled: true
+  interval: 1800 # In seconds (1800 = 30 minutes)
 
 # MySQL Support
 mysql:
-    enabled: false
-    host: localhost
-    port: 3306
-    database: minecraft
-    user: mmolover
-    pass: ILoveAria
-    properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-    # Will verbose to the console whenever
-    # data is saved/loaded from the SQL database.
-    debug: false
+  enabled: false
+  host: localhost
+  port: 3306
+  database: minecraft
+  user: mmolover
+  pass: ILoveAria
+  properties:
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+  # Will verbose to the console whenever
+  # data is saved/loaded from the SQL database.
+  debug: false
 
 # The default values for all playerdata
 # All new players will start with these values
 default-playerdata:
-    level: 1
-    class-points: 0
-    skill-points: 0
-    attribute-points: 0
-    attribute-realloc-points: 0
+  level: 1
+  class-points: 0
+  skill-points: 0
+  attribute-points: 0
+  attribute-realloc-points: 0
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
@@ -51,8 +51,8 @@ default-playerdata:
 #
 # ^ will enable custom mining server wide
 custom-mine-conditions:
-    - 'world{name="world,world_nether,world_the_end"}'
-    - 'region{name="example_region,example_region2,__global__"}'
+  - 'world{name="world,world_nether,world_the_end"}'
+  - 'region{name="example_region,example_region2,__global__"}'
 
 # Set to true to prevent vanilla blocks from being
 # broken when custom mining conditions are met
@@ -64,57 +64,57 @@ should-cobblestone-generators-give-exp: false
 
 loot-chests:
 
-    # Time in seconds it takes for a loot chest to
-    # expire after it was spawned. 600 is 10 minutes.
-    chest-expire-time: 600
-    
-    # Interval in seconds before the same player
-    # spawns two loot chests in ANY region.
-    player-cooldown: 600
+  # Time in seconds it takes for a loot chest to
+  # expire after it was spawned. 600 is 10 minutes.
+  chest-expire-time: 600
+
+  # Interval in seconds before the same player
+  # spawns two loot chests in ANY region.
+  player-cooldown: 600
 
 # Settings for the default action bar
 action-bar:
 
-    # Whether or not to use the default action bar.
-    # (This doesn't change any other action bars provided by MMOCore.)
-    enabled: true
-    
-    # The decimal format for stats (not including stat formats in stats.yml)
-    decimal: "0.#"
-    
-    # The amount of miliseconds the bar will be faded
-    #out when displaying other action bars.
-    time-out: 60
-    
-    # The amount of ticks before updating the info
-    ticks-to-update: 5
-    
-    # How to display the data.
-    format: "&c❤ {health}/{max_health} &f| {mana_icon} {mana}/{max_mana} &f| &7⛨ {armor}"
+  # Whether or not to use the default action bar.
+  # (This doesn't change any other action bars provided by MMOCore.)
+  enabled: true
+
+  # The decimal format for stats (not including stat formats in stats.yml)
+  decimal: "0.#"
+
+  # The amount of miliseconds the bar will be faded
+  #out when displaying other action bars.
+  time-out: 60
+
+  # The amount of ticks before updating the info
+  ticks-to-update: 5
+
+  # How to display the data.
+  format: "&c❤ {health}/{max_health} &f| {mana_icon} {mana}/{max_mana} &f| &7⛨ {armor}"
 
 party:
 
-    # Edit party buffs here. You may
-    # add as many stats as you want.
-    buff:
-        health-regeneration: 3
-        additional-experience: 5
-    
-    # Prefix you need to put in the chat
-    # to talk in the party chat.
-    chat-prefix: '@'
+  # Edit party buffs here. You may
+  # add as many stats as you want.
+  buff:
+    health-regeneration: 3
+    additional-experience: 5
 
-    # The max players that can be in
-    # any given party. Between 2-8.
-    max-players: 8
+  # Prefix you need to put in the chat
+  # to talk in the party chat.
+  chat-prefix: '@'
+
+  # The max players that can be in
+  # any given party. Between 2-8.
+  max-players: 8
 
 # Redirects vanilla experience obtained to MMOCore
 # class experience. You can define the % of the vanilla
 # experience that is being transfered as MMOCore exp.
 # Requires a SERVER reload when changed.
 vanilla-exp-redirection:
-    enabled: false
-    ratio: 0.8
+  enabled: false
+  ratio: 0.8
 
 # Enable this open to override vanilla EXP and display
 # level progress on the vanilla experience bar.
@@ -130,25 +130,22 @@ display-main-class-exp-holograms: true
 
 # Requires a SERVER reload when changed.
 death-exp-loss:
-    enabled: false
+  enabled: false
 
-    # Percentage of current EXP you lose when dying.
-    percent: 30
+  # Percentage of current EXP you lose when dying.
+  percent: 30
 
-# Put the "value" of the action you want.
-# If the value is invalid or empty it will
-# default to the vanilla minecraft action.
-# spell_cast
-# Enters the default spell casting mode
-# hotbar_swap
-# Players can swap their hotbar with the 9 inventory slots
-# right above it by pressing [swap items] while crouching.
-# THis allows players to have two combat item sets.
-# - vanilla
-# The default F action, swapping main hand and offhand.
+# Modify the keybinds for the 'swap hand items' key (F by default)
+#
+# Available actions:
+# - spell_cast (enters the default spell casting mode)
+# - vanilla (swaps hand items)
+# - hotbar_swap (swap the player's horbat with the 9 lowest inventory slots)
+#
+# If the action is invalid, it will use 'vanilla' by default
 swap-keybind:
-    normal: spell_cast
-    sneaking: hotbar_swap
+  normal: spell_cast
+  sneaking: hotbar_swap
 
 # Set this to true to allow players
 # in creative mode to enter casting mode
@@ -163,7 +160,7 @@ prevent-spawner-xp: true
 
 # Timer for combat log to expire (in seconds)
 combat-log:
-    timer: 10
+  timer: 10
 
 # Whether or not the default class should save information (level,
 # skills, etc.) when selecting a new class
@@ -172,9 +169,9 @@ save-default-class-info: false
 # Change this to the name of the color you want for
 # the different resource bar placeholders
 resource-bar-colors:
-    stamina-whole: 'GREEN'
-    stamina-half: 'DARK_GREEN'
-    stamina-empty: 'WHITE'
+  stamina-whole: 'GREEN'
+  stamina-half: 'DARK_GREEN'
+  stamina-empty: 'WHITE'
 
 # Whether or not the admin commands should display
 # the result of the command when ran.
@@ -185,11 +182,11 @@ resource-bar-colors:
 # console - Only verbose when ran from console
 # false - Never verbose
 command-verbose:
-    attribute: true
-    class: true
-    experience: true
-    level: true
-    nocd: true
-    points: true
-    reset: true
-    resource: true
+  attribute: true
+  class: true
+  experience: true
+  level: true
+  nocd: true
+  points: true
+  reset: true
+  resource: true
