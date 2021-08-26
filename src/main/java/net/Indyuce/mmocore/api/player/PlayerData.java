@@ -1,6 +1,8 @@
 package net.Indyuce.mmocore.api.player;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
+import io.lumine.mythic.lib.player.CooldownInfo;
+import io.lumine.mythic.lib.player.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
@@ -24,7 +26,6 @@ import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.skill.CasterMetadata;
-import net.Indyuce.mmocore.skill.PlayerSkillData;
 import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.skill.Skill.SkillInfo;
 import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
@@ -71,7 +72,6 @@ public class PlayerData extends OfflinePlayerData {
     private final Map<String, Integer> skills = new HashMap<>();
     private final List<SkillInfo> boundSkills = new ArrayList<>();
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
-    private final PlayerSkillData skillData = new PlayerSkillData(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
 
@@ -744,8 +744,8 @@ public class PlayerData extends OfflinePlayerData {
         setAttributeReallocationPoints(attributeReallocationPoints + value);
     }
 
-    public PlayerSkillData getSkillData() {
-        return skillData;
+    public CooldownMap getCooldownMap() {
+        return mmoData.getCooldownMap();
     }
 
     public void setClass(PlayerClass profess) {
@@ -850,10 +850,12 @@ public class PlayerData extends OfflinePlayerData {
 
         // Apply cooldown, mana and stamina costs
         if (!noCooldown) {
-            double flatCooldownReduction = Math.max(0, Math.min(1, getStats().getStat(StatType.COOLDOWN_REDUCTION) / 100));
-            flatCooldownReduction *= flatCooldownReduction > 0 ? skill.getModifier("cooldown", getSkillLevel(skill.getSkill())) * 1000 : 0;
 
-            skillData.setLastCast(cast.getSkill(), System.currentTimeMillis() - (long) flatCooldownReduction);
+            // Cooldown
+            double flatCooldownReduction = Math.max(0, Math.min(1, getStats().getStat(StatType.COOLDOWN_REDUCTION) / 100));
+            CooldownInfo cooldownHandler = getCooldownMap().applyCooldown(cast.getSkill(), cast.getCooldown());
+            cooldownHandler.reduceInitialCooldown(flatCooldownReduction);
+
             giveMana(-cast.getManaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
             giveStamina(-cast.getStaminaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
         }

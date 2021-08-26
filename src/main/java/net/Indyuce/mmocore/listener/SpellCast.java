@@ -125,7 +125,7 @@ public class SpellCast implements Listener {
             for (int j = 0; j < data.getBoundSkills().size(); j++) {
                 SkillInfo skill = data.getBoundSkill(j);
                 str.append((str.length() == 0) ? "" : split).append((onCooldown(data, skill)
-                        ? onCooldown.replace("{cooldown}", "" + data.getSkillData().getCooldown(skill) / 1000)
+                        ? onCooldown.replace("{cooldown}", String.valueOf(data.getCooldownMap().getInfo(skill.getSkill()).getRemaining() / 1000))
                         : noMana(data, skill) ? noMana : ready).replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot()
                         <= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName()));
             }
@@ -133,13 +133,13 @@ public class SpellCast implements Listener {
             return str.toString();
         }
 
-        /*
-         * no longer use index as arguments because data.getBoundSkill(int) has
-         * n-complexity, it has to iterate through a list. using skillInfo
-         * argument uses only one iteration
+        /**
+         * We don't even need to check if the skill has the 'cooldown'
+         * modifier. We just look for an entry in the cooldown map which
+         * won't be here if the skill has no cooldown.
          */
         private boolean onCooldown(PlayerData data, SkillInfo skill) {
-            return skill.getSkill().hasModifier("cooldown") && data.getSkillData().getCooldown(skill) > 0;
+            return data.getCooldownMap().isOnCooldown(skill.getSkill());
         }
 
         private boolean noMana(PlayerData data, SkillInfo skill) {

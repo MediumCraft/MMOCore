@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
+import io.lumine.mythic.lib.player.CooldownObject;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
@@ -13,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public abstract class Skill {
+public abstract class Skill implements CooldownObject {
     private final String id;
 
     private String name;
@@ -84,6 +85,11 @@ public abstract class Skill {
 
     public ItemStack getIcon() {
         return icon.clone();
+    }
+
+    @Override
+    public String getCooldownPath() {
+        return "mmocore_skill_" + id.toLowerCase();
     }
 
     /**

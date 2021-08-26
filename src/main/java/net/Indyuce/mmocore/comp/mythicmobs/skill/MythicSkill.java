@@ -98,7 +98,7 @@ public class MythicSkill extends Skill {
             MMOCore.plugin.antiCheatSupport.disableAntiCheat(caster.getPlayer(), antiCheat);
 
         // Place cast skill info in a variable
-        skillMeta.getVariables().putObject("MMOCoreSkill", cast);
+        skillMeta.getVariables().putObject("MMOSkill", cast);
         skillMeta.getVariables().putObject("MMOStatMap", caster.getStats());
 
         //  Yo is that me or the second argument is f***ing useless

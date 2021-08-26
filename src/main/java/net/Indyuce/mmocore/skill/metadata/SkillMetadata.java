@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.skill.metadata;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.comp.flags.CustomFlag;
+import io.lumine.mythic.lib.comp.mythicmobs.MythicSkillInfo;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.CasterMetadata;
 import net.Indyuce.mmocore.skill.Skill;
@@ -9,7 +10,7 @@ import net.Indyuce.mmocore.skill.Skill.SkillInfo;
 
 import java.util.Objects;
 
-public class SkillMetadata {
+public class SkillMetadata implements MythicSkillInfo {
     private final SkillInfo skill;
     private final int level;
     private final double mana, cooldown, stamina;
@@ -22,11 +23,11 @@ public class SkillMetadata {
         PlayerData data = caster.getPlayerData();
 
         level = data.getSkillLevel(skill.getSkill());
-        cooldown = (skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0);
-        mana = (skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0);
-        stamina = (skill.getSkill().hasModifier("stamina") ? skill.getModifier("stamina", level) : 0);
+        cooldown = skill.getSkill().hasModifier("cooldown") ? getModifier("cooldown") : 0;
+        mana = skill.getSkill().hasModifier("mana") ? getModifier("mana") : 0;
+        stamina = skill.getSkill().hasModifier("stamina") ? getModifier("stamina") : 0;
         cancelReason = !data.hasSkillUnlocked(skill) ? CancelReason.LOCKED
-                : cooldown > 0 ? CancelReason.COOLDOWN
+                : data.getCooldownMap().isOnCooldown(getSkill()) ? CancelReason.COOLDOWN
                 : mana > data.getMana() ? CancelReason.MANA
                 : stamina > data.getStamina() ? CancelReason.STAMINA
                 : !data.isOnline() ? CancelReason.OTHER
@@ -39,9 +40,9 @@ public class SkillMetadata {
         this.cancelReason = reason;
 
         level = data.getSkillLevel(skill.getSkill());
-        cooldown = skill.getSkill().hasModifier("cooldown") ? data.getSkillData().getCooldown(skill) : 0;
-        mana = skill.getSkill().hasModifier("mana") ? skill.getModifier("mana", level) : 0;
-        stamina = (skill.getSkill().hasModifier("stamina") ? skill.getModifier("stamina", level) : 0);
+        cooldown = skill.getSkill().hasModifier("cooldown") ? getModifier("cooldown") : 0;
+        mana = skill.getSkill().hasModifier("mana") ? getModifier("mana") : 0;
+        stamina = skill.getSkill().hasModifier("stamina") ? getModifier("stamina") : 0;
     }
 
     public Skill getSkill() {
@@ -84,6 +85,7 @@ public class SkillMetadata {
         cancelReason = Objects.requireNonNull(reason, "Reason cannot be null");
     }
 
+    @Override
     public double getModifier(String modifier) {
         return skill.getModifier(modifier, level);
     }

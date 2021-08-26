@@ -4,7 +4,10 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicDropLoadEvent;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicReloadedEvent;
 import io.lumine.xikage.mythicmobs.skills.placeholders.Placeholder;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.comp.mythicmobs.load.CurrencyItemDrop;
 import net.Indyuce.mmocore.comp.mythicmobs.load.GoldPouchDrop;
 import org.bukkit.event.EventHandler;
@@ -38,7 +41,24 @@ public class MythicHook implements Listener {
     }
 
     private void registerPlaceholders() {
-        MythicMobs.inst().getPlaceholderManager().register("mana", Placeholder.meta((metadata, arg) -> String.valueOf((int) PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getMana())));
-        MythicMobs.inst().getPlaceholderManager().register("stamina", Placeholder.meta((metadata, arg) -> String.valueOf((int) PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getStamina())));
+
+        // Resource
+        MythicMobs.inst().getPlaceholderManager().register("mana", Placeholder.meta((metadata, arg) -> {
+            return String.valueOf((int) PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getMana());
+        }));
+        MythicMobs.inst().getPlaceholderManager().register("stamina", Placeholder.meta((metadata, arg) -> {
+            return String.valueOf((int) PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getStamina());
+        }));
+        MythicMobs.inst().getPlaceholderManager().register("stellium", Placeholder.meta((metadata, arg) -> {
+            return String.valueOf((int) PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getStellium());
+        }));
+
+        // Attributes
+        MythicMobs.inst().getPlaceholderManager().register("attribute", Placeholder.meta((metadata, arg) -> {
+            PlayerAttributes attributes = PlayerData.get(metadata.getCaster().getEntity().getUniqueId()).getAttributes();
+            PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(arg);
+            return String.valueOf(attributes.getAttribute(attribute));
+        }));
+
     }
 }
