@@ -883,6 +883,22 @@ public class PlayerData extends OfflinePlayerData {
         return MMOCore.plugin.dataProvider.getDataManager().get(uuid);
     }
 
+    /**
+     * This is used to check if the player data is loaded for a
+     * specific player. This might seem redundant because the given
+     * Player instance is linked to an online player, and data
+     * is always loaded for an online player.
+     * <p>
+     * In fact a Player instance can be attached to a Citizens NPC
+     * which has no player data loaded hence this method
+     *
+     * @param player Either a real player or an NPC
+     * @return If player data for that player is loaded
+     */
+    public static boolean has(Player player) {
+        return MMOCore.plugin.dataProvider.getDataManager().isLoaded(player.getUniqueId());
+    }
+
     public static Collection<PlayerData> getAll() {
         return MMOCore.plugin.dataProvider.getDataManager().getLoaded();
     }

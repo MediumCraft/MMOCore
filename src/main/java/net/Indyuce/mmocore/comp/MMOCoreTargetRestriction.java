@@ -11,7 +11,7 @@ public class MMOCoreTargetRestriction implements TargetRestriction {
     @Override
     public boolean canTarget(Player player, LivingEntity target, InteractionType interaction) {
 
-        if (interaction.isOffense() && target instanceof Player) {
+        if (interaction.isOffense() && target instanceof Player && PlayerData.has((Player) target)) {
             PlayerData targetData = PlayerData.get(target.getUniqueId());
 
             // Check for the same party
