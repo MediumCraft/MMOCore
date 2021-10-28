@@ -882,6 +882,17 @@ public class PlayerData extends OfflinePlayerData {
         return MMOCore.plugin.dataProvider.getDataManager().get(uuid);
     }
 
+    /**
+     * This is being used to easily check if an online player corresponds to
+     * a real player or a Citizens NPC. Citizens NPCs do not have any player
+     * data associated to them
+     *
+     * @return Checks if plater data is loaded for a specific player UID
+     */
+    public static boolean has(UUID uuid) {
+        return MMOCore.plugin.dataProvider.getDataManager().isLoaded(uuid);
+    }
+
     public static Collection<PlayerData> getAll() {
         return MMOCore.plugin.dataProvider.getDataManager().getLoaded();
     }
