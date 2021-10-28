@@ -570,7 +570,6 @@ public class PlayerData extends OfflinePlayerData {
             return;
 
         // Use updated amount from Bukkit event
-        setStamina(stamina + event.getAmount());
         stamina = Math.max(0, Math.min(stamina + event.getAmount(), max));
     }
 
