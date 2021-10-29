@@ -842,8 +842,7 @@ public class PlayerData extends OfflinePlayerData {
                     MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(getPlayer());
             }
 
-            PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast);
-            Bukkit.getPluginManager().callEvent(postEvent);
+            Bukkit.getPluginManager().callEvent(new PlayerPostCastSkillEvent(this, skill, cast));
             return cast;
         }
 
@@ -859,8 +858,7 @@ public class PlayerData extends OfflinePlayerData {
             giveStamina(-cast.getStaminaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
         }
 
-        PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast);
-        Bukkit.getPluginManager().callEvent(postEvent);
+        Bukkit.getPluginManager().callEvent(new PlayerPostCastSkillEvent(this, skill, cast));
         return cast;
     }
 

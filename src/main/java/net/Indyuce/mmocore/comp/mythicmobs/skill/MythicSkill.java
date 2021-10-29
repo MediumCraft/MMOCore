@@ -82,7 +82,7 @@ public class MythicSkill extends Skill {
     @Override
     public SkillMetadata whenCast(CasterMetadata caster, SkillInfo skill) {
         SkillMetadata cast = new SkillMetadata(caster, skill);
-        if (!cast.isSuccessful() || isPassive())
+        if (isPassive() || !cast.isSuccessful())
             return cast;
 
         // Gather MythicMobs skill info
@@ -101,7 +101,7 @@ public class MythicSkill extends Skill {
         skillMeta.getVariables().putObject("MMOSkill", cast);
         skillMeta.getVariables().putObject("MMOStatMap", caster.getStats());
 
-        //  Yo is that me or the second argument is f***ing useless
+        // Yo is that me or the second argument is f***ing useless
         if (this.skill.usable(skillMeta, SkillTrigger.CAST))
             this.skill.execute(skillMeta);
         else
