@@ -133,7 +133,7 @@ vanilla-exp-redirection:
 override-vanilla-exp: true
 
 # Check the target player's RPG profile when shift when shift right clicking.
-shift-click-player-profile-check: true
+shift-click-player-profile-check: false
 
 # If main class experience holograms should be displayed
 # whenever a player earns main class exp
