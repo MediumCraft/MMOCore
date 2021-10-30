@@ -33,7 +33,7 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
     @Override
     public ExperienceSourceManager<MineBlockExperienceSource> newManager() {
         return new ExperienceSourceManager<MineBlockExperienceSource>() {
-            @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+            @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
             public void a(BlockBreakEvent event) {
                 if (event.getPlayer().getGameMode() != GameMode.SURVIVAL)
                     return;
