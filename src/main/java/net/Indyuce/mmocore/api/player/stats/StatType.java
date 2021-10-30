@@ -1,130 +1,160 @@
 package net.Indyuce.mmocore.api.player.stats;
 
+import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import io.lumine.mythic.lib.MythicLib;
+import net.Indyuce.mmocore.experience.Profession;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DecimalFormat;
 
 public enum StatType {
 
-	ATTACK_DAMAGE,
-	ATTACK_SPEED,
-	MAX_HEALTH,
-	HEALTH_REGENERATION,
+    // Vanilla stats
+    ATTACK_DAMAGE,
+    ATTACK_SPEED,
+    MAX_HEALTH,
+    HEALTH_REGENERATION,
+    MAX_HEALTH_REGENERATION,
 
-	MOVEMENT_SPEED,
-	SPEED_MALUS_REDUCTION,
-	KNOCKBACK_RESISTANCE,
+    // Misc
+    MOVEMENT_SPEED,
+    SPEED_MALUS_REDUCTION,
+    KNOCKBACK_RESISTANCE,
 
-	MAX_MANA,
-	MAX_STAMINA,
-	MAX_STELLIUM,
-	MANA_REGENERATION,
-	STAMINA_REGENERATION,
-	STELLIUM_REGENERATION,
+    // Mana
+    MAX_MANA,
+    MANA_REGENERATION,
+    MAX_MANA_REGENERATION,
 
-	ARMOR,
-	ARMOR_TOUGHNESS,
+    // Stamina
+    MAX_STAMINA,
+    STAMINA_REGENERATION,
+    MAX_STAMINA_REGENERATION,
 
-	CRITICAL_STRIKE_CHANCE,
-	CRITICAL_STRIKE_POWER,
-	SKILL_CRITICAL_STRIKE_CHANCE,
-	SKILL_CRITICAL_STRIKE_POWER,
+    // Stellium
+    MAX_STELLIUM,
+    STELLIUM_REGENERATION,
+    MAX_STELLIUM_REGENERATION,
 
-	BLOCK_POWER,
-	BLOCK_RATING,
-	BLOCK_COOLDOWN_REDUCTION,
-	DODGE_RATING,
-	DODGE_COOLDOWN_REDUCTION,
-	PARRY_RATING,
-	PARRY_COOLDOWN_REDUCTION,
+    // Vanilla armor stats
+    ARMOR,
+    ARMOR_TOUGHNESS,
 
-	ADDITIONAL_EXPERIENCE,
-	COOLDOWN_REDUCTION,
+    // Critical strikes
+    CRITICAL_STRIKE_CHANCE,
+    CRITICAL_STRIKE_POWER,
+    SKILL_CRITICAL_STRIKE_CHANCE,
+    SKILL_CRITICAL_STRIKE_POWER,
 
-	MAGIC_DAMAGE,
-	PHYSICAL_DAMAGE,
-	PROJECTILE_DAMAGE,
-	WEAPON_DAMAGE,
-	SKILL_DAMAGE,
-	UNDEAD_DAMAGE,
+    // Mitigation
+    DEFENSE,
+    BLOCK_POWER,
+    BLOCK_RATING,
+    BLOCK_COOLDOWN_REDUCTION,
+    DODGE_RATING,
+    DODGE_COOLDOWN_REDUCTION,
+    PARRY_RATING,
+    PARRY_COOLDOWN_REDUCTION,
 
-	PVP_DAMAGE,
-	PVE_DAMAGE,
+    // Utility
+    ADDITIONAL_EXPERIENCE,
+    COOLDOWN_REDUCTION,
 
-	DEFENSE,
-	DAMAGE_REDUCTION,
-	MAGIC_DAMAGE_REDUCTION,
-	PHYSICAL_DAMAGE_REDUCTION,
-	PROJECTILE_DAMAGE_REDUCTION,
-	WEAPON_DAMAGE_REDUCTION,
-	SKILL_DAMAGE_REDUCTION,
+    // Damage-type based stats
+    MAGIC_DAMAGE,
+    PHYSICAL_DAMAGE,
+    PROJECTILE_DAMAGE,
+    WEAPON_DAMAGE,
+    SKILL_DAMAGE,
+    UNDEAD_DAMAGE,
 
-	// reduces amount of tugs needed to fish
-	FISHING_STRENGTH("fishing"),
+    // Misc damage stats
+    PVP_DAMAGE,
+    PVE_DAMAGE,
 
-	// chance of instant success when fishing
-	CRITICAL_FISHING_CHANCE("fishing"),
+    // Damage reduction stats
+    DAMAGE_REDUCTION,
+    MAGIC_DAMAGE_REDUCTION,
+    PHYSICAL_DAMAGE_REDUCTION,
+    PROJECTILE_DAMAGE_REDUCTION,
+    WEAPON_DAMAGE_REDUCTION,
+    SKILL_DAMAGE_REDUCTION,
 
-	// chance of crit fishing failure
-	CRITICAL_FISHING_FAILURE_CHANCE("fishing"),
+    /**
+     * Reduces amount of tugs needed to fish
+     */
+    FISHING_STRENGTH("fishing"),
 
-	// chance of dropping more minerals when mining.
-	FORTUNE,
+    /**
+     * Chance of instant success when fishing
+     */
+    CRITICAL_FISHING_CHANCE("fishing"),
 
-	// get haste when mining blocks.
-	GATHERING_HASTE,
+    /**
+     * Chance of crit fishing failure
+     */
+    CRITICAL_FISHING_FAILURE_CHANCE("fishing"),
 
-	// chance of getting more crops when farming
-	LUCK_OF_THE_FIELD;
+    /**
+     * Chance of dropping more minerals when mining.
+     */
+    FORTUNE,
 
-	private String profession;
+    /**
+     * Get haste when mining blocks.
+     */
+    GATHERING_HASTE,
 
-	private LinearValue defaultInfo;
-	private DecimalFormat format;
+    /**
+     * Chance of getting more crops when farming
+     */
+    LUCK_OF_THE_FIELD;
 
-	StatType() {
-		// completely custom stat.
-	}
+    private String profession;
 
-	@SuppressWarnings("SameParameterValue")
-	StatType(String profession) {
-		this.profession = profession;
-	}
+    private LinearValue defaultInfo;
+    private DecimalFormat format;
 
-	public String getProfession() {
-		return profession;
-	}
+    StatType() {
+        // Completely custom stat
+    }
 
-	public Profession findProfession() {
-		return MMOCore.plugin.professionManager.get(profession);
-	}
+    @SuppressWarnings("SameParameterValue")
+    StatType(String profession) {
+        this.profession = profession;
+    }
 
-	public boolean hasProfession() {
-		return profession != null;
-	}
+    public String getProfession() {
+        return profession;
+    }
 
-	public LinearValue getDefault() {
-		return defaultInfo;
-	}
+    public Profession findProfession() {
+        return MMOCore.plugin.professionManager.get(profession);
+    }
 
-	public boolean matches(Profession profession) {
-		return this.profession != null && this.profession.equals(profession.getId());
-	}
+    public boolean hasProfession() {
+        return profession != null;
+    }
 
-	public String format(double value) {
-		return format.format(value);
-	}
+    public LinearValue getDefault() {
+        return defaultInfo;
+    }
 
-	public static void load() {
-		FileConfiguration config = new ConfigFile("stats").getConfig();
-		for (StatType stat : values()) {
-			stat.defaultInfo = config.contains("default." + stat.name()) ? new LinearValue(config.getConfigurationSection("default." + stat.name())) : new LinearValue(0, 0);
-			stat.format = MythicLib.plugin.getMMOConfig().newFormat(config.contains("decimal-format." + stat.name()) ? config.getString("decimal-format." + stat.name()) : "0.#");
-		}
-	}
+    public boolean matches(Profession profession) {
+        return this.profession != null && this.profession.equals(profession.getId());
+    }
+
+    public String format(double value) {
+        return format.format(value);
+    }
+
+    public static void load() {
+        FileConfiguration config = new ConfigFile("stats").getConfig();
+        for (StatType stat : values()) {
+            stat.defaultInfo = config.contains("default." + stat.name()) ? new LinearValue(config.getConfigurationSection("default." + stat.name())) : new LinearValue(0, 0);
+            stat.format = MythicLib.plugin.getMMOConfig().newFormat(config.contains("decimal-format." + stat.name()) ? config.getString("decimal-format." + stat.name()) : "0.#");
+        }
+    }
 }

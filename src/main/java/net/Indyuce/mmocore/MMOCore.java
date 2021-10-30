@@ -90,11 +90,6 @@ public class MMOCore extends LuminePlugin {
 
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 
-	public boolean healthRegenFlat;
-	public boolean manaRegenFlat;
-	public boolean staminaRegenFlat;
-	public boolean stelliumRegenFlat;
-
 	public boolean shouldDebugSQL = false;
 
 	public MMOCore() {
@@ -146,13 +141,6 @@ public class MMOCore extends LuminePlugin {
 		if (getConfig().isConfigurationSection("default-playerdata"))
 			dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
 
-		if (getConfig().isConfigurationSection("stat-regen-flat")) {
-			healthRegenFlat = getConfig().getBoolean("stat-regen-flat.health", true);
-			manaRegenFlat = getConfig().getBoolean("stat-regen-flat.mana", true);
-			staminaRegenFlat = getConfig().getBoolean("stat-regen-flat.stamina", true);
-			stelliumRegenFlat = getConfig().getBoolean("stat-regen-flat.stellium", true);
-		}
-
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null) economy = new VaultEconomy();
 
 		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -190,32 +178,8 @@ public class MMOCore extends LuminePlugin {
 					if (player.isOnline() && !player.getPlayer().isDead())
 						for (PlayerResource resource : PlayerResource.values()) {
 							double regenAmount = player.getProfess().getHandler(resource).getRegen(player);
-							switch (resource) {
-								case HEALTH:
-									if (healthRegenFlat && regenAmount != 0)
-										resource.regen(player, regenAmount);
-									else if (!healthRegenFlat && regenAmount * player.getStats().getStat(StatType.HEALTH_REGENERATION) != 0)
-										resource.regen(player, player.getStats().getStat(StatType.MAX_HEALTH) * regenAmount);
-									break;
-								case MANA:
-									if (manaRegenFlat && regenAmount != 0)
-										resource.regen(player, regenAmount);
-									else if (!manaRegenFlat && regenAmount * player.getStats().getStat(StatType.MANA_REGENERATION) != 0)
-										resource.regen(player, player.getStats().getStat(StatType.MAX_MANA) * regenAmount);
-									break;
-								case STAMINA:
-									if (staminaRegenFlat && regenAmount != 0)
-										resource.regen(player, regenAmount);
-									else if (!staminaRegenFlat && regenAmount * player.getStats().getStat(StatType.STAMINA_REGENERATION) != 0)
-										resource.regen(player, player.getStats().getStat(StatType.MAX_STAMINA) * regenAmount);
-									break;
-								case STELLIUM:
-									if (stelliumRegenFlat && regenAmount != 0)
-										resource.regen(player, regenAmount);
-									else if (!stelliumRegenFlat && regenAmount * player.getStats().getStat(StatType.STELLIUM_REGENERATION) != 0)
-										resource.regen(player, player.getStats().getStat(StatType.MAX_STELLIUM) * regenAmount);
-									break;
-							}
+							if (regenAmount != 0)
+								resource.regen(player, regenAmount);
 						}
 			}
 		}.runTaskTimer(MMOCore.plugin, 100, 20);
