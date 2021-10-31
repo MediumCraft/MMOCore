@@ -1,6 +1,11 @@
-package net.Indyuce.mmocore.comp.mythicmobs.skill;
+package net.Indyuce.mmocore.comp.mythicmobs;
 
 import io.lumine.mythic.lib.api.util.EnumUtils;
+import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
+import io.lumine.mythic.lib.skill.metadata.TriggerMetadata;
+import io.lumine.mythic.lib.skill.trigger.PassiveSkill;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
+import io.lumine.mythic.lib.skill.trigger.TriggeredSkill;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.AbstractEntity;
 import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
@@ -9,6 +14,11 @@ import io.lumine.xikage.mythicmobs.mobs.GenericCaster;
 import io.lumine.xikage.mythicmobs.skills.SkillCaster;
 import io.lumine.xikage.mythicmobs.skills.SkillTrigger;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.PlayerPostCastSkillEvent;
+import net.Indyuce.mmocore.api.event.PlayerPreCastSkillEvent;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -27,9 +37,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 
-public class MythicSkill extends Skill {
+public class MythicSkill extends Skill implements TriggeredSkill {
     private final io.lumine.xikage.mythicmobs.skills.Skill skill;
     private final Map<CheatType, Integer> antiCheat = new HashMap<>();
+    private final PassiveSkill mythicLibSkill;
 
     public MythicSkill(String id, FileConfiguration config) {
         super(id);
@@ -64,11 +75,12 @@ public class MythicSkill extends Skill {
             }
 
         if (config.isString("passive-type")) {
-            Optional<PassiveSkillType> passiveType = EnumUtils.getIfPresent(PassiveSkillType.class, config.getString("passive-type").toUpperCase());
+            Optional<TriggerType> passiveType = EnumUtils.getIfPresent(TriggerType.class, config.getString("passive-type").toUpperCase());
             Validate.isTrue(passiveType.isPresent(), "Invalid passive skill type");
             setPassive();
-            Bukkit.getPluginManager().registerEvents(passiveType.get().getHandler(this), MMOCore.plugin);
-        }
+            mythicLibSkill = new PassiveSkill("MMOCorePassiveSkill", passiveType.get(), this);
+        } else
+            mythicLibSkill = null;
     }
 
     public Map<CheatType, Integer> getAntiCheat() {
@@ -77,6 +89,10 @@ public class MythicSkill extends Skill {
 
     public io.lumine.xikage.mythicmobs.skills.Skill getSkill() {
         return skill;
+    }
+
+    public PassiveSkill toMythicLib() {
+        return mythicLibSkill;
     }
 
     @Override
@@ -116,5 +132,69 @@ public class MythicSkill extends Skill {
      */
     private LinearValue readLinearValue(ConfigurationSection section) {
         return section.getBoolean("int") ? new IntegerLinearValue(section) : new LinearValue(section);
+    }
+
+    @Override
+    public void execute(TriggerMetadata triggerMeta) {
+        PlayerData playerData = PlayerData.get(triggerMeta.getAttack().getPlayer().getUniqueId());
+        if (!playerData.getProfess().hasSkill(this))
+            return;
+
+        // Check for Bukkit pre cast event
+        Skill.SkillInfo skill = playerData.getProfess().getSkill(this);
+        PlayerPreCastSkillEvent preEvent = new PlayerPreCastSkillEvent(playerData, skill);
+        Bukkit.getPluginManager().callEvent(preEvent);
+        if (preEvent.isCancelled())
+            return;
+
+        // Gather MMOCore skill info
+        CasterMetadata caster = new CasterMetadata(playerData);
+        SkillMetadata cast = new SkillMetadata(caster, skill);
+        if (!cast.isSuccessful())
+            return;
+
+        // Gather MythicMobs skill info
+        HashSet<AbstractEntity> targetEntities = new HashSet<>();
+        HashSet<AbstractLocation> targetLocations = new HashSet<>();
+
+        // The only difference
+        if (triggerMeta.getTarget() != null)
+            targetEntities.add(BukkitAdapter.adapt(triggerMeta.getTarget()));
+
+        AbstractEntity trigger = BukkitAdapter.adapt(caster.getPlayer());
+        SkillCaster skillCaster = new GenericCaster(trigger);
+        io.lumine.xikage.mythicmobs.skills.SkillMetadata skillMeta = new io.lumine.xikage.mythicmobs.skills.SkillMetadata(SkillTrigger.API, skillCaster, trigger, BukkitAdapter.adapt(caster.getPlayer().getEyeLocation()), targetEntities, targetLocations, 1);
+
+        // Check if the MythicMobs skill can be cast
+        if (!this.skill.usable(skillMeta, SkillTrigger.CAST)) {
+            cast.abort();
+            return;
+        }
+
+        // Disable anticheat
+        if (MMOCore.plugin.hasAntiCheat())
+            MMOCore.plugin.antiCheatSupport.disableAntiCheat(caster.getPlayer(), antiCheat);
+
+        // Place cast skill info in a variable
+        skillMeta.getVariables().putObject("MMOSkill", cast);
+        skillMeta.getVariables().putObject("MMOStatMap", caster.getStats());
+
+        // Apply cooldown, mana and stamina costs
+        if (!playerData.noCooldown) {
+
+            // Cooldown
+            double flatCooldownReduction = Math.max(0, Math.min(1, playerData.getStats().getStat(StatType.COOLDOWN_REDUCTION) / 100));
+            CooldownInfo cooldownHandler = playerData.getCooldownMap().applyCooldown(cast.getSkill(), cast.getCooldown());
+            cooldownHandler.reduceInitialCooldown(flatCooldownReduction);
+
+            // Mana and stamina cost
+            playerData.giveMana(-cast.getManaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
+            playerData.giveStamina(-cast.getStaminaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
+        }
+
+        // Execute the MythicMobs skill
+        this.skill.execute(skillMeta);
+
+        Bukkit.getPluginManager().callEvent(new PlayerPostCastSkillEvent(playerData, skill, cast));
     }
 }

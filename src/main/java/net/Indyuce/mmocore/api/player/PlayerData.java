@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.api.player;
 
-import io.lumine.mythic.lib.api.player.MMOPlayerData;
-import io.lumine.mythic.lib.player.CooldownInfo;
-import io.lumine.mythic.lib.player.CooldownMap;
+import io.lumine.mythic.lib.player.MMOPlayerData;
+import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
+import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicSkill;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
@@ -757,6 +758,12 @@ public class PlayerData extends OfflinePlayerData {
 
         // Update stats
         getStats().updateStats();
+
+        // Update skill triggers
+        mmoData.unregisterSkillTriggers("MMOCorePassiveSkill");
+        for (SkillInfo skill : getProfess().getSkills())
+            if (skill.getSkill() instanceof MythicSkill && skill.getSkill().isPassive())
+                mmoData.registerSkillTrigger(((MythicSkill) skill.getSkill()).toMythicLib());
     }
 
     public boolean hasSkillBound(int slot) {

@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
-import io.lumine.mythic.lib.player.CooldownObject;
+import io.lumine.mythic.lib.player.cooldown.CooldownObject;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
