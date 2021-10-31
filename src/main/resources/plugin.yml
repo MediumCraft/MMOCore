@@ -5,7 +5,7 @@ author: Indyuce
 description: ${project.description}
 loadbefore: [MMOItems]
 depend: [MythicLib]
-softdepend: [Vault,MythicMobs,PlaceholderAPI,Residence]
+softdepend: [Vault,MythicMobs,PlaceholderAPI,Residence,Citizens]
 api-version: 1.13
 commands:
     mmocore:
