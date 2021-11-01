@@ -14,7 +14,7 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
     private final Block block;
     private final BlockInfo info;
-    private final List<ItemStack> drops;
+    private List<ItemStack> drops;
 
     private boolean cancelled;
 
@@ -37,6 +37,10 @@ public class CustomBlockMineEvent extends PlayerDataEvent implements Cancellable
 
     public BlockInfo getBlockInfo() {
         return info;
+    }
+
+    public void setDrops(List<ItemStack> list) {
+        this.drops = list;
     }
 
     @Override

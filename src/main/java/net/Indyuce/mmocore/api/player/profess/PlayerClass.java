@@ -10,7 +10,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.player.profess.resource.ResourceHandler;
+import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -47,7 +47,7 @@ public class PlayerClass extends PostLoadObject {
     private final Map<String, SkillInfo> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
 
-    private final Map<PlayerResource, ResourceHandler> resourceHandlers = new HashMap<>();
+    private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
     private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
     private final CastingParticle castParticle;
@@ -142,7 +142,7 @@ public class PlayerClass extends PostLoadObject {
                     String format = key.toLowerCase().replace("_", "-").replace(" ", "-");
                     eventTriggers.put(format, new EventTrigger(format, config.getStringList("triggers." + key)));
                 } catch (IllegalArgumentException exception) {
-                    MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] " + exception.getMessage());
+                    MMOCore.log(Level.WARNING, "Could not load trigger '" + key + "' from class '" + id + "':" + exception.getMessage());
                 }
             }
 
@@ -153,15 +153,15 @@ public class PlayerClass extends PostLoadObject {
         for (PlayerResource resource : PlayerResource.values()) {
             if (config.isConfigurationSection("resource." + resource.name().toLowerCase()))
                 try {
-                    resourceHandlers.put(resource, new ResourceHandler(resource,
+                    resourceHandlers.put(resource, new ResourceRegeneration(resource,
                             config.getConfigurationSection("resource." + resource.name().toLowerCase())));
                 } catch (IllegalArgumentException exception) {
-                    MMOCore.log(Level.WARNING, "[PlayerClasses:" + id + "] Could not load special resource regen for "
-                            + resource.name() + ": " + exception.getMessage());
-                    resourceHandlers.put(resource, new ResourceHandler(resource));
+                    MMOCore.log(Level.WARNING, "Could not load special " + resource.name().toLowerCase() + " regen from class '"
+                            + id + "': " + exception.getMessage());
+                    resourceHandlers.put(resource, new ResourceRegeneration(resource));
                 }
             else
-                resourceHandlers.put(resource, new ResourceHandler(resource));
+                resourceHandlers.put(resource, new ResourceRegeneration(resource));
         }
     }
 
@@ -185,7 +185,7 @@ public class PlayerClass extends PostLoadObject {
         setOption(ClassOption.DEFAULT, false);
 
         for (PlayerResource resource : PlayerResource.values())
-            resourceHandlers.put(resource, new ResourceHandler(resource));
+            resourceHandlers.put(resource, new ResourceRegeneration(resource));
     }
 
     @Override
@@ -215,7 +215,7 @@ public class PlayerClass extends PostLoadObject {
         return manaDisplay;
     }
 
-    public ResourceHandler getHandler(PlayerResource resource) {
+    public ResourceRegeneration getHandler(PlayerResource resource) {
         return resourceHandlers.get(resource);
     }
 

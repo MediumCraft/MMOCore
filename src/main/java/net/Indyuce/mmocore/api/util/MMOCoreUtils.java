@@ -190,7 +190,7 @@ public class MMOCoreUtils {
      * @return If the player can target the entity given the attack type (buff or attack)
      */
     public static boolean canTarget(PlayerData player, Entity target, InteractionType interaction) {
-        return target instanceof LivingEntity && MythicLib.plugin.getEntities().canTarget(player.getPlayer(), (LivingEntity) target, interaction);
+        return target instanceof LivingEntity && MythicLib.plugin.getEntities().canTarget(player.getPlayer(), target, interaction);
     }
 
     public static void heal(LivingEntity target, double value) {

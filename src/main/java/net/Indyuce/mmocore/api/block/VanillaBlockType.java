@@ -15,7 +15,7 @@ public class VanillaBlockType implements BlockType {
 
 	/*
 	 * allows to plant back crops with a custom age so that it does not always
-	 * have to full grow again
+	 * have to full grow again-
 	 */
 	private final int age;
 

@@ -177,8 +177,9 @@ public class MMOCore extends LuminePlugin {
 				for (PlayerData player : PlayerData.getAll())
 					if (player.isOnline() && !player.getPlayer().isDead())
 						for (PlayerResource resource : PlayerResource.values()) {
-							double d = player.getProfess().getHandler(resource).getRegen(player);
-							if (d != 0) resource.regen(player, d);
+							double regenAmount = player.getProfess().getHandler(resource).getRegen(player);
+							if (regenAmount != 0)
+								resource.regen(player, regenAmount);
 						}
 			}
 		}.runTaskTimer(MMOCore.plugin, 100, 20);

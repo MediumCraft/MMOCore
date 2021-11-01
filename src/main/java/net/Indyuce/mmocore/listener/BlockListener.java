@@ -102,6 +102,8 @@ public class BlockListener implements Listener {
             return;
         }
 
+        drops = called.getDrops();
+
         /*
          * Remove vanilla drops if needed and
          * decreases the durability of the item

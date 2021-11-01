@@ -19,7 +19,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.comp.mythicmobs.skill.MythicSkill;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicSkill;
 
 public class SkillManager {
 	private final Map<String, Skill> skills = new LinkedHashMap<>();

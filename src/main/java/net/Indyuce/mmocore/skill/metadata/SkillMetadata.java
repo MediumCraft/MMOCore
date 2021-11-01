@@ -118,7 +118,9 @@ public class SkillMetadata implements MythicSkillInfo {
         LOCKED,
 
         /**
-         * Anything else
+         * Anything else, used for instance when MythicMobs
+         * skill conditions prevent the skill from casting or
+         * when the Bukkit pre cast event is cancelled
          */
         OTHER;
     }
