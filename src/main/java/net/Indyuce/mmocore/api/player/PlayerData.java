@@ -130,6 +130,12 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
     @Override
     public void close() {
+
+        // Remove from party
+        if (hasParty())
+            getParty().removeMember(this);
+
+        // Close quest data
         questData.close();
     }
 

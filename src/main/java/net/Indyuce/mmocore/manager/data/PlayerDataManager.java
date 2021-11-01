@@ -35,12 +35,18 @@ public abstract class PlayerDataManager {
     }
 
     /**
-     * Clears the data map from a certain key
+     * Safely unregisters the player data from the map.
+     * This saves the player data either through SQL or YAML,
+     * then closes the player data and clears it from the data map.
      *
-     * @param uuid Player UUID to clear
+     * @param playerData PLayer data to unregister
      */
-    protected void unregisterData(UUID uuid) {
-        data.remove(uuid);
+    public void unregisterSafe(PlayerData playerData) {
+        if (playerData.isFullyLoaded())
+            saveData(playerData);
+
+        playerData.close();
+        this.data.remove(playerData.getUniqueId());
     }
 
     /**
@@ -118,8 +124,6 @@ public abstract class PlayerDataManager {
      * @param data Player data to save
      */
     public abstract void saveData(PlayerData data);
-
-    public abstract void remove(PlayerData data);
 
     public static class DefaultPlayerData {
         private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;

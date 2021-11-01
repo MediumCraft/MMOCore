@@ -67,10 +67,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void e(PlayerQuitEvent event) {
         PlayerData playerData = PlayerData.get(event.getPlayer());
-        if (playerData.hasParty())
-            playerData.getParty().removeMember(playerData);
-
-        MMOCore.plugin.dataProvider.getDataManager().remove(playerData);
+        MMOCore.plugin.dataProvider.getDataManager().unregisterSafe(playerData);
     }
 
     /**
