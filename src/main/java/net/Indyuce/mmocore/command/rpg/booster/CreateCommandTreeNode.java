@@ -12,8 +12,8 @@ import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.experience.Booster;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
-import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
-import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
+import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
 
 public class CreateCommandTreeNode extends CommandTreeNode {
 	public CreateCommandTreeNode(CommandTreeNode parent) {
