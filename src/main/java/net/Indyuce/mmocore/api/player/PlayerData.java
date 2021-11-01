@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.api.player;
 
-import io.lumine.mythic.lib.api.player.MMOPlayerData;
-import io.lumine.mythic.lib.player.CooldownInfo;
-import io.lumine.mythic.lib.player.CooldownMap;
+import io.lumine.mythic.lib.player.MMOPlayerData;
+import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
+import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
@@ -19,6 +19,7 @@ import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -45,7 +46,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 
-public class PlayerData extends OfflinePlayerData {
+public class PlayerData extends OfflinePlayerData implements Closable {
 
     /**
      * Corresponds to the MythicLib player data. It is used to keep
@@ -125,6 +126,11 @@ public class PlayerData extends OfflinePlayerData {
                             "[Userdata] Could not find unidentified skill in class " + getProfess().getId() + " while refreshing player data.");
                 }
             }
+    }
+
+    @Override
+    public void close() {
+        questData.close();
     }
 
     public MMOPlayerData getMMOPlayerData() {
@@ -896,7 +902,23 @@ public class PlayerData extends OfflinePlayerData {
      * @return If player data for that player is loaded
      */
     public static boolean has(Player player) {
-        return MMOCore.plugin.dataProvider.getDataManager().isLoaded(player.getUniqueId());
+       return has(player.getUniqueId());
+    }
+
+    /**
+     * This is used to check if the player data is loaded for a
+     * specific player. This might seem redundant because the given
+     * Player instance is linked to an online player, and data
+     * is always loaded for an online player.
+     * <p>
+     * In fact a Player instance can be attached to a Citizens NPC
+     * which has no player data loaded hence this method
+     *
+     * @param uuid A (real or fictive) player UUID
+     * @return If player data for that player is loaded
+     */
+    public static boolean has(UUID uuid) {
+        return MMOCore.plugin.dataProvider.getDataManager().isLoaded(uuid);
     }
 
     public static Collection<PlayerData> getAll() {

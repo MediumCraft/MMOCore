@@ -238,7 +238,10 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
 	@Override
 	public void remove(PlayerData data) {
-		if (data.isFullyLoaded()) saveData(data);
-		remove(data.getUniqueId());
+		if (data.isFullyLoaded())
+			saveData(data);
+
+		data.close();
+		unregisterData(data.getUniqueId());
 	}
 }

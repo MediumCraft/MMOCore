@@ -129,5 +129,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 	}
 
 	@Override
-	public void remove(PlayerData data) {}
+	public void remove(PlayerData data) {
+		data.close();
+		unregisterData(data.getUniqueId());
+	}
 }

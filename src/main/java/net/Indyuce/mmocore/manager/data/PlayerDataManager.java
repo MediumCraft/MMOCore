@@ -34,7 +34,12 @@ public abstract class PlayerDataManager {
         return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
     }
 
-    public void remove(UUID uuid) {
+    /**
+     * Clears the data map from a certain key
+     *
+     * @param uuid Player UUID to clear
+     */
+    protected void unregisterData(UUID uuid) {
         data.remove(uuid);
     }
 
