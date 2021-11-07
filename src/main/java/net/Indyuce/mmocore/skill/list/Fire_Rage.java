@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.skill.list;
 
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.player.EquipmentSlot;
+import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.version.VersionMaterial;

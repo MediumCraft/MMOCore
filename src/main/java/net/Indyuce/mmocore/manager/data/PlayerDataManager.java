@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.manager.data;
 
-import io.lumine.mythic.lib.player.MMOPlayerData;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.AsyncPlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;

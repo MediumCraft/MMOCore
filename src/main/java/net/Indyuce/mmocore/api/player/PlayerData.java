@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.api.player;
 
-import io.lumine.mythic.lib.player.MMOPlayerData;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
