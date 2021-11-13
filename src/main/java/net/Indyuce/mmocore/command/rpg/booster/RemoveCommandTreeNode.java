@@ -8,8 +8,8 @@ import org.bukkit.command.CommandSender;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.Booster;
-import io.lumine.mythic.lib.mmolibcommands.api.CommandTreeNode;
-import io.lumine.mythic.lib.mmolibcommands.api.Parameter;
+import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
 
 public class RemoveCommandTreeNode extends CommandTreeNode {
 	public RemoveCommandTreeNode(CommandTreeNode parent) {

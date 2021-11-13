@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.manager.data;
 
-import io.lumine.mythic.lib.player.MMOPlayerData;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.AsyncPlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
@@ -34,8 +34,19 @@ public abstract class PlayerDataManager {
         return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
     }
 
-    public void remove(UUID uuid) {
-        data.remove(uuid);
+    /**
+     * Safely unregisters the player data from the map.
+     * This saves the player data either through SQL or YAML,
+     * then closes the player data and clears it from the data map.
+     *
+     * @param playerData PLayer data to unregister
+     */
+    public void unregisterSafe(PlayerData playerData) {
+        if (playerData.isFullyLoaded())
+            saveData(playerData);
+
+        playerData.close();
+        this.data.remove(playerData.getUniqueId());
     }
 
     /**
@@ -113,8 +124,6 @@ public abstract class PlayerDataManager {
      * @param data Player data to save
      */
     public abstract void saveData(PlayerData data);
-
-    public abstract void remove(PlayerData data);
 
     public static class DefaultPlayerData {
         private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;

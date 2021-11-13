@@ -97,7 +97,6 @@ public class MMOCore extends LuminePlugin {
 	}
 
 	public void load() {
-
 		// Register target restrictions due to MMOCore in MythicLib
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
 

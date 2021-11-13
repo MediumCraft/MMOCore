@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.Closable;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -19,7 +20,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
-public class PlayerQuests {
+public class PlayerQuests implements Closable {
     private final PlayerData playerData;
     private final BossBar bossbar;
     private final Map<String, Long> finished = new HashMap<>();
@@ -34,12 +35,6 @@ public class PlayerQuests {
                 "", BarColor.PURPLE, BarStyle.SEGMENTED_20);
         if (playerData.isOnline())
             bossbar.addPlayer(playerData.getPlayer());
-    }
-
-    @Deprecated
-    public PlayerQuests(PlayerData playerData, BossBar bar) {
-        this.playerData = playerData;
-        this.bossbar = bar;
     }
 
     public PlayerQuests load(ConfigurationSection config) {
@@ -148,13 +143,18 @@ public class PlayerQuests {
 
     public void start(Quest quest) {
 
-        // close current objective progress if quest is active
-        if (hasCurrent())
-            current.getProgress().close();
+        // Close current objective progress if quest is active
+        close();
 
-        // apply newer quest
+        // Apply newest quest
         current = quest == null ? null : quest.generateNewProgress(playerData);
         updateBossBar();
+    }
+
+    @Override
+    public void close() {
+        if (current != null)
+            current.getProgress().close();
     }
 
     public boolean checkCooldownAvailability(Quest quest) {
