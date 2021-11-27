@@ -33,7 +33,7 @@ public class Backstab extends PassiveSkill {
     public void a(PlayerAttackEvent event) {
         PlayerData data = PlayerData.get(event.getData().getUniqueId());
         LivingEntity target = event.getEntity();
-        if (data.isInCombat() || !event.getAttack().getDamage().hasType(DamageType.WEAPON)
+        if (!event.getAttack().getDamage().hasType(DamageType.WEAPON)
                 || event.getPlayer().getEyeLocation().getDirection().angle(target.getEyeLocation().getDirection()) > Math.PI / 6
                 || !data.getProfess().hasSkill(this))
             return;
