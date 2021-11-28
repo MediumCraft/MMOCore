@@ -44,8 +44,10 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 	@SuppressWarnings("DuplicateExpressions")
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
-		PlayerData playerData = PlayerData.get(player);
+		if (!PlayerData.has(player.getUniqueId()))
+			return null;
 
+		PlayerData playerData = PlayerData.get(player);
 		if (identifier.equals("mana_icon"))
 			return playerData.getProfess().getManaDisplay().getIcon();
 		if (identifier.equals("mana_name"))
