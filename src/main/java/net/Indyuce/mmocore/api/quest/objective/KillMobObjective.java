@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.quest.objective;
 
+import io.lumine.mythic.lib.api.event.PlayerKillEntityEvent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -8,7 +9,6 @@ import org.bukkit.event.Listener;
 import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
 import net.Indyuce.mmocore.api.quest.QuestProgress;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.event.EntityKillEntityEvent;
 
 public class KillMobObjective extends Objective {
 	private final EntityType type;
@@ -36,9 +36,9 @@ public class KillMobObjective extends Objective {
 		}
 
 		@EventHandler
-		public void a(EntityKillEntityEvent event) {
+		public void a(PlayerKillEntityEvent event) {
 			if(!getPlayer().isOnline()) return;
-			if (event.getTarget().getType() == type && event.getEntity().equals(getPlayer().getPlayer())) {
+			if (event.getTarget().getType() == type && event.getPlayer().equals(getPlayer().getPlayer())) {
 				count++;
 				getQuestProgress().getPlayer().getQuestData().updateBossBar();
 				if (count >= required)
