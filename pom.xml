@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.Indyuce</groupId>
 	<artifactId>MMOCore</artifactId>
-	<version>1.8.2</version>
+	<version>1.8.3</version>
 	<name>MMOCore</name>
 	<description>Offer your players a brand new RPG experience!!</description>
 
@@ -73,6 +73,11 @@
 	<repositories>
 
 		<repository>
+			<id>lumine</id>
+			<url>https://mvn.lumine.io/repository/maven/</url>
+		</repository>
+
+		<repository>
 			<id>placeholderapi</id>
 			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
@@ -80,11 +85,6 @@
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
-		</repository>
-
-		<repository>
-			<id>lumine</id>
-			<url>https://mvn.lumine.io/repository/maven/</url>
 		</repository>
 
 		<repository>
@@ -124,8 +124,8 @@
 
 		<dependency>
 			<groupId>io.lumine</groupId>
-			<artifactId>MythicLib</artifactId>
-			<version>1.1.6</version>
+			<artifactId>MythicLib-dist</artifactId>
+			<version>1.2-0</version>
 			<scope>provided</scope>
 		</dependency>
 

@@ -76,7 +76,7 @@ public class MMOCore extends LuminePlugin {
 	public final PartyManager partyManager = new PartyManager();
 	public final QuestManager questManager = new QuestManager();
 	public final ProfessionManager professionManager = new ProfessionManager();
-	public final ExperienceManager experience = new ExperienceManager();
+	public final net.Indyuce.mmocore.manager.ExperienceManager experience = new net.Indyuce.mmocore.manager.ExperienceManager();
 	public final LootChestManager lootChests = new LootChestManager();
 
 	/*

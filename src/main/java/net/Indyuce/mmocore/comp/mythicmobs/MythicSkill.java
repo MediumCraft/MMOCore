@@ -1,8 +1,10 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
+import io.lumine.mythic.lib.api.player.EquipmentSlot;
+import io.lumine.mythic.lib.api.stat.modifier.ModifierSource;
 import io.lumine.mythic.lib.api.util.EnumUtils;
 import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
-import io.lumine.mythic.lib.skill.metadata.TriggerMetadata;
+import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.skill.trigger.PassiveSkill;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.skill.trigger.TriggeredSkill;
@@ -78,7 +80,7 @@ public class MythicSkill extends Skill implements TriggeredSkill {
             Optional<TriggerType> passiveType = EnumUtils.getIfPresent(TriggerType.class, config.getString("passive-type").toUpperCase());
             Validate.isTrue(passiveType.isPresent(), "Invalid passive skill type");
             setPassive();
-            mythicLibSkill = new PassiveSkill("MMOCorePassiveSkill", passiveType.get(), this);
+            mythicLibSkill = new PassiveSkill("MMOCorePassiveSkill", passiveType.get(), this, EquipmentSlot.OTHER, ModifierSource.OTHER);
         } else
             mythicLibSkill = null;
     }
