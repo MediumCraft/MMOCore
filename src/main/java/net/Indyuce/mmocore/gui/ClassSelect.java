@@ -121,8 +121,33 @@ public class ClassSelect extends EditableInventory {
 					return;
 				}
 
-				InventoryManager.CLASS_CONFIRM.newInventory(playerData, profess, this).open();
+				InventoryManager.CLASS_CONFIRM.newInventory(playerData, findDeepestSubclass(playerData, profess), this).open();
 			}
 		}
+	}
+
+	/**
+	 * When switching from a class where you had progress before,
+	 * you should be instantly redirected to the highest subclass
+	 * in the subclass tree that you chose, because your progress
+	 * is saved there.
+	 * <p>
+	 * It's also more RPG style to take the player back to the subclass
+	 * he chose because that way he can't turn back and chose another path.
+	 *
+	 * This does NOT function properly with subclass nets yet.
+	 *
+	 * @param root The root class, it's called the root because since the
+	 *             player was able to choose it in the class GUI, it should
+	 *             be at the bottom of the class tree.
+	 */
+	private PlayerClass findDeepestSubclass(PlayerData player, PlayerClass root) {
+		for (String checkedName : player.getSavedClasses()) {
+			PlayerClass checked = MMOCore.plugin.classManager.getOrThrow(checkedName);
+			if (root.hasSubclass(checked))
+				return checked;
+		}
+
+		return root;
 	}
 }

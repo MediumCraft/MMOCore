@@ -267,6 +267,20 @@ public class PlayerClass extends PostLoadObject {
         return subclasses;
     }
 
+    /**
+     * Recursive method which checks if the given class
+     * is a child of the current class in the 'subclass tree'.
+     *
+     * @param profess Some player class
+     * @return If given class is a subclass of the current class
+     */
+    public boolean hasSubclass(PlayerClass profess) {
+        for (Subclass sub : subclasses)
+            if (sub.getProfess().equals(profess) || sub.getProfess().hasSubclass(profess))
+                return true;
+        return false;
+    }
+
     public boolean hasSkill(Skill skill) {
         return hasSkill(skill.getId());
     }
