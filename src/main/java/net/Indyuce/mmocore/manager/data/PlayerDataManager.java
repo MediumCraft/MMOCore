@@ -42,11 +42,22 @@ public abstract class PlayerDataManager {
      * @param playerData PLayer data to unregister
      */
     public void unregisterSafe(PlayerData playerData) {
-        if (playerData.isFullyLoaded())
-            saveData(playerData);
 
-        playerData.close();
-        this.data.remove(playerData.getUniqueId());
+        // Save data async if required
+        if (playerData.isFullyLoaded())
+            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+                saveData(playerData);
+
+                // Unregister once the data was saved
+                playerData.close();
+                this.data.remove(playerData.getUniqueId());
+            });
+
+            // Just unregister data without saving
+        else {
+            playerData.close();
+            this.data.remove(playerData.getUniqueId());
+        }
     }
 
     /**
@@ -120,6 +131,8 @@ public abstract class PlayerDataManager {
 
     /**
      * Called when player data must be saved in configs or database.
+     * This method should always be called sync because it DOES register
+     * an async task in case MySQL storage is used.
      *
      * @param data Player data to save
      */

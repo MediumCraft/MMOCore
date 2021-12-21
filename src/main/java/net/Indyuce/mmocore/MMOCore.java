@@ -6,14 +6,13 @@ import io.lumine.mythic.lib.version.SpigotPlugin;
 import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
-import net.Indyuce.mmocore.comp.MMOCoreTargetRestriction;
-import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
+import net.Indyuce.mmocore.comp.MMOCoreTargetRestriction;
 import net.Indyuce.mmocore.comp.anticheat.AntiCheatSupport;
 import net.Indyuce.mmocore.comp.anticheat.SpartanPlugin;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
@@ -33,7 +32,7 @@ import net.Indyuce.mmocore.listener.*;
 import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
-import net.Indyuce.mmocore.manager.ExperienceManager;
+import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.manager.*;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
@@ -299,9 +298,13 @@ public class MMOCore extends LuminePlugin {
 			int autosave = getConfig().getInt("auto-save.interval") * 20;
 			new BukkitRunnable() {
 				public void run() {
-					for (PlayerData loaded : PlayerData.getAll())
-						if(loaded.isFullyLoaded()) dataProvider.getDataManager().saveData(loaded);
 
+					// Save player data
+					for (PlayerData data : PlayerData.getAll())
+						if (data.isFullyLoaded())
+							dataProvider.getDataManager().saveData(data);
+
+					// Save guild info
 					for (Guild guild : dataProvider.getGuildManager().getAll())
 						dataProvider.getGuildManager().save(guild);
 				}
@@ -310,20 +313,26 @@ public class MMOCore extends LuminePlugin {
 	}
 
 	public void disable() {
-		for (PlayerData data : PlayerData.getAll()) {
-			if(!data.isFullyLoaded()) return;
-			data.getQuestData().resetBossBar();
-			dataProvider.getDataManager().saveData(data);
-		}
 
+		// Save player data
+		for (PlayerData data : PlayerData.getAll())
+			if (data.isFullyLoaded()) {
+				data.close();
+				dataProvider.getDataManager().saveData(data);
+			}
+
+		// Save guild info
 		for (Guild guild : dataProvider.getGuildManager().getAll())
 			dataProvider.getGuildManager().save(guild);
 
-		if(dataProvider instanceof MySQLDataProvider)
+		// Close MySQL data provider (memory leaks)
+		if (dataProvider instanceof MySQLDataProvider)
 			((MySQLDataProvider) dataProvider).close();
 
+		// Reset active blocks
 		mineManager.resetRemainingBlocks();
 
+		// Clear spawned loot chests
 		lootChests.getActive().forEach(chest -> chest.unregister(false));
 	}
 

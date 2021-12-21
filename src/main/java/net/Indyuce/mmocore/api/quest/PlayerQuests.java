@@ -153,6 +153,11 @@ public class PlayerQuests implements Closable {
 
     @Override
     public void close() {
+
+        // Remove boss bar
+        bossbar.removeAll();
+
+        // Close current objective progress
         if (current != null)
             current.getProgress().close();
     }
@@ -182,9 +187,5 @@ public class PlayerQuests implements Closable {
         bossbar.setColor(current.getProgress().getObjective().getBarColor());
         bossbar.setTitle(current.getFormattedLore());
         bossbar.setProgress((double) current.getObjectiveNumber() / current.getQuest().getObjectives().size());
-    }
-
-    public void resetBossBar() {
-        bossbar.removeAll();
     }
 }

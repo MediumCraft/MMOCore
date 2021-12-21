@@ -4,15 +4,18 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.util.AltChar;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.PlayerProfessions;
-import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.experience.Profession;
+import net.Indyuce.mmocore.skill.Skill;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
+
+import java.util.Objects;
 
 
 public class RPGPlaceholders extends PlaceholderExpansion {
@@ -55,6 +58,12 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		if (identifier.equals("level"))
 			return "" + playerData.getLevel();
+
+		else if (identifier.startsWith("skill_level_")) {
+			String id = identifier.substring(12);
+			Skill skill = Objects.requireNonNull(MMOCore.plugin.skillManager.get(id), "Could not find skill with ID '" + id + "'");
+			return String.valueOf(playerData.getSkillLevel(skill));
+		}
 
 		else if (identifier.equals("level_percent")) {
 			double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
