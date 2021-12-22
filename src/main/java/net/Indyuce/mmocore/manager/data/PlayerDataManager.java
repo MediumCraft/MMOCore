@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.manager.data;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
+import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.AsyncPlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
@@ -87,7 +88,7 @@ public abstract class PlayerDataManager {
 
         // Load player data if it does not exist
         if (!data.containsKey(uniqueId)) {
-            PlayerData newData = new PlayerData(MMOPlayerData.get(uniqueId));
+            PlayerData newData = TemporaryPlayerData.has(uniqueId) ? new PlayerData(MMOPlayerData.get(uniqueId), TemporaryPlayerData.get(uniqueId)) : new PlayerData(MMOPlayerData.get(uniqueId));
 
             // Schedule async data loading
             Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {

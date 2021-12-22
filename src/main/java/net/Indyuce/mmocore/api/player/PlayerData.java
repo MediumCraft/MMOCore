@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.api.player;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
+import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
@@ -96,6 +97,14 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         this.mmoData = mmoData;
         this.playerStats = new PlayerStats(this);
         this.questData = new PlayerQuests(this);
+    }
+
+    public PlayerData(MMOPlayerData mmoData, TemporaryPlayerData tempData) {
+        this(mmoData);
+
+        mana = tempData.getDouble("mana");
+        stamina = tempData.getDouble("stamina");
+        stellium = tempData.getDouble("stellium");
     }
 
     /**
@@ -908,7 +917,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      * @return If player data for that player is loaded
      */
     public static boolean has(Player player) {
-       return has(player.getUniqueId());
+        return has(player.getUniqueId());
     }
 
     /**
