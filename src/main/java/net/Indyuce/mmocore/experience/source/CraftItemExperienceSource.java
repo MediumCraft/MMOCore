@@ -1,18 +1,22 @@
 package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nullable;
 
 public class CraftItemExperienceSource extends SpecificExperienceSource<Material> {
     public final Material material;
@@ -33,9 +37,42 @@ public class CraftItemExperienceSource extends SpecificExperienceSource<Material
                         event.getInventory().getResult() == null) return;
 
                 PlayerData data = PlayerData.get((Player) event.getWhoClicked());
-                for (CraftItemExperienceSource source : getSources())
-                    if (source.matches(data, event.getInventory().getResult().getType()))
-                        source.giveExperience(data, getAmountCrafted(event), event.getInventory().getLocation());
+
+                /**
+                 * This makes sure that the crafting recipe was performed correctly.
+                 *
+                 * In some scenarii, the CraftItemEvent (which is only a click event
+                 * by the way) is not cancelled, but the item is not crafted which makes
+                 * EXP duplication a game breaking glitch. MMOCore make sure that at
+                 * least one ingredient has lowered in amount.
+                 *
+                 * The second objective of that check is to deduce the amount of items that
+                 * were crafted during this event. For that, it finds the item with the lowest
+                 * amount in the crafting matrix and see how many items disappeared,
+                 * multiplied by the recipe output amount (works for a shift click).
+                 *
+                 * References:
+                 * - https://git.lumine.io/mythiccraft/mmocore/-/issues/102
+                 * - https://www.spigotmc.org/threads/how-to-get-amount-of-item-crafted.377598/
+                 */
+                final int index = getLowerAmountIngredientIndex(event.getInventory().getMatrix());
+                final int oldAmount = event.getInventory().getMatrix()[index].getAmount();
+                final int itemsCraftedPerRecipe = event.getInventory().getResult().getAmount();
+                final Material resultType = event.getInventory().getResult().getType();
+
+                Bukkit.getScheduler().runTask(MMOCore.plugin, () -> {
+
+                    // First check
+                    int newAmount = getAmount(event.getInventory().getMatrix()[index]);
+                    if (newAmount >= oldAmount)
+                        return;
+
+                    // Deduce amount crafted
+                    int amountCrafted = (event.getClick().isShiftClick() ? oldAmount - newAmount : 1) * itemsCraftedPerRecipe;
+                    for (CraftItemExperienceSource source : getSources())
+                        if (source.matches(data, resultType))
+                            source.giveExperience(data, amountCrafted, event.getInventory().getLocation());
+                });
             }
         };
     }
@@ -45,30 +82,23 @@ public class CraftItemExperienceSource extends SpecificExperienceSource<Material
         return material == obj;
     }
 
-    /**
-     * Source:
-     * - https://www.spigotmc.org/threads/how-to-get-amount-of-item-crafted.377598/
-     * <p>
-     * The idea is to find the item with the lowest count which is basically
-     * the amount of items that are crafted. Minecraft uses the same calculation
-     *
-     * @return Amount of items crafted
-     */
-    private final int getAmountCrafted(CraftItemEvent event) {
-        ItemStack craftedItem = event.getInventory().getResult(); //Get result of recipe
-        ClickType clickType = event.getClick();
+    private int getAmount(@Nullable ItemStack item) {
+        return item == null || item.getType() == Material.AIR ? 0 : item.getAmount();
+    }
 
-        // No shift click
-        if (!clickType.isShiftClick())
-            return craftedItem.getAmount();
+    private int getLowerAmountIngredientIndex(ItemStack[] matrix) {
+        int lower = Integer.MAX_VALUE;
+        int index = -1;
 
-        // Find lowest amount of all ingredients
-        int lowerAmount = craftedItem.getMaxStackSize() + 1000; //Set lower at recipe result max stack size + 1000 (or just highter max stacksize of reciped item)
-        for (ItemStack actualItem : event.getInventory().getContents()) //For each item in crafting inventory
-            if (!actualItem.getType().isAir() && lowerAmount > actualItem.getAmount() && !actualItem.getType().equals(craftedItem.getType())) //if slot is not air && lowerAmount is highter than this slot amount && it's not the recipe amount
-                lowerAmount = actualItem.getAmount(); //Set new lower amount
+        for (int i = 0; i < 9; i++) {
+            ItemStack checked = matrix[i];
+            if (checked != null && checked.getType() != Material.AIR && checked.getAmount() > 0 && checked.getAmount() < lower) {
+                lower = checked.getAmount();
+                index = i;
+            }
+        }
 
-        //Calculate the final amount : lowerAmount * craftedItem.getAmount
-        return lowerAmount * craftedItem.getAmount();
+        Validate.isTrue(index != -1, "No item in matrix");
+        return index;
     }
 }
