@@ -11,6 +11,7 @@ public class QuestCommandTreeNode extends CommandTreeNode {
 
 		addChild(new StartCommandTreeNode(this));
 		addChild(new CancelCommandTreeNode(this));
+		addChild(new FinishCommandTreeNode(this));
 	}
 
 	@Override
