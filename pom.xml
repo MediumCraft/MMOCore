@@ -125,7 +125,7 @@
 		<dependency>
 			<groupId>io.lumine</groupId>
 			<artifactId>MythicLib-dist</artifactId>
-			<version>1.2-0</version>
+			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
 
