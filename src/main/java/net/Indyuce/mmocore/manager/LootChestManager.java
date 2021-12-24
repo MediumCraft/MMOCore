@@ -15,7 +15,7 @@ import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.loot.chest.LootChestRegion;
 
-public class LootChestManager {
+public class LootChestManager implements MMOCoreManager {
 
 	/*
 	 * all active loot chests in the server
@@ -57,9 +57,12 @@ public class LootChestManager {
 		return null;
 	}
 
-	public void reload() {
-		regions.values().forEach(region -> region.getRunnable().cancel());
-		regions.clear();
+	@Override
+	public void initialize(boolean clearBefore) {
+		if (clearBefore) {
+			regions.values().forEach(region -> region.getRunnable().cancel());
+			regions.clear();
+		}
 
 		FileConfiguration config = new ConfigFile("loot-chests").getConfig();
 		for (String key : config.getKeys(false))

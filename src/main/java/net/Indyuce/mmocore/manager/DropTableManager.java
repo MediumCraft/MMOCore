@@ -16,7 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.loot.droptable.DropTable;
 
-public class DropTableManager implements MMOManager {
+public class DropTableManager implements MMOCoreManager {
 	private final Map<String, DropTable> map = new HashMap<>();
 
 	public void register(DropTable table) {
@@ -59,7 +59,10 @@ public class DropTableManager implements MMOManager {
 	}
 
 	@Override
-	public void reload() {
+	public void initialize(boolean clearBefore) {
+		if (clearBefore)
+			map.clear();
+
 		for (File file : new File(MMOCore.plugin.getDataFolder() + "/drop-tables").listFiles())
 			try {
 
@@ -76,10 +79,5 @@ public class DropTableManager implements MMOManager {
 			}
 
 		Bukkit.getScheduler().runTask(MMOCore.plugin, () -> map.values().forEach(PostLoadObject::postLoad));
-	}
-
-	@Override
-	public void clear() {
-		map.clear();
 	}
 }

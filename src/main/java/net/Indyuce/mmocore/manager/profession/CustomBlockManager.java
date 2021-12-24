@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.manager;
+package net.Indyuce.mmocore.manager.profession;
 
 import io.papermc.lib.PaperLib;
 import net.Indyuce.mmocore.MMOCore;
@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.loot.droptable.condition.Condition;
 import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.manager.profession.SpecificProfessionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -22,7 +23,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
 
-public class CustomBlockManager implements MMOManager {
+public class CustomBlockManager extends SpecificProfessionManager {
 
 	/**
 	 * Registered block infos
@@ -49,6 +50,8 @@ public class CustomBlockManager implements MMOManager {
 	private boolean protect;
 
 	public CustomBlockManager() {
+		super("on-mine");
+
 		registerBlockType(block -> MMOCoreUtils.isPlayerHead(block.getType()) ? Optional.of(new SkullBlockType(block)) : Optional.empty());
 	}
 
@@ -160,7 +163,8 @@ public class CustomBlockManager implements MMOManager {
 		return true;
 	}
 
-	public void loadDropTables(ConfigurationSection config) {
+	@Override
+	public void loadProfessionConfiguration(ConfigurationSection config) {
 		for (String key : config.getKeys(false))
 			try {
 				register(new BlockInfo(config.getConfigurationSection(key)));
@@ -177,8 +181,11 @@ public class CustomBlockManager implements MMOManager {
 	}
 
 	@Override
-	public void reload() {
-		customMineConditions.clear();
+	public void initialize(boolean clearBefore) {
+		if (clearBefore) {
+			customMineConditions.clear();
+			map.clear();
+		}
 
 		this.protect = MMOCore.plugin.getConfig().getBoolean("protect-custom-mine");
 
@@ -188,10 +195,5 @@ public class CustomBlockManager implements MMOManager {
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load custom mining condition '" + key + "': " + exception.getMessage());
 			}
-	}
-
-	@Override
-	public void clear() {
-		map.clear();
 	}
 }

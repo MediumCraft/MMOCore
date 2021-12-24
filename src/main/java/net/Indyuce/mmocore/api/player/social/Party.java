@@ -62,13 +62,13 @@ public class Party {
 
         reopenInventories();
 
-        // disband the party if no member left
+        // Disband the party if no member left
         if (members.count() < 1) {
             MMOCore.plugin.partyManager.unregisterParty(this);
             return;
         }
 
-        // transfer ownership
+        // Transfer ownership
         if (owner.equals(data)) {
             owner = members.get(0);
             if (notify && owner.isOnline())

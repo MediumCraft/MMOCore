@@ -70,7 +70,6 @@ public class MMOCore extends LuminePlugin {
 	public final SkillManager skillManager = new SkillManager();
 	public final ClassManager classManager = new ClassManager();
 	public final DropTableManager dropTableManager = new DropTableManager();
-	public final CustomBlockManager mineManager = new CustomBlockManager();
 	public final BoosterManager boosterManager = new BoosterManager();
 	public final AttributeManager attributeManager = new AttributeManager();
 	public final PartyManager partyManager = new PartyManager();
@@ -79,9 +78,8 @@ public class MMOCore extends LuminePlugin {
 	public final net.Indyuce.mmocore.manager.ExperienceManager experience = new net.Indyuce.mmocore.manager.ExperienceManager();
 	public final LootChestManager lootChests = new LootChestManager();
 
-	/*
-	 * professions
-	 */
+	// Profession managers
+	public final net.Indyuce.mmocore.manager.profession.CustomBlockManager mineManager = new net.Indyuce.mmocore.manager.profession.CustomBlockManager();
 	public final FishingManager fishingManager = new FishingManager();
 	public final AlchemyManager alchemyManager = new AlchemyManager();
 	public final EnchantManager enchantManager = new EnchantManager();
@@ -206,7 +204,7 @@ public class MMOCore extends LuminePlugin {
 			return;
 		}
 
-		reloadPlugin();
+		initializePlugin(false);
 
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
 			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
@@ -336,45 +334,39 @@ public class MMOCore extends LuminePlugin {
 		lootChests.getActive().forEach(chest -> chest.unregister(false));
 	}
 
-	public void reloadPlugin() {
+	/**
+	 * Called either when the server starts when initializing the manager for
+	 * the first time, or when issuing a plugin reload; in that case, stuff
+	 * like listeners must all be cleared before.
+	 *
+	 * Also see {@link MMOCoreManager}
+	 *
+	 * @param clearBefore True when issuing a plugin reload
+	 */
+	public void initializePlugin(boolean clearBefore) {
 		reloadConfig();
 
 		configManager = new ConfigManager();
 
 		skillManager.reload();
 
-		mineManager.clear();
-		mineManager.reload();
+		mineManager.initialize(clearBefore);
+		partyManager.initialize(clearBefore);
+		attributeManager.initialize(clearBefore);
 
-		fishingManager.clear();
-		alchemyManager.clear();
-		smithingManager.clear();
+		// Experience must be loaded before professions and classes
+		experience.initialize(clearBefore);
 
-		partyManager.clear();
-		partyManager.reload();
+		// Drop tables must be loaded before professions
+		dropTableManager.initialize(clearBefore);
 
-		attributeManager.clear();
-		attributeManager.reload();
-
-		// experience must be loaded before professions and classes
-		experience.reload();
-
-		// drop tables must be loaded before professions
-		dropTableManager.clear();
-		dropTableManager.reload();
-
-		professionManager.clear();
-		professionManager.reload();
-
-		classManager.clear();
-		classManager.reload();
+		professionManager.initialize(clearBefore);
+		classManager.initialize(clearBefore);
 
 		InventoryManager.load();
 
-		questManager.clear();
-		questManager.reload();
-
-		lootChests.reload();
+		questManager.initialize(clearBefore);
+		lootChests.initialize(clearBefore);
 
 		waypointManager = new WaypointManager(new ConfigFile("waypoints").getConfig());
 		restrictionManager = new RestrictionManager(new ConfigFile("restrictions").getConfig());

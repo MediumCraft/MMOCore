@@ -9,7 +9,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 
-public class AttributeManager implements MMOManager {
+public class AttributeManager implements MMOCoreManager {
 	private final Map<String, PlayerAttribute> map = new HashMap<>();
 
 	public PlayerAttribute get(String id) {
@@ -23,9 +23,11 @@ public class AttributeManager implements MMOManager {
 	public Collection<PlayerAttribute> getAll() {
 		return map.values();
 	}
- 
+
 	@Override
-	public void reload() {
+	public void initialize(boolean clearBefore) {
+		if (clearBefore)
+			map.clear();
 
 		ConfigFile config = new ConfigFile("attributes");
 		for (String key : config.getConfig().getKeys(false))
@@ -35,10 +37,5 @@ public class AttributeManager implements MMOManager {
 			} catch (IllegalArgumentException exception) {
 				MMOCore.log(Level.WARNING, "Could not load attribute '" + key + "': " + exception.getMessage());
 			}
-	}
-
-	@Override
-	public void clear() {
-		map.clear();
 	}
 }

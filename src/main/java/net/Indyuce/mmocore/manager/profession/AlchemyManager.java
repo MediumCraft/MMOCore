@@ -1,17 +1,38 @@
 package net.Indyuce.mmocore.manager.profession;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import net.Indyuce.mmocore.MMOCore;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionType;
 
-import net.Indyuce.mmocore.manager.MMOManager;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
-public class AlchemyManager implements MMOManager {
+public class AlchemyManager extends SpecificProfessionManager {
 	public double splash, lingering, upgrade, extend;
 
 	// private Map<PotionEffectType, Double> custom = new HashMap<>();
 	private final Map<PotionType, Double> base = new HashMap<>();
+
+	public AlchemyManager() {
+		super("alchemy-experience");
+	}
+
+	@Override
+	public void loadProfessionConfiguration(ConfigurationSection config) {
+		splash = 1 + config.getDouble("special.splash") / 100;
+		lingering = 1 + config.getDouble("special.lingering") / 100;
+		extend = 1 + config.getDouble("special.extend") / 100;
+		upgrade = 1 + config.getDouble("special.upgrade") / 100;
+
+		for (String key : config.getConfigurationSection("effects").getKeys(false))
+			try {
+				PotionType type = PotionType.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
+				MMOCore.plugin.alchemyManager.registerBaseExperience(type, config.getDouble("effects." + key));
+			} catch (IllegalArgumentException exception) {
+				MMOCore.log(Level.WARNING, "Could not read potion type from " + key);
+			}
+	}
 
 	// public double getWeight(PotionEffectType type) {
 	// return custom.containsKey(type) ? custom.get(type) : 0;
@@ -39,15 +60,11 @@ public class AlchemyManager implements MMOManager {
 	// }
 	// }
 
-	@Override
-	public void reload() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void clear() {
-		splash = lingering = upgrade = extend = 1;
-		base.clear();
-	}
+    @Override
+    public void initialize(boolean clearBefore) {
+        if (clearBefore) {
+            splash = lingering = upgrade = extend = 1;
+            base.clear();
+        }
+    }
 }

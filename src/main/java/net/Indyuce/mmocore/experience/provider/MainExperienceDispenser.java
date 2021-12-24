@@ -23,7 +23,7 @@ public class MainExperienceDispenser implements ExperienceDispenser {
     }
 
     @Override
-    public boolean matches(PlayerData playerData) {
+    public boolean shouldHandle(PlayerData playerData) {
         return playerData.getProfess().equals(profess);
     }
 }

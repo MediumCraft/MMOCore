@@ -32,9 +32,13 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		data.setExperience(config.getInt("experience"));
 		if (config.contains("class"))
 			data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));
-		data.setMana(data.getStats().getStat(StatType.MAX_MANA));
-		data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
-		data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+
+		if (!data.hasUsedTemporaryData()) {
+			data.setMana(data.getStats().getStat(StatType.MAX_MANA));
+			data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
+			data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+		}
+
 		if (config.contains("guild"))
 			data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), config.getString("guild")));
 		if (config.contains("attribute"))
@@ -55,9 +59,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 				if (data.getProfess().hasSkill(id))
 					data.getBoundSkills().add(data.getProfess().getSkill(id));
 
-		/*
-		 * load class slots, use try so the player can log in.
-		 */
+		// Load class slots, use try so the player can log in.
 		if (config.contains("class-info"))
 			for (String key : config.getConfigurationSection("class-info").getKeys(false))
 				try {
@@ -67,6 +69,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "Could not load class info '" + key + "': " + exception.getMessage());
 				}
+
 		data.setFullyLoaded();
 	}
 

@@ -26,7 +26,7 @@ import net.Indyuce.mmocore.api.player.profess.event.trigger.ClassChosenEventTrig
 import net.Indyuce.mmocore.api.player.profess.event.trigger.LevelUpEventTrigger;
 import net.Indyuce.mmocore.api.player.profess.event.trigger.MultipleLevelUpEventTrigger;
 
-public class ClassManager implements MMOManager {
+public class ClassManager implements MMOCoreManager {
 	private final Map<String, PlayerClass> map = new HashMap<>();
 
 	/*
@@ -84,7 +84,17 @@ public class ClassManager implements MMOManager {
 	}
 
 	@Override
-	public void reload() {
+	public void initialize(boolean clearBefore) {
+		if (clearBefore) {
+			map.clear();
+			triggerHandlers.forEach(HandlerList::unregisterAll);
+
+			/*
+			 * Do not clear the list of trigger listeners, since it's only setup
+			 * once the server loads and it is never modified.
+			 */
+		}
+
 		for (File file : new File(MMOCore.plugin.getDataFolder() + "/classes").listFiles())
 			try {
 				String id = file.getName().substring(0, file.getName().length() - 4);
@@ -104,19 +114,8 @@ public class ClassManager implements MMOManager {
 				.orElse(new PlayerClass("HUMAN", "Human", Material.LEATHER_BOOTS));
 
 		/*
-		 * register event triggers
+		 * Register event triggers
 		 */
 		triggerHandlers.forEach(handler -> Bukkit.getPluginManager().registerEvents(handler, MMOCore.plugin));
-	}
-
-	@Override
-	public void clear() {
-		map.clear();
-		triggerHandlers.forEach(HandlerList::unregisterAll);
-
-		/*
-		 * do not clear the list of trigger listeners, since it's only setup
-		 * once the server loads and it is never modified.
-		 */
 	}
 }

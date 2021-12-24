@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 
 public class ExpCurve {
@@ -21,7 +22,9 @@ public class ExpCurve {
 	/**
 	 * Purely arbitrary but MMOCore needs a default exp curve for everything
 	 * otherwise there might be divisions by 0 when trying to update the vanilla
-	 * exp bar which requires a 0.0 -> 1.0 float as parameter
+	 * exp bar which requires a 0.0 -> 1.0 float as parameter.
+	 *
+	 * See {@link PlayerData#refreshVanillaExp()}
 	 */
 	public static final ExpCurve DEFAULT = new ExpCurve("default", 100, 200, 300, 400, 500);
 

@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.Quest;
 
-public class QuestManager implements MMOManager {
+public class QuestManager implements MMOCoreManager {
 	private final Map<String, Quest> quests = new LinkedHashMap<>();
 	
 	public void load(File file) {
@@ -45,7 +45,10 @@ public class QuestManager implements MMOManager {
 	}
 
 	@Override
-	public void reload() {
+	public void initialize(boolean clearBefore) {
+		if (clearBefore)
+			quests.clear();
+
 		load(new File(MMOCore.plugin.getDataFolder() + "/quests"));
 		for (Quest quest : quests.values())
 			try {
@@ -53,10 +56,5 @@ public class QuestManager implements MMOManager {
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not post-load quest '" + quest.getId() + "': " + exception.getMessage());
 			}
-	}
-
-	@Override
-	public void clear() {
-		quests.clear();
 	}
 }

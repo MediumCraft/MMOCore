@@ -19,7 +19,7 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
 		long ms = System.currentTimeMillis();
 
 		MMOCore.plugin.reloadConfig();
-		MMOCore.plugin.reloadPlugin();
+		MMOCore.plugin.initializePlugin(true);
 		
 		PlayerData.getAll().forEach(PlayerData::update);
 

@@ -1,48 +1,39 @@
 package net.Indyuce.mmocore.manager.profession;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
-import io.lumine.mythic.lib.api.util.PostLoadObject;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.HandlerList;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.Profession;
-import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.manager.MMOManager;
+import net.Indyuce.mmocore.manager.MMOCoreManager;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
-public class ProfessionManager implements MMOManager {
+import java.io.File;
+import java.util.*;
+import java.util.logging.Level;
 
-	/**
-	 * Loaded professions.
-	 */
+public class ProfessionManager implements MMOCoreManager {
 	private final Map<String, Profession> professions = new HashMap<>();
-
-	/**
-	 * Saves different experience sources based on experience source type.
-	 */
-	private final Map<Class<?>, ExperienceSourceManager<?>> managers = new HashMap<>();
-
-	@SuppressWarnings("unchecked")
-	public <T> ExperienceSourceManager<T> getManager(Class<T> t) {
-		return (ExperienceSourceManager<T>) managers.get(t);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T extends ExperienceSource<?>> void registerExpSource(T source) {
-		Class<T> path = (Class<T>) source.getClass();
-
-		if (!managers.containsKey(path))
-			managers.put(path, source.newManager());
-		getManager(path).registerSource(source);
-	}
+	private final Set<SpecificProfessionManager> professionManagers = new HashSet<>();
 
 	public void register(Profession profession) {
 		professions.put(profession.getId(), profession);
+	}
+
+	public void registerProfessionManager(@NotNull SpecificProfessionManager professionManager) {
+		Validate.notNull(professionManager);
+
+		professionManagers.add(professionManager);
+	}
+
+	public void loadProfessionConfigurations(ConfigurationSection config) {
+		for (SpecificProfessionManager manager : professionManagers)
+			if (config.contains(manager.getStringKey()))
+				try {
+					manager.loadProfessionConfiguration(config.getConfigurationSection(manager.getStringKey()));
+				} catch (RuntimeException exception) {
+					MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load profession config '" + manager.getStringKey() + "': " + exception.getMessage());
+				}
 	}
 
 	public Profession get(String id) {
@@ -58,7 +49,20 @@ public class ProfessionManager implements MMOManager {
 	}
 
 	@Override
-	public void reload() {
+	public void initialize(boolean clearBefore) {
+		if (clearBefore)
+			professions.clear();
+
+		// Load default profession managers (can't be done on constructor because MMOCore.plugin is null)
+		if (professionManagers.isEmpty()) {
+			registerProfessionManager(MMOCore.plugin.alchemyManager);
+			registerProfessionManager(MMOCore.plugin.enchantManager);
+			registerProfessionManager(MMOCore.plugin.fishingManager);
+			registerProfessionManager(MMOCore.plugin.smithingManager);
+		}
+
+		professionManagers.forEach(manager -> manager.initialize(clearBefore));
+
 		for (File file : new File(MMOCore.plugin.getDataFolder() + "/professions").listFiles())
 			try {
 				String id = file.getName().substring(0, file.getName().length() - 4);
@@ -66,14 +70,5 @@ public class ProfessionManager implements MMOManager {
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load profession " + file.getName() + ": " + exception.getMessage());
 			}
-
-		getAll().forEach(PostLoadObject::postLoad);
-	}
-
-	@Override
-	public void clear() {
-		managers.values().forEach(HandlerList::unregisterAll);
-		managers.clear();
-		professions.clear();
 	}
 }

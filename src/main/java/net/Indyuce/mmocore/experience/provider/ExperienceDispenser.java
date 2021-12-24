@@ -22,7 +22,15 @@ public interface ExperienceDispenser {
      */
     void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation);
 
-    boolean matches(PlayerData playerData);
+    /**
+     * Experience sources handle both CLASS experience sources and PROFESSION
+     * experience sources. Professions have no problem because whatever
+     * class the player has chosen, he can get exp in that profession.
+     * <p>
+     * But class experience sources must first make sure that the player has
+     * the right class before giving exp to the player
+     */
+    boolean shouldHandle(PlayerData playerData);
 
     default Location getPlayerLocation(PlayerData player) {
         return player.isOnline() ? player.getPlayer().getLocation() : null;

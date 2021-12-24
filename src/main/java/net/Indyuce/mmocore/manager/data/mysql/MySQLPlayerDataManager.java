@@ -44,10 +44,13 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 					data.setAttributePoints(getDefaultData().getAttributePoints());
 					data.setAttributeReallocationPoints(getDefaultData().getAttrReallocPoints());
 					data.setExperience(0);
-					data.setMana(data.getStats().getStat(StatType.MAX_MANA));
-					data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
-					data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
 					data.getQuestData().updateBossBar();
+
+					if (!data.hasUsedTemporaryData()) {
+						data.setMana(data.getStats().getStat(StatType.MAX_MANA));
+						data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
+						data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+					}
 
 					data.setFullyLoaded();
 					MMOCore.sqlDebug("Loaded DEFAULT data for: '" + data.getUniqueId() + "' as no saved data was found.");
@@ -62,9 +65,13 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 				data.setExperience(result.getInt("experience"));
 				if (!isEmpty(result.getString("class")))
 					data.setClass(MMOCore.plugin.classManager.get(result.getString("class")));
-				data.setMana(data.getStats().getStat(StatType.MAX_MANA));
-				data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
-				data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+
+				if (!data.hasUsedTemporaryData()) {
+					data.setMana(data.getStats().getStat(StatType.MAX_MANA));
+					data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
+					data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
+				}
+
 				if (!isEmpty(result.getString("guild")))
 					data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), result.getString("guild")));
 				if (!isEmpty(result.getString("attributes"))) data.getAttributes().load(result.getString("attributes"));

@@ -85,7 +85,7 @@ public class PlayerClass extends PostLoadObject {
         actionBarFormat = config.contains("action-bar", true) ? config.getString("action-bar") : null;
 
         expCurve = config.contains("exp-curve")
-                ? MMOCore.plugin.experience.getOrThrow(
+                ? MMOCore.plugin.experience.getCurveOrThrow(
                 config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
 
@@ -129,7 +129,7 @@ public class PlayerClass extends PostLoadObject {
             for (String key : config.getStringList("main-exp-sources"))
                 try {
                     ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser);
-                    MMOCore.plugin.professionManager.registerExpSource(source);
+                    MMOCore.plugin.experience.registerSource(source);
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp source '" + key + "' from class '"
                             + id + "': " + exception.getMessage());

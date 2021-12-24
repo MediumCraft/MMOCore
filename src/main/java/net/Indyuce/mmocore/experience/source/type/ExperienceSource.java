@@ -18,7 +18,7 @@ public abstract class ExperienceSource<T> {
     public abstract ExperienceSourceManager<?> newManager();
 
     public boolean matches(PlayerData player, T obj) {
-        return getDispenser().matches(player) && matchesParameter(player, obj);
+        return getDispenser().shouldHandle(player) && matchesParameter(player, obj);
     }
 
     public abstract boolean matchesParameter(PlayerData player, T obj);

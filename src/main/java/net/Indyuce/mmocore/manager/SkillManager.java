@@ -24,8 +24,32 @@ import net.Indyuce.mmocore.comp.mythicmobs.MythicSkill;
 public class SkillManager {
 	private final Map<String, Skill> skills = new LinkedHashMap<>();
 
+	public void register(Skill skill) {
+		skills.put(skill.getId().toUpperCase(), skill);
+	}
+
+	public Skill get(String id) {
+		return skills.get(id.toUpperCase());
+	}
+
+	public boolean has(String id) {
+		return skills.containsKey(id.toUpperCase());
+	}
+
+	public Collection<Skill> getAll() {
+		return skills.values();
+	}
+
+	public Set<Skill> getActive() {
+		return skills.values().stream().filter(skill -> !skill.isPassive()).collect(Collectors.toSet());
+	}
+
+	public Set<String> getKeys() {
+		return skills.keySet();
+	}
+
 	/*
-	 * skills are initialized when MMOCore enables but SkillManager must be
+	 * Skills are initialized when MMOCore enables but SkillManager must be
 	 * instanced when MMOCore loads so that extra plugins can register skills
 	 * before CLASSES are loaded
 	 */
@@ -53,9 +77,7 @@ public class SkillManager {
 		if (!mythicMobs.exists())
 			mythicMobs.mkdir();
 
-		/*
-		 * load MythicMobs addon skills
-		 */
+		// Load MythicMobs addon skills
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			for (File file : mythicMobs.listFiles()) {
 				try {
@@ -95,29 +117,5 @@ public class SkillManager {
 				skill.update(config.getConfig());
 				config.save();
 			}
-	}
-
-	public void register(Skill skill) {
-		skills.put(skill.getId().toUpperCase(), skill);
-	}
-
-	public Skill get(String id) {
-		return skills.get(id.toUpperCase());
-	}
-
-	public boolean has(String id) {
-		return skills.containsKey(id.toUpperCase());
-	}
-
-	public Collection<Skill> getAll() {
-		return skills.values();
-	}
-
-	public Set<Skill> getActive() {
-		return skills.values().stream().filter(skill -> !skill.isPassive()).collect(Collectors.toSet());
-	}
-
-	public Set<String> getKeys() {
-		return skills.keySet();
 	}
 }

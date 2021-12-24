@@ -91,20 +91,31 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      */
     private boolean fullyLoaded = false;
 
+    /**
+     * If the player data was loaded using temporary data.
+     * See {@link TemporaryPlayerData} for more info
+     */
+    private final boolean usingTemporaryData;
+
     public PlayerData(MMOPlayerData mmoData) {
+        this(mmoData, false);
+    }
+
+    public PlayerData(MMOPlayerData mmoData, TemporaryPlayerData tempData) {
+        this(mmoData, true);
+
+        mana = tempData.getDouble("mana");
+        stamina = tempData.getDouble("stamina");
+        stellium = tempData.getDouble("stellium");
+    }
+
+    private PlayerData(MMOPlayerData mmoData, boolean usingTemporaryData) {
         super(mmoData.getUniqueId());
 
         this.mmoData = mmoData;
         this.playerStats = new PlayerStats(this);
         this.questData = new PlayerQuests(this);
-    }
-
-    public PlayerData(MMOPlayerData mmoData, TemporaryPlayerData tempData) {
-        this(mmoData);
-
-        mana = tempData.getDouble("mana");
-        stamina = tempData.getDouble("stamina");
-        stellium = tempData.getDouble("stellium");
+        this.usingTemporaryData = usingTemporaryData;
     }
 
     /**
@@ -658,6 +669,10 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
     public void setFullyLoaded() {
         this.fullyLoaded = true;
+    }
+
+    public boolean hasUsedTemporaryData() {
+        return usingTemporaryData;
     }
 
     public boolean isCasting() {

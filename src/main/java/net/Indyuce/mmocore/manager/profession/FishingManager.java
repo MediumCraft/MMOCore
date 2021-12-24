@@ -1,30 +1,28 @@
 package net.Indyuce.mmocore.manager.profession;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.logging.Level;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
-
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.loot.droptable.condition.Condition;
 import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
-import net.Indyuce.mmocore.manager.MMOManager;
-import io.lumine.mythic.lib.api.MMOLineConfig;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 
-public class FishingManager implements MMOManager {
+import java.util.*;
+import java.util.logging.Level;
+
+public class FishingManager extends SpecificProfessionManager {
 	private final Set<FishingDropTable> tables = new LinkedHashSet<>();
 
 	private static final Random random = new Random();
 
-	public void loadDropTables(ConfigurationSection config) {
+	public FishingManager() {
+		super("on-fish");
+	}
+
+	@Override
+	public void loadProfessionConfiguration(ConfigurationSection config) {
 		for (String key : config.getKeys(false))
 			try {
 				tables.add(new FishingDropTable(config.getConfigurationSection(key)));
@@ -107,12 +105,8 @@ public class FishingManager implements MMOManager {
 	}
 
 	@Override
-	public void reload() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void clear() {
-		tables.clear();
+	public void initialize(boolean clearBefore) {
+		if (clearBefore)
+			tables.clear();
 	}
 }

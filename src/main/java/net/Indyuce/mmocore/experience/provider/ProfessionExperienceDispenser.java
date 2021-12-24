@@ -21,7 +21,7 @@ public class ProfessionExperienceDispenser implements ExperienceDispenser {
     }
 
     @Override
-    public boolean matches(PlayerData playerData) {
+    public boolean shouldHandle(PlayerData playerData) {
         return true;
     }
 }
