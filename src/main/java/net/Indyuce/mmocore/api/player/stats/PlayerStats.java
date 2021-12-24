@@ -81,7 +81,7 @@ public class PlayerStats {
          *
          * This updates the player's passive skills
          */
-        data.getMMOPlayerData().unregisterSkillTriggers("mmocoreClass");
+        data.getMMOPlayerData().unregisterSkillTriggers("MMOCorePassiveSkill");
         for (Skill.SkillInfo skill : data.getProfess().getSkills())
             if (skill.getSkill().isPassive() && skill.getSkill() instanceof MythicSkill)
                 data.getMMOPlayerData().registerSkillTrigger(((MythicSkill) skill.getSkill()).toMythicLib());
