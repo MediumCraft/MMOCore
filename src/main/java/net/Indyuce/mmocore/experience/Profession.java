@@ -1,47 +1,54 @@
 package net.Indyuce.mmocore.experience;
 
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.provider.ProfessionExperienceDispenser;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class Profession extends PostLoadObject {
+public class Profession {
     private final String id, name;
     private final ExpCurve expCurve;
     private final int maxLevel;
     private final Map<ProfessionOption, Boolean> options = new HashMap<>();
+    private final ExperienceTable expTable;
 
-    /*
-     * experience given to the main player level whenever he levels up this
-     * profession
+    /**
+     * Experience given to the main player level whenever he levels up this profession
+     *
+     * @deprecated Being replaced by {@link ExperienceTable}
      */
+    @Deprecated
     private final LinearValue experience;
 
     public Profession(String id, FileConfiguration config) {
-        super(config);
-
         this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
         this.name = config.getString("name");
         Validate.notNull(name, "Could not load name");
 
         expCurve = config.contains("exp-curve")
-                ? MMOCore.plugin.experience.getOrThrow(config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
+                ? MMOCore.plugin.experience.getCurveOrThrow(config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
         experience = new LinearValue(config.getConfigurationSection("experience"));
+
+        ExperienceTable expTable = null;
+        if (config.contains("exp-table"))
+            try {
+                expTable = loadExperienceTable(config.get("exp-table"));
+            } catch (RuntimeException exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from profession '" + id + "': " + exception.getMessage());
+            }
+        this.expTable = expTable;
 
         if (config.contains("options"))
             for (String key : config.getConfigurationSection("options").getKeys(false))
@@ -59,71 +66,25 @@ public class Profession extends PostLoadObject {
             ExperienceDispenser dispenser = new ProfessionExperienceDispenser(this);
             for (String key : config.getStringList("exp-sources"))
                 try {
-                    MMOCore.plugin.professionManager.registerExpSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser));
+                    MMOCore.plugin.experience.registerSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING,
                             "Could not register exp source '" + key + "' from profession '" + id + "': " + exception.getMessage());
                 }
         }
+
+        MMOCore.plugin.professionManager.loadProfessionConfigurations(config);
     }
 
-    /*
-     * drop tables must be loaded after professions are initialized
-     */
-    @Override
-    protected void whenPostLoaded(ConfigurationSection config) {
+    private ExperienceTable loadExperienceTable(Object obj) {
 
-        if (config.contains("on-fish"))
-            MMOCore.plugin.fishingManager.loadDropTables(config.getConfigurationSection("on-fish"));
+        if (obj instanceof ConfigurationSection)
+            return new ExperienceTable((ConfigurationSection) obj);
 
-        if (config.contains("on-mine"))
-            MMOCore.plugin.mineManager.loadDropTables(config.getConfigurationSection("on-mine"));
+        if (obj instanceof String)
+            return MMOCore.plugin.experience.getTableOrThrow(obj.toString());
 
-        if (config.contains("alchemy-experience")) {
-
-            MMOCore.plugin.alchemyManager.splash = 1 + config.getDouble("alchemy-experience.special.splash") / 100;
-            MMOCore.plugin.alchemyManager.lingering = 1 + config.getDouble("alchemy-experience.special.lingering") / 100;
-            MMOCore.plugin.alchemyManager.extend = 1 + config.getDouble("alchemy-experience.special.extend") / 100;
-            MMOCore.plugin.alchemyManager.upgrade = 1 + config.getDouble("alchemy-experience.special.upgrade") / 100;
-
-            for (String key : config.getConfigurationSection("alchemy-experience.effects").getKeys(false))
-                try {
-                    PotionType type = PotionType.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
-                    MMOCore.plugin.alchemyManager.registerBaseExperience(type, config.getDouble("alchemy-experience.effects." + key));
-                } catch (IllegalArgumentException exception) {
-                    MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read potion type from " + key);
-                }
-        }
-
-        if (config.contains("base-enchant-exp"))
-            for (String key : config.getConfigurationSection("base-enchant-exp").getKeys(false))
-                try {
-                    Enchantment enchant = MythicLib.plugin.getVersion().getWrapper().getEnchantmentFromString(key.toLowerCase().replace("-", "_"));
-                    MMOCore.plugin.enchantManager.registerBaseExperience(enchant, config.getDouble("base-enchant-exp." + key));
-                } catch (IllegalArgumentException exception) {
-                    MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read enchant from " + key);
-                }
-
-        if (config.contains("repair-exp"))
-            for (String key : config.getConfigurationSection("repair-exp").getKeys(false))
-                try {
-                    Material material = Material.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
-                    MMOCore.plugin.smithingManager.registerBaseExperience(material, config.getDouble("repair-exp." + key));
-                } catch (IllegalArgumentException exception) {
-                    MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not read material from " + key);
-                }
-
-        // if (config.contains("effect-weight"))
-        // for (String key :
-        // config.getConfigurationSection("effect-weight").getKeys(false))
-        // try {
-        // MMOCore.plugin.alchemyManager.registerEffectWeight(PotionEffectType.getByName(key.toUpperCase().replace("-",
-        // "_").replace(" ", "_")), config.getDouble("effect-weight." + key));
-        // } catch (IllegalArgumentException exception) {
-        // MMOCore.log(Level.WARNING, "[PlayerProfessions:" + id + "] Could not
-        // read
-        // potion effect type from " + key);
-        // }
+        throw new IllegalArgumentException("Please provide either a string (exp table name) or a config section (locally define an exp table)");
     }
 
     public boolean getOption(ProfessionOption option) {
@@ -156,6 +117,14 @@ public class Profession extends PostLoadObject {
 
     public LinearValue getExperience() {
         return experience;
+    }
+
+    public boolean hasExperienceTable() {
+        return expTable != null;
+    }
+
+    public ExperienceTable getExperienceTable() {
+        return Objects.requireNonNull(expTable, "Profession has no exp table");
     }
 
     public static enum ProfessionOption {

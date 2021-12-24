@@ -86,6 +86,7 @@ public class ConfigManager {
         loadDefaultFile("sounds.yml");
         loadDefaultFile("loot-chests.yml");
         loadDefaultFile("commands.yml");
+        loadDefaultFile("exp-tables.yml");
         loadDefaultFile("guilds.yml");
 
         commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));

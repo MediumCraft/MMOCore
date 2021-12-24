@@ -11,7 +11,10 @@ import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.manager.SoundManager;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,6 +29,7 @@ import java.util.Map.Entry;
 public class PlayerProfessions {
 	private final Map<String, Integer> exp = new HashMap<>();
 	private final Map<String, Integer> level = new HashMap<>();
+	private final Map<String, Integer> timesClaimed = new HashMap<>();
 	private final PlayerData playerData;
 
 	public PlayerProfessions(PlayerData playerData) {
@@ -39,6 +43,11 @@ public class PlayerProfessions {
 				level.put(key, config.getInt(key + ".level"));
 			}
 
+		if (config.contains("times-claimed"))
+			// Watch out for the deep section lookup
+			for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
+				this.timesClaimed.put(key, config.getInt("times-claimed." + key));
+
 		return this;
 	}
 
@@ -47,6 +56,8 @@ public class PlayerProfessions {
 			config.set(id + ".exp", exp.get(id));
 		for (String id : level.keySet())
 			config.set(id + ".level", level.get(id));
+
+		timesClaimed.forEach((key, value) -> config.set("times-claimed." + key, value));
 	}
 
 	public String toJsonString() {
@@ -58,18 +69,29 @@ public class PlayerProfessions {
 
 			json.add(profession.getId(), object);
 		}
+
+		JsonObject timesClaimed = new JsonObject();
+		this.timesClaimed.forEach((key, value) -> timesClaimed.addProperty(key, value));
+		json.add("timesClaimed", timesClaimed);
+
 		return json.toString();
 	}
 
 	public void load(String json) {
-		Gson parser = new Gson();
-		JsonObject jo = parser.fromJson(json, JsonObject.class);
-		for (Entry<String, JsonElement> entry : jo.entrySet()) {
+		JsonObject obj = new Gson().fromJson(json, JsonObject.class);
+
+		// Load profession exp and levels
+		for (Entry<String, JsonElement> entry : obj.entrySet())
 			if (MMOCore.plugin.professionManager.has(entry.getKey())) {
-				exp.put(entry.getKey(), entry.getValue().getAsJsonObject().get("exp").getAsInt());
-				level.put(entry.getKey(), entry.getValue().getAsJsonObject().get("level").getAsInt());
+				JsonObject value = entry.getValue().getAsJsonObject();
+				exp.put(entry.getKey(), value.get("exp").getAsInt());
+				level.put(entry.getKey(), value.get("level").getAsInt());
 			}
-		}
+
+		// Load times claimed
+		if (obj.has("timesClaimed"))
+			for (Entry<String, JsonElement> entry : obj.getAsJsonObject("timesClaimed").entrySet())
+				timesClaimed.put(entry.getKey(), entry.getValue().getAsInt());
 	}
 
 	public PlayerData getPlayerData() {
@@ -129,7 +151,9 @@ public class PlayerProfessions {
 	}
 
 	public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation) {
-		if (hasReachedMaxLevel(profession)) {
+        Validate.isTrue(playerData.isOnline(), "Cannot give experience to offline player");
+
+        if (hasReachedMaxLevel(profession)) {
 			setExperience(profession, 0);
 			return;
 		}
@@ -137,7 +161,7 @@ public class PlayerProfessions {
 		value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 
 		// display hologram
-		if (hologramLocation != null && playerData.isOnline())
+		if (hologramLocation != null )
 			MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
 
 		PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, (int) value, source);
@@ -166,13 +190,17 @@ public class PlayerProfessions {
 			playerData.giveExperience((int) profession.getExperience().calculate(level), null);
 		}
 
-		if (check && playerData.isOnline()) {
+		if (check) {
 			Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
 			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
 			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + level, "profession", profession.getName())
 					.send(playerData.getPlayer());
 			MMOCore.plugin.soundManager.play(playerData.getPlayer(), SoundManager.SoundEvent.LEVEL_UP);
 			playerData.getStats().updateStats();
+
+			// Apply profession experience table
+			if (profession.hasExperienceTable())
+				profession.getExperienceTable().claim(playerData, level, this);
 		}
 
 		StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
@@ -183,4 +211,20 @@ public class PlayerProfessions {
 			MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
 					MythicLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
 	}
+
+    /**
+     * @return The amount of times that specific experience item was claimed by the player
+     */
+    public int getTimesClaimed(ExperienceTable table, ExperienceItem item) {
+        String path = table.getId() + "." + item.getId();
+        return timesClaimed.getOrDefault(path, 0);
+    }
+
+    /**
+     * See {@link #getTimesClaimed(ExperienceTable, ExperienceItem)}
+     */
+    public void setTimesClaimed(ExperienceTable table, ExperienceItem item, int timesClaimed) {
+        String path = table.getId() + "." + item.getId();
+        this.timesClaimed.put(path, timesClaimed);
+    }
 }
