@@ -16,6 +16,11 @@ public class ProfessionManager implements MMOCoreManager {
 	private final Map<String, Profession> professions = new HashMap<>();
 	private final Set<SpecificProfessionManager> professionManagers = new HashSet<>();
 
+	/**
+	 * If it has been loaded at least once
+	 */
+	private boolean loadedOnce;
+
 	public void register(Profession profession) {
 		professions.put(profession.getId(), profession);
 	}
@@ -54,11 +59,12 @@ public class ProfessionManager implements MMOCoreManager {
 			professions.clear();
 
 		// Load default profession managers (can't be done on constructor because MMOCore.plugin is null)
-		if (professionManagers.isEmpty()) {
+		if (!loadedOnce) {
 			registerProfessionManager(MMOCore.plugin.alchemyManager);
 			registerProfessionManager(MMOCore.plugin.enchantManager);
 			registerProfessionManager(MMOCore.plugin.fishingManager);
 			registerProfessionManager(MMOCore.plugin.smithingManager);
+			loadedOnce = true;
 		}
 
 		professionManagers.forEach(manager -> manager.initialize(clearBefore));
