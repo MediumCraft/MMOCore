@@ -29,7 +29,7 @@ display:
 # Must match an existing exp curve filename from the 'expcurves' folder
 exp-curve: levels
 
-# Players cannot go further than Lvl 100
+# The maximum level players can reach
 max-level: 100
 
 triggers:
