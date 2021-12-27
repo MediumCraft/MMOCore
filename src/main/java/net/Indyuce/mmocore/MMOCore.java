@@ -89,17 +89,25 @@ public class MMOCore extends LuminePlugin {
 
 	public boolean shouldDebugSQL = false;
 
+	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 1;
+
 	public MMOCore() {
 		plugin = this;
 	}
 
 	public void load() {
+
+		// Check if the ML build matches
+		if (MYTHICLIB_COMPATIBILITY_INDEX != MythicLib.MMOCORE_COMPATIBILITY_INDEX) {
+			getLogger().log(Level.WARNING, "Your versions of MythicLib and MMOCore do not match. Make sure you are using the latest builds of both plugins");
+			disable();
+			return;
+		}
+
 		// Register target restrictions due to MMOCore in MythicLib
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
 
-		/*
-		 * register extra objective, drop items...
-		 */
+		// Register extra objective, drop items...
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
 			loadManager.registerLoader(new WorldGuardMMOLoader());
 
@@ -110,12 +118,6 @@ public class MMOCore extends LuminePlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			loadManager.registerLoader(new MythicMobsMMOLoader());
-
-		/*
-		 * WorldGuard closes the flag registry after 'onLoad()', so it must be
-		 * registered here or it will throw an IllegalStateException
-		 */
-	//	if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) flagPlugin = new WorldGuardFlags();
 	}
 
 	public void enable() {
