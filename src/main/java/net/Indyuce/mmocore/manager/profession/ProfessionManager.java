@@ -31,10 +31,15 @@ public class ProfessionManager implements MMOCoreManager {
 		professionManagers.add(professionManager);
 	}
 
-	public void loadProfessionConfigurations(ConfigurationSection config) {
+	/**
+	 * @param profession Profession loading some configuration section
+	 * @param config     Configuration section to load profession config from
+	 */
+	public void loadProfessionConfigurations(Profession profession, ConfigurationSection config) {
 		for (SpecificProfessionManager manager : professionManagers)
 			if (config.contains(manager.getStringKey()))
 				try {
+					manager.setLinkedProfession(profession);
 					manager.loadProfessionConfiguration(config.getConfigurationSection(manager.getStringKey()));
 				} catch (RuntimeException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load profession config '" + manager.getStringKey() + "': " + exception.getMessage());

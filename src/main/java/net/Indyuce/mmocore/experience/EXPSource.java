@@ -1,10 +1,36 @@
 package net.Indyuce.mmocore.experience;
 
 public enum EXPSource {
-	SOURCE,
-	COMMAND,
-	VANILLA,
-	QUEST,
-	FISHING,
-	OTHER
+
+    /**
+     * When using a profession/class experience source
+     */
+    SOURCE,
+
+    /**
+     * When using the /mmocore admin exp command
+     */
+    COMMAND,
+
+    /**
+     * When converting vanilla exp into MMOCore exp
+     */
+    VANILLA,
+
+    /**
+     * When using the experience trigger. Keep in mind the
+     * experience trigger can also use another experience source
+     * when using the right parameter
+     */
+    QUEST,
+
+    /**
+     * When gaining experience from fishing
+     */
+    FISHING,
+
+    /**
+     * Anything else
+     */
+    OTHER
 }

@@ -73,7 +73,7 @@ public class Profession {
                 }
         }
 
-        MMOCore.plugin.professionManager.loadProfessionConfigurations(config);
+        MMOCore.plugin.professionManager.loadProfessionConfigurations(this, config);
     }
 
     private ExperienceTable loadExperienceTable(Object obj) {

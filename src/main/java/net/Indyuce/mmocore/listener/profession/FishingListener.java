@@ -188,9 +188,8 @@ public class FishingListener implements Listener {
                     location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (random.nextDouble() - .5), 2,
                             4 * (random.nextDouble() - .5), .05);
 
-                if (MMOCore.plugin.professionManager.has("fishing"))
-                    playerData.getCollectionSkills().giveExperience(MMOCore.plugin.professionManager.get("fishing"), exp, EXPSource.FISHING,
-                            location);
+                if (MMOCore.plugin.fishingManager.hasLinkedProfession())
+                    playerData.getCollectionSkills().giveExperience(MMOCore.plugin.fishingManager.getLinkedProfession(), exp, EXPSource.FISHING, location);
             }
         }
     }

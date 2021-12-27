@@ -12,7 +12,8 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class ExperienceTrigger extends Trigger {
 	private final RandomAmount amount;
-	private Profession profession;
+	private final Profession profession;
+	private final EXPSource source;
 
 	public ExperienceTrigger(MMOLineConfig config) {
 		super(config);
@@ -23,16 +24,18 @@ public class ExperienceTrigger extends Trigger {
 			String id = config.getString("profession").toLowerCase().replace("_", "-");
 			Validate.isTrue(MMOCore.plugin.professionManager.has(id), "Could not find profession");
 			profession = MMOCore.plugin.professionManager.get(id);
-		}
+		} else
+			profession = null;
 		amount = new RandomAmount(config.getString("amount"));
+		source = config.contains("source") ? EXPSource.valueOf(config.getString("source").toUpperCase()) : EXPSource.QUEST;
 	}
 
 	@Override
 	public void apply(PlayerData player) {
 		if (profession == null)
-			player.giveExperience(amount.calculateInt(), EXPSource.QUEST);
+			player.giveExperience(amount.calculateInt(), source);
 		else
-			player.getCollectionSkills().giveExperience(profession, amount.calculateInt(), EXPSource.QUEST);
+			player.getCollectionSkills().giveExperience(profession, amount.calculateInt(), source);
 	}
 
 	/*
