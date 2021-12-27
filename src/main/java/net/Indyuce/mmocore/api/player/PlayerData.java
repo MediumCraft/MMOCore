@@ -246,12 +246,13 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
     public void setLevel(int level) {
         this.level = Math.max(1, level);
+
         getStats().updateStats();
+        refreshVanillaExp();
     }
 
     public void takeLevels(int value) {
-        this.level = Math.max(1, level - value);
-        getStats().updateStats();
+        setLevel(level - value);
     }
 
     public void giveLevels(int value, EXPSource source) {

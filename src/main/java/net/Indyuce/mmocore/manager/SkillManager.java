@@ -2,11 +2,8 @@ package net.Indyuce.mmocore.manager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -21,8 +18,10 @@ import net.Indyuce.mmocore.skill.Skill;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicSkill;
 
-public class SkillManager {
+public class SkillManager implements MMOCoreManager {
 	private final Map<String, Skill> skills = new LinkedHashMap<>();
+
+	private boolean hasLoadedDefaultSkills;
 
 	public void register(Skill skill) {
 		skills.put(skill.getId().toUpperCase(), skill);
@@ -48,24 +47,31 @@ public class SkillManager {
 		return skills.keySet();
 	}
 
-	/*
-	 * Skills are initialized when MMOCore enables but SkillManager must be
-	 * instanced when MMOCore loads so that extra plugins can register skills
-	 * before CLASSES are loaded
-	 */
-	public void reload() {
+	@Override
+	public void initialize(boolean clearBefore) {
 
-		if (skills.isEmpty())
+		if (clearBefore) {
+
+			// Only remove custom skills
+			Iterator<Skill> ite = skills.values().iterator();
+			while (ite.hasNext()) {
+				Skill next = ite.next();
+				if (next instanceof MythicSkill)
+					ite.remove();
+			}
+		}
+
+		if (!hasLoadedDefaultSkills)
 			try {
+				hasLoadedDefaultSkills = true;
 				JarFile jarFile = new JarFile(MMOCore.plugin.getJarFile());
 				JarEntry entry;
 				for (Enumeration<JarEntry> en = jarFile.entries(); en.hasMoreElements();)
 					if ((entry = en.nextElement()).getName().startsWith("net/Indyuce/mmocore/skill/list/")
 							&& !entry.isDirectory() && !entry.getName().contains("$"))
-						register((Skill) Class.forName(entry.getName().replace("/", ".").replace(".class", ""))
-								.newInstance());
+						register((Skill) Class.forName(entry.getName().replace("/", ".").replace(".class", "")).getDeclaredConstructor().newInstance());
 				jarFile.close();
-			} catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException exception) {
+			} catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException exception) {
 				exception.printStackTrace();
 				MMOCore.log(Level.WARNING, "Could not load skills! Careful with player data :(");
 			}
@@ -88,6 +94,7 @@ public class SkillManager {
 				}
 			}
 
+		// Load configuration for default skills
 		for (Skill skill : getAll())
 			if (!(skill instanceof MythicSkill)) {
 				File file = new File(MMOCore.plugin.getDataFolder() + "/skills", skill.getLowerCaseId() + ".yml");
@@ -98,7 +105,7 @@ public class SkillManager {
 					config.getConfig().set("lore", skill.getLore());
 
 					/*
-					 * it does support custom modeled items but it does not
+					 * It does support custom modeled items but it does not
 					 * provide default configs for that.
 					 */
 					config.getConfig().set("material", skill.getIcon().getType().name());
@@ -112,10 +119,10 @@ public class SkillManager {
 						if (value.hasMin())
 							config.getConfig().set(mod + ".min", value.getMin());
 					}
+					config.save();
 				}
 
 				skill.update(config.getConfig());
-				config.save();
 			}
 	}
 }
