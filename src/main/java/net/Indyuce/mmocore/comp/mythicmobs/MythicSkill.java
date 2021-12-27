@@ -4,8 +4,8 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.modifier.ModifierSource;
 import io.lumine.mythic.lib.api.util.EnumUtils;
 import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
-import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.skill.trigger.PassiveSkill;
+import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.skill.trigger.TriggeredSkill;
 import io.lumine.xikage.mythicmobs.MythicMobs;
@@ -32,6 +32,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,9 +41,11 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 public class MythicSkill extends Skill implements TriggeredSkill {
-    private final io.lumine.xikage.mythicmobs.skills.Skill skill;
     private final Map<CheatType, Integer> antiCheat = new HashMap<>();
     private final PassiveSkill mythicLibSkill;
+
+    // Not final so that it can be changed when MM is reloaded
+    private io.lumine.xikage.mythicmobs.skills.Skill skill;
 
     public MythicSkill(String id, FileConfiguration config) {
         super(id);
@@ -91,6 +94,19 @@ public class MythicSkill extends Skill implements TriggeredSkill {
 
     public io.lumine.xikage.mythicmobs.skills.Skill getSkill() {
         return skill;
+    }
+
+    /**
+     * Used when reloading MMOCore. Something convenient to do is to
+     * reload the MMOCore skills that are linked to a MM skill whenever
+     * MM is reloaded, so that changes to the skill are taken into account
+     * in MMOCore skills.
+     *
+     * @param skill Newest version of skill
+     */
+    public void setSkill(@NotNull io.lumine.xikage.mythicmobs.skills.Skill skill) {
+        Validate.notNull(skill);
+        this.skill = skill;
     }
 
     public PassiveSkill toMythicLib() {
