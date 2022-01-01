@@ -13,7 +13,7 @@ import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.skill.Skill;
+import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager.DefaultPlayerData;
 
 public class SavedClassInformation {
@@ -102,16 +102,16 @@ public class SavedClassInformation {
 		return skills.keySet();
 	}
 
-	public int getSkillLevel(Skill skill) {
-		return getSkillLevel(skill.getId());
+	public int getSkillLevel(RegisteredSkill skill) {
+		return getSkillLevel(skill.getHandler().getId());
 	}
 
 	public int getSkillLevel(String id) {
 		return skills.get(id);
 	}
 
-	public void registerSkillLevel(Skill skill, int level) {
-		registerSkillLevel(skill.getId(), level);
+	public void registerSkillLevel(RegisteredSkill skill, int level) {
+		registerSkillLevel(skill.getHandler().getId(), level);
 	}
 
 	public void registerSkillLevel(String attribute, int level) {
