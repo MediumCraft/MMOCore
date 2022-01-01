@@ -7,7 +7,6 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
@@ -19,8 +18,8 @@ import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.provider.MainExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.skill.Skill;
-import net.Indyuce.mmocore.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.skill.ClassSkill;
+import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
@@ -44,11 +43,10 @@ public class PlayerClass extends PostLoadObject {
     private final ExpCurve expCurve;
 
     private final Map<StatType, LinearValue> stats = new HashMap<>();
-    private final Map<String, SkillInfo> skills = new LinkedHashMap<>();
+    private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
 
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
-    private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
     private final CastingParticle castParticle;
 
@@ -102,9 +100,8 @@ public class PlayerClass extends PostLoadObject {
         if (config.contains("skills"))
             for (String key : config.getConfigurationSection("skills").getKeys(false))
                 try {
-                    Validate.isTrue(MMOCore.plugin.skillManager.has(key), "Could not find skill " + key);
-                    skills.put(key.toUpperCase(), MMOCore.plugin.skillManager.get(key)
-                            .newSkillInfo(config.getConfigurationSection("skills." + key)));
+                    Validate.isTrue(MMOCore.plugin.skillManager.hasSkill(key), "Could not find skill " + key);
+                    skills.put(key, new ClassSkill(MMOCore.plugin.skillManager.getSkill(key), config.getConfigurationSection("skills." + key)));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill info '" + key + "' from class '"
                             + id + "': " + exception.getMessage());
@@ -136,19 +133,9 @@ public class PlayerClass extends PostLoadObject {
                 }
         }
 
-        if (config.contains("triggers"))
-            for (String key : config.getConfigurationSection("triggers").getKeys(false)) {
-                try {
-                    String format = key.toLowerCase().replace("_", "-").replace(" ", "-");
-                    eventTriggers.put(format, new EventTrigger(format, config.getStringList("triggers." + key)));
-                } catch (IllegalArgumentException exception) {
-                    MMOCore.log(Level.WARNING, "Could not load trigger '" + key + "' from class '" + id + "':" + exception.getMessage());
-                }
-            }
-
         /*
-         * must make sure all the resourceHandlers are registered when the placer class
-         * is initialized.
+         * Must make sure all the resourceHandlers are registered
+         * when the placer class is initialized.
          */
         for (PlayerResource resource : PlayerResource.values()) {
             if (config.isConfigurationSection("resource." + resource.name().toLowerCase()))
@@ -165,8 +152,12 @@ public class PlayerClass extends PostLoadObject {
         }
     }
 
-    /*
-     * used to generate display class
+    /**
+     * Used to generate the default Human class if no one is
+     * specified after loading all the player classes. This is
+     * a very basic class that will make sure MMOCore can still
+     * continue to run without having to stop the server because
+     * some option was not provided
      */
     public PlayerClass(String id, String name, Material material) {
         super(null);
@@ -281,16 +272,16 @@ public class PlayerClass extends PostLoadObject {
         return false;
     }
 
-    public boolean hasSkill(Skill skill) {
-        return hasSkill(skill.getId());
+    public boolean hasSkill(RegisteredSkill skill) {
+        return hasSkill(skill.getHandler().getId());
     }
 
     public boolean hasSkill(String id) {
         return skills.containsKey(id);
     }
 
-    public SkillInfo getSkill(Skill skill) {
-        return getSkill(skill.getId());
+    public ClassSkill getSkill(RegisteredSkill skill) {
+        return getSkill(skill.getHandler().getId());
     }
 
     /**
@@ -299,30 +290,18 @@ public class PlayerClass extends PostLoadObject {
      * <p>
      * Examples:
      * - {@link net.Indyuce.mmocore.skill.list.Neptune_Gift}
-     * - {@link net.Indyuce.mmocore.skill.list.Fire_Berserker}
+     * - {@link net.Indyuce.mmocore.skill.list.Ambers}
      */
-    public Optional<SkillInfo> findSkill(Skill skill) {
-        SkillInfo found = skills.get(skill.getId());
+    public Optional<ClassSkill> findSkill(RegisteredSkill skill) {
+        ClassSkill found = skills.get(skill.getHandler().getId());
         return found == null ? Optional.empty() : Optional.of(found);
     }
 
-    public SkillInfo getSkill(String id) {
+    public ClassSkill getSkill(String id) {
         return skills.get(id);
     }
 
-    public Set<String> getEventTriggers() {
-        return eventTriggers.keySet();
-    }
-
-    public boolean hasEventTriggers(String name) {
-        return eventTriggers.containsKey(name);
-    }
-
-    public EventTrigger getEventTriggers(String name) {
-        return eventTriggers.get(name);
-    }
-
-    public Collection<SkillInfo> getSkills() {
+    public Collection<ClassSkill> getSkills() {
         return skills.values();
     }
 
