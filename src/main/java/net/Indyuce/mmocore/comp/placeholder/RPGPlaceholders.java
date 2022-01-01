@@ -9,7 +9,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
-import net.Indyuce.mmocore.skill.Skill;
+import net.Indyuce.mmocore.skill.RegisteredSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -61,7 +61,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.startsWith("skill_level_")) {
 			String id = identifier.substring(12);
-			Skill skill = Objects.requireNonNull(MMOCore.plugin.skillManager.get(id), "Could not find skill with ID '" + id + "'");
+			RegisteredSkill skill = Objects.requireNonNull(MMOCore.plugin.skillManager.getSkill(id), "Could not find skill with ID '" + id + "'");
 			return String.valueOf(playerData.getSkillLevel(skill));
 		}
 

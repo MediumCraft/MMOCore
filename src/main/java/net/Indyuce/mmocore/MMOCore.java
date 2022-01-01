@@ -13,8 +13,6 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
 import net.Indyuce.mmocore.comp.MMOCoreTargetRestriction;
-import net.Indyuce.mmocore.comp.anticheat.AntiCheatSupport;
-import net.Indyuce.mmocore.comp.anticheat.SpartanPlugin;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
@@ -41,6 +39,9 @@ import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import net.Indyuce.mmocore.skill.list.Ambers;
+import net.Indyuce.mmocore.skill.list.Neptune_Gift;
+import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -57,15 +58,9 @@ public class MMOCore extends LuminePlugin {
 
 	public ConfigManager configManager;
 	public WaypointManager waypointManager;
-	public RestrictionManager restrictionManager;
 	public SoundManager soundManager;
 	public RequestManager requestManager;
 	public ConfigItemManager configItems;
-	public VaultEconomy economy;
-	public AntiCheatSupport antiCheatSupport;
-	public RegionHandler regionHandler = new DefaultRegionHandler();
-	public PlaceholderParser placeholderParser = new DefaultParser();
-	public DataProvider dataProvider = new YAMLDataProvider();
 	public final PlayerActionBar actionBarManager = new PlayerActionBar();
 	public final SkillManager skillManager = new SkillManager();
 	public final ClassManager classManager = new ClassManager();
@@ -77,6 +72,13 @@ public class MMOCore extends LuminePlugin {
 	public final ProfessionManager professionManager = new ProfessionManager();
 	public final net.Indyuce.mmocore.manager.ExperienceManager experience = new net.Indyuce.mmocore.manager.ExperienceManager();
 	public final LootChestManager lootChests = new LootChestManager();
+	public final MMOLoadManager loadManager = new MMOLoadManager();
+	public final RestrictionManager restrictionManager = new RestrictionManager();
+
+	public VaultEconomy economy;
+	public RegionHandler regionHandler = new DefaultRegionHandler();
+	public PlaceholderParser placeholderParser = new DefaultParser();
+	public DataProvider dataProvider = new YAMLDataProvider();
 
 	// Profession managers
 	public final net.Indyuce.mmocore.manager.profession.CustomBlockManager mineManager = new net.Indyuce.mmocore.manager.profession.CustomBlockManager();
@@ -84,8 +86,6 @@ public class MMOCore extends LuminePlugin {
 	public final AlchemyManager alchemyManager = new AlchemyManager();
 	public final EnchantManager enchantManager = new EnchantManager();
 	public final SmithingManager smithingManager = new SmithingManager();
-
-	public final MMOLoadManager loadManager = new MMOLoadManager();
 
 	public boolean shouldDebugSQL = false;
 
@@ -118,6 +118,11 @@ public class MMOCore extends LuminePlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			loadManager.registerLoader(new MythicMobsMMOLoader());
+
+		// Register MMOCore specific skills
+		MythicLib.plugin.getSkills().registerSkillHandler(new Ambers());
+		MythicLib.plugin.getSkills().registerSkillHandler(new Neptune_Gift());
+		MythicLib.plugin.getSkills().registerSkillHandler(new Sneaky_Picky());
 	}
 
 	public void enable() {
@@ -154,11 +159,6 @@ public class MMOCore extends LuminePlugin {
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
 			regionHandler = new WorldGuardRegionHandler();
 			getLogger().log(Level.INFO, "Hooked onto WorldGuard");
-		}
-
-		if (Bukkit.getPluginManager().getPlugin("Spartan") != null) {
-			antiCheatSupport = new SpartanPlugin();
-			getLogger().log(Level.INFO, "Hooked onto Spartan");
 		}
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
@@ -368,9 +368,9 @@ public class MMOCore extends LuminePlugin {
 
 		questManager.initialize(clearBefore);
 		lootChests.initialize(clearBefore);
+		restrictionManager.initialize(clearBefore);
 
 		waypointManager = new WaypointManager(new ConfigFile("waypoints").getConfig());
-		restrictionManager = new RestrictionManager(new ConfigFile("restrictions").getConfig());
 		requestManager = new RequestManager();
 		soundManager = new SoundManager(new ConfigFile("sounds").getConfig());
 		configItems = new ConfigItemManager(new ConfigFile("items").getConfig());
@@ -399,10 +399,6 @@ public class MMOCore extends LuminePlugin {
 
 	public File getJarFile() {
 		return getFile();
-	}
-
-	public boolean hasAntiCheat() {
-		return antiCheatSupport != null;
 	}
 
 	public boolean hasEconomy() {

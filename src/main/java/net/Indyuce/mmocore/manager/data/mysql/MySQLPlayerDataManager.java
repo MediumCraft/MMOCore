@@ -135,7 +135,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
 		sql.updateJSONArray("waypoints", data.getWaypoints());
 		sql.updateJSONArray("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
-		sql.updateJSONArray("bound_skills", data.getBoundSkills().stream().map(skill -> skill.getSkill().getId()).collect(Collectors.toList()));
+		sql.updateJSONArray("bound_skills", data.getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).collect(Collectors.toList()));
 
 		sql.updateJSONObject("skills", data.mapSkillLevels().entrySet());
 

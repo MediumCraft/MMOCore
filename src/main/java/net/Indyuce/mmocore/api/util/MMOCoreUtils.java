@@ -2,12 +2,10 @@ package net.Indyuce.mmocore.api.util;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.NBTItem;
-import io.lumine.mythic.lib.comp.target.InteractionType;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import io.lumine.mythic.utils.holograms.Hologram;
 import io.lumine.mythic.utils.serialize.Position;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -171,26 +169,6 @@ public class MMOCoreUtils {
                 entities.addAll(Arrays.asList(loc.getWorld().getChunkAt(cx + x, cz + z).getEntities()));
 
         return entities;
-    }
-
-    /**
-     * @param player Player casting a spell/basic attack
-     * @param target The target entity
-     * @return If the player can attack the entity
-     */
-    public static boolean canTarget(PlayerData player, Entity target) {
-        return canTarget(player, target, InteractionType.OFFENSE_SKILL);
-    }
-
-    /**
-     * @param player      Player casting a spell/basic attack
-     * @param target      The target entity
-     * @param interaction Whether the action is an attack or a buff, this does
-     *                    impact the outcome of the friendly fire check
-     * @return If the player can target the entity given the attack type (buff or attack)
-     */
-    public static boolean canTarget(PlayerData player, Entity target, InteractionType interaction) {
-        return target instanceof LivingEntity && MythicLib.plugin.getEntities().canTarget(player.getPlayer(), target, interaction);
     }
 
     public static void heal(LivingEntity target, double value) {

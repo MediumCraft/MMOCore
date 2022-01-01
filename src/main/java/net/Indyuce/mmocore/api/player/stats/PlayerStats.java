@@ -7,8 +7,7 @@ import io.lumine.mythic.lib.api.stat.modifier.ModifierSource;
 import io.lumine.mythic.lib.api.stat.modifier.ModifierType;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.comp.mythicmobs.MythicSkill;
-import net.Indyuce.mmocore.skill.Skill;
+import net.Indyuce.mmocore.skill.ClassSkill;
 
 public class PlayerStats {
     private final PlayerData data;
@@ -82,8 +81,8 @@ public class PlayerStats {
          * This updates the player's passive skills
          */
         data.getMMOPlayerData().unregisterSkillTriggers("MMOCorePassiveSkill");
-        for (Skill.SkillInfo skill : data.getProfess().getSkills())
-            if (skill.getSkill().isPassive() && skill.getSkill() instanceof MythicSkill)
-                data.getMMOPlayerData().registerSkillTrigger(((MythicSkill) skill.getSkill()).toMythicLib());
+        for (ClassSkill skill : data.getProfess().getSkills())
+            if (skill.getSkill().hasTrigger())
+                data.getMMOPlayerData().registerSkillTrigger(skill.toPassive(data));
     }
 }

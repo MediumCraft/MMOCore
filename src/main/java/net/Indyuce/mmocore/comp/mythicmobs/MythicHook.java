@@ -10,9 +10,10 @@ import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.comp.mythicmobs.load.CurrencyItemDrop;
 import net.Indyuce.mmocore.comp.mythicmobs.load.GoldPouchDrop;
-import net.Indyuce.mmocore.skill.Skill;
+import net.Indyuce.mmocore.skill.RegisteredSkill;
 import org.apache.commons.lang.Validate;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.Optional;
@@ -39,23 +40,14 @@ public class MythicHook implements Listener {
             event.register(new CurrencyItemDrop("NOTE", event.getConfig()));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void b(MythicReloadedEvent event) {
 
         // When MM is reloaded, reload placeholders because they are no longer registered
         registerPlaceholders();
 
-        // Reload MMOCore skills as well
-        for (Skill skill : MMOCore.plugin.skillManager.getActive())
-            if (skill instanceof MythicSkill)
-                try {
-                    String skillId = ((MythicSkill) skill).getSkill().getInternalName();
-                    Optional<io.lumine.xikage.mythicmobs.skills.Skill> opt = MythicMobs.inst().getSkillManager().getSkill(skillId);
-                    Validate.isTrue(opt.isPresent(), "Could not find skill with ID '" + skillId + "'");
-                    ((MythicSkill) skill).setSkill(opt.get());
-                } catch (RuntimeException exception) {
-                    MMOCore.log(Level.WARNING, "Could not reload MM skill '" + skill.getId() + "': " + exception.getMessage());
-                }
+        // Reload skills
+        MMOCore.plugin.skillManager.initialize(true);
     }
 
     private void registerPlaceholders() {

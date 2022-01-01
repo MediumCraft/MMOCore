@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.api.player;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
-import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
@@ -27,11 +26,8 @@ import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
-import net.Indyuce.mmocore.skill.CasterMetadata;
-import net.Indyuce.mmocore.skill.Skill;
-import net.Indyuce.mmocore.skill.Skill.SkillInfo;
-import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
-import net.Indyuce.mmocore.skill.metadata.SkillMetadata.CancelReason;
+import net.Indyuce.mmocore.skill.ClassSkill;
+import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -72,7 +68,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     private final List<UUID> friends = new ArrayList<>();
     private final Set<String> waypoints = new HashSet<>();
     private final Map<String, Integer> skills = new HashMap<>();
-    private final List<SkillInfo> boundSkills = new ArrayList<>();
+    private final List<ClassSkill> boundSkills = new ArrayList<>();
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
@@ -139,7 +135,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
             } catch (NullPointerException npe1) {
                 boundSkills.remove(j);
                 try {
-                    MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getId() + " in class "
+                    MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getHandler().getId() + " in class "
                             + getProfess().getId() + " while refreshing player data.");
                 } catch (NullPointerException npe2) {
                     MMOCore.log(Level.SEVERE,
@@ -719,12 +715,12 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return getAttributes().mapPoints();
     }
 
-    public int getSkillLevel(Skill skill) {
-        return skills.getOrDefault(skill.getId(), 1);
+    public int getSkillLevel(RegisteredSkill skill) {
+        return skills.getOrDefault(skill.getHandler().getId(), 1);
     }
 
-    public void setSkillLevel(Skill skill, int level) {
-        setSkillLevel(skill.getId(), level);
+    public void setSkillLevel(RegisteredSkill skill, int level) {
+        setSkillLevel(skill.getHandler().getId(), level);
     }
 
     public void setSkillLevel(String skill, int level) {
@@ -735,12 +731,12 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         skills.remove(skill);
     }
 
-    /*
-     * better use getProfess().findSkill(skill).isPresent()
+    /**
+     * @deprecated use {@link PlayerClass#findSkill(RegisteredSkill)} instead
      */
     @Deprecated
-    public boolean hasSkillUnlocked(Skill skill) {
-        return getProfess().hasSkill(skill.getId()) && hasSkillUnlocked(getProfess().getSkill(skill.getId()));
+    public boolean hasSkillUnlocked(RegisteredSkill skill) {
+        return getProfess().hasSkill(skill.getHandler().getId()) && hasSkillUnlocked(getProfess().getSkill(skill.getHandler().getId()));
     }
 
     /**
@@ -753,8 +749,8 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      *
      * @return If the player unlocked the skill
      */
-    public boolean hasSkillUnlocked(SkillInfo info) {
-        return getLevel() >= info.getUnlockLevel();
+    public boolean hasSkillUnlocked(ClassSkill skill) {
+        return getLevel() >= skill.getUnlockLevel();
     }
 
     public Map<String, Integer> mapSkillLevels() {
@@ -789,7 +785,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         this.profess = profess;
 
         // Clear old skills
-        for (Iterator<SkillInfo> iterator = boundSkills.iterator(); iterator.hasNext(); )
+        for (Iterator<ClassSkill> iterator = boundSkills.iterator(); iterator.hasNext(); )
             if (!getProfess().hasSkill(iterator.next().getSkill()))
                 iterator.remove();
 
@@ -801,11 +797,11 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return slot < boundSkills.size();
     }
 
-    public SkillInfo getBoundSkill(int slot) {
+    public ClassSkill getBoundSkill(int slot) {
         return slot >= boundSkills.size() ? null : boundSkills.get(slot);
     }
 
-    public void setBoundSkill(int slot, SkillInfo skill) {
+    public void setBoundSkill(int slot, ClassSkill skill) {
         if (boundSkills.size() < 6)
             boundSkills.add(skill);
         else
@@ -816,7 +812,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         boundSkills.remove(slot);
     }
 
-    public List<SkillInfo> getBoundSkills() {
+    public List<ClassSkill> getBoundSkills() {
         return boundSkills;
     }
 
@@ -847,59 +843,6 @@ public class PlayerData extends OfflinePlayerData implements Closable {
             combat.update();
         else
             combat = new CombatRunnable(this);
-    }
-
-    public SkillMetadata cast(Skill skill) {
-        return cast(getProfess().getSkill(skill));
-    }
-
-    public SkillMetadata cast(SkillInfo skill) {
-
-        PlayerPreCastSkillEvent preEvent = new PlayerPreCastSkillEvent(this, skill);
-        Bukkit.getPluginManager().callEvent(preEvent);
-        if (preEvent.isCancelled())
-            return new SkillMetadata(this, skill, CancelReason.OTHER);
-
-        // Check for mana/stamina/cooldown and cast skill
-        CasterMetadata casterMeta = new CasterMetadata(this);
-        SkillMetadata cast = skill.getSkill().whenCast(casterMeta, skill);
-
-        // Send failure messages
-        if (!cast.isSuccessful()) {
-            if (!skill.getSkill().isPassive() && isOnline()) {
-                if (cast.getCancelReason() == CancelReason.LOCKED)
-                    MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(getPlayer());
-
-                if (cast.getCancelReason() == CancelReason.MANA)
-                    MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana", getProfess().getManaDisplay().getName()).send(getPlayer());
-
-                if (cast.getCancelReason() == CancelReason.STAMINA)
-                    MMOCore.plugin.configManager.getSimpleMessage("casting.no-stamina").send(getPlayer());
-
-                if (cast.getCancelReason() == CancelReason.COOLDOWN)
-                    MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(getPlayer());
-            }
-
-            PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast);
-            Bukkit.getPluginManager().callEvent(postEvent);
-            return cast;
-        }
-
-        // Apply cooldown, mana and stamina costs
-        if (!noCooldown) {
-
-            // Cooldown
-            double flatCooldownReduction = Math.max(0, Math.min(1, getStats().getStat(StatType.COOLDOWN_REDUCTION) / 100));
-            CooldownInfo cooldownHandler = getCooldownMap().applyCooldown(cast.getSkill(), cast.getCooldown());
-            cooldownHandler.reduceInitialCooldown(flatCooldownReduction);
-
-            giveMana(-cast.getManaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
-            giveStamina(-cast.getStaminaCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
-        }
-
-        PlayerPostCastSkillEvent postEvent = new PlayerPostCastSkillEvent(this, skill, cast);
-        Bukkit.getPluginManager().callEvent(postEvent);
-        return cast;
     }
 
     @Override

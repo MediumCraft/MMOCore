@@ -1,71 +1,80 @@
 package net.Indyuce.mmocore.skill.list;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.damage.DamageType;
-import net.Indyuce.mmocore.MMOCore;
+import io.lumine.mythic.lib.skill.SkillMetadata;
+import io.lumine.mythic.lib.skill.handler.SkillHandler;
+import io.lumine.mythic.lib.skill.result.def.SimpleSkillResult;
+import io.lumine.mythic.lib.skill.trigger.PassiveSkill;
+import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
+import io.lumine.mythic.lib.util.EntityLocationType;
+import io.lumine.mythic.lib.util.ParabolicProjectile;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.api.util.math.particle.ParabolicProjectile;
-import net.Indyuce.mmocore.skill.PassiveSkill;
-import net.Indyuce.mmocore.skill.metadata.SkillMetadata;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Ambers extends PassiveSkill {
+public class Ambers extends SkillHandler<SimpleSkillResult> implements Listener {
     public Ambers() {
-        super();
+        super(false);
 
-        setMaterial(Material.EMERALD);
-        setLore("Dealing magic damage has &630% &7chance", "of dropping an amber on the ground.", "", "When picked up, ambers stack and",
-                "refund &9{percent}% &7of your missing mana.", "", "&oAmbers can be used in other damaging skills.",
-                "&oThe more you collect, the more powerful the skills.", "", "&e{cooldown}s Cooldown");
-        setPassive();
+        registerModifiers("percent");
+    }
 
-        addModifier("cooldown", new LinearValue(3, -.1, 1, 3));
-        addModifier("percent", new LinearValue(10, .1, 10, 20));
+    @Override
+    public SimpleSkillResult getResult(SkillMetadata meta) {
+        return new SimpleSkillResult(meta.hasAttackBound() && meta.hasTargetEntity() && meta.getTargetEntityOrNull() instanceof LivingEntity);
+    }
 
-        Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
+    @Override
+    public void whenCast(SimpleSkillResult result, SkillMetadata skillMeta) {
+        LivingEntity target = (LivingEntity) skillMeta.getTargetEntityOrNull();
+        Location loc = target.getLocation();
+
+        double a = random.nextDouble() * 2 * Math.PI;
+        new Amber(skillMeta.getCaster().getData(), EntityLocationType.BODY.getLocation(target), loc.clone().add(4 * Math.cos(a), 0, 4 * Math.sin(a)), skillMeta.getModifier("percent"));
     }
 
     @EventHandler
-    public void a(PlayerAttackEvent event) {
-        PlayerData data = PlayerData.get(event.getData().getUniqueId());
-        if (!event.getAttack().getDamage().hasType(DamageType.SKILL) || !data.getProfess().hasSkill(this))
+    public void spawnAmber(PlayerAttackEvent event) {
+        MMOPlayerData data = event.getData();
+        if (!event.getAttack().getDamage().hasType(DamageType.SKILL))
             return;
 
-        SkillMetadata cast = data.cast(this);
-        if (!cast.isSuccessful())
+        PassiveSkill passive = data.getPassiveSkill(this);
+        if (passive == null)
             return;
 
-        Location loc = event.getEntity().getLocation();
-        double a = random.nextDouble() * 2 * Math.PI;
-
-        new Amber(data, loc.add(0, event.getEntity().getHeight() / 2, 0), loc.clone().add(4 * Math.cos(a), 0, 4 * Math.sin(a)), cast.getModifier("percent"));
+        passive.getTriggeredSkill().cast(new TriggerMetadata(event.getAttack(), event.getEntity()));
     }
 
     public static class Amber extends BukkitRunnable {
         private final Location loc;
-        private final PlayerData data;
+        private final MMOPlayerData data;
         private final double percent;
 
         private int j;
 
-        private Amber(PlayerData data, Location source, Location loc, double percent) {
+        private Amber(MMOPlayerData data, Location source, Location loc, double percent) {
             this.loc = loc;
             this.data = data;
             this.percent = percent / 100;
 
             final Amber amber = this;
-            new ParabolicProjectile(source, loc, Particle.REDSTONE, () -> amber.runTaskTimer(MMOCore.plugin, 0, 3), 1, Color.ORANGE, 1.3f);
+            new ParabolicProjectile(source, loc, Particle.REDSTONE, () -> amber.runTaskTimer(MythicLib.plugin, 0, 3), 1, Color.ORANGE, 1.3f);
         }
 
         @Override
         public void run() {
-            if (!data.isOnline()) return;
-            if (j++ > 66 || !data.getPlayer().getWorld().equals(loc.getWorld())) {
+            if (j++ > 66 || !data.isOnline() || !data.getPlayer().getWorld().equals(loc.getWorld())) {
                 cancel();
                 return;
             }
@@ -74,7 +83,11 @@ public class Ambers extends PassiveSkill {
 
                 data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1);
                 // data.getSkillData().ambers++;
-                data.giveMana((data.getStats().getStat(StatType.MAX_MANA) - data.getMana()) * percent, PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
+
+                // Give mana back
+                PlayerData playerData = PlayerData.get(data.getUniqueId());
+                double missingMana = data.getStatMap().getStat("MAX_MANA") - playerData.getMana();
+                playerData.giveMana(missingMana * percent, PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
 
                 cancel();
                 return;

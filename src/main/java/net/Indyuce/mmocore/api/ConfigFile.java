@@ -42,6 +42,10 @@ public class ConfigFile {
 		config = YamlConfiguration.loadConfiguration(file = new File(plugin.getDataFolder() + folder, (this.name = name) + ".yml"));
 	}
 
+	public boolean exists() {
+		return file.exists();
+	}
+
 	public FileConfiguration getConfig() {
 		return config;
 	}

@@ -1,0 +1,20 @@
+name: Backstab
+lore:
+- Backstabs deal &c{extra}%&7 damage.
+- ''
+- '&9Costs {mana} {mana_name}'
+material: FLINT
+mana:
+  base: 8.0
+  per-level: 1.0
+stamina:
+  base: 0.0
+  per-level: 0.0
+  max: 0.0
+  min: 0.0
+extra:
+  base: 50.0
+  per-level: 20.0
+cooldown:
+  base: 0.0
+  per-level: 0.0

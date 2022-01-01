@@ -95,7 +95,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
 
 		List<String> boundSkills = new ArrayList<>();
-		data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getId()));
+		data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
 		config.set("bound-skills", boundSkills);
 
 		config.set("attribute", null);

@@ -1,10 +1,13 @@
 package net.Indyuce.mmocore.listener;
 
+import io.lumine.mythic.lib.api.player.EquipmentSlot;
+import io.lumine.mythic.lib.player.PlayerMetadata;
+import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.ConfigManager;
 import net.Indyuce.mmocore.manager.SoundManager;
-import net.Indyuce.mmocore.skill.Skill.SkillInfo;
+import net.Indyuce.mmocore.skill.ClassSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -80,7 +83,7 @@ public class SpellCast implements Listener {
                 return;
 
             /*
-             * when the event is cancelled, another playerItemHeldEvent is
+             * When the event is cancelled, another playerItemHeldEvent is
              * called and previous and next slots are equal. the event must not
              * listen to that non-player called event.
              */
@@ -91,12 +94,14 @@ public class SpellCast implements Listener {
             int slot = event.getNewSlot() + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
 
             /*
-             * the event is called again soon after the first since when
+             * The event is called again soon after the first since when
              * cancelling the first one, the player held item slot must go back
              * to the previous one.
              */
-            if (slot >= 0 && playerData.hasSkillBound(slot))
-                playerData.cast(playerData.getBoundSkill(slot));
+            if (slot >= 0 && playerData.hasSkillBound(slot)) {
+                PlayerMetadata caster = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
+                playerData.getBoundSkill(slot).toCastable(playerData).cast(new TriggerMetadata(caster, null, null));
+            }
         }
 
         @EventHandler
@@ -123,9 +128,9 @@ public class SpellCast implements Listener {
             StringBuilder str = new StringBuilder();
             if (!data.isOnline()) return str.toString();
             for (int j = 0; j < data.getBoundSkills().size(); j++) {
-                SkillInfo skill = data.getBoundSkill(j);
+                ClassSkill skill = data.getBoundSkill(j);
                 str.append((str.length() == 0) ? "" : split).append((onCooldown(data, skill)
-                        ? onCooldown.replace("{cooldown}", String.valueOf(data.getCooldownMap().getInfo(skill.getSkill()).getRemaining() / 1000))
+                        ? onCooldown.replace("{cooldown}", String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000))
                         : noMana(data, skill) ? noMana : ready).replace("{index}", "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot()
                         <= j ? 1 : 0))).replace("{skill}", data.getBoundSkill(j).getSkill().getName()));
             }
@@ -138,11 +143,11 @@ public class SpellCast implements Listener {
          * modifier. We just look for an entry in the cooldown map which
          * won't be here if the skill has no cooldown.
          */
-        private boolean onCooldown(PlayerData data, SkillInfo skill) {
-            return data.getCooldownMap().isOnCooldown(skill.getSkill());
+        private boolean onCooldown(PlayerData data, ClassSkill skill) {
+            return data.getCooldownMap().isOnCooldown(skill);
         }
 
-        private boolean noMana(PlayerData data, SkillInfo skill) {
+        private boolean noMana(PlayerData data, ClassSkill skill) {
             return skill.getSkill().hasModifier("mana") && skill.getModifier("mana", data.getSkillLevel(skill.getSkill())) > data.getMana();
         }
 

@@ -25,10 +25,7 @@ public class Profession {
 
     /**
      * Experience given to the main player level whenever he levels up this profession
-     *
-     * @deprecated Being replaced by {@link ExperienceTable}
      */
-    @Deprecated
     private final LinearValue experience;
 
     public Profession(String id, FileConfiguration config) {
@@ -109,10 +106,6 @@ public class Profession {
 
     public boolean hasMaxLevel() {
         return maxLevel > 0;
-    }
-
-    public int calculateExperience(int x) {
-        return (int) experience.calculate(x);
     }
 
     public LinearValue getExperience() {

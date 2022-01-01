@@ -1,40 +1,41 @@
 package net.Indyuce.mmocore.skill.list;
 
-import java.util.Optional;
-
-import net.Indyuce.mmocore.skill.PassiveSkill;
-import org.bukkit.Bukkit;
+import io.lumine.mythic.lib.skill.SkillMetadata;
+import io.lumine.mythic.lib.skill.handler.SkillHandler;
+import io.lumine.mythic.lib.skill.result.def.SimpleSkillResult;
+import io.lumine.mythic.lib.skill.trigger.PassiveSkill;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.skill.Skill;
-import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import io.lumine.mythic.lib.version.VersionMaterial;
+public class Neptune_Gift extends SkillHandler<SimpleSkillResult> implements Listener {
+    public Neptune_Gift() {
+        super(false);
 
-public class Neptune_Gift extends PassiveSkill {
-	public Neptune_Gift() {
-		super("NEPTUNE_GIFT");
-		setName("Neptune's Gift");
+        registerModifiers("extra");
+    }
 
-		setMaterial(VersionMaterial.LILY_PAD.toMaterial());
-		setLore("Resource regeneration is increased by &8{extra}% &7when standing in water.");
-		setPassive();
+    @Override
+    public SimpleSkillResult getResult(SkillMetadata meta) {
+        throw new RuntimeException("Not supported");
+    }
 
-		addModifier("extra", new LinearValue(30, 5));
+    @Override
+    public void whenCast(SimpleSkillResult result, SkillMetadata skillMeta) {
+        throw new RuntimeException("Not supported");
+    }
 
-		Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
-	}
+    @EventHandler
+    public void a(PlayerResourceUpdateEvent event) {
+        PlayerData data = event.getData();
+        if (event.getPlayer().getLocation().getBlock().getType() == Material.WATER) {
+            PassiveSkill skill = event.getData().getMMOPlayerData().getPassiveSkill(this);
+            if (skill == null)
+                return;
 
-	@EventHandler
-	public void a(PlayerResourceUpdateEvent event) {
-		PlayerData data = event.getData();
-		if (event.getPlayer().getLocation().getBlock().getType() == Material.WATER) {
-			Optional<SkillInfo> skill = data.getProfess().findSkill(this);
-			skill.ifPresent(skillInfo -> event.setAmount(event.getAmount() * (1 + skillInfo.getModifier("extra", data.getSkillLevel(this)) / 100)));
-		}
-	}
+            event.setAmount(event.getAmount() * (1 + skill.getTriggeredSkill().getModifier("extra") / 100));
+        }
+    }
 }

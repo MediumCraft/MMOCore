@@ -39,9 +39,7 @@ public class BlockListener implements Listener {
         String savedData = event.getBlock().getBlockData().getAsString();
         Block block = event.getBlock();
 
-        /*
-         * Check for custom mining in the current region first.
-         */
+        // Check for custom mining in the current region first.
         boolean customMine = MMOCore.plugin.mineManager.isEnabled(player, block.getLocation());
         if (!customMine)
             return;
@@ -70,9 +68,7 @@ public class BlockListener implements Listener {
             return;
         }
 
-        /*
-         * Extra breaking conditions.
-         */
+        // Extra breaking conditions.
         if (!info.getBlock().breakRestrictions(block)) {
             event.setCancelled(true);
             return;
