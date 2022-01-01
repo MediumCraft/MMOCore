@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui.eco;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -59,7 +60,10 @@ public class DepositMenu extends PluginInventory {
 			if (deposit <= 0)
 				return;
 
-			MMOCore.plugin.economy.getEconomy().depositPlayer(player, deposit);
+			EconomyResponse response = MMOCore.plugin.economy.getEconomy().depositPlayer(player, deposit);
+			if (!response.transactionSuccess())
+				return;
+
 			event.getInventory().clear();
 			player.closeInventory();
 			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
