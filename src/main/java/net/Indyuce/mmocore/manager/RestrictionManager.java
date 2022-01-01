@@ -4,10 +4,12 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.itemtype.ItemType;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.block.BlockType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,99 +17,134 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-public class RestrictionManager {
-	private final Map<ItemType, ToolPermissions> map = new HashMap<>();
+public class RestrictionManager implements MMOCoreManager {
 
-	public RestrictionManager(FileConfiguration config) {
+    /**
+     * Using {@link ItemType#display()} instead of an ItemType as
+     * map key to utilize the HashMap O(1) time complexity of the
+     * get function instead of iterating through the key set.
+     */
+    private final Map<String, ToolPermissions> map = new HashMap<>();
 
-		for (String key : config.getKeys(false))
-			try {
-				register(new ToolPermissions(config.getConfigurationSection(key)));
-			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "Could not load block perms " + key + ": " + exception.getMessage());
-			}
+    /**
+     * If a player breaks a block with an item type that was not
+     * registered in the map above, it will use this permission set instead.
+     */
+    private ToolPermissions defaultPermissions;
 
-		for (ToolPermissions perms : map.values())
-			try {
-				perms.postLoad();
-			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "Could not postload block perms " + perms.getTool().display() + ": " + exception.getMessage());
-			}
-	}
+    @Override
+    public void initialize(boolean clearBefore) {
+        if (clearBefore) {
+            map.clear();
+            defaultPermissions = null;
+        }
 
-	public void register(ToolPermissions perms) {
-		if (perms.isValid())
-			map.put(perms.getTool(), perms);
-	}
+        FileConfiguration config = new ConfigFile("restrictions").getConfig();
+        for (String key : config.getKeys(false))
+            try {
+                register(new ToolPermissions(config.getConfigurationSection(key)));
+            } catch (IllegalArgumentException exception) {
+                MMOCore.log(Level.WARNING, "Could not load block perms " + key + ": " + exception.getMessage());
+            }
 
-	/**
-	 * @param item
-	 *            The item used to break a block
-	 * @return A list of all the blocks an item is allowed to break.
-	 */
-	public Set<ToolPermissions> getPermissions(ItemStack item) {
-		Set<ToolPermissions> set = new HashSet<>();
-		for (ItemType type : map.keySet())
-			if (type.matches(item))
-				set.add(map.get(type));
-		return set;
-	}
+        for (ToolPermissions perms : map.values())
+            try {
+                perms.postLoad();
+            } catch (IllegalArgumentException exception) {
+                MMOCore.log(Level.WARNING, "Could not postload block perms " + perms.getTool().display() + ": " + exception.getMessage());
+            }
+    }
 
-	/**
-	 * Performance method so that MMOCore does not have to fill in a set of
-	 * toolPermission instances.
-	 * 
-	 * @param item
-	 *            The item used to break a block
-	 * @return If the block can be broken by a certain item
-	 */
-	public boolean checkPermissions(ItemStack item, BlockType block) {
-		for (ItemType type : map.keySet())
-			if (type.matches(item) && map.get(type).canMine(block))
-				return true;
-		return false;
-	}
+    public void register(ToolPermissions perms) {
+        map.put(perms.getTool().display(), perms);
 
-	public class ToolPermissions extends PostLoadObject {
-		private final Set<BlockType> mineable = new HashSet<>();
-		private final ItemType tool;
+        if (perms.isDefault())
+            defaultPermissions = perms;
+    }
 
-		private ToolPermissions parent;
+    /**
+     * @param item The item used to break a block
+     * @return A list of all the blocks an item is allowed to break.
+     *         If it was not registered earlier, it returns the default permission
+     *         set. If there is no default permission set, returns null
+     */
+    @Nullable
+    public ToolPermissions getPermissions(ItemStack item) {
+        String mapKey = ItemType.fromItemStack(item).display();
+        ToolPermissions found = map.get(mapKey);
+        return found == null ? defaultPermissions : found;
+    }
 
-		public ToolPermissions(ConfigurationSection config) {
-			super(config);
+    /**
+     * Uses a hashMap O(1) check to determine if the given item
+     * can break the block
+     * <p>
+     * MMOCore looks
+     *
+     * @param item The item used to break a block
+     * @return If the block can be broken by a certain item
+     */
+    public boolean checkPermissions(ItemStack item, BlockType block) {
 
-			tool = ItemType.fromString(config.getName());
-		}
+        // Map O(1) checkup instead of linear time
+        String mapKey = ItemType.fromItemStack(item).display();
+        ToolPermissions perms = map.getOrDefault(mapKey, defaultPermissions);
+        return perms != null && perms.canMine(block);
+    }
 
-		@Override
-		protected void whenPostLoaded(ConfigurationSection config) {
-			if (config.contains("parent"))
-				parent = map.get(ItemType.fromString(config.getString("parent")));
-			for (String key : config.getStringList("can-mine"))
-				mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)));
-		}
+    public class ToolPermissions extends PostLoadObject {
 
-		public void addPermission(BlockType block) {
-			mineable.add(block);
-		}
+        /**
+         * Now saving string keys using {@link BlockType#generateKey()} instead
+         * of iterating through the set to take advantage of the O(1) time
+         * complexity of hash sets.
+         */
+        private final Set<String> mineable = new HashSet<>();
 
-		// recursive function to check for parent permissions
-		public boolean canMine(BlockType type) {
-			String key = type.generateKey();
-			for (BlockType mineable : this.mineable)
-				if (mineable.generateKey().equals(key))
-					return true;
+        private final ItemType tool;
+        private final boolean defaultSet;
 
-			return parent != null && parent.canMine(type);
-		}
+        private ToolPermissions parent;
 
-		public ItemType getTool() {
-			return tool;
-		}
+        public ToolPermissions(ConfigurationSection config) {
+            super(config);
 
-		public boolean isValid() {
-			return tool != null;
-		}
-	}
+            tool = ItemType.fromString(config.getName());
+            defaultSet = config.getBoolean("default");
+        }
+
+        @Override
+        protected void whenPostLoaded(ConfigurationSection config) {
+            if (config.contains("parent"))
+                parent = map.get(ItemType.fromString(config.getString("parent")));
+            for (String key : config.getStringList("can-mine"))
+                mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)).generateKey());
+        }
+
+        public void addPermission(BlockType block) {
+            mineable.add(block.generateKey());
+        }
+
+        /**
+         * Recursively checks if a player can break the
+         * given block by exploring the parent permissions tree.
+         * <p>
+         * Uses hash sets which provide O(1) time complexity for checkups
+         * instead of iterating through the entire set
+         *
+         * @param type Block being broken
+         * @return If the given block can be broken
+         */
+        public boolean canMine(BlockType type) {
+            return mineable.contains(type.generateKey()) || (parent != null && parent.canMine(type));
+        }
+
+        public ItemType getTool() {
+            return tool;
+        }
+
+        public boolean isDefault() {
+            return defaultSet;
+        }
+    }
 }
