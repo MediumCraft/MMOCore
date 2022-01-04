@@ -70,7 +70,7 @@ public class MMOCore extends LuminePlugin {
 	public final PartyManager partyManager = new PartyManager();
 	public final QuestManager questManager = new QuestManager();
 	public final ProfessionManager professionManager = new ProfessionManager();
-	public final net.Indyuce.mmocore.manager.ExperienceManager experience = new net.Indyuce.mmocore.manager.ExperienceManager();
+	public final ExperienceManager experience = new ExperienceManager();
 	public final LootChestManager lootChests = new LootChestManager();
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public final RestrictionManager restrictionManager = new RestrictionManager();
@@ -81,7 +81,7 @@ public class MMOCore extends LuminePlugin {
 	public DataProvider dataProvider = new YAMLDataProvider();
 
 	// Profession managers
-	public final net.Indyuce.mmocore.manager.profession.CustomBlockManager mineManager = new net.Indyuce.mmocore.manager.profession.CustomBlockManager();
+	public final CustomBlockManager mineManager = new CustomBlockManager();
 	public final FishingManager fishingManager = new FishingManager();
 	public final AlchemyManager alchemyManager = new AlchemyManager();
 	public final EnchantManager enchantManager = new EnchantManager();
