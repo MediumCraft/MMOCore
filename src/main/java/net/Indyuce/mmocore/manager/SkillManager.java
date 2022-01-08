@@ -41,10 +41,6 @@ public class SkillManager implements MMOCoreManager {
         if (clearBefore)
             skills.clear();
 
-        File skillsFolder = new File(MMOCore.plugin.getDataFolder() + "/skills");
-        if (!skillsFolder.exists())
-            skillsFolder.mkdir();
-
         // Check for default files
         File skillFolder = new File(MMOCore.plugin.getDataFolder() + "/skills");
         if (!skillFolder.exists())
