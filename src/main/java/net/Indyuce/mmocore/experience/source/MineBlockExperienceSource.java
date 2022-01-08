@@ -18,6 +18,13 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
     public final Material material;
     private final boolean silkTouch;
     private final boolean crop;
+
+    /**
+     * Set to false by default.
+     *
+     * When set to true, the exp source will trigger when breaking
+     * blocks that were placed by players. This can be used for crops
+     */
     private final boolean playerPlaced;
 
     public MineBlockExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
