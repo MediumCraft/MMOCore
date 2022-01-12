@@ -17,6 +17,7 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import org.jetbrains.annotations.NotNull;
 
 public class YAMLPlayerDataManager extends PlayerDataManager {
 
@@ -126,6 +127,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 		file.save();
 	}
 
+	@NotNull
 	@Override
 	public OfflinePlayerData getOffline(UUID uuid) {
 		return isLoaded(uuid) ? get(uuid) : new YAMLOfflinePlayerData(uuid);

@@ -32,7 +32,9 @@ public abstract class PlayerDataManager {
      * @return Player data, if it's loaded
      */
     public PlayerData get(UUID uuid) {
-        return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
+        if(isLoaded(uuid))
+            return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
+        else return setup(uuid);
     }
 
     /**
@@ -51,13 +53,13 @@ public abstract class PlayerDataManager {
 
                 // Unregister once the data was saved
                 playerData.close();
-                this.data.remove(playerData.getUniqueId());
+                data.remove(playerData.getUniqueId());
             });
 
             // Just unregister data without saving
         else {
             playerData.close();
-            this.data.remove(playerData.getUniqueId());
+            data.remove(playerData.getUniqueId());
         }
     }
 
@@ -85,7 +87,6 @@ public abstract class PlayerDataManager {
      * @return The loaded player data.
      */
     public PlayerData setup(UUID uniqueId) {
-
         // Load player data if it does not exist
         if (!data.containsKey(uniqueId)) {
             PlayerData newData = TemporaryPlayerData.has(uniqueId) ? new PlayerData(MMOPlayerData.get(uniqueId), TemporaryPlayerData.get(uniqueId)) : new PlayerData(MMOPlayerData.get(uniqueId));

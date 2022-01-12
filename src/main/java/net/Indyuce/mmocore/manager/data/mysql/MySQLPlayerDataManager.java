@@ -12,6 +12,7 @@ import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
 import io.lumine.mythic.lib.MythicLib;
 import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -174,6 +175,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		return json;
 	}
 
+	@NotNull
 	@Override
 	public OfflinePlayerData getOffline(UUID uuid) {
 		return isLoaded(uuid) ? get(uuid) : new MySQLOfflinePlayerData(uuid);
