@@ -34,7 +34,7 @@ public class CastableSkill extends Skill {
         }
 
         // Cooldown check
-        if (!skillMeta.getCaster().getData().getCooldownMap().isOnCooldown(this)) {
+        if (skillMeta.getCaster().getData().getCooldownMap().isOnCooldown(this)) {
             MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(playerData.getPlayer());
             return false;
         }
