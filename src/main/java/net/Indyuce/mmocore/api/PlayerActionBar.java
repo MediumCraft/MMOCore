@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.api;
 
 import java.text.DecimalFormat;
 
+import net.Indyuce.mmocore.api.player.PlayerActivity;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -36,7 +37,7 @@ public class PlayerActionBar extends BukkitRunnable {
 	@Override
 	public void run() {
 		for (PlayerData data : PlayerData.getAll()) 
-			if (data.isOnline() && !data.getPlayer().isDead() && !data.isCasting() && data.canSeeActionBar()) {
+			if (data.isOnline() && !data.getPlayer().isDead() && !data.isCasting() && data.getActivityTimeOut(PlayerActivity.ACTION_BAR_MESSAGE) == 0) {
 				data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(MMOCore.plugin.placeholderParser.parse(data.getPlayer(),
 						MythicLib.plugin.parseColors((data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : config.format)
 								.replace("{health}", digit.format(data.getPlayer().getHealth()))

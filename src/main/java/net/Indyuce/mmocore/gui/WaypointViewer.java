@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.Waypoint;
+import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
@@ -183,7 +184,7 @@ public class WaypointViewer extends EditableInventory {
 					return;
 				}
 
-				if (playerData.getWaypointCooldown() > 0)
+				if (playerData.getActivityTimeOut(PlayerActivity.USE_WAYPOINT) > 0)
 					return;
 
 				player.closeInventory();

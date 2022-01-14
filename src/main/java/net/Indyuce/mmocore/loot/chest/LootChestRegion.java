@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.loot.chest;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.LootChestSpawnEvent;
+import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.loot.LootBuilder;
 import org.apache.commons.lang.Validate;
@@ -27,7 +28,8 @@ public class LootChestRegion {
 
         @Override
         public void run() {
-            getBounds().getPlayers().filter(PlayerData::canSpawnLootChest).findAny().ifPresent(player -> spawnChest(player));
+            getBounds().getPlayers().filter(player -> player.getActivityTimeOut(PlayerActivity.LOOT_CHEST_SPAWN) == 0)
+                    .findAny().ifPresent(player -> spawnChest(player));
         }
     };
 
@@ -80,7 +82,7 @@ public class LootChestRegion {
     public void spawnChest(PlayerData player) {
 
         // Apply chest cooldown
-        player.applyLootChestCooldown();
+        player.setLastActivity(PlayerActivity.LOOT_CHEST_SPAWN);
 
         // First randomly determine the chest tier
         ChestTier tier = rollTier();

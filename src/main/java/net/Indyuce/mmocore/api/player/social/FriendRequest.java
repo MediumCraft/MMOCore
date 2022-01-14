@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.api.player.social;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Sound;
 
@@ -24,7 +25,7 @@ public class FriendRequest extends Request {
 	}
 
 	public void accept() {
-		getCreator().setLastFriendRequest(0);
+		getCreator().setLastActivity(PlayerActivity.FRIEND_REQUEST, 0);
 		getCreator().addFriend(target.getUniqueId());
 		target.addFriend(getCreator().getUniqueId());
 		if(target.isOnline() && getCreator().isOnline()) {

@@ -72,6 +72,11 @@ loot-chests:
   # spawns two loot chests in ANY region.
   player-cooldown: 600
 
+# A global cooldown (in ticks) that applies for every skill
+# Set to 0 to disable this option. It is set to half
+# a second by default. This does not apply to passive skills
+global-skill-cooldown: 10
+
 # Settings for the default action bar
 action-bar:
 

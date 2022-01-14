@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui.social.friend;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
@@ -199,7 +200,7 @@ public class EditableFriendList extends EditableInventory {
 
             if (item.getFunction().equals("request")) {
 
-                long remaining = playerData.getLastFriendRequest() + 60 * 2 * 1000 - System.currentTimeMillis();
+                long remaining = playerData.getActivityTimeOut(PlayerActivity.FRIEND_REQUEST);
                 if (remaining > 0) {
                     MMOCore.plugin.configManager.getSimpleMessage("friend-request-cooldown", "cooldown", new DelayFormat().format(remaining))
                             .send(player);

@@ -1,14 +1,13 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import net.Indyuce.mmocore.api.player.PlayerActivity;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-
-import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
 
 public class HideActionBarCommandTreeNode extends CommandTreeNode {
 	public HideActionBarCommandTreeNode(CommandTreeNode parent) {
@@ -37,7 +36,8 @@ public class HideActionBarCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		PlayerData.get(player).setActionBarTimeOut(amount);
+		long lastUsed = System.currentTimeMillis() - PlayerActivity.ACTION_BAR_MESSAGE.getTimeOut() + amount * 50;
+		PlayerData.get(player).setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE, lastUsed);
 		return CommandResult.SUCCESS;
 	}
 }

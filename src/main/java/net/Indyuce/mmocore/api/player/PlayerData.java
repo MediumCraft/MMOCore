@@ -74,8 +74,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
-
-    private long lastWaypoint, lastFriendRequest, actionBarTimeOut, lastLootChest;
+private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
     public int skillGuiDisplayOffset;
@@ -177,13 +176,25 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return mmoData.getPlayer();
     }
 
-    @Override
-    public long getLastLogin() {
-        return mmoData.getLastLogin();
+    public long getLastActivity(PlayerActivity activity) {
+        return this.lastActivity.getOrDefault(activity, 0l);
     }
 
-    public long getLastFriendRequest() {
-        return lastFriendRequest;
+    public long getActivityTimeOut(PlayerActivity activity) {
+        return Math.max(0, getLastActivity(activity) + activity.getTimeOut() - System.currentTimeMillis());
+    }
+
+    public void setLastActivity(PlayerActivity activity) {
+        setLastActivity(activity, System.currentTimeMillis());
+    }
+
+    public void setLastActivity(PlayerActivity activity, long timestamp) {
+        this.lastActivity.put(activity, timestamp);
+    }
+
+    @Override
+    public long getLastLogin() {
+        return mmoData.getLastLogActivity();
     }
 
     @Override
@@ -333,25 +344,6 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         waypoints.add(waypoint.getId());
     }
 
-    public long getWaypointCooldown() {
-        return Math.max(0, lastWaypoint + 5000 - System.currentTimeMillis());
-    }
-
-    /**
-     * Handles the per-player loot chest cooldown system. That is to
-     * reduce the rik of spawning multiple loot chests around the same
-     * player in a row, which could be game breaking.
-     *
-     * @return If a random chest can spawn around that player
-     */
-    public boolean canSpawnLootChest() {
-        return lastLootChest + MMOCore.plugin.configManager.lootChestPlayerCooldown < System.currentTimeMillis();
-    }
-
-    public void applyLootChestCooldown() {
-        lastLootChest = System.currentTimeMillis();
-    }
-
     /**
      * @deprecated Provide a heal reason with {@link #heal(double, PlayerResourceUpdateEvent.UpdateReason)}
      */
@@ -405,15 +397,11 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         MMOCore.plugin.getLogger().log(level, "[Userdata:" + (isOnline() ? getPlayer().getName() : "Offline Player") + "] " + message);
     }
 
-    public void setLastFriendRequest(long ms) {
-        lastFriendRequest = Math.max(0, ms);
-    }
-
     public void sendFriendRequest(PlayerData target) {
         if (!isOnline() || !target.isOnline())
             return;
-        setLastFriendRequest(System.currentTimeMillis());
 
+        setLastActivity(PlayerActivity.FRIEND_REQUEST);
         FriendRequest request = new FriendRequest(this, target);
         new ConfigMessage("friend-request").addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString())
                 .sendAsJSon(target.getPlayer());
@@ -435,7 +423,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
          * spamming waypoints. There is no need to reset it when resetting the
          * player waypoints data
          */
-        lastWaypoint = System.currentTimeMillis();
+        setLastActivity(PlayerActivity.USE_WAYPOINT);
 
         giveStellium(-waypoint.getStelliumCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
 
@@ -687,27 +675,11 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return skillCasting != null;
     }
 
-    /**
-     * @return If the action bar is not being used to display anything else
-     * i.e if the "general info" action bar can be displayed
-     */
-    public boolean canSeeActionBar() {
-        return actionBarTimeOut < System.currentTimeMillis();
-    }
-
-    /**
-     * @param timeOut Delay during which the general info action bar
-     *                will not be displayed to the player
-     */
-    public void setActionBarTimeOut(long timeOut) {
-        actionBarTimeOut = System.currentTimeMillis() + (timeOut * 50);
-    }
-
     public void displayActionBar(String message) {
         if (!isOnline())
             return;
 
-        setActionBarTimeOut(MMOCore.plugin.actionBarManager.getTimeOut());
+        setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE);
         getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     }
 
