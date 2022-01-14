@@ -176,7 +176,7 @@ public class PlayerStats extends EditableInventory {
 		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 			Placeholders holders = new Placeholders();
 
-			int count = inv.getPlayerData().getParty().getMembers().count();
+			int count = inv.getPlayerData().getParty().getMembers().size();
 			holders.register("count", "" + count);
 			for (StatType stat : MMOCore.plugin.partyManager.getBonuses())
 				holders.register("buff_" + stat.name().toLowerCase(), MMOCore.plugin.partyManager.getBonus(stat).multiply(count - 1).toString());
@@ -186,7 +186,7 @@ public class PlayerStats extends EditableInventory {
 
 		@Override
 		public boolean canDisplay(GeneratedInventory inv) {
-			return inv.getPlayerData().hasParty() && inv.getPlayerData().getParty().getMembers().count() > 1;
+			return inv.getPlayerData().hasParty() && inv.getPlayerData().getParty().getMembers().size() > 1;
 		}
 	}
 

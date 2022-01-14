@@ -18,6 +18,11 @@ public enum EXPSource {
     VANILLA,
 
     /**
+     * When party members share exp
+     */
+    PARTY_SHARING,
+
+    /**
      * When using the experience trigger. Keep in mind the
      * experience trigger can also use another experience source
      * when using the right parameter

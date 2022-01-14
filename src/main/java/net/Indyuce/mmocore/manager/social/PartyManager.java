@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.Party;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.manager.MMOCoreManager;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -34,7 +35,8 @@ public class PartyManager implements MMOCoreManager {
 
 	public void unregisterParty(Party party) {
 		// IMPORTANT: clears all party members before unregistering the party
-		party.getMembers().forEach(party::removeMember);
+		party.forEachMember(party::removeMember);
+		Validate.isTrue(party.getMembers().isEmpty(), "Tried unregistering a non-empty party");
 		parties.remove(party);
 	}
 

@@ -54,7 +54,7 @@ public class PartyListener implements Listener {
 		LivingEntity entity = event.getEntity();
 		if (entity instanceof Player && !entity.hasMetadata("NPC")) {
 			PlayerData targetData = PlayerData.get((Player) event.getEntity());
-			if (targetData.hasParty() && targetData.getParty().getMembers().has(PlayerData.get(event.getData().getUniqueId())))
+			if (targetData.hasParty() && targetData.getParty().hasMember(PlayerData.get(event.getData().getUniqueId())))
 				event.setCancelled(true);
 		}
 	}

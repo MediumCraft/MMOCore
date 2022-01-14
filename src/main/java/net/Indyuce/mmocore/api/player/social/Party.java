@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class Party {
-    private final PartyMembers members = new PartyMembers();
+    private final List<PlayerData> members = new ArrayList<>();
     private final Map<UUID, Long> invites = new HashMap<>();
 
     // used to check if two parties are the same
@@ -36,8 +36,22 @@ public class Party {
         return owner;
     }
 
-    public PartyMembers getMembers() {
+    public List<PlayerData> getMembers() {
         return members;
+    }
+
+    public List<PlayerData> getOnlineMembers() {
+        List<PlayerData> online = new ArrayList<>();
+
+        for (PlayerData member : members)
+            if (member.isOnline())
+                online.add(member);
+
+        return online;
+    }
+
+    public PlayerData getMember(int index) {
+        return members.get(index);
     }
 
     public long getLastInvite(Player player) {
@@ -46,6 +60,21 @@ public class Party {
 
     public void removeLastInvite(Player player) {
         invites.remove(player.getUniqueId());
+    }
+
+    public boolean hasMember(PlayerData playerData) {
+        return hasMember(playerData.getUniqueId());
+    }
+
+    public boolean hasMember(Player player) {
+        return hasMember(player.getUniqueId());
+    }
+
+    public boolean hasMember(UUID uuid) {
+        for (PlayerData member : members)
+            if (member.getUniqueId().equals(uuid))
+                return true;
+        return false;
     }
 
     public void removeMember(PlayerData data) {
@@ -59,11 +88,12 @@ public class Party {
 
         members.remove(data);
         data.setParty(null);
-
-        reopenInventories();
+        clearStatBonuses(data);
+        members.forEach(this::applyStatBonuses);
+        updateOpenInventories();
 
         // Disband the party if no member left
-        if (members.count() < 1) {
+        if (members.size() < 1) {
             MMOCore.plugin.partyManager.unregisterParty(this);
             return;
         }
@@ -82,18 +112,24 @@ public class Party {
 
         data.setParty(this);
         members.add(data);
+        members.forEach(this::applyStatBonuses);
 
-        reopenInventories();
+        updateOpenInventories();
     }
 
-    public void reopenInventories() {
-        for (PlayerData member : members.members)
+    private void updateOpenInventories() {
+        for (PlayerData member : members)
             if (member.isOnline() && member.getPlayer().getOpenInventory() != null
                     && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
                 ((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
     }
 
+    @Deprecated
     public void sendPartyInvite(PlayerData inviter, PlayerData target) {
+        sendInvite(inviter, target);
+    }
+
+    public void sendInvite(PlayerData inviter, PlayerData target) {
         invites.put(target.getUniqueId(), System.currentTimeMillis());
         Request request = new PartyInvite(this, inviter, target);
         if (inviter.isOnline() && target.isOnline())
@@ -102,61 +138,36 @@ public class Party {
         MMOCore.plugin.requestManager.registerRequest(request);
     }
 
+    /**
+     * An issue can happen if the consumer given as parameter
+     * modifies the member list during list iteration.
+     * <p>
+     * To solve this, this method first copies the member list
+     * and iterates through it to avoid the exception.
+     */
+    public void forEachMember(Consumer<PlayerData> action) {
+        new ArrayList<>(members).forEach(action);
+    }
+
+    private static final String PARTY_BUFF_MODIFIER_KEY = "mmocoreParty";
+
+    /**
+     * Applies party stat bonuses to a specific player
+     */
+    private void applyStatBonuses(PlayerData player) {
+        MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier(PARTY_BUFF_MODIFIER_KEY,
+                MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
+    }
+
+    /**
+     * Clear party stat bonuses from a player
+     */
+    private void clearStatBonuses(PlayerData player) {
+        MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).remove(PARTY_BUFF_MODIFIER_KEY));
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Party && ((Party) obj).getUniqueId().equals(getUniqueId());
-    }
-
-    /*
-     * this class makes controling entries and departures and APPLYING PARTY
-     * STAT ATTRIBUTES much easier
-     */
-    public static class PartyMembers {
-        private final List<PlayerData> members = new ArrayList<>();
-
-        public PlayerData get(int count) {
-            return members.get(count);
-        }
-
-        public boolean has(PlayerData player) {
-            return members.contains(player);
-        }
-
-        public boolean has(Player player) {
-            for (PlayerData member : members)
-                if (member.getUniqueId().equals(player.getUniqueId()))
-                    return true;
-            return false;
-        }
-
-        public void add(PlayerData player) {
-            members.add(player);
-
-            members.forEach(this::applyAttributes);
-        }
-
-        public void remove(PlayerData player) {
-            members.remove(player);
-
-            members.forEach(this::applyAttributes);
-            clearAttributes(player);
-        }
-
-        public void forEach(Consumer<? super PlayerData> action) {
-            members.forEach(action);
-        }
-
-        public int count() {
-            return members.size();
-        }
-
-        private void applyAttributes(PlayerData player) {
-            MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("mmocoreParty",
-                    MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
-        }
-
-        private void clearAttributes(PlayerData player) {
-            MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).remove("mmocoreParty"));
-        }
     }
 }

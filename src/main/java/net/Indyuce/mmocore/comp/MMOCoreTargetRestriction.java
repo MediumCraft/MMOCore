@@ -15,7 +15,7 @@ public class MMOCoreTargetRestriction implements TargetRestriction {
             PlayerData targetData = PlayerData.get(target.getUniqueId());
 
             // Check for the same party
-            if (targetData.hasParty() && targetData.getParty().getMembers().has(player))
+            if (targetData.hasParty() && targetData.getParty().hasMember(player))
                 return false;
         }
 

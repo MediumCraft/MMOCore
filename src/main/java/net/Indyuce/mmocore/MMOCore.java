@@ -39,6 +39,7 @@ import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import net.Indyuce.mmocore.skill.cast.listener.SkillBar;
 import net.Indyuce.mmocore.skill.list.Ambers;
 import net.Indyuce.mmocore.skill.list.Neptune_Gift;
 import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
@@ -236,7 +237,6 @@ public class MMOCore extends LuminePlugin {
 		Bukkit.getPluginManager().registerEvents(new GoldPouchesListener(), this);
 		Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
 		Bukkit.getPluginManager().registerEvents(new LootableChestsListener(), this);
-		Bukkit.getPluginManager().registerEvents(new SpellCast(), this);
 		Bukkit.getPluginManager().registerEvents(new PartyListener(), this);
 		Bukkit.getPluginManager().registerEvents(new GuildListener(), this);
 		Bukkit.getPluginManager().registerEvents(new FishingListener(), this);

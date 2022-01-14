@@ -6,7 +6,9 @@ import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.Waypoint;
-import net.Indyuce.mmocore.api.event.*;
+import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
+import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
+import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -24,10 +26,10 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
-import net.Indyuce.mmocore.listener.SpellCast.SkillCasting;
 import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import net.Indyuce.mmocore.skill.cast.listener.SkillBar.SkillCasting;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -485,7 +487,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      * @param source How the player earned experience
      */
     public void giveExperience(int value, EXPSource source) {
-        giveExperience(value, source, null);
+        giveExperience(value, source, null, true);
     }
 
     /**
@@ -495,8 +497,9 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      * @param source           How the player earned experience
      * @param hologramLocation Location used to display the hologram. If it's null, no
      *                         hologram will be displayed
+     * @param splitExp         Should the exp be split among party members
      */
-    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation) {
+    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         if (hasReachedMaxLevel()) {
             setExperience(0);
             return;
@@ -508,6 +511,14 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
         value = MMOCore.plugin.boosterManager.calculateExp(null, value);
         value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
+
+        // Splitting exp through party members
+        if (splitExp && hasParty()) {
+            List<PlayerData> onlineMembers = getParty().getOnlineMembers();
+            value /= onlineMembers.size();
+            for (PlayerData member : onlineMembers)
+                member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
+        }
 
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, (int) value, source);
         Bukkit.getPluginManager().callEvent(event);
@@ -678,7 +689,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
     /**
      * @return If the action bar is not being used to display anything else
-     *         i.e if the "general info" action bar can be displayed
+     * i.e if the "general info" action bar can be displayed
      */
     public boolean canSeeActionBar() {
         return actionBarTimeOut < System.currentTimeMillis();
@@ -825,7 +836,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())

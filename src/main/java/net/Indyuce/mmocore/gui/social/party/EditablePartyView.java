@@ -8,7 +8,6 @@ import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -98,7 +97,7 @@ public class EditablePartyView extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			return inv.getPlayerData().getParty().getMembers().count() > n ? member.display(inv, n) : empty.display(inv, n);
+			return inv.getPlayerData().getParty().getMembers().size() > n ? member.display(inv, n) : empty.display(inv, n);
 		}
 
 		@Override
@@ -127,7 +126,7 @@ public class EditablePartyView extends EditableInventory {
 
 		@Override
 		public String calculateName() {
-			return getName().replace("{max}", "" + max).replace("{players}", "" + getPlayerData().getParty().getMembers().count());
+			return getName().replace("{max}", "" + max).replace("{players}", "" + getPlayerData().getParty().getMembers().size());
 		}
 
 		@Override
@@ -142,7 +141,7 @@ public class EditablePartyView extends EditableInventory {
 
 			if (item.getFunction().equals("invite")) {
 
-				if (playerData.getParty().getMembers().count() >= max) {
+				if (playerData.getParty().getMembers().size() >= max) {
 					MMOCore.plugin.configManager.getSimpleMessage("party-is-full").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
@@ -165,14 +164,14 @@ public class EditablePartyView extends EditableInventory {
 					}
 
 					PlayerData targetData = PlayerData.get(target);
-					if (playerData.getParty().getMembers().has(targetData)) {
+					if (playerData.getParty().hasMember(targetData)) {
 						MMOCore.plugin.configManager.getSimpleMessage("already-in-party", "player", target.getName()).send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
 						return;
 					}
 
-					playerData.getParty().sendPartyInvite(playerData, targetData);
+					playerData.getParty().sendInvite(playerData, targetData);
 					MMOCore.plugin.configManager.getSimpleMessage("sent-party-invite", "player", target.getName()).send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 					open();
