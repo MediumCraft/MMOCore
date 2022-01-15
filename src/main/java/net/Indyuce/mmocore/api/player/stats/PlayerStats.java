@@ -3,9 +3,9 @@ package net.Indyuce.mmocore.api.player.stats;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.StatMap;
-import io.lumine.mythic.lib.api.stat.modifier.ModifierSource;
-import io.lumine.mythic.lib.api.stat.modifier.ModifierType;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
+import io.lumine.mythic.lib.player.modifier.ModifierSource;
+import io.lumine.mythic.lib.player.modifier.ModifierType;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
 
@@ -67,7 +67,7 @@ public class PlayerStats {
             // Add newest one
             double total = getBase(stat) - instance.getBase();
             if (total != 0)
-                packet.addModifier("mmocoreClass", new StatModifier(total, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
+                packet.addModifier(new StatModifier("mmocoreClass", stat.name(), total, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
 
             // Then update the stat
             packet.runUpdate();
@@ -80,9 +80,9 @@ public class PlayerStats {
          *
          * This updates the player's passive skills
          */
-        data.getMMOPlayerData().unregisterSkillTriggers("MMOCorePassiveSkill");
+        data.getMMOPlayerData().getPassiveSkillMap().removeModifiers("MMOCorePassiveSkill");
         for (ClassSkill skill : data.getProfess().getSkills())
             if (skill.getSkill().hasTrigger())
-                data.getMMOPlayerData().registerSkillTrigger(skill.toPassive(data));
+                data.getMMOPlayerData().getPassiveSkillMap().addModifier(skill.toPassive(data));
     }
 }

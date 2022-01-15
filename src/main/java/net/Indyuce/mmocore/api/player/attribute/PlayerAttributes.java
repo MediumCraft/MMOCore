@@ -3,9 +3,10 @@ package net.Indyuce.mmocore.api.player.attribute;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.lumine.mythic.lib.api.stat.modifier.Closable;
-import io.lumine.mythic.lib.api.stat.modifier.ModifierType;
-import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
+import io.lumine.mythic.lib.api.player.EquipmentSlot;
+import io.lumine.mythic.lib.player.modifier.Closeable;
+import io.lumine.mythic.lib.player.modifier.ModifierSource;
+import io.lumine.mythic.lib.player.modifier.ModifierType;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
@@ -33,7 +34,7 @@ public class PlayerAttributes {
 				Validate.isTrue(MMOCore.plugin.attributeManager.has(id), "Could not find attribute '" + id + "'");
 
 				PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
-				AttributeInstance ins = new AttributeInstance(attribute);
+				AttributeInstance ins = new AttributeInstance(attribute.getId());
 				ins.setBase(config.getInt(key));
 				instances.put(id, ins);
 			} catch (IllegalArgumentException exception) {
@@ -61,7 +62,7 @@ public class PlayerAttributes {
 				Validate.isTrue(MMOCore.plugin.attributeManager.has(id), "Could not find attribute '" + id + "'");
 
 				PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
-				AttributeInstance ins = new AttributeInstance(attribute);
+				AttributeInstance ins = new AttributeInstance(attribute.getId());
 				ins.setBase(entry.getValue().getAsInt());
 				instances.put(id, ins);
 			} catch (IllegalArgumentException exception) {
@@ -88,13 +89,17 @@ public class PlayerAttributes {
 		return map;
 	}
 
-	public AttributeInstance getInstance(PlayerAttribute attribute) {
-		if (instances.containsKey(attribute.getId()))
-			return instances.get(attribute.getId());
+	public AttributeInstance getInstance(String attribute) {
+		if (instances.containsKey(attribute))
+			return instances.get(attribute);
 
 		AttributeInstance ins = new AttributeInstance(attribute);
-		instances.put(attribute.getId(), ins);
+		instances.put(attribute, ins);
 		return ins;
+	}
+
+	public AttributeInstance getInstance(PlayerAttribute attribute) {
+		return getInstance(attribute.getId());
 	}
 
 	public int countSkillPoints() {
@@ -108,10 +113,10 @@ public class PlayerAttributes {
 		private int spent;
 
 		private final String id;
-		private final Map<String, StatModifier> map = new HashMap<>();
+		private final Map<String, AttributeModifier> map = new HashMap<>();
 
-		public AttributeInstance(PlayerAttribute attribute) {
-			id = attribute.getId();
+		public AttributeInstance(String attribute) {
+			id = attribute;
 		}
 
 		public int getBase() {
@@ -138,11 +143,11 @@ public class PlayerAttributes {
 		public int getTotal() {
 			double d = spent;
 
-			for (StatModifier attr : map.values())
+			for (AttributeModifier attr : map.values())
 				if (attr.getType() == ModifierType.FLAT)
 					d += attr.getValue();
 
-			for (StatModifier attr : map.values())
+			for (AttributeModifier attr : map.values())
 				if (attr.getType() == ModifierType.RELATIVE)
 					d *= attr.getValue();
 
@@ -150,16 +155,16 @@ public class PlayerAttributes {
 			return (int) d;
 		}
 
-		public StatModifier getModifier(String key) {
+		public AttributeModifier getModifier(String key) {
 			return map.get(key);
 		}
 
 		public void addModifier(String key, double value) {
-			addModifier(key, new StatModifier(value));
+			addModifier(new AttributeModifier(key, id, value, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
 		}
 
-		public void addModifier(String key, StatModifier modifier) {
-			map.put(key, modifier);
+		public void addModifier(AttributeModifier modifier) {
+			map.put(modifier.getKey(), modifier);
 
 			update();
 		}
@@ -172,27 +177,25 @@ public class PlayerAttributes {
 			return map.containsKey(key);
 		}
 
-		public void remove(String key) {
+		public void removeModifier(String key) {
+			AttributeModifier mod = map.remove(key);
 
 			/*
-			 * closing stat is really important with temporary stats because
+			 * Closing stat is really important with temporary stats because
 			 * otherwise the runnable will try to remove the key from the map
 			 * even though the attribute was cancelled before hand
 			 */
-			StatModifier mod;
-			if (map.containsKey(key) && (mod = map.get(key)) instanceof Closable) {
-				((Closable) mod).close();
-				map.remove(key);
+			if (mod != null) {
+				if (mod instanceof Closeable)
+					((Closeable) mod).close();
+				update();
 			}
-
-			update();
 		}
 
 		public void update() {
 			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 			int total = getTotal();
-			attribute.getBuffs()
-					.forEach((key, buff) -> data.getStats().getInstance(key).addModifier("attribute." + attribute.getId(), buff.multiply(total)));
+			attribute.getBuffs().forEach(buff -> buff.multiply(total).register(data.getMMOPlayerData()));
 		}
 
 		public String getId() {

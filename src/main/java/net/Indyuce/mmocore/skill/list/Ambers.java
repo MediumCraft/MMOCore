@@ -4,10 +4,10 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.damage.DamageType;
+import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import io.lumine.mythic.lib.skill.SkillMetadata;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.result.def.SimpleSkillResult;
-import io.lumine.mythic.lib.skill.trigger.PassiveSkill;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.util.EntityLocationType;
 import io.lumine.mythic.lib.util.ParabolicProjectile;
@@ -49,7 +49,7 @@ public class Ambers extends SkillHandler<SimpleSkillResult> implements Listener 
         if (!event.getAttack().getDamage().hasType(DamageType.SKILL))
             return;
 
-        PassiveSkill passive = data.getPassiveSkill(this);
+        PassiveSkill passive = data.getPassiveSkillMap().getSkill(this);
         if (passive == null)
             return;
 

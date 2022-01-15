@@ -17,7 +17,7 @@ import java.util.logging.Level;
 
 public class PartyManager implements MMOCoreManager {
 	private final Set<Party> parties = new HashSet<>();
-	private final Map<StatType, StatModifier> buffs = new HashMap<>();
+	private final Set<StatModifier> buffs = new HashSet<>();
 
 	public void registerParty(Party party) {
 		parties.add(party);
@@ -40,16 +40,8 @@ public class PartyManager implements MMOCoreManager {
 		parties.remove(party);
 	}
 
-	public boolean hasBonus(StatType stat) {
-		return buffs.containsKey(stat);
-	}
-
-	public StatModifier getBonus(StatType stat) {
-		return buffs.get(stat);
-	}
-
-	public Set<StatType> getBonuses() {
-		return buffs.keySet();
+	public Set<StatModifier> getBonuses() {
+		return buffs;
 	}
 
 	@Override
@@ -62,7 +54,7 @@ public class PartyManager implements MMOCoreManager {
 			for (String key : config.getKeys(false))
 				try {
 					StatType stat = StatType.valueOf(key.toUpperCase().replace("-", "_").replace(" ", "_"));
-					buffs.put(stat, new StatModifier(config.getString(key)));
+					buffs.add(new StatModifier("mmocoreParty", stat.name(), config.getString(key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "Could not load party buff '" + key + "': " + exception.getMessage());
 				}

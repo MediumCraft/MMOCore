@@ -6,19 +6,19 @@ import net.Indyuce.mmocore.MMOCore;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class PlayerAttribute {
 	private final String id, name;
 	private final int max;
 
-	/*
-	 * used to store stats using StatType, but attributes also need to access
+	/**
+	 * Used to store stats using StatType, but attributes also need to access
 	 * non basic MMOCore stats hence the string maps keys
 	 */
-	private final Map<String, StatModifier> buffs = new HashMap<>();
+	private final Set<StatModifier> buffs = new HashSet<>();
 
 	public PlayerAttribute(ConfigurationSection config) {
 		Validate.notNull(config, "Could not load config");
@@ -31,7 +31,7 @@ public class PlayerAttribute {
 			for (String key : config.getConfigurationSection("buff").getKeys(false))
 				try {
 					String stat = key.toUpperCase().replace("-", "_").replace(" ", "_");
-					buffs.put(stat, new StatModifier(config.getString("buff." + key)));
+					buffs.add(new StatModifier("attribute." + id, stat, config.getString("buff." + key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.log(Level.WARNING, "Could not load buff '" + key + "' from attribute '" + id + "': " + exception.getMessage());
 				}
@@ -53,7 +53,7 @@ public class PlayerAttribute {
 		return max;
 	}
 
-	public Map<String, StatModifier> getBuffs() {
+	public Set<StatModifier> getBuffs() {
 		return buffs;
 	}
 }

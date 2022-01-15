@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.Booster;
@@ -178,8 +179,8 @@ public class PlayerStats extends EditableInventory {
 
 			int count = inv.getPlayerData().getParty().getMembers().size();
 			holders.register("count", "" + count);
-			for (StatType stat : MMOCore.plugin.partyManager.getBonuses())
-				holders.register("buff_" + stat.name().toLowerCase(), MMOCore.plugin.partyManager.getBonus(stat).multiply(count - 1).toString());
+			for (StatModifier buff : MMOCore.plugin.partyManager.getBonuses())
+				holders.register("buff_" + buff.getStat().toLowerCase(), buff.multiply(count - 1).toString());
 
 			return holders;
 		}
