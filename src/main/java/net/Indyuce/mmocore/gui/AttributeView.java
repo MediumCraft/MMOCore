@@ -64,9 +64,9 @@ public class AttributeView extends EditableInventory {
 			holders.register("max", attribute.getMax());
 			holders.register("current", total);
 			holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
-			attribute.getBuffs().forEach((key, buff) -> {
-				holders.register("buff_" + key.toLowerCase(), buff);
-				holders.register("total_" + key.toLowerCase(), buff.multiply(total));
+			attribute.getBuffs().forEach(buff -> {
+				holders.register("buff_" + buff.getStat().toLowerCase(), buff.getValue());
+				holders.register("total_" + buff.getStat().toLowerCase(), buff.multiply(total).getValue());
 			});
 			return holders;
 		}

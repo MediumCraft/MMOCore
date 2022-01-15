@@ -89,7 +89,7 @@ public class MMOCore extends LuminePlugin {
 
 	public boolean shouldDebugSQL = false;
 
-	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 2;
+	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 3;
 
 	public MMOCore() {
 		plugin = this;
@@ -350,7 +350,8 @@ public class MMOCore extends LuminePlugin {
 
 		configManager = new ConfigManager();
 
-		//MythicLib.plugin.getSkills().initialize(clearBefore);
+		if (clearBefore)
+			MythicLib.plugin.getSkills().initialize(true);
 		skillManager.initialize(clearBefore);
 		mineManager.initialize(clearBefore);
 		partyManager.initialize(clearBefore);

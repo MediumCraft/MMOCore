@@ -151,12 +151,11 @@ public class Party {
         }
 
         private void applyAttributes(PlayerData player) {
-            MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier("mmocoreParty",
-                    MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
+            MMOCore.plugin.partyManager.getBonuses().forEach(buff -> buff.multiply(members.size() - 1).register(player.getMMOPlayerData()));
         }
 
         private void clearAttributes(PlayerData player) {
-            MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).remove("mmocoreParty"));
+            MMOCore.plugin.partyManager.getBonuses().forEach(buff -> player.getStats().getInstance(buff.getStat()).remove("mmocoreParty"));
         }
     }
 }
