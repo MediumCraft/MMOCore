@@ -27,6 +27,7 @@ import net.Indyuce.mmocore.comp.region.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
 import net.Indyuce.mmocore.listener.*;
+import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
@@ -241,6 +242,7 @@ public class MMOCore extends LuminePlugin {
 		Bukkit.getPluginManager().registerEvents(new GuildListener(), this);
 		Bukkit.getPluginManager().registerEvents(new FishingListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerCollectStats(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerPressKeyListener(), this);
 
 		/*
 		 * Initialize player data from all online players. This is very important to do

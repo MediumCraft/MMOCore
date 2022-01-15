@@ -1,15 +1,19 @@
-package net.Indyuce.mmocore.listener;
+package net.Indyuce.mmocore.skill.cast.listener;
 
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.manager.ConfigManager;
 import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -19,36 +23,26 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class SpellCast implements Listener {
+import java.util.Objects;
+
+public class SkillBar implements Listener {
+    private final PlayerKey mainKey;
+
+    public SkillBar(ConfigurationSection config) {
+        mainKey = PlayerKey.valueOf(Objects.requireNonNull(config.getString("open"), "Could not find open key"));
+    }
 
     @EventHandler
-    public void a(PlayerSwapHandItemsEvent event) {
-        Player player = event.getPlayer();
-        ConfigManager.SwapAction action = player.isSneaking() ? MMOCore.plugin.configManager.sneakingSwapAction : MMOCore.plugin.configManager.normalSwapAction;
-
-        // Vanilla action does nothing
-        if (action == ConfigManager.SwapAction.VANILLA)
+    public void a(PlayerKeyPressEvent event) {
+        if (event.getPressed() != mainKey)
             return;
 
-        // Always cancel event if it's not the vanilla action
+        // Always cancel event
         event.setCancelled(true);
 
-        /*
-         * Hotbar swap feature, this entirely switches the
-         * player's hotbar with their 9 lowest inventory slots
-         */
-        if (action == ConfigManager.SwapAction.HOTBAR_SWAP) {
-            MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.HOTBAR_SWAP);
-            for (int j = 0; j < 9; j++) {
-                ItemStack replaced = player.getInventory().getItem(j + 9 * 3);
-                player.getInventory().setItem(j + 9 * 3, player.getInventory().getItem(j));
-                player.getInventory().setItem(j, replaced);
-            }
-            return;
-        }
-
         // Enter spell casting
-        PlayerData playerData = PlayerData.get(player);
+        Player player = event.getData().getPlayer();
+        PlayerData playerData = event.getData();
         if (player.getGameMode() != GameMode.SPECTATOR
                 && (MMOCore.plugin.configManager.canCreativeCast || player.getGameMode() != GameMode.CREATIVE)
                 && !playerData.isCasting()
