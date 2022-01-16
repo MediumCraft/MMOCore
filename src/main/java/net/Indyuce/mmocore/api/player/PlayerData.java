@@ -27,12 +27,12 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
-import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
-import net.Indyuce.mmocore.skill.cast.listener.SkillBar.SkillCasting;
+import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -65,6 +65,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     private double mana, stamina, stellium;
     private Party party;
     private Guild guild;
+    private SkillCastingHandler skillCasting;
 
     private final PlayerQuests questData;
     private final PlayerStats playerStats;
@@ -79,7 +80,6 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
     // NON-FINAL player data stuff made public to facilitate field change
     public int skillGuiDisplayOffset;
-    public Object skillCasting;
     public boolean noCooldown;
     public CombatRunnable combat;
 
@@ -676,6 +676,22 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return skillCasting != null;
     }
 
+    public void setSkillCasting(SkillCastingHandler skillCasting) {
+        Validate.isTrue(!isCasting(), "Player already in casting mode");
+        this.skillCasting = skillCasting;
+    }
+
+    @NotNull
+    public SkillCastingHandler getSkillCasting() {
+        return Objects.requireNonNull(skillCasting, "Player not in casting mode");
+    }
+
+    public void leaveCastingMode() {
+        Validate.isTrue(isCasting(), "Player not in casting mode");
+        skillCasting.close();
+        this.skillCasting = null;
+    }
+
     public void displayActionBar(String message) {
         if (!isOnline())
             return;
@@ -809,7 +825,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
