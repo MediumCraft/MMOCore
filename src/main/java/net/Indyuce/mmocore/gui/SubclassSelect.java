@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
@@ -118,7 +119,7 @@ public class SubclassSelect extends EditableInventory {
 
 				if (playerData.getClassPoints() < 1) {
 					player.closeInventory();
-					MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.CANT_SELECT_CLASS);
+					MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(getPlayer());
 					new ConfigMessage("cant-choose-new-class").send(player);
 					return;
 				}

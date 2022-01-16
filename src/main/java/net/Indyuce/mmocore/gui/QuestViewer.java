@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.Quest;
@@ -235,7 +236,7 @@ public class QuestViewer extends EditableInventory {
 					if (playerData.getQuestData().hasCurrent(quest)) {
 						if (event.getAction() == InventoryAction.PICKUP_HALF) {
 							playerData.getQuestData().start(null);
-							MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.CANCEL_QUEST);
+							MMOCore.plugin.soundManager.getSound(SoundEvent.CANCEL_QUEST).playTo(player);
 							MMOCore.plugin.configManager.getSimpleMessage("cancel-quest").send(player);
 							open();
 						}
@@ -293,7 +294,7 @@ public class QuestViewer extends EditableInventory {
 				 * eventually start a new quest.
 				 */
 				MMOCore.plugin.configManager.getSimpleMessage("start-quest", "quest", quest.getName()).send(player);
-				MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.START_QUEST);
+				MMOCore.plugin.soundManager.getSound(SoundEvent.START_QUEST).playTo(player);
 				playerData.getQuestData().start(quest);
 				open();
 			}

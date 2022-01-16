@@ -149,21 +149,18 @@ public class Party {
         new ArrayList<>(members).forEach(action);
     }
 
-    private static final String PARTY_BUFF_MODIFIER_KEY = "mmocoreParty";
-
     /**
      * Applies party stat bonuses to a specific player
      */
     private void applyStatBonuses(PlayerData player) {
-        MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).addModifier(PARTY_BUFF_MODIFIER_KEY,
-                MMOCore.plugin.partyManager.getBonus(stat).multiply(members.size() - 1)));
+        MMOCore.plugin.partyManager.getBonuses().forEach(buff -> buff.multiply(members.size() - 1).register(player.getMMOPlayerData()));
     }
 
     /**
      * Clear party stat bonuses from a player
      */
     private void clearStatBonuses(PlayerData player) {
-        MMOCore.plugin.partyManager.getBonuses().forEach(stat -> player.getStats().getInstance(stat).remove(PARTY_BUFF_MODIFIER_KEY));
+        MMOCore.plugin.partyManager.getBonuses().forEach(buff -> buff.unregister(player.getMMOPlayerData()));
     }
 
     @Override

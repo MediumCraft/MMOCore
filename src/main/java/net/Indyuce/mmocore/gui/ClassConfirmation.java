@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.gui;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -125,7 +126,7 @@ public class ClassConfirmation extends EditableInventory {
 				(playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
 						: new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
 				MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
-				MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SELECT_CLASS);
+				MMOCore.plugin.soundManager.getSound(SoundEvent.SELECT_CLASS).playTo(player);
 				player.closeInventory();
 			}
 		}

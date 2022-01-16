@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.listener;
 
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -29,7 +30,7 @@ public class WaypointsListener implements Listener {
 			data.unlockWaypoint(waypoint);
 			new SmallParticleEffect(player, Particle.SPELL_WITCH);
 			MMOCore.plugin.configManager.getSimpleMessage("new-waypoint", "waypoint", waypoint.getName()).send(player);
-			MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.WARP_UNLOCK);
+			MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_UNLOCK).playTo(player);
 			return;
 		}
 

@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -109,14 +110,14 @@ public class ClassSelect extends EditableInventory {
 					return;
 
 				if (playerData.getClassPoints() < 1) {
-					MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.CANT_SELECT_CLASS);
+					MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
 					new ConfigMessage("cant-choose-new-class").send(player);
 					return;
 				}
 
 				PlayerClass profess = MMOCore.plugin.classManager.get(tag);
 				if (profess.equals(playerData.getProfess())) {
-					MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.CANT_SELECT_CLASS);
+					MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
 					MMOCore.plugin.configManager.getSimpleMessage("already-on-class", "class", profess.getName()).send(player);
 					return;
 				}
