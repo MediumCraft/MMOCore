@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
@@ -26,12 +27,12 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
-import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
-import net.Indyuce.mmocore.skill.cast.listener.SkillBar.SkillCasting;
+import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -64,6 +65,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     private double mana, stamina, stellium;
     private Party party;
     private Guild guild;
+    private SkillCastingHandler skillCasting;
 
     private final PlayerQuests questData;
     private final PlayerStats playerStats;
@@ -74,11 +76,10 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
-private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
+    private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
     public int skillGuiDisplayOffset;
-    public SkillCasting skillCasting;
     public boolean noCooldown;
     public CombatRunnable combat;
 
@@ -438,7 +439,7 @@ private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
                     return;
                 if (getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y
                         || getPlayer().getLocation().getBlockZ() != z) {
-                    MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_CANCELLED);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CANCELLED).playTo(getPlayer());
                     MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
                     giveStellium(waypoint.getStelliumCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
                     cancel();
@@ -449,12 +450,12 @@ private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
                 if (t++ >= 100) {
                     getPlayer().teleport(waypoint.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
-                    MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_TELEPORT);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_TELEPORT).playTo(getPlayer());
                     cancel();
                     return;
                 }
 
-                MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.WARP_CHARGE, 1, (float) (t / Math.PI * .015 + .5));
+                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (t / Math.PI * .015 + .5));
                 double r = Math.sin((double) t / 100 * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE,
@@ -532,7 +533,7 @@ private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
             Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
             if (isOnline()) {
                 new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
-                MMOCore.plugin.soundManager.play(getPlayer(), SoundManager.SoundEvent.LEVEL_UP);
+                MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
                 new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
             }
             getStats().updateStats();
@@ -675,6 +676,22 @@ private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
         return skillCasting != null;
     }
 
+    public void setSkillCasting(SkillCastingHandler skillCasting) {
+        Validate.isTrue(!isCasting(), "Player already in casting mode");
+        this.skillCasting = skillCasting;
+    }
+
+    @NotNull
+    public SkillCastingHandler getSkillCasting() {
+        return Objects.requireNonNull(skillCasting, "Player not in casting mode");
+    }
+
+    public void leaveCastingMode() {
+        Validate.isTrue(isCasting(), "Player not in casting mode");
+        skillCasting.close();
+        this.skillCasting = null;
+    }
+
     public void displayActionBar(String message) {
         if (!isOnline())
             return;
@@ -808,7 +825,7 @@ private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())

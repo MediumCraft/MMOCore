@@ -23,10 +23,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
+    private final double multiplier;
     private final List<PotionType> types = new ArrayList<>();
 
     public BrewPotionExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser);
+
+        multiplier = config.getDouble("multiplier", 1);
 
         if (config.contains("effect"))
             for (String key : config.getString("effect").split(","))
@@ -164,7 +167,7 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
              */
             // exp += getTotal(mapEffectDurations());
 
-            getDispenser().giveExperience(PlayerData.get(player), (int) exp, null);
+            getDispenser().giveExperience(PlayerData.get(player), (int) exp * multiplier, null);
         }
     }
 }

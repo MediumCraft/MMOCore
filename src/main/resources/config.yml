@@ -62,6 +62,47 @@ protect-custom-mine: false
 # provide the player with experience points or not
 should-cobblestone-generators-give-exp: false
 
+# Edit how to cast skills here. This part of the config is
+# pretty tricky so it's best to read the wiki page before editing anything
+skill-casting:
+  mode: KEY_COMBOS
+  initializer-key: SWAP_HANDS
+  sound:
+    begin-combo:
+      sound: BLOCK_END_PORTAL_FRAME_FILL
+      volume: 1
+      pitch: 2
+    combo-key:
+      sound: BLOCK_LEVER_CLICK
+      volume: 1
+      pitch: 2
+    fail-combo:
+      sound: BLOCK_FIRE_EXTINGUISH
+      volume: 1
+      pitch: 2
+  action-bar:
+    separator: ' - '
+    no-key: '***'
+    key-name:
+      LEFT_CLICK: 'LEFT'
+      RIGHT_CLICK: 'RGHT'
+      DROP: 'DROP'
+      SWAP_HANDS: 'SWAP'
+      CROUCH: 'SHFT'
+  combos:
+    '1':
+      - LEFT_CLICK
+      - LEFT_CLICK
+    '2':
+      - LEFT_CLICK
+      - RIGHT_CLICK
+    '3':
+      - RIGHT_CLICK
+      - LEFT_CLICK
+    '4':
+      - RIGHT_CLICK
+      - RIGHT_CLICK
+
 loot-chests:
 
   # Time in seconds it takes for a loot chest to
@@ -140,17 +181,19 @@ death-exp-loss:
   # Percentage of current EXP you lose when dying.
   percent: 30
 
-# Modify the keybinds for the 'swap hand items' key (F by default)
-#
-# Available actions:
-# - spell_cast (enters the default spell casting mode)
-# - vanilla (swaps hand items)
-# - hotbar_swap (swap the player's horbat with the 9 lowest inventory slots)
-#
-# If the action is invalid, it will use 'vanilla' by default
-swap-keybind:
-  normal: spell_cast
-  sneaking: hotbar_swap
+# Fun extra RPG feature that switches the player's hotbar with
+# the 9 lower row items of his inventory. This allows the player
+# to have two different item sets or quickly have access to pots
+# TODO
+hotbar-swapping:
+  enabled: true
+
+  # Keybind which triggers
+  # Available keybinds
+  keybind: SWAP_HANDS
+
+  # If the player has to sneak to swap hotbars
+  crouching: true
 
 # Set this to true to allow players
 # in creative mode to enter casting mode

@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.comp.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
 import io.lumine.mythic.utils.plugin.LuminePlugin;
@@ -40,7 +41,7 @@ import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
-import net.Indyuce.mmocore.skill.cast.listener.SkillBar;
+import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
 import net.Indyuce.mmocore.skill.list.Ambers;
 import net.Indyuce.mmocore.skill.list.Neptune_Gift;
 import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
@@ -219,6 +220,14 @@ public class MMOCore extends LuminePlugin {
 		if (getConfig().contains("debug")) {
 			DebugMode.setLevel(getConfig().getInt("debug", 0));
 			DebugMode.enableActionBar();
+		}
+
+		// Skill casting
+		try {
+			SkillCastingMode mode = SkillCastingMode.valueOf(UtilityMethods.enumName(getConfig().getString("skill-casting.mode")));
+			Bukkit.getPluginManager().registerEvents(mode.loadFromConfig(getConfig().getConfigurationSection("skill-casting")), this);
+		} catch (RuntimeException exception) {
+			getLogger().log(Level.WARNING, "Could not load skill casting: " + exception.getMessage());
 		}
 
 		if (configManager.overrideVanillaExp = getConfig().getBoolean("override-vanilla-exp"))

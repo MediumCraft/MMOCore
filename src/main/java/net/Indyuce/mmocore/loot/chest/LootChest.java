@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.loot.chest;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -66,7 +67,7 @@ public class LootChest {
 
         // If a player is responsible of closing the chest, close it with sound
         if (player) {
-            MMOCore.plugin.soundManager.play(block.loc.getBlock(), SoundManager.SoundEvent.CLOSE_LOOT_CHEST);
+            MMOCore.plugin.soundManager.getSound(SoundEvent.CLOSE_LOOT_CHEST).playAt(block.loc);
             block.loc.getWorld().spawnParticle(Particle.CRIT, block.loc.clone().add(.5, .5, .5), 16, 0, 0, 0, .5);
             MMOCore.plugin.lootChests.unregister(this);
         }

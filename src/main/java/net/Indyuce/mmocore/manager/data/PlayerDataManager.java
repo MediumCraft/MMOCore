@@ -32,9 +32,7 @@ public abstract class PlayerDataManager {
      * @return Player data, if it's loaded
      */
     public PlayerData get(UUID uuid) {
-        if(isLoaded(uuid))
-            return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
-        else return setup(uuid);
+        return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
     }
 
     /**

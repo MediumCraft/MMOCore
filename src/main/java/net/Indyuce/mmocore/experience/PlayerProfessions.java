@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -195,7 +196,7 @@ public class PlayerProfessions {
 			new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
 			new ConfigMessage("profession-level-up").addPlaceholders("level", "" + level, "profession", profession.getName())
 					.send(playerData.getPlayer());
-			MMOCore.plugin.soundManager.play(playerData.getPlayer(), SoundManager.SoundEvent.LEVEL_UP);
+			MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(playerData.getPlayer());
 			playerData.getStats().updateStats();
 
 			// Apply profession experience table

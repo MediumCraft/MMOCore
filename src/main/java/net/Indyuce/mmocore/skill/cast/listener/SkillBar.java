@@ -4,24 +4,20 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.manager.ConfigManager;
-import net.Indyuce.mmocore.manager.SoundManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
-import org.bukkit.Bukkit;
+import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 
@@ -38,7 +34,8 @@ public class SkillBar implements Listener {
             return;
 
         // Always cancel event
-        event.setCancelled(true);
+        if (event.getPressed().shouldCancelEvent())
+            event.setCancelled(true);
 
         // Enter spell casting
         Player player = event.getData().getPlayer();
@@ -46,15 +43,13 @@ public class SkillBar implements Listener {
         if (player.getGameMode() != GameMode.SPECTATOR
                 && (MMOCore.plugin.configManager.canCreativeCast || player.getGameMode() != GameMode.CREATIVE)
                 && !playerData.isCasting()
-                && playerData.getBoundSkills().size() > 0) {
-            playerData.skillCasting = new SkillCasting(playerData);
-            MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SPELL_CAST_BEGIN);
+                && !playerData.getBoundSkills().isEmpty()) {
+            playerData.setSkillCasting(new CustomSkillCastingHandler(playerData));
+            MMOCore.plugin.soundManager.getSound(SoundEvent.SPELL_CAST_BEGIN).playTo(player);
         }
     }
 
-    public class SkillCasting extends BukkitRunnable implements Listener {
-        private final PlayerData playerData;
-
+    private class CustomSkillCastingHandler extends SkillCastingHandler {
         private final String ready = MMOCore.plugin.configManager.getSimpleMessage("casting.action-bar.ready").message();
         private final String onCooldown = MMOCore.plugin.configManager.getSimpleMessage("casting.action-bar.on-cooldown").message();
         private final String noMana = MMOCore.plugin.configManager.getSimpleMessage("casting.action-bar.no-mana").message();
@@ -62,18 +57,15 @@ public class SkillBar implements Listener {
 
         private int j;
 
-        public SkillCasting(PlayerData playerData) {
-            this.playerData = playerData;
-
-            Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
-            runTaskTimer(MMOCore.plugin, 0, 1);
+        CustomSkillCastingHandler(PlayerData playerData) {
+            super(playerData, 1);
         }
 
         @EventHandler()
         public void onSkillCast(PlayerItemHeldEvent event) {
             Player player = event.getPlayer();
-            if (!playerData.isOnline()) return;
-            if (!event.getPlayer().equals(playerData.getPlayer()))
+            if (!getCaster().isOnline()) return;
+            if (!event.getPlayer().equals(getCaster().getPlayer()))
                 return;
 
             /*
@@ -92,9 +84,9 @@ public class SkillBar implements Listener {
              * cancelling the first one, the player held item slot must go back
              * to the previous one.
              */
-            if (slot >= 0 && playerData.hasSkillBound(slot)) {
-                PlayerMetadata caster = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                playerData.getBoundSkill(slot).toCastable(playerData).cast(new TriggerMetadata(caster, null, null));
+            if (slot >= 0 && getCaster().hasSkillBound(slot)) {
+                PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
+                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null));
             }
         }
 
@@ -104,18 +96,12 @@ public class SkillBar implements Listener {
             ConfigManager.SwapAction action = player.isSneaking()
                     ? MMOCore.plugin.configManager.sneakingSwapAction
                     : MMOCore.plugin.configManager.normalSwapAction;
-            if (action != ConfigManager.SwapAction.SPELL_CAST || !playerData.isOnline()) return;
-            if (event.getPlayer().equals(playerData.getPlayer())) {
-                MMOCore.plugin.soundManager.play(player, SoundManager.SoundEvent.SPELL_CAST_END);
-                MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(playerData.getPlayer());
-                close();
+            if (action != ConfigManager.SwapAction.SPELL_CAST || !getCaster().isOnline()) return;
+            if (event.getPlayer().equals(getCaster().getPlayer())) {
+                MMOCore.plugin.soundManager.getSound(SoundEvent.SPELL_CAST_END).playTo(player);
+                MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(getCaster().getPlayer());
+                PlayerData.get(player).leaveCastingMode();
             }
-        }
-
-        private void close() {
-            playerData.skillCasting = null;
-            HandlerList.unregisterAll(this);
-            cancel();
         }
 
         private String getFormat(PlayerData data) {
@@ -146,19 +132,14 @@ public class SkillBar implements Listener {
         }
 
         @Override
-        public void run() {
-            if (!playerData.isOnline() || playerData.getPlayer().isDead()) {
-                close();
-                return;
-            }
-
+        public void onTick() {
             if (j % 20 == 0)
-                playerData.displayActionBar(getFormat(playerData));
+                getCaster().displayActionBar(getFormat(getCaster()));
 
             for (int k = 0; k < 2; k++) {
                 double a = (double) j++ / 5;
-                playerData.getProfess().getCastParticle()
-                        .display(playerData.getPlayer().getLocation().add(Math.cos(a), 1 + Math.sin(a / 3) / 1.3, Math.sin(a)));
+                getCaster().getProfess().getCastParticle()
+                        .display(getCaster().getPlayer().getLocation().add(Math.cos(a), 1 + Math.sin(a / 3) / 1.3, Math.sin(a)));
             }
         }
     }
