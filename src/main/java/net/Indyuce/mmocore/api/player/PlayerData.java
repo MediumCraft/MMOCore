@@ -17,7 +17,6 @@ import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
-import net.Indyuce.mmocore.api.player.social.Party;
 import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
@@ -27,6 +26,8 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -63,7 +64,6 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     private PlayerClass profess;
     private int level, experience, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
     private double mana, stamina, stellium;
-    private Party party;
     private Guild guild;
     private SkillCastingHandler skillCasting;
 
@@ -150,8 +150,9 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     public void close() {
 
         // Remove from party
-        if (hasParty())
-            getParty().removeMember(this);
+        AbstractParty party = getParty();
+        if (party != null && party instanceof Party)
+            ((Party) party).removeMember(this);
 
         // Close quest data
         questData.close();
@@ -203,8 +204,9 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return Math.max(1, level);
     }
 
-    public Party getParty() {
-        return party;
+    @Nullable
+    public AbstractParty getParty() {
+        return MMOCore.plugin.partyModule.getParty(this);
     }
 
     public boolean hasGuild() {
@@ -244,10 +246,6 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
     public boolean isOnline() {
         return mmoData.isOnline();
-    }
-
-    public boolean hasParty() {
-        return party != null;
     }
 
     public boolean inGuild() {
@@ -386,10 +384,6 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return friends.contains(uuid);
     }
 
-    public void setParty(Party party) {
-        this.party = party;
-    }
-
     public void setGuild(Guild guild) {
         this.guild = guild;
     }
@@ -502,7 +496,8 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
 
         // Splitting exp through party members
-        if (splitExp && hasParty()) {
+        AbstractParty party = getParty();
+        if (splitExp && party != null) {
             List<PlayerData> onlineMembers = getParty().getOnlineMembers();
             value /= onlineMembers.size();
             for (PlayerData member : onlineMembers)

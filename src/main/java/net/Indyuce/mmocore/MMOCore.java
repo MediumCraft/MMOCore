@@ -41,15 +41,20 @@ import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import net.Indyuce.mmocore.party.PartyModule;
+import net.Indyuce.mmocore.party.PartyModuleType;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
 import net.Indyuce.mmocore.skill.list.Ambers;
 import net.Indyuce.mmocore.skill.list.Neptune_Gift;
 import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -82,6 +87,10 @@ public class MMOCore extends LuminePlugin {
 	public RegionHandler regionHandler = new DefaultRegionHandler();
 	public PlaceholderParser placeholderParser = new DefaultParser();
 	public DataProvider dataProvider = new YAMLDataProvider();
+
+	// Modules
+	@NotNull
+	public PartyModule partyModule;
 
 	// Profession managers
 	public final CustomBlockManager mineManager = new CustomBlockManager();
@@ -214,12 +223,21 @@ public class MMOCore extends LuminePlugin {
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
 			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
 
-		/*
-		 * enable debug mode for extra debug tools.
-		 */
+		// Enable debug mode for extra debug tools
 		if (getConfig().contains("debug")) {
 			DebugMode.setLevel(getConfig().getInt("debug", 0));
 			DebugMode.enableActionBar();
+		}
+
+		// Load party module
+		try {
+			String partyPluginName = UtilityMethods.enumName(getConfig().getString("party-plugin"));
+			PartyModuleType moduleType = PartyModuleType.valueOf(partyPluginName);
+			Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
+			partyModule = moduleType.provideModule();
+		} catch (RuntimeException exception) {
+			getLogger().log(Level.WARNING, "Could not initialize party module: " + exception.getMessage());
+			partyModule = new MMOCorePartyModule();
 		}
 
 		// Skill casting
@@ -247,7 +265,6 @@ public class MMOCore extends LuminePlugin {
 		Bukkit.getPluginManager().registerEvents(new GoldPouchesListener(), this);
 		Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
 		Bukkit.getPluginManager().registerEvents(new LootableChestsListener(), this);
-		Bukkit.getPluginManager().registerEvents(new PartyListener(), this);
 		Bukkit.getPluginManager().registerEvents(new GuildListener(), this);
 		Bukkit.getPluginManager().registerEvents(new FishingListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerCollectStats(), this);

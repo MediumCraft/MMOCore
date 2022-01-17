@@ -3,8 +3,11 @@ package net.Indyuce.mmocore.comp;
 import io.lumine.mythic.lib.comp.target.InteractionType;
 import io.lumine.mythic.lib.comp.target.TargetRestriction;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.party.AbstractParty;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import java.util.Optional;
 
 public class MMOCoreTargetRestriction implements TargetRestriction {
 
@@ -15,7 +18,8 @@ public class MMOCoreTargetRestriction implements TargetRestriction {
             PlayerData targetData = PlayerData.get(target.getUniqueId());
 
             // Check for the same party
-            if (targetData.hasParty() && targetData.getParty().hasMember(player))
+            AbstractParty party = targetData.getParty();
+            if (party != null && party.hasMember(player))
                 return false;
         }
 

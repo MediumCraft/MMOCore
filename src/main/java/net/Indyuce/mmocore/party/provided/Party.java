@@ -1,30 +1,39 @@
-package net.Indyuce.mmocore.api.player.social;
+package net.Indyuce.mmocore.party.provided;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.social.Request;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView.PartyViewInventory;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import net.Indyuce.mmocore.party.AbstractParty;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Party {
+public class Party implements AbstractParty {
     private final List<PlayerData> members = new ArrayList<>();
     private final Map<UUID, Long> invites = new HashMap<>();
 
-    // used to check if two parties are the same
+    /**
+     * Used for {@link #equals(Object)}
+     */
     private final UUID id = UUID.randomUUID();
 
-    /*
-     * owner changes when the old owner leaves party
+    /**
+     * Owner has to change when previous owner leaves party
      */
     private PlayerData owner;
 
-    public Party(PlayerData owner) {
+    private final MMOCorePartyModule module;
+
+    public Party(MMOCorePartyModule module, PlayerData owner) {
         this.owner = owner;
+        this.module = module;
+
         addMember(owner);
     }
 
@@ -40,6 +49,7 @@ public class Party {
         return members;
     }
 
+    @Override
     public List<PlayerData> getOnlineMembers() {
         List<PlayerData> online = new ArrayList<>();
 
@@ -48,6 +58,11 @@ public class Party {
                 online.add(member);
 
         return online;
+    }
+
+    @Override
+    public int countMembers() {
+        return members.size();
     }
 
     public PlayerData getMember(int index) {
@@ -62,11 +77,8 @@ public class Party {
         invites.remove(player.getUniqueId());
     }
 
-    public boolean hasMember(PlayerData playerData) {
-        return hasMember(playerData.getUniqueId());
-    }
-
-    public boolean hasMember(Player player) {
+    @Override
+    public boolean hasMember(OfflinePlayer player) {
         return hasMember(player.getUniqueId());
     }
 
@@ -87,14 +99,15 @@ public class Party {
             InventoryManager.PARTY_CREATION.newInventory(data).open();
 
         members.remove(data);
-        data.setParty(null);
+
+        module.setParty(data, null);
         clearStatBonuses(data);
         members.forEach(this::applyStatBonuses);
         updateOpenInventories();
 
         // Disband the party if no member left
         if (members.size() < 1) {
-            MMOCore.plugin.partyManager.unregisterParty(this);
+            module.unregisterParty(this);
             return;
         }
 
@@ -107,10 +120,11 @@ public class Party {
     }
 
     public void addMember(PlayerData data) {
-        if (data.hasParty())
-            data.getParty().removeMember(data);
+        Party party = (Party) data.getParty();
+        if (party != null)
+            party.removeMember(data);
 
-        data.setParty(this);
+        module.setParty(data, this);
         members.add(data);
         members.forEach(this::applyStatBonuses);
 
@@ -164,7 +178,15 @@ public class Party {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Party && ((Party) obj).getUniqueId().equals(getUniqueId());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Party party = (Party) o;
+        return id.equals(party.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

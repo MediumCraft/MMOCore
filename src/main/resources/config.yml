@@ -58,6 +58,14 @@ custom-mine-conditions:
 # broken when custom mining conditions are met
 protect-custom-mine: false
 
+# Edit the plugin handling parties here.
+# Supported values (just copy and paste):
+# - mmocore
+# - dungeonsxl
+# - parties
+# - parties_and_friends
+party-plugin: mmocore
+
 # Whether blocks generated with a "cobblegenerator" should
 # provide the player with experience points or not
 should-cobblestone-generators-give-exp: false
@@ -65,43 +73,8 @@ should-cobblestone-generators-give-exp: false
 # Edit how to cast skills here. This part of the config is
 # pretty tricky so it's best to read the wiki page before editing anything
 skill-casting:
-  mode: KEY_COMBOS
-  initializer-key: SWAP_HANDS
-  sound:
-    begin-combo:
-      sound: BLOCK_END_PORTAL_FRAME_FILL
-      volume: 1
-      pitch: 2
-    combo-key:
-      sound: BLOCK_LEVER_CLICK
-      volume: 1
-      pitch: 2
-    fail-combo:
-      sound: BLOCK_FIRE_EXTINGUISH
-      volume: 1
-      pitch: 2
-  action-bar:
-    separator: ' - '
-    no-key: '***'
-    key-name:
-      LEFT_CLICK: 'LEFT'
-      RIGHT_CLICK: 'RGHT'
-      DROP: 'DROP'
-      SWAP_HANDS: 'SWAP'
-      CROUCH: 'SHFT'
-  combos:
-    '1':
-      - LEFT_CLICK
-      - LEFT_CLICK
-    '2':
-      - LEFT_CLICK
-      - RIGHT_CLICK
-    '3':
-      - RIGHT_CLICK
-      - LEFT_CLICK
-    '4':
-      - RIGHT_CLICK
-      - RIGHT_CLICK
+  mode: SKILL_BAR
+  open: SWAP_HANDS
 
 loot-chests:
 

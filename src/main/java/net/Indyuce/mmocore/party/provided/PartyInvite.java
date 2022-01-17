@@ -1,7 +1,8 @@
-package net.Indyuce.mmocore.api.player.social;
+package net.Indyuce.mmocore.party.provided;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.social.Request;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
 public class PartyInvite extends Request {

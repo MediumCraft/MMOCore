@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.party.provided.Party;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,7 +50,8 @@ public class EditablePartyView extends EditableInventory {
 
 		@Override
 		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
-			PlayerData member = inv.getPlayerData().getParty().getMembers().get(n);
+			Party party = (Party) inv.getPlayerData().getParty();
+			PlayerData member = party.getMembers().get(n);
 
 			Placeholders holders = new Placeholders();
 			if (member.isOnline())
@@ -62,7 +64,8 @@ public class EditablePartyView extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			PlayerData member = inv.getPlayerData().getParty().getMembers().get(n);
+			Party party = (Party) inv.getPlayerData().getParty();
+			PlayerData member = party.getMembers().get(n);
 
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
@@ -97,7 +100,8 @@ public class EditablePartyView extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			return inv.getPlayerData().getParty().getMembers().size() > n ? member.display(inv, n) : empty.display(inv, n);
+			Party party = (Party) inv.getPlayerData().getParty();
+			return party.getMembers().size() > n ? member.display(inv, n) : empty.display(inv, n);
 		}
 
 		@Override
@@ -126,14 +130,16 @@ public class EditablePartyView extends EditableInventory {
 
 		@Override
 		public String calculateName() {
-			return getName().replace("{max}", "" + max).replace("{players}", "" + getPlayerData().getParty().getMembers().size());
+			Party party = (Party) getPlayerData().getParty();
+			return getName().replace("{max}", "" + max).replace("{players}", "" + party.getMembers().size());
 		}
 
 		@Override
 		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+			Party party = (Party) playerData.getParty();
 
 			if (item.getFunction().equals("leave")) {
-				playerData.getParty().removeMember(playerData);
+				party.removeMember(playerData);
 				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 				player.closeInventory();
 				return;
@@ -141,7 +147,7 @@ public class EditablePartyView extends EditableInventory {
 
 			if (item.getFunction().equals("invite")) {
 
-				if (playerData.getParty().getMembers().size() >= max) {
+				if (party.getMembers().size() >= max) {
 					MMOCore.plugin.configManager.getSimpleMessage("party-is-full").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
@@ -156,7 +162,7 @@ public class EditablePartyView extends EditableInventory {
 						return;
 					}
 
-					long remaining = playerData.getParty().getLastInvite(target) + 60 * 2 * 1000 - System.currentTimeMillis();
+					long remaining = party.getLastInvite(target) + 60 * 2 * 1000 - System.currentTimeMillis();
 					if (remaining > 0) {
 						MMOCore.plugin.configManager.getSimpleMessage("party-invite-cooldown", "player", target.getName(), "cooldown", new DelayFormat().format(remaining)).send(player);
 						open();
@@ -164,14 +170,14 @@ public class EditablePartyView extends EditableInventory {
 					}
 
 					PlayerData targetData = PlayerData.get(target);
-					if (playerData.getParty().hasMember(targetData)) {
+					if (party.hasMember(target)) {
 						MMOCore.plugin.configManager.getSimpleMessage("already-in-party", "player", target.getName()).send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();
 						return;
 					}
 
-					playerData.getParty().sendInvite(playerData, targetData);
+					party.sendInvite(playerData, targetData);
 					MMOCore.plugin.configManager.getSimpleMessage("sent-party-invite", "player", target.getName()).send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 					open();
@@ -179,14 +185,14 @@ public class EditablePartyView extends EditableInventory {
 			}
 
 			if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF) {
-				if (!playerData.getParty().getOwner().equals(playerData))
+				if (!party.getOwner().equals(playerData))
 					return;
 
 				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(NBTItem.get(event.getCurrentItem()).getString("uuid")));
 				if (target.equals(player))
 					return;
 
-				playerData.getParty().removeMember(PlayerData.get(target));
+				party.removeMember(PlayerData.get(target));
 				MMOCore.plugin.configManager.getSimpleMessage("kick-from-party", "player", target.getName()).send(player);
 				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 			}

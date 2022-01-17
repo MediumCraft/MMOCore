@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.command;
 
 import java.util.UUID;
 
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.social.PartyInvite;
+import net.Indyuce.mmocore.party.provided.PartyInvite;
 import net.Indyuce.mmocore.api.player.social.Request;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
@@ -55,7 +56,7 @@ public class PartyCommand extends BukkitCommand {
 				return true;
 			}
 
-			if (!MMOCore.plugin.partyManager.isRegistered(((PartyInvite) request).getParty())) {
+			if (!((MMOCorePartyModule) MMOCore.plugin.partyModule).isRegistered(((PartyInvite) request).getParty())) {
 				MMOCore.plugin.requestManager.unregisterRequest(uuid);
 				return true;
 			}
@@ -67,7 +68,7 @@ public class PartyCommand extends BukkitCommand {
 			return true;
 		}
 
-		if (data.hasParty())
+		if (data.getParty() != null)
 			InventoryManager.PARTY_VIEW.newInventory(data).open();
 		else
 			InventoryManager.PARTY_CREATION.newInventory(data).open();

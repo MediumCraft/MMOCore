@@ -14,6 +14,7 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.party.AbstractParty;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -177,7 +178,7 @@ public class PlayerStats extends EditableInventory {
 		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
 			Placeholders holders = new Placeholders();
 
-			int count = inv.getPlayerData().getParty().getMembers().size();
+			int count = inv.getPlayerData().getParty().getOnlineMembers().size();
 			holders.register("count", "" + count);
 			for (StatModifier buff : MMOCore.plugin.partyManager.getBonuses())
 				holders.register("buff_" + buff.getStat().toLowerCase(), buff.multiply(count - 1).toString());
@@ -187,7 +188,8 @@ public class PlayerStats extends EditableInventory {
 
 		@Override
 		public boolean canDisplay(GeneratedInventory inv) {
-			return inv.getPlayerData().hasParty() && inv.getPlayerData().getParty().getMembers().size() > 1;
+			AbstractParty party = inv.getPlayerData().getParty();
+			return party != null && party.getOnlineMembers().size() > 1;
 		}
 	}
 

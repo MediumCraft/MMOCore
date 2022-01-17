@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
+import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -117,8 +118,10 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return "" + PlayerData.get(player).getCollectionSkills()
 					.getLevelUpExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase());
 
-		else if (identifier.startsWith("party_count"))
-			return playerData.hasParty() ? String.valueOf(playerData.getParty().getMembers().size()) : "0";
+		else if (identifier.startsWith("party_count")) {
+			AbstractParty party = playerData.getParty();
+			return party == null ? "0" : String.valueOf(party.countMembers());
+		}
 
 		else if (identifier.startsWith("profession_"))
 			return String

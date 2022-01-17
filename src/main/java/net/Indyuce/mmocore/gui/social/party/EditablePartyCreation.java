@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -36,8 +37,8 @@ public class EditablePartyCreation extends EditableInventory {
 				return;
 
 			if (item.getFunction().equals("create")) {
-				MMOCore.plugin.partyManager.newRegisteredParty(playerData);
-				InventoryManager.PARTY_VIEW.newInventory(playerData).open();
+                ((MMOCorePartyModule) MMOCore.plugin.partyModule).newRegisteredParty(playerData);
+                InventoryManager.PARTY_VIEW.newInventory(playerData).open();
 				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 			}
 
