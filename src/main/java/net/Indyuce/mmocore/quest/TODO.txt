@@ -1,0 +1,6 @@
+
+COMPATIBILITY TODO
+- Quests https://www.spigotmc.org/resources/quests.3711/
+- BeautyQuests https://www.spigotmc.org/resources/beautyquests.39255/
+- BetonQuest https://www.spigotmc.org/resources/betonquest-all-your-adventure-supplies-versatile-quests-in-depth-conversations.2117/
+- QuestCreator https://www.spigotmc.org/resources/questcreator-new-1-18-support.38734/
