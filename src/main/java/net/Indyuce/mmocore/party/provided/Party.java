@@ -8,7 +8,6 @@ import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView.PartyViewInventory;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.party.AbstractParty;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -78,7 +77,7 @@ public class Party implements AbstractParty {
     }
 
     @Override
-    public boolean hasMember(OfflinePlayer player) {
+    public boolean hasMember(Player player) {
         return hasMember(player.getUniqueId());
     }
 

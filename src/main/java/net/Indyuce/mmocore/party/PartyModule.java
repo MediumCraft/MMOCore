@@ -3,8 +3,8 @@ package net.Indyuce.mmocore.party;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.jetbrains.annotations.Nullable;
 
-public interface PartyModule<T extends AbstractParty> {
+public interface PartyModule {
 
     @Nullable
-    public T getParty(PlayerData playerData);
+    public AbstractParty getParty(PlayerData playerData);
 }

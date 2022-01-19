@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.party;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface AbstractParty {
     /**
      * @return If given player is in that party
      */
-    boolean hasMember(OfflinePlayer player);
+    boolean hasMember(Player player);
 
     /**
      * @return List of online members
