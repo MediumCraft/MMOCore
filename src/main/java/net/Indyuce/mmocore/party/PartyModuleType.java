@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.party;
 
 import net.Indyuce.mmocore.party.compat.DungeonsPartyModule;
+import net.Indyuce.mmocore.party.compat.McMMOPartyModule;
 import net.Indyuce.mmocore.party.compat.PAFPartyModule;
 import net.Indyuce.mmocore.party.compat.PartiesPartyModule;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
@@ -13,6 +14,7 @@ public enum PartyModuleType {
     MMOCORE("MMOCore", () -> new MMOCorePartyModule()),
     PARTY_AND_FRIENDS("PartyAndFriends", () -> new PAFPartyModule()),
     PARTIES("Parties", () -> new PartiesPartyModule()),
+    MCMMO("mcMMO", () -> new McMMOPartyModule()),
     // DUNGEONS("Dungeons", null),
     ;
 

@@ -49,5 +49,4 @@ public class DungeonsPartyModule implements PartyModule {
             return group.getMembers().getUniqueIds().size();
         }
     }
-
 }
