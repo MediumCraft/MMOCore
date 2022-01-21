@@ -362,6 +362,7 @@ public class MMOCore extends LuminePlugin {
 
 		// Clear spawned loot chests
 		lootChests.getActive().forEach(chest -> chest.unregister(false));
+
 	}
 
 	/**
