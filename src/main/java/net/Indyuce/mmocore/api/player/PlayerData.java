@@ -776,10 +776,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skills.remove(skill);
     }
 
-    /**
-     * @deprecated use {@link PlayerClass#findSkill(RegisteredSkill)} instead
-     */
-    @Deprecated
     public boolean hasSkillUnlocked(RegisteredSkill skill) {
         return getProfess().hasSkill(skill.getHandler().getId()) && hasSkillUnlocked(getProfess().getSkill(skill.getHandler().getId()));
     }

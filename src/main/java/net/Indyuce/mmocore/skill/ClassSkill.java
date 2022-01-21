@@ -64,12 +64,13 @@ public class ClassSkill implements CooldownObject {
         return maxSkillLevel;
     }
 
-    /*
-     * this method can only OVERRIDE default modifiers
+    /**
+     * This method can only override default modifiers and
+     * will throw an error when trying to define non existing modifiers
      */
     public void addModifier(String modifier, LinearValue linear) {
-        if (modifiers.containsKey(modifier))
-            modifiers.put(modifier, linear);
+        Validate.isTrue(modifiers.containsKey(modifier), "Could not find modifier '" + modifier + "'");
+        modifiers.put(modifier, linear);
     }
 
     public double getModifier(String modifier, int level) {
@@ -117,6 +118,7 @@ public class ClassSkill implements CooldownObject {
         return new PassiveSkill("MMOCorePassiveSkill", skill.getTrigger(), toCastable(caster), EquipmentSlot.OTHER, ModifierSource.OTHER);
     }
 
+    @Override
     public String getCooldownPath() {
         return "skill_" + skill.getHandler().getId();
     }

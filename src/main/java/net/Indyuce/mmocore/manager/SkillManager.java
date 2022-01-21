@@ -6,15 +6,14 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class SkillManager implements MMOCoreManager {
@@ -24,8 +23,14 @@ public class SkillManager implements MMOCoreManager {
         skills.put(skill.getHandler().getId().toUpperCase(), skill);
     }
 
+    @Nullable
     public RegisteredSkill getSkill(String id) {
         return skills.get(id.toUpperCase());
+    }
+
+    @NotNull
+    public RegisteredSkill getSkillOrThrow(String id) {
+        return Objects.requireNonNull(skills.get(id.toUpperCase()), "Could not find skill with ID '" + id + "'");
     }
 
     public boolean hasSkill(String id) {
