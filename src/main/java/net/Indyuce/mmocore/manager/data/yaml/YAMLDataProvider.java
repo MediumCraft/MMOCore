@@ -5,7 +5,7 @@ import net.Indyuce.mmocore.manager.data.GuildDataManager;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 
 public class YAMLDataProvider implements DataProvider {
-	private final YAMLPlayerDataManager playerManager = new YAMLPlayerDataManager();
+	private final YAMLPlayerDataManager playerManager = new YAMLPlayerDataManager(this);
 	private final YAMLGuildDataManager guildManager = new YAMLGuildDataManager();
 
 	@Override

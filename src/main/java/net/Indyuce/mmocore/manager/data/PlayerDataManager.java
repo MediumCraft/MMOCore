@@ -138,7 +138,7 @@ public abstract class PlayerDataManager {
      */
     public abstract void saveData(PlayerData data);
 
-    public static class DefaultPlayerData {
+    public class DefaultPlayerData {
         private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;
 
         public DefaultPlayerData(ConfigurationSection config) {

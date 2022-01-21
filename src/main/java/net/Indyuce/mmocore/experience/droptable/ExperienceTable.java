@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.experience.droptable;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.experience.ExperienceObject;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -40,15 +40,15 @@ public class ExperienceTable {
      *
      * @param levelingUp      Player leveling up
      * @param professionLevel New profession level
-     * @param professionData  Player profession data
+     * @param object          Either profession or class leveling up
      */
-    public void claim(PlayerData levelingUp, int professionLevel, PlayerProfessions professionData) {
+    public void claim(PlayerData levelingUp, int professionLevel, ExperienceObject object) {
         for (ExperienceItem item : items) {
-            int timesClaimed = professionData.getTimesClaimed(this, item);
+            int timesClaimed = levelingUp.getClaims(object, this, item);
             if (!item.roll(professionLevel, timesClaimed))
                 continue;
 
-            professionData.setTimesClaimed(this, item, timesClaimed + 1);
+            levelingUp.setClaims(object, this, item, timesClaimed + 1);
             item.applyTriggers(levelingUp);
         }
     }

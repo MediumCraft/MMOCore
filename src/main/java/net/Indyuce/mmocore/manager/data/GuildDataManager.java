@@ -9,7 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.player.social.guilds.Guild;
+import net.Indyuce.mmocore.guild.provided.Guild;
 
 public abstract class GuildDataManager {
 	protected final Map<String, Guild> guilds = new HashMap<>();
@@ -37,14 +37,6 @@ public abstract class GuildDataManager {
 		// guild.getMembers().clear();
 		guilds.remove(guild.getId());
 		delete(guild);
-	}
-
-	// TODO has nothing to do here
-	public Guild stillInGuild(UUID uuid, String id) {
-		Guild guild = getGuild(id);
-		if (guild != null && guild.getMembers().has(uuid))
-			return guild;
-		return null;
 	}
 
 	public Guild getGuild(String guild) {

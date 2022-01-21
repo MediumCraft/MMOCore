@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.player.social.guilds;
+package net.Indyuce.mmocore.guild.provided;
 
 import org.bukkit.Bukkit;
 

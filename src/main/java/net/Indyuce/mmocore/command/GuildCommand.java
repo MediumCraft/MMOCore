@@ -14,7 +14,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.Request;
-import net.Indyuce.mmocore.api.player.social.guilds.GuildInvite;
+import net.Indyuce.mmocore.guild.provided.GuildInvite;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
 public class GuildCommand extends BukkitCommand {

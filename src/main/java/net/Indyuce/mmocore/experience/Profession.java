@@ -16,15 +16,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class Profession {
+public class Profession implements ExperienceObject {
     private final String id, name;
-    private final ExpCurve expCurve;
     private final int maxLevel;
     private final Map<ProfessionOption, Boolean> options = new HashMap<>();
+    private final ExpCurve expCurve;
     private final ExperienceTable expTable;
 
     /**
-     * Experience given to the main player level whenever he levels up this profession
+     * Experience given to the main player level
+     * whenever he levels up this profession
      */
     private final LinearValue experience;
 
@@ -41,7 +42,7 @@ public class Profession {
         ExperienceTable expTable = null;
         if (config.contains("exp-table"))
             try {
-                expTable = loadExperienceTable(config.get("exp-table"));
+                expTable = MMOCore.plugin.experience.loadExperienceTable(config.get("exp-table"));
             } catch (RuntimeException exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from profession '" + id + "': " + exception.getMessage());
             }
@@ -73,16 +74,7 @@ public class Profession {
         MMOCore.plugin.professionManager.loadProfessionConfigurations(this, config);
     }
 
-    private ExperienceTable loadExperienceTable(Object obj) {
 
-        if (obj instanceof ConfigurationSection)
-            return new ExperienceTable((ConfigurationSection) obj);
-
-        if (obj instanceof String)
-            return MMOCore.plugin.experience.getTableOrThrow(obj.toString());
-
-        throw new IllegalArgumentException("Please provide either a string (exp table name) or a config section (locally define an exp table)");
-    }
 
     public boolean getOption(ProfessionOption option) {
         return options.getOrDefault(option, option.getDefault());
@@ -96,6 +88,12 @@ public class Profession {
         return name;
     }
 
+    @Override
+    public String geyKey() {
+        return "profession." + getId();
+    }
+
+    @Override
     public ExpCurve getExpCurve() {
         return expCurve;
     }

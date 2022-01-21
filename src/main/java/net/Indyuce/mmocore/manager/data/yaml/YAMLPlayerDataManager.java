@@ -1,14 +1,5 @@
 package net.Indyuce.mmocore.manager.data.yaml;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
@@ -16,10 +7,25 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.guild.provided.Guild;
+import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+
 public class YAMLPlayerDataManager extends PlayerDataManager {
+	private final DataProvider provider;
+
+	public YAMLPlayerDataManager(DataProvider provider) {
+		this.provider = provider;
+	}
 
 	@Override
 	public void loadData(PlayerData data) {
@@ -40,8 +46,10 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 			data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
 		}
 
-		if (config.contains("guild"))
-			data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), config.getString("guild")));
+		if (config.contains("guild")) {
+			Guild guild = provider.getGuildManager().getGuild(config.getString("guild"));
+			data.setGuild(guild.getMembers().has(data.getUniqueId()) ? guild : null);
+		}
 		if (config.contains("attribute"))
 			data.getAttributes().load(config.getConfigurationSection("attribute"));
 		if (config.contains("profession"))

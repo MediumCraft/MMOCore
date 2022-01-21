@@ -11,8 +11,8 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 public class YAMLOfflinePlayerData extends OfflinePlayerData {
 	private final ConfigFile config;
 
-	/*
-	 * supports offline player data operations like friend removals which can't
+	/**
+	 * Supports offline player data operations like friend removals which can't
 	 * be handled when their player data is not loaded in the data map.
 	 */
 	public YAMLOfflinePlayerData(UUID uuid) {

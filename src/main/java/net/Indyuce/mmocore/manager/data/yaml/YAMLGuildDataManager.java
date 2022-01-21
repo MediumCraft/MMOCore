@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.player.social.guilds.Guild;
+import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.GuildDataManager;
 
 public class YAMLGuildDataManager extends GuildDataManager {

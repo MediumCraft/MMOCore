@@ -5,7 +5,7 @@ import org.bukkit.event.HandlerList;
 
 import net.Indyuce.mmocore.api.event.PlayerDataEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.social.guilds.Guild;
+import net.Indyuce.mmocore.guild.provided.Guild;
 
 public class GuildChatEvent extends PlayerDataEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();

@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.social.guilds.Guild;
+import net.Indyuce.mmocore.guild.provided.Guild;
 
 public class ConfigFile {
 	private final File file;

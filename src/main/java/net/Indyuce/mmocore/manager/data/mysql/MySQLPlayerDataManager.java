@@ -2,26 +2,22 @@ package net.Indyuce.mmocore.manager.data.mysql;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
-import io.lumine.mythic.lib.MythicLib;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -73,8 +69,10 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 					data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
 				}
 
-				if (!isEmpty(result.getString("guild")))
-					data.setGuild(MMOCore.plugin.dataProvider.getGuildManager().stillInGuild(data.getUniqueId(), result.getString("guild")));
+				if (!isEmpty(result.getString("guild"))) {
+					Guild guild = provider.getGuildManager().getGuild(result.getString("guild"));
+					data.setGuild(guild.getMembers().has(data.getUniqueId()) ? guild : null);
+				}
 				if (!isEmpty(result.getString("attributes"))) data.getAttributes().load(result.getString("attributes"));
 				if (!isEmpty(result.getString("professions")))
 					data.getCollectionSkills().load(result.getString("professions"));

@@ -15,6 +15,8 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
 import net.Indyuce.mmocore.experience.ExpCurve;
+import net.Indyuce.mmocore.experience.ExperienceObject;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.provider.MainExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
@@ -28,12 +30,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.logging.Level;
 
-public class PlayerClass extends PostLoadObject {
+public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final String name, id, actionBarFormat;
     private final List<String> description = new ArrayList<>(), attrDescription = new ArrayList<>();
     private final ItemStack icon;
@@ -41,6 +45,7 @@ public class PlayerClass extends PostLoadObject {
     private final ManaDisplayOptions manaDisplay;
     private final int maxLevel, displayOrder;
     private final ExpCurve expCurve;
+    private final ExperienceTable expTable;
 
     private final Map<StatType, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
@@ -86,6 +91,15 @@ public class PlayerClass extends PostLoadObject {
                 ? MMOCore.plugin.experience.getCurveOrThrow(
                 config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
+
+        ExperienceTable expTable = null;
+        if (config.contains("exp-table"))
+            try {
+                expTable = MMOCore.plugin.experience.loadExperienceTable(config.get("exp-table"));
+            } catch (RuntimeException exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from class '" + id + "': " + exception.getMessage());
+            }
+        this.expTable = expTable;
 
         if (config.contains("attributes"))
             for (String key : config.getConfigurationSection("attributes").getKeys(false))
@@ -168,6 +182,7 @@ public class PlayerClass extends PostLoadObject {
         maxLevel = 0;
         displayOrder = 0;
         expCurve = ExpCurve.DEFAULT;
+        expTable = null;
         castParticle = new CastingParticle(Particle.SPELL_INSTANT);
         actionBarFormat = "";
 
@@ -202,10 +217,17 @@ public class PlayerClass extends PostLoadObject {
         return name;
     }
 
+    @Override
+    public String geyKey() {
+        return "class." + getId();
+    }
+
+    @NotNull
     public ManaDisplayOptions getManaDisplay() {
         return manaDisplay;
     }
 
+    @NotNull
     public ResourceRegeneration getHandler(PlayerResource resource) {
         return resourceHandlers.get(resource);
     }
@@ -218,8 +240,14 @@ public class PlayerClass extends PostLoadObject {
         return displayOrder;
     }
 
+    @Override
     public ExpCurve getExpCurve() {
         return expCurve;
+    }
+
+    @Override
+    public ExperienceTable getExperienceTable() {
+        return expTable;
     }
 
     public ItemStack getIcon() {
@@ -246,8 +274,13 @@ public class PlayerClass extends PostLoadObject {
         return options.containsKey(option) ? options.get(option) : option.getDefault();
     }
 
+    @Deprecated
     public void setStat(StatType type, double base, double perLevel) {
-        stats.put(type, new LinearValue(base, perLevel));
+        setStat(type, new LinearValue(base, perLevel));
+    }
+
+    public void setStat(StatType type, LinearValue value) {
+        stats.put(type, value);
     }
 
     public double calculateStat(StatType stat, int level) {

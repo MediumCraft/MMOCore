@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 
@@ -56,6 +57,18 @@ public class ExperienceManager implements MMOCoreManager {
 
     public ExperienceTable getTableOrThrow(String id) {
         return Objects.requireNonNull(expTables.get(id), "Could not find exp table with ID '" + id + "'");
+    }
+
+    @Deprecated
+    public ExperienceTable loadExperienceTable(Object obj) {
+
+        if (obj instanceof ConfigurationSection)
+            return new ExperienceTable((ConfigurationSection) obj);
+
+        if (obj instanceof String)
+            return MMOCore.plugin.experience.getTableOrThrow(obj.toString());
+
+        throw new IllegalArgumentException("Please provide either a string (exp table name) or a config section (locally define an exp table)");
     }
 
     public Collection<ExpCurve> getCurves() {

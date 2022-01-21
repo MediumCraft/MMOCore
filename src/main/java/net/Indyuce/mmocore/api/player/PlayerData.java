@@ -17,7 +17,6 @@ import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
-import net.Indyuce.mmocore.api.player.social.guilds.Guild;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
@@ -25,7 +24,12 @@ import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.ExperienceObject;
+import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
+import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.skill.ClassSkill;
@@ -47,7 +51,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 
-public class PlayerData extends OfflinePlayerData implements Closable {
+public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
 
     /**
      * Corresponds to the MythicLib player data. It is used to keep
@@ -77,6 +81,21 @@ public class PlayerData extends OfflinePlayerData implements Closable {
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
     private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
+
+    /**
+     * Saves all the items that have been unlocked so far by
+     * the player. This can be used by other plugins by
+     * implementing the {@link Unlockable} interface
+     *
+     * @see {@link Unlockable}
+     */
+    private final Set<String> unlockedItems = new HashSet<>();
+
+    /**
+     * Saves the amount of times the player has claimed some
+     * exp item in exp tables, for both exp tables used
+     */
+    private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
     public int skillGuiDisplayOffset;
@@ -225,6 +244,24 @@ public class PlayerData extends OfflinePlayerData implements Closable {
         return skillPoints;
     }
 
+    @Override
+    public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {
+        String key = object.geyKey() + "." + table.getId() + "." + item.getId();
+        return tableItemClaims.get(key);
+    }
+
+    @Override
+    public void setClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item, int times) {
+        String key = object.geyKey() + "." + table.getId() + "." + item.getId();
+        tableItemClaims.put(key, times);
+    }
+
+    @Deprecated(since = "1.9")
+    public void setProfessionExpItemClaims(String professionTableItemKey, int times) {
+        Validate.isTrue(!professionTableItemKey.startsWith("class.") && !professionTableItemKey.startsWith("profession."), "Invalid exp item key");
+        tableItemClaims.put("profession." + professionTableItemKey, times);
+    }
+
     /**
      * @return Experience needed in order to reach next level
      */
@@ -250,6 +287,19 @@ public class PlayerData extends OfflinePlayerData implements Closable {
 
     public boolean inGuild() {
         return guild != null;
+    }
+
+    public boolean hasUnlocked(Unlockable unlockable) {
+        throw new RuntimeException("Not implemented yet");
+    }
+
+    /**
+     * Unlocks an item for the player
+     *
+     * @return If the item was already unlocked when calling this method
+     */
+    public boolean unlock(Unlockable unlockable) {
+        throw new RuntimeException("Not implemented yet");
     }
 
     public void setLevel(int level) {
@@ -820,7 +870,7 @@ public class PlayerData extends OfflinePlayerData implements Closable {
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
