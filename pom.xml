@@ -114,21 +114,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Public repos -->
-		<dependency>
-			<groupId>me.clip</groupId>
-			<artifactId>placeholderapi</artifactId>
-			<version>2.9.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.lumine</groupId>
-			<artifactId>MythicLib-dist</artifactId>
-			<version>1.3-R17</version>
-			<scope>provided</scope>
-		</dependency>
-
+		<!-- Extra libs -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
@@ -143,6 +129,21 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.20</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Plugin dependencies -->
+		<dependency>
+			<groupId>io.lumine</groupId>
+			<artifactId>MythicLib-dist</artifactId>
+			<version>1.3-R17</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>io.lumine</groupId>
 			<artifactId>MythicMobs-Dist</artifactId>
 			<version>5.0.0-SNAPSHOT</version>
@@ -150,9 +151,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.20</version>
+			<groupId>me.clip</groupId>
+			<artifactId>placeholderapi</artifactId>
+			<version>2.9.2</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -176,6 +177,45 @@
 			<version>2.0.25</version>
             <scope>provided</scope>
 		</dependency>
+
+		<!-- Party plugins -->
+		<dependency>
+			<groupId>de.simonsator</groupId>
+			<artifactId>PartyAndFriends</artifactId>
+			<version>1.0.65</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alessiodp</groupId>
+			<artifactId>Parties</artifactId>
+			<version>3.1.14</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gmail.nossr50</groupId>
+			<artifactId>mcMMO</artifactId>
+			<version>2.1.209</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.erethon</groupId>
+			<artifactId>DungeonsXL</artifactId>
+			<version>0.18-PRE-02</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Guild plugins -->
+		<dependency>
+			<groupId>com.massivecraft</groupId>
+			<artifactId>Factions</artifactId>
+			<version>1.6.9.5-2.9.8-RC</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Quest plugins -->
 
 	</dependencies>
 </project>
