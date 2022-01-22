@@ -17,10 +17,13 @@ exp-curve: levels
 # Specifying enchants like that lets you create different
 # enchanting professions, like DESTRUCTION for offense enchants
 # (Smite, Bane of Arth., Sharpness, Power, Fire Aspect, Flame)
-# and ALTERATION for strategic enchants for e.g
-
+# and ALTERATION for strategic enchants for example.
+#
+# Use enchantitem{} to have it apply for any enchant.
+#
+# Use enchantitem{enchant="sharpness,power"} for multiple enchants
 exp-sources:
-- 'enchantitem{enchant=sharpness}'
+- 'enchantitem{}'
 
 # When enchanting an item, players earn Enchanting experience.
 # Experience given by an item is the sum of the EXP given by every extra enchantment.

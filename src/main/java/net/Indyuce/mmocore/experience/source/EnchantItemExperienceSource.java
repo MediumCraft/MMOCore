@@ -3,9 +3,9 @@ package net.Indyuce.mmocore.experience.source;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -19,6 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class EnchantItemExperienceSource extends ExperienceSource<Void> {
+
+    /**
+     * When empty, this applies for all enchants
+     */
     private final List<Enchantment> enchants = new ArrayList<>();
 
     public EnchantItemExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
@@ -43,16 +47,17 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
                 PlayerData player = PlayerData.get(event.getEnchanter());
                 for (EnchantItemExperienceSource source : getSources())
                     if (source.matches(player, null)) {
-                        Map<Enchantment, Integer> ench = new HashMap<>(event.getEnchantsToAdd());
+                        Map<Enchantment, Integer> applicableEnchants = new HashMap<>(event.getEnchantsToAdd());
 
+                        // Filter out enchants if required
                         if (!source.enchants.isEmpty())
-                            ench.keySet().removeIf(enchantment -> !source.enchants.contains(enchantment));
+                            applicableEnchants.keySet().removeIf(enchantment -> !source.enchants.contains(enchantment));
 
-                        if (ench.isEmpty())
+                        if (applicableEnchants.isEmpty())
                             continue;
 
                         double exp = 0;
-                        for (Entry<Enchantment, Integer> entry : ench.entrySet())
+                        for (Entry<Enchantment, Integer> entry : applicableEnchants.entrySet())
                             exp += MMOCore.plugin.enchantManager.getBaseExperience(entry.getKey()) * entry.getValue();
                         getDispenser().giveExperience(player, (int) exp, event.getEnchantBlock().getLocation());
                     }

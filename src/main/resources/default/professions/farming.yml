@@ -1,17 +1,31 @@
-
 # Display options
 name: Farming
 
 # Experience given to the main level
 # when leveling up this profession
 experience:
-    base: 10
-    per-level: 2
+  base: 10
+  per-level: 2
 
 # Must match an existing exp curve filename from the 'expcurves' folder
 exp-curve: levels
 
 exp-sources:
-- 'mineblock{type=CARROTS;amount=1-3;crop=true;player-placed:true}'
-- 'mineblock{type=POTATOES;amount=1-3;crop=true;player-placed:true}'
-- 'mineblock{type=WHEAT;amount=1-3;crop=true;player-placed:true}'
+  - 'mineblock{type=WHEAT;amount=1-3;crop=true;player-placed=true;silk-touch=false}'
+  - 'mineblock{type=BEETROOTS;amount=1-3;crop=true;player-placed=true;silk-touch=false}'
+  - 'mineblock{type=CARROTS;amount=1-3;crop=true;player-placed=true;silk-touch=false}'
+  - 'mineblock{type=POTATOES;amount=1-3;crop=true;player-placed=true;silk-touch=false}'
+  - 'mineblock{type=MELON;amount=1-3}'
+  - 'mineblock{type=PUMPKIN;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=BAMBOO;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=COCOA;amount=1-3;crop=true;player-placed=true;silk-touch=false}'
+  - 'mineblock{type=SUGAR_CANE;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=CACTUS;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=RED_MUSHROOM;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=BROWN_MUSHROOM;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=KELP;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=SEA_PICKLE;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=NETHER_WART;amount=1-3;crop=true;silk-touch=false}'
+  - 'mineblock{type=CHORUS_FLOWER;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=CRIMSON_FUNGUS;amount=1-3;silk-touch=false}'
+  - 'mineblock{type=WARPED_FUNGUS;amount=1-3;silk-touch=false}'
