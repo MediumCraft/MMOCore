@@ -246,20 +246,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {
-        String key = object.geyKey() + "." + table.getId() + "." + item.getId();
+        String key = object.getKey() + "." + table.getId() + "." + item.getId();
         return tableItemClaims.get(key);
     }
 
     @Override
     public void setClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item, int times) {
-        String key = object.geyKey() + "." + table.getId() + "." + item.getId();
+        String key = object.getKey() + "." + table.getId() + "." + item.getId();
         tableItemClaims.put(key, times);
     }
 
-    @Deprecated(since = "1.9")
-    public void setProfessionExpItemClaims(String professionTableItemKey, int times) {
-        Validate.isTrue(!professionTableItemKey.startsWith("class.") && !professionTableItemKey.startsWith("profession."), "Invalid exp item key");
-        tableItemClaims.put("profession." + professionTableItemKey, times);
+    public Map<String, Integer> getItemClaims() {
+        return tableItemClaims;
     }
 
     /**

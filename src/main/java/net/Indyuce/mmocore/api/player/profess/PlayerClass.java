@@ -218,7 +218,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     }
 
     @Override
-    public String geyKey() {
+    public String getKey() {
         return "class." + getId();
     }
 

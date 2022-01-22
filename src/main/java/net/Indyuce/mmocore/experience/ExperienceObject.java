@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
  */
 public interface ExperienceObject {
 
-    String geyKey();
+    String getKey();
 
     /**
      * Indicates the amount of exp required to level up

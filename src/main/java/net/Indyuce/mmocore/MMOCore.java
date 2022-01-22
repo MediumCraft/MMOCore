@@ -101,7 +101,7 @@ public class MMOCore extends LuminePlugin {
 
 	public boolean shouldDebugSQL = false;
 
-	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 3;
+	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 4;
 
 	public MMOCore() {
 		plugin = this;
@@ -362,7 +362,6 @@ public class MMOCore extends LuminePlugin {
 
 		// Clear spawned loot chests
 		lootChests.getActive().forEach(chest -> chest.unregister(false));
-
 	}
 
 	/**

@@ -30,7 +30,7 @@ public class Sneaky_Picky extends SkillHandler<SimpleSkillResult> implements Lis
     @Override
     public void whenCast(SimpleSkillResult result, SkillMetadata skillMeta) {
         LivingEntity target = (LivingEntity) skillMeta.getTargetEntity();
-        skillMeta.getAttack().getDamage().multiply(1 + skillMeta.getModifier("extra") / 100, DamageType.WEAPON);
+        skillMeta.getAttack().getDamage().multiplicativeModifier(1 + skillMeta.getModifier("extra") / 100, DamageType.WEAPON);
         target.getWorld().spawnParticle(Particle.SMOKE_NORMAL, target.getLocation().add(0, target.getHeight() / 2, 0), 64, 0, 0, 0, .05);
         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 2);
     }
