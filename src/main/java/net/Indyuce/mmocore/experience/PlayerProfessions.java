@@ -47,7 +47,7 @@ public class PlayerProfessions {
         if (config.contains("times-claimed"))
             // Watch out for the deep section lookup
             for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
-                playerData.setProfessionExpItemClaims(key, config.getInt("times-claimed." + key));
+                playerData.getItemClaims().put("profession." + key, config.getInt("times-claimed." + key));
 
         return this;
     }
@@ -95,7 +95,7 @@ public class PlayerProfessions {
         // Load times claimed
         if (obj.has("timesClaimed"))
             for (Entry<String, JsonElement> entry : obj.getAsJsonObject("timesClaimed").entrySet())
-                playerData.setProfessionExpItemClaims(entry.getKey(), entry.getValue().getAsInt());
+                playerData.getItemClaims().put("profession." + entry.getKey(), entry.getValue().getAsInt());
     }
 
     public PlayerData getPlayerData() {

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class Profession implements ExperienceObject {
+public class Profession extends PostLoadObject implements ExperienceObject {
     private final String id, name;
     private final int maxLevel;
     private final Map<ProfessionOption, Boolean> options = new HashMap<>();
@@ -30,6 +30,8 @@ public class Profession implements ExperienceObject {
     private final LinearValue experience;
 
     public Profession(String id, FileConfiguration config) {
+        super(config);
+
         this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
         this.name = config.getString("name");
         Validate.notNull(name, "Could not load name");
@@ -70,11 +72,12 @@ public class Profession implements ExperienceObject {
                             "Could not register exp source '" + key + "' from profession '" + id + "': " + exception.getMessage());
                 }
         }
-
-        MMOCore.plugin.professionManager.loadProfessionConfigurations(this, config);
     }
 
-
+    @Override
+    protected void whenPostLoaded(ConfigurationSection configurationSection) {
+        MMOCore.plugin.professionManager.loadProfessionConfigurations(this, configurationSection);
+    }
 
     public boolean getOption(ProfessionOption option) {
         return options.getOrDefault(option, option.getDefault());
@@ -89,7 +92,7 @@ public class Profession implements ExperienceObject {
     }
 
     @Override
-    public String geyKey() {
+    public String getKey() {
         return "profession." + getId();
     }
 

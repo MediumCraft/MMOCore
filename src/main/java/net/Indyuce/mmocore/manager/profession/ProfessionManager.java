@@ -16,11 +16,6 @@ public class ProfessionManager implements MMOCoreManager {
 	private final Map<String, Profession> professions = new HashMap<>();
 	private final Set<SpecificProfessionManager> professionManagers = new HashSet<>();
 
-	/**
-	 * If it has been loaded at least once
-	 */
-	private boolean loadedOnce;
-
 	public void register(Profession profession) {
 		professions.put(profession.getId(), profession);
 	}
@@ -63,23 +58,32 @@ public class ProfessionManager implements MMOCoreManager {
 		if (clearBefore)
 			professions.clear();
 
-		// Load default profession managers (can't be done on constructor because MMOCore.plugin is null)
-		if (!loadedOnce) {
+			// Load default profession managers (can't be done on constructor because MMOCore.plugin is null)
+		else {
 			registerProfessionManager(MMOCore.plugin.alchemyManager);
+			registerProfessionManager(MMOCore.plugin.mineManager);
 			registerProfessionManager(MMOCore.plugin.enchantManager);
 			registerProfessionManager(MMOCore.plugin.fishingManager);
 			registerProfessionManager(MMOCore.plugin.smithingManager);
-			loadedOnce = true;
 		}
 
 		professionManagers.forEach(manager -> manager.initialize(clearBefore));
 
+		// Register professions
 		for (File file : new File(MMOCore.plugin.getDataFolder() + "/professions").listFiles())
 			try {
 				String id = file.getName().substring(0, file.getName().length() - 4);
 				register(new Profession(id, YamlConfiguration.loadConfiguration(file)));
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load profession " + file.getName() + ": " + exception.getMessage());
+			}
+
+		// Load profession-specific configurations
+		for (Profession profession : professions.values())
+			try {
+				profession.postLoad();
+			} catch (IllegalArgumentException exception) {
+				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not postload profession " + profession.getId() + ": " + exception.getMessage());
 			}
 	}
 }
