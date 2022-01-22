@@ -223,6 +223,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>me.glaremasters</groupId>
+			<artifactId>Guilds</artifactId>
+			<version>3.5.6.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Quest plugins -->
 
 	</dependencies>

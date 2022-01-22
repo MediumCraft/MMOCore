@@ -12,7 +12,7 @@ public class FactionsGuildModule implements GuildModule {
     @Override
     public AbstractGuild getGuild(PlayerData playerData) {
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(playerData.getPlayer());
-        return new CustomGuild(fPlayer.getFaction());
+        return fPlayer.hasFaction() ? new CustomGuild(fPlayer.getFaction()) : null;
     }
 
     class CustomGuild implements AbstractGuild {
