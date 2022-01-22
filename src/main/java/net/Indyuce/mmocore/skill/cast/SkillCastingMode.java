@@ -19,7 +19,7 @@ public enum SkillCastingMode {
     SKILL_BAR(config -> new SkillBar(config)),
 
     /**
-     * TODO
+     *
      */
     SKILL_SCROLL(config -> new SkillScroller(config)),
 

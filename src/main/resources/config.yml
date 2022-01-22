@@ -1,14 +1,6 @@
-#
-# ███    ███ ███    ███  ██████   ██████  ██████  ██████  ███████
-# ████  ████ ████  ████ ██    ██ ██      ██    ██ ██   ██ ██
-# ██ ████ ██ ██ ████ ██ ██    ██ ██      ██    ██ ██████  █████
-# ██  ██  ██ ██  ██  ██ ██    ██ ██      ██    ██ ██   ██ ██
-# ██      ██ ██      ██  ██████   ██████  ██████  ██   ██ ███████
-#
-# a Spigot Plugin by Team Requiem
 
 # DO NOT TOUCH
-config-version: 8
+config-version: 9
 
 # Auto-Save feature automatically saves playerdata
 # (class, level, etc.) and guild data
@@ -157,7 +149,7 @@ death-exp-loss:
 # Fun extra RPG feature that switches the player's hotbar with
 # the 9 lower row items of his inventory. This allows the player
 # to have two different item sets or quickly have access to pots
-# TODO
+# Requires a SERVER reload when changed.
 hotbar-swapping:
   enabled: true
 

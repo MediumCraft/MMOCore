@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.gui.eco.GoldPouch;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,9 +9,6 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-
-import net.Indyuce.mmocore.gui.eco.GoldPouch;
-import io.lumine.mythic.lib.api.item.NBTItem;
 
 public class GoldPouchesListener implements Listener {
 	@EventHandler
@@ -21,11 +20,13 @@ public class GoldPouchesListener implements Listener {
 		if (!nbt.hasTag("RpgPouchInventory"))
 			return;
 
-		// that way ppl can't open a chest when right clicking a backpack
-		// when they wanted to open the backpack
+		/*
+		 * That way players cannot open a chest when right clicking
+		 * a backpack when they wanted to open the backpack
+		 */
 		event.setCancelled(true);
 
-		// dupe bug : open 2 stacked backpacks and split them to dupe.
+		// Dupe bug: open 2 stacked backpacks and split them to dupe.
 		if (event.getItem().getAmount() > 1)
 			return;
 
@@ -33,9 +34,9 @@ public class GoldPouchesListener implements Listener {
 	}
 
 	/*
-	 * if a player has a backpack open, he cannot pick up a backpack. bug fix -
+	 * If a player has a backpack open, he cannot pick up a backpack. bug fix -
 	 * he can pick up a backpack, and dupe items when the items are saved in a
-	 * amount=2 backpack itemstack TODO register and unregister listener.
+	 * amount=2 backpack itemstack
 	 */
 	@EventHandler
 	public void b(EntityPickupItemEvent event) {

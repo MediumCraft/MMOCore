@@ -32,10 +32,6 @@ public class GoldPouch extends PluginInventory {
 		return inv;
 	}
 
-	/*
-	 * if the player has opened a backpack, he cannot click a backpack. bug fix
-	 * - the player can move the backpack and lose the inventory he had opened
-	 */
 	@Override
 	public void whenClicked(InventoryClickEvent event) {
 
@@ -63,6 +59,12 @@ public class GoldPouch extends PluginInventory {
 			return;
 		}
 
+		/*
+		 * Player cannot interact with a backpack item while
+		 * interacting with a backpack inventory. This fixes a
+		 * huge glitch where the player would lose the backpack
+		 * contents
+		 */
 		if (nbt.hasTag("RpgPouchInventory"))
 			event.setCancelled(true);
 	}

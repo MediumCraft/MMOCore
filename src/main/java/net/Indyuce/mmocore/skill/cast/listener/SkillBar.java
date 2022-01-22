@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.skill.cast.listener;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
@@ -7,7 +8,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.manager.ConfigManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 import java.util.Objects;
 
@@ -25,7 +24,7 @@ public class SkillBar implements Listener {
     private final PlayerKey mainKey;
 
     public SkillBar(ConfigurationSection config) {
-        mainKey = PlayerKey.valueOf(Objects.requireNonNull(config.getString("open"), "Could not find open key"));
+        mainKey = PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("open"), "Could not find open key")));
     }
 
     @EventHandler
@@ -61,7 +60,7 @@ public class SkillBar implements Listener {
             super(playerData, 1);
         }
 
-        @EventHandler()
+        @EventHandler
         public void onSkillCast(PlayerItemHeldEvent event) {
             Player player = event.getPlayer();
             if (!getCaster().isOnline()) return;
@@ -91,13 +90,9 @@ public class SkillBar implements Listener {
         }
 
         @EventHandler
-        public void stopCasting(PlayerSwapHandItemsEvent event) {
+        public void stopCasting(PlayerKeyPressEvent event) {
             Player player = event.getPlayer();
-            ConfigManager.SwapAction action = player.isSneaking()
-                    ? MMOCore.plugin.configManager.sneakingSwapAction
-                    : MMOCore.plugin.configManager.normalSwapAction;
-            if (action != ConfigManager.SwapAction.SPELL_CAST || !getCaster().isOnline()) return;
-            if (event.getPlayer().equals(getCaster().getPlayer())) {
+            if (event.getPressed() == mainKey && event.getPlayer().equals(getCaster().getPlayer())) {
                 MMOCore.plugin.soundManager.getSound(SoundEvent.SPELL_CAST_END).playTo(player);
                 MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(getCaster().getPlayer());
                 PlayerData.get(player).leaveCastingMode();

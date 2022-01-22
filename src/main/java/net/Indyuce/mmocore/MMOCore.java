@@ -9,7 +9,6 @@ import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
@@ -27,6 +26,7 @@ import net.Indyuce.mmocore.comp.region.WorldGuardMMOLoader;
 import net.Indyuce.mmocore.comp.region.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
+import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.listener.*;
 import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
@@ -250,6 +250,13 @@ public class MMOCore extends LuminePlugin {
 
 		if (configManager.overrideVanillaExp = getConfig().getBoolean("override-vanilla-exp"))
 			Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), this);
+
+		if (getConfig().getBoolean("hotbar-swapping.enabled"))
+			try {
+				Bukkit.getPluginManager().registerEvents(new HotbarSwap(getConfig().getConfigurationSection("hotbar-swapping")), this);
+			} catch (RuntimeException exception) {
+				getLogger().log(Level.WARNING, "Could not load hotbar swapping: " + exception.getMessage());
+			}
 
 		if (getConfig().getBoolean("prevent-spawner-xp"))
 			Bukkit.getPluginManager().registerEvents(new NoSpawnerEXP(), this);

@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.util.EnumUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -28,7 +27,6 @@ public class ConfigManager {
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public SwapAction normalSwapAction, sneakingSwapAction;
 
     private final FileConfiguration messages;
     private final boolean chatInput;
@@ -104,8 +102,6 @@ public class ConfigManager {
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
         staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
 
-        normalSwapAction = EnumUtils.getIfPresent(SwapAction.class, MMOCore.plugin.getConfig().getString("swap-keybind.normal").toUpperCase()).orElse(SwapAction.VANILLA);
-        sneakingSwapAction = EnumUtils.getIfPresent(SwapAction.class, MMOCore.plugin.getConfig().getString("swap-keybind.sneaking").toUpperCase()).orElse(SwapAction.VANILLA);
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
@@ -176,11 +172,5 @@ public class ConfigManager {
             }
             return !msg.isEmpty();
         }
-    }
-
-    public enum SwapAction {
-        VANILLA,
-        SPELL_CAST,
-        HOTBAR_SWAP
     }
 }
