@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.manager.data.mysql;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
@@ -62,6 +63,11 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 				data.setExperience(result.getInt("experience"));
 				if (!isEmpty(result.getString("class")))
 					data.setClass(MMOCore.plugin.classManager.get(result.getString("class")));
+
+				if (!isEmpty(result.getString("times_claimed"))) {
+					JsonObject json = new JsonParser().parse(result.getString("times_claimed")).getAsJsonObject();
+					json.entrySet().forEach(entry -> data.getItemClaims().put(entry.getKey(), entry.getValue().getAsInt()));
+				}
 
 				if (!data.hasUsedTemporaryData()) {
 					data.setMana(data.getStats().getStat(StatType.MAX_MANA));
@@ -137,6 +143,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		sql.updateJSONArray("bound_skills", data.getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).collect(Collectors.toList()));
 
 		sql.updateJSONObject("skills", data.mapSkillLevels().entrySet());
+		sql.updateJSONObject("times_claimed", data.getItemClaims().entrySet());
 
 		sql.updateData("attributes", data.getAttributes().toJsonString());
 		sql.updateData("professions", data.getCollectionSkills().toJsonString());

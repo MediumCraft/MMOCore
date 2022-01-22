@@ -68,6 +68,10 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 				if (data.getProfess().hasSkill(id))
 					data.getBoundSkills().add(data.getProfess().getSkill(id));
 
+		if (config.contains("times-claimed"))
+			for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
+				data.getItemClaims().put(key, config.getInt("times-claimed." + key));
+
 		// Load class slots, use try so the player can log in.
 		if (config.contains("class-info"))
 			for (String key : config.getConfigurationSection("class-info").getKeys(false))
@@ -102,6 +106,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 		config.set("skill", null);
 		data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
+		data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
 		List<String> boundSkills = new ArrayList<>();
 		data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
