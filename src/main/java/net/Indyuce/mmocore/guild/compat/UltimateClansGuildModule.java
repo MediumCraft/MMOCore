@@ -15,6 +15,7 @@ public class UltimateClansGuildModule implements GuildModule {
         return API.getPlayerAPI().hasClan(playerData.getUniqueId()) ? new CustomGuild(API.getClanAPI().getClan(API.getPlayerAPI().getClanID(playerData.getUniqueId()))) : null;
     }
 
+
     class CustomGuild implements AbstractGuild {
         private final ClanData clan;
 
