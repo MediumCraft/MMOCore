@@ -14,7 +14,7 @@ public abstract class DropItem {
 
 	public DropItem(MMOLineConfig config) {
 		chance = config.args().length > 0 ? Double.parseDouble(config.args()[0]) : 1;
-		amount = config.args().length > 1 ? new RandomAmount(config.args()[1]) : new RandomAmount(1, 0);
+		amount = config.args().length > 1 ? new RandomAmount(config.args()[1]) : new RandomAmount(1, 1);
 		weight = config.args().length > 2 ? Double.parseDouble(config.args()[2]) : 0;
 	}
 

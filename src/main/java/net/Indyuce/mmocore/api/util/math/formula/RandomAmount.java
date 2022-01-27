@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.api.util.math.formula;
 
+import org.apache.commons.lang.Validate;
+
 import java.util.Random;
 
 public class RandomAmount {
@@ -10,6 +12,7 @@ public class RandomAmount {
     public RandomAmount(double min, double max) {
         this.min = min;
         this.max = max;
+        Validate.isTrue(max >= min, "Max value must be greater than min");
     }
 
     public RandomAmount(String value) {
