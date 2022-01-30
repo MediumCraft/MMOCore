@@ -14,11 +14,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class BlockInfo {
@@ -78,16 +76,17 @@ public class BlockInfo {
 		return block;
 	}
 
+	@NotNull
 	public DropTable getDropTable() {
-		return table;
-	}
-
-	public List<ItemStack> collectDrops(LootBuilder builder) {
-		return hasDropTable() ? table.collect(builder) : new ArrayList<>();
+		return Objects.requireNonNull(table, "Block has no drop table");
 	}
 
 	public boolean hasDropTable() {
 		return table != null;
+	}
+
+	public List<ItemStack> collectDrops(LootBuilder builder) {
+		return table != null ? table.collect(builder) : new ArrayList<>();
 	}
 
 	public boolean hasRegen() {
