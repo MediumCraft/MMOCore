@@ -138,6 +138,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     /**
      * Update all references after /mmocore reload so there can be garbage
      * collection with old plugin objects like class or skill instances.
+     * <p>
+     * It's OK if bound skills disappear because of a configuration issue
+     * on the user's end. After all this method is only called when using
+     * /reload and /reload is considered a bad practice. If any error
+     * happens then just don't update the player's skill.
      */
     public void update() {
 
@@ -152,16 +157,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         while (j < boundSkills.size())
             try {
                 boundSkills.set(j, getProfess().getSkill(boundSkills.get(j).getSkill()));
+            } catch (Exception ignored) {
+            } finally {
                 j++;
-            } catch (NullPointerException npe1) {
-                boundSkills.remove(j);
-                try {
-                    MMOCore.log(Level.SEVERE, "[Userdata] Could not find skill " + boundSkills.get(j).getSkill().getHandler().getId() + " in class "
-                            + getProfess().getId() + " while refreshing player data.");
-                } catch (NullPointerException npe2) {
-                    MMOCore.log(Level.SEVERE,
-                            "[Userdata] Could not find unidentified skill in class " + getProfess().getId() + " while refreshing player data.");
-                }
             }
     }
 
@@ -868,7 +866,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
