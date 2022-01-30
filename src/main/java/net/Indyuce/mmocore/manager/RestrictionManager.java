@@ -1,11 +1,13 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.itemtype.ItemType;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.block.BlockType;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -44,25 +46,29 @@ public class RestrictionManager implements MMOCoreManager {
             try {
                 register(new ToolPermissions(config.getConfigurationSection(key)));
             } catch (IllegalArgumentException exception) {
-                MMOCore.log(Level.WARNING, "Could not load block perms " + key + ": " + exception.getMessage());
+                MMOCore.log(Level.WARNING, "Could not load perm set '" + key + "': " + exception.getMessage());
             }
 
         for (ToolPermissions perms : map.values())
             try {
                 perms.postLoad();
             } catch (IllegalArgumentException exception) {
-                MMOCore.log(Level.WARNING, "Could not postload block perms " + perms.getTool().display() + ": " + exception.getMessage());
+                MMOCore.log(Level.WARNING, "Could not post-load perm set '" + perms.getTool().display() + "': " + exception.getMessage());
             }
     }
 
     public void register(ToolPermissions perms) {
         map.put(perms.getTool().display(), perms);
 
-        if (perms.isDefault())
+        if (perms.isDefault()) {
+            Validate.isTrue(defaultPermissions == null, "There is already a default tool permission set");
             defaultPermissions = perms;
+        }
     }
 
     /**
+     * Uses a hashMap O(1) check to find permission set of given item
+     *
      * @param item The item used to break a block
      * @return A list of all the blocks an item is allowed to break.
      *         If it was not registered earlier, it returns the default permission
@@ -76,19 +82,11 @@ public class RestrictionManager implements MMOCoreManager {
     }
 
     /**
-     * Uses a hashMap O(1) check to determine if the given item
-     * can break the block
-     * <p>
-     * MMOCore looks
-     *
      * @param item The item used to break a block
      * @return If the block can be broken by a certain item
      */
     public boolean checkPermissions(ItemStack item, BlockType block) {
-
-        // Map O(1) checkup instead of linear time
-        String mapKey = ItemType.fromItemStack(item).display();
-        ToolPermissions perms = map.getOrDefault(mapKey, defaultPermissions);
+        ToolPermissions perms = getPermissions(item);
         return perms != null && perms.canMine(block);
     }
 
@@ -116,13 +114,9 @@ public class RestrictionManager implements MMOCoreManager {
         @Override
         protected void whenPostLoaded(ConfigurationSection config) {
             if (config.contains("parent"))
-                parent = map.get(ItemType.fromString(config.getString("parent")));
+                parent = map.get(UtilityMethods.enumName(config.getString("parent")));
             for (String key : config.getStringList("can-mine"))
                 mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)).generateKey());
-        }
-
-        public void addPermission(BlockType block) {
-            mineable.add(block.generateKey());
         }
 
         /**
@@ -136,7 +130,16 @@ public class RestrictionManager implements MMOCoreManager {
          * @return If the given block can be broken
          */
         public boolean canMine(BlockType type) {
-            return mineable.contains(type.generateKey()) || (parent != null && parent.canMine(type));
+            ToolPermissions parent;
+            return mineable.contains(type.generateKey()) || ((parent = getParent()) != null && parent.canMine(type));
+        }
+
+        /**
+         * @return Either parent if provided or default tool permission set if this is
+         *         not the default set already, or null otherwise.
+         */
+        public ToolPermissions getParent() {
+            return parent != null ? parent : defaultSet ? null : defaultPermissions;
         }
 
         public ItemType getTool() {
