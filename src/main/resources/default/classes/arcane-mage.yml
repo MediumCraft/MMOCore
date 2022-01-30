@@ -35,13 +35,11 @@ exp-curve: levels
 max-level: 100
 
 # This class must not display in /class
-# becasue it is a subclass of mage
+# because it is a subclass of mage
 options:
     display: false
 
-triggers:
-    level-up:
-    - 'command{format="mmocore admin skill-points give %player% 1"}'
+exp-table: class_exp_table
 
 attributes:
     max-health:

@@ -31,9 +31,7 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
-triggers:
-    level-up:
-    - 'command{format="mmocore admin skill-points give %player% 1"}'
+exp-table: class_exp_table
 
 # Particles displayed around the player
 # when he enters the casting mode.

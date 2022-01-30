@@ -33,13 +33,7 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
-triggers:
-    level-up:
-    - 'command{format="mmocore admin skill-points give %player% 1"}'
-    
-    # Get some mana back when dealing magic damage.
-    magic-damage:
-    - 'mana{operation=GIVE;amount=1}'
+exp-table: class_exp_table
 
 cast-particle:
     particle: VILLAGER_HAPPY

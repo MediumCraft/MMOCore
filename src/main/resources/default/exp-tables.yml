@@ -31,6 +31,14 @@ example_exp_table:
       - 'exp{amount=80}'
       - 'command{format="broadcast Boy, %player_name% level up twice in one of his(her) professions!"}'
 
+# Exp table used by class to provide
+# one skill point every level up
+class_exp_table:
+  skill_point:
+    period: 1
+    triggers:
+      - 'command{format="mmocore admin skill-points give %player% 1"}'
+
 second_exp_table:
 
   # Base exp every level up, sweet.

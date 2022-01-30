@@ -31,11 +31,10 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
-triggers:
-    level-up:
-    - 'command{format="mmocore admin skill-points give %player% 1"}'
+exp-table: class_exp_table
 
 options:
+    # Mana and health regen only applies when out of combat
     off-combat-mana-regen: true
     off-combat-health-regen: true
 

@@ -32,9 +32,7 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
-triggers:
-    level-up:
-    - 'command{format="mmocore admin skill-points give %player% 1"}'
+exp-table: class_exp_table
 
 # This is the default mana display options, however it is not mandatory
 # to have it in your class config file. Other classes do not have this

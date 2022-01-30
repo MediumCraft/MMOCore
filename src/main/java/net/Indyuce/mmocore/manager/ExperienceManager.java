@@ -59,7 +59,6 @@ public class ExperienceManager implements MMOCoreManager {
         return Objects.requireNonNull(expTables.get(id), "Could not find exp table with ID '" + id + "'");
     }
 
-    @Deprecated
     public ExperienceTable loadExperienceTable(Object obj) {
 
         if (obj instanceof ConfigurationSection)

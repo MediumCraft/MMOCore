@@ -53,15 +53,14 @@ mana:
         empty: WHITE
     name: 'Rage'
 
+exp-table: class_exp_table
+
 # Rage charges when dealing weapon and physical damage.
 triggers:
     weapon-damage:
     - 'mana{operation=GIVE;amount=2-3}'
     physical-damage:
     - 'mana{operation=GIVE;amount=2-3}'
-    
-    level-up:
-    - 'command{format="mmocore admin skill-points give %player% 1"}'
 
 cast-particle:
     particle: REDSTONE
