@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.experience.provider.ProfessionExperienceDispenser;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -113,10 +114,12 @@ public class Profession extends PostLoadObject implements ExperienceObject {
         return experience;
     }
 
+    @Override
     public boolean hasExperienceTable() {
         return expTable != null;
     }
 
+    @NotNull
     public ExperienceTable getExperienceTable() {
         return Objects.requireNonNull(expTable, "Profession has no exp table");
     }

@@ -245,9 +245,14 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return expCurve;
     }
 
-    @Override
+    @NotNull
     public ExperienceTable getExperienceTable() {
-        return expTable;
+        return Objects.requireNonNull(expTable, "Class has no exp table");
+    }
+
+    @Override
+    public boolean hasExperienceTable() {
+        return expTable != null;
     }
 
     public ItemStack getIcon() {

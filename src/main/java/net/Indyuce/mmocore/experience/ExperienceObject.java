@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.experience;
 
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -24,6 +25,8 @@ public interface ExperienceObject {
     /**
      * @return Table read when leveling up
      */
-    @Nullable
+    @NotNull
     ExperienceTable getExperienceTable();
+
+    boolean hasExperienceTable();
 }
