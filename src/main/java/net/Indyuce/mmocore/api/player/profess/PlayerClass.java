@@ -20,6 +20,8 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.provider.MainExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
+import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
@@ -31,8 +33,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.logging.Level;
@@ -50,7 +52,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final Map<StatType, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
-
+    private final Map<String, ClassTrigger> classTriggers = new HashMap<>();
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
 
     private final CastingParticle castParticle;
@@ -100,6 +102,16 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from class '" + id + "': " + exception.getMessage());
             }
         this.expTable = expTable;
+
+        if (config.contains("triggers"))
+            for (String key : config.getConfigurationSection("triggers").getKeys(false)) {
+                try {
+                    String format = key.toLowerCase().replace("_", "-").replace(" ", "-");
+                    classTriggers.put(format, new ClassTrigger(format, config.getStringList("triggers." + key)));
+                } catch (IllegalArgumentException exception) {
+                    MMOCore.log(Level.WARNING, "Could not load trigger '" + key + "' from class '" + id + "':" + exception.getMessage());
+                }
+            }
 
         if (config.contains("attributes"))
             for (String key : config.getConfigurationSection("attributes").getKeys(false))
@@ -277,6 +289,11 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public boolean hasOption(ClassOption option) {
         return options.containsKey(option) ? options.get(option) : option.getDefault();
+    }
+
+    @Nullable
+    public ClassTrigger getClassTrigger(ClassTriggerType type) {
+        return classTriggers.get(type);
     }
 
     @Deprecated
