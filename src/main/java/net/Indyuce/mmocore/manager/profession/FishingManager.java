@@ -68,10 +68,10 @@ public class FishingManager extends SpecificProfessionManager {
 
 			for (String str : list)
 				try {
-					FishingDropItem dropItem = new FishingDropItem(str);
+					FishingDropItem dropItem = new FishingDropItem(new MMOLineConfig(str));
 					maxWeight += dropItem.getWeight();
 					items.add(dropItem);
-				} catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
+				} catch (RuntimeException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING,
 							"Could not load item '" + str + "' from fishing drop table '" + id + "': " + exception.getMessage());
 				}
@@ -91,14 +91,11 @@ public class FishingManager extends SpecificProfessionManager {
 		}
 
 		public FishingDropItem getRandomItem() {
-			int weight = random.nextInt(maxWeight);
+			int randomCoefficient = random.nextInt(maxWeight);
 
-			for (FishingDropItem item : items) {
-				weight -= item.getWeight();
-
-				if (weight <= 0)
+			for (FishingDropItem item : items)
+				if ((randomCoefficient -= item.getWeight()) <= 0)
 					return item;
-			}
 
 			throw new NullPointerException("Could not find item in drop table");
 		}

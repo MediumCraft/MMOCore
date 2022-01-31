@@ -15,9 +15,7 @@ public class FishingDropItem {
 
 	private final int weight;
 
-	public FishingDropItem(String value) {
-		MMOLineConfig config = new MMOLineConfig(value);
-
+	public FishingDropItem(MMOLineConfig config) {
 		config.validate("tugs", "experience");
 
 		tugs = new RandomAmount(config.getString("tugs"));
