@@ -6,6 +6,7 @@ import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
 import io.lumine.mythic.lib.skill.Skill;
 import io.lumine.mythic.lib.skill.SkillMetadata;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
@@ -27,10 +28,11 @@ public class CastableSkill extends Skill {
     @Override
     public boolean getResult(SkillMetadata skillMeta) {
         PlayerData playerData = PlayerData.get(skillMeta.getCaster().getData().getUniqueId());
+        boolean loud = !skill.getSkill().hasTrigger() || !skill.getSkill().getTrigger().isSilent();
 
         // If the caster has unlocked that skill
         if (!playerData.hasSkillUnlocked(skill)) {
-            MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(playerData.getPlayer());
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(playerData.getPlayer());
             return false;
         }
 
@@ -40,19 +42,19 @@ public class CastableSkill extends Skill {
 
         // Cooldown check
         if (skillMeta.getCaster().getData().getCooldownMap().isOnCooldown(this)) {
-            MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(playerData.getPlayer());
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(playerData.getPlayer());
             return false;
         }
 
         // Mana cost
         if (playerData.getMana() < getModifier("mana")) {
-            MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana", playerData.getProfess().getManaDisplay().getName()).send(playerData.getPlayer());
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana", playerData.getProfess().getManaDisplay().getName()).send(playerData.getPlayer());
             return false;
         }
 
         // Stamina cost
         if (playerData.getStamina() < getModifier("stamina")) {
-            MMOCore.plugin.configManager.getSimpleMessage("casting.no-stamina").send(playerData.getPlayer());
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.no-stamina").send(playerData.getPlayer());
             return false;
         }
 
