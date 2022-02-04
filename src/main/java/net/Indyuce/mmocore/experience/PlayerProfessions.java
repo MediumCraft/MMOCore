@@ -164,6 +164,7 @@ public class PlayerProfessions {
         }
 
         value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
+
         // Adds functionality for additional experience per profession.
         value *= 1 + playerData.getStats().getInstance(StatType.ADDITIONAL_EXPERIENCE, profession).getTotal() / 100;
 
