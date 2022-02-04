@@ -7,7 +7,12 @@ import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
 
 public class PlayerStats {
     private final PlayerData data;
@@ -35,6 +40,25 @@ public class PlayerStats {
 
     public StatInstance getInstance(String stat) {
         return getMap().getInstance(stat);
+    }
+
+    /**
+     * Allows for stat type enum to have dynamic professions.
+     * ID FORMAT: STAT_TYPE_HERE_PROFESSION_HERE
+     *
+     * @param type the type of stat
+     * @param profession the stat's specific permission
+     * @return instance of found stat
+     * @author Ehhthan
+     */
+    @NotNull
+    public StatInstance getInstance(StatType type, @Nullable Profession profession) {
+        if (profession == null)
+            return getInstance(type);
+        else {
+            String id = (type.name() + '_' + profession.getId()).replace('-', '_').replace(' ', '_').toUpperCase(Locale.ROOT);
+            return getInstance(id);
+        }
     }
 
     /*
