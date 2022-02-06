@@ -28,7 +28,7 @@ public class CastableSkill extends Skill {
     @Override
     public boolean getResult(SkillMetadata skillMeta) {
         PlayerData playerData = PlayerData.get(skillMeta.getCaster().getData().getUniqueId());
-        boolean loud = !skill.getSkill().hasTrigger() || !skill.getSkill().getTrigger().isSilent();
+        boolean loud = skill.getSkill().getHandler().isTriggerable() && (!skill.getSkill().hasTrigger() || !skill.getSkill().getTrigger().isSilent());
 
         // If the caster has unlocked that skill
         if (!playerData.hasSkillUnlocked(skill)) {
