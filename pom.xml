@@ -208,6 +208,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.denizen</groupId>
+			<artifactId>Dungeons</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Guild plugins -->
 		<dependency>
 			<groupId>com.massivecraft</groupId>
@@ -227,6 +234,13 @@
 			<groupId>me.glaremasters</groupId>
 			<artifactId>Guilds</artifactId>
 			<version>3.5.6.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.kingdoms.main</groupId>
+			<artifactId>Kingdoms</artifactId>
+			<version>1.11.15.0.0.0.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 

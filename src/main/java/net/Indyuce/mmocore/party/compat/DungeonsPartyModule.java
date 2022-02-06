@@ -1,52 +1,37 @@
 package net.Indyuce.mmocore.party.compat;
 
-import de.erethon.dungeonsxl.DungeonsXL;
-import de.erethon.dungeonsxl.api.player.PlayerGroup;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.PartyModule;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class DungeonsPartyModule implements PartyModule {
 
     @Override
     public AbstractParty getParty(PlayerData playerData) {
-        PlayerGroup group = DungeonsXL.getInstance().getPlayerGroup(playerData.getPlayer());
-        return group == null ? null : new CustomParty(group);
+        throw new RuntimeException("Not supported");
     }
 
     class CustomParty implements AbstractParty {
-        private final PlayerGroup group;
 
-        public CustomParty(PlayerGroup group) {
-            this.group = group;
+        public CustomParty() {
         }
 
         @Override
         public boolean hasMember(Player player) {
-            return group.getMembers().contains(player.getUniqueId());
+            throw new RuntimeException("Not supported");
         }
 
         @Override
         public List<PlayerData> getOnlineMembers() {
-            List<PlayerData> list = new ArrayList<>();
-
-            for (UUID playerUid : group.getMembers().getUniqueIds()) {
-                PlayerData found = PlayerData.get(playerUid);
-                if (found.isOnline())
-                    list.add(found);
-            }
-
-            return list;
+            throw new RuntimeException("Not supported");
         }
 
         @Override
         public int countMembers() {
-            return group.getMembers().getUniqueIds().size();
+            throw new RuntimeException("Not supported");
         }
     }
 }
