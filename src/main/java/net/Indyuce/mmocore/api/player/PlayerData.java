@@ -247,7 +247,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Override
     public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {
         String key = object.getKey() + "." + table.getId() + "." + item.getId();
-        return tableItemClaims.get(key);
+        return tableItemClaims.getOrDefault(key, 0);
     }
 
     @Override
