@@ -7,6 +7,7 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
@@ -54,6 +55,9 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final List<Subclass> subclasses = new ArrayList<>();
     private final Map<String, ClassTrigger> classTriggers = new HashMap<>();
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
+
+    @Deprecated
+    private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
     private final CastingParticle castParticle;
 
@@ -107,7 +111,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             for (String key : config.getConfigurationSection("triggers").getKeys(false)) {
                 try {
                     String format = key.toLowerCase().replace("_", "-").replace(" ", "-");
-                    classTriggers.put(format, new ClassTrigger(format, config.getStringList("triggers." + key)));
+                    eventTriggers.put(format, new EventTrigger(format, config.getStringList("triggers." + key)));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.log(Level.WARNING, "Could not load trigger '" + key + "' from class '" + id + "':" + exception.getMessage());
                 }
@@ -294,6 +298,21 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     public ClassTrigger getClassTrigger(ClassTriggerType type) {
         return classTriggers.get(type);
+    }
+
+    @Deprecated
+    public Set<String> getEventTriggers() {
+        return eventTriggers.keySet();
+    }
+
+    @Deprecated
+    public boolean hasEventTriggers(String name) {
+        return eventTriggers.containsKey(name);
+    }
+
+    @Deprecated
+    public EventTrigger getEventTriggers(String name) {
+        return eventTriggers.get(name);
     }
 
     @Deprecated

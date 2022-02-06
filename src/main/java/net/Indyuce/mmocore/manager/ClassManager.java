@@ -4,14 +4,16 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
+import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.*;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.HandlerList;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class ClassManager implements MMOCoreManager {
@@ -22,6 +24,26 @@ public class ClassManager implements MMOCoreManager {
      * classes, the last one overrides the previous.
      */
     private PlayerClass defaultClass;
+
+    /**
+     * Same different types of trigger events to be able to
+     * map them later in the player class instances.
+     */
+    private final Set<EventTriggerHandler> triggerHandlers = new HashSet<>();
+
+    public ClassManager() {
+        registerEvent(new LevelUpEventTrigger());
+        registerEvent(new AttackEventTrigger());
+        registerEvent(new ClassChosenEventTrigger());
+        registerEvent(new BlockBrokenTrigger());
+        registerEvent(new BlockPlacedTrigger());
+        registerEvent(new MultipleLevelUpEventTrigger());
+    }
+
+    @Deprecated
+    public void registerEvent(EventTriggerHandler handler) {
+        triggerHandlers.add(handler);
+    }
 
     public void register(PlayerClass playerClass) {
         map.put(playerClass.getId(), playerClass);
@@ -48,14 +70,17 @@ public class ClassManager implements MMOCoreManager {
         return defaultClass;
     }
 
-    public void reloadPlayerClasses() {
-        PlayerData.getAll().forEach(data -> data.setClass(get(data.getProfess().getId())));
-    }
-
     @Override
     public void initialize(boolean clearBefore) {
-        if (clearBefore)
+        if (clearBefore) {
             map.clear();
+
+            /*
+             * Do not clear the list of trigger listeners, since it's only setup
+             * once the server loads and it is never modified.
+             */
+            triggerHandlers.forEach(HandlerList::unregisterAll);
+        }
 
         for (File file : new File(MMOCore.plugin.getDataFolder() + "/classes").listFiles())
             try {
@@ -74,5 +99,8 @@ public class ClassManager implements MMOCoreManager {
 
         defaultClass = map.values().stream().filter(profess -> profess.hasOption(ClassOption.DEFAULT)).findFirst()
                 .orElse(new PlayerClass("HUMAN", "Human", Material.LEATHER_BOOTS));
+
+        // Register event triggers
+        triggerHandlers.forEach(handler -> Bukkit.getPluginManager().registerEvents(handler, MMOCore.plugin));
     }
 }
