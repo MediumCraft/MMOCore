@@ -353,7 +353,7 @@ public class SkillList extends EditableInventory {
                         if (selected == null)
                             return;
 
-                        if (selected.getSkill().isPassive()) {
+                        if (selected.getSkill().getTrigger().isPassive()) {
                             MMOCore.plugin.configManager.getSimpleMessage("not-active-skill").send(player);
                             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                             return;

@@ -11,12 +11,15 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import org.jetbrains.annotations.NotNull;
 
 public class CastableSkill extends Skill {
     private final ClassSkill skill;
     private final int skillLevel;
 
     public CastableSkill(ClassSkill skill, int skillLevel) {
+        super(skill.getSkill().getTrigger());
+
         this.skill = skill;
         this.skillLevel = skillLevel;
     }
@@ -28,7 +31,7 @@ public class CastableSkill extends Skill {
     @Override
     public boolean getResult(SkillMetadata skillMeta) {
         PlayerData playerData = PlayerData.get(skillMeta.getCaster().getData().getUniqueId());
-        boolean loud = skill.getSkill().getHandler().isTriggerable() && (!skill.getSkill().hasTrigger() || !skill.getSkill().getTrigger().isSilent());
+        boolean loud = !getTrigger().isSilent();
 
         // If the caster has unlocked that skill
         if (!playerData.hasSkillUnlocked(skill)) {
@@ -37,7 +40,7 @@ public class CastableSkill extends Skill {
         }
 
         // Global cooldown check
-        if (!skill.getSkill().isPassive() && playerData.getActivityTimeOut(PlayerActivity.CAST_SKILL) > 0)
+        if (!getTrigger().isPassive() && playerData.getActivityTimeOut(PlayerActivity.CAST_SKILL) > 0)
             return false;
 
         // Cooldown check

@@ -101,7 +101,7 @@ public class MMOCore extends LuminePlugin {
 
 	public boolean shouldDebugSQL = false;
 
-	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 6;
+	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 7;
 
 	public MMOCore() {
 		plugin = this;

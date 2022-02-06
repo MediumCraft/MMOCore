@@ -7,6 +7,7 @@ import io.lumine.mythic.lib.skill.Skill;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.result.SkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.party.AbstractParty;
@@ -110,7 +111,7 @@ public class MMOCoreAPI {
         PlayerMetadata casterMeta = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
         TriggerMetadata triggerMeta = new TriggerMetadata(casterMeta, null, null);
         RegisteredSkill registered = MMOCore.plugin.skillManager.getSkill(skill.getId());
-        Skill cast = registered == null ? new SimpleSkill(skill) : new CastableSkill(new ClassSkill(registered, 0), level);
+        Skill cast = registered == null ? new SimpleSkill(TriggerType.CAST, skill) : new CastableSkill(new ClassSkill(registered, 0), level);
         return cast.cast(triggerMeta);
     }
 }
