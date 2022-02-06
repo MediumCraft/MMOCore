@@ -32,7 +32,8 @@ public class RegisteredSkill {
         lore = Objects.requireNonNull(config.getStringList("lore"), "Could not find skill lore");
 
         // Trigger type
-        Validate.isTrue(getHandler().isTriggerable() || !config.contains("passive-type"), "Cannot change the trigger type of a default passive skill");
+        Validate.isTrue(!getHandler().isTriggerable() || config.contains("passive-type"), "Please provide a passive type");
+        Validate.isTrue(getHandler().isTriggerable() || !config.contains("passive-type"), "Cannot change passive type of a default passive skill");
         triggerType = config.contains("passive-type") ? TriggerType.valueOf(config.getString("passive-type").toUpperCase().replace(" ", "_").replace("-", "_")) : null;
 
         for (String mod : handler.getModifiers())
@@ -99,6 +100,11 @@ public class RegisteredSkill {
     @NotNull
     public TriggerType getTrigger() {
         return Objects.requireNonNull(triggerType, "Skill has no trigger");
+    }
+
+    @Nullable
+    public TriggerType getTriggerOrNull() {
+        return triggerType;
     }
 
     public void addModifier(String modifier, LinearValue linear) {

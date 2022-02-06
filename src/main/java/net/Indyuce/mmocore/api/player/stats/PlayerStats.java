@@ -102,11 +102,11 @@ public class PlayerStats {
          * as statistics (when the player level changes, when his class
          * changes, when he logs on..)
          *
-         * This updates the player's passive skills
+         * This updates the player's PASSIVE skills
          */
         data.getMMOPlayerData().getPassiveSkillMap().removeModifiers("MMOCorePassiveSkill");
         for (ClassSkill skill : data.getProfess().getSkills())
-            if (skill.getSkill().hasTrigger())
+            if (skill.getSkill().isPassive())
                 data.getMMOPlayerData().getPassiveSkillMap().addModifier(skill.toPassive(data));
     }
 }
