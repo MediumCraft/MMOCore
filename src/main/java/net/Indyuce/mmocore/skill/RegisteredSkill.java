@@ -28,6 +28,7 @@ public class RegisteredSkill {
     public RegisteredSkill(SkillHandler<?> handler, ConfigurationSection config) {
         this.handler = handler;
 
+
         name = Objects.requireNonNull(config.getString("name"), "Could not find skill name");
         icon = MMOCoreUtils.readIcon(Objects.requireNonNull(config.getString("material"), "Could not find skill icon"));
         lore = Objects.requireNonNull(config.getStringList("lore"), "Could not find skill lore");
