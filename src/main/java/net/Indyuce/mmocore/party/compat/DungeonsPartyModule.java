@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+@Deprecated
 public class DungeonsPartyModule implements PartyModule {
 
     @Override
