@@ -114,7 +114,7 @@ public class ClassSkill implements CooldownObject {
     }
 
     public PassiveSkill toPassive(PlayerData caster) {
-        Validate.isTrue(!skill.getTrigger().isPassive(), "Skill is active");
+        Validate.isTrue(skill.getTrigger().isPassive(), "Skill is active");
         return new PassiveSkill("MMOCorePassiveSkill", toCastable(caster), EquipmentSlot.OTHER, ModifierSource.OTHER);
     }
 
