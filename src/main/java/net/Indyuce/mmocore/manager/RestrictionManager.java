@@ -13,10 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class RestrictionManager implements MMOCoreManager {
@@ -32,6 +29,7 @@ public class RestrictionManager implements MMOCoreManager {
      * If a player breaks a block with an item type that was not
      * registered in the map above, it will use this permission set instead.
      */
+    @Nullable
     private ToolPermissions defaultPermissions;
 
     @Override
@@ -113,7 +111,10 @@ public class RestrictionManager implements MMOCoreManager {
 
         @Override
         protected void whenPostLoaded(ConfigurationSection config) {
-            parent = config.contains("parent") ? map.get(formatId(config.getString("parent"))) : null;
+            if (config.contains("parent")) {
+                String parentFormat = formatId(config.getString("parent"));
+                parent = Objects.requireNonNull(map.get(parentFormat), "Could not find parent with ID '" + parentFormat + "'");
+            }
             for (String key : config.getStringList("can-mine"))
                 mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)).generateKey());
         }
