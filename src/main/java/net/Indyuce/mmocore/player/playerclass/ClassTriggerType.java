@@ -22,5 +22,8 @@ public enum ClassTriggerType {
     WEAPON_DAMAGE,
 
     @Deprecated
-    SKILL_DAMAGE;
+    SKILL_DAMAGE,
+
+    @Deprecated
+    UNARMED_DAMAGE;
 }

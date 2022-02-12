@@ -1,7 +1,10 @@
 package net.Indyuce.mmocore.listener;
 
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.damage.DamageType;
+import io.lumine.mythic.lib.skill.result.SkillResult;
+import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
@@ -15,6 +18,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import javax.annotation.Nullable;
+import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +33,7 @@ import java.util.Map;
  * @author jules
  * @see {@link ClassTrigger}
  */
+@Deprecated
 public class ClassTriggers implements Listener {
 
     @Deprecated
@@ -39,6 +45,7 @@ public class ClassTriggers implements Listener {
         damageTriggers.put(DamageType.PROJECTILE, ClassTriggerType.PROJECTILE_DAMAGE);
         damageTriggers.put(DamageType.WEAPON, ClassTriggerType.WEAPON_DAMAGE);
         damageTriggers.put(DamageType.SKILL, ClassTriggerType.SKILL_DAMAGE);
+        damageTriggers.put(DamageType.UNARMED, ClassTriggerType.SKILL_DAMAGE);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -68,25 +75,22 @@ public class ClassTriggers implements Listener {
         applyTriggers(event.getPlayer(), ClassTriggerType.PLACE_BLOCK);
     }
 
-    private void applyTriggers(Player player, ClassTriggerType type) {
-        applyTriggers(PlayerData.get(player), type);
+    private SkillResult applyTriggers(Player player, ClassTriggerType type) {
+        return applyTriggers(PlayerData.get(player), type);
     }
 
-    private void applyTriggers(PlayerData player, ClassTriggerType type) {
-        //return applyTriggers(player, type, () -> new TriggerMetadata(player.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND), null, null));
+    private SkillResult applyTriggers(PlayerData player, ClassTriggerType type) {
+        return applyTriggers(player, type, () -> new TriggerMetadata(player.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND), null, null));
+    }
+
+    @Nullable
+    private SkillResult applyTriggers(Player player, ClassTriggerType type, Provider<TriggerMetadata> triggerMetaProvider) {
+        return applyTriggers(PlayerData.get(player), type, triggerMetaProvider);
+    }
+
+    @Nullable
+    private SkillResult applyTriggers(PlayerData player, ClassTriggerType type, Provider<TriggerMetadata> triggerMetaProvider) {
         ClassTrigger trigger = player.getProfess().getClassTrigger(type);
-        if (trigger != null)
-            trigger.trigger(player);
+        return trigger == null ? null : trigger.trigger(triggerMetaProvider.get());
     }
-
-    // @Nullable
-    // private SkillResult applyTriggers(Player player, ClassTriggerType type, Provider<TriggerMetadata> triggerMetaProvider) {
-    //    return applyTriggers(PlayerData.get(player), type, triggerMetaProvider);
-    // }
-
-    // @Nullable
-    // private SkillResult applyTriggers(PlayerData player, ClassTriggerType type, Provider<TriggerMetadata> triggerMetaProvider) {
-    //     ClassTrigger trigger = player.getProfess().getClassTrigger(type);
-    //     return trigger == null ? null : trigger.trigger(triggerMetaProvider.get());
-    //  }
 }

@@ -113,8 +113,7 @@ public class RestrictionManager implements MMOCoreManager {
 
         @Override
         protected void whenPostLoaded(ConfigurationSection config) {
-            if (config.contains("parent"))
-                parent = map.get(UtilityMethods.enumName(config.getString("parent")));
+            parent = config.contains("parent") ? map.get(formatId(config.getString("parent"))) : null;
             for (String key : config.getStringList("can-mine"))
                 mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)).generateKey());
         }
@@ -149,5 +148,9 @@ public class RestrictionManager implements MMOCoreManager {
         public boolean isDefault() {
             return defaultSet;
         }
+    }
+
+    private String formatId(String str) {
+        return UtilityMethods.enumName(str.replace("?", ".").replace("%", "."));
     }
 }
