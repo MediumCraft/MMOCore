@@ -53,7 +53,6 @@ public class ClassTrigger {
         return type;
     }
 
-    @Deprecated
     public SkillResult trigger(TriggerMetadata triggerMeta) {
         return castableSkill.cast(triggerMeta);
     }

@@ -276,7 +276,7 @@ public class MMOCore extends LuminePlugin {
 		Bukkit.getPluginManager().registerEvents(new FishingListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerCollectStats(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerPressKeyListener(), this);
-		Bukkit.getPluginManager().registerEvents(new ClassTriggers(), this);
+		// Bukkit.getPluginManager().registerEvents(new ClassTriggers(), this);
 
 		/*
 		 * Initialize player data from all online players. This is very important to do
