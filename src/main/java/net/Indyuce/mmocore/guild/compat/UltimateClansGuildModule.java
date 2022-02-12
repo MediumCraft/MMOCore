@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.guild.AbstractGuild;
 import net.Indyuce.mmocore.guild.GuildModule;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 public class UltimateClansGuildModule implements GuildModule {
     private static final UClans API = (UClans) Bukkit.getPluginManager().getPlugin("UltimateCLans");
@@ -15,8 +16,9 @@ public class UltimateClansGuildModule implements GuildModule {
         return API.getPlayerAPI().hasClan(playerData.getUniqueId()) ? new CustomGuild(API.getClanAPI().getClan(API.getPlayerAPI().getClanID(playerData.getUniqueId()))) : null;
     }
 
-
     class CustomGuild implements AbstractGuild {
+
+        @NotNull
         private final ClanData clan;
 
         CustomGuild(ClanData clan) {

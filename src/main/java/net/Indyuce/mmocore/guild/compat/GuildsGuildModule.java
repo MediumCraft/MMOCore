@@ -5,6 +5,7 @@ import me.glaremasters.guilds.guild.Guild;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.guild.AbstractGuild;
 import net.Indyuce.mmocore.guild.GuildModule;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildsGuildModule implements GuildModule {
 
@@ -15,6 +16,8 @@ public class GuildsGuildModule implements GuildModule {
     }
 
     class CustomGuild implements AbstractGuild {
+
+        @NotNull
         private final Guild guild;
 
         CustomGuild(Guild guild) {

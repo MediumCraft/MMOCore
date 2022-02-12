@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -27,13 +28,13 @@ public class RegisteredSkill {
     public RegisteredSkill(SkillHandler<?> handler, ConfigurationSection config) {
         this.handler = handler;
 
+
         name = Objects.requireNonNull(config.getString("name"), "Could not find skill name");
         icon = MMOCoreUtils.readIcon(Objects.requireNonNull(config.getString("material"), "Could not find skill icon"));
         lore = Objects.requireNonNull(config.getStringList("lore"), "Could not find skill lore");
 
         // Trigger type
-        Validate.isTrue(getHandler().isTriggerable() || !config.contains("passive-type"), "Cannot change the trigger type of a default passive skill");
-        triggerType = config.contains("passive-type") ? TriggerType.valueOf(config.getString("passive-type").toUpperCase().replace(" ", "_").replace("-", "_")) : null;
+        triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
 
         for (String mod : handler.getModifiers())
             defaultModifiers.put(mod, config.contains(mod) ? new LinearValue(config.getConfigurationSection(mod)) : LinearValue.ZERO);
@@ -65,35 +66,6 @@ public class RegisteredSkill {
 
     public boolean hasModifier(String modifier) {
         return defaultModifiers.containsKey(modifier);
-    }
-
-    /**
-     * There are three types of MMOCore skills:
-     * - skills with no trigger type (therefore active)
-     * - default passive skills with no trigger type
-     * - custom skills with a trigger type (therefore passive)
-     * <p>
-     * Illegal:
-     * - default passive skills with a trigger type
-     *
-     * @return If the skill should
-     */
-    public boolean hasTrigger() {
-        return triggerType != null;
-    }
-
-    /**
-     * Two types of passive skills:
-     * - custom passive skills, with a trigger type
-     * - default passive skills which are untriggerable
-     * <p>
-     * This option dictates whether or not it
-     * can be cast when in casting mode.
-     *
-     * @return If the given skill is passive
-     */
-    public boolean isPassive() {
-        return triggerType != null || !getHandler().isTriggerable();
     }
 
     @NotNull

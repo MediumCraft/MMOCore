@@ -7,6 +7,7 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
@@ -20,6 +21,8 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.provider.MainExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
+import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
@@ -31,8 +34,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.logging.Level;
@@ -50,8 +53,11 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final Map<StatType, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
-
+    private final Map<String, ClassTrigger> classTriggers = new HashMap<>();
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
+
+    @Deprecated
+    private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
     private final CastingParticle castParticle;
 
@@ -100,6 +106,16 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from class '" + id + "': " + exception.getMessage());
             }
         this.expTable = expTable;
+
+        if (config.contains("triggers"))
+            for (String key : config.getConfigurationSection("triggers").getKeys(false)) {
+                try {
+                    String format = key.toLowerCase().replace("_", "-").replace(" ", "-");
+                    eventTriggers.put(format, new EventTrigger(format, config.getStringList("triggers." + key)));
+                } catch (IllegalArgumentException exception) {
+                    MMOCore.log(Level.WARNING, "Could not load trigger '" + key + "' from class '" + id + "':" + exception.getMessage());
+                }
+            }
 
         if (config.contains("attributes"))
             for (String key : config.getConfigurationSection("attributes").getKeys(false))
@@ -277,6 +293,26 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public boolean hasOption(ClassOption option) {
         return options.containsKey(option) ? options.get(option) : option.getDefault();
+    }
+
+    @Nullable
+    public ClassTrigger getClassTrigger(ClassTriggerType type) {
+        return classTriggers.get(type);
+    }
+
+    @Deprecated
+    public Set<String> getEventTriggers() {
+        return eventTriggers.keySet();
+    }
+
+    @Deprecated
+    public boolean hasEventTriggers(String name) {
+        return eventTriggers.containsKey(name);
+    }
+
+    @Deprecated
+    public EventTrigger getEventTriggers(String name) {
+        return eventTriggers.get(name);
     }
 
     @Deprecated

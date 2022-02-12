@@ -66,8 +66,8 @@ public class AttributeModifier extends PlayerModifier {
         Validate.notNull(str, "String cannot be null");
         Validate.notEmpty(str, "String cannot be empty");
 
-        type = str.toCharArray()[str.length() - 1] == '%' ? io.lumine.mythic.lib.player.modifier.ModifierType.RELATIVE : io.lumine.mythic.lib.player.modifier.ModifierType.FLAT;
-        value = Double.parseDouble(type == io.lumine.mythic.lib.player.modifier.ModifierType.RELATIVE ? str.substring(0, str.length() - 1) : str);
+        type = str.toCharArray()[str.length() - 1] == '%' ? ModifierType.RELATIVE : ModifierType.FLAT;
+        value = Double.parseDouble(type == ModifierType.RELATIVE ? str.substring(0, str.length() - 1) : str);
         this.attribute = attribute;
     }
 
@@ -76,7 +76,7 @@ public class AttributeModifier extends PlayerModifier {
 
         this.attribute = object.getString("attribute");
         this.value = object.getDouble("value");
-        type = object.getBoolean("multiplicative", false) ? io.lumine.mythic.lib.player.modifier.ModifierType.RELATIVE : io.lumine.mythic.lib.player.modifier.ModifierType.FLAT;
+        type = object.getBoolean("multiplicative", false) ? ModifierType.RELATIVE : ModifierType.FLAT;
     }
 
     public String getAttribute() {
