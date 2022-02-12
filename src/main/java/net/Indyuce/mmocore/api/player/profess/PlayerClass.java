@@ -21,8 +21,6 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.provider.MainExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
-import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
-import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
@@ -53,7 +51,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final Map<StatType, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
-    private final Map<String, ClassTrigger> classTriggers = new HashMap<>();
+    // private final Map<String, ClassTrigger> classTriggers = new HashMap<>();
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
 
     @Deprecated
@@ -295,10 +293,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return options.containsKey(option) ? options.get(option) : option.getDefault();
     }
 
-    @Nullable
-    public ClassTrigger getClassTrigger(ClassTriggerType type) {
-        return classTriggers.get(type);
-    }
+    // @Nullable
+    // public ClassTrigger getClassTrigger(ClassTriggerType type) {
+    //     return classTriggers.get(type);
+    // }
 
     @Deprecated
     public Set<String> getEventTriggers() {
