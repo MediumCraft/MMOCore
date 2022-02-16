@@ -10,10 +10,7 @@ import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClassSkill implements CooldownObject {
     private final RegisteredSkill skill;
@@ -74,7 +71,7 @@ public class ClassSkill implements CooldownObject {
     }
 
     public double getModifier(String modifier, int level) {
-        return modifiers.get(modifier).calculate(level);
+        return Objects.requireNonNull(modifiers.get(modifier), "Could not find modifier '" + modifier + "'").calculate(level);
     }
 
     public List<String> calculateLore(PlayerData data) {
