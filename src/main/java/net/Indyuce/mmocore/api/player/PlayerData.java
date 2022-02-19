@@ -555,7 +555,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (event.isCancelled())
             return;
 
-        experience += event.getExperience();
+        experience = Math.max(0, experience + event.getExperience());
 
         // Calculate the player's next level
         int oldLevel = level, needed;

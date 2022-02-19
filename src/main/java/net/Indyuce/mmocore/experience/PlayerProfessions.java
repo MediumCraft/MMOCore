@@ -177,7 +177,7 @@ public class PlayerProfessions {
         if (event.isCancelled())
             return;
 
-        exp.put(profession.getId(), exp.containsKey(profession.getId()) ? exp.get(profession.getId()) + event.getExperience() : event.getExperience());
+        exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0) + event.getExperience()));
         int needed, exp, level, oldLevel = getLevel(profession);
 
         /*

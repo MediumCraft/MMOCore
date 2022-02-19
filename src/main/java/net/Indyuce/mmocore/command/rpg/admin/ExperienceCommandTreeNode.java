@@ -1,21 +1,21 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
-import java.util.function.BiConsumer;
-
+import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.command.CommandVerbose;
+import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.experience.Profession;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.EXPSource;
-import net.Indyuce.mmocore.experience.PlayerProfessions;
-import net.Indyuce.mmocore.experience.Profession;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.CommandVerbose;
-import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import java.util.function.BiConsumer;
 
 public class ExperienceCommandTreeNode extends CommandTreeNode {
 	public ExperienceCommandTreeNode(CommandTreeNode parent) {
@@ -24,6 +24,8 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 		addChild(new ActionCommandTreeNode(this, "set", PlayerData::setExperience, PlayerProfessions::setExperience));
 		addChild(new ActionCommandTreeNode(this, "give", (data, value) -> data.giveExperience(value, EXPSource.COMMAND), (professions, profession,
 				value) -> professions.giveExperience(profession, value, EXPSource.COMMAND, professions.getPlayerData().getPlayer().getLocation())));
+		addChild(new ActionCommandTreeNode(this, "take", (data, value) -> data.giveExperience(-value, EXPSource.COMMAND), (professions, profession,
+				value) -> professions.giveExperience(profession, -value, EXPSource.COMMAND, professions.getPlayerData().getPlayer().getLocation())));
 	}
 
 	public static class ActionCommandTreeNode extends CommandTreeNode {
@@ -56,6 +58,7 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 			int amount;
 			try {
 				amount = Integer.parseInt(args[5]);
+				Validate.isTrue(amount > 0);
 			} catch (NumberFormatException exception) {
 				sender.sendMessage(ChatColor.RED + args[5] + " is not a valid number.");
 				return CommandResult.FAILURE;
