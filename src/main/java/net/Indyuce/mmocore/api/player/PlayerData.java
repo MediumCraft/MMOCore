@@ -156,7 +156,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         int j = 0;
         while (j < boundSkills.size())
             try {
-                boundSkills.set(j, getProfess().getSkill(boundSkills.get(j).getSkill()));
+                boundSkills.set(j, Objects.requireNonNull(getProfess().getSkill(boundSkills.get(j).getSkill())));
             } catch (Exception ignored) {
             } finally {
                 j++;
@@ -843,6 +843,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setBoundSkill(int slot, ClassSkill skill) {
+        Validate.notNull(skill, "Skill cannot be null");
         if (boundSkills.size() < 6)
             boundSkills.add(skill);
         else
