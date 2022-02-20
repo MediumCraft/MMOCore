@@ -145,9 +145,8 @@ public class Party implements AbstractParty {
     public void sendInvite(PlayerData inviter, PlayerData target) {
         invites.put(target.getUniqueId(), System.currentTimeMillis());
         Request request = new PartyInvite(this, inviter, target);
-        if (inviter.isOnline() && target.isOnline())
-            new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
-                    .sendAsJSon(target.getPlayer());
+        new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
+                .sendAsJSon(target.getPlayer());
         MMOCore.plugin.requestManager.registerRequest(request);
     }
 

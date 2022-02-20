@@ -1,31 +1,55 @@
 package net.Indyuce.mmocore.api.player.social;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import org.apache.commons.lang.Validate;
+
 import java.util.UUID;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-
 public abstract class Request {
-	private final UUID uuid = UUID.randomUUID();
-	private final long date = System.currentTimeMillis();
-	private final PlayerData creator;
+    private final UUID uuid = UUID.randomUUID();
+    private final long date = System.currentTimeMillis();
+    private final PlayerData creator, target;
 
-	public Request(PlayerData creator) {
-		this.creator = creator;
-	}
+    /**
+     * Any request time out is by default 2 minutes.
+     */
+    private static final long TIME_OUT = 1000 * 60 * 2;
 
-	public PlayerData getCreator() {
-		return creator;
-	}
+    public Request(PlayerData creator, PlayerData target) {
+        this.creator = creator;
+        this.target = target;
+    }
 
-	public UUID getUniqueId() {
-		return uuid;
-	}
+    public PlayerData getCreator() {
+        return creator;
+    }
 
-	public boolean isTimedOut() {
-		return date + 1000 * 60 * 2 < System.currentTimeMillis();
-	}
+    public PlayerData getTarget() {
+        return target;
+    }
 
-	public abstract void accept();
+    public UUID getUniqueId() {
+        return uuid;
+    }
 
-	public abstract void deny();
+    public boolean isTimedOut() {
+        return date + TIME_OUT < System.currentTimeMillis();
+    }
+
+    public void accept() {
+        Validate.isTrue(target.isOnline(), "Target must be online");
+        whenAccepted();
+        MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
+    }
+
+    public abstract void whenAccepted();
+
+    public void deny() {
+        Validate.isTrue(target.isOnline(), "Target must be online");
+        whenDenied();
+        MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
+    }
+
+    public abstract void whenDenied();
 }
