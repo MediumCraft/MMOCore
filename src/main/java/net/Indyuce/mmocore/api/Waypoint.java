@@ -78,7 +78,7 @@ public class Waypoint {
 		String[] split = string.split(" ");
 
 		World world = Bukkit.getWorld(split[0]);
-		Validate.notNull(world, "Could not find world " + world);
+		Validate.notNull(world, "Could not find world with name '" + split[0]+"'");
 
 		double x = Double.parseDouble(split[1]);
 		double y = Double.parseDouble(split[2]);

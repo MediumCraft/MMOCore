@@ -19,7 +19,7 @@ public class WaypointManager {
 			try {
 				register(new Waypoint(config.getConfigurationSection(key)));
 			} catch (IllegalArgumentException exception) {
-				MMOCore.log(Level.WARNING, "Could not load waypoint " + key + ": " + exception.getMessage());
+				MMOCore.log(Level.WARNING, "Could not load waypoint '" + key + "': " + exception.getMessage());
 			}
 	}
 
