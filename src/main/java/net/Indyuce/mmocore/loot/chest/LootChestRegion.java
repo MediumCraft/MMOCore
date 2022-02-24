@@ -138,7 +138,7 @@ public class LootChestRegion {
         }
 
         /*
-         * no location has been found after the X iterations, return null and
+         * No location has been found after the X iterations, return null and
          * cancel chest spawning. worst case scenario, should not happen too
          * often except if the player is in a really NARROW zone
          */
@@ -148,8 +148,8 @@ public class LootChestRegion {
     public Location tryRandomDirection(Location center) {
 
         /*
-         * chooses a random direction and get the block in that direction which
-         * has the same height as the player
+         * Chooses a random direction and get the block in
+         * that direction which has the same height as the player
          */
         double a = random.nextDouble() * 2 * Math.PI;
         Vector dir = new Vector(Math.cos(a), 0, Math.sin(a))
@@ -157,8 +157,8 @@ public class LootChestRegion {
         Location random = center.add(dir);
 
         /*
-         * go up and down at the same time till it finds a non-solid block with
-         * a solid block underneath
+         * Go up and down at the same time till it finds
+         * a non-solid block with a solid block underneath
          */
         for (int h = 0; h <= algOptions.height * 2; h++) {
             int z = h % 2 == 0 ? h / 2 : -(h + 1) / 2; // bijective from N to Z

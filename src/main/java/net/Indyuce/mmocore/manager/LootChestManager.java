@@ -1,10 +1,6 @@
 package net.Indyuce.mmocore.manager;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
@@ -14,23 +10,33 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.loot.chest.LootChestRegion;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LootChestManager implements MMOCoreManager {
 
-	/*
-	 * all active loot chests in the server
+	/**
+	 * Active loot chests in the server
 	 */
 	private final Set<LootChest> active = new HashSet<>();
 
+	/**
+	 * Registered loot chest regions
+	 */
 	private final Map<String, LootChestRegion> regions = new HashMap<>();
 
 	public boolean hasRegion(String id) {
 		return regions.containsKey(id);
 	}
 
-	public LootChestRegion getRegion(String id) {
-		return regions.get(id);
-	}
+    /**
+     * @return Region with specific identifier
+     * @throws NullPointerException if not found
+     */
+    @NotNull
+    public LootChestRegion getRegion(String id) {
+        return Objects.requireNonNull(regions.get(id), "Could not find region with ID '" + id + "'");
+    }
 
 	public Collection<LootChestRegion> getRegions() {
 		return regions.values();
@@ -48,6 +54,7 @@ public class LootChestManager implements MMOCoreManager {
 		active.remove(chest);
 	}
 
+	@Nullable
 	public LootChest getChest(Location loc) {
 
 		for (LootChest chest : active)
