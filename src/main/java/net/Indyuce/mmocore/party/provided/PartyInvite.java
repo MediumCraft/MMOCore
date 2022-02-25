@@ -6,43 +6,38 @@ import net.Indyuce.mmocore.api.player.social.Request;
 import net.Indyuce.mmocore.manager.InventoryManager;
 
 public class PartyInvite extends Request {
-	private final PlayerData target;
-	private final Party party;
+    private final Party party;
 
-	public PartyInvite(Party party, PlayerData creator, PlayerData target) {
-		super(creator);
+    public PartyInvite(Party party, PlayerData creator, PlayerData target) {
+        super(creator, target);
 
-		this.party = party;
-		this.target = target;
-	}
+        this.party = party;
+    }
 
-	public Party getParty() {
-		return party;
-	}
+    public Party getParty() {
+        return party;
+    }
 
-	public PlayerData getPlayer() {
-		return target;
-	}
+    @Override
+    public void whenDenied() {
+        // Nothing
+    }
 
-	public void deny() {
-		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
-	}
-
-	public void accept() {
-		if(party.getMembers().size() >= Math.max(2, MMOCore.plugin.getConfig().getInt("party.max-players", 8))) {
-			MMOCore.plugin.configManager.getSimpleMessage("party-is-full").send(target.getPlayer());
-			return;
-		}
-		if(getCreator().isOnline())
-			party.removeLastInvite(getCreator().getPlayer());
-		party.getMembers().forEach(member -> {
-			if(member.isOnline() && target.isOnline())
-				MMOCore.plugin.configManager.getSimpleMessage("party-joined-other", "player", target.getPlayer().getName()).send(member.getPlayer());
-			});
-		if(party.getOwner().isOnline() && target.isOnline())
-			MMOCore.plugin.configManager.getSimpleMessage("party-joined", "owner", party.getOwner().getPlayer().getName()).send(target.getPlayer());
-		party.addMember(target);
-		InventoryManager.PARTY_VIEW.newInventory(target).open();
-		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
-	}
+    @Override
+    public void whenAccepted() {
+        if (party.getMembers().size() >= Math.max(2, MMOCore.plugin.getConfig().getInt("party.max-players", 8))) {
+            MMOCore.plugin.configManager.getSimpleMessage("party-is-full").send(getTarget().getPlayer());
+            return;
+        }
+        if (getCreator().isOnline())
+            party.removeLastInvite(getCreator().getPlayer());
+        party.getMembers().forEach(member -> {
+            if (member.isOnline())
+                MMOCore.plugin.configManager.getSimpleMessage("party-joined-other", "player", getTarget().getPlayer().getName()).send(member.getPlayer());
+        });
+        if (party.getOwner().isOnline())
+            MMOCore.plugin.configManager.getSimpleMessage("party-joined", "owner", party.getOwner().getPlayer().getName()).send(getTarget().getPlayer());
+        party.addMember(getTarget());
+        InventoryManager.PARTY_VIEW.newInventory(getTarget()).open();
+    }
 }

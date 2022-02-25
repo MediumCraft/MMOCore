@@ -43,7 +43,7 @@ public class StatModifiersCommandTreeNode extends CommandTreeNode {
 		StatInstance instance = data.getStats().getInstance(stat);
 		sender.sendMessage("Stat Modifiers (" + instance.getKeys().size() + "):");
 		for (String key : instance.getKeys()) {
-			StatModifier mod = instance.getAttribute(key);
+			StatModifier mod = instance.getModifier(key);
 			sender.sendMessage("- " + key + ": " + mod.getValue() + " " + mod.getType().name());
 		}
 

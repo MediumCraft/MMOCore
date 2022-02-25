@@ -1,50 +1,44 @@
 package net.Indyuce.mmocore.guild.provided;
 
-import org.bukkit.Bukkit;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.Request;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import org.bukkit.Bukkit;
 
 public class GuildInvite extends Request {
-	private final PlayerData target;
-	private final Guild guild;
+    private final Guild guild;
 
-	public GuildInvite(Guild guild, PlayerData creator, PlayerData target) {
-		super(creator);
+    public GuildInvite(Guild guild, PlayerData creator, PlayerData target) {
+        super(creator, target);
 
-		this.guild = guild;
-		this.target = target;
-	}
+        this.guild = guild;
+    }
 
-	public Guild getGuild() {
-		return guild;
-	}
+    public Guild getGuild() {
+        return guild;
+    }
 
-	public PlayerData getPlayer() {
-		return target;
-	}
+    @Override
+    public void whenDenied() {
+        // Nothing
+    }
 
-	public void deny() {
-		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
-	}
+    @Override
+    public void whenAccepted() {
+        guild.removeLastInvite(getCreator().getPlayer());
+        guild.getMembers().forEach(member -> {
+                    if (Bukkit.getPlayer(member) != null) {
+                        MMOCore.plugin.configManager.getSimpleMessage("guild-joined-other", "player",
+                                getTarget().getPlayer().getName()).send(Bukkit.getPlayer(member));
 
-	public void accept() {
-		guild.removeLastInvite(getCreator().getPlayer());
-		guild.getMembers().forEach(member -> {
-			if(Bukkit.getPlayer(member) != null) {
-					MMOCore.plugin.configManager.getSimpleMessage("guild-joined-other", "player",
-							target.getPlayer().getName()).send(Bukkit.getPlayer(member));
+                        MMOCore.plugin.configManager.getSimpleMessage("guild-joined", "owner",
+                                Bukkit.getPlayer(guild.getOwner()).getName()).send(getTarget().getPlayer());
+                    }
+                }
+        );
 
-				MMOCore.plugin.configManager.getSimpleMessage("guild-joined", "owner",
-						Bukkit.getPlayer(guild.getOwner()).getName()).send(target.getPlayer());
-				}}
-
-				);
-
-		guild.addMember(target.getUniqueId());
-		InventoryManager.GUILD_VIEW.newInventory(target).open();
-		MMOCore.plugin.requestManager.unregisterRequest(getUniqueId());
-	}
+        guild.addMember(getTarget().getUniqueId());
+        InventoryManager.GUILD_VIEW.newInventory(getTarget()).open();
+    }
 }

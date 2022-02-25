@@ -90,4 +90,17 @@ public class RegisteredSkill {
     public double getModifier(String modifier, int level) {
         return defaultModifiers.get(modifier).calculate(level);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RegisteredSkill that = (RegisteredSkill) o;
+        return handler.equals(that.handler) && triggerType.equals(that.triggerType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(handler, triggerType);
+    }
 }
