@@ -6,11 +6,12 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.BlockInfo.BlockInfoOption;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
-import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
-import net.Indyuce.mmocore.loot.LootBuilder;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.experience.source.MineBlockExperienceSource;
+import net.Indyuce.mmocore.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -139,14 +140,17 @@ public class BlockListener implements Listener {
             Schedulers.sync().runLater(() -> MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !temporaryBlock), 1);
     }
 
-    /*
+    /**
      * This is handled in a separate event because it
      * needs to happen AFTER it's already checked the tag
+     * <p>
+     * Event priority is now set to {@link EventPriority#MONITOR}
+     * so that it does NOT interfere with the <code>playerPlaced</code>
+     * option from {@link MineBlockExperienceSource}
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void unregisterPlayerPlacedBlocksTag(BlockBreakEvent event) {
-        if (event.getBlock().hasMetadata("player_placed"))
-            event.getBlock().removeMetadata("player_placed", MMOCore.plugin);
+        event.getBlock().removeMetadata("player_placed", MMOCore.plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
