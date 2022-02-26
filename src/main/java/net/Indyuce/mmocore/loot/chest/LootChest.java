@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.loot.chest;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.manager.SoundManager;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -12,12 +12,17 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.annotation.Nullable;
+
 public class LootChest {
     private final ChestTier tier;
     private final LootChestRegion region;
     private final ReplacedBlock block;
+    @Nullable
     private final BukkitRunnable effectRunnable;
     private final long date = System.currentTimeMillis();
+
+    private boolean active = true;
 
     /**
      * Called when a loot chest is placed as a Bukkit block, and used
@@ -57,19 +62,24 @@ public class LootChest {
     }
 
     /**
+     * This does NOT remove the loot chest from the plugin registry.
+     *
      * @param player If a player triggered the unregistration of that chest by
      *               opening and then closing it for the first time. It's set
      *               to false when a loot chest expires or when MMOCore disables.
      *               <p>
      *               When no player is closing the chest, its content should be lost
      */
-    public void unregister(boolean player) {
+    public void expire(boolean player) {
+
+        // Check for expire
+        Validate.isTrue(active, "Chest has already expired");
+        active = false;
 
         // If a player is responsible of closing the chest, close it with sound
         if (player) {
             MMOCore.plugin.soundManager.getSound(SoundEvent.CLOSE_LOOT_CHEST).playAt(block.loc);
             block.loc.getWorld().spawnParticle(Particle.CRIT, block.loc.clone().add(.5, .5, .5), 16, 0, 0, 0, .5);
-            MMOCore.plugin.lootChests.unregister(this);
         }
 
         /*

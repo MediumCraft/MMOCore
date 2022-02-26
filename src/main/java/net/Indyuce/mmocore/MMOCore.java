@@ -58,7 +58,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 public class MMOCore extends LuminePlugin {
@@ -200,8 +200,14 @@ public class MMOCore extends LuminePlugin {
 		 */
 		new BukkitRunnable() {
 			public void run() {
-				for (LootChest chest : new HashSet<>(lootChests.getActive()))
-					if (chest.shouldExpire()) chest.unregister(false);
+				Iterator<LootChest> iterator = lootChests.getActive().iterator();
+				while (iterator.hasNext()) {
+					LootChest next = iterator.next();
+					if (next.shouldExpire()) {
+						iterator.remove();
+						next.expire(false);
+					}
+				}
 			}
 		}.runTaskTimer(this, 5 * 60 * 20, 5 * 60 * 20);
 
@@ -369,7 +375,7 @@ public class MMOCore extends LuminePlugin {
 		mineManager.resetRemainingBlocks();
 
 		// Clear spawned loot chests
-		lootChests.getActive().forEach(chest -> chest.unregister(false));
+		lootChests.getActive().forEach(chest -> chest.expire(false));
 	}
 
 	/**

@@ -17,6 +17,6 @@ public class LootableChestsListener implements Listener {
 		Chest chest = (Chest) event.getInventory().getHolder();
 		LootChest lootChest = MMOCore.plugin.lootChests.getChest(chest.getLocation());
 		if (lootChest != null)
-			lootChest.unregister(true);
+			lootChest.expire(true);
 	}
 }
