@@ -2,9 +2,11 @@ package net.Indyuce.mmocore.skill.cast.listener;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.api.event.skill.PlayerCastSkillEvent;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
@@ -19,9 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 public class KeyCombos implements Listener {
@@ -142,6 +142,30 @@ public class KeyCombos implements Listener {
             if (failComboSound != null)
                 failComboSound.playTo(player);
         }
+    }
+
+    private static final Set<TriggerType> IGNORED_WHEN_CASTING = new HashSet<>();
+
+    static {
+        IGNORED_WHEN_CASTING.add(TriggerType.RIGHT_CLICK);
+        IGNORED_WHEN_CASTING.add(TriggerType.LEFT_CLICK);
+        IGNORED_WHEN_CASTING.add(TriggerType.SHIFT_RIGHT_CLICK);
+        IGNORED_WHEN_CASTING.add(TriggerType.SHIFT_LEFT_CLICK);
+        IGNORED_WHEN_CASTING.add(TriggerType.SNEAK);
+    }
+
+    /**
+     * This makes sure NO skills are cast when in casting mode so that
+     * item abilities from MMOItems don't interfere with that.
+     * <p>
+     * Any trigger type that has a PlayerKey associated to it will
+     * be ignored if the player is currently in casting mode.
+     */
+    @EventHandler
+    public void ignoreOtherSkills(PlayerCastSkillEvent event) {
+        TriggerType triggerType = event.getCast().getTrigger();
+        if (IGNORED_WHEN_CASTING.contains(triggerType) && PlayerData.get(event.getData().getUniqueId()).isCasting())
+            event.setCancelled(true);
     }
 
     private class CustomSkillCastingHandler extends SkillCastingHandler {
