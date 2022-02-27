@@ -9,7 +9,7 @@ import io.lumine.xikage.mythicmobs.drops.IMultiDrop;
 import io.lumine.xikage.mythicmobs.drops.LootBag;
 import io.lumine.xikage.mythicmobs.drops.droppables.ItemDrop;
 import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
-import net.Indyuce.mmocore.api.util.item.CurrencyItem;
+import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 
 public class CurrencyItemDrop extends Drop implements IMultiDrop {
 	private final String key;
@@ -30,7 +30,7 @@ public class CurrencyItemDrop extends Drop implements IMultiDrop {
 	@Override
 	public LootBag get(DropMetadata metadata) {
 		LootBag loot = new LootBag(metadata);
-		loot.add(new ItemDrop(this.getLine(), (MythicLineConfig) this.getConfig(), new BukkitItemStack(new CurrencyItem(key, random(minw, maxw)).build())));
+		loot.add(new ItemDrop(this.getLine(), (MythicLineConfig) this.getConfig(), new BukkitItemStack(new CurrencyItemBuilder(key, random(minw, maxw)).build())));
 		return loot;
 	}
 

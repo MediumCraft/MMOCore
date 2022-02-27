@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.api.util.item.CurrencyItemBuilder;
+import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 import io.lumine.mythic.lib.api.util.SmartGive;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;

@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui.eco;
 
+import net.Indyuce.mmocore.util.item.SimpleItemBuilder;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,7 +14,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.api.util.item.ConfigItem;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.util.SmartGive;
@@ -30,7 +30,7 @@ public class DepositMenu extends PluginInventory {
 	public Inventory getInventory() {
 		Inventory inv = Bukkit.createInventory(this, 27, "Deposit");
 
-		inv.setItem(26, depositItem = new ConfigItem("DEPOSIT_ITEM").addPlaceholders("worth", "0").build());
+		inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "0").build());
 
 		new BukkitRunnable() {
 
@@ -115,6 +115,6 @@ public class DepositMenu extends PluginInventory {
 
 	private void updateDeposit(Inventory inv) {
 		deposit = MMOCoreUtils.getWorth(inv.getContents());
-		inv.setItem(26, depositItem = new ConfigItem("DEPOSIT_ITEM").addPlaceholders("worth", "" + deposit).build());
+		inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "" + deposit).build());
 	}
 }

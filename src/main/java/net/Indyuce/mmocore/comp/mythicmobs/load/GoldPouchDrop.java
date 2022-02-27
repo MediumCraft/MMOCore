@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.comp.mythicmobs.load;
 
 import java.util.Random;
 
+import net.Indyuce.mmocore.util.item.SimpleItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,8 +14,7 @@ import io.lumine.xikage.mythicmobs.drops.LootBag;
 import io.lumine.xikage.mythicmobs.drops.droppables.ItemDrop;
 import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.api.util.item.ConfigItem;
-import net.Indyuce.mmocore.api.util.item.CurrencyItem;
+import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 
@@ -35,7 +35,7 @@ public class GoldPouchDrop extends Drop implements IMultiDrop {
 	@Override
 	public LootBag get(DropMetadata metadata) {
 		LootBag loot = new LootBag(metadata);
-		NBTItem nbt = NBTItem.get(new ConfigItem("MOB_GOLD_POUCH").build());
+		NBTItem nbt = NBTItem.get(new SimpleItemBuilder("MOB_GOLD_POUCH").build());
 
 		ItemStack[] content = new ItemStack[18];
 		int money = random.nextInt(max - min + 1) + min;
@@ -45,16 +45,21 @@ public class GoldPouchDrop extends Drop implements IMultiDrop {
 			money -= a;
 
 			if (a < 30 && random.nextDouble() < .3) {
-				content[getAvailableSlot(content)] = new CurrencyItem("GOLD_COIN", 1, a).build();
+				content[getAvailableSlot(content)] = setAmount(new CurrencyItemBuilder("GOLD_COIN", 1).build(), a);
 				continue;
 			}
 
-			content[getAvailableSlot(content)] = new CurrencyItem("NOTE", a, 1).build();
+			content[getAvailableSlot(content)] = new CurrencyItemBuilder("NOTE", a).build();
 		}
 
 		nbt.addTag(new ItemTag("RpgPouchSize", 18), new ItemTag("RpgPouchMob", true), new ItemTag("RpgPouchInventory", MMOCoreUtils.toBase64(content)));
 		loot.add(new ItemDrop(this.getLine(), (MythicLineConfig) this.getConfig(), new BukkitItemStack(nbt.toItem())));
 		return loot;
+	}
+
+	private ItemStack setAmount(ItemStack item, int amount) {
+		item.setAmount(amount);
+		return item;
 	}
 
 	private int getAvailableSlot(ItemStack[] content) {

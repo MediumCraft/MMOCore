@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.command.rpg;
 import io.lumine.mythic.lib.api.util.SmartGive;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
-import net.Indyuce.mmocore.api.util.item.CurrencyItemBuilder;
+import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

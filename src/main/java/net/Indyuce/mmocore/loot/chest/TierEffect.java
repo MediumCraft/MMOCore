@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.math.particle.ChestParticleEffect;
+import net.Indyuce.mmocore.loot.chest.particle.ChestParticleEffect;
 
 public class TierEffect {
 	private final ChestParticleEffect type;

@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.item.CurrencyItem;
+import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 import io.lumine.mythic.lib.api.util.SmartGive;
 
 public class Withdraw implements Listener {
@@ -101,9 +101,9 @@ public class Withdraw implements Listener {
 
 		SmartGive smart = new SmartGive(player);
 		if (note > 0)
-			smart.give(new CurrencyItem("NOTE", note).build());
+			smart.give(new CurrencyItemBuilder("NOTE", note).build());
 
-		ItemStack coinsItem = new CurrencyItem("GOLD_COIN", 1).build();
+		ItemStack coinsItem = new CurrencyItemBuilder("GOLD_COIN", 1).build();
 		coinsItem.setAmount(coins);
 		smart.give(coinsItem);
 	}
