@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.util.math.particle;
+package net.Indyuce.mmocore.loot.chest.particle;
 
 import java.util.function.BiConsumer;
 
