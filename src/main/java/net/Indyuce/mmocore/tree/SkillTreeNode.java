@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.tree;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import io.lumine.mythic.lib.util.configobject.ConfigSectionObject;
-import net.Indyuce.mmocore.api.player.Unlockable;
+import net.Indyuce.mmocore.player.Unlockable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 

@@ -73,6 +73,7 @@ not-dynamic-waypoint: '&cYou many only teleport to a non-dynamic waypoint while 
 standing-on-waypoint: '&cYou are already standing on this waypoint.'
 warping-canceled: '%&cWaypoint warping canceled.'
 warping-comencing: '%&cDO NOT MOVE!&e You will be warped in {left}sec.'
+cannot-teleport-to: '&cThe two waypoints are not linked.'
 
 # Cash
 deposit: '&eYou successfully deposited &6{worth}g&e.'

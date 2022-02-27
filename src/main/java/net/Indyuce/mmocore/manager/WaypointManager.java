@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.Waypoint;
+import net.Indyuce.mmocore.waypoint.Waypoint;
 
 public class WaypointManager {
 	private final Map<String, Waypoint> waypoints = new LinkedHashMap<>();

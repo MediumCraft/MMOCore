@@ -6,7 +6,9 @@ import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.api.Waypoint;
+import net.Indyuce.mmocore.player.Unlockable;
+import net.Indyuce.mmocore.waypoint.CostType;
+import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
@@ -22,7 +24,7 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
@@ -35,6 +37,7 @@ import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
+import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.Validate;
@@ -382,7 +385,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public boolean hasWaypoint(Waypoint waypoint) {
-        return waypoint.isDefault() || waypoints.contains(waypoint.getId());
+        return waypoint.hasOption(WaypointOption.DEFAULT) || waypoints.contains(waypoint.getId());
     }
 
     public void unlockWaypoint(Waypoint waypoint) {
@@ -455,9 +458,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *
      * @param waypoint Target waypoint
      */
-    public void warp(Waypoint waypoint) {
-        if (!isOnline())
-            return;
+    public void warp(Waypoint waypoint, CostType costType) {
 
         /*
          * This cooldown is only used internally to make sure the player is not
@@ -466,7 +467,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
          */
         setLastActivity(PlayerActivity.USE_WAYPOINT);
 
-        giveStellium(-waypoint.getStelliumCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
+        giveStellium(-waypoint.getCost(costType), PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
 
         new BukkitRunnable() {
             final int x = getPlayer().getLocation().getBlockX();
@@ -481,7 +482,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                         || getPlayer().getLocation().getBlockZ() != z) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CANCELLED).playTo(getPlayer());
                     MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
-                    giveStellium(waypoint.getStelliumCost(), PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
+                    giveStellium(waypoint.getCost(CostType.NORMAL_USE), PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
                     cancel();
                     return;
                 }

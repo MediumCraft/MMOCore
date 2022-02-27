@@ -1,40 +1,58 @@
 package net.Indyuce.mmocore.listener;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.manager.SoundManager;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.manager.InventoryManager;
+import net.Indyuce.mmocore.waypoint.Waypoint;
+import net.Indyuce.mmocore.waypoint.WaypointOption;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.Waypoint;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
-import net.Indyuce.mmocore.manager.InventoryManager;
+import java.util.Objects;
 
 public class WaypointsListener implements Listener {
-	@EventHandler
-	public void a(PlayerToggleSneakEvent event) {
-		Player player = event.getPlayer();
-		if (!event.isSneaking())
-			return;
 
-		Waypoint waypoint = MMOCore.plugin.waypointManager.getCurrentWaypoint(player);
-		if (waypoint == null || !waypoint.hasSneakEnabled())
-			return;
+    @EventHandler
+    public void interactWithWaypoint(PlayerToggleSneakEvent event) {
+        Player player = event.getPlayer();
+        if (!event.isSneaking())
+            return;
 
-		PlayerData data = PlayerData.get(player);
-		if (!data.hasWaypoint(waypoint)) {
-			data.unlockWaypoint(waypoint);
-			new SmallParticleEffect(player, Particle.SPELL_WITCH);
-			MMOCore.plugin.configManager.getSimpleMessage("new-waypoint", "waypoint", waypoint.getName()).send(player);
-			MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_UNLOCK).playTo(player);
-			return;
-		}
+        Waypoint waypoint = MMOCore.plugin.waypointManager.getCurrentWaypoint(player);
+        if (waypoint == null)
+            return;
 
-		player.setSneaking(false);
-		InventoryManager.WAYPOINTS.newInventory(data, waypoint).open();
-	}
+        PlayerData data = PlayerData.get(player);
+        if (waypoint.hasOption(WaypointOption.UNLOCKABLE) && !data.hasWaypoint(waypoint)) {
+            data.unlockWaypoint(waypoint);
+            new SmallParticleEffect(player, Particle.SPELL_WITCH);
+            MMOCore.plugin.configManager.getSimpleMessage("new-waypoint", "waypoint", waypoint.getName()).send(player);
+            MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_UNLOCK).playTo(player);
+            return;
+        }
+
+        if (waypoint.hasOption(WaypointOption.ENABLE_MENU)) {
+            player.setSneaking(false);
+            InventoryManager.WAYPOINTS.newInventory(data, waypoint).open();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void waypointBook(PlayerInteractEvent event) {
+        if (!event.hasItem() || (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK))
+            return;
+
+        NBTItem nbtItem = NBTItem.get(event.getItem());
+        if (Objects.equals(nbtItem.getString("MMOCoreItemId"), "WAYPOINT_BOOK"))
+            InventoryManager.WAYPOINTS.newInventory(PlayerData.get(event.getPlayer())).open();
+    }
 }
