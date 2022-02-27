@@ -10,8 +10,8 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
 
 public class AttributeCommandTreeNode extends CommandTreeNode {
 	public AttributeCommandTreeNode(CommandTreeNode parent) {

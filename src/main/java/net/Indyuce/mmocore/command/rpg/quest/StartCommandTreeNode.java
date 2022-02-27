@@ -10,8 +10,8 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.quest.Quest;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
 
 public class StartCommandTreeNode extends CommandTreeNode {
 	public StartCommandTreeNode(CommandTreeNode parent) {

@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import org.bukkit.command.CommandSender;

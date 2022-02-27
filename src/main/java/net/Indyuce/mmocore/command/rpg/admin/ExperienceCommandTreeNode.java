@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.command.CommandVerbose;

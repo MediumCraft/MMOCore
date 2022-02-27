@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
 
 public class ReloadCommandTreeNode extends CommandTreeNode {
 	public ReloadCommandTreeNode(CommandTreeNode parent) {
