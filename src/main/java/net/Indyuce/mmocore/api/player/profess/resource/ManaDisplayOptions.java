@@ -12,6 +12,10 @@ public class ManaDisplayOptions {
 	private final String name, icon;
 	private final char barCharacter;
 
+	public ChatColor getFull() { return full; }
+	public ChatColor getHalf() { return half; }
+	public ChatColor getEmpty() { return empty; }
+
 	public static final ManaDisplayOptions DEFAULT = new ManaDisplayOptions(ChatColor.AQUA, ChatColor.BLUE, ChatColor.WHITE, "Mana",
 			AltChar.listSquare.charAt(0), ChatColor.BLUE + AltChar.star2);
 

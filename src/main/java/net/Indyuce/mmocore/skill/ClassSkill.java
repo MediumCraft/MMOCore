@@ -83,6 +83,7 @@ public class ClassSkill implements CooldownObject {
 
         Map<String, String> placeholders = calculateModifiers(x);
         placeholders.put("mana_name", data.getProfess().getManaDisplay().getName());
+        placeholders.put("mana_color", data.getProfess().getManaDisplay().getFull().toString());
         skill.getLore().forEach(str -> list.add(applyPlaceholders(placeholders, str)));
 
         return list;
