@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.waypoint.CostType;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -69,13 +70,19 @@ public class WaypointViewer extends EditableInventory {
         public WaypointItem(ConfigurationSection config) {
             super(Material.BARRIER, config);
 
-            noWaypoint = new SimplePlaceholderItem(Objects.requireNonNull(config.getConfigurationSection("no-waypoint"), "Could not load 'no-waypoint' config"));
-            locked = new SimplePlaceholderItem(Objects.requireNonNull(config.getConfigurationSection("locked"), "Could not load 'locked' config"));
+            Validate.notNull(config.getConfigurationSection("no-waypoint"), "Could not load 'no-waypoint' config");
+            Validate.notNull(config.getConfigurationSection("locked"), "Could not load 'locked' config");
+            Validate.notNull(config.getConfigurationSection("not-a-destination"), "Could not load 'not-a-destination' config");
+            Validate.notNull(config.getConfigurationSection("not-dynamic"), "Could not load 'not-dynamic' config");
+            Validate.notNull(config.getConfigurationSection("not-enough-stellium"), "Could not load 'not-enough-stellium' config");
+            Validate.notNull(config.getConfigurationSection("display"), "Could not load 'display' config");
 
-            notLinked = new WaypointItemHandler(Objects.requireNonNull(config.getConfigurationSection("not-a-destination"), "Could not load 'not-a-destination' config"));
-            notDynamic = new WaypointItemHandler(Objects.requireNonNull(config.getConfigurationSection("not-dynamic"), "Could not load 'not-dynamic' config"));
-            noStellium = new WaypointItemHandler(Objects.requireNonNull(config.getConfigurationSection("not-enough-stellium"), "Could not load 'not-enough-stellium' config"));
-            availWaypoint = new WaypointItemHandler(Objects.requireNonNull(config.getConfigurationSection("display"), "Could not load 'display' config"));
+            noWaypoint = new SimplePlaceholderItem(config.getConfigurationSection("no-waypoint"));
+            locked = new SimplePlaceholderItem(config.getConfigurationSection("locked"));
+            notLinked = new WaypointItemHandler(config.getConfigurationSection("not-a-destination"));
+            notDynamic = new WaypointItemHandler(config.getConfigurationSection("not-dynamic"));
+            noStellium = new WaypointItemHandler(config.getConfigurationSection("not-enough-stellium"));
+            availWaypoint = new WaypointItemHandler(config.getConfigurationSection("display"));
         }
 
         @Override
