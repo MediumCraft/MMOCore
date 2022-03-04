@@ -5,7 +5,6 @@ import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +17,6 @@ import java.util.Objects;
 
 public class RegisteredSkill {
     private final SkillHandler<?> handler;
-
     private final String name;
     private final Map<String, LinearValue> defaultModifiers = new HashMap<>();
     private final ItemStack icon;
@@ -27,7 +25,6 @@ public class RegisteredSkill {
 
     public RegisteredSkill(SkillHandler<?> handler, ConfigurationSection config) {
         this.handler = handler;
-
 
         name = Objects.requireNonNull(config.getString("name"), "Could not find skill name");
         icon = MMOCoreUtils.readIcon(Objects.requireNonNull(config.getString("material"), "Could not find skill icon"));

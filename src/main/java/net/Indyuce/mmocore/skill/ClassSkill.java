@@ -17,13 +17,14 @@ public class ClassSkill implements CooldownObject {
     private final int unlockLevel, maxSkillLevel;
     private final Map<String, LinearValue> modifiers = new HashMap<>();
 
-    public ClassSkill(RegisteredSkill skill, int unlockLevel) {
-        this(skill, unlockLevel, 0);
-    }
-
     /**
      * Class used to save information about skills IN A CLASS CONTEXT i.e at
      * which level the skill can be unlocked, etc.
+     * <p>
+     * This constructor can be used by other plugins to register class skills
+     * directly without the use of class config files.
+     * <p>
+     * It is also used by the MMOCore API to force players to cast abilities.
      */
     public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel) {
         this.skill = skill;
