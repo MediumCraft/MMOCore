@@ -375,6 +375,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return found == null ? Optional.empty() : Optional.of(found);
     }
 
+    @Nullable
     public ClassSkill getSkill(String id) {
         return skills.get(id);
     }

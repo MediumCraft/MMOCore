@@ -10,14 +10,9 @@ import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.comp.mythicmobs.load.CurrencyItemDrop;
 import net.Indyuce.mmocore.comp.mythicmobs.load.GoldPouchDrop;
-import net.Indyuce.mmocore.skill.RegisteredSkill;
-import org.apache.commons.lang.Validate;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import java.util.Optional;
-import java.util.logging.Level;
 
 public class MythicHook implements Listener {
     public MythicHook() {
@@ -48,6 +43,8 @@ public class MythicHook implements Listener {
 
         // Reload skills
         MMOCore.plugin.skillManager.initialize(true);
+        MMOCore.plugin.classManager.initialize(true);
+        PlayerData.getAll().forEach(PlayerData::update);
     }
 
     private void registerPlaceholders() {
