@@ -130,11 +130,6 @@ public class MMOCore extends LuminePlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			loadManager.registerLoader(new MythicMobsMMOLoader());
-
-		// Register MMOCore specific skills
-		MythicLib.plugin.getSkills().registerSkillHandler(new Ambers());
-		MythicLib.plugin.getSkills().registerSkillHandler(new Neptune_Gift());
-		MythicLib.plugin.getSkills().registerSkillHandler(new Sneaky_Picky());
 	}
 
 	public void enable() {
