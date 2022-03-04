@@ -33,8 +33,3 @@ cooldown:
 ratio:
   base: 50.0
   per-level: 3.0
-timer:
-  base: 0.0
-  per-level: 0.0
-  max: 0.0
-  min: 0.0

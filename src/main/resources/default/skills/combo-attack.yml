@@ -27,8 +27,3 @@ cooldown:
 count:
   base: 3.0
   per-level: 0.2
-timer:
-  base: 0.0
-  per-level: 0.0
-  max: 0.0
-  min: 0.0
