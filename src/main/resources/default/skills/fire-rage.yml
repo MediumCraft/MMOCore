@@ -33,3 +33,8 @@ cooldown:
   per-level: -0.1
   max: 5.0
   min: 1.0
+timer:
+  base: 0.0
+  per-level: 0.0
+  max: 0.0
+  min: 0.0

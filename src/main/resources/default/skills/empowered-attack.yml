@@ -32,3 +32,8 @@ ratio:
   per-level: 10.0
   max: 100.0
   min: 30.0
+timer:
+  base: 0.0
+  per-level: 0.0
+  max: 0.0
+  min: 0.0

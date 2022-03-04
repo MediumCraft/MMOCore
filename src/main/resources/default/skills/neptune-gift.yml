@@ -5,3 +5,8 @@ material: LILY_PAD
 extra:
   base: 30.0
   per-level: 5.0
+timer:
+  base: 0.0
+  per-level: 0.0
+  max: 0.0
+  min: 0.0
