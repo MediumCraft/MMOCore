@@ -41,6 +41,14 @@ spawn:
     # Should be waypoint be unlocked by default?
     default: true
 
+  # All the waypoints you can teleport to when standing
+  # on that waypoint. If that list is empty you are able
+  # to teleport to any waypoint
+  linked:
+    - spawn1
+    - spawn2
+    - forest
+
 spawn1:
   name: Spawn1
   location: 'world 69 71 136 136 0'
