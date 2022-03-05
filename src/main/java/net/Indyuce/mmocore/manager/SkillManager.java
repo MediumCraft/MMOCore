@@ -46,8 +46,10 @@ public class SkillManager implements MMOCoreManager {
 
     public void initialize(boolean clearBefore) {
 
-        if (clearBefore)
+        if (clearBefore) {
+            MythicLib.plugin.getSkills().initialize(true);
             skills.clear();
+        }
 
         // Register MMOCore specific skills
         MythicLib.plugin.getSkills().registerSkillHandler(new Ambers());
