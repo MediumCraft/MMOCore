@@ -15,7 +15,7 @@ import java.util.logging.Level;
 public class FishingManager extends SpecificProfessionManager {
 	private final Set<FishingDropTable> tables = new LinkedHashSet<>();
 
-	private static final Random random = new Random();
+	private static final Random RANDOM = new Random();
 
 	public FishingManager() {
 		super("on-fish");
@@ -44,7 +44,7 @@ public class FishingManager extends SpecificProfessionManager {
 	public static class FishingDropTable {
 		private final Set<Condition> conditions = new HashSet<>();
 		private final List<FishingDropItem> items = new ArrayList<>();
-		private int maxWeight = 0;
+		private double maxWeight = 0;
 
 		public FishingDropTable(ConfigurationSection section) {
 			Validate.notNull(section, "Could not load config");
@@ -69,8 +69,8 @@ public class FishingManager extends SpecificProfessionManager {
 			for (String str : list)
 				try {
 					FishingDropItem dropItem = new FishingDropItem(new MMOLineConfig(str));
-					maxWeight += dropItem.getWeight();
 					items.add(dropItem);
+					maxWeight += dropItem.getItem().getWeight();
 				} catch (RuntimeException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING,
 							"Could not load item '" + str + "' from fishing drop table '" + id + "': " + exception.getMessage());
@@ -91,10 +91,10 @@ public class FishingManager extends SpecificProfessionManager {
 		}
 
 		public FishingDropItem getRandomItem() {
-			int randomCoefficient = random.nextInt(maxWeight);
+			double randomCoefficient = RANDOM.nextDouble() * maxWeight;
 
 			for (FishingDropItem item : items)
-				if ((randomCoefficient -= item.getWeight()) <= 0)
+				if ((randomCoefficient -= item.getItem().getWeight()) <= 0)
 					return item;
 
 			throw new NullPointerException("Could not find item in drop table");
