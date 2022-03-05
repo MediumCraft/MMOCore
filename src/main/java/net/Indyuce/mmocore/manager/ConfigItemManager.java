@@ -1,31 +1,38 @@
 package net.Indyuce.mmocore.manager;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.util.item.ConfigItem;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.configuration.file.FileConfiguration;
+public class ConfigItemManager implements MMOCoreManager {
+    private final Map<String, ConfigItem> map = new HashMap<>();
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.util.item.ConfigItem;
+    public void register(ConfigItem item) {
+        map.put(item.getId(), item);
+    }
 
-public class ConfigItemManager {
-	private final Map<String, ConfigItem> map = new HashMap<>();
+    @Nullable
+    public ConfigItem get(String id) {
+        return map.get(id);
+    }
 
-	public ConfigItemManager(FileConfiguration config) {
-		for (String key : config.getKeys(false))
-			try {
-				register(new ConfigItem(config.getConfigurationSection(key)));
-			} catch (NullPointerException | IllegalArgumentException exception) {
-				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load config item " + key);
-			}
-	}
+    @Override
+    public void initialize(boolean clearBefore) {
+        if (clearBefore)
+            map.clear();
 
-	public void register(ConfigItem item) {
-		map.put(item.getId(), item);
-	}
-
-	public ConfigItem get(String id) {
-		return map.get(id);
-	}
+        FileConfiguration config = new ConfigFile("items").getConfig();
+        for (String key : config.getKeys(false))
+            try {
+                register(new ConfigItem(config.getConfigurationSection(key)));
+            } catch (NullPointerException | IllegalArgumentException exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load config item " + key);
+            }
+    }
 }

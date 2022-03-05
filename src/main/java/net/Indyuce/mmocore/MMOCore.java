@@ -61,11 +61,10 @@ import java.util.logging.Level;
 public class MMOCore extends LuminePlugin {
 	public static MMOCore plugin;
 
-	public ConfigManager configManager;
 	public final WaypointManager waypointManager = new WaypointManager();
-	public SoundManager soundManager;
-	public RequestManager requestManager;
-	public ConfigItemManager configItems;
+	public final SoundManager soundManager = new SoundManager();
+	public final RequestManager requestManager = new RequestManager();
+	public final ConfigItemManager configItems = new ConfigItemManager();
 	public final PlayerActionBar actionBarManager = new PlayerActionBar();
 	public final SkillManager skillManager = new SkillManager();
 	public final ClassManager classManager = new ClassManager();
@@ -82,6 +81,15 @@ public class MMOCore extends LuminePlugin {
 	@Deprecated
 	public final SkillTreeManager skillTreeManager = new SkillTreeManager();
 
+	// Profession managers
+	public final CustomBlockManager mineManager = new CustomBlockManager();
+	public final FishingManager fishingManager = new FishingManager();
+	public final AlchemyManager alchemyManager = new AlchemyManager();
+	public final EnchantManager enchantManager = new EnchantManager();
+	public final SmithingManager smithingManager = new SmithingManager();
+
+	@NotNull
+	public ConfigManager configManager;
 	public VaultEconomy economy;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
 	public PlaceholderParser placeholderParser = new DefaultParser();
@@ -90,13 +98,6 @@ public class MMOCore extends LuminePlugin {
 	// Modules
 	@NotNull
 	public PartyModule partyModule;
-
-	// Profession managers
-	public final CustomBlockManager mineManager = new CustomBlockManager();
-	public final FishingManager fishingManager = new FishingManager();
-	public final AlchemyManager alchemyManager = new AlchemyManager();
-	public final EnchantManager enchantManager = new EnchantManager();
-	public final SmithingManager smithingManager = new SmithingManager();
 
 	public boolean shouldDebugSQL = false;
 
@@ -408,10 +409,9 @@ public class MMOCore extends LuminePlugin {
 		lootChests.initialize(clearBefore);
 		restrictionManager.initialize(clearBefore);
 		waypointManager.initialize(clearBefore);
-
-		requestManager = new RequestManager();
-		soundManager = new SoundManager(new ConfigFile("sounds").getConfig());
-		configItems = new ConfigItemManager(new ConfigFile("items").getConfig());
+		requestManager.initialize(clearBefore);
+		soundManager.initialize(clearBefore);
+		configItems.initialize(clearBefore);
 
 		if (getConfig().isConfigurationSection("action-bar"))
 			actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
