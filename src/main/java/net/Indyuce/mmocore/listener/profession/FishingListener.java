@@ -96,7 +96,7 @@ public class FishingListener implements Listener {
                 lootFish();
         }
 
-        public void criticalFish() {
+        public void setCriticalFish() {
             currentPulls = fishStrength + 2;
         }
 
@@ -107,7 +107,7 @@ public class FishingListener implements Listener {
         /**
          * @return If the fish is weak enough to be looted by the player.
          */
-        public boolean pull() {
+        public boolean pullOnce() {
             last = System.currentTimeMillis();
             currentPulls++;
             return currentPulls >= fishStrength;
@@ -116,7 +116,7 @@ public class FishingListener implements Listener {
         /**
          * Critical fish's means you catch the fish on the very first try
          */
-        public boolean isCrit() {
+        public boolean isCriticalFish() {
             return currentPulls > fishStrength + 1;
         }
 
@@ -148,13 +148,11 @@ public class FishingListener implements Listener {
                     return;
                 }
 
-                System.out.println("Pulls: " + currentPulls + " / " + fishStrength);
-
                 if (currentPulls == 0 && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_CHANCE) / 100)
-                    criticalFish();
+                    setCriticalFish();
 
                 // Check if enough pulls; if not, wait till the next fish event
-                if (pull())
+                if (pullOnce())
                     lootFish();
             }
         }
@@ -167,7 +165,7 @@ public class FishingListener implements Listener {
                     (mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND, 1);
 
             // Critical fishing failure
-            if (!isCrit() && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
+            if (!isCriticalFish() && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
                 player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));
                 hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
                 return;
@@ -189,7 +187,7 @@ public class FishingListener implements Listener {
             // Calculate yeet velocity
             Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);
             MMOCoreUtils.displayIndicator(location.add(0, 1.25, 0),
-                    MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCrit() ? "-crit" : "")).message());
+                    MMOCore.plugin.configManager.getSimpleMessage("fish-out-water" + (isCriticalFish() ? "-crit" : "")).message());
             Vector vec = player.getLocation().subtract(hook.getLocation()).toVector();
             vec.setY(vec.getY() * .031 + vec.length() * .05);
             vec.setX(vec.getX() * .08);
