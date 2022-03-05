@@ -17,7 +17,8 @@ public enum WaypointOption {
     ENABLE_MENU(true),
 
     /**
-     * By defaut, players must stand into
+     * By default waypoints are not dynamic. Players need to be standing on
+     * ANOTHER waypoint to be able to teleport to other waypoints.
      */
     DYNAMIC(false),
 

@@ -467,7 +467,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
          */
         setLastActivity(PlayerActivity.USE_WAYPOINT);
 
-        giveStellium(-waypoint.getCost(costType), PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
+        final double cost = waypoint.getCost(costType);
+        giveStellium(-cost, PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
 
         new BukkitRunnable() {
             final int x = getPlayer().getLocation().getBlockX();
@@ -482,7 +483,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                         || getPlayer().getLocation().getBlockZ() != z) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CANCELLED).playTo(getPlayer());
                     MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
-                    giveStellium(waypoint.getCost(CostType.NORMAL_USE), PlayerResourceUpdateEvent.UpdateReason.SKILL_REGENERATION);
+                    giveStellium(cost, PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
                     cancel();
                     return;
                 }
