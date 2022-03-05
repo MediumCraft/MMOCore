@@ -45,9 +45,6 @@ import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
-import net.Indyuce.mmocore.skill.list.Ambers;
-import net.Indyuce.mmocore.skill.list.Neptune_Gift;
-import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -65,7 +62,7 @@ public class MMOCore extends LuminePlugin {
 	public static MMOCore plugin;
 
 	public ConfigManager configManager;
-	public WaypointManager waypointManager;
+	public final WaypointManager waypointManager = new WaypointManager();
 	public SoundManager soundManager;
 	public RequestManager requestManager;
 	public ConfigItemManager configItems;
@@ -82,6 +79,8 @@ public class MMOCore extends LuminePlugin {
 	public final LootChestManager lootChests = new LootChestManager();
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public final RestrictionManager restrictionManager = new RestrictionManager();
+	@Deprecated
+	public final SkillTreeManager skillTreeManager = new SkillTreeManager();
 
 	public VaultEconomy economy;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
@@ -408,8 +407,8 @@ public class MMOCore extends LuminePlugin {
 		questManager.initialize(clearBefore);
 		lootChests.initialize(clearBefore);
 		restrictionManager.initialize(clearBefore);
+		waypointManager.initialize(clearBefore);
 
-		waypointManager = new WaypointManager(new ConfigFile("waypoints").getConfig());
 		requestManager = new RequestManager();
 		soundManager = new SoundManager(new ConfigFile("sounds").getConfig());
 		configItems = new ConfigItemManager(new ConfigFile("items").getConfig());
