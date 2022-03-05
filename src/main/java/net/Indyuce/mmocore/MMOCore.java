@@ -387,6 +387,8 @@ public class MMOCore extends LuminePlugin {
 
 		configManager = new ConfigManager();
 
+		if (clearBefore)
+			MythicLib.plugin.getSkills().initialize(true);
 		skillManager.initialize(clearBefore);
 		mineManager.initialize(clearBefore);
 		partyManager.initialize(clearBefore);
