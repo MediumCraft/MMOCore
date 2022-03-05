@@ -28,9 +28,15 @@ spawn:
     # by sneaking on it (true by default)
     unlockable: true
 
-    # When enabled, players can teleport to other
-    #waypoints when sneaking (true by default)
+    # When enabled, opens up the teleportation menu
+    # when sneaking (true by default)
     enable-menu: true
+
+    # When set to true (false by default) players don't
+    # have to be standing on any waypoint to teleport
+    # to that waypoint. This could be a nice option for
+    # spawn waypoints alongside with the 'default' option.
+    dynamic: false
 
     # Should be waypoint be unlocked by default?
     default: true

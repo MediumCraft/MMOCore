@@ -15,7 +15,8 @@ public enum CostType {
     /**
      * When setting your spawn point to this waypoint.
      */
-    SET_SPAWNPOINT;
+    // SET_SPAWNPOINT
+    ;
 
     private final String path;
 
