@@ -1,49 +1,44 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
-import org.bukkit.configuration.ConfigurationSection;
-
-import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicFactionExperienceSource;
-import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicFactionObjective;
-import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobExperienceSource;
-import net.Indyuce.mmocore.comp.mythicmobs.load.KillMythicMobObjective;
-import net.Indyuce.mmocore.comp.mythicmobs.load.MythicSkillTrigger;
-import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.comp.mythicmobs.load.*;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class MythicMobsMMOLoader extends MMOLoader {
 
-	@Override
-	public Trigger loadTrigger(MMOLineConfig config) {
+    @Override
+    public Trigger loadTrigger(MMOLineConfig config) {
 
-		if (config.getKey().equalsIgnoreCase("mmskill") || config.getKey().equalsIgnoreCase("mythicmobskill"))
-			return new MythicSkillTrigger(config);
+        if (config.getKey().equalsIgnoreCase("mmskill") || config.getKey().equalsIgnoreCase("mythicmobskill"))
+            return new MythicSkillTrigger(config);
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public Objective loadObjective(MMOLineConfig config, ConfigurationSection section) {
+    @Override
+    public Objective loadObjective(MMOLineConfig config, ConfigurationSection section) {
 
-		if (config.getKey().equalsIgnoreCase("killmythicmob"))
-			return new KillMythicMobObjective(section, config);
-		if (config.getKey().equalsIgnoreCase("killmythicfaction"))
-			return new KillMythicFactionObjective(section, config);
+        if (config.getKey().equalsIgnoreCase("killmythicmob"))
+            return new KillMythicMobObjective(section, config);
+        if (config.getKey().equalsIgnoreCase("killmythicfaction"))
+            return new KillMythicFactionObjective(section, config);
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+    @Override
+    public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
 
-		if (config.getKey().equalsIgnoreCase("killmythicmob"))
-			return new KillMythicMobExperienceSource(dispenser, config);
-		if (config.getKey().equalsIgnoreCase("killmythicfaction"))
-			return new KillMythicFactionExperienceSource(dispenser, config);
+        if (config.getKey().equalsIgnoreCase("killmythicmob"))
+            return new KillMythicMobExperienceSource(dispenser, config);
+        if (config.getKey().equalsIgnoreCase("killmythicfaction"))
+            return new KillMythicFactionExperienceSource(dispenser, config);
 
-		return null;
-	}
+        return null;
+    }
 }

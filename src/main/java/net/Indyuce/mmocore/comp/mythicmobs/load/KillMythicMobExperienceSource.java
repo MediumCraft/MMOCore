@@ -1,10 +1,10 @@
 package net.Indyuce.mmocore.comp.mythicmobs.load;
 
+import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.Bukkit;
