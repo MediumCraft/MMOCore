@@ -9,6 +9,7 @@ import io.lumine.mythic.api.skills.SkillTrigger;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.skills.SkillMetadataImpl;
+import io.lumine.mythic.core.skills.SkillTriggers;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
@@ -37,7 +38,7 @@ public class MythicSkillTrigger extends Trigger {
 
         AbstractPlayer trigger = BukkitAdapter.adapt(player.getPlayer());
         SkillCaster caster = new GenericCaster(trigger);
-        SkillMetadata skillMeta = new SkillMetadataImpl(new SkillTrigger("API", new ArrayList<>()), caster, trigger, BukkitAdapter.adapt(player.getPlayer().getLocation()), new HashSet<>(), null, 1);
+        SkillMetadata skillMeta = new SkillMetadataImpl(SkillTriggers.API, caster, trigger, BukkitAdapter.adapt(player.getPlayer().getLocation()), new HashSet<>(), null, 1);
         if (skill.isUsable(skillMeta))
             skill.execute(skillMeta);
     }
