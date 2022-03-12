@@ -18,15 +18,11 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
 		sender.sendMessage(ChatColor.YELLOW + "Reloading " + MMOCore.plugin.getName() + " " + MMOCore.plugin.getDescription().getVersion() + "...");
 		long ms = System.currentTimeMillis();
 
-		MMOCore.plugin.reloadConfig();
 		MMOCore.plugin.initializePlugin(true);
-		
-		PlayerData.getAll().forEach(PlayerData::update);
 
 		ms = System.currentTimeMillis() - ms;
 		sender.sendMessage(ChatColor.YELLOW + MMOCore.plugin.getName() + " " + MMOCore.plugin.getDescription().getVersion() + " successfully reloaded.");
 		sender.sendMessage(ChatColor.YELLOW + "Time Taken: " + ChatColor.GOLD + ms + ChatColor.YELLOW + "ms (" + ChatColor.GOLD + (double) ms / 50 + ChatColor.YELLOW + " ticks)");
 		return CommandResult.SUCCESS;
 	}
-
 }

@@ -383,7 +383,8 @@ public class MMOCore extends LuminePlugin {
 	 * @param clearBefore True when issuing a plugin reload
 	 */
 	public void initializePlugin(boolean clearBefore) {
-		reloadConfig();
+		if (clearBefore)
+			reloadConfig();
 
 		configManager = new ConfigManager();
 
@@ -417,6 +418,9 @@ public class MMOCore extends LuminePlugin {
 			actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
 
 		StatType.load();
+
+		if (clearBefore)
+			PlayerData.getAll().forEach(PlayerData::update);
 	}
 
 	public static void log(String message) {

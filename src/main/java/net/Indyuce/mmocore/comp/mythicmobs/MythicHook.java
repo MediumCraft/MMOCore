@@ -41,10 +41,8 @@ public class MythicHook implements Listener {
         // When MM is reloaded, reload placeholders because they are no longer registered
         registerPlaceholders();
 
-        // Reload skills
-        MMOCore.plugin.skillManager.initialize(true);
-        MMOCore.plugin.classManager.initialize(true);
-        PlayerData.getAll().forEach(PlayerData::update);
+        // Reload every god damn thing
+        MMOCore.plugin.initializePlugin(true);
     }
 
     private void registerPlaceholders() {
