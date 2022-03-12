@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.comp.mythicmobs.load.*;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class MythicMobsMMOLoader extends MMOLoader {
@@ -16,6 +17,15 @@ public class MythicMobsMMOLoader extends MMOLoader {
 
         if (config.getKey().equalsIgnoreCase("mmskill") || config.getKey().equalsIgnoreCase("mythicmobskill"))
             return new MythicSkillTrigger(config);
+
+        return null;
+    }
+
+    @Override
+    public DropItem loadDropItem(MMOLineConfig config) {
+
+        if (config.getKey().equals("mmdroptable"))
+            return new MMDropTableDropItem(config);
 
         return null;
     }

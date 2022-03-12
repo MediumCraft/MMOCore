@@ -14,7 +14,6 @@ import net.Indyuce.mmocore.loot.droptable.condition.WorldCondition;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropTableDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.GoldDropItem;
-import net.Indyuce.mmocore.loot.droptable.dropitem.MMDropTableDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.NoteDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.VanillaDropItem;
 import net.Indyuce.mmocore.experience.source.BrewPotionExperienceSource;
@@ -87,9 +86,6 @@ public class DefaultMMOLoader extends MMOLoader {
 
 		if (config.getKey().equals("gold") || config.getKey().equals("coin"))
 			return new GoldDropItem(config);
-
-		if (config.getKey().equals("mmdroptable"))
-			return new MMDropTableDropItem(config);
 
 		return null;
 	}
