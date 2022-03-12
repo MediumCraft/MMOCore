@@ -18,8 +18,8 @@ import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
-import net.Indyuce.mmocore.experience.provider.MainExperienceDispenser;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.dispenser.ClassExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
 import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
@@ -155,7 +155,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         if (config.contains("main-exp-sources")) {
-            ExperienceDispenser dispenser = new MainExperienceDispenser(this);
+            ExperienceDispenser dispenser = new ClassExperienceDispenser(this);
             for (String key : config.getStringList("main-exp-sources"))
                 try {
                     ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser);

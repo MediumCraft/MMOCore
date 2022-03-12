@@ -2,7 +2,8 @@ package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
@@ -74,7 +75,7 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
                              */
                             double exp = MMOCore.plugin.smithingManager.getBaseExperience(item.getType())
                                     * Math.max(0, ((Damageable) old.getItemMeta()).getDamage() - ((Damageable) item.getItemMeta()).getDamage()) / 100;
-                            getDispenser().giveExperience(data, (int) exp, null);
+                            getDispenser().giveExperience(data, (int) exp, null, EXPSource.SOURCE);
                         }
                 }
             }

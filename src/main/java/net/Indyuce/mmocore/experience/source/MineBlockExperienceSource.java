@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.experience.source;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.GameMode;

@@ -2,7 +2,8 @@ package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
@@ -167,7 +168,7 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
              */
             // exp += getTotal(mapEffectDurations());
 
-            getDispenser().giveExperience(PlayerData.get(player), (int) exp * multiplier, null);
+            getDispenser().giveExperience(PlayerData.get(player), (int) exp * multiplier, null, EXPSource.SOURCE);
         }
     }
 }

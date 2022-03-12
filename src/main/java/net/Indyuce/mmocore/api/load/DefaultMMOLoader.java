@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.api.load;
 
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.block.BlockType;

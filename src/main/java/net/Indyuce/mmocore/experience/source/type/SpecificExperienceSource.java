@@ -1,7 +1,8 @@
 package net.Indyuce.mmocore.experience.source.type;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import org.bukkit.Location;
@@ -41,6 +42,6 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
      * @param hologramLocation Location used to display the exp hologram
      */
     public void giveExperience(PlayerData player, double multiplier, @Nullable Location hologramLocation) {
-        getDispenser().giveExperience(player, rollAmount() * multiplier, hologramLocation);
+        getDispenser().giveExperience(player, rollAmount() * multiplier, hologramLocation, EXPSource.SOURCE);
     }
 }

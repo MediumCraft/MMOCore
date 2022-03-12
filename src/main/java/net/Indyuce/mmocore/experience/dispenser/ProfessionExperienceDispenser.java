@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.experience.provider;
+package net.Indyuce.mmocore.experience.dispenser;
 
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.Profession;
@@ -14,7 +14,7 @@ public class ProfessionExperienceDispenser implements ExperienceDispenser {
     }
 
     @Override
-    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation) {
+    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
         hologramLocation = !profession.getOption(Profession.ProfessionOption.EXP_HOLOGRAMS) ? null
                 : hologramLocation == null ? getPlayerLocation(playerData) : hologramLocation;
         playerData.getCollectionSkills().giveExperience(profession, experience, EXPSource.SOURCE, hologramLocation);
