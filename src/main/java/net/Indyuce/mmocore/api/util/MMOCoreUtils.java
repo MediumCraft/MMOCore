@@ -65,6 +65,7 @@ public class MMOCoreUtils {
      */
     public static void displayIndicator(Location loc, String message) {
         Hologram holo = Hologram.create(Position.of(loc), Arrays.asList(message));
+        holo.spawn();
         Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> holo.despawn(), 20);
     }
 
@@ -211,5 +212,12 @@ public class MMOCoreUtils {
             ((Damageable) meta).setDamage(((Damageable) meta).getDamage() + event.getDamage());
             item.setItemMeta(meta);
         }
+    }
+
+    /**
+     * @return Center location of an entity using its bounding box
+     */
+    public static Location getCenterLocation(Entity entity) {
+        return entity.getBoundingBox().getCenter().toLocation(entity.getWorld());
     }
 }

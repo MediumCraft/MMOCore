@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.experience.dispenser;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,8 @@ public interface ExperienceDispenser {
      */
     boolean shouldHandle(PlayerData playerData);
 
+    @Nullable
     default Location getPlayerLocation(PlayerData player) {
-        return player.isOnline() ? player.getPlayer().getLocation() : null;
+        return player.isOnline() ? MMOCoreUtils.getCenterLocation(player.getPlayer()) : null;
     }
 }

@@ -538,7 +538,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         // Experience hologram
         if (hologramLocation != null && isOnline())
-            MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
+            MMOCoreUtils.displayIndicator(hologramLocation, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
 
         value = MMOCore.plugin.boosterManager.calculateExp(null, value);
         value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
