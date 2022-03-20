@@ -5,6 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class SimplePlaceholderItem<T extends GeneratedInventory> extends InventoryItem<T> {
+    public SimplePlaceholderItem(InventoryItem<?> parent, ConfigurationSection config) {
+        super(parent, config);
+    }
+
     public SimplePlaceholderItem(ConfigurationSection config) {
         super(config);
     }

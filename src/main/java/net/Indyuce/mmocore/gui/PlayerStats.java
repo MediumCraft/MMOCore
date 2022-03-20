@@ -200,13 +200,15 @@ public class PlayerStats extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			ItemStack item = super.display(inv, n);
-			if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
-				SkullMeta meta = (SkullMeta) item.getItemMeta();
-				meta.setOwningPlayer(inv.getPlayer());
-				item.setItemMeta(meta);
+			ItemStack disp = super.display(inv, n);
+			if (disp.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
+				SkullMeta meta = (SkullMeta) disp.getItemMeta();
+				inv.dynamicallyUpdateItem(this, n, disp, current -> {
+					meta.setOwningPlayer(inv.getPlayer());
+					current.setItemMeta(meta);
+				});
 			}
-			return item;
+			return disp;
 		}
 
 		@Override

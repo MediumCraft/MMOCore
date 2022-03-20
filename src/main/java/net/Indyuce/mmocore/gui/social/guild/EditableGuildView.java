@@ -1,7 +1,5 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -13,10 +11,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
@@ -24,10 +19,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
 public class EditableGuildView extends EditableInventory {
+	private static final NamespacedKey UUID_NAMESPACEDKEY = new NamespacedKey(MMOCore.plugin, "Uuid");
+
 	public EditableGuildView() {
 		super("guild-view");
 	}
@@ -38,8 +36,8 @@ public class EditableGuildView extends EditableInventory {
 	}
 
 	public static class MemberDisplayItem extends InventoryItem {
-		public MemberDisplayItem(ConfigurationSection config) {
-			super(config);
+		public MemberDisplayItem(MemberItem memberItem, ConfigurationSection config) {
+			super(memberItem, config);
 		}
 
 		@Override
@@ -71,14 +69,16 @@ public class EditableGuildView extends EditableInventory {
 
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
+			meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, uuid.toString());
 
 			if (meta instanceof SkullMeta)
-				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+				inv.dynamicallyUpdateItem(this, n, disp, current -> {
 					((SkullMeta) meta).setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
-					disp.setItemMeta(meta);
+					current.setItemMeta(meta);
 				});
 
-			return NBTItem.get(disp).addTag(new ItemTag("uuid", uuid.toString())).toItem();
+			disp.setItemMeta(meta);
+			return disp;
 		}
 	}
 
@@ -93,7 +93,7 @@ public class EditableGuildView extends EditableInventory {
 			Validate.notNull(config.contains("member"), "Could not load member config");
 
 			empty = new SimplePlaceholderItem(config.getConfigurationSection("empty"));
-			member = new MemberDisplayItem(config.getConfigurationSection("member"));
+			member = new MemberDisplayItem(this, config.getConfigurationSection("member"));
 		}
 
 		@Override
@@ -223,11 +223,15 @@ public class EditableGuildView extends EditableInventory {
 				});
 			}
 
-			if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF && !NBTItem.get(event.getCurrentItem()).getString("uuid").isEmpty()) {
+			if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF) {
 				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
 					return;
 
-				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(NBTItem.get(event.getCurrentItem()).getString("uuid")));
+				String tag = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
+				if (tag == null || tag.isEmpty())
+					return;
+
+				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(tag));
 				if (target.equals(player))
 					return;
 
