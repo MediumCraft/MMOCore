@@ -100,9 +100,8 @@ public class KeyCombos implements Listener {
         if (!event.getData().isCasting()) {
             if (event.getPressed() == initializerKey) {
 
-                // Cancel event if necessary
-                if (event.getPressed().shouldCancelEvent())
-                    event.setCancelled(true);
+                // Always cancel event
+                event.setCancelled(true);
 
                 // Start combo
                 playerData.setSkillCasting(new CustomSkillCastingHandler(playerData));
@@ -119,9 +118,8 @@ public class KeyCombos implements Listener {
         if (comboClickSound != null)
             comboClickSound.playTo(player);
 
-        // Cancel event if necessary
-        if (event.getPressed().shouldCancelEvent())
-            event.setCancelled(true);
+        // Always cancel event
+        event.setCancelled(true);
 
         // Hash current combo and check
         if (combos.containsKey(casting.current)) {

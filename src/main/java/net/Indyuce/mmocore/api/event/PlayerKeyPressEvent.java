@@ -5,6 +5,12 @@ import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Basically an event wrapper for multiple bukkit events that
+ * correspond to keys the player can use to cast skill combos.
+ *
+ * @author jules
+ */
 public class PlayerKeyPressEvent extends PlayerDataEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
@@ -16,8 +22,9 @@ public class PlayerKeyPressEvent extends PlayerDataEvent implements Cancellable 
      * only fired if the user has chosen the 'key combos' casting
      * method
      *
-     * @param playerData Player pressing the key
-     * @param pressed    Key being pressed
+     * @param playerData  Player pressing the key
+     * @param pressed     Key being pressed
+     * @param cancellable Cancellable event being wrapped
      */
     public PlayerKeyPressEvent(PlayerData playerData, PlayerKey pressed, Cancellable cancellable) {
         super(playerData);
