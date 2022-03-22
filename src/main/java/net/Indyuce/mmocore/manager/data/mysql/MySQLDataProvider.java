@@ -17,6 +17,24 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
 
 	@Override
 	public void load() {
+
+
+			/*TODO
+			also move Debug function to mysql data provider
+
+			String tableName = getPoolName();
+getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '" +getPoolName()+ "' AND TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'times_claimed'",
+		result -> {
+			if (!result.next())
+				executeUpdateAsync()
+		}):
+		executeUpdateAsync();
+
+
+		if (!provider.prepareStatement("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '" + provider.getDatabase()
+				+ "' AND TABLE_NAME = '" + provider.getBountyDataTable() + "' AND COLUMN_NAME = 'last_updated'").executeQuery().next())
+			provider.prepareStatement("ALTER TABLE " + provider.getBountyDataTable() + " ADD COLUMN last_updated BIGINT").execute();*/
+
 		executeUpdateAsync(
 			"CREATE TABLE IF NOT EXISTS mmocore_playerdata(uuid VARCHAR(36),class_points "
 			+ "INT(11) DEFAULT 0,skill_points INT(11) DEFAULT 0,attribute_points INT(11) "

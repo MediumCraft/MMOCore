@@ -1,45 +1,72 @@
-
-# Waypoint ID, used as reference.
-# Make sure the waypoints have different IDs.
+# Waypoint identifier, used as reference for admin commands.
+# Make sure all the waypoints have different identifiers.
 spawn:
 
-    # Name of waypoint displayed in the waypoint GUI.
-    name: Spawn
-    
-    # Location of waypoint: <world> <x y z> <yaw> <pitch>
-    # Yaw and pitch are where the player will be looking at when teleported.
-    location: 'world 69 71 136 136 0'
-    
-    # Radius of waypoint around the specified location.
-    radius: 1.5
-    
+  # Name of waypoint displayed in the waypoint GUI.
+  name: Spawn
+
+  # Location of waypoint: <world> <x y z> <yaw> <pitch>
+  # Yaw and pitch are where the player will be looking at when teleported.
+  location: 'world 69 71 136 136 0'
+
+  # Radius of waypoint around the specified location.
+  radius: 2.0
+
+  cost:
+
     # Stellium cost in order to use the waypoint.
     # Stellium is like stamina however it's not used
     # by skills and regens much slower than mana.
-    stellium: 3
-    
+    normal-use: 3
+
+    # Cost when not standing on any waypoint.
+    dynamic-use: 5
+
+  option:
+
     # When enabled, players can unlock the waypoint
-    # by sneaking on it, and can open the waypoint menu
-    # from the specified location (true by default).
-    sneak: true
-    
+    # by sneaking on it (true by default)
+    unlockable: true
+
+    # When enabled, opens up the teleportation menu
+    # when sneaking (true by default)
+    enable-menu: true
+
+    # When set to true (false by default) players don't
+    # have to be standing on any waypoint to teleport
+    # to that waypoint. This could be a nice option for
+    # spawn waypoints alongside with the 'default' option.
+    dynamic: false
+
     # Should be waypoint be unlocked by default?
     default: true
 
+  # All the waypoints you can teleport to when standing
+  # on that waypoint. If that list is empty you are able
+  # to teleport to any waypoint
+  linked:
+    - spawn1
+    - spawn2
+    - forest
+
 spawn1:
-    name: Spawn1
-    location: 'world 69 71 136 136 0'
-    radius: 1.5
-    stellium: 3
+  name: Spawn1
+  location: 'world 69 71 136 136 0'
+  radius: 2.0
+  cost:
+    normal-use: 3
+  option:
     default: false
-    
+
     # Can be teleported to even when not standing
     # on any waypoint (waypoint must be unlocked).
     dynamic: true
 
 spawn2:
-    name: Spawn2
-    location: 'world 69 71 136 136 0'
-    radius: 1.5
-    stellium: 3
-    sneak: false
+  name: Spawn2
+  location: 'world 69 71 136 136 0'
+  radius: 3.0
+  cost:
+    normal-use: 3
+  option:
+    enable-menu: false

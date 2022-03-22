@@ -14,12 +14,12 @@ import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.api.util.math.particle.CastingParticle;
+import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
-import net.Indyuce.mmocore.experience.provider.MainExperienceDispenser;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.dispenser.ClassExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
 import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
@@ -155,7 +155,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         if (config.contains("main-exp-sources")) {
-            ExperienceDispenser dispenser = new MainExperienceDispenser(this);
+            ExperienceDispenser dispenser = new ClassExperienceDispenser(this);
             for (String key : config.getStringList("main-exp-sources"))
                 try {
                     ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser);
@@ -375,6 +375,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return found == null ? Optional.empty() : Optional.of(found);
     }
 
+    @Nullable
     public ClassSkill getSkill(String id) {
         return skills.get(id);
     }

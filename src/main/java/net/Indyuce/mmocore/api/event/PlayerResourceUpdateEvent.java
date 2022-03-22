@@ -98,6 +98,11 @@ public class PlayerResourceUpdateEvent extends PlayerDataEvent implements Cancel
 		SKILL_COST,
 
 		/**
+		 * When consuming stellium to use a waypoint
+		 */
+		USE_WAYPOINT,
+
+		/**
 		 * Used by quests triggers
 		 * - {@link net.Indyuce.mmocore.api.quest.trigger.ManaTrigger}
 		 * - {@link net.Indyuce.mmocore.api.quest.trigger.StaminaTrigger}

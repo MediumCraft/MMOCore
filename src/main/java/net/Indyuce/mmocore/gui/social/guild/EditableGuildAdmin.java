@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,10 +23,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
 public class EditableGuildAdmin extends EditableInventory {
+	private static final NamespacedKey UUID_NAMESPACEDKEY = new NamespacedKey(MMOCore.plugin, "Uuid");
+
 	public EditableGuildAdmin() {
 		super("guild-admin");
 	}
@@ -40,8 +44,8 @@ public class EditableGuildAdmin extends EditableInventory {
 	}
 
 	public static class MemberDisplayItem extends InventoryItem {
-		public MemberDisplayItem(ConfigurationSection config) {
-			super(config);
+		public MemberDisplayItem(MemberItem memberItem, ConfigurationSection config) {
+			super(memberItem, config);
 		}
 
 		@Override
@@ -65,19 +69,21 @@ public class EditableGuildAdmin extends EditableInventory {
 
 		@Override
 		public ItemStack display(GeneratedInventory inv, int n) {
-			PlayerData member = PlayerData.get(inv.getPlayerData().getGuild().getMembers().get(n));
+			UUID uuid = inv.getPlayerData().getGuild().getMembers().get(n);
+			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
+			meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, uuid.toString());
 
-			if (meta instanceof SkullMeta)
-				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-					if (!member.isOnline()) return;
-					((SkullMeta) meta).setOwningPlayer(member.getPlayer());
-					disp.setItemMeta(meta);
+			if (meta instanceof SkullMeta && offlinePlayer != null)
+				inv.dynamicallyUpdateItem(this, n, disp, current -> {
+					((SkullMeta) meta).setOwningPlayer(offlinePlayer);
+					current.setItemMeta(meta);
 				});
 
-			return NBTItem.get(disp).addTag(new ItemTag("uuid", member.getUniqueId().toString())).toItem();
+			disp.setItemMeta(meta);
+			return disp;
 		}
 	}
 
@@ -92,7 +98,7 @@ public class EditableGuildAdmin extends EditableInventory {
 			Validate.notNull(config.contains("member"), "Could not load member config");
 
 			empty = new SimplePlaceholderItem(config.getConfigurationSection("empty"));
-			member = new MemberDisplayItem(config.getConfigurationSection("member"));
+			member = new MemberDisplayItem(this, config.getConfigurationSection("member"));
 		}
 
 		@Override
@@ -174,7 +180,7 @@ public class EditableGuildAdmin extends EditableInventory {
 				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
 					return;
 
-				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(NBTItem.get(event.getCurrentItem()).getString("uuid")));
+				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
 				if (target.equals(player))
 					return;
 

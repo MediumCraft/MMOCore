@@ -1,18 +1,21 @@
 package net.Indyuce.mmocore.comp.mythicmobs.load;
 
+import io.lumine.mythic.api.adapters.AbstractPlayer;
+import io.lumine.mythic.api.mobs.GenericCaster;
+import io.lumine.mythic.api.skills.Skill;
+import io.lumine.mythic.api.skills.SkillCaster;
+import io.lumine.mythic.api.skills.SkillMetadata;
+import io.lumine.mythic.api.skills.SkillTrigger;
+import io.lumine.mythic.bukkit.BukkitAdapter;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.skills.SkillMetadataImpl;
+import io.lumine.mythic.core.skills.SkillTriggers;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.adapters.AbstractPlayer;
-import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
-import io.lumine.xikage.mythicmobs.mobs.GenericCaster;
-import io.lumine.xikage.mythicmobs.skills.Skill;
-import io.lumine.xikage.mythicmobs.skills.SkillCaster;
-import io.lumine.xikage.mythicmobs.skills.SkillMetadata;
-import io.lumine.xikage.mythicmobs.skills.SkillTrigger;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import org.apache.commons.lang.Validate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -24,7 +27,7 @@ public class MythicSkillTrigger extends Trigger {
 
         config.validate("id");
         String id = config.getString("id");
-        Optional<io.lumine.xikage.mythicmobs.skills.Skill> opt = MythicMobs.inst().getSkillManager().getSkill(id);
+        Optional<io.lumine.mythic.api.skills.Skill> opt = MythicBukkit.inst().getSkillManager().getSkill(id);
         Validate.isTrue(opt.isPresent(), "Could not find MM skill " + id);
         skill = opt.get();
     }
@@ -35,8 +38,8 @@ public class MythicSkillTrigger extends Trigger {
 
         AbstractPlayer trigger = BukkitAdapter.adapt(player.getPlayer());
         SkillCaster caster = new GenericCaster(trigger);
-        SkillMetadata skillMeta = new SkillMetadata(SkillTrigger.API, caster, trigger, BukkitAdapter.adapt(player.getPlayer().getLocation()), new HashSet<>(), null, 1);
-        if (skill.usable(skillMeta, SkillTrigger.API))
+        SkillMetadata skillMeta = new SkillMetadataImpl(SkillTriggers.API, caster, trigger, BukkitAdapter.adapt(player.getPlayer().getLocation()), new HashSet<>(), null, 1);
+        if (skill.isUsable(skillMeta))
             skill.execute(skillMeta);
     }
 }

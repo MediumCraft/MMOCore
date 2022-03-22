@@ -8,7 +8,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.Booster;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
 
 public class ListCommandTreeNode extends CommandTreeNode {
 	public ListCommandTreeNode(CommandTreeNode parent) {

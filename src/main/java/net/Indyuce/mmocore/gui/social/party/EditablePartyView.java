@@ -1,7 +1,5 @@
 package net.Indyuce.mmocore.gui.social.party;
 
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
@@ -13,10 +11,7 @@ import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.party.provided.Party;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
@@ -24,178 +19,178 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
-
 public class EditablePartyView extends EditableInventory {
-	public EditablePartyView() {
-		super("party-view");
-	}
+    private static final NamespacedKey UUID_NAMESPACEDKEY = new NamespacedKey(MMOCore.plugin, "Uuid");
 
-	@Override
-	public InventoryItem load(String function, ConfigurationSection config) {
-		return function.equals("member") ? new MemberItem(config) : new SimplePlaceholderItem(config);
-	}
+    public EditablePartyView() {
+        super("party-view");
+    }
 
-	public static class MemberDisplayItem extends InventoryItem {
-		public MemberDisplayItem(ConfigurationSection config) {
-			super(config);
-		}
+    @Override
+    public InventoryItem load(String function, ConfigurationSection config) {
+        return function.equals("member") ? new MemberItem(config) : new SimplePlaceholderItem(config);
+    }
 
-		@Override
-		public boolean hasDifferentDisplay() {
-			return true;
-		}
+    public static class MemberDisplayItem extends InventoryItem {
+        public MemberDisplayItem(MemberItem memberItem, ConfigurationSection config) {
+            super(memberItem, config);
+        }
 
-		@Override
-		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
-			Party party = (Party) inv.getPlayerData().getParty();
-			PlayerData member = party.getMembers().get(n);
+        @Override
+        public boolean hasDifferentDisplay() {
+            return true;
+        }
 
-			Placeholders holders = new Placeholders();
-			if (member.isOnline())
-				holders.register("name", member.getPlayer().getName());
-			holders.register("class", member.getProfess().getName());
-			holders.register("level", "" + member.getLevel());
-			holders.register("since", new DelayFormat(2).format(System.currentTimeMillis() - member.getLastLogin()));
-			return holders;
-		}
+        @Override
+        public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
+            Party party = (Party) inv.getPlayerData().getParty();
+            PlayerData member = party.getMembers().get(n);
 
-		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			Party party = (Party) inv.getPlayerData().getParty();
-			PlayerData member = party.getMembers().get(n);
+            Placeholders holders = new Placeholders();
+            if (member.isOnline())
+                holders.register("name", member.getPlayer().getName());
+            holders.register("class", member.getProfess().getName());
+            holders.register("level", "" + member.getLevel());
+            holders.register("since", new DelayFormat(2).format(System.currentTimeMillis() - member.getLastLogin()));
+            return holders;
+        }
 
-			ItemStack disp = super.display(inv, n);
-			ItemMeta meta = disp.getItemMeta();
+        @Override
+        public ItemStack display(GeneratedInventory inv, int n) {
+            Party party = (Party) inv.getPlayerData().getParty();
+            PlayerData member = party.getMembers().get(n);
 
-			/*
-			 * run async to save performance
-			 */
-			if (meta instanceof SkullMeta)
-				Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-					if (!member.isOnline()) return;
-					((SkullMeta) meta).setOwningPlayer(member.getPlayer());
-					disp.setItemMeta(meta);
-				});
+            ItemStack disp = super.display(inv, n);
+            ItemMeta meta = disp.getItemMeta();
+            meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, member.getUniqueId().toString());
 
-			return NBTItem.get(disp).addTag(new ItemTag("uuid", member.getUniqueId().toString())).toItem();
-		}
-	}
+            if (meta instanceof SkullMeta)
+                inv.dynamicallyUpdateItem(this, n, disp, current -> {
+                    ((SkullMeta) meta).setOwningPlayer(member.getPlayer());
+                    current.setItemMeta(meta);
+                });
 
-	public static class MemberItem extends SimplePlaceholderItem {
-		private final InventoryItem empty;
-		private final MemberDisplayItem member;
+            disp.setItemMeta(meta);
+            return disp;
+        }
+    }
 
-		public MemberItem(ConfigurationSection config) {
-			super(Material.BARRIER, config);
+    public static class MemberItem extends SimplePlaceholderItem {
+        private final InventoryItem empty;
+        private final MemberDisplayItem member;
 
-			Validate.notNull(config.contains("empty"), "Could not load empty config");
-			Validate.notNull(config.contains("member"), "Could not load member config");
+        public MemberItem(ConfigurationSection config) {
+            super(Material.BARRIER, config);
 
-			empty = new SimplePlaceholderItem(config.getConfigurationSection("empty"));
-			member = new MemberDisplayItem(config.getConfigurationSection("member"));
-		}
+            Validate.notNull(config.contains("empty"), "Could not load empty config");
+            Validate.notNull(config.contains("member"), "Could not load member config");
 
-		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			Party party = (Party) inv.getPlayerData().getParty();
-			return party.getMembers().size() > n ? member.display(inv, n) : empty.display(inv, n);
-		}
+            empty = new SimplePlaceholderItem(config.getConfigurationSection("empty"));
+            member = new MemberDisplayItem(this, config.getConfigurationSection("member"));
+        }
 
-		@Override
-		public boolean hasDifferentDisplay() {
-			return true;
-		}
+        @Override
+        public ItemStack display(GeneratedInventory inv, int n) {
+            Party party = (Party) inv.getPlayerData().getParty();
+            return party.getMembers().size() > n ? member.display(inv, n) : empty.display(inv, n);
+        }
 
-		@Override
-		public boolean canDisplay(GeneratedInventory inv) {
-			return true;
-		}
-	}
+        @Override
+        public boolean hasDifferentDisplay() {
+            return true;
+        }
 
-	public GeneratedInventory newInventory(PlayerData data) {
-		return new PartyViewInventory(data, this);
-	}
+        @Override
+        public boolean canDisplay(GeneratedInventory inv) {
+            return true;
+        }
+    }
 
-	public class PartyViewInventory extends GeneratedInventory {
-		private final int max;
+    public GeneratedInventory newInventory(PlayerData data) {
+        return new PartyViewInventory(data, this);
+    }
 
-		public PartyViewInventory(PlayerData playerData, EditableInventory editable) {
-			super(playerData, editable);
+    public class PartyViewInventory extends GeneratedInventory {
+        private final int max;
 
-			max = editable.getByFunction("member").getSlots().size();
-		}
+        public PartyViewInventory(PlayerData playerData, EditableInventory editable) {
+            super(playerData, editable);
 
-		@Override
-		public String calculateName() {
-			Party party = (Party) getPlayerData().getParty();
-			return getName().replace("{max}", "" + max).replace("{players}", "" + party.getMembers().size());
-		}
+            max = editable.getByFunction("member").getSlots().size();
+        }
 
-		@Override
-		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
-			Party party = (Party) playerData.getParty();
+        @Override
+        public String calculateName() {
+            Party party = (Party) getPlayerData().getParty();
+            return getName().replace("{max}", "" + max).replace("{players}", "" + party.getMembers().size());
+        }
 
-			if (item.getFunction().equals("leave")) {
-				party.removeMember(playerData);
-				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-				player.closeInventory();
-				return;
-			}
+        @Override
+        public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+            Party party = (Party) playerData.getParty();
 
-			if (item.getFunction().equals("invite")) {
+            if (item.getFunction().equals("leave")) {
+                party.removeMember(playerData);
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                player.closeInventory();
+                return;
+            }
 
-				if (party.getMembers().size() >= max) {
-					MMOCore.plugin.configManager.getSimpleMessage("party-is-full").send(player);
-					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-					return;
-				}
+            if (item.getFunction().equals("invite")) {
 
-				MMOCore.plugin.configManager.newPlayerInput(player, InputType.PARTY_INVITE, (input) -> {
-					Player target = Bukkit.getPlayer(input);
-					if (target == null) {
-						MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);
-						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-						open();
-						return;
-					}
+                if (party.getMembers().size() >= max) {
+                    MMOCore.plugin.configManager.getSimpleMessage("party-is-full").send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                    return;
+                }
 
-					long remaining = party.getLastInvite(target) + 60 * 2 * 1000 - System.currentTimeMillis();
-					if (remaining > 0) {
-						MMOCore.plugin.configManager.getSimpleMessage("party-invite-cooldown", "player", target.getName(), "cooldown", new DelayFormat().format(remaining)).send(player);
-						open();
-						return;
-					}
+                MMOCore.plugin.configManager.newPlayerInput(player, InputType.PARTY_INVITE, (input) -> {
+                    Player target = Bukkit.getPlayer(input);
+                    if (target == null) {
+                        MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                        open();
+                        return;
+                    }
 
-					PlayerData targetData = PlayerData.get(target);
-					if (party.hasMember(target)) {
-						MMOCore.plugin.configManager.getSimpleMessage("already-in-party", "player", target.getName()).send(player);
-						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-						open();
-						return;
-					}
+                    long remaining = party.getLastInvite(target) + 60 * 2 * 1000 - System.currentTimeMillis();
+                    if (remaining > 0) {
+                        MMOCore.plugin.configManager.getSimpleMessage("party-invite-cooldown", "player", target.getName(), "cooldown", new DelayFormat().format(remaining)).send(player);
+                        open();
+                        return;
+                    }
 
-					party.sendInvite(playerData, targetData);
-					MMOCore.plugin.configManager.getSimpleMessage("sent-party-invite", "player", target.getName()).send(player);
-					player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-					open();
-				});
-			}
+                    PlayerData targetData = PlayerData.get(target);
+                    if (party.hasMember(target)) {
+                        MMOCore.plugin.configManager.getSimpleMessage("already-in-party", "player", target.getName()).send(player);
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                        open();
+                        return;
+                    }
 
-			if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF) {
-				if (!party.getOwner().equals(playerData))
-					return;
+                    party.sendInvite(playerData, targetData);
+                    MMOCore.plugin.configManager.getSimpleMessage("sent-party-invite", "player", target.getName()).send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    open();
+                });
+            }
 
-				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(NBTItem.get(event.getCurrentItem()).getString("uuid")));
-				if (target.equals(player))
-					return;
+            if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF) {
+                if (!party.getOwner().equals(playerData))
+                    return;
 
-				party.removeMember(PlayerData.get(target));
-				MMOCore.plugin.configManager.getSimpleMessage("kick-from-party", "player", target.getName()).send(player);
-				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-			}
-		}
-	}
+                OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
+                if (target.equals(player))
+                    return;
+
+                party.removeMember(PlayerData.get(target));
+                MMOCore.plugin.configManager.getSimpleMessage("kick-from-party", "player", target.getName()).send(player);
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+            }
+        }
+    }
 }

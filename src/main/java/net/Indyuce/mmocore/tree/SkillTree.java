@@ -1,8 +1,10 @@
 package net.Indyuce.mmocore.tree;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.manager.registry.RegisterObject;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ import java.util.logging.Level;
  * @author jules
  * @see {@link SkillTreeNode}
  */
-public class SkillTree {
+public class SkillTree implements RegisterObject {
     private final String id, name;
     private final Map<IntegerCoordinates, SkillTreeNode> nodes = new HashMap<>();
 
@@ -44,6 +46,7 @@ public class SkillTree {
                 }
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -54,6 +57,11 @@ public class SkillTree {
 
     public Collection<SkillTreeNode> getNodes() {
         return nodes.values();
+    }
+
+    @NotNull
+    public SkillTreeNode getNode(IntegerCoordinates coords) {
+        return Objects.requireNonNull(nodes.get(coords), "Could not find node in tree '" + id + "' with coordinates '" + coords.toString() + "'");
     }
 
     @Override

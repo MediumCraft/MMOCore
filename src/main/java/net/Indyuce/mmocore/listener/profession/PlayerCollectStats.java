@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
 import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.api.util.math.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import io.lumine.mythic.lib.MythicLib;
 
 public class PlayerCollectStats implements Listener {

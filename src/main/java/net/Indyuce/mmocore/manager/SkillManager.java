@@ -6,6 +6,9 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import net.Indyuce.mmocore.skill.list.Ambers;
+import net.Indyuce.mmocore.skill.list.Neptune_Gift;
+import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +48,11 @@ public class SkillManager implements MMOCoreManager {
 
         if (clearBefore)
             skills.clear();
+
+        // Register MMOCore specific skills
+        MythicLib.plugin.getSkills().registerSkillHandler(new Ambers());
+        MythicLib.plugin.getSkills().registerSkillHandler(new Neptune_Gift());
+        MythicLib.plugin.getSkills().registerSkillHandler(new Sneaky_Picky());
 
         // Check for default files
         File skillFolder = new File(MMOCore.plugin.getDataFolder() + "/skills");

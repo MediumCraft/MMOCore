@@ -4,7 +4,8 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.event.PlayerKillEntityEvent;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.Bukkit;
@@ -34,7 +35,7 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
 
                         for (KillMobExperienceSource source : getSources())
                             if (source.matches(data, event.getTarget()))
-                                source.giveExperience(data, 1, event.getTarget().getLocation());
+                                source.giveExperience(data, 1, MMOCoreUtils.getCenterLocation(event.getTarget()));
                     }
                 }, 2);
             }

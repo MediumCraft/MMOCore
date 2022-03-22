@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.command.rpg.waypoint;
 
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.Waypoint;
+import net.Indyuce.mmocore.waypoint.Waypoint;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

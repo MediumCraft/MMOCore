@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.util.math.particle;
+package net.Indyuce.mmocore.loot.chest.particle;
 
 import org.bukkit.Color;
 import org.bukkit.Particle;

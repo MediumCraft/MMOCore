@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -21,147 +23,160 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public abstract class InventoryItem<T extends GeneratedInventory> {
-	private final String id, function;
-	private final List<Integer> slots = new ArrayList<>();
+    private final String id, function;
+    private final List<Integer> slots = new ArrayList<>();
 
-	private final Material material;
-	private final String name, texture;
-	private final List<String> lore;
-	private final int modelData;
-	private final boolean placeholders, hideFlags;
+    @Nullable
+    private final InventoryItem<?> parent;
 
-	public InventoryItem(ConfigurationSection config) {
-		this(Material.valueOf(config.getString("item", "").toUpperCase().replace(" ", "_").replace("-", "_")), config);
-	}
+    private final Material material;
+    private final String name, texture;
+    private final List<String> lore;
+    private final int modelData;
+    private final boolean hideFlags;
 
-	public InventoryItem(Material material, ConfigurationSection config) {
-		this.id = config.getName();
-		this.function = config.getString("function", "");
+    public InventoryItem(ConfigurationSection config) {
+        this((InventoryItem) null, config);
+    }
 
-		this.material = material;
-		this.name = config.getString("name");
-		this.lore = config.getStringList("lore");
-		this.hideFlags = config.getBoolean("hide-flags");
-		this.texture = config.getString("texture");
-		this.placeholders = config.getBoolean("placeholders");
-		this.modelData = config.getInt("custom-model-data");
+    public InventoryItem(@Nullable InventoryItem<?> parent, ConfigurationSection config) {
+        this(parent, Material.valueOf(config.getString("item", "").toUpperCase().replace(" ", "_").replace("-", "_")), config);
+    }
 
-		config.getStringList("slots").forEach(str -> slots.add(Integer.parseInt(str)));
-	}
+    public InventoryItem(@NotNull Material material, ConfigurationSection config) {
+        this(null, material, config);
+    }
 
-	public String getId() {
-		return id;
-	}
+    public InventoryItem(InventoryItem parent, Material material, ConfigurationSection config) {
+        this.id = config.getName();
+        this.function = config.getString("function", "");
+        this.parent = parent;
 
-	public String getFunction() {
-		return function;
-	}
+        this.material = material;
+        this.name = config.getString("name");
+        this.lore = config.getStringList("lore");
+        this.hideFlags = config.getBoolean("hide-flags");
+        this.texture = config.getString("texture");
+        this.modelData = config.getInt("custom-model-data");
 
-	public boolean hasFunction() {
-		return !function.isEmpty();
-	}
+        config.getStringList("slots").forEach(str -> slots.add(Integer.parseInt(str)));
+    }
 
-	public List<Integer> getSlots() {
-		return slots;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public Material getMaterial() {
-		return material;
-	}
+    @NotNull
+    public String getFunction() {
+        return parent == null ? function : parent.function;
+    }
 
-	public boolean hideFlags() {
-		return hideFlags;
-	}
+    public boolean hasFunction() {
+        return !getFunction().isEmpty();
+    }
 
-	public boolean hasName() {
-		return name != null;
-	}
+    @NotNull
+    public List<Integer> getSlots() {
+        return parent == null ? slots : parent.slots;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Material getMaterial() {
+        return material;
+    }
 
-	public boolean hasLore() {
-		return lore != null && !lore.isEmpty();
-	}
+    public boolean hideFlags() {
+        return hideFlags;
+    }
 
-	public List<String> getLore() {
-		return lore;
-	}
+    public boolean hasName() {
+        return name != null;
+    }
 
-	public int getModelData() {
-		return modelData;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setDisplayed(Inventory inv, T generated) {
-		generated.addLoaded(this);
+    public boolean hasLore() {
+        return lore != null && !lore.isEmpty();
+    }
 
-		if (!hasDifferentDisplay()) {
-			ItemStack display = display(generated);
-			for (int slot : getSlots())
-				inv.setItem(slot, display);
-		} else
-			for (int j = 0; j < slots.size(); j++)
-				inv.setItem(slots.get(j), display(generated, j));
+    public List<String> getLore() {
+        return lore;
+    }
 
-	}
+    public int getModelData() {
+        return modelData;
+    }
 
-	public boolean hasDifferentDisplay() {
-		return false;
-	}
+    public void setDisplayed(Inventory inv, T generated) {
+        generated.addLoaded(this);
 
-	public boolean canDisplay(T inv) {
-		return true;
-	}
+        if (!hasDifferentDisplay()) {
+            ItemStack display = display(generated);
+            for (int slot : getSlots())
+                inv.setItem(slot, display);
+        } else
+            for (int j = 0; j < slots.size(); j++)
+                inv.setItem(slots.get(j), display(generated, j));
 
-	public ItemStack display(T inv) {
-		return display(inv, 0);
-	}
+    }
 
-	public ItemStack display(T inv, int n) {
+    public boolean hasDifferentDisplay() {
+        return false;
+    }
 
-		Placeholders placeholders = getPlaceholders(inv, n);
-		ItemStack item = new ItemStack(material);
-		ItemMeta meta = item.getItemMeta();
+    public boolean canDisplay(T inv) {
+        return true;
+    }
 
-		if (texture != null && meta instanceof SkullMeta)
-			applyTexture(texture, (SkullMeta) meta);
+    public ItemStack display(T inv) {
+        return display(inv, 0);
+    }
 
-		if (hasName())
-			meta.setDisplayName(placeholders.apply(inv.getPlayer(), getName()));
+    public ItemStack display(T inv, int n) {
 
-		if (hideFlags())
-			meta.addItemFlags(ItemFlag.values());
+        Placeholders placeholders = getPlaceholders(inv, n);
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
 
-		if (hasLore()) {
-			List<String> lore = new ArrayList<>();
-			getLore().forEach(line -> lore.add(ChatColor.GRAY + placeholders.apply(inv.getPlayer(), line)));
-			meta.setLore(lore);
-		}
+        if (texture != null && meta instanceof SkullMeta)
+            applyTexture(texture, (SkullMeta) meta);
 
-		if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
-			meta.setCustomModelData(getModelData());
+        if (hasName())
+            meta.setDisplayName(placeholders.apply(inv.getPlayer(), getName()));
 
-		item.setItemMeta(meta);
-		return item;
-	}
+        if (hideFlags())
+            meta.addItemFlags(ItemFlag.values());
 
-	private void applyTexture(String value, SkullMeta meta) {
-		try {
-			GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-			profile.getProperties().put("textures", new Property("textures", value));
+        if (hasLore()) {
+            List<String> lore = new ArrayList<>();
+            getLore().forEach(line -> lore.add(ChatColor.GRAY + placeholders.apply(inv.getPlayer(), line)));
+            meta.setLore(lore);
+        }
 
-			Field profileField = meta.getClass().getDeclaredField("profile");
-			profileField.setAccessible(true);
-			profileField.set(meta, profile);
-		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException exception) {
-			MMOCore.log(Level.WARNING, "Could not apply item texture value of " + getId());
-		}
-	}
+        if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
+            meta.setCustomModelData(getModelData());
 
-	public Placeholders getPlaceholders(T inv) {
-		return getPlaceholders(inv, 0);
-	}
+        item.setItemMeta(meta);
+        return item;
+    }
 
-	public abstract Placeholders getPlaceholders(T inv, int n);
+    private void applyTexture(String value, SkullMeta meta) {
+        try {
+            GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+            profile.getProperties().put("textures", new Property("textures", value));
+
+            Field profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(meta, profile);
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException exception) {
+            MMOCore.log(Level.WARNING, "Could not apply item texture value of " + getId());
+        }
+    }
+
+    public Placeholders getPlaceholders(T inv) {
+        return getPlaceholders(inv, 0);
+    }
+
+    public abstract Placeholders getPlaceholders(T inv, int n);
 }

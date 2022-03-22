@@ -3,6 +3,9 @@ package net.Indyuce.mmocore.manager.profession;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.manager.MMOCoreManager;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public abstract class SpecificProfessionManager implements MMOCoreManager {
 
@@ -25,8 +28,9 @@ public abstract class SpecificProfessionManager implements MMOCoreManager {
         this.linkedProfession = linkedProfession;
     }
 
+    @NotNull
     public Profession getLinkedProfession() {
-        return linkedProfession;
+        return Objects.requireNonNull(linkedProfession, "No linked profession found");
     }
 
     public boolean hasLinkedProfession() {

@@ -1,7 +1,5 @@
 package net.Indyuce.mmocore.gui.social.friend;
 
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -15,6 +13,7 @@ import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,10 +23,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
 public class EditableFriendList extends EditableInventory {
+    private static final NamespacedKey UUID_NAMESPACEDKEY = new NamespacedKey(MMOCore.plugin, "Uuid");
+
     public EditableFriendList() {
         super("friend-list");
     }
@@ -64,8 +66,8 @@ public class EditableFriendList extends EditableInventory {
     }
 
     public static class OfflineFriendItem extends InventoryItem {
-        public OfflineFriendItem(ConfigurationSection config) {
-            super(config);
+        public OfflineFriendItem(FriendItem parent, ConfigurationSection config) {
+            super(parent, config);
         }
 
         @Override
@@ -82,27 +84,11 @@ public class EditableFriendList extends EditableInventory {
             holders.register("last_seen", new DelayFormat(2).format(System.currentTimeMillis() - friend.getLastPlayed()));
             return holders;
         }
-
-        @Override
-        public ItemStack display(GeneratedInventory inv, int n) {
-            OfflinePlayer friend = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n));
-
-            ItemStack disp = super.display(inv, n);
-            ItemMeta meta = disp.getItemMeta();
-
-            if (meta instanceof SkullMeta)
-                Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-                    ((SkullMeta) meta).setOwningPlayer(friend);
-                    disp.setItemMeta(meta);
-                });
-
-            return NBTItem.get(disp).addTag(new ItemTag("uuid", friend.getUniqueId().toString())).toItem();
-        }
     }
 
     public static class OnlineFriendItem extends SimplePlaceholderItem {
-        public OnlineFriendItem(ConfigurationSection config) {
-            super(config);
+        public OnlineFriendItem(FriendItem parent, ConfigurationSection config) {
+            super(parent, config);
         }
 
         @Override
@@ -123,22 +109,6 @@ public class EditableFriendList extends EditableInventory {
             holders.register("online_since", new DelayFormat(2).format(System.currentTimeMillis() - data.getLastLogin()));
             return holders;
         }
-
-        @Override
-        public ItemStack display(GeneratedInventory inv, int n) {
-            Player friend = Bukkit.getPlayer(inv.getPlayerData().getFriends().get(n));
-
-            ItemStack disp = super.display(inv, n);
-            ItemMeta meta = disp.getItemMeta();
-
-            if (meta instanceof SkullMeta)
-                Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-                    ((SkullMeta) meta).setOwningPlayer(friend);
-                    disp.setItemMeta(meta);
-                });
-
-            return NBTItem.get(disp).addTag(new ItemTag("uuid", friend.getUniqueId().toString())).toItem();
-        }
     }
 
     public static class FriendItem extends SimplePlaceholderItem {
@@ -151,14 +121,28 @@ public class EditableFriendList extends EditableInventory {
             Validate.notNull(config.contains("online"), "Could not load online config");
             Validate.notNull(config.contains("offline"), "Could not load offline config");
 
-            online = new OnlineFriendItem(config.getConfigurationSection("online"));
-            offline = new OfflineFriendItem(config.getConfigurationSection("offline"));
+            online = new OnlineFriendItem(this, config.getConfigurationSection("online"));
+            offline = new OfflineFriendItem(this, config.getConfigurationSection("offline"));
         }
 
         @Override
         public ItemStack display(GeneratedInventory inv, int n) {
-            return inv.getPlayerData().getFriends().size() <= n ? super.display(inv, n)
-                    : Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n)).isOnline() ? online.display(inv, n) : offline.display(inv, n);
+            if (inv.getPlayerData().getFriends().size() <= n)
+                return super.display(inv, n);
+
+            ItemStack disp = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n)).isOnline() ? online.display(inv, n) : offline.display(inv, n);
+            Player friend = Bukkit.getPlayer(inv.getPlayerData().getFriends().get(n));
+            ItemMeta meta = disp.getItemMeta();
+            meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, friend.getUniqueId().toString());
+
+            if (meta instanceof SkullMeta)
+                inv.dynamicallyUpdateItem(this, n, disp, current -> {
+                    ((SkullMeta) meta).setOwningPlayer(friend);
+                    current.setItemMeta(meta);
+                });
+
+            disp.setItemMeta(meta);
+            return disp;
         }
 
         @Override
@@ -238,7 +222,7 @@ public class EditableFriendList extends EditableInventory {
             }
 
             if (item.getFunction().equals("friend") && event.getAction() == InventoryAction.PICKUP_HALF) {
-                String tag = NBTItem.get(event.getCurrentItem()).getString("uuid");
+                String tag = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
                 if (tag == null || tag.isEmpty())
                     return;
 

@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
 
 public class ReloadCommandTreeNode extends CommandTreeNode {
 	public ReloadCommandTreeNode(CommandTreeNode parent) {
@@ -18,15 +18,11 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
 		sender.sendMessage(ChatColor.YELLOW + "Reloading " + MMOCore.plugin.getName() + " " + MMOCore.plugin.getDescription().getVersion() + "...");
 		long ms = System.currentTimeMillis();
 
-		MMOCore.plugin.reloadConfig();
 		MMOCore.plugin.initializePlugin(true);
-		
-		PlayerData.getAll().forEach(PlayerData::update);
 
 		ms = System.currentTimeMillis() - ms;
 		sender.sendMessage(ChatColor.YELLOW + MMOCore.plugin.getName() + " " + MMOCore.plugin.getDescription().getVersion() + " successfully reloaded.");
 		sender.sendMessage(ChatColor.YELLOW + "Time Taken: " + ChatColor.GOLD + ms + ChatColor.YELLOW + "ms (" + ChatColor.GOLD + (double) ms / 50 + ChatColor.YELLOW + " ticks)");
 		return CommandResult.SUCCESS;
 	}
-
 }

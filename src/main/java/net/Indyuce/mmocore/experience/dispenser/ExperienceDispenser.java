@@ -1,12 +1,16 @@
-package net.Indyuce.mmocore.experience.provider;
+package net.Indyuce.mmocore.experience.dispenser;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.experience.EXPSource;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Used to differenciate between the main class experience
- * and experience given in a specific profession
+ * Used to differenciate between the main class experience and
+ * experience given in a specific profession. Also being used to
+ * monitor EXP holograms.
  */
 public interface ExperienceDispenser {
 
@@ -17,10 +21,12 @@ public interface ExperienceDispenser {
      * @param experience       Experience gained. Note that it is a double
      *                         because it gets converted to an integer at
      *                         the very last moment in MMOCore
-     * @param hologramLocation Location of displayed hologram, nothing
-     *                         is displayed if it's null
+     * @param hologramLocation Location of displayed hologram. When set to null
+     *                         and if exp holograms are enabled it will take the
+     *                         player's location instead.
+     * @param source           Why the EXP was gained
      */
-    void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation);
+    void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, @NotNull EXPSource source);
 
     /**
      * Experience sources handle both CLASS experience sources and PROFESSION
@@ -32,7 +38,8 @@ public interface ExperienceDispenser {
      */
     boolean shouldHandle(PlayerData playerData);
 
+    @Nullable
     default Location getPlayerLocation(PlayerData player) {
-        return player.isOnline() ? player.getPlayer().getLocation() : null;
+        return player.isOnline() ? MMOCoreUtils.getCenterLocation(player.getPlayer()) : null;
     }
 }

@@ -7,10 +7,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.api.util.item.CurrencyItem;
+import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 import io.lumine.mythic.lib.api.util.SmartGive;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
 
 public class NoteCommandTreeNode extends CommandTreeNode {
 	public NoteCommandTreeNode(CommandTreeNode parent) {
@@ -40,7 +40,7 @@ public class NoteCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		new SmartGive(player).give(new CurrencyItem("NOTE", worth).build());
+		new SmartGive(player).give(new CurrencyItemBuilder("NOTE", worth).build());
 		return CommandResult.SUCCESS;
 	}
 }

@@ -45,9 +45,6 @@ import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
-import net.Indyuce.mmocore.skill.list.Ambers;
-import net.Indyuce.mmocore.skill.list.Neptune_Gift;
-import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,11 +61,10 @@ import java.util.logging.Level;
 public class MMOCore extends LuminePlugin {
 	public static MMOCore plugin;
 
-	public ConfigManager configManager;
-	public WaypointManager waypointManager;
-	public SoundManager soundManager;
-	public RequestManager requestManager;
-	public ConfigItemManager configItems;
+	public final WaypointManager waypointManager = new WaypointManager();
+	public final SoundManager soundManager = new SoundManager();
+	public final RequestManager requestManager = new RequestManager();
+	public final ConfigItemManager configItems = new ConfigItemManager();
 	public final PlayerActionBar actionBarManager = new PlayerActionBar();
 	public final SkillManager skillManager = new SkillManager();
 	public final ClassManager classManager = new ClassManager();
@@ -82,7 +78,18 @@ public class MMOCore extends LuminePlugin {
 	public final LootChestManager lootChests = new LootChestManager();
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public final RestrictionManager restrictionManager = new RestrictionManager();
+	@Deprecated
+	public final SkillTreeManager skillTreeManager = new SkillTreeManager();
 
+	// Profession managers
+	public final CustomBlockManager mineManager = new CustomBlockManager();
+	public final FishingManager fishingManager = new FishingManager();
+	public final AlchemyManager alchemyManager = new AlchemyManager();
+	public final EnchantManager enchantManager = new EnchantManager();
+	public final SmithingManager smithingManager = new SmithingManager();
+
+	@NotNull
+	public ConfigManager configManager;
 	public VaultEconomy economy;
 	public RegionHandler regionHandler = new DefaultRegionHandler();
 	public PlaceholderParser placeholderParser = new DefaultParser();
@@ -91,13 +98,6 @@ public class MMOCore extends LuminePlugin {
 	// Modules
 	@NotNull
 	public PartyModule partyModule;
-
-	// Profession managers
-	public final CustomBlockManager mineManager = new CustomBlockManager();
-	public final FishingManager fishingManager = new FishingManager();
-	public final AlchemyManager alchemyManager = new AlchemyManager();
-	public final EnchantManager enchantManager = new EnchantManager();
-	public final SmithingManager smithingManager = new SmithingManager();
 
 	public boolean shouldDebugSQL = false;
 
@@ -130,11 +130,6 @@ public class MMOCore extends LuminePlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null)
 			loadManager.registerLoader(new MythicMobsMMOLoader());
-
-		// Register MMOCore specific skills
-		MythicLib.plugin.getSkills().registerSkillHandler(new Ambers());
-		MythicLib.plugin.getSkills().registerSkillHandler(new Neptune_Gift());
-		MythicLib.plugin.getSkills().registerSkillHandler(new Sneaky_Picky());
 	}
 
 	public void enable() {
@@ -388,7 +383,8 @@ public class MMOCore extends LuminePlugin {
 	 * @param clearBefore True when issuing a plugin reload
 	 */
 	public void initializePlugin(boolean clearBefore) {
-		reloadConfig();
+		if (clearBefore)
+			reloadConfig();
 
 		configManager = new ConfigManager();
 
@@ -413,16 +409,18 @@ public class MMOCore extends LuminePlugin {
 		questManager.initialize(clearBefore);
 		lootChests.initialize(clearBefore);
 		restrictionManager.initialize(clearBefore);
-
-		waypointManager = new WaypointManager(new ConfigFile("waypoints").getConfig());
-		requestManager = new RequestManager();
-		soundManager = new SoundManager(new ConfigFile("sounds").getConfig());
-		configItems = new ConfigItemManager(new ConfigFile("items").getConfig());
+		waypointManager.initialize(clearBefore);
+		requestManager.initialize(clearBefore);
+		soundManager.initialize(clearBefore);
+		configItems.initialize(clearBefore);
 
 		if (getConfig().isConfigurationSection("action-bar"))
 			actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
 
 		StatType.load();
+
+		if (clearBefore)
+			PlayerData.getAll().forEach(PlayerData::update);
 	}
 
 	public static void log(String message) {

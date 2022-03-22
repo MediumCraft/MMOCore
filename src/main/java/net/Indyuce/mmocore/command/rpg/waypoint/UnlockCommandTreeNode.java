@@ -6,10 +6,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.Waypoint;
+import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import io.lumine.mythic.lib.commands.mmolib.api.CommandTreeNode;
-import io.lumine.mythic.lib.commands.mmolib.api.Parameter;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
 
 public class UnlockCommandTreeNode extends CommandTreeNode {
 	public UnlockCommandTreeNode(CommandTreeNode parent) {

@@ -68,6 +68,7 @@ public enum StatType {
     PROJECTILE_DAMAGE,
     WEAPON_DAMAGE,
     SKILL_DAMAGE,
+    UNARMED_DAMAGE,
     UNDEAD_DAMAGE,
 
     // Misc damage stats

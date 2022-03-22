@@ -1,29 +1,35 @@
-
 GOLD_COIN:
-    item: GOLD_NUGGET
-    name: '&6Gold Coin'
-    lore:
+  item: GOLD_NUGGET
+  name: '&6Gold Coin'
+  lore:
     - '&eWorth: 1g'
 
 NOTE:
-    item: PAPER
-    name: '&6Note'
-    lore:
+  item: PAPER
+  name: '&6Note'
+  lore:
     - '&eWorth: {worth}g'
 
+WAYPOINT_BOOK:
+  item: ENCHANTED_BOOK
+  name: '&6Waypoints Book'
+  lore:
+    - '&7Waypoints are locations used to save your progress.'
+    - '&7This book gives you the ability to freely warp between these.'
+
 DEPOSIT_ITEM:
-    item: BOOK
-    name: '&eDeposit {worth}g'
-    lore: {}
+  item: BOOK
+  name: '&eDeposit {worth}g'
+  lore: { }
 
 GOLD_POUCH:
-    item: LEATHER
-    name: '&fGold Pouch'
-    lore:
+  item: LEATHER
+  name: '&fGold Pouch'
+  lore:
     - '&7Right-Click to open.'
 
 MOB_GOLD_POUCH:
-    item: LEATHER
-    name: '&fGold Pouch'
-    lore:
+  item: LEATHER
+  name: '&fGold Pouch'
+  lore:
     - '&7Right-Click to open.'

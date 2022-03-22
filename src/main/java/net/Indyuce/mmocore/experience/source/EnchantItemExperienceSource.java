@@ -4,7 +4,8 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.provider.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.enchantments.Enchantment;
@@ -59,7 +60,7 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
                         double exp = 0;
                         for (Entry<Enchantment, Integer> entry : applicableEnchants.entrySet())
                             exp += MMOCore.plugin.enchantManager.getBaseExperience(entry.getKey()) * entry.getValue();
-                        getDispenser().giveExperience(player, (int) exp, event.getEnchantBlock().getLocation());
+                        getDispenser().giveExperience(player, (int) exp, event.getEnchantBlock().getLocation(), EXPSource.SOURCE);
                     }
             }
         };

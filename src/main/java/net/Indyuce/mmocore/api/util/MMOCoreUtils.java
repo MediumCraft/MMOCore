@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.api.util;
 
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import io.lumine.mythic.utils.holograms.Hologram;
 import io.lumine.mythic.utils.serialize.Position;
@@ -66,6 +65,7 @@ public class MMOCoreUtils {
      */
     public static void displayIndicator(Location loc, String message) {
         Hologram holo = Hologram.create(Position.of(loc), Arrays.asList(message));
+        holo.spawn();
         Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> holo.despawn(), 20);
     }
 
@@ -184,8 +184,11 @@ public class MMOCoreUtils {
     /**
      * Method used when mining a custom block or fishing, as the corresponding
      * interaction event is cancelled durability is not handled. This method is
-     * needed and actually calls a damage event so that MMOItems can listen to
-     * it
+     * needed and actually calls a damage event so that MMOItems can listen to it.
+     * <p>
+     * This method only supports item types which DO have a durability bar like
+     * fishing rods or pickaxes. This shouldn't cause any issue because you can
+     * only use fishing rods to fish and pickaxes to mine stuff.
      *
      * @param player Player holding the item with durability
      * @param slot   The slot of the item with durability
@@ -193,26 +196,28 @@ public class MMOCoreUtils {
      */
     public static void decreaseDurability(Player player, EquipmentSlot slot, int damage) {
         ItemStack item = player.getInventory().getItem(slot);
-        NBTItem nbt = NBTItem.get(item);
-
-        if (!nbt.hasTag("MMOITEMS_MAX_DURABILITY")) {
+        if (!item.hasItemMeta() || !(item.getItemMeta() instanceof Damageable) || item.getItemMeta().isUnbreakable())
             return;
-        }
 
         PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, item, damage);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-
-        if (!nbt.getBoolean("Unbreakable") && item.getItemMeta() instanceof Damageable) {
-            ItemMeta meta = item.getItemMeta();
-            ((Damageable) meta).setDamage(((Damageable) meta).getDamage() + damage);
+        ItemMeta meta = item.getItemMeta();
+        if (event.getDamage() + ((Damageable) meta).getDamage() >= item.getType().getMaxDurability()) {
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1F, 1F);
+            player.getInventory().setItem(slot, null);
+        } else {
+            ((Damageable) meta).setDamage(((Damageable) meta).getDamage() + event.getDamage());
             item.setItemMeta(meta);
-            if (((Damageable) meta).getDamage() >= item.getType().getMaxDurability()) {
-                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1F, 1F);
-                player.getInventory().setItem(slot, null);
-            }
         }
+    }
+
+    /**
+     * @return Center location of an entity using its bounding box
+     */
+    public static Location getCenterLocation(Entity entity) {
+        return entity.getBoundingBox().getCenter().toLocation(entity.getWorld());
     }
 }
