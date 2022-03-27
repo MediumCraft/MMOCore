@@ -90,7 +90,7 @@ public class CraftItemExperienceSource extends SpecificExperienceSource<Material
         int lower = Integer.MAX_VALUE;
         int index = -1;
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < matrix.length; i++) {
             ItemStack checked = matrix[i];
             if (checked != null && checked.getType() != Material.AIR && checked.getAmount() > 0 && checked.getAmount() < lower) {
                 lower = checked.getAmount();
