@@ -33,11 +33,7 @@ public class SkillManager implements MMOCoreManager {
 
     @NotNull
     public RegisteredSkill getSkillOrThrow(String id) {
-        return Objects.requireNonNull(skills.get(id.toUpperCase()), "Could not find skill with ID '" + id + "'");
-    }
-
-    public boolean hasSkill(String id) {
-        return skills.containsKey(id.toUpperCase());
+        return Objects.requireNonNull(skills.get(id), "Could not find skill with ID '" + id + "'");
     }
 
     public Collection<RegisteredSkill> getAll() {

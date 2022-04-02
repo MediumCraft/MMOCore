@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.player.profess;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
@@ -133,8 +134,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         if (config.contains("skills"))
             for (String key : config.getConfigurationSection("skills").getKeys(false))
                 try {
-                    Validate.isTrue(MMOCore.plugin.skillManager.hasSkill(key), "Could not find skill " + key);
-                    skills.put(key, new ClassSkill(MMOCore.plugin.skillManager.getSkill(key), config.getConfigurationSection("skills." + key)));
+                    RegisteredSkill registered = MMOCore.plugin.skillManager.getSkillOrThrow(UtilityMethods.enumName(key));
+                    skills.put(registered.getHandler().getId(), new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill info '" + key + "' from class '"
                             + id + "': " + exception.getMessage());

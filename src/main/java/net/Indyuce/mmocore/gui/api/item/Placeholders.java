@@ -15,6 +15,9 @@ public class Placeholders {
 
     public String apply(Player player, String str) {
 
+        // Remove conditions first
+        str = removeCondition(str);
+
         // Internal placeholders
         while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
             String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
@@ -22,7 +25,7 @@ public class Placeholders {
         }
 
         // External placeholders
-        return MMOCore.plugin.placeholderParser.parse(player, removeCondition(str));
+        return MMOCore.plugin.placeholderParser.parse(player, str);
     }
 
     private String removeCondition(String str) {
