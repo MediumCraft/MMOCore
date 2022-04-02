@@ -136,7 +136,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 try {
                     RegisteredSkill registered = MMOCore.plugin.skillManager.getSkillOrThrow(UtilityMethods.enumName(key));
                     skills.put(registered.getHandler().getId(), new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
-                } catch (IllegalArgumentException exception) {
+                } catch (RuntimeException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill info '" + key + "' from class '"
                             + id + "': " + exception.getMessage());
                 }
