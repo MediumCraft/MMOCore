@@ -99,10 +99,10 @@ public class PlayerQuests implements Closable {
                 playerData.log(Level.WARNING, "Couldn't load current quest progress (ID '" + cur.get("id").getAsString() + "')");
             }
         }
-        if (jo.has("finished")) {
+
+        if (jo.has("finished"))
             for (Entry<String, JsonElement> entry : jo.getAsJsonObject("finished").entrySet())
                 finished.put(entry.getKey(), entry.getValue().getAsLong());
-        }
 
         for (Entry<String, Long> entry : finished.entrySet())
             MMOCore.log("Finished: (" + entry.getKey() + ") - at: " + entry.getValue());
@@ -144,11 +144,19 @@ public class PlayerQuests implements Closable {
     public void start(Quest quest) {
 
         // Close current objective progress if quest is active
-        close();
+        closeCurrentQuest();
 
         // Apply newest quest
         current = quest == null ? null : quest.generateNewProgress(playerData);
         updateBossBar();
+    }
+
+    public void closeCurrentQuest() {
+        if (current == null)
+            return;
+
+        current.getProgress().close();
+        current = null;
     }
 
     @Override
@@ -158,8 +166,7 @@ public class PlayerQuests implements Closable {
         bossbar.removeAll();
 
         // Close current objective progress
-        if (current != null)
-            current.getProgress().close();
+        closeCurrentQuest();
     }
 
     public boolean checkCooldownAvailability(Quest quest) {
