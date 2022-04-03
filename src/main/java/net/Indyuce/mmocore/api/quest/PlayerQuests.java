@@ -3,10 +3,10 @@ package net.Indyuce.mmocore.api.quest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.Closable;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -23,6 +23,7 @@ import java.util.logging.Level;
 public class PlayerQuests implements Closable {
     private final PlayerData playerData;
     private final BossBar bossbar;
+    private final NamespacedKey bossbarNamespacedKey;
     private final Map<String, Long> finished = new HashMap<>();
 
     private QuestProgress current;
@@ -30,9 +31,8 @@ public class PlayerQuests implements Closable {
     public PlayerQuests(PlayerData playerData) {
         this.playerData = playerData;
 
-        bossbar = MythicLib.plugin.getVersion().getWrapper().createBossBar(
-                new NamespacedKey(MMOCore.plugin, "quest_bar_" + playerData.getUniqueId().toString()),
-                "", BarColor.PURPLE, BarStyle.SEGMENTED_20);
+        bossbarNamespacedKey = new NamespacedKey(MMOCore.plugin, "mmocore_quest_progress_" + playerData.getUniqueId().toString());
+        bossbar = Bukkit.createBossBar(bossbarNamespacedKey, "", BarColor.PURPLE, BarStyle.SEGMENTED_20);
         if (playerData.isOnline())
             bossbar.addPlayer(playerData.getPlayer());
     }
@@ -164,6 +164,7 @@ public class PlayerQuests implements Closable {
 
         // Remove boss bar
         bossbar.removeAll();
+        Bukkit.removeBossBar(bossbarNamespacedKey);
 
         // Close current objective progress
         closeCurrentQuest();
