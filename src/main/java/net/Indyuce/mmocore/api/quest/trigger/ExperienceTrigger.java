@@ -1,8 +1,6 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
-import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
-import net.Indyuce.mmocore.experience.dispenser.ProfessionExperienceDispenser;
-import net.Indyuce.mmocore.experience.dispenser.SimpleExperienceDispenser;
+import net.Indyuce.mmocore.experience.ExperienceObject;
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
@@ -11,14 +9,17 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class ExperienceTrigger extends Trigger {
 	@NotNull
 	private final RandomAmount amount;
 	@NotNull
 	private final EXPSource source;
-	@NotNull
-	private final ExperienceDispenser dispenser;
+	@Nullable
+	private final ExperienceObject expObject;
 
 	public ExperienceTrigger(MMOLineConfig config) {
 		super(config);
@@ -28,15 +29,15 @@ public class ExperienceTrigger extends Trigger {
 		if (config.contains("profession")) {
 			String id = config.getString("profession").toLowerCase().replace("_", "-");
 			Validate.isTrue(MMOCore.plugin.professionManager.has(id), "Could not find profession");
-			dispenser = new ProfessionExperienceDispenser(MMOCore.plugin.professionManager.get(id));
+			expObject = MMOCore.plugin.professionManager.get(id);
 		} else
-			dispenser = new SimpleExperienceDispenser();
+			expObject = null;
 		amount = new RandomAmount(config.getString("amount"));
 		source = config.contains("source") ? EXPSource.valueOf(config.getString("source").toUpperCase()) : EXPSource.QUEST;
 	}
 
 	@Override
 	public void apply(PlayerData player) {
-		dispenser.giveExperience(player, amount.calculateInt(), null, source);
+		Objects.requireNonNullElse(expObject, player.getProfess()).giveExperience(player, amount.calculateInt(), null, source);
 	}
 }
