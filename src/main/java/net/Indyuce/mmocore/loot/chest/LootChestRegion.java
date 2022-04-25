@@ -119,14 +119,19 @@ public class LootChestRegion {
     // TODO stat to increase chance to get higher tiers?
     public ChestTier rollTier() {
 
-        double s = 0;
-        for (ChestTier tier : tiers) {
-            if (random.nextDouble() < tier.chance / (1 - s))
-                return tier;
-            s += tier.chance;
-        }
+        // Calculate sum of all chances and then normalize
+        double norm = 0;
+        for (ChestTier tier : tiers)
+            norm += tier.getChance();
 
-        return tiers.stream().findAny().orElse(null);
+        Validate.isTrue(norm > 0, "No tier was found");
+
+        double sum = 0;
+        for (ChestTier tier : tiers)
+            if (random.nextDouble() < (sum += tier.getChance()) / norm)
+                return tier;
+
+        throw new RuntimeException("Could not roll random chest tier");
     }
 
     public Location getRandomLocation(Location center) {
