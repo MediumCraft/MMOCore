@@ -12,7 +12,6 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
-import net.Indyuce.mmocore.comp.MMOCoreTargetRestriction;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
@@ -41,6 +40,7 @@ import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import net.Indyuce.mmocore.party.PartyMemberTargetRestriction;
 import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
@@ -116,8 +116,8 @@ public class MMOCore extends LuminePlugin {
 			return;
 		}
 
-		// Register target restrictions due to MMOCore in MythicLib
-		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
+		// Register MMOCore-specific target restrictions
+		MythicLib.plugin.getEntities().registerRestriction(new PartyMemberTargetRestriction());
 
 		// Register extra objective, drop items...
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
