@@ -1,7 +1,5 @@
 package net.Indyuce.mmocore.gui;
 
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -15,13 +13,16 @@ import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class WaypointViewer extends EditableInventory {
     public WaypointViewer() {
@@ -103,12 +104,15 @@ public class WaypointViewer extends EditableInventory {
                 return locked.display(inv, n);
 
             // Waypoints are not linked
-            if (inv.current != null && !inv.current.hasDestination(waypoint))
+            if (inv.current != null && inv.current.getPath(waypoint)==null)
                 return notLinked.display(inv, n);
 
             // Not dynamic waypoint
             if (inv.current == null && !waypoint.hasOption(WaypointOption.DYNAMIC))
                 return notDynamic.display(inv, n);
+
+            //Dynamic waypoint
+            if(waypoint.hasOption(WaypointOption.DYNAMIC)&&inv.current==null)
 
             // Stellium cost
             if (waypoint.getCost(inv.current == null ? CostType.DYNAMIC_USE : CostType.NORMAL_USE) > inv.getPlayerData().getStellium())
@@ -129,7 +133,11 @@ public class WaypointViewer extends EditableInventory {
 
             // If a player can teleport to another waypoint given his location
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
-            return NBTItem.get(disp).addTag(new ItemTag("waypointId", waypoint.getId())).toItem();
+            ItemMeta meta=disp.getItemMeta();
+            PersistentDataContainer container=meta.getPersistentDataContainer();
+            container.set(new NamespacedKey(MMOCore.plugin,"waypointId"),PersistentDataType.STRING,waypoint.getId());
+            disp.setItemMeta(meta);
+            return disp;
         }
 
         @Override
@@ -149,6 +157,7 @@ public class WaypointViewer extends EditableInventory {
     public class WaypointViewerInventory extends GeneratedInventory {
         private final List<Waypoint> waypoints = new ArrayList<>(MMOCore.plugin.waypointManager.getAll());
         private final Waypoint current;
+        private final ArrayList<Waypoint.PathInfo> paths;
         private final CostType waypointCostType;
 
         private int page;
@@ -157,6 +166,7 @@ public class WaypointViewer extends EditableInventory {
             super(playerData, editable);
 
             this.current = current;
+            paths=current!=null? current.getAllPath() : null;
             this.waypointCostType = current == null ? CostType.DYNAMIC_USE : CostType.NORMAL_USE;
         }
 
@@ -180,7 +190,9 @@ public class WaypointViewer extends EditableInventory {
             }
 
             if (item.getFunction().equals("waypoint")) {
-                String tag = NBTItem.get(event.getCurrentItem()).getString("waypointId");
+                PersistentDataContainer container =event.getCurrentItem().getItemMeta().getPersistentDataContainer();
+                String tag =container.get(new NamespacedKey(MMOCore.plugin,"wayPointId"), PersistentDataType.STRING);
+
                 if (tag.equals(""))
                     return;
 

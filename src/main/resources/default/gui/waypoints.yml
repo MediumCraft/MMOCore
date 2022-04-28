@@ -61,6 +61,7 @@ items:
 
       lore:
         - '&7You can teleport to this waypoint.'
+        - '&7 Intermediary waypoints : {intermediary_waypoints}'
         - '&7Click to teleport for &b{current_cost} &7Stellium.'
 
   next:

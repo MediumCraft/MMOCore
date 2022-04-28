@@ -1,11 +1,13 @@
 package net.Indyuce.mmocore.waypoint;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.player.Unlockable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -21,7 +23,7 @@ public class Waypoint implements Unlockable {
      * <p>
      * If it's empty it can access any waypoint.
      */
-    private final Set<String> destinations = new HashSet<>();
+    private final Map<String, Integer> destinations = new HashMap<>();
 
     /**
      * Waypoint options saved here.
@@ -46,7 +48,14 @@ public class Waypoint implements Unlockable {
         for (WaypointOption option : WaypointOption.values())
             options.put(option, config.getBoolean("option." + option.getPath(), option.getDefaultValue()));
 
-        destinations.addAll(config.getStringList("linked"));
+        //We load all the linked WayPoints
+        ConfigurationSection section=config.getConfigurationSection("linked");
+        for(String key: section.getKeys(false)) {
+            destinations.put(key,config.getInt(key));
+        }
+
+
+        //destinations.addAll(config.getStringList("linked"));
     }
 
     public String getId() {
@@ -61,13 +70,89 @@ public class Waypoint implements Unlockable {
         return loc;
     }
 
+
     /**
      * @param other Another waypoint
      * @return If any player standing on that waypoint can teleport to given waypoint
      */
+    @Deprecated
     public boolean hasDestination(Waypoint other) {
-        return destinations.isEmpty() || destinations.contains(other.getId());
+        return destinations.isEmpty() || destinations.keySet().contains(other.getId());
     }
+
+    /**
+     * Checks directly if the waypoint is directly linked to the current one
+     *
+     * @return Integer.POSITIVE_INFINITY if the way point is not linked
+     */
+    public int getSimpleCostDestination(Waypoint waypoint) {
+        if (!destinations.keySet().contains(waypoint.getId()))
+            return Integer.MAX_VALUE;
+        return destinations.get(waypoint.getId());
+    }
+
+
+    public ArrayList<PathInfo> getAllPath() {
+        //All the WayPoints that have been registered
+        ArrayList<Waypoint> checkedPoints = new ArrayList<>();
+        //All the path
+        ArrayList<PathInfo> paths = new ArrayList();
+        ArrayList<PathInfo> pointsToCheck = new ArrayList<>();
+        pointsToCheck.add(new PathInfo(this));
+
+        while (pointsToCheck.size() != 0) {
+            PathInfo checked = pointsToCheck.get(0);
+            pointsToCheck.remove(0);
+            paths.add(checked);
+            checkedPoints.add(checked.getFinalWaypoint());
+
+            for (String wayPointId : checked.getFinalWaypoint().destinations.keySet()) {
+                Waypoint toCheck = MMOCore.plugin.waypointManager.get(wayPointId);
+                if (!checkedPoints.contains(toCheck)) {
+                    PathInfo toCheckInfo = checked.addWayPoint(toCheck);
+                    //We keep pointsToCheck ordered
+                    pointsToCheck = toCheckInfo.addInOrder(pointsToCheck);
+                }
+            }
+        }
+        return paths;
+
+    }
+
+
+    @Nullable
+    public PathInfo getPath(Waypoint targetWaypoint) {
+        //All the WayPoints that have been registered
+        ArrayList<Waypoint> checkedPoints = new ArrayList<>();
+        //All the path
+        ArrayList<PathInfo> paths = new ArrayList();
+        ArrayList<PathInfo> pointsToCheck = new ArrayList<>();
+        pointsToCheck.add(new PathInfo(this));
+
+        while (pointsToCheck.size() != 0) {
+            PathInfo checked = pointsToCheck.get(0);
+            pointsToCheck.remove(0);
+            paths.add(checked);
+            checkedPoints.add(checked.getFinalWaypoint());
+
+            if(checked.getFinalWaypoint().equals(targetWaypoint))
+                return checked;
+
+            for (String wayPointId : checked.getFinalWaypoint().destinations.keySet()) {
+                Waypoint toCheck = MMOCore.plugin.waypointManager.get(wayPointId);
+                if (!checkedPoints.contains(toCheck)) {
+                    PathInfo toCheckInfo = checked.addWayPoint(toCheck);
+                    //We keep pointsToCheck ordered
+                    pointsToCheck = toCheckInfo.addInOrder(pointsToCheck);
+                }
+            }
+        }
+
+        //If no path has been found we return null
+        return null;
+
+    }
+
 
     public double getCost(CostType type) {
         return costs.getOrDefault(type, 0d);
@@ -117,5 +202,62 @@ public class Waypoint implements Unlockable {
         float pitch = split.length > 5 ? (float) Double.parseDouble(split[5]) : 0;
 
         return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    public class PathInfo {
+        private final ArrayList<Waypoint> waypoints;
+        private final int cost;
+
+        public ArrayList<Waypoint> getWaypoints() {
+            return waypoints;
+        }
+
+        public int getCost() {
+            return cost;
+        }
+
+        public PathInfo(Waypoint waypoint) {
+            this.waypoints = (ArrayList<Waypoint>) Arrays.asList(waypoint);
+            cost = 0;
+        }
+
+
+        public ArrayList<PathInfo> addInOrder(ArrayList<PathInfo> pathInfos) {
+            int index = 0;
+            while (index < pathInfos.size()) {
+                if (cost < pathInfos.get(index).cost) {
+                    pathInfos.set(index, this);
+                    return pathInfos;
+                }
+            }
+            //If index==pathInfos.size() we add the waypoint at the end
+            pathInfos.add(this);
+            return pathInfos;
+        }
+
+
+
+        public PathInfo(ArrayList<Waypoint> waypoints, int cost) {
+            this.waypoints = waypoints;
+            this.cost = cost;
+        }
+
+        public PathInfo addWayPoint(Waypoint waypoint) {
+            Validate.isTrue(!waypoints.contains(waypoint), "You can't create cyclic path");
+            ArrayList<Waypoint> newWaypoints = new ArrayList<>();
+            newWaypoints.addAll(waypoints);
+            newWaypoints.add(waypoint);
+            int cost=this.cost+getFinalWaypoint().getSimpleCostDestination(waypoint);
+            return new PathInfo(newWaypoints,cost);
+        }
+
+
+        public Waypoint getInitialWaypoint() {
+            return waypoints.get(0);
+        }
+
+        public Waypoint getFinalWaypoint() {
+            return waypoints.get(waypoints.size() - 1);
+        }
     }
 }
