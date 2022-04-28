@@ -33,7 +33,20 @@ public class Waypoint implements Unlockable {
     /**
      * Stellium cost for each action (0 being the default cost)
      */
+    private final double dynamicCost,setSpawnCost;
     private final Map<CostType, Double> costs = new HashMap<>();
+
+    public double getDynamicCost() {
+        return dynamicCost;
+    }
+
+    public double getSetSpawnCost() {
+        return setSpawnCost;
+    }
+
+    public double getCost(Waypoint waypoint) {
+        return getPath(waypoint).cost;
+    }
 
     public Waypoint(ConfigurationSection config) {
         id = Objects.requireNonNull(config, "Could not load config section").getName();
@@ -42,8 +55,9 @@ public class Waypoint implements Unlockable {
         loc = readLocation(Objects.requireNonNull(config.getString("location"), "Could not read location"));
         radiusSquared = Math.pow(config.getDouble("radius"), 2);
 
-        for (CostType costType : CostType.values())
-            costs.put(costType, config.getDouble("cost." + costType.getPath()));
+        dynamicCost=config.getDouble("cost.dynamic-use");
+        setSpawnCost=config.getDouble("cost.set-spawnpoint");
+
 
         for (WaypointOption option : WaypointOption.values())
             options.put(option, config.getBoolean("option." + option.getPath(), option.getDefaultValue()));
@@ -85,7 +99,7 @@ public class Waypoint implements Unlockable {
      *
      * @return Integer.POSITIVE_INFINITY if the way point is not linked
      */
-    public int getSimpleCostDestination(Waypoint waypoint) {
+    private int getSimpleCostDestination(Waypoint waypoint) {
         if (!destinations.keySet().contains(waypoint.getId()))
             return Integer.MAX_VALUE;
         return destinations.get(waypoint.getId());
@@ -153,11 +167,6 @@ public class Waypoint implements Unlockable {
 
     }
 
-
-    public double getCost(CostType type) {
-        return costs.getOrDefault(type, 0d);
-    }
-
     public boolean hasOption(WaypointOption option) {
         return options.get(option);
     }
@@ -206,13 +215,13 @@ public class Waypoint implements Unlockable {
 
     public class PathInfo {
         private final ArrayList<Waypoint> waypoints;
-        private final int cost;
+        private final double cost;
 
         public ArrayList<Waypoint> getWaypoints() {
             return waypoints;
         }
 
-        public int getCost() {
+        public double getCost() {
             return cost;
         }
 
@@ -237,9 +246,19 @@ public class Waypoint implements Unlockable {
 
 
 
-        public PathInfo(ArrayList<Waypoint> waypoints, int cost) {
+        public PathInfo(ArrayList<Waypoint> waypoints, double cost) {
             this.waypoints = waypoints;
             this.cost = cost;
+        }
+
+        public String displayIntermediaryWayPoints() {
+            if(waypoints.size()<=2)
+                return "";
+            String result="";
+            for(int i=1;i<waypoints.size()-1;i++) {
+                result+=waypoints.get(i).name+(i!=waypoints.size()-2?",":"");
+            }
+            return result;
         }
 
         public PathInfo addWayPoint(Waypoint waypoint) {
@@ -247,7 +266,7 @@ public class Waypoint implements Unlockable {
             ArrayList<Waypoint> newWaypoints = new ArrayList<>();
             newWaypoints.addAll(waypoints);
             newWaypoints.add(waypoint);
-            int cost=this.cost+getFinalWaypoint().getSimpleCostDestination(waypoint);
+            double cost=this.cost+getFinalWaypoint().getSimpleCostDestination(waypoint);
             return new PathInfo(newWaypoints,cost);
         }
 

@@ -22,7 +22,9 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WaypointViewer extends EditableInventory {
     public WaypointViewer() {
@@ -65,8 +67,8 @@ public class WaypointViewer extends EditableInventory {
     }
 
     public class WaypointItem extends SimplePlaceholderItem<WaypointViewerInventory> {
-        private final SimplePlaceholderItem noWaypoint, locked;
-        private final WaypointItemHandler availWaypoint, notLinked, notDynamic, noStellium;
+        private final SimplePlaceholderItem noWaypoint, locked,notLinked,notDynamic;
+        private final WaypointItemHandler availWaypoint,noStellium;
 
         public WaypointItem(ConfigurationSection config) {
             super(Material.BARRIER, config);
@@ -80,8 +82,8 @@ public class WaypointViewer extends EditableInventory {
 
             noWaypoint = new SimplePlaceholderItem(config.getConfigurationSection("no-waypoint"));
             locked = new SimplePlaceholderItem(config.getConfigurationSection("locked"));
-            notLinked = new WaypointItemHandler(config.getConfigurationSection("not-a-destination"));
-            notDynamic = new WaypointItemHandler(config.getConfigurationSection("not-dynamic"));
+            notLinked = new SimplePlaceholderItem(config.getConfigurationSection("not-a-destination"));
+            notDynamic = new SimplePlaceholderItem(config.getConfigurationSection("not-dynamic"));
             noStellium = new WaypointItemHandler(config.getConfigurationSection("not-enough-stellium"));
             availWaypoint = new WaypointItemHandler(config.getConfigurationSection("display"));
         }
@@ -104,19 +106,22 @@ public class WaypointViewer extends EditableInventory {
                 return locked.display(inv, n);
 
             // Waypoints are not linked
-            if (inv.current != null && inv.current.getPath(waypoint)==null)
+            if (inv.current != null && !inv.paths.containsKey(waypoint))
                 return notLinked.display(inv, n);
 
             // Not dynamic waypoint
             if (inv.current == null && !waypoint.hasOption(WaypointOption.DYNAMIC))
                 return notDynamic.display(inv, n);
 
-            //Dynamic waypoint
-            if(waypoint.hasOption(WaypointOption.DYNAMIC)&&inv.current==null)
 
-            // Stellium cost
-            if (waypoint.getCost(inv.current == null ? CostType.DYNAMIC_USE : CostType.NORMAL_USE) > inv.getPlayerData().getStellium())
+            //Dynamic waypoint
+            if (waypoint.hasOption(WaypointOption.DYNAMIC) && inv.current == null && waypoint.getDynamicCost() > inv.getPlayerData().getStellium())
                 return noStellium.display(inv, n);
+
+            //Normal cost
+            if (inv.current != null && inv.paths.get(waypoint).getCost() > inv.getPlayerData().getStellium())
+                return noStellium.display(inv, n);
+
 
             return availWaypoint.display(inv, n);
         }
@@ -133,9 +138,9 @@ public class WaypointViewer extends EditableInventory {
 
             // If a player can teleport to another waypoint given his location
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
-            ItemMeta meta=disp.getItemMeta();
-            PersistentDataContainer container=meta.getPersistentDataContainer();
-            container.set(new NamespacedKey(MMOCore.plugin,"waypointId"),PersistentDataType.STRING,waypoint.getId());
+            ItemMeta meta = disp.getItemMeta();
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(new NamespacedKey(MMOCore.plugin, "waypointId"), PersistentDataType.STRING, waypoint.getId());
             disp.setItemMeta(meta);
             return disp;
         }
@@ -146,9 +151,10 @@ public class WaypointViewer extends EditableInventory {
 
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getByFunction("waypoint").getSlots().size() + n);
             holders.register("name", waypoint.getName());
-            holders.register("current_cost", decimal.format(waypoint.getCost(inv.waypointCostType)));
-            holders.register("normal_cost", decimal.format(waypoint.getCost(CostType.NORMAL_USE)));
-            holders.register("dynamic_cost", decimal.format(waypoint.getCost(CostType.DYNAMIC_USE)));
+            holders.register("current_cost", decimal.format(inv.waypointCostType.equals(CostType.DYNAMIC_USE) ? waypoint.getDynamicCost() : inv.paths.get(waypoint).getCost()));
+            holders.register("normal_cost", decimal.format(inv.paths.get(waypoint).getCost()));
+            holders.register("dynamic_cost", decimal.format(waypoint.getDynamicCost()));
+            holders.register("intermediary_waypoints", inv.paths.get(waypoint).displayIntermediaryWayPoints());
 
             return holders;
         }
@@ -157,7 +163,7 @@ public class WaypointViewer extends EditableInventory {
     public class WaypointViewerInventory extends GeneratedInventory {
         private final List<Waypoint> waypoints = new ArrayList<>(MMOCore.plugin.waypointManager.getAll());
         private final Waypoint current;
-        private final ArrayList<Waypoint.PathInfo> paths;
+        private final Map<Waypoint, Waypoint.PathInfo> paths = new HashMap<>();
         private final CostType waypointCostType;
 
         private int page;
@@ -166,7 +172,11 @@ public class WaypointViewer extends EditableInventory {
             super(playerData, editable);
 
             this.current = current;
-            paths=current!=null? current.getAllPath() : null;
+            if (current != null) {
+                for (Waypoint.PathInfo pathInfo : current.getAllPath())
+                    paths.put(pathInfo.getFinalWaypoint(), pathInfo);
+            }
+
             this.waypointCostType = current == null ? CostType.DYNAMIC_USE : CostType.NORMAL_USE;
         }
 
@@ -190,8 +200,8 @@ public class WaypointViewer extends EditableInventory {
             }
 
             if (item.getFunction().equals("waypoint")) {
-                PersistentDataContainer container =event.getCurrentItem().getItemMeta().getPersistentDataContainer();
-                String tag =container.get(new NamespacedKey(MMOCore.plugin,"wayPointId"), PersistentDataType.STRING);
+                PersistentDataContainer container = event.getCurrentItem().getItemMeta().getPersistentDataContainer();
+                String tag = container.get(new NamespacedKey(MMOCore.plugin, "wayPointId"), PersistentDataType.STRING);
 
                 if (tag.equals(""))
                     return;
@@ -210,7 +220,7 @@ public class WaypointViewer extends EditableInventory {
                 }
 
                 // Waypoint does not have target as destination
-                if (current != null && !current.hasDestination(waypoint)) {
+                if (current != null && current.getPath(waypoint)==null) {
                     MMOCore.plugin.configManager.getSimpleMessage("cannot-teleport-to").send(player);
                     return;
                 }
@@ -223,7 +233,8 @@ public class WaypointViewer extends EditableInventory {
 
                 // Stellium cost
                 CostType costType = current == null ? CostType.DYNAMIC_USE : CostType.NORMAL_USE;
-                double left = waypoint.getCost(costType) - playerData.getStellium();
+                double withdraw = current == null ? waypoint.getDynamicCost() : paths.get(waypoint).getCost();
+                double left = withdraw - playerData.getStellium();
                 if (left > 0) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-enough-stellium", "more", decimal.format(left)).send(player);
                     return;
@@ -233,7 +244,11 @@ public class WaypointViewer extends EditableInventory {
                     return;
 
                 player.closeInventory();
-                playerData.warp(waypoint, costType);
+                if (current == null)
+                    playerData.warp(null, waypoint, costType);
+                else
+                    playerData.warp(current, waypoint, costType);
+
             }
         }
     }

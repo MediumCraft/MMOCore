@@ -457,9 +457,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * Teleports the player to a specific waypoint. This applies
      * the stellium waypoint cost and plays the teleport animation.
      *
-     * @param waypoint Target waypoint
+     * @param target Target waypoint
      */
-    public void warp(Waypoint waypoint, CostType costType) {
+    public void warp(Waypoint source, Waypoint target, CostType costType) {
 
         /*
          * This cooldown is only used internally to make sure the player is not
@@ -467,8 +467,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
          * player waypoints data
          */
         setLastActivity(PlayerActivity.USE_WAYPOINT);
+        Validate.isTrue(source!=null||costType!=CostType.NORMAL_USE,"You must precise a source to use normal waypoint" );
+        final double cost = costType == CostType.DYNAMIC_USE ? target.getDynamicCost() : source.getCost(target);
 
-        final double cost = waypoint.getCost(costType);
+
         giveStellium(-cost, PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
 
         new BukkitRunnable() {
@@ -491,7 +493,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
                 MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(getPlayer());
                 if (t++ >= 100) {
-                    getPlayer().teleport(waypoint.getLocation());
+                    getPlayer().teleport(target.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_TELEPORT).playTo(getPlayer());
                     cancel();
@@ -869,7 +871,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
