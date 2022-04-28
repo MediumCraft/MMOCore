@@ -111,6 +111,7 @@ public class KeyCombos implements Listener {
             return;
         }
 
+
         // Adding pressed key
         CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
         casting.current.registerKey(event.getPressed());
