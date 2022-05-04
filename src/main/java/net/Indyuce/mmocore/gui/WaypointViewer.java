@@ -157,7 +157,7 @@ public class WaypointViewer extends EditableInventory {
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getByFunction("waypoint").getSlots().size() + n);
             holders.register("name", waypoint.getName());
             if (!onlyName) {
-                holders.register("current_cost",inv.paths.get(waypoint).getCost());
+                holders.register("current_cost", inv.paths.get(waypoint).getCost());
                 holders.register("normal_cost", decimal.format(inv.paths.containsKey(waypoint) ? inv.paths.get(waypoint).getCost() : Double.POSITIVE_INFINITY));
                 holders.register("dynamic_cost", decimal.format(waypoint.getDynamicCost()));
                 holders.register("intermediary_waypoints", inv.paths.containsKey(waypoint) ? inv.paths.get(waypoint).displayIntermediaryWayPoints(inv.waypointCostType.equals(CostType.DYNAMIC_USE)) : "none");
@@ -184,17 +184,20 @@ public class WaypointViewer extends EditableInventory {
                     paths.put(pathInfo.getFinalWaypoint(), pathInfo);
             }
             if (current == null) {
+
+                //Iterate through all the dynamic points and find all the points it is linked to and the path
+                HashMap<Waypoint, Double> dynamicPoints = new HashMap<>();
                 //We first check all the dynamic waypoints
                 for (Waypoint waypoint : waypoints) {
-                    if (waypoint.canHaveDynamicUse(playerData.getPlayer()))
-                        paths.put(waypoint,new Waypoint.PathInfo(waypoint, waypoint.getDynamicCost()));
+                    if (waypoint.canHaveDynamicUse(playerData.getPlayer())) {
+                        paths.put(waypoint, new Waypoint.PathInfo(waypoint, waypoint.getDynamicCost()));
+                        dynamicPoints.put(waypoint, waypoint.getDynamicCost());
+                    }
                 }
-                //Iterate through all the dynamic points and find all the points it is linked to and the path
-                HashSet<Waypoint> waypointSet = new HashSet<>(paths.keySet());
-                for (Waypoint source : waypointSet) {
+                for(Waypoint source: dynamicPoints.keySet()){
                     for (Waypoint.PathInfo target : source.getAllPath()) {
-                        if (!paths.containsKey(target.getFinalWaypoint()) || paths.get(target.getFinalWaypoint()).getCost() > target.getCost()) {
-                            paths.put(target.getFinalWaypoint(), target);
+                        if (!paths.containsKey(target.getFinalWaypoint()) || paths.get(target.getFinalWaypoint()).getCost() > target.getCost()+dynamicPoints.get(source)) {
+                            paths.put(target.getFinalWaypoint(), target.addCost(dynamicPoints.get(source)));
                         }
                     }
                 }

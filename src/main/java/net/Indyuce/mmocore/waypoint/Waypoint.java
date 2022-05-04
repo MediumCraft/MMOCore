@@ -240,7 +240,7 @@ public class Waypoint implements Unlockable {
 
     public static class PathInfo {
         private final ArrayList<Waypoint> waypoints;
-        private final double cost;
+        private double cost;
 
         public ArrayList<Waypoint> getWaypoints() {
             return waypoints;
@@ -259,6 +259,11 @@ public class Waypoint implements Unlockable {
             this.waypoints = new ArrayList<>();
             this.waypoints.add(waypoint);
             this.cost = cost;
+        }
+
+        public PathInfo addCost(double cost) {
+            this.cost+=cost;
+            return this;
         }
 
         public ArrayList<PathInfo> addInOrder(ArrayList<PathInfo> pathInfos) {
