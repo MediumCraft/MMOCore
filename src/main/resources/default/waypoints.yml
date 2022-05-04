@@ -17,8 +17,6 @@ spawn:
     # Stellium cost in order to use the waypoint.
     # Stellium is like stamina however it's not used
     # by skills and regens much slower than mana.
-    normal-use: 3
-
     # Cost when not standing on any waypoint.
     dynamic-use: 5
 
@@ -42,12 +40,12 @@ spawn:
     default: true
 
   # All the waypoints you can teleport to when standing
-  # on that waypoint. If that list is empty you are able
+  # on that waypoint. And the cost needed to travel to his pointIf that list is empty you are able
   # to teleport to any waypoint
   linked:
-    - spawn1
-    - spawn2
-    - forest
+    spawn1: 4
+    spawn2: 5
+
 
 spawn1:
   name: Spawn1
@@ -62,6 +60,15 @@ spawn1:
     # on any waypoint (waypoint must be unlocked).
     dynamic: true
 
+  ##Not necessary if the waypoint doesn't allow dynamic use
+  ##The conditions for the dynamic-use of the waypoint
+  conditions:
+    - 'distance{world=world;x=69;y=71;z=163;distance=500}'
+
+
+  linked:
+    spawn: 4
+
 spawn2:
   name: Spawn2
   location: 'world 69 71 136 136 0'
@@ -70,3 +77,5 @@ spawn2:
     normal-use: 3
   option:
     enable-menu: false
+  linked:
+    spawn: 3

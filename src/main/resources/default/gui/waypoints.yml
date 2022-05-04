@@ -45,6 +45,13 @@ items:
         - '&7You cannot teleport as you are not standing on a waypoint.'
 
 
+    current-waypoint:
+      name: '&a{name}'
+      item: ENDER_PEARL
+
+      lore:
+        - '&7The waypoint you are standing at.'
+
     # When you don't have enough stellium
     not-enough-stellium:
       name: '&a{name}'
@@ -61,7 +68,7 @@ items:
 
       lore:
         - '&7You can teleport to this waypoint.'
-        - '&7 Intermediary waypoints : {intermediary_waypoints}'
+        - '&7Intermediary waypoints : {intermediary_waypoints}'
         - '&7Click to teleport for &b{current_cost} &7Stellium.'
 
   next:

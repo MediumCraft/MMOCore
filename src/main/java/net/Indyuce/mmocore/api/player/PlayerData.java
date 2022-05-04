@@ -459,7 +459,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *
      * @param target Target waypoint
      */
-    public void warp(Waypoint source, Waypoint target, CostType costType) {
+    public void warp(Waypoint target, double cost) {
 
         /*
          * This cooldown is only used internally to make sure the player is not
@@ -467,10 +467,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
          * player waypoints data
          */
         setLastActivity(PlayerActivity.USE_WAYPOINT);
-        Validate.isTrue(source!=null||costType!=CostType.NORMAL_USE,"You must precise a source to use normal waypoint" );
-        final double cost = costType == CostType.DYNAMIC_USE ? target.getDynamicCost() : source.getCost(target);
-
-
         giveStellium(-cost, PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
 
         new BukkitRunnable() {

@@ -1,16 +1,12 @@
 package net.Indyuce.mmocore.api.load;
 
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.loot.droptable.condition.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.block.BlockType;
 import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
-import net.Indyuce.mmocore.loot.droptable.condition.BiomeCondition;
-import net.Indyuce.mmocore.loot.droptable.condition.Condition;
-import net.Indyuce.mmocore.loot.droptable.condition.LevelCondition;
-import net.Indyuce.mmocore.loot.droptable.condition.PermissionCondition;
-import net.Indyuce.mmocore.loot.droptable.condition.WorldCondition;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropTableDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.GoldDropItem;
@@ -109,6 +105,9 @@ public class DefaultMMOLoader extends MMOLoader {
 
 	@Override
 	public Condition loadCondition(MMOLineConfig config) {
+		if(config.getKey().equals("distance"))
+			return new DistanceCondition(config);
+
 		if (config.getKey().equals("world"))
 			return new WorldCondition(config);
 

@@ -58,6 +58,11 @@ default:
     COOLDOWN_REDUCTION:
         base: 0
         per-level: 0
+
+    #Increases chance to have rare loot chests
+    CHANCE:
+        base: 0
+        per-level: 0
     
     # Dealt by skills
     SKILL_DAMAGE:

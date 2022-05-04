@@ -61,6 +61,7 @@ public enum StatType {
     // Utility
     ADDITIONAL_EXPERIENCE,
     COOLDOWN_REDUCTION,
+    CHANCE,
 
     // Damage-type based stats
     MAGIC_DAMAGE,

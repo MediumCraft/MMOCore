@@ -1,8 +1,12 @@
 package net.Indyuce.mmocore.waypoint;
 
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.loot.droptable.condition.Condition;
+import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
 import net.Indyuce.mmocore.player.Unlockable;
 import org.apache.commons.lang.Validate;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,6 +15,7 @@ import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class Waypoint implements Unlockable {
     private final String id, name;
@@ -33,7 +38,9 @@ public class Waypoint implements Unlockable {
     /**
      * Stellium cost for each action (0 being the default cost)
      */
-    private final double dynamicCost,setSpawnCost;
+    private final double dynamicCost, setSpawnCost;
+    private final ArrayList<Condition> dynamicUseConditions = new ArrayList<>();
+
     private final Map<CostType, Double> costs = new HashMap<>();
 
     public double getDynamicCost() {
@@ -55,21 +62,39 @@ public class Waypoint implements Unlockable {
         loc = readLocation(Objects.requireNonNull(config.getString("location"), "Could not read location"));
         radiusSquared = Math.pow(config.getDouble("radius"), 2);
 
-        dynamicCost=config.getDouble("cost.dynamic-use");
-        setSpawnCost=config.getDouble("cost.set-spawnpoint");
+        dynamicCost = config.getDouble("cost.dynamic-use");
+        setSpawnCost = config.getDouble("cost.set-spawnpoint");
 
 
         for (WaypointOption option : WaypointOption.values())
             options.put(option, config.getBoolean("option." + option.getPath(), option.getDefaultValue()));
 
         //We load all the linked WayPoints
-        ConfigurationSection section=config.getConfigurationSection("linked");
-        for(String key: section.getKeys(false)) {
-            destinations.put(key,config.getInt(key));
+        if (config.contains("linked")) {
+            ConfigurationSection section = config.getConfigurationSection("linked");
+            for (String key : section.getKeys(false)) {
+                destinations.put(key, section.getInt(key));
+            }
         }
+        if (config.contains("conditions")) {
+            List<String> conditions = config.getStringList("conditions");
+            for (String condition : conditions) {
+                dynamicUseConditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(condition)));
 
+            }
 
-        //destinations.addAll(config.getStringList("linked"));
+        }
+    }
+
+    public boolean canHaveDynamicUse(Player player) {
+        if (!options.get(WaypointOption.DYNAMIC))
+            return false;
+
+        for (Condition condition : dynamicUseConditions) {
+            if (!condition.isMet(new ConditionInstance(player)))
+                return false;
+        }
+        return true;
     }
 
     public String getId() {
@@ -149,7 +174,7 @@ public class Waypoint implements Unlockable {
             paths.add(checked);
             checkedPoints.add(checked.getFinalWaypoint());
 
-            if(checked.getFinalWaypoint().equals(targetWaypoint))
+            if (checked.getFinalWaypoint().equals(targetWaypoint))
                 return checked;
 
             for (String wayPointId : checked.getFinalWaypoint().destinations.keySet()) {
@@ -213,7 +238,7 @@ public class Waypoint implements Unlockable {
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    public class PathInfo {
+    public static class PathInfo {
         private final ArrayList<Waypoint> waypoints;
         private final double cost;
 
@@ -226,10 +251,15 @@ public class Waypoint implements Unlockable {
         }
 
         public PathInfo(Waypoint waypoint) {
-            this.waypoints = (ArrayList<Waypoint>) Arrays.asList(waypoint);
+            this.waypoints = new ArrayList<>();
+            this.waypoints.add(waypoint);
             cost = 0;
         }
-
+        public PathInfo(Waypoint waypoint,double cost) {
+            this.waypoints = new ArrayList<>();
+            this.waypoints.add(waypoint);
+            this.cost = cost;
+        }
 
         public ArrayList<PathInfo> addInOrder(ArrayList<PathInfo> pathInfos) {
             int index = 0;
@@ -238,6 +268,7 @@ public class Waypoint implements Unlockable {
                     pathInfos.set(index, this);
                     return pathInfos;
                 }
+                index++;
             }
             //If index==pathInfos.size() we add the waypoint at the end
             pathInfos.add(this);
@@ -245,29 +276,43 @@ public class Waypoint implements Unlockable {
         }
 
 
-
-        public PathInfo(ArrayList<Waypoint> waypoints, double cost) {
-            this.waypoints = waypoints;
+        public PathInfo(List<Waypoint> waypoints, double cost) {
+            this.waypoints = new ArrayList<>(waypoints);
             this.cost = cost;
         }
 
-        public String displayIntermediaryWayPoints() {
-            if(waypoints.size()<=2)
-                return "";
-            String result="";
-            for(int i=1;i<waypoints.size()-1;i++) {
-                result+=waypoints.get(i).name+(i!=waypoints.size()-2?",":"");
+        /**
+         *
+         * @param dynamic We display the first waypoint if it is dynamic as it is an intermediary point
+         * @return
+         */
+        public String displayIntermediaryWayPoints(boolean dynamic) {
+            String result = "";
+            if(!dynamic) {
+                if (waypoints.size() <= 2)
+                    return "none";
+                for (int i = 1; i < waypoints.size() - 1; i++) {
+                    result += waypoints.get(i).name + (i != waypoints.size() - 2 ? "," : "");
+                }
+
+            }
+            if(dynamic) {
+                if (waypoints.size() <= 1)
+                    return "none";
+                for (int i = 0; i < waypoints.size() - 1; i++) {
+                    result += waypoints.get(i).name + (i != waypoints.size() - 2 ? "," : "");
+                }
             }
             return result;
-        }
+            }
 
         public PathInfo addWayPoint(Waypoint waypoint) {
             Validate.isTrue(!waypoints.contains(waypoint), "You can't create cyclic path");
             ArrayList<Waypoint> newWaypoints = new ArrayList<>();
             newWaypoints.addAll(waypoints);
             newWaypoints.add(waypoint);
-            double cost=this.cost+getFinalWaypoint().getSimpleCostDestination(waypoint);
-            return new PathInfo(newWaypoints,cost);
+            double cost = this.cost + getFinalWaypoint().getSimpleCostDestination(waypoint);
+            return new PathInfo(newWaypoints, cost);
         }
 
 
