@@ -532,6 +532,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @param splitExp         Should the exp be split among party members
      */
     public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+        if (value <= 0)
+            return;
+
         if (hasReachedMaxLevel()) {
             setExperience(0);
             return;
