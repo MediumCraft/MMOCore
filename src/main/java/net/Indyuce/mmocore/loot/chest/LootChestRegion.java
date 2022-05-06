@@ -4,6 +4,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.LootChestSpawnEvent;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.loot.LootBuilder;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -85,7 +86,7 @@ public class LootChestRegion {
         player.setLastActivity(PlayerActivity.LOOT_CHEST_SPAWN);
 
         // First randomly determine the chest tier
-        ChestTier tier = rollTier();
+        ChestTier tier = rollTier(player);
 
         // Find a random location, 20 trials max
         Location location = getRandomLocation(player.getPlayer().getLocation());
@@ -116,14 +117,22 @@ public class LootChestRegion {
         MMOCore.plugin.lootChests.register(lootChest);
     }
 
-    // TODO stat to increase chance to get higher tiers?
-    public ChestTier rollTier() {
+    public ChestTier rollTier(PlayerData player) {
+        double chance = player.getStats().getStat(StatType.CHANCE);
 
-        double s = 0;
+        //chance=0 ->the tier.chance remains the same
+        //chance ->+inf -> the tier.chance becomes the same for everyone, uniform law
+        //chance=8-> tierChance=sqrt(tierChance)
+        double sum = 0;
         for (ChestTier tier : tiers) {
-            if (random.nextDouble() < tier.chance / (1 - s))
+            sum += Math.pow(tier.chance, 1 / Math.pow((1 + chance),1/3));
+        }
+
+        double s=0;
+        for (ChestTier tier : tiers) {
+            s+=Math.pow(tier.chance, 1 / Math.pow((1 + chance),1/3))/sum;
+            if (random.nextDouble() < s)
                 return tier;
-            s += tier.chance;
         }
 
         return tiers.stream().findAny().orElse(null);
