@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -25,12 +26,12 @@ public class RideExperienceSource extends SpecificExperienceSource<Class<? exten
      */
     public RideExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
-        if (!config.contains("entity-type"))
+        if (!config.contains("type"))
             type = null;
         else {
-            String str = config.getString("entity-type").toUpperCase().replace("-", "_");
+            String str = config.getString("type").toUpperCase().replace("-", "_");
             Validate.isTrue(Arrays.stream(EntityType.values()).map(Objects::toString).collect(Collectors.toList()).contains(str),
-                    "The entity-type must correspond to an entity that exist in the game.");
+                    "The type must correspond to an entity that exist in the game.");
             type=EntityType.valueOf(str);
         }
 

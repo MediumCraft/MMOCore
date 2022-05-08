@@ -1,12 +1,10 @@
 package net.Indyuce.mmocore.experience.source;
 
-import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
-import net.Indyuce.mmocore.loot.chest.RegionBounds;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -14,17 +12,24 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class PlayingExperienceSource extends SpecificExperienceSource {
+public class PlayExperienceSource extends SpecificExperienceSource {
 
     private final World world;
     private final double x1, x2, z1, z2;
+    private final boolean inCombat;
 
     /**
      * Experience source giving the specified amount of xp to all the players online each second in certain world bounds.
-     *If no bounds are given, it will give the xp to every player online.
+     * If no bounds are given, it will give the xp to every player online. You can also specifiy if the player
+     * has to be inCombat or not to get the xp.
      */
-    public PlayingExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
+    public PlayExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
+        if (!config.contains("in-combat"))
+            inCombat = false;
+        else {
+            inCombat = config.getBoolean("in-combat");
+        }
 
         if (!config.contains("world"))
             world = null;
@@ -49,13 +54,16 @@ public class PlayingExperienceSource extends SpecificExperienceSource {
     }
 
     @Override
-    public ExperienceSourceManager<PlayingExperienceSource> newManager() {
+    public ExperienceSourceManager<PlayExperienceSource> newManager() {
         return new PlayingExperienceSourceManager();
 
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, Object obj) {
+        if (inCombat && !player.isInCombat())
+            return false;
+
         if (world == null)
             return true;
         Location location = player.getPlayer().getLocation();
@@ -64,7 +72,7 @@ public class PlayingExperienceSource extends SpecificExperienceSource {
     }
 
 
-    private class PlayingExperienceSourceManager extends ExperienceSourceManager<PlayingExperienceSource> {
+    private class PlayingExperienceSourceManager extends ExperienceSourceManager<PlayExperienceSource> {
 
         public PlayingExperienceSourceManager() {
             new BukkitRunnable() {
@@ -74,7 +82,7 @@ public class PlayingExperienceSource extends SpecificExperienceSource {
                     Bukkit.getOnlinePlayers().forEach((player) -> {
                         if (!player.hasMetadata("NPC")) {
                             PlayerData playerData = PlayerData.get(player);
-                            for (PlayingExperienceSource source : getSources()) {
+                            for (PlayExperienceSource source : getSources()) {
                                 if (source.matchesParameter(playerData, null))
                                     giveExperience(playerData, 1, null);
                             }

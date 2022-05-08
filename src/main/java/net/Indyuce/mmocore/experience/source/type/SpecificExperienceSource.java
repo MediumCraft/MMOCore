@@ -5,11 +5,13 @@ import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
     private final RandomAmount amount;
+    double counter = 0;
 
     /**
      * Used to register experience sources with SPECIFIC experience outputs.
@@ -42,6 +44,8 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
      * @param hologramLocation Location used to display the exp hologram
      */
     public void giveExperience(PlayerData player, double multiplier, @Nullable Location hologramLocation) {
+        counter+=rollAmount() * multiplier;
+        Bukkit.broadcastMessage("Gave xp " + counter+ " from " + this.getClass().getSimpleName());
         getDispenser().giveExperience(player, rollAmount() * multiplier, hologramLocation, EXPSource.SOURCE);
     }
 }

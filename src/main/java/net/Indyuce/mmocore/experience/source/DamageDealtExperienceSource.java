@@ -26,13 +26,13 @@ public class DamageDealtExperienceSource extends SpecificExperienceSource<Damage
 
     public DamageDealtExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
-        if (!config.contains("damage-type"))
+        if (!config.contains("type"))
             type = null;
         else {
-            String str = config.getString("damage-type").toUpperCase().replace("-", "_");
+            String str = config.getString("type").toUpperCase().replace("-", "_");
             //Checks if the damage type correspond to a value of the damage type enum
             Validate.isTrue(Arrays.stream(DamageType.values()).map(Objects::toString).collect(Collectors.toList()).contains(str),
-                    "damage-type value not allowed. Damage type value allowed: magic, physical, weapon, skill, projectile," +
+                    "Type value not allowed. Type value allowed: magic, physical, weapon, skill, projectile," +
                             " unarmed, on-hit, minion, dot.");
             type = DamageType.valueOf(str);
 
