@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-import net.Indyuce.mmocore.api.condition.Condition;
-import net.Indyuce.mmocore.api.condition.ConditionInstance;
+import net.Indyuce.mmocore.loot.condition.Condition;
+import net.Indyuce.mmocore.loot.condition.ConditionInstance;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;

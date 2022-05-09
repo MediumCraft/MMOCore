@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.waypoint;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.condition.Condition;
-import net.Indyuce.mmocore.api.condition.ConditionInstance;
+import net.Indyuce.mmocore.loot.condition.Condition;
+import net.Indyuce.mmocore.loot.condition.ConditionInstance;
 import net.Indyuce.mmocore.player.Unlockable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;

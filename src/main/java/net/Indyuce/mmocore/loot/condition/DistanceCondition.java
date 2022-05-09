@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.condition;
+package net.Indyuce.mmocore.loot.condition;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.apache.commons.lang.Validate;

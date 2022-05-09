@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.condition;
+package net.Indyuce.mmocore.loot.condition;
 
 import java.util.List;
 import java.util.stream.Stream;
