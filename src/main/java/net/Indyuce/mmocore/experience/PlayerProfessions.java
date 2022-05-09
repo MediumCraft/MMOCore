@@ -196,7 +196,7 @@ public class PlayerProfessions {
             this.exp.put(profession.getId(), exp - needed);
             this.level.put(profession.getId(), level + 1);
             check = true;
-            playerData.giveExperience((int) profession.getExperience().calculate(level), null);
+            playerData.giveExperience(profession.getExperience().calculate(level), null);
         }
 
         if (check) {

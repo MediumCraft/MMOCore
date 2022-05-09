@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.loot.condition;
+package net.Indyuce.mmocore.loot.chest.condition;
 
 import java.util.Arrays;
 import java.util.List;

@@ -2,12 +2,14 @@ package net.Indyuce.mmocore.api.load;
 
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.*;
+import net.Indyuce.mmocore.loot.chest.condition.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.block.BlockType;
 import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
+
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropTableDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.GoldDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.NoteDropItem;
@@ -118,9 +120,6 @@ public class DefaultMMOLoader extends MMOLoader {
     public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
         if (config.getKey().equals("resource"))
             return new ResourceExperienceSource(dispenser, config);
-
-        if (config.getKey().equals("vanillaexperience"))
-            return new VanillaExperienceExperienceSource(dispenser, config);
 
         if (config.getKey().equals("climb"))
             return new ClimbExperienceSource(dispenser, config);

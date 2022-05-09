@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.loot.condition;
+package net.Indyuce.mmocore.loot.chest.condition;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 import io.lumine.mythic.lib.api.MMOLineConfig;

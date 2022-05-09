@@ -321,7 +321,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         giveExperience(total, source);
     }
 
-    public void setExperience(int value) {
+    public void setExperience(double value) {
         experience = Math.max(0, value);
         refreshVanillaExp();
     }
@@ -517,7 +517,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @param value  Experience to give the player
      * @param source How the player earned experience
      */
-    public void giveExperience(int value, EXPSource source) {
+    public void giveExperience(double value, EXPSource source) {
         giveExperience(value, source, null, true);
     }
 

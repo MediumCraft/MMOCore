@@ -17,13 +17,14 @@ import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager.DefaultPlayerData;
 
 public class SavedClassInformation {
-	private final int level, experience, skillPoints, attributePoints, attributeReallocationPoints;
+	private final int level, skillPoints, attributePoints, attributeReallocationPoints;
+	private final double experience;
 	private final Map<String, Integer> attributes;
 	private final Map<String, Integer> skills;
 
 	public SavedClassInformation(ConfigurationSection config) {
 		level = config.getInt("level");
-		experience = config.getInt("experience");
+		experience = config.getDouble("experience");
 		skillPoints = config.getInt("skill-points");
 		attributePoints = config.getInt("attribute-points");
 		attributeReallocationPoints = config.getInt("attribute-realloc-points");
@@ -38,7 +39,7 @@ public class SavedClassInformation {
 
 	public SavedClassInformation(JsonObject json) {
 		level = json.get("level").getAsInt();
-		experience = json.get("experience").getAsInt();
+		experience = json.get("experience").getAsDouble();
 		skillPoints = json.get("skill-points").getAsInt();
 		attributePoints = json.get("attribute-points").getAsInt();
 		attributeReallocationPoints = json.get("attribute-realloc-points").getAsInt();
@@ -63,11 +64,11 @@ public class SavedClassInformation {
 		this(data.getLevel(), 0, data.getSkillPoints(), data.getAttributePoints(), data.getAttrReallocPoints());
 	}
 
-	public SavedClassInformation(int level, int experience, int skillPoints, int attributePoints, int attributeReallocationPoints) {
+	public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints) {
 		this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, new HashMap<>(), new HashMap<>());
 	}
 
-	private SavedClassInformation(int level, int experience, int skillPoints, int attributePoints, int attributeReallocationPoints,
+	private SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints,
 			Map<String, Integer> attributes, Map<String, Integer> skills) {
 		this.level = level;
 		this.experience = experience;
@@ -82,7 +83,7 @@ public class SavedClassInformation {
 		return level;
 	}
 
-	public int getExperience() {
+	public double getExperience() {
 		return experience;
 	}
 

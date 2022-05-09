@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -47,14 +48,23 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
             HashMap<Projectile, Location> projectiles = new HashMap<>();
 
             @EventHandler
-            public void onHit(EntityDamageByEntityEvent e) {
+            public void onHit(ProjectileHitEvent e) {
+                if (e.getHitBlock() != null && projectiles.containsKey(e.getEntity()))
+                    projectiles.remove(e.getEntity());
 
-                if (e.getDamager() instanceof Projectile) {
-                    Projectile projectile = (Projectile) e.getDamager();
+            }
+
+            @EventHandler
+            public void onDamage(EntityDamageByEntityEvent e) {
+
+                if (e.getEntity() instanceof Projectile) {
+                    Projectile projectile = (Projectile) e.getEntity();
+                    if(!projectiles.containsKey(projectile))
+                        return;
                     if (projectile.getShooter() instanceof Player && !((Player) projectile.getShooter()).hasMetadata("NPC")) {
                         Player player = (Player) projectile.getShooter();
                         PlayerData playerData = PlayerData.get(player);
-                        double distance = projectiles.get(projectile).distance(e.getDamager().getLocation());
+                        double distance = projectiles.get(projectile).distance(e.getEntity().getLocation());
                         for (ProjectileExperienceSource source : getSources()) {
                             if (source.matchesParameter(playerData, projectile))
                                 source.giveExperience(playerData, e.getFinalDamage() * distance, null);
@@ -62,6 +72,7 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
 
 
                     }
+                    projectiles.remove(projectile);
                 }
 
             }
