@@ -2,11 +2,10 @@ package net.Indyuce.mmocore.waypoint;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.loot.droptable.condition.Condition;
-import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
+import net.Indyuce.mmocore.api.condition.Condition;
+import net.Indyuce.mmocore.api.condition.ConditionInstance;
 import net.Indyuce.mmocore.player.Unlockable;
 import org.apache.commons.lang.Validate;
-import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,7 +14,6 @@ import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class Waypoint implements Unlockable {
     private final String id, name;

@@ -80,7 +80,7 @@ public class FishingListener implements Listener {
 
         public FishingData(Player player, FishHook hook, FishingDropTable table) {
             this.location = hook.getLocation();
-            this.caught = table.getRandomItem();
+            this.caught = table.getRandomItem(PlayerData.get(player));
             this.playerData = PlayerData.get(this.player = player);
             this.hook = hook;
 

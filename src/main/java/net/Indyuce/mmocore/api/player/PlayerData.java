@@ -70,7 +70,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Nullable
     private PlayerClass profess;
-    private int level, experience, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
+    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
+    private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
     private SkillCastingHandler skillCasting;
@@ -547,7 +548,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
         }
 
-        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, (int) value, source);
+        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this,  value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
@@ -588,7 +589,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         refreshVanillaExp();
     }
 
-    public int getExperience() {
+    public double getExperience() {
         return experience;
     }
 

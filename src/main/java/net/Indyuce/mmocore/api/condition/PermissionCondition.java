@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.loot.droptable.condition;
+package net.Indyuce.mmocore.api.condition;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.bukkit.entity.Player;

@@ -43,7 +43,6 @@ public class ResourceExperienceSource extends SpecificExperienceSource<PlayerRes
             public void onResource(PlayerResourceUpdateEvent e) {
                 if (e.getPlayer().hasMetadata("NPC"))
                     return;
-
                 PlayerData playerData = PlayerData.get(e.getPlayer());
                 if(e.getAmount()<0)
                 for (ResourceExperienceSource source : getSources()) {

@@ -31,10 +31,10 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
 
     public ProjectileExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
-        if(!config.contains("type"))
-            projectileType=null;
+        if (!config.contains("type"))
+            projectileType = null;
         else {
-            String str=config.getString("type").toUpperCase().replace("-", "_");
+            String str = config.getString("type").toUpperCase().replace("-", "_");
             Validate.isTrue(Arrays.stream(ProjectileType.values()).map(ProjectileType::toString).collect(Collectors.toList()).contains(str));
             projectileType = ProjectileType.valueOf(str);
         }
@@ -54,7 +54,6 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
                     if (projectile.getShooter() instanceof Player && !((Player) projectile.getShooter()).hasMetadata("NPC")) {
                         Player player = (Player) projectile.getShooter();
                         PlayerData playerData = PlayerData.get(player);
-                        Validate.isTrue(projectiles.containsKey(projectile));
                         double distance = projectiles.get(projectile).distance(e.getDamager().getLocation());
                         for (ProjectileExperienceSource source : getSources()) {
                             if (source.matchesParameter(playerData, projectile))
@@ -83,7 +82,7 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
                         public void run() {
                             projectiles.remove(e.getEntity());
                         }
-                    }.runTaskLater(MMOCore.plugin, 15 * 20L);
+                    }.runTaskLater(MMOCore.plugin, 60 * 20L);
 
 
                 }
@@ -94,23 +93,20 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
 
     @Override
     public boolean matchesParameter(PlayerData player, Projectile projectile) {
-        if(projectileType==null)
+        if (projectileType == null)
             return true;
         return projectileType.matches(projectile);
     }
 
 
     public enum ProjectileType {
-        ARROW((p)-> p instanceof Arrow),
-        TRIDENT((p)-> p instanceof Trident),
-        FIREBALL((p)-> p instanceof Fireball),
-        FISH_HOOK((p)-> p instanceof FishHook),
-        ;
+        ARROW((p) -> p instanceof Arrow),
+        TRIDENT((p) -> p instanceof Trident);
 
-        private final Function<Projectile,Boolean> matching;
+        private final Function<Projectile, Boolean> matching;
 
-        ProjectileType(Function<Projectile,Boolean> matching) {
-            this.matching=matching;
+        ProjectileType(Function<Projectile, Boolean> matching) {
+            this.matching = matching;
         }
 
 

@@ -42,14 +42,19 @@ public class MoveExperienceSource extends SpecificExperienceSource {
         return new ExperienceSourceManager<MoveExperienceSource>() {
             @EventHandler
             public void onMove(PlayerMoveEvent e) {
-                if(e.getPlayer().hasMetadata("NPC"))
-                    return;
-                Player player=e.getPlayer();
-
-                PlayerData playerData =PlayerData.get(player);
-                for(MoveExperienceSource source:getSources()) {
-                    if(source.matchesParameter(playerData,null)) {
-                        giveExperience(playerData,e.getTo().distance(e.getFrom()),null);
+                double deltax=e.getTo().getBlockX()-e.getFrom().getBlockX();
+                double deltay=e.getTo().getBlockY()-e.getFrom().getBlockY();
+                double deltaz=e.getTo().getBlockZ()-e.getFrom().getBlockZ();
+                if(deltax!=0&&deltay!=0&&deltaz!=0) {
+                    double delta=Math.sqrt(deltax*deltax+deltay*deltay+deltaz*deltaz);
+                    if(e.getPlayer().hasMetadata("NPC"))
+                        return;
+                    Player player=e.getPlayer();
+                    PlayerData playerData =PlayerData.get(player);
+                    for(MoveExperienceSource source:getSources()) {
+                        if(source.matchesParameter(playerData,null)) {
+                            giveExperience(playerData,delta,null);
+                        }
                     }
                 }
             }
@@ -58,7 +63,7 @@ public class MoveExperienceSource extends SpecificExperienceSource {
 
     @Override
     public boolean matchesParameter(PlayerData player, Object obj) {
-        return type.matches(player.getPlayer());
+        return type==null||type.matches(player.getPlayer());
     }
 
     public enum MovingType {

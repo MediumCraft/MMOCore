@@ -45,11 +45,11 @@ public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
         return new ExperienceSourceManager<ClimbExperienceSource>() {
             @EventHandler
             public void onClimb(PlayerMoveEvent e) {
-                if (e.getPlayer().hasMetadata("NPC"))
-                    return;
-                PlayerData playerData = PlayerData.get(e.getPlayer());
-                double delta = e.getTo().getY() - e.getFrom().getY();
+                double delta=e.getTo().getBlockY()-e.getFrom().getBlockY();
                 if (delta > 0) {
+                    if (e.getPlayer().hasMetadata("NPC"))
+                        return;
+                    PlayerData playerData = PlayerData.get(e.getPlayer());
                     for (ClimbExperienceSource source : getSources()) {
                         if (source.matchesParameter(playerData, e.getFrom().getBlock().getType()))
                             source.giveExperience(playerData, delta, null);

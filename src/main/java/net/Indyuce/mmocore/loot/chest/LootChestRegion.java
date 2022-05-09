@@ -125,17 +125,18 @@ public class LootChestRegion {
         //chance=8-> tierChance=sqrt(tierChance)
         double sum = 0;
         for (ChestTier tier : tiers) {
-            sum += Math.pow(tier.chance, 1 / Math.pow((1 + chance),1/3));
+            sum += Math.pow(tier.chance, 1 / Math.log(1 + chance));
         }
-
+        double randomCoefficient=random.nextDouble();
         double s=0;
         for (ChestTier tier : tiers) {
             s+=Math.pow(tier.chance, 1 / Math.pow((1 + chance),1/3))/sum;
-            if (random.nextDouble() < s)
+            if (randomCoefficient < s)
                 return tier;
         }
 
-        return tiers.stream().findAny().orElse(null);
+
+        throw new NullPointerException("Could not find item in the tier list");
     }
 
     public Location getRandomLocation(Location center) {

@@ -29,8 +29,8 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
         return amount;
     }
 
-    public int rollAmount() {
-        return amount.calculateInt();
+    public double rollAmount() {
+        return amount.calculate();
     }
 
     /**
@@ -44,8 +44,6 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
      * @param hologramLocation Location used to display the exp hologram
      */
     public void giveExperience(PlayerData player, double multiplier, @Nullable Location hologramLocation) {
-        counter+=rollAmount() * multiplier;
-        Bukkit.broadcastMessage("Gave xp " + counter+ " from " + this.getClass().getSimpleName());
         getDispenser().giveExperience(player, rollAmount() * multiplier, hologramLocation, EXPSource.SOURCE);
     }
 }

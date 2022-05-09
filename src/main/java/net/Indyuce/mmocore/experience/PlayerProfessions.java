@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class PlayerProfessions {
-    private final Map<String, Integer> exp = new HashMap<>();
+    private final Map<String, Double> exp = new HashMap<>();
     private final Map<String, Integer> level = new HashMap<>();
 
     private final PlayerData playerData;
@@ -41,7 +41,7 @@ public class PlayerProfessions {
     public PlayerProfessions load(ConfigurationSection config) {
         for (String key : config.getKeys(false))
             if (MMOCore.plugin.professionManager.has(key)) {
-                exp.put(key, config.getInt(key + ".exp"));
+                exp.put(key, config.getDouble(key + ".exp"));
                 level.put(key, config.getInt(key + ".level"));
             }
 
@@ -89,7 +89,7 @@ public class PlayerProfessions {
         for (Entry<String, JsonElement> entry : obj.entrySet())
             if (MMOCore.plugin.professionManager.has(entry.getKey())) {
                 JsonObject value = entry.getValue().getAsJsonObject();
-                exp.put(entry.getKey(), value.get("exp").getAsInt());
+                exp.put(entry.getKey(), value.get("exp").getAsDouble());
                 level.put(entry.getKey(), value.get("level").getAsInt());
             }
 
@@ -111,11 +111,11 @@ public class PlayerProfessions {
         return getLevel(profession.getId());
     }
 
-    public int getExperience(String id) {
-        return exp.getOrDefault(id, 0);
+    public double getExperience(String id) {
+        return exp.getOrDefault(id, 0.);
     }
 
-    public int getExperience(Profession profession) {
+    public double getExperience(Profession profession) {
         return getExperience(profession.getId());
     }
 
@@ -136,7 +136,7 @@ public class PlayerProfessions {
         level.put(profession.getId(), Math.max(1, current - value));
     }
 
-    public void setExperience(Profession profession, int value) {
+    public void setExperience(Profession profession, double value) {
         exp.put(profession.getId(), value);
     }
 
@@ -147,7 +147,7 @@ public class PlayerProfessions {
         giveExperience(profession, total, source);
     }
 
-    public void giveExperience(Profession profession, int value, EXPSource source) {
+    public void giveExperience(Profession profession, double value, EXPSource source) {
         giveExperience(profession, value, source, null);
     }
 
@@ -172,13 +172,14 @@ public class PlayerProfessions {
         if (hologramLocation != null)
             MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
 
-        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, (int) value, source);
+        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-        exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0) + event.getExperience()));
-        int needed, exp, level, oldLevel = getLevel(profession);
+        exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0.) + event.getExperience()));
+        int level, oldLevel = getLevel(profession);
+        double needed,exp;
 
         /*
          * Loop for exp overload when leveling up, will continue
