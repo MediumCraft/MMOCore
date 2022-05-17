@@ -34,7 +34,7 @@ items:
 
       lore:
         - '&7You cannot teleport as the two waypoints are not linked.'
-        - '&7Teleporting costs &b&l{normal_cost}&7/&b&l{dynamic_cost}  &7Stellium.'
+
 
     # When you cannot teleport to a non dynamic waypoint
     not-dynamic:
@@ -43,9 +43,16 @@ items:
 
       lore:
         - '&7You cannot teleport as you are not standing on a waypoint.'
-        - '&7Teleporting costs &b&l{normal_cost}&7/&b&l{dynamic_cost}  &7Stellium.'
 
-    # When you cannot teleport to a non dynamic waypoint
+
+    current-waypoint:
+      name: '&a{name}'
+      item: ENDER_PEARL
+
+      lore:
+        - '&7The waypoint you are standing at.'
+
+    # When you don't have enough stellium
     not-enough-stellium:
       name: '&a{name}'
       item: ENDER_PEARL
@@ -61,6 +68,7 @@ items:
 
       lore:
         - '&7You can teleport to this waypoint.'
+        - '&7Intermediary waypoints : {intermediary_waypoints}'
         - '&7Click to teleport for &b{current_cost} &7Stellium.'
 
   next:

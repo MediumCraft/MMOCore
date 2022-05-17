@@ -22,7 +22,7 @@ exp-sources: {}
 on-fish:
     overriding-drop-table:
         conditions:
-        - 'region{name=swamp}'
+        - 'biome{name=swamp}'
         
         # When drop table is read, one of these
         # items will be selected randomly.
