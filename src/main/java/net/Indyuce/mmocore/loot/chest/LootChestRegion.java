@@ -14,6 +14,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -117,25 +118,39 @@ public class LootChestRegion {
         MMOCore.plugin.lootChests.register(lootChest);
     }
 
+    /**
+     * @param player Player rolling the tier
+     * @return A randomly picked tiers taking into account tier spawn rates
+     *         and the player Chance attribute
+     */
+    @NotNull
     public ChestTier rollTier(PlayerData player) {
-        double chance = player.getStats().getStat(StatType.CHANCE);
+        double chance = player.getStats().getStat(StatType.CHANCE) * MMOCore.plugin.configManager.lootChestsChanceWeight;
 
-        //chance=0 ->the tier.chance remains the same
-        //chance ->+inf -> the tier.chance becomes the same for everyone, uniform law
-        //chance=8-> tierChance=sqrt(tierChance)
         double sum = 0;
-        for (ChestTier tier : tiers) {
-            sum += Math.pow(tier.chance, 1 / Math.pow((1 + chance),1/3));
-        }
+        for (ChestTier tier : tiers)
+            sum += getTierCoefficient(tier.getChance(), chance);
+        Validate.isTrue(sum > 0, "No chest tier was found");
 
-        double s=0;
+        double cummulated = 0;
         for (ChestTier tier : tiers) {
-            s+=Math.pow(tier.chance, 1 / Math.pow((1 + chance),1/3))/sum;
-            if (random.nextDouble() < s)
+            cummulated += getTierCoefficient(tier.getChance(), chance);
+            if (random.nextDouble() < cummulated / sum)
                 return tier;
         }
 
-        return tiers.stream().findAny().orElse(null);
+        throw new RuntimeException("Could not roll chest tier");
+    }
+
+    private static final double CHANCE_COEF = 7 / 100;
+
+    /**
+     * - Chance = 0    | tier coefficient is left unchanged.
+     * - Chance -> +oo | all tier coefficients are the same (1)
+     * - Chance = 50   | coefficients become their square roots
+     */
+    private double getTierCoefficient(double initialTierChance, double chance) {
+        return Math.pow(initialTierChance, 1 / Math.pow(1 + CHANCE_COEF * chance, 1 / 3));
     }
 
     public Location getRandomLocation(Location center) {
