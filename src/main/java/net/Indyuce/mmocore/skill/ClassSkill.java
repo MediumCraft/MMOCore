@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.cooldown.CooldownObject;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import io.lumine.mythic.lib.skill.custom.condition.Condition;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -16,6 +17,9 @@ public class ClassSkill implements CooldownObject {
     private final RegisteredSkill skill;
     private final int unlockLevel, maxSkillLevel;
     private final Map<String, LinearValue> modifiers = new HashMap<>();
+
+    @Deprecated
+    private final Set<Condition> unlockConditions = new HashSet<>();
 
     /**
      * Class used to save information about skills IN A CLASS CONTEXT i.e at

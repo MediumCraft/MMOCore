@@ -1,15 +1,11 @@
 package net.Indyuce.mmocore.api.player;
 
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.waypoint.CostType;
-import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
@@ -25,7 +21,6 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
@@ -33,11 +28,14 @@ import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
+import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.Party;
+import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
+import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -88,8 +86,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     /**
      * Saves all the items that have been unlocked so far by
-     * the player. This can be used by other plugins by
-     * implementing the {@link Unlockable} interface
+     * the player. This is used for:
+     * - waypoints
+     * - skills
      *
      * @see {@link Unlockable}
      */
@@ -289,8 +288,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return guild != null;
     }
 
+    /**
+     * @return If the item is unlocked by the player
+     */
     public boolean hasUnlocked(Unlockable unlockable) {
-        throw new RuntimeException("Not implemented yet");
+        return unlockedItems.contains(unlockable.getUnlockNamespacedKey());
     }
 
     /**
@@ -299,7 +301,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @return If the item was already unlocked when calling this method
      */
     public boolean unlock(Unlockable unlockable) {
-        throw new RuntimeException("Not implemented yet");
+        return unlockedItems.add(unlockable.getUnlockNamespacedKey());
     }
 
     public void setLevel(int level) {
