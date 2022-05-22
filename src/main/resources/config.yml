@@ -58,6 +58,16 @@ protect-custom-mine: false
 # - parties_and_friends
 party-plugin: mmocore
 
+## Edit the plugin handling parties here.
+## Supported values (just copy and paste):
+## - mmocore
+## - beauty_quest
+## - quest_creator
+## - quests
+quest-plugin: mmocore
+
+
+
 # Whether blocks generated with a "cobblegenerator" should
 # provide the player with experience points or not
 should-cobblestone-generators-give-exp: false

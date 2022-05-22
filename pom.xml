@@ -226,6 +226,33 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!--Quest Plugin-->
+		<dependency>
+			<groupId>me.blackvein</groupId>
+			<artifactId>Quests</artifactId>
+			<version>4.4.1-b340</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fr.skytasul.quests</groupId>
+			<artifactId>BeautyQuests</artifactId>
+			<version>0.19.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.guillaumevdn</groupId>
+			<artifactId>QuestCreator</artifactId>
+			<version>6.39.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.guillaumevdn</groupId>
+			<artifactId>GCore</artifactId>
+			<version>8.39.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<!-- Guild plugins -->
 		<dependency>
 			<groupId>com.massivecraft</groupId>
