@@ -6,13 +6,12 @@ import org.bukkit.entity.Player;
 public interface QuestModule<T extends AbstractQuest> {
 
     /**
-     * @return Quest with given name
+     * @return Quest with given identifier
      */
     public T getQuestOrThrow(String id);
 
     /**
-     * @return If a specific player did a certain quest
+     * @return If a specific player has made a certain quest
      */
     public boolean hasCompletedQuest(String quest, Player player);
-
 }
