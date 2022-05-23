@@ -3,14 +3,15 @@ package net.Indyuce.mmocore.experience;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
-import net.Indyuce.mmocore.experience.dispenser.ProfessionExperienceDispenser;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,16 +64,14 @@ public class Profession extends PostLoadObject implements ExperienceObject {
 
         maxLevel = config.getInt("max-level");
 
-        if (config.contains("exp-sources")) {
-            ExperienceDispenser dispenser = new ProfessionExperienceDispenser(this);
+        if (config.contains("exp-sources"))
             for (String key : config.getStringList("exp-sources"))
                 try {
-                    MMOCore.plugin.experience.registerSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser));
+                    MMOCore.plugin.experience.registerSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING,
                             "Could not register exp source '" + key + "' from profession '" + id + "': " + exception.getMessage());
                 }
-        }
     }
 
     @Override
@@ -122,6 +121,18 @@ public class Profession extends PostLoadObject implements ExperienceObject {
     @NotNull
     public ExperienceTable getExperienceTable() {
         return Objects.requireNonNull(expTable, "Profession has no exp table");
+    }
+
+    @Override
+    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
+        hologramLocation = !getOption(Profession.ProfessionOption.EXP_HOLOGRAMS) ? null
+                : hologramLocation;
+        playerData.getCollectionSkills().giveExperience(this, experience, EXPSource.SOURCE, hologramLocation);
+    }
+
+    @Override
+    public boolean shouldHandle(PlayerData playerData) {
+        return true;
     }
 
     public static enum ProfessionOption {

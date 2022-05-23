@@ -8,6 +8,7 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
@@ -15,19 +16,18 @@ import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
-import net.Indyuce.mmocore.experience.dispenser.ClassExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
 import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
@@ -156,10 +156,9 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         if (config.contains("main-exp-sources")) {
-            ExperienceDispenser dispenser = new ClassExperienceDispenser(this);
             for (String key : config.getStringList("main-exp-sources"))
                 try {
-                    ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser);
+                    ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this);
                     MMOCore.plugin.experience.registerSource(source);
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp source '" + key + "' from class '"
@@ -297,6 +296,18 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public boolean hasOption(ClassOption option) {
         return options.containsKey(option) ? options.get(option) : option.getDefault();
+    }
+
+    @Override
+    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
+        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null
+                : hologramLocation;
+        playerData.giveExperience(experience, source, hologramLocation, true);
+    }
+
+    @Override
+    public boolean shouldHandle(PlayerData playerData) {
+        return equals(playerData.getProfess());
     }
 
     @Nullable
