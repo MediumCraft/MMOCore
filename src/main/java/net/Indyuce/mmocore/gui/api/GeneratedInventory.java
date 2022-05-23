@@ -59,7 +59,7 @@ public abstract class GeneratedInventory extends PluginInventory {
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, editable.getSlots(), MythicLib.plugin.parseColors(calculateName()));
+        Inventory inv = Bukkit.createInventory(this, editable.getSlots(), MythicLib.plugin.getPlaceholderParser().parse(getPlayer(), calculateName()));
 
         for (InventoryItem item : editable.getItems())
             if (item.canDisplay(this))
