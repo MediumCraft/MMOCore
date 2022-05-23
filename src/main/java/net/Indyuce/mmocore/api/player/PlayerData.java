@@ -553,7 +553,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
         }
 
-        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this,  value, source);
+        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
@@ -873,7 +873,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())

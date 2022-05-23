@@ -12,11 +12,11 @@ spawn:
   # Radius of waypoint around the specified location.
   radius: 2.0
 
+  lore: {}
+
+  # Cost for several specific actions
   cost:
 
-    # Stellium cost in order to use the waypoint.
-    # Stellium is like stamina however it's not used
-    # by skills and regens much slower than mana.
     # Cost when not standing on any waypoint.
     dynamic-use: 5
 
@@ -46,13 +46,11 @@ spawn:
     spawn1: 4
     spawn2: 5
 
-
 spawn1:
   name: Spawn1
   location: 'world 69 71 136 136 0'
   radius: 2.0
-  cost:
-    normal-use: 3
+  lore: {}
   option:
     default: false
 
@@ -60,21 +58,19 @@ spawn1:
     # on any waypoint (waypoint must be unlocked).
     dynamic: true
 
-  ##Not necessary if the waypoint doesn't allow dynamic use
-  ##The conditions for the dynamic-use of the waypoint
-  conditions:
+  # Not necessary if the waypoint doesn't allow dynamic use
+  # The conditions for the dynamic-use of the waypoint
+  dynamic-conditions:
     - 'distance{world=world;x=69;y=71;z=163;distance=500}'
-
 
   linked:
     spawn: 4
 
 spawn2:
   name: Spawn2
+  lore: {}
   location: 'world 69 71 136 136 0'
   radius: 3.0
-  cost:
-    normal-use: 3
   option:
     enable-menu: false
   linked:

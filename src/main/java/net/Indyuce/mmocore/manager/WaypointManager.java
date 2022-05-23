@@ -55,5 +55,12 @@ public class WaypointManager implements MMOCoreManager {
             } catch (RuntimeException exception) {
                 MMOCore.log(Level.WARNING, "Could not load waypoint '" + key + "': " + exception.getMessage());
             }
+
+        for (Waypoint waypoint : waypoints.values())
+            try {
+                waypoint.postLoad();
+            } catch (RuntimeException exception) {
+                MMOCore.log(Level.WARNING, "Could not post-load waypoint '" + waypoint.getId() + "': " + exception.getMessage());
+            }
     }
 }

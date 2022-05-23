@@ -59,7 +59,7 @@ items:
 
       lore:
         - '&7You cannot teleport as you do not have enough Stellium.'
-        - '&7Teleporting costs &b&l{normal_cost}&7/&b&l{dynamic_cost}  &7Stellium.'
+        - '&7Teleporting costs &b{normal_cost}&7/&b{dynamic_cost} &7Stellium.'
 
     # Displayed when the waypoint is unlocked and usable
     display:

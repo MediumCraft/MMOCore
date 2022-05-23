@@ -35,7 +35,7 @@ public class LootChestRegion {
         }
     };
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     public LootChestRegion(ConfigurationSection config) {
         Validate.notNull(config, "Could not load config");
@@ -110,7 +110,7 @@ public class LootChestRegion {
         location.getBlock().setType(Material.CHEST);
         Chest chest = (Chest) location.getBlock().getState();
         tier.getDropTable().collect(builder).forEach(item -> {
-            Integer slot = slots.get(random.nextInt(slots.size()));
+            Integer slot = slots.get(RANDOM.nextInt(slots.size()));
             chest.getInventory().setItem(slot, item);
             slots.remove(slot);
         });
@@ -135,7 +135,7 @@ public class LootChestRegion {
         double cummulated = 0;
         for (ChestTier tier : tiers) {
             cummulated += getTierCoefficient(tier.getChance(), chance);
-            if (random.nextDouble() < cummulated / sum)
+            if (RANDOM.nextDouble() < cummulated / sum)
                 return tier;
         }
 
@@ -175,9 +175,9 @@ public class LootChestRegion {
          * Chooses a random direction and get the block in
          * that direction which has the same height as the player
          */
-        double a = random.nextDouble() * 2 * Math.PI;
+        double a = RANDOM.nextDouble() * 2 * Math.PI;
         Vector dir = new Vector(Math.cos(a), 0, Math.sin(a))
-                .multiply(algOptions.minRange + random.nextDouble() * (algOptions.maxRange - algOptions.minRange));
+                .multiply(algOptions.minRange + RANDOM.nextDouble() * (algOptions.maxRange - algOptions.minRange));
         Location random = center.add(dir);
 
         /*
