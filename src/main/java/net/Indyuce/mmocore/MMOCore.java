@@ -190,23 +190,6 @@ public class MMOCore extends LuminePlugin {
 		}.runTaskTimer(MMOCore.plugin, 100, 20);
 
 		/*
-		 * Clean active loot chests every 5 minutes. Cannot register this runnable in
-		 * the loot chest manager because it is instanced when the plugin loads
-		 */
-		new BukkitRunnable() {
-			public void run() {
-				Iterator<LootChest> iterator = lootChests.getActive().iterator();
-				while (iterator.hasNext()) {
-					LootChest next = iterator.next();
-					if (next.shouldExpire()) {
-						iterator.remove();
-						next.expire(false);
-					}
-				}
-			}
-		}.runTaskTimer(this, 5 * 60 * 20, 5 * 60 * 20);
-
-		/*
 		 * For the sake of the lord, make sure they aren't using MMOItems Mana and
 		 * Stamina Addon...This should prevent a couple error reports produced by people
 		 * not reading the installation guide...

@@ -10,7 +10,6 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
@@ -21,7 +20,7 @@ public class LootChest {
     private final ReplacedBlock block;
     @Nullable
     private final BukkitRunnable effectRunnable;
-    private final long date = System.currentTimeMillis();
+    private final BukkitRunnable closeRunnable;
 
     private boolean active = true;
 
@@ -37,6 +36,13 @@ public class LootChest {
         this.region = region;
         this.block = new ReplacedBlock(block);
         this.effectRunnable = tier.hasEffect() ? tier.getEffect().startNewRunnable(block.getLocation().add(.5, .5, .5)) : null;
+        closeRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                expire(false);
+            }
+        };
+        closeRunnable.runTaskLater(MMOCore.plugin, MMOCore.plugin.configManager.lootChestExpireTime);
     }
 
     public ChestTier getTier() {
@@ -51,15 +57,8 @@ public class LootChest {
         return region;
     }
 
-    public boolean hasPlayerNearby() {
-        for (Player player : block.loc.getWorld().getPlayers())
-            if (player.getLocation().distanceSquared(block.loc.bukkit()) < 625)
-                return true;
-        return false;
-    }
-
-    public boolean shouldExpire() {
-        return System.currentTimeMillis() - date > MMOCore.plugin.configManager.lootChestExpireTime;
+    public boolean isActive() {
+        return active;
     }
 
     /**
@@ -76,6 +75,10 @@ public class LootChest {
         // Check for expire
         Validate.isTrue(active, "Chest has already expired");
         active = false;
+
+        // Close runnable
+        if (!closeRunnable.isCancelled())
+            closeRunnable.cancel();
 
         // If a player is responsible of closing the chest, close it with sound
         if (player) {

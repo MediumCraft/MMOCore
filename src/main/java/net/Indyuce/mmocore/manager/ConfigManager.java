@@ -94,7 +94,7 @@ public class ConfigManager {
         chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
         partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
         combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000L;
-        lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 1000L;
+        lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 20;
         lootChestPlayerCooldown = (long) MMOCore.plugin.getConfig().getDouble("player-cooldown") * 1000L;
         globalSkillCooldown = MMOCore.plugin.getConfig().getLong("global-skill-cooldown") * 50;
         noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
