@@ -60,7 +60,7 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
                         double exp = 0;
                         for (Entry<Enchantment, Integer> entry : applicableEnchants.entrySet())
                             exp += MMOCore.plugin.enchantManager.getBaseExperience(entry.getKey()) * entry.getValue();
-                        getDispenser().giveExperience(player, (int) exp, event.getEnchantBlock().getLocation(), EXPSource.SOURCE);
+                        getDispenser().giveExperience(player, exp, event.getEnchantBlock().getLocation(), EXPSource.SOURCE);
                     }
             }
         };

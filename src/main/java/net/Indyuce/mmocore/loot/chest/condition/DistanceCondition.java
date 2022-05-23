@@ -1,15 +1,10 @@
-package net.Indyuce.mmocore.loot.droptable.condition;
+package net.Indyuce.mmocore.loot.chest.condition;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.generator.WorldInfo;
-
-
-import java.util.stream.Collectors;
 
 public class DistanceCondition extends Condition{
     private final Location location;

@@ -8,7 +8,7 @@
 diamond-drop-table:
     items:
     - 'vanilla{type=DIAMOND} 1 1-3'
-   # - 'mmoitem{type=material;id=RARE_DIAMOND} .1 1-3'
+   # - 'mmoitem{type=material;id=RARE_DIAMOND;period=} .1 1-3'
     - 'droptable{id=other-drop-table} .1'
 
 other-drop-table:

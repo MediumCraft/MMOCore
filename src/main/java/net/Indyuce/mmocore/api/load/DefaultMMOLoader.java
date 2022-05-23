@@ -1,26 +1,19 @@
 package net.Indyuce.mmocore.api.load;
 
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
-import net.Indyuce.mmocore.loot.droptable.condition.*;
+import net.Indyuce.mmocore.experience.source.*;
+import net.Indyuce.mmocore.loot.chest.condition.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.api.block.BlockType;
 import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
+
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropTableDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.GoldDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.NoteDropItem;
 import net.Indyuce.mmocore.loot.droptable.dropitem.VanillaDropItem;
-import net.Indyuce.mmocore.experience.source.BrewPotionExperienceSource;
-import net.Indyuce.mmocore.experience.source.CraftItemExperienceSource;
-import net.Indyuce.mmocore.experience.source.EnchantItemExperienceSource;
-import net.Indyuce.mmocore.experience.source.FishItemExperienceSource;
-import net.Indyuce.mmocore.experience.source.KillMobExperienceSource;
-import net.Indyuce.mmocore.experience.source.MineBlockExperienceSource;
-import net.Indyuce.mmocore.experience.source.PlaceBlockExperienceSource;
-import net.Indyuce.mmocore.experience.source.RepairItemExperienceSource;
-import net.Indyuce.mmocore.experience.source.SmeltItemExperienceSource;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.quest.objective.ClickonObjective;
 import net.Indyuce.mmocore.api.quest.objective.GoToObjective;
@@ -40,130 +33,154 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class DefaultMMOLoader extends MMOLoader {
 
-	@Override
-	public Trigger loadTrigger(MMOLineConfig config) {
-		if (config.getKey().equals("message"))
-			return new MessageTrigger(config);
+    @Override
+    public Trigger loadTrigger(MMOLineConfig config) {
+        if (config.getKey().equals("message"))
+            return new MessageTrigger(config);
 
-		if (config.getKey().equals("sound") || config.getKey().equals("playsound"))
-			return new SoundTrigger(config);
+        if (config.getKey().equals("sound") || config.getKey().equals("playsound"))
+            return new SoundTrigger(config);
 
-		if (config.getKey().equals("mana"))
-			return new ManaTrigger(config);
+        if (config.getKey().equals("mana"))
+            return new ManaTrigger(config);
 
-		if (config.getKey().equals("stamina"))
-			return new StaminaTrigger(config);
-		
-		if (config.getKey().equals("stellium"))
-			return new StelliumTrigger(config);
+        if (config.getKey().equals("stamina"))
+            return new StaminaTrigger(config);
 
-		if (config.getKey().equals("command"))
-			return new CommandTrigger(config);
+        if (config.getKey().equals("stellium"))
+            return new StelliumTrigger(config);
 
-		if (config.getKey().equals("item") || config.getKey().equals("vanilla"))
-			return new ItemTrigger(config);
+        if (config.getKey().equals("command"))
+            return new CommandTrigger(config);
 
-		if (config.getKey().equals("exp") || config.getKey().equals("experience"))
-			return new ExperienceTrigger(config);
+        if (config.getKey().equals("item") || config.getKey().equals("vanilla"))
+            return new ItemTrigger(config);
 
-		return null;
-	}
+        if (config.getKey().equals("exp") || config.getKey().equals("experience"))
+            return new ExperienceTrigger(config);
 
-	@Override
-	public DropItem loadDropItem(MMOLineConfig config) {
-		if (config.getKey().equals("droptable"))
-			return new DropTableDropItem(config);
+        return null;
+    }
 
-		if (config.getKey().equals("vanilla"))
-			return new VanillaDropItem(config);
+    @Override
+    public DropItem loadDropItem(MMOLineConfig config) {
+        if (config.getKey().equals("droptable"))
+            return new DropTableDropItem(config);
 
-		if (config.getKey().equals("note"))
-			return new NoteDropItem(config);
+        if (config.getKey().equals("vanilla"))
+            return new VanillaDropItem(config);
 
-		if (config.getKey().equals("gold") || config.getKey().equals("coin"))
-			return new GoldDropItem(config);
+        if (config.getKey().equals("note"))
+            return new NoteDropItem(config);
 
-		return null;
-	}
+        if (config.getKey().equals("gold") || config.getKey().equals("coin"))
+            return new GoldDropItem(config);
 
-	@Override
-	public Objective loadObjective(MMOLineConfig config, ConfigurationSection section) {
-		if (config.getKey().equals("goto"))
-			return new GoToObjective(section, config);
+        return null;
+    }
 
-		if (config.getKey().equals("mineblock"))
-			return new MineBlockObjective(section, config);
+    @Override
+    public Objective loadObjective(MMOLineConfig config, ConfigurationSection section) {
+        if (config.getKey().equals("goto"))
+            return new GoToObjective(section, config);
 
-		if (config.getKey().equals("killmob"))
-			return new KillMobObjective(section, config);
+        if (config.getKey().equals("mineblock"))
+            return new MineBlockObjective(section, config);
 
-		if (config.getKey().equals("clickon"))
-			return new ClickonObjective(section, config);
+        if (config.getKey().equals("killmob"))
+            return new KillMobObjective(section, config);
 
-		return null;
-	}
+        if (config.getKey().equals("clickon"))
+            return new ClickonObjective(section, config);
 
-	@Override
-	public Condition loadCondition(MMOLineConfig config) {
-		if(config.getKey().equals("distance"))
-			return new DistanceCondition(config);
+        return null;
+    }
 
-		if (config.getKey().equals("world"))
-			return new WorldCondition(config);
+    @Override
+    public Condition loadCondition(MMOLineConfig config) {
+        if (config.getKey().equals("distance"))
+            return new DistanceCondition(config);
 
-		if (config.getKey().equals("biome"))
-			return new BiomeCondition(config);
+        if (config.getKey().equals("world"))
+            return new WorldCondition(config);
 
-		if (config.getKey().equals("level"))
-			return new LevelCondition(config);
-		
-		if (config.getKey().equals("permission"))
-			return new PermissionCondition(config);
+        if (config.getKey().equals("biome"))
+            return new BiomeCondition(config);
 
-		return null;
-	}
+        if (config.getKey().equals("level"))
+            return new LevelCondition(config);
 
-	@Override
-	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
-		if (config.getKey().equals("fishitem"))
-			return new FishItemExperienceSource(dispenser, config);
+        if (config.getKey().equals("permission"))
+            return new PermissionCondition(config);
 
-		if (config.getKey().equals("killmob"))
-			return new KillMobExperienceSource(dispenser, config);
+        return null;
+    }
 
-		if (config.getKey().equals("mineblock"))
-			return new MineBlockExperienceSource(dispenser, config);
+    @Override
+    public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+        if (config.getKey().equals("resource"))
+            return new ResourceExperienceSource(dispenser, config);
 
-		if (config.getKey().equals("placeblock"))
-			return new PlaceBlockExperienceSource(dispenser, config);
+        if (config.getKey().equals("climb"))
+            return new ClimbExperienceSource(dispenser, config);
 
-		if (config.getKey().equals("brewpotion"))
-			return new BrewPotionExperienceSource(dispenser, config);
+        if (config.getKey().equals("damagedealt"))
+            return new DamageDealtExperienceSource(dispenser, config);
 
-		if (config.getKey().equals("smeltitem"))
-			return new SmeltItemExperienceSource(dispenser, config);
+        if (config.getKey().equals("damagetaken"))
+            return new DamageTakenExperienceSource(dispenser, config);
 
-		if (config.getKey().equals("enchantitem"))
-			return new EnchantItemExperienceSource(dispenser, config);
+        if (config.getKey().equals("move"))
+            return new MoveExperienceSource(dispenser, config);
 
-		if (config.getKey().equals("repairitem"))
-			return new RepairItemExperienceSource(dispenser, config);
+        if (config.getKey().equals("play"))
+            return new PlayExperienceSource(dispenser, config);
 
-		if (config.getKey().equals("craftitem"))
-			return new CraftItemExperienceSource(dispenser, config);
+        if (config.getKey().equals("projectile"))
+            return new ProjectileExperienceSource(dispenser, config);
 
-		return null;
-	}
+        if (config.getKey().equals("ride"))
+            return new RideExperienceSource(dispenser, config);
 
-	@Override
-	public BlockType loadBlockType(MMOLineConfig config) {
+        if (config.getKey().equals("tame"))
+            return new TameExperienceSource(dispenser, config);
 
-		if (config.getKey().equalsIgnoreCase("vanilla"))
-			return new VanillaBlockType(config);
-		
-		if (config.getKey().equalsIgnoreCase("skull") || config.getKey().equals("head") || config.getKey().equals("playerhead"))
-			return new SkullBlockType(config);
+        if (config.getKey().equals("killmob"))
+            return new KillMobExperienceSource(dispenser, config);
 
-		return null;
-	}
+        if (config.getKey().equals("mineblock"))
+            return new MineBlockExperienceSource(dispenser, config);
+
+        if (config.getKey().equals("placeblock"))
+            return new PlaceBlockExperienceSource(dispenser, config);
+
+        if (config.getKey().equals("brewpotion"))
+            return new BrewPotionExperienceSource(dispenser, config);
+
+        if (config.getKey().equals("smeltitem"))
+            return new SmeltItemExperienceSource(dispenser, config);
+
+        if (config.getKey().equals("enchantitem"))
+            return new EnchantItemExperienceSource(dispenser, config);
+
+        if (config.getKey().equals("repairitem"))
+            return new RepairItemExperienceSource(dispenser, config);
+
+        if (config.getKey().equals("craftitem"))
+            return new CraftItemExperienceSource(dispenser, config);
+
+        return null;
+    }
+
+    @Override
+    public BlockType loadBlockType(MMOLineConfig config) {
+
+        if (config.getKey().equalsIgnoreCase("vanilla"))
+            return new VanillaBlockType(config);
+
+        if (config.getKey().equalsIgnoreCase("skull") || config.getKey().equals("head") || config.getKey().equals("playerhead"))
+            return new SkullBlockType(config);
+
+        return null;
+    }
 }

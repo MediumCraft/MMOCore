@@ -16,14 +16,14 @@ public class PlayerExperienceGainEvent extends PlayerDataEvent implements Cancel
 	private final Profession profession;
 	private final EXPSource source;
 
-	private int experience;
+	private double experience;
 	private boolean cancelled;
 
-	public PlayerExperienceGainEvent(PlayerData player, int experience, EXPSource source) {
+	public PlayerExperienceGainEvent(PlayerData player, double experience, EXPSource source) {
 		this(player, null, experience, source);
 	}
 
-	public PlayerExperienceGainEvent(PlayerData player, @Nullable Profession profession, int experience, EXPSource source) {
+	public PlayerExperienceGainEvent(PlayerData player, @Nullable Profession profession, double experience, EXPSource source) {
 		super(player);
 
 		this.profession = profession;
@@ -31,7 +31,7 @@ public class PlayerExperienceGainEvent extends PlayerDataEvent implements Cancel
 		this.source = source;
 	}
 
-	public int getExperience() {
+	public double getExperience() {
 		return experience;
 	}
 

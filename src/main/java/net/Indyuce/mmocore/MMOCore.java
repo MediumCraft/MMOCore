@@ -230,6 +230,19 @@ public class MMOCore extends LuminePlugin {
 			DebugMode.enableActionBar();
 		}
 
+		// Load quest module
+		try {
+			String questPluginName = UtilityMethods.enumName(getConfig().getString("quest-plugin"));
+			PartyModuleType moduleType = PartyModuleType.valueOf(questPluginName);
+			Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
+			partyModule = moduleType.provideModule();
+		} catch (RuntimeException exception) {
+			getLogger().log(Level.WARNING, "Could not initialize quest module: " + exception.getMessage());
+			partyModule = new MMOCorePartyModule();
+		}
+
+
+
 		// Load party module
 		try {
 			String partyPluginName = UtilityMethods.enumName(getConfig().getString("party-plugin"));
@@ -240,6 +253,7 @@ public class MMOCore extends LuminePlugin {
 			getLogger().log(Level.WARNING, "Could not initialize party module: " + exception.getMessage());
 			partyModule = new MMOCorePartyModule();
 		}
+
 
 		// Skill casting
 		try {

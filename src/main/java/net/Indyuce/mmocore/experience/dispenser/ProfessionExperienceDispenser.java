@@ -16,7 +16,7 @@ public class ProfessionExperienceDispenser implements ExperienceDispenser {
     @Override
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
         hologramLocation = !profession.getOption(Profession.ProfessionOption.EXP_HOLOGRAMS) ? null
-                : hologramLocation == null ? getPlayerLocation(playerData) : hologramLocation;
+                : hologramLocation;
         playerData.getCollectionSkills().giveExperience(profession, experience, EXPSource.SOURCE, hologramLocation);
     }
 
