@@ -4,7 +4,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.loot.chest.LootChestRegion;
-import net.Indyuce.mmocore.util.item.HashableLocation;
+import net.Indyuce.mmocore.util.HashableLocation;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.loot.chest;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.util.item.HashableLocation;
+import net.Indyuce.mmocore.util.HashableLocation;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.util.item;
+package net.Indyuce.mmocore.util;
 
 import org.bukkit.Location;
 import org.bukkit.World;
