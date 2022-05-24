@@ -11,10 +11,8 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
-import net.Indyuce.mmocore.manager.SkillManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
-import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -39,7 +37,6 @@ public class SkillList extends EditableInventory {
         if (function.equals("skill"))
             return new SkillItem(config);
 
-
         if (function.equals("level"))
             return new LevelItem(config);
 
@@ -48,7 +45,7 @@ public class SkillList extends EditableInventory {
 
                 @Override
                 public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-                    RegisteredSkill selected = inv.selected==null?null:inv.selected.getSkill();
+                    RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
                     Placeholders holders = new Placeholders();
 
                     holders.register("skill_caps", selected.getName().toUpperCase());
@@ -57,7 +54,6 @@ public class SkillList extends EditableInventory {
 
                     return holders;
                 }
-
             };
 
         if (function.equals("slot"))
@@ -69,7 +65,7 @@ public class SkillList extends EditableInventory {
 
                 @Override
                 public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-                    RegisteredSkill selected = inv.selected==null?null:inv.selected.getSkill();
+                    RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
                     RegisteredSkill skill = inv.getPlayerData().hasSkillBound(n) ? inv.getPlayerData().getBoundSkill(n).getSkill() : null;
 
                     Placeholders holders = new Placeholders();
@@ -77,7 +73,7 @@ public class SkillList extends EditableInventory {
                     holders.register("skill", skill == null ? none : skill.getName());
                     holders.register("index", "" + (n + 1));
                     holders.register("slot", MMOCoreUtils.intToRoman(n + 1));
-                    holders.register("selected", selected==null?none:selected.getName());
+                    holders.register("selected", selected == null ? none : selected.getName());
 
                     return holders;
                 }
@@ -115,7 +111,8 @@ public class SkillList extends EditableInventory {
 
                 @Override
                 public boolean canDisplay(SkillViewerInventory inv) {
-                    return inv.page < inv.skills.size() / 12;
+                    final int perPage = inv.skillSlots.size();
+                    return inv.page < (inv.skills.size() - 1) / perPage;
                 }
             };
         }
@@ -172,21 +169,15 @@ public class SkillList extends EditableInventory {
             return NBTItem.get(item).addTag(new ItemTag("skillId", skill.getSkill().getHandler().getId())).toItem();
         }
 
-
         @Override
         public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
             return new Placeholders();
         }
-
-
     }
 
     public class SkillItem extends InventoryItem<SkillViewerInventory> {
-
-
         public SkillItem(ConfigurationSection config) {
             super(Material.BARRIER, config);
-
         }
 
         @Override
@@ -197,11 +188,9 @@ public class SkillList extends EditableInventory {
         @Override
         public ItemStack display(SkillViewerInventory inv, int n) {
 
-            /*
-             * calculate placeholders
-             */
-            int index=n+inv.skillSlots.size()*inv.page;
-            if(index>=inv.skills.size())
+            // Calculate placeholders
+            int index = n + inv.skillSlots.size() * inv.page;
+            if (index >= inv.skills.size())
                 return new ItemStack(Material.AIR);
 
             ClassSkill skill = inv.skills.get(index);
@@ -222,9 +211,7 @@ public class SkillList extends EditableInventory {
             for (int j = 0; j < lore.size(); j++)
                 lore.set(j, ChatColor.GRAY + holders.apply(inv.getPlayer(), lore.get(j)));
 
-            /*
-             * generate item
-             */
+            // Generate item
             ItemStack item = skill.getSkill().getIcon();
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(holders.apply(inv.getPlayer(), getName()));
@@ -266,7 +253,7 @@ public class SkillList extends EditableInventory {
             skills = new ArrayList<>(playerData.getProfess().getSkills());
             skillSlots = getEditable().getByFunction("skill").getSlots();
             slotSlots = getEditable().getByFunction("slot").getSlots();
-            selected=skills.get(page*skillSlots.size());
+            selected = skills.get(page * skillSlots.size());
         }
 
         @Override
