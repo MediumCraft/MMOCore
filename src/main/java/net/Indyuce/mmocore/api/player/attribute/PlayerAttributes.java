@@ -129,8 +129,17 @@ public class PlayerAttributes {
 			update();
 		}
 
+		/**
+		 * Adds X points to the base of the player attribute AND applies
+		 * the attribute experience table.
+		 *
+		 * @param value Amount of attribute points spent in the attribute
+		 */
 		public void addBase(int value) {
+			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 			setBase(spent + value);
+			if (attribute.hasExperienceTable())
+				attribute.getExperienceTable().claim(data, spent, attribute);
 		}
 
 		/*
@@ -159,14 +168,14 @@ public class PlayerAttributes {
 			return map.get(key);
 		}
 
-		public void addModifier(String key, double value) {
-			addModifier(new AttributeModifier(key, id, value, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
+		public AttributeModifier addModifier(String key, double value) {
+			return addModifier(new AttributeModifier(key, id, value, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
 		}
 
-		public void addModifier(AttributeModifier modifier) {
-			map.put(modifier.getKey(), modifier);
-
+		public AttributeModifier addModifier(AttributeModifier modifier) {
+			AttributeModifier mod = map.put(modifier.getKey(), modifier);
 			update();
+			return mod;
 		}
 
 		public Set<String> getKeys() {
@@ -177,7 +186,7 @@ public class PlayerAttributes {
 			return map.containsKey(key);
 		}
 
-		public void removeModifier(String key) {
+		public AttributeModifier removeModifier(String key) {
 			AttributeModifier mod = map.remove(key);
 
 			/*
@@ -190,12 +199,13 @@ public class PlayerAttributes {
 					((Closeable) mod).close();
 				update();
 			}
+			return mod;
 		}
 
 		public void update() {
-			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
+			PlayerAttribute attr = MMOCore.plugin.attributeManager.get(id);
 			int total = getTotal();
-			attribute.getBuffs().forEach(buff -> buff.multiply(total).register(data.getMMOPlayerData()));
+			attr.getBuffs().forEach(buff -> buff.multiply(total).register(data.getMMOPlayerData()));
 		}
 
 		public String getId() {
