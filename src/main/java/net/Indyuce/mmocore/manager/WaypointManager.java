@@ -25,6 +25,7 @@ public class WaypointManager implements MMOCoreManager {
         return waypoints.containsKey(id);
     }
 
+    @Nullable
     public Waypoint get(String id) {
         return waypoints.get(id);
     }

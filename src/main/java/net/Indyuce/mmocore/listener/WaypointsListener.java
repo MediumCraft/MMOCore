@@ -52,7 +52,19 @@ public class WaypointsListener implements Listener {
             return;
 
         NBTItem nbtItem = NBTItem.get(event.getItem());
-        if (Objects.equals(nbtItem.getString("MMOCoreItemId"), "WAYPOINT_BOOK"))
-            InventoryManager.WAYPOINTS.newInventory(PlayerData.get(event.getPlayer())).open();
+        if (Objects.equals(nbtItem.getString("MMOCoreItemId"), "WAYPOINT_BOOK")) {
+            String waypointId = nbtItem.getString("WaypointBookId");
+            Waypoint waypoint = MMOCore.plugin.waypointManager.get(waypointId);
+            if (waypoint == null)
+                return;
+
+            PlayerData playerData = PlayerData.get(event.getPlayer());
+            if (playerData.hasWaypoint(waypoint))
+                return;
+
+            playerData.unlockWaypoint(waypoint);
+            event.getItem().setAmount(event.getItem().getAmount() - 1); // Consume item
+            MMOCore.plugin.configManager.getSimpleMessage("new-waypoint-book", "waypoint", waypoint.getName()).send(event.getPlayer());
+        }
     }
 }
