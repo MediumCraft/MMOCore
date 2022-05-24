@@ -7,11 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 /**
- * General implementation for professions and classes.
+ * General implementation for professions, classes and attributes.
  * <p>
- * An experience object is a type of object that can
- * level up. It has an experience curve and table and
- * can receive EXP
+ * An experience object is a type of object that can level up.
+ * It has an experience curve and table and can receive EXP
  *
  * @author jules
  */

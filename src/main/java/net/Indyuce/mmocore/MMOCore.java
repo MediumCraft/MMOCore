@@ -8,6 +8,7 @@ import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
@@ -31,7 +32,6 @@ import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
-import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.manager.*;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
@@ -55,7 +55,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 public class MMOCore extends LuminePlugin {
@@ -116,8 +115,9 @@ public class MMOCore extends LuminePlugin {
 			return;
 		}
 
-		// Register MMOCore-specific target restrictions
+		// Register MMOCore-specific objects
 		MythicLib.plugin.getEntities().registerRestriction(new PartyMemberTargetRestriction());
+		MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
 
 		// Register extra objective, drop items...
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
