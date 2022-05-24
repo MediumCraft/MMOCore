@@ -8,11 +8,13 @@ import fr.skytasul.quests.structure.Quest;
 import net.Indyuce.mmocore.quest.AbstractQuest;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+
 public class BeautyQuestModule implements QuestModule<BeautyQuestModule.BeautyQuestQuest> {
 
 
     @Override
-    public BeautyQuestQuest getQuestOrThrow(String questId) {
+    public BeautyQuestQuest getQuest(String questId) {
         Quest quest=QuestsAPI.getQuests().getQuest(Integer.parseInt(questId));
         return quest==null?null:new BeautyQuestQuest(quest);
     }
@@ -20,15 +22,15 @@ public class BeautyQuestModule implements QuestModule<BeautyQuestModule.BeautyQu
     @Override
     public boolean hasCompletedQuest(String questId, Player player) {
         PlayerAccount account=PlayersManager.getPlayerAccount(player);
-        PlayerQuestDatas quest=account.getQuestDatas(QuestsAPI.getQuests().getQuest(Integer.parseInt(questId)));
-        return quest.isFinished();
+        Quest quest=QuestsAPI.getQuests().getQuest(Integer.parseInt(questId));
+        PlayerQuestDatas questData=account.getQuestDatas(quest);
+        return questData.isFinished();
     }
-
 
 
     public class BeautyQuestQuest implements AbstractQuest {
 
-        Quest quest;
+        private final Quest quest;
 
         public BeautyQuestQuest(Quest quest) {
             this.quest = quest;

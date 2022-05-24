@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.api.player;
 
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
@@ -8,7 +7,9 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.waypoint.CostType;
+import net.Indyuce.mmocore.tree.NodeState;
+import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
@@ -49,10 +50,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Node;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
@@ -113,6 +116,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     private boolean fullyLoaded = false;
 
+
+    //Value of the last skill tree the player was viewing
+    private SkillTree cachedSkillTree = null;
+    private final HashMap<SkillTreeNode, NodeState> nodeStates= new HashMap<>();
     /**
      * If the player data was loaded using temporary data.
      * See {@link TemporaryPlayerData} for more info
@@ -166,6 +173,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             } finally {
                 j++;
             }
+    }
+
+    public NodeState getNodeState(SkillTreeNode node) {
+        return nodeStates.get(node);
+    }
+
+    public void setNodeState(SkillTreeNode node,NodeState nodeState) {
+        nodeStates.put(node,nodeState);
     }
 
     @Override
@@ -224,6 +239,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Override
     public int getLevel() {
         return Math.max(1, level);
+    }
+
+    public void setCachedSkillTree(SkillTree cachedSkillTree) {
+        this.cachedSkillTree = cachedSkillTree;
+    }
+
+    public SkillTree getCachedSkillTree() {
+
+        if (cachedSkillTree == null)
+            return MMOCore.plugin.skillTreeManager.getAll().stream().collect(Collectors.toList()).get(0);
+        return cachedSkillTree;
     }
 
     @Nullable
@@ -548,7 +574,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
         }
 
-        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this,  value, source);
+        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;

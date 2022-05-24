@@ -14,14 +14,15 @@ import java.util.List;
 public class QuestCreatorModule implements QuestModule<QuestCreatorModule.QuestCreatorQuest>{
 
     @Override
-    public QuestCreatorQuest getQuestOrThrow(String id) {
+    public QuestCreatorQuest getQuest(String id) {
         return new QuestCreatorQuest(id);
     }
 
     @Override
     public boolean hasCompletedQuest(String questId, Player player) {
         UserQC playerData=UserQC.cachedOrNull(player);
-        Validate.notNull(playerData,"QuestCreator User hasn't been loaded!");
+        if(playerData==null)
+            return false;
         //Gets all the quests the player has  succeeded at
         List<QuestHistoryElement> elements=playerData.getQuestHistory().getElements(questId, Arrays.asList(QuestEndType.SUCCESS),0);
         for(QuestHistoryElement el:elements) {

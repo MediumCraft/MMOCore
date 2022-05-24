@@ -6,8 +6,9 @@ import net.Indyuce.mmocore.quest.compat.QuestModule;
 import org.bukkit.entity.Player;
 
 public class MMOCoreQuestModule implements QuestModule {
+
     @Override
-    public AbstractQuest getQuestOrThrow(String id) {
+    public AbstractQuest getQuest(String id) {
         Quest quest=MMOCore.plugin.questManager.get(id);
         if(quest==null)
             return null;

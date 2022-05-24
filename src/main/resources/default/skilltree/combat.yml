@@ -1,0 +1,29 @@
+id: 'combat'
+name: 'Combat Skill Tree'
+
+
+#The type of the Skill tree, can be :
+#'linked'->You must only precise nodes coordinates. 2 adjacent nodes will be affiliated. The root is at coordinates 0,0.
+#'automatic'-> You must only precise the children(there can more than 1) of each node. Each node can only have one parent and the root has none.
+#              The display coordinates will be automatically calculated to have a good render.
+#'custom'-> You must precise coordinates and children for each node, each node can have multiple parents and children.
+#           The coordinates are only used for display on the GUI but will not have any impact on the affiliation between nodes.
+
+type: 'linked'
+
+#The material that will represent the skill tree in the GUI
+material: 'DIAMOND_SWORD'
+
+nodes:
+  strength:
+    name: 'Combat strength'
+    #Coordinates of the node
+    coordinates:
+      x: 0
+      y: 0
+  strength2:
+    name: 'Combat strength 2'
+    coordinates:
+      x: 1
+      y: 0
+

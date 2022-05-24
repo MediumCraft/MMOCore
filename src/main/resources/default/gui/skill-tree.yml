@@ -1,0 +1,25 @@
+# GUI display name
+name: 'Current Skill Tree: &6{skill-tree-name}'
+
+# Number of slots in your inventory. Must be
+# between 9 and 54 and must be a multiple of 9.
+slots: 54
+
+items:
+  skill-tree:
+    name: '{skill-tree-node}'
+    function: 'skill-tree'
+    slots: [9,18,27,36]
+
+  next-tree-list-page:
+    function: 'next-tree-list-page'
+    material: 'ARROW'
+    slots: [ 45 ]
+
+  previous-tree-list-page:
+    function: 'previous-tree-list-page'
+    material: "ARROW"
+    slots: [ 0 ]
+
+  skill-tree-node:
+    function: 'skill-tree-node'

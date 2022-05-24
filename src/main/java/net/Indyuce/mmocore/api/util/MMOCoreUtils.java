@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class MMOCoreUtils {
     public static boolean pluginItem(ItemStack item) {
@@ -52,6 +53,10 @@ public class MMOCoreUtils {
                 isLastSpace = ch == ' ';
         }
         return builder.toString();
+    }
+
+    public static String toEnumName(String str) {
+        return str.replace("-", "_").toUpperCase();
     }
 
     /**
