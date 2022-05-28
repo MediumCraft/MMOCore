@@ -10,7 +10,6 @@ import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
@@ -77,6 +76,7 @@ public class MMOCore extends LuminePlugin {
 	public final LootChestManager lootChests = new LootChestManager();
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public final RestrictionManager restrictionManager = new RestrictionManager();
+	public final StatManager statManager = new StatManager();
 	@Deprecated
 	public final SkillTreeManager skillTreeManager = new SkillTreeManager();
 
@@ -385,6 +385,7 @@ public class MMOCore extends LuminePlugin {
 
 		configManager = new ConfigManager();
 
+		statManager.initialize(clearBefore);
 		if (clearBefore)
 			MythicLib.plugin.getSkills().initialize(true);
 		skillManager.initialize(clearBefore);
@@ -413,8 +414,6 @@ public class MMOCore extends LuminePlugin {
 
 		if (getConfig().isConfigurationSection("action-bar"))
 			actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
-
-		StatType.load();
 
 		if (clearBefore)
 			PlayerData.getAll().forEach(PlayerData::update);

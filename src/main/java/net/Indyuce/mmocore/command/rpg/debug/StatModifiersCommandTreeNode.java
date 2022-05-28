@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.command.rpg.debug;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,10 +15,7 @@ public class StatModifiersCommandTreeNode extends CommandTreeNode {
 	public StatModifiersCommandTreeNode(CommandTreeNode parent) {
 		super(parent, "statmods");
 
-		addParameter(new Parameter("<stat>", (explorer, list) -> {
-			for (StatType stat : StatType.values())
-				list.add(stat.name());
-		}));
+        addParameter(new Parameter("<stat>", (explorer, list) -> list.add("STAT_ID")));
 	}
 
 	@Override
@@ -32,15 +29,7 @@ public class StatModifiersCommandTreeNode extends CommandTreeNode {
 		}
 		PlayerData data = PlayerData.get((Player) sender);
 
-		StatType stat;
-		try {
-			stat = StatType.valueOf(args[2].toUpperCase().replace("-", "_").replace(" ", "_"));
-		} catch (IllegalArgumentException exception) {
-			sender.sendMessage(ChatColor.RED + "Could not find stat: " + args[2] + ".");
-			return CommandResult.FAILURE;
-		}
-
-		StatInstance instance = data.getStats().getInstance(stat);
+		StatInstance instance = data.getStats().getInstance(UtilityMethods.enumName(args[2]));
 		sender.sendMessage("Stat Modifiers (" + instance.getKeys().size() + "):");
 		for (String key : instance.getKeys()) {
 			StatModifier mod = instance.getModifier(key);

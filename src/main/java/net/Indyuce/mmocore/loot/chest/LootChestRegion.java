@@ -4,7 +4,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.LootChestSpawnEvent;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.loot.LootBuilder;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -125,7 +124,7 @@ public class LootChestRegion {
      */
     @NotNull
     public ChestTier rollTier(PlayerData player) {
-        double chance = player.getStats().getStat(StatType.CHANCE) * MMOCore.plugin.configManager.lootChestsChanceWeight;
+        double chance = player.getStats().getStat("CHANCE") * MMOCore.plugin.configManager.lootChestsChanceWeight;
 
         double sum = 0;
         for (ChestTier tier : tiers)

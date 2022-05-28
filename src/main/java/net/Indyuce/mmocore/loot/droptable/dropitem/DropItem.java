@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.loot.droptable.dropitem;
 import java.util.Random;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.loot.LootBuilder;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import io.lumine.mythic.lib.api.MMOLineConfig;
@@ -40,7 +39,7 @@ public abstract class DropItem {
      * If the player chance is 0 the random value will remain the same. When he get lucks the chance gets closer to one.
      */
     public boolean rollChance(PlayerData player) {
-        return Math.pow(random.nextDouble(), 1 / Math.log(1 + player.getStats().getStat(StatType.CHANCE))) < chance;
+        return Math.pow(random.nextDouble(), 1 / Math.log(1 + player.getStats().getStat("CHANCE"))) < chance;
     }
 
     public abstract void collect(LootBuilder builder);

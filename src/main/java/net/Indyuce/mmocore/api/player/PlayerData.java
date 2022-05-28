@@ -17,7 +17,6 @@ import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -542,7 +541,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         }
 
         value = MMOCore.plugin.boosterManager.calculateExp(null, value);
-        value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
+        value *= 1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100;
 
         // Splitting exp through party members
         AbstractParty party = getParty();
@@ -615,7 +614,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveMana(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_MANA);
+        double max = getStats().getStat("MAX_MANA");
         double newest = Math.max(0, Math.min(mana + amount, max));
         if (mana == newest)
             return;
@@ -640,7 +639,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveStamina(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_STAMINA);
+        double max = getStats().getStat("MAX_STAMINA");
         double newest = Math.max(0, Math.min(stamina + amount, max));
         if (stamina == newest)
             return;
@@ -665,7 +664,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveStellium(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_STELLIUM);
+        double max = getStats().getStat("MAX_STELLIUM");
         double newest = Math.max(0, Math.min(stellium + amount, max));
         if (stellium == newest)
             return;
@@ -700,15 +699,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setMana(double amount) {
-        mana = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_MANA)));
+        mana = Math.max(0, Math.min(amount, getStats().getStat("MAX_MANA")));
     }
 
     public void setStamina(double amount) {
-        stamina = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_STAMINA)));
+        stamina = Math.max(0, Math.min(amount, getStats().getStat("MAX_STAMINA")));
     }
 
     public void setStellium(double amount) {
-        stellium = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_STELLIUM)));
+        stellium = Math.max(0, Math.min(amount, getStats().getStat("MAX_STELLIUM")));
     }
 
     public boolean isFullyLoaded() {

@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import org.apache.commons.lang.Validate;
@@ -168,7 +168,7 @@ public class PlayerProfessions {
         value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 
         // Adds functionality for additional experience per profession.
-        value *= 1 + playerData.getStats().getInstance(StatType.ADDITIONAL_EXPERIENCE, profession).getTotal() / 100;
+        value *= 1 + playerData.getStats().getInstance("ADDITIONAL_EXPERIENCE_" + UtilityMethods.enumName(profession.getId())).getTotal() / 100;
 
         // Display hologram
         if (hologramLocation != null)

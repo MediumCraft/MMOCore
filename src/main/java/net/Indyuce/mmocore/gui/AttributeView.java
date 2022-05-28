@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.SoundManager;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -66,8 +67,9 @@ public class AttributeView extends EditableInventory {
 			holders.register("current", total);
 			holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
 			attribute.getBuffs().forEach(buff -> {
-				holders.register("buff_" + buff.getStat().toLowerCase(), buff.getValue());
-				holders.register("total_" + buff.getStat().toLowerCase(), buff.multiply(total).getValue());
+				StatInfo info = StatInfo.valueOf(buff.getStat());
+				holders.register("buff_" + buff.getStat().toLowerCase(), info.format(buff.getValue()));
+				holders.register("total_" + buff.getStat().toLowerCase(), info.format(buff.multiply(total).getValue()));
 			});
 			return holders;
 		}

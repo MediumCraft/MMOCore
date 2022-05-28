@@ -110,4 +110,16 @@ public class LinearValue {
 
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "LinearValue{" +
+                "base=" + base +
+                ", perLevel=" + perLevel +
+                ", min=" + min +
+                ", max=" + max +
+                ", hasmin=" + hasmin +
+                ", hasmax=" + hasmax +
+                '}';
+    }
 }

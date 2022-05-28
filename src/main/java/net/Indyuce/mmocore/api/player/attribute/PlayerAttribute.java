@@ -25,8 +25,8 @@ public class PlayerAttribute implements ExperienceObject {
     private final ExperienceTable expTable;
 
     /**
-     * Used to store stats using StatType, but attributes also need to access
-     * non basic MMOCore stats hence the string maps keys
+     * All buffs granted by an attribute. These are normalized and
+     * must be multiplied by the player level first
      */
     private final Set<StatModifier> buffs = new HashSet<>();
 

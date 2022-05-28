@@ -9,7 +9,6 @@ import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor.Table;
@@ -35,6 +34,13 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 			try {
 				MMOCore.sqlDebug("Loading data for: '" + data.getUniqueId() + "'...");
 
+				// Initialize custom resources
+				if (!data.hasUsedTemporaryData()) {
+					data.setMana(data.getStats().getStat("MAX_MANA"));
+					data.setStamina(data.getStats().getStat("MAX_STAMINA"));
+					data.setStellium(data.getStats().getStat("MAX_STELLIUM"));
+				}
+
 				if (!result.next()) {
 					data.setLevel(getDefaultData().getLevel());
 					data.setClassPoints(getDefaultData().getClassPoints());
@@ -43,12 +49,6 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 					data.setAttributeReallocationPoints(getDefaultData().getAttrReallocPoints());
 					data.setExperience(0);
 					data.getQuestData().updateBossBar();
-
-					if (!data.hasUsedTemporaryData()) {
-						data.setMana(data.getStats().getStat(StatType.MAX_MANA));
-						data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
-						data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
-					}
 
 					data.setFullyLoaded();
 					MMOCore.sqlDebug("Loaded DEFAULT data for: '" + data.getUniqueId() + "' as no saved data was found.");
@@ -67,12 +67,6 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 				if (!isEmpty(result.getString("times_claimed"))) {
 					JsonObject json = new JsonParser().parse(result.getString("times_claimed")).getAsJsonObject();
 					json.entrySet().forEach(entry -> data.getItemClaims().put(entry.getKey(), entry.getValue().getAsInt()));
-				}
-
-				if (!data.hasUsedTemporaryData()) {
-					data.setMana(data.getStats().getStat(StatType.MAX_MANA));
-					data.setStamina(data.getStats().getStat(StatType.MAX_STAMINA));
-					data.setStellium(data.getStats().getStat(StatType.MAX_STELLIUM));
 				}
 
 				if (!isEmpty(result.getString("guild"))) {

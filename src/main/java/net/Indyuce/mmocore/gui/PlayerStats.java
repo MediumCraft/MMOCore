@@ -1,14 +1,15 @@
 package net.Indyuce.mmocore.gui;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.Booster;
-import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
+import net.Indyuce.mmocore.experience.Booster;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
@@ -18,9 +19,12 @@ import net.Indyuce.mmocore.party.AbstractParty;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.Objects;
 
 public class PlayerStats extends EditableInventory {
 	public PlayerStats() {
@@ -78,7 +82,7 @@ public class PlayerStats extends EditableInventory {
 					Placeholders holders = new Placeholders();
 					net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.getPlayerData().getStats();
 
-					double ratio = (double) inv.getPlayerData().getCollectionSkills().getExperience(profession)
+					double ratio = inv.getPlayerData().getCollectionSkills().getExperience(profession)
 							/ (double) inv.getPlayerData().getCollectionSkills().getLevelUpExperience(profession);
 
 					String bar = "" + ChatColor.BOLD;
@@ -91,9 +95,9 @@ public class PlayerStats extends EditableInventory {
 					holders.register("level", "" + inv.getPlayerData().getCollectionSkills().getLevel(profession));
 					holders.register("xp", inv.getPlayerData().getCollectionSkills().getExperience(profession));
 					holders.register("percent", decimal.format(ratio * 100));
-					for (StatType stat : StatType.values())
-						if (stat.matches(profession))
-							holders.register(stat.name().toLowerCase(), stat.format(stats.getStat(stat)));
+					for (StatInfo stat : MMOCore.plugin.statManager.getLoaded())
+						if (Objects.equals(stat.profession, profession))
+							holders.register(stat.name.toLowerCase(), stat.format(stats.getStat(stat.name)));
 
 					return holders;
 				}
@@ -113,21 +117,35 @@ public class PlayerStats extends EditableInventory {
 
 				@Override
 				public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
+					return new Placeholders() {
+						final net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.getPlayerData().getStats();
 
-					net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.getPlayerData().getStats();
-					Placeholders holders = new Placeholders();
+						public String apply(Player player, String str) {
+							while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
+								String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
+								String replaced;
 
-					for (StatType stat : StatType.values()) {
-						double base = stats.getBase(stat), total = stats.getStat(stat), extra = total - base;
-						holders.register(stat.name().toLowerCase(), stat.format(total));
-						holders.register(stat.name().toLowerCase() + "_base", stat.format(base));
-						holders.register(stat.name().toLowerCase() + "_extra", stat.format(extra));
-					}
+								if (holder.endsWith("_base")) {
+									StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 5)));
+									replaced = info.format(stats.getBase(info.name));
+								} else if (holder.endsWith("_extra")) {
+									StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 5)));
+									replaced = info.format(stats.getStat(info.name) - stats.getBase(info.name));
+								} else if (holder.startsWith("attribute_")) {
+									PlayerAttribute attr = MMOCore.plugin.attributeManager.get(holder.substring(10).replace("_", "-").toLowerCase());
+									replaced = String.valueOf(inv.getPlayerData().getAttributes().getAttribute(attr));
+								} else {
+									StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder));
+									replaced = info.format(stats.getStat(info.name));
+								}
 
-					for (PlayerAttribute attribute : MMOCore.plugin.attributeManager.getAll())
-						holders.register("attribute_" + attribute.getId().replace("-", "_"), inv.getPlayerData().getAttributes().getAttribute(attribute));
+								str = str.replace("{" + holder + "}", replaced);
+							}
 
-					return holders;
+							// External placeholders
+							return MMOCore.plugin.placeholderParser.parse(player, str);
+						}
+					};
 				}
 			};
 
