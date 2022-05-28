@@ -140,6 +140,10 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         while (pointsToCheck.size() != 0) {
             WaypointPath checked = pointsToCheck.get(0);
             pointsToCheck.remove(0);
+            // If the point has already been checked, pass
+            if (checkedPoints.contains(checked.getFinalWaypoint()))
+                continue;
+
             paths.add(checked);
             checkedPoints.add(checked.getFinalWaypoint());
 
@@ -165,6 +169,10 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         while (pointsToCheck.size() != 0) {
             WaypointPath checked = pointsToCheck.get(0);
             pointsToCheck.remove(0);
+            // If the point has already been checked, pass
+            if (checkedPoints.contains(checked.getFinalWaypoint()))
+                continue;
+
             paths.add(checked);
             checkedPoints.add(checked.getFinalWaypoint());
 
