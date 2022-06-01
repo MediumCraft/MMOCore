@@ -30,13 +30,13 @@ public class Waypoint extends PostLoadObject implements Unlockable {
      * <p>
      * If it's empty it can access any waypoint.
      */
-    private final Map<Waypoint, Integer> destinations = new HashMap<>();
+    private final Map<Waypoint, Double> destinations = new HashMap<>();
 
     /**
      * Waypoint options saved here.
      */
     private final Map<WaypointOption, Boolean> options = new HashMap<>();
-    private final double dynamicCost, setSpawnCost;
+    private final double dynamicCost, setSpawnCost, normalCost;
     private final List<Condition> dynamicUseConditions = new ArrayList<>();
 
     public Waypoint(ConfigurationSection config) {
@@ -50,6 +50,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         radiusSquared = Math.pow(config.getDouble("radius"), 2);
 
         dynamicCost = config.getDouble("cost.dynamic-use");
+        normalCost = config.getDouble("cost.normal-use");
         setSpawnCost = config.getDouble("cost.set-spawnpoint");
 
         for (WaypointOption option : WaypointOption.values())
@@ -66,6 +67,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         }
     }
 
+
     @Override
     protected void whenPostLoaded(@NotNull ConfigurationSection config) {
 
@@ -73,7 +75,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         if (config.contains("linked")) {
             ConfigurationSection section = config.getConfigurationSection("linked");
             for (String key : section.getKeys(false))
-                destinations.put(MMOCore.plugin.waypointManager.get(key), section.getInt(key));
+                destinations.put(MMOCore.plugin.waypointManager.get(key), section.getDouble(key));
         }
     }
 
@@ -93,19 +95,11 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         return loc;
     }
 
-    /**
-     * @param other Another waypoint
-     * @return If any player standing on that waypoint can teleport to given waypoint
-     */
-    @Deprecated
-    public boolean hasDestination(Waypoint other) {
-        return destinations.isEmpty() || destinations.containsKey(other);
-    }
-
     public double getDynamicCost() {
         return dynamicCost;
     }
 
+    @Deprecated
     public double getSetSpawnCost() {
         return setSpawnCost;
     }
@@ -125,8 +119,8 @@ public class Waypoint extends PostLoadObject implements Unlockable {
      * @return Integer.POSITIVE_INFINITY if the way point is not linked
      *         If it is, cost of the instant travel between the two waypoints.
      */
-    public int getDirectCost(Waypoint waypoint) {
-        return destinations.getOrDefault(waypoint, Integer.MAX_VALUE);
+    public double getDirectCost(Waypoint waypoint) {
+        return destinations.isEmpty() ? normalCost : destinations.getOrDefault(waypoint, Double.POSITIVE_INFINITY);
     }
 
     public List<WaypointPath> getAllPath() {
