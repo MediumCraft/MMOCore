@@ -196,7 +196,7 @@ public class MMOCoreUtils {
      */
     public static void decreaseDurability(Player player, EquipmentSlot slot, int damage) {
         ItemStack item = player.getInventory().getItem(slot);
-        if (!item.hasItemMeta() || !(item.getItemMeta() instanceof Damageable) || item.getItemMeta().isUnbreakable())
+        if (item == null || item.getType().getMaxDurability() == 0 || !item.hasItemMeta() || !(item.getItemMeta() instanceof Damageable) || item.getItemMeta().isUnbreakable())
             return;
 
         PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, item, damage);
