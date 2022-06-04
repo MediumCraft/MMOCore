@@ -55,7 +55,8 @@ protect-custom-mine: false
 # - mmocore
 # - dungeonsxl
 # - parties
-# - parties_and_friends
+# - party_and_friends
+# - mcmmo
 party-plugin: mmocore
 
 ## Edit the plugin handling parties here.

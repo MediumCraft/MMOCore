@@ -6,11 +6,12 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Objects;
 
 public class PlayExperienceSource extends SpecificExperienceSource {
 
@@ -25,18 +26,9 @@ public class PlayExperienceSource extends SpecificExperienceSource {
      */
     public PlayExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
-        if (!config.contains("in-combat"))
-            inCombat = false;
-        else {
-            inCombat = config.getBoolean("in-combat");
-        }
 
-        if (!config.contains("world"))
-            world = null;
-        else {
-            String name = config.getString("world");
-            Validate.notNull(world = Bukkit.getWorld(name), "Could not find world " + config.getString("world"));
-        }
+        inCombat = config.getBoolean("in-combat", false);
+        world = config.contains("world") ? Objects.requireNonNull(Bukkit.getWorld(config.getString("world")), "Could not find world " + config.getString("world")) : null;
         if (!config.contains("x1") || !config.contains("x2")) {
             x1 = Double.NEGATIVE_INFINITY;
             x2 = Double.POSITIVE_INFINITY;

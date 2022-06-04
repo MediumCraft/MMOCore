@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class ResourceExperienceSource extends SpecificExperienceSource<PlayerResource> {
     private final PlayerResource resource;
 
-
     /**
      * Gives experience when the player uses a specific resoure. If no resource is precised it will trigger for
      * mana, stamina and stellium. The amount specified si the xp given per resource consummed.

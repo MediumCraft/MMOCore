@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class TameExperienceSource extends SpecificExperienceSource {
-
-
     public TameExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
     }
@@ -22,6 +20,7 @@ public class TameExperienceSource extends SpecificExperienceSource {
     @Override
     public ExperienceSourceManager<TameExperienceSource> newManager() {
         return new ExperienceSourceManager<TameExperienceSource>() {
+
             @EventHandler
             public void onWolfHit(EntityDamageByEntityEvent e) {
                 if(e.getDamager() instanceof Wolf) {

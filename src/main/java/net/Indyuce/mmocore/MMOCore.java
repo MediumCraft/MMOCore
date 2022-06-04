@@ -39,7 +39,7 @@ import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
-import net.Indyuce.mmocore.party.PartyMemberTargetRestriction;
+import net.Indyuce.mmocore.party.MMOCoreTargetRestriction;
 import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
@@ -116,7 +116,7 @@ public class MMOCore extends LuminePlugin {
 		}
 
 		// Register MMOCore-specific objects
-		MythicLib.plugin.getEntities().registerRestriction(new PartyMemberTargetRestriction());
+		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
 		MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
 
 		// Register extra objective, drop items...

@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class PartyMemberTargetRestriction implements TargetRestriction {
+public class MMOCoreTargetRestriction implements TargetRestriction {
 
     @Override
     public boolean canTarget(Player player, LivingEntity livingEntity, InteractionType interactionType) {
@@ -15,6 +15,7 @@ public class PartyMemberTargetRestriction implements TargetRestriction {
             return true;
 
         AbstractParty party = MMOCore.plugin.partyModule.getParty(PlayerData.get(player));
+        // TODO check for guild
         return party == null || !party.hasMember((Player) livingEntity);
     }
 }

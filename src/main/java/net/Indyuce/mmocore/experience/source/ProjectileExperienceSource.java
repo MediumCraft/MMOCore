@@ -1,18 +1,17 @@
 package net.Indyuce.mmocore.experience.source;
 
-import de.schlichtherle.key.passwd.swing.BasicUnknownKeyFeedback;
-import io.lumine.mythic.core.skills.mechanics.ShootMechanic;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import me.glaremasters.guilds.utils.BackupUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -21,13 +20,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ProjectileExperienceSource extends SpecificExperienceSource<Projectile> {
-
     private final ProjectileType projectileType;
 
     public ProjectileExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
@@ -59,7 +55,7 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
 
                 if (e.getEntity() instanceof Projectile) {
                     Projectile projectile = (Projectile) e.getEntity();
-                    if(!projectiles.containsKey(projectile))
+                    if (!projectiles.containsKey(projectile))
                         return;
                     if (projectile.getShooter() instanceof Player && !((Player) projectile.getShooter()).hasMetadata("NPC")) {
                         Player player = (Player) projectile.getShooter();
