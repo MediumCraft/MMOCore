@@ -1,120 +1,169 @@
 package net.Indyuce.mmocore.tree;
 
+import com.gmail.nossr50.mcmmo.acf.annotation.HelpSearchTags;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.player.modifier.PlayerModifier;
-import io.lumine.mythic.lib.util.configobject.ConfigSectionObject;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.tree.skilltree.AutomaticSkillTree;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+//We must use generics to get the type of the corresponding tree
 public class SkillTreeNode implements Unlockable {
     private final SkillTree tree;
-    private final String name,id;
+    private final String name, id;
     private IntegerCoordinates coordinates;
-    private final List<String> lore;
-    private final Set<PlayerModifier> modifiers = new HashSet<>();
-    private final ArrayList<SkillTreeNode> children = new ArrayList<>();
-    private final ArrayList<SkillTreeNode> parents=new ArrayList<>();
+    private boolean isRoot;
+    /**
+     * The lore corresponding to each level
+     */
+    private final HashMap<NodeContext, List<String>> lores = new HashMap<>();
 
+    //TODO modifiers depending on level with drop tables
+    private final HashMap<Integer, HashSet<PlayerModifier>> modifiers = new HashMap<>();
+    private final HashMap<Integer, HashSet<Trigger>> triggers = new HashMap<>();
+    //The max level the skill tree node can have and the max amount of children it can have.
+    private final int maxLevel, maxChildren, size;
+    private final ArrayList<SkillTreeNode> children = new ArrayList<>();
+    /**
+     * Associates the required level to each parent
+     * You only need to have the requirement for one of your softParents but you need to fulfill the requirements
+     * of all of your strong parents.
+     **/
+
+
+    private final HashMap<SkillTreeNode, Integer> softParents = new HashMap<>();
+    private final HashMap<SkillTreeNode ,Integer> strongParents = new HashMap<>();
 
 
     public SkillTreeNode(SkillTree tree, ConfigurationSection config) {
 
         Validate.notNull(config, "Config cannot be null");
-        this.id=config.getName();
+        this.id = config.getName();
         this.tree = tree;
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
-        lore = config.getStringList("lore");
-        Validate.isTrue(config.contains("node-type"),"Could not find the node type");
+        size = Objects.requireNonNull(config.getInt("size"));
+        isRoot = config.contains("is-root") ? config.getBoolean("is-root") ? true : false : false;
 
+        //We initialize the value of the lore for each skill tree node.
+        for (String state : Objects.requireNonNull(config.getConfigurationSection("lores")).getKeys(false)) {
+            NodeState nodeState = NodeState.valueOf(MMOCoreUtils.toEnumName(state));
+            if (nodeState == NodeState.UNLOCKED) {
+                //TODO: Message could'nt load ... instead of exception
+                ConfigurationSection section = config.getConfigurationSection("lores." + state);
+                for (String level : section.getKeys(false)) {
+                    lores.put(new NodeContext(nodeState, Integer.parseInt(level)), section.getStringList(level));
+                }
+            } else {
+                lores.put(new NodeContext(nodeState, 0), config.getStringList("lores." + state));
+            }
+        }
+        maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
+        maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
+        //If coordinates are precised adn we are not wiht an automaticTree we set them up
+        if ((!(tree instanceof AutomaticSkillTree)) && config.contains("coordinates.x") && config.contains("coordinates.y")) {
+            coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
+        }
+        /*
+        if (config.contains("modifiers")) {
+            for (String key : config.getConfigurationSection("modifiers").getKeys(false)) {
+                PlayerModifier mod = MythicLib.plugin.getModifiers().loadPlayerModifier(new ConfigSectionObject(config.getConfigurationSection(key)));
+                modifiers.put(1, mod);
+            }
+        }
+        */
 
-        //If coordinates are precised adn we are not wiht an automaticTreewe set them up
-        if((!(tree instanceof AutomaticSkillTree))&&config.contains("coordinates.x")&&config.contains("coordinates.y")) {
-            coordinates=new IntegerCoordinates(config.getInt("coordinates.x"),config.getInt("coordinates.y"));
-        }
-        for (String key : config.getConfigurationSection("modifiers").getKeys(false)) {
-            PlayerModifier mod = MythicLib.plugin.getModifiers().loadPlayerModifier(new ConfigSectionObject(config.getConfigurationSection(key)));
-            modifiers.add(mod);
-        }
     }
 
-    public SkillTreeNode(SkillTree tree, int x, int y, ConfigurationSection config) {
-        Validate.notNull(config, "Config cannot be null");
-        this.id=config.getName();
-        this.tree = tree;
-        name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
-        Validate.isTrue(config.contains("node-type"),"Could not find the node type");
-        coordinates = new IntegerCoordinates(x, y);
-        lore = config.getStringList("lore");
-        for (String key : config.getConfigurationSection("modifiers").getKeys(false)) {
-            PlayerModifier mod = MythicLib.plugin.getModifiers().loadPlayerModifier(new ConfigSectionObject(config.getConfigurationSection(key)));
-            modifiers.add(mod);
-        }
-    }
-
-
-    /**
-     *
-     */
-    protected void whenPostLoaded(@NotNull ConfigurationSection config) {
-
-    }
 
     public SkillTree getTree() {
         return tree;
     }
 
-    //Used when postLoaded
-    public void addParent(SkillTreeNode parent) {
-        parents.add(parent);
+    public boolean isRoot() {
+        return isRoot;
     }
 
-    public void addChild(SkillTreeNode child) {children.add(child);}
+    //Used when postLoaded
+    public void addParent(SkillTreeNode parent, int requiredLevel, ParentType parentType) {
+        if (parentType == ParentType.SOFT)
+            softParents.put(parent, requiredLevel);
+        else
+            strongParents.put(parent, requiredLevel);
+    }
+
+    public void addChild(SkillTreeNode child) {
+        children.add(child);
+    }
 
     public void setCoordinates(IntegerCoordinates coordinates) {
         this.coordinates = coordinates;
     }
 
+    public int getParentNeededLevel(SkillTreeNode parent) {
+        return softParents.containsKey(parent) ? softParents.get(parent) : strongParents.containsKey(parent) ? strongParents.get(parent) : 0;
+    }
 
-    public ArrayList<SkillTreeNode> getParents() {
-        return parents;
+    public boolean hasParent(SkillTreeNode parent) {
+        return softParents.containsKey(parent) || strongParents.containsKey(parent);
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+
+    public int getMaxChildren() {
+        return maxChildren;
+    }
+
+    public Set<SkillTreeNode> getSoftParents() {
+        return softParents.keySet();
+    }
+
+    public Set<SkillTreeNode> getStrongParents() {
+        return strongParents.keySet();
     }
 
     public ArrayList<SkillTreeNode> getChildren() {
         return children;
     }
 
-
+    public int getSize() {
+        return size;
+    }
 
     public String getId() {
         return id;
     }
 
     public String getName() {
-        return name;
+        return MythicLib.plugin.parseColors( name);
     }
 
     public IntegerCoordinates getCoordinates() {
         return coordinates;
     }
 
-    public Set<PlayerModifier> getModifiers() {
-        return modifiers;
+    public Set<PlayerModifier> getModifiers(int level) {
+        return modifiers.get(level);
     }
 
-    /**
-     * @return Uncolored lore with no placeholders
-     */
-    public List<String> getLore() {
-        return lore;
+
+    public Set<Trigger> getTriggers(int level) {
+        return triggers.get(level);
     }
+
 
     @Override
     public String getUnlockNamespacedKey() {
@@ -122,19 +171,87 @@ public class SkillTreeNode implements Unlockable {
     }
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SkillTreeNode that = (SkillTreeNode) o;
-        return tree.equals(that.tree) && coordinates.equals(that.coordinates);
+        return tree.equals(that.tree) && (id.equals(that.id));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tree, coordinates);
+        return Objects.hash(tree, id);
     }
+
+    public Placeholders getPlaceholders(PlayerData playerData) {
+        Placeholders holders = new Placeholders();
+        holders.register("name", getName());
+        holders.register("node-state", playerData.getNodeState(this));
+        holders.register("size", getSize());
+        holders.register("level", playerData.getNodeLevel(this));
+        holders.register("max-level", getMaxLevel());
+        holders.register("max-children", getMaxChildren());
+
+        //List of all the children of the node
+        String str = "";
+        for (SkillTreeNode node : getChildren())
+            str += node.getName() + ",";
+        //We remove the last comma
+        if (str.length() != 0)
+            str = str.substring(0, str.length() - 1);
+        holders.register("children", str);
+
+        //list of parents with the level needed for each of them
+        str = "";
+        for (SkillTreeNode node : getSoftParents())
+            str += node.getName() + " " + MMOCoreUtils.toRomanNumerals(getParentNeededLevel(node)) + ",";
+        //We remove the last comma
+        if (str.length() != 0)
+            str = str.substring(0, str.length() - 1);
+        holders.register("soft-parents-level", str);
+
+        //list of parents
+        str = "";
+        for (SkillTreeNode node : getSoftParents())
+            str += node.getName() + ",";
+        //We remove the last comma
+        if (str.length() != 0)
+            str = str.substring(0, str.length() - 1);
+        holders.register("soft-parents", str);
+
+        //list of parents with the level needed for each of them
+        str = "";
+        for (SkillTreeNode node : getStrongParents())
+            str += node.getName() + " " + MMOCoreUtils.toRomanNumerals(getParentNeededLevel(node)) + ",";
+        //We remove the last comma
+        if (str.length() != 0)
+            str = str.substring(0, str.length() - 1);
+        holders.register("strong-parents-level", str);
+
+        //list of parents
+        str = "";
+        for (SkillTreeNode node : getStrongParents())
+            str += node.getName() + ",";
+        //We remove the last comma
+        if (str.length() != 0)
+            str = str.substring(0, str.length() - 1);
+        holders.register("strong-parents", str);
+
+        return holders;
+    }
+
+    public List<String> getLore(PlayerData playerData) {
+        Placeholders holders = getPlaceholders(playerData);
+        List<String> parsedLore = new ArrayList<>();
+        NodeContext context= new NodeContext(playerData.getNodeState(this),playerData.getNodeLevel(this));
+        lores.get(context).forEach(string -> parsedLore.add(
+                MythicLib.plugin.parseColors( holders.apply(playerData.getPlayer(), string))));
+        return parsedLore;
+
+    }
+
+
 
     /**
      * @param namespacedKey Something like "skill_tree:tree_name_1_5"
@@ -157,5 +274,47 @@ public class SkillTreeNode implements Unlockable {
         String treeId = treeIdBuilder.toString();
         return MMOCore.plugin.skillTreeManager.get(treeId).getNode(coords);
     }
+
+    public class NodeContext {
+        private final NodeState nodeState;
+        private final int nodeLevel;
+
+        public NodeContext(NodeState nodeState, int nodeLevel) {
+            this.nodeState = nodeState;
+            this.nodeLevel = nodeLevel;
+        }
+
+        public NodeState getNodeState() {
+            return nodeState;
+        }
+
+        public int getNodeLevel() {
+            return nodeLevel;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            NodeContext that = (NodeContext) o;
+            return nodeLevel == that.nodeLevel && nodeState == that.nodeState;
+        }
+
+        @Override
+        public String toString() {
+            return "NodeContext{" +
+                    "nodeState=" + nodeState +
+                    ", nodeLevel=" + nodeLevel +
+                    '}';
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(nodeState, nodeLevel);
+        }
+    }
+
+
+
 
 }

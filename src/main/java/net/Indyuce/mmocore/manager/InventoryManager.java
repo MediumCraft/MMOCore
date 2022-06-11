@@ -32,7 +32,7 @@ public class InventoryManager {
     public static final QuestViewer QUEST_LIST = new QuestViewer();
     public static final AttributeView ATTRIBUTE_VIEW = new AttributeView();
     public static final SkillTreeViewer TREE_VIEW = new SkillTreeViewer();
-    public static final List<EditableInventory> list = Arrays.asList(PLAYER_STATS, ATTRIBUTE_VIEW, SKILL_LIST, CLASS_SELECT, SUBCLASS_SELECT, SUBCLASS_CONFIRM, QUEST_LIST, WAYPOINTS, CLASS_CONFIRM, FRIEND_LIST, FRIEND_REMOVAL, PARTY_VIEW, PARTY_CREATION, GUILD_VIEW, GUILD_CREATION);
+    public static final List<EditableInventory> list = Arrays.asList(PLAYER_STATS, ATTRIBUTE_VIEW, TREE_VIEW,SKILL_LIST, CLASS_SELECT, SUBCLASS_SELECT, SUBCLASS_CONFIRM, QUEST_LIST, WAYPOINTS, CLASS_CONFIRM, FRIEND_LIST, FRIEND_REMOVAL, PARTY_VIEW, PARTY_CREATION, GUILD_VIEW, GUILD_CREATION);
 
     public static void load() {
         list.forEach(inv -> {

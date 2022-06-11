@@ -133,16 +133,20 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         return display(inv, 0);
     }
 
-    public ItemStack display(T inv,int n) {
-        return display(inv,n,null);
+    public ItemStack display(T inv, int n) {
+        return display(inv, n, null);
     }
 
-    public ItemStack display(T inv, int n,Material specificMaterial) {
+    public ItemStack display(T inv, int n, Material specificMaterial) {
+        return display(inv, n, specificMaterial, 0);
+    }
+
+    public ItemStack display(T inv, int n, Material specificMaterial, int modelData) {
 
         Placeholders placeholders = getPlaceholders(inv, n);
-        ItemStack item = new ItemStack(specificMaterial==null?material:specificMaterial);
+        ItemStack item = new ItemStack(specificMaterial == null ? material : specificMaterial);
         ItemMeta meta = item.getItemMeta();
-
+        meta.setCustomModelData(modelData);
         if (texture != null && meta instanceof SkullMeta)
             applyTexture(texture, (SkullMeta) meta);
 
@@ -164,6 +168,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         item.setItemMeta(meta);
         return item;
     }
+
 
     private void applyTexture(String value, SkullMeta meta) {
         try {

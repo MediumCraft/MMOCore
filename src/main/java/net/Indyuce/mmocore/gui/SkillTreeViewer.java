@@ -1,7 +1,8 @@
 package net.Indyuce.mmocore.gui;
 
-import io.lumine.mythic.lib.player.modifier.PlayerModifier;
+import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
@@ -12,17 +13,22 @@ import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.NodeState;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
-import org.apache.commons.lang.Validate;
+import net.Indyuce.mmocore.tree.skilltree.display.Icon;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SkillTreeViewer extends EditableInventory {
@@ -37,6 +43,20 @@ public class SkillTreeViewer extends EditableInventory {
         if (function.equals("skill-tree")) {
             return new SkillTreeItem(config);
         }
+        if (function.equals("reallocation"))
+            return new InventoryItem<SkillTreeInventory>(config) {
+
+                @Override
+                public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
+                    Placeholders holders = new Placeholders();
+                    holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
+                    holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
+                    holders.register("realloc-points", inv.getPlayerData().getSkillTreeReallocationPoints());
+                    holders.register("total", inv.getPlayerData().countSkillTreePoints(inv.getSkillTree()));
+                    return holders;
+                }
+            };
+
         if (function.equals("skill-tree-node"))
             return new SkillTreeNodeItem(config);
         if (function.equals("next-tree-list-page")) {
@@ -57,17 +77,31 @@ public class SkillTreeViewer extends EditableInventory {
     public class SkillTreeItem extends InventoryItem<SkillTreeInventory> {
 
         public SkillTreeItem(ConfigurationSection config) {
-            super(config);
+            //We must use this constructor to show that there are not specified material
+            super(Material.BARRIER, config);
 
+        }
+
+
+        @Override
+        public boolean hasDifferentDisplay() {
+            return true;
         }
 
         @Override
         public ItemStack display(SkillTreeInventory inv, int n) {
-            int index = 4 * inv.treeListPage + n;
+            int index = inv.getEditable().getByFunction("skill-tree").getSlots().size() * inv.treeListPage + n;
+            if (!MMOCore.plugin.skillTreeManager.has(index)) {
+                return new ItemStack(Material.AIR);
+            }
             SkillTree skillTree = MMOCore.plugin.skillTreeManager.get(index);
             //We display with the material corresponding to the skillTree
-            ItemStack item = super.display(inv, n, skillTree.getGuiMaterial());
+            ItemStack item = super.display(inv, n, skillTree.getItem());
+
             ItemMeta meta = item.getItemMeta();
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            meta.setDisplayName(skillTree.getName());
+            meta.setLore(skillTree.getLore());
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING, skillTree.getId());
             item.setItemMeta(meta);
@@ -76,7 +110,7 @@ public class SkillTreeViewer extends EditableInventory {
 
         @Override
         public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
-            int index = 4 * inv.treeListPage + n;
+            int index = inv.getEditable().getByFunction("skill-tree").getSlots().size() * inv.treeListPage + n;
             SkillTree skillTree = MMOCore.plugin.skillTreeManager.get(index);
             Placeholders holders = new Placeholders();
             holders.register("name", skillTree.getName());
@@ -111,144 +145,63 @@ public class SkillTreeViewer extends EditableInventory {
 
 
     public class SkillTreeNodeItem extends InventoryItem<SkillTreeInventory> {
-        private final LockedSkillNodeItem lockedSkillNode;
-        private final UnlockedSkillNodeItem unlockedSkillNode;
-        private final PathTreeNodeItem pathTreeNode;
-
-
         public SkillTreeNodeItem(ConfigurationSection config) {
-            super(config);
-            Validate.isTrue(config.contains("locked-skill-node"));
-            Validate.isTrue(config.contains("unlocked-skill-node"));
-            Validate.isTrue(config.contains("path-tree-node"));
-            lockedSkillNode = new LockedSkillNodeItem(config.getConfigurationSection("locked-skill-node"));
-            unlockedSkillNode = new UnlockedSkillNodeItem(config.getConfigurationSection("unlocked-skill-node"));
-            pathTreeNode = new PathTreeNodeItem(config.getConfigurationSection("path-tree-node"));
+            super(Material.AIR, config);
         }
 
+        @Override
+        public boolean hasDifferentDisplay() {
+            return true;
+        }
 
+        /**
+         * Display the node/path with the lore and name filled in the yml of the skill tree node with the right material
+         * and model-data.
+         * You don't need to give any name or lore in the gui/skilltree.yml all the information are filled in
+         * the yml of the skill tree.
+         */
         @Override
         public ItemStack display(SkillTreeInventory inv, int n) {
             int slot = getSlots().get(n);
             int deltaX = (slot - inv.getMinSlot()) % 9;
             int deltaY = (slot - inv.getMinSlot()) / 9;
             IntegerCoordinates coordinates = new IntegerCoordinates(inv.getX() + deltaX, inv.getY() + deltaY);
-            ItemStack item=null;
-            if (inv.getSkillTree().isNode(coordinates)) {
-                SkillTreeNode node = inv.getSkillTree().getNode(coordinates);
-                if (inv.getPlayerData().getNodeState(node).equals(NodeState.UNLOCKED))
-                    item = unlockedSkillNode.display(inv, n, coordinates);
-                else if (inv.getPlayerData().getNodeState(node).equals(NodeState.LOCKED))
-                    item = lockedSkillNode.display(inv, n, coordinates);
-
-            }    //We check if is a path only if the skillTree is an automatic Skill Tree
-            else if (inv.getSkillTree().isPath(coordinates))
-                item = pathTreeNode.display(inv, n);
-            else
-                //If it is none of the above we just display air
-                return new ItemStack(Material.AIR);
-
-            //We save the coordinates of the node
-            ItemMeta meta = item.getItemMeta();
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            container.set(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER, coordinates.getX());
-            container.set(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER, coordinates.getY());
-            item.setItemMeta(meta);
-            return item;
-        }
-
-
-        @Override
-        public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
-            return new Placeholders();
-        }
-
-    }
-
-    public class LockedSkillNodeItem extends InventoryItem<SkillTreeInventory> {
-
-        public LockedSkillNodeItem(ConfigurationSection config) {
-            super(config);
-        }
-
-        public ItemStack display(SkillTreeInventory inv, int n, IntegerCoordinates coordinates) {
-            return super.display(inv, n);
-        }
-
-        @Override
-        public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
-            int slot = getSlots().get(n);
-            int deltaX = (slot - inv.getMinSlot()) % 9;
-            int deltaY = (slot - inv.getMinSlot()) / 9;
-            IntegerCoordinates coordinates = new IntegerCoordinates(inv.getX() + deltaX, inv.getY() + deltaY);
-            SkillTreeNode treeNode = inv.getSkillTree().getNode(coordinates);
-            Placeholders holders = new Placeholders();
-            holders.register("name", treeNode.getName());
-            holders.register("node-state", inv.getPlayerData().getNodeState(treeNode));
-            //Display what nodes this node unlocks
-            String str = "";
-            for (SkillTreeNode node : treeNode.getChildren())
-                str += node.getName() + ",";
-            //We remove the last comma
-            str = str.substring(0, str.length() - 1);
-            holders.register("unlocks", str);
-            //Display all the modifiers this node gives
-            str = "";
-            for (PlayerModifier playerModifier : treeNode.getModifiers()) {
-                //TODO
-                str += "\n" + playerModifier.getKey();
+            if (inv.getSkillTree().isNode(coordinates) || inv.getSkillTree().isPath(coordinates)) {
+                Icon icon = inv.getPlayerData().getIcon(inv.getSkillTree(), coordinates);
+                ItemStack item = super.display(inv, n, icon.getMaterial(), icon.getCustomModelData());
+                ItemMeta meta = item.getItemMeta();
+                if (inv.getSkillTree().isNode(coordinates)) {
+                    SkillTreeNode node = inv.getSkillTree().getNode(coordinates);
+                    List<String> lore = new ArrayList<>(node.getLore(inv.getPlayerData()));
+                    lore.add("");
+                    getLore().forEach(str -> lore.add(MythicLib.plugin.parseColors(getPlaceholders(inv, n).apply(inv.getPlayer(), str))));
+                    meta.setLore(lore);
+                    meta.setDisplayName(node.getName());
+                }
+                //If it is path we remove the display name and the lore.
+                else {
+                    meta.setLore(new ArrayList<>());
+                    meta.setDisplayName("");
+                }
+                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                PersistentDataContainer container = meta.getPersistentDataContainer();
+                container.set(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER, coordinates.getX());
+                container.set(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER, coordinates.getY());
+                item.setItemMeta(meta);
+                return item;
             }
+            return new ItemStack(Material.AIR);
+        }
 
-            holders.register("modifiers", str);
 
+        @Override
+        public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
+            Placeholders holders = new Placeholders();
+            holders.register("skill-tree", inv.getSkillTree().getName());
+            holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
+            holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
             return holders;
         }
-    }
-
-    public class UnlockedSkillNodeItem extends InventoryItem<SkillTreeInventory> {
-        public UnlockedSkillNodeItem(ConfigurationSection config) {
-            super(config);
-        }
-
-
-        public ItemStack display(SkillTreeInventory inv, int n, IntegerCoordinates coordinates) {
-            return super.display(inv, n);
-        }
-
-        @Override
-        public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
-            int slot = getSlots().get(n);
-            int deltaX = (slot - inv.getMinSlot()) % 9;
-            int deltaY = (slot - inv.getMinSlot()) / 9;
-            IntegerCoordinates coordinates = new IntegerCoordinates(inv.getX() + deltaX, inv.getY() + deltaY);
-            SkillTreeNode treeNode = inv.getSkillTree().getNode(coordinates);
-            Placeholders holders = new Placeholders();
-            holders.register("name", treeNode.getName());
-            holders.register("node-state", inv.getPlayerData().getNodeState(treeNode));
-            String str = "";
-            for (SkillTreeNode node : treeNode.getChildren())
-                str += node.getName() + ",";
-            //We remove the last comma
-            str = str.substring(0, str.length() - 1);
-            holders.register("unlocks", str);
-            str = "";
-            for (PlayerModifier playerModifier : treeNode.getModifiers()) {
-                //TODO
-                str += "\n" + playerModifier.getKey();
-            }
-
-            holders.register("modifiers", str);
-            return holders;
-        }
-
-
-    }
-
-    public class PathTreeNodeItem extends SimplePlaceholderItem<SkillTreeInventory> {
-        public PathTreeNodeItem(ConfigurationSection config) {
-            super(config);
-        }
-
     }
 
 
@@ -265,11 +218,9 @@ public class SkillTreeViewer extends EditableInventory {
         public SkillTreeInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
             skillTree = playerData.getCachedSkillTree();
-
-            maxTreeListPage = MMOCore.plugin.skillTreeManager.getAll().size() / 4;
-
+            maxTreeListPage = (MMOCore.plugin.skillTreeManager.getAll().size() - 1) / editable.getByFunction("skill-tree").getSlots().size();
             //We get the width and height of the GUI(corresponding to the slots given)
-            List<Integer> slots = getByFunction("skill-tree-node").getSlots();
+            List<Integer> slots = editable.getByFunction("skill-tree-node").getSlots();
             minSlot = 64;
             maxSlot = 0;
             for (int slot : slots) {
@@ -281,6 +232,8 @@ public class SkillTreeViewer extends EditableInventory {
             width = (maxSlot - minSlot) % 9;
             height = (maxSlot - minSlot) / 9;
             middleSlot = minSlot + width / 2 + 9 * (height / 2);
+            x -= width / 2;
+            y -= height / 2;
         }
 
         public int getX() {
@@ -314,13 +267,8 @@ public class SkillTreeViewer extends EditableInventory {
 
         @Override
         public void whenClicked(InventoryClickEvent event, InventoryItem item) {
-            if (event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
-                int offset = event.getSlot() - middleSlot;
-                x += offset % 9;
-                y += offset / 9;
-                open();
-                return;
-            }
+
+
             if (item.getFunction().equals("next-tree-list-page")) {
                 treeListPage++;
                 open();
@@ -330,16 +278,100 @@ public class SkillTreeViewer extends EditableInventory {
                 treeListPage--;
                 open();
             }
+            if (item.getFunction().equals("reallocation")) {
+                int spent = playerData.countSkillTreePoints(skillTree);
+                if (spent < 1) {
+                    MMOCore.plugin.configManager.getSimpleMessage("no-skill-tree-points-spent").send(player);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                    event.setCancelled(true);
+                    return;
+                }
+
+                if (getPlayerData().getSkillTreeReallocationPoints() <= 0) {
+                    MMOCore.plugin.configManager.getSimpleMessage("not-skill-tree-reallocation-point").send(player);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                    event.setCancelled(true);
+                    return;
+                } else {
+                    int reallocated = playerData.countSkillTreePoints(skillTree);
+                    //We remove all the nodeStates progress
+                    playerData.giveSkillTreePoints(skillTree.getId(), reallocated);
+                    playerData.giveSkillTreeReallocationPoints(-1);
+                    for (SkillTreeNode node : skillTree.getNodes()) {
+                        playerData.setNodeLevel(node, 0);
+                        playerData.setNodeState(node, NodeState.LOCKED);
+                    }
+                    skillTree.setupNodeState(playerData);
+                    MMOCore.plugin.configManager.getSimpleMessage("reallocated-points", "points", "" + playerData.getSkillTreePoint(skillTree.getId()), "skill-tree", skillTree.getName()).send(player);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.RESET_SKILL_TREE).playTo(player);
+                    event.setCancelled(true);
+                    open();
+                    return;
+
+                }
+            }
+
 
             if (item.getFunction().equals("skill-tree")) {
                 String id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(
                         new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING);
                 playerData.setCachedSkillTree(MMOCore.plugin.skillTreeManager.get(id));
+                MMOCore.plugin.soundManager.getSound(SoundEvent.CHANGE_SKILL_TREE).playTo(player);
+
                 newInventory(playerData).open();
+                event.setCancelled(true);
+                return;
             }
+
             if (item.getFunction().equals("skill-tree-node")) {
 
+                if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
+                    int offset = event.getSlot();
+                    int xOffset=offset%9-middleSlot%9;
+                    int yOffset=offset/9-middleSlot/9;
+                    x += xOffset;
+                    y += yOffset;
+                    open();
+                    event.setCancelled(true);
+                    return;
+                }
+
+                else if (event.getAction() == InventoryAction.PICKUP_ALL) {
+                    PersistentDataContainer container = event.getCurrentItem().getItemMeta().getPersistentDataContainer();
+                    int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
+                    int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
+                    SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));
+                    if (playerData.canIncrementNodeLevel(node)) {
+                        playerData.incrementNodeLevel(node);
+                        MMOCore.plugin.configManager.getSimpleMessage("upgrade-skill-node", "skill-node", node.getName(), "level", "" + playerData.getNodeLevel(node)).send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
+                        open();
+                        event.setCancelled(true);
+                        return;
+                    } else if (playerData.getNodeState(node) == NodeState.LOCKED || playerData.getNodeState(node) == NodeState.FULLY_LOCKED) {
+                        MMOCore.plugin.configManager.getSimpleMessage("locked-node").send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        event.setCancelled(true);
+                        return;
+
+                    } else if (playerData.getNodeLevel(node) >= node.getMaxLevel()) {
+                        MMOCore.plugin.configManager.getSimpleMessage("skill-node-max-level-hit").send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        event.setCancelled(true);
+                        return;
+                    }
+
+                    //Else the player doesn't doesn't have the skill tree points
+                    else {
+                        MMOCore.plugin.configManager.getSimpleMessage("not-enough-skill-tree-points").send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        event.setCancelled(true);
+                        return;
+                    }
+
+                }
             }
+
         }
     }
 }

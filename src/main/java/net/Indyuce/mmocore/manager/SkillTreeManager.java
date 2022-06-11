@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.gui.SkillTreeViewer;
 import net.Indyuce.mmocore.manager.registry.MMOCoreRegister;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
@@ -23,6 +22,18 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
         tree.getNodes().forEach((node)->skillTreeNodes.add(node));
     }
 
+    public boolean has(int index) {
+        return index>=0 &&index<registered.values().stream().collect(Collectors.toList()).size();
+    }
+
+    /**
+     * Useful to recursively go trough trees
+     *
+     * @return The list of all the roots (e.g the nodes without any parents
+     */
+    public List<SkillTreeNode> getRootNodes() {
+        return skillTreeNodes.stream().filter(treeNode -> treeNode.getSoftParents().size()==0).collect(Collectors.toList());
+    }
 
     public ArrayList<SkillTreeNode> getAllNodes() {
         return skillTreeNodes;

@@ -1,19 +1,25 @@
 package net.Indyuce.mmocore.tree.skilltree;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.tree.IntegerCoordinates;
+import net.Indyuce.mmocore.tree.ParentType;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
+import javax.swing.text.html.HTMLDocument;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.logging.Level;
 
+/**
+ * Skill Trees where you only need to fill the strong and soft
+ */
 public class AutomaticSkillTree extends SkillTree  {
     private SkillTreeNode root;
-    //Represents all the coordinates that will be displayed as a path (between 2 nodes of the tree)
-    private final ArrayList<IntegerCoordinates> pathToParents = new ArrayList<>();
 
-    //Hash map to store the left and right branches of each node
+    //Hash map to store the number of left and right branches of each node
     private final HashMap<SkillTreeNode, Branches> nodeBranches = new HashMap<>();
 
     public AutomaticSkillTree(ConfigurationSection config) {
@@ -25,20 +31,31 @@ public class AutomaticSkillTree extends SkillTree  {
 
 
         //We setup the children and parents for each node.
-        for (SkillTreeNode node : nodes.values()) {
-            ConfigurationSection section = config.getConfigurationSection(node.getId());
-            for (String child : section.getStringList("children")) {
-                node.addChild(getNode(child));
-                getNode(child).addParent(node);
+        for(SkillTreeNode node:nodes.values()) {
+            ConfigurationSection section = config.getConfigurationSection("nodes."+node.getId() + ".children.soft");
+            if(section!=null) {
+                for (String child : section.getKeys(false)) {
+                    node.addChild(getNode(child));
+                    getNode(child).addParent(node, section.getInt(child), ParentType.SOFT);
+                }
             }
+            section = config.getConfigurationSection("nodes."+node.getId() + ".children.strong");
+
+            if(section!=null) {
+                for (String child : section.getKeys(false)) {
+                    node.addChild(getNode(child));
+                    getNode(child).addParent(node, section.getInt(child), ParentType.STRONG);
+                }
+            }
+
         }
-
-
         //We find the root of the tree wich is
         for (SkillTreeNode node : nodes.values()) {
-            if (node.getParents().size() == 0) {
-                Validate.isTrue(root == null, "Their can't be more than 1 root in the skillTree!");
-                root = node;
+            if (node.getSoftParents().size() == 0&&node.getStrongParents().size()==0) {
+                    Validate.isTrue(root == null, "You can't have 2 roots on one automatic skill tree. You have "+(root!=null?root.getName():"")+" and "+node.getName()+".");
+                    root = node;
+
+
             }
         }
         //We setup the width of all the nodes recursively
@@ -57,8 +74,8 @@ public class AutomaticSkillTree extends SkillTree  {
                 maxY = node.getCoordinates().getY();
         }
 
-        //Eventually we setup the coordinateNodesMap
-        super.setupCoordinatesNodesMap();
+        //Eventually we setup the skill tree info related to coordinates
+        super.coordinatesSetup();
 
     }
 
@@ -85,6 +102,7 @@ public class AutomaticSkillTree extends SkillTree  {
                 rightOffset += 2 + nodeBranches.get(child).getRightBranches();
             } else if (i % 2 == 0) {
                 child.setCoordinates(new IntegerCoordinates(x - leftOffset - 2 - nodeBranches.get(child).getWidth(), y + 2));
+                for(SkillTreeNode skillTree : nodeBranches.keySet())
                 leftOffset += 2 + nodeBranches.get(child).getWidth();
             } else {
                 child.setCoordinates(new IntegerCoordinates(x + rightOffset + 2 + nodeBranches.get(child).getWidth(), y + 2));
@@ -95,11 +113,11 @@ public class AutomaticSkillTree extends SkillTree  {
             int childX = child.getCoordinates().getX();
             int childY = child.getCoordinates().getY();
 
-            int parentX = node.getParents().get(0).getCoordinates().getX();
-            pathToParents.add(new IntegerCoordinates(childX, childY - 1));
+            int parentX = node.getSoftParents().size()!=0?((SkillTreeNode)node.getSoftParents().toArray()[0]).getCoordinates().getX():((SkillTreeNode)node.getStrongParents().toArray()[0]).getCoordinates().getX();
+            paths.add(new IntegerCoordinates(childX, childY - 1));
             int offset = childX > parentX ? -1 : 1;
             while (childX != parentX) {
-                pathToParents.add(new IntegerCoordinates(childX, childY - 2));
+                paths.add(new IntegerCoordinates(childX, childY - 2));
                 childX += offset;
             }
 
@@ -118,13 +136,15 @@ public class AutomaticSkillTree extends SkillTree  {
      * Recursively sed to setup all the right and left branches of the node to later determine its coordinates for GUI display
      */
     public void setupTreeWidth(SkillTreeNode node) {
+
         int childrenSize = node.getChildren().size();
         int leftBranches = 0;
         int rightBranches = 0;
         for (int i = 0; i < childrenSize; i++) {
             SkillTreeNode child = node.getChildren().get(i);
             setupTreeWidth(child);
-            if (childrenSize % 2 == 0 && i == 0) {
+            //If there is an odd number ob branches the first one will be at the center so we add to the left and to the right
+            if (childrenSize % 2 == 1 && i == 0) {
 
                 leftBranches += nodeBranches.get(child).getLeftBranches();
                 rightBranches += nodeBranches.get(child).getRightBranches();
@@ -133,15 +153,10 @@ public class AutomaticSkillTree extends SkillTree  {
             } else {
                 rightBranches += nodeBranches.get(child).getWidth() + 2;
             }
-
         }
-    }
 
-    @Override
-    public boolean isPath(IntegerCoordinates coordinates) {
-        return pathToParents.contains(coordinates);
+        nodeBranches.put(node,new Branches(leftBranches,rightBranches));
     }
-
 
     private class Branches {
         private final int leftBranches, rightBranches;
@@ -161,6 +176,28 @@ public class AutomaticSkillTree extends SkillTree  {
 
         public int getWidth() {
             return leftBranches + rightBranches;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Branches branches = (Branches) o;
+            return leftBranches == branches.leftBranches && rightBranches == branches.rightBranches;
+        }
+
+
+        @Override
+        public String toString() {
+            return "Branches{" +
+                    "leftBranches=" + leftBranches +
+                    ", rightBranches=" + rightBranches +
+                    '}';
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(leftBranches, rightBranches);
         }
     }
 }

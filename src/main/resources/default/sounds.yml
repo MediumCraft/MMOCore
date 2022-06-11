@@ -20,6 +20,10 @@ select-class: UI_TOAST_CHALLENGE_COMPLETE
 level-attribute: ENTITY_PLAYER_LEVELUP
 reset-attributes: ENTITY_PLAYER_LEVELUP
 
+level-skill-tree-node: ENTITY_PLAYER_LEVELUP
+reset-skill-tree: ENTITY_PLAYER_LEVELUP
+change-skill-tree: ITEM_ARMOR_EQUIP_LEATHER
+
 not-enough-points: ENTITY_VILLAGER_NO
 
 cancel-quest: ENTITY_VILLAGER_NO

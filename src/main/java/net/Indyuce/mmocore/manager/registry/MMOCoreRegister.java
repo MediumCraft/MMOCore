@@ -21,6 +21,9 @@ public abstract class MMOCoreRegister<T extends RegisterObject> implements MMOCo
     public T get(String id) {
         return Objects.requireNonNull(registered.get(id), "Could not find " + getRegisteredObjectName() + " with ID '" + id + "'");
     }
+    public boolean has(String id){
+        return registered.containsKey(id);
+    }
 
     public Collection<T> getAll() {
         return registered.values();

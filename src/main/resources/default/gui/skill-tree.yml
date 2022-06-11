@@ -1,5 +1,5 @@
 # GUI display name
-name: 'Current Skill Tree: &6{skill-tree-name}'
+name: '&eCurrent Skill Tree: &6{skill-tree-name}'
 
 # Number of slots in your inventory. Must be
 # between 9 and 54 and must be a multiple of 9.
@@ -8,18 +8,26 @@ slots: 54
 items:
   skill-tree:
     name: '{skill-tree-node}'
-    function: 'skill-tree'
+    function: skill-tree
     slots: [9,18,27,36]
+    lore: 'Description: {skill-tree-description}'
 
   next-tree-list-page:
     function: 'next-tree-list-page'
-    material: 'ARROW'
+    item: ARROW
     slots: [ 45 ]
 
   previous-tree-list-page:
     function: 'previous-tree-list-page'
-    material: "ARROW"
+    item: 'ARROW'
     slots: [ 0 ]
 
   skill-tree-node:
+
     function: 'skill-tree-node'
+    slots: [2,3,4,5,6,7,8,11,12,13,14,15,16,17,20,21,22,23,24,25,26,29,30,31,32,33,34,35,38,39,40,41,42,43,44]
+    #The lore that will be displayed after the lore of the node
+    lore:
+      - '&eCurrent {skill-tree} &epoints: &6{skill-tree-points}'
+      - '&eCurrent global points: &6{global-points}'
+

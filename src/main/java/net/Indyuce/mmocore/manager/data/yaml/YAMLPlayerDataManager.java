@@ -10,9 +10,11 @@ import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
-import net.Indyuce.mmocore.tree.NodeState;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,13 +74,36 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         if (config.contains("times-claimed"))
             for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
                 data.getItemClaims().put(key, config.getInt("times-claimed." + key));
+        //Load skill tree nodes
+
         for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
-            String str = config.getString("skill-tree-nodes." + node.getTree().getId() + "." + node.getId());
-            if (str == null)
-                data.setNodeState(node, NodeState.LOCKED);
-            else
-                data.setNodeState(node,NodeState.valueOf(str));
+            String path = "skill-tree-nodes." + node.getTree().getId() + "." + node.getId();
+
+            if (config.contains(path))
+                data.setNodeLevel(node, config.getInt(path));
+            else {
+                data.setNodeLevel(node, 0);
+            }
         }
+        //Setup the nodeStates
+        data.setupNodeState();
+        //Load skill tree points
+        ConfigurationSection section = config.getConfigurationSection("skill-tree-points");
+        if (section != null) {
+            for (String key : section.getKeys(false))
+                data.setSkillTreePoints(key, section.getInt(key));
+
+        }
+        //Put 0 to the rest of the values if nothing has been given
+        List<String> skillTreeIds = MMOCore.plugin.skillTreeManager.getAll().stream().map(SkillTree::getId).collect(Collectors.toList());
+        skillTreeIds.add("global");
+        for (String treeId : skillTreeIds) {
+            if (!data.containsSkillPointTreeId(treeId))
+                data.setSkillTreePoints(treeId, 0);
+        }
+
+        data.setSkillTreeReallocationPoints(config.getInt("skill-tree-reallocation-points",0));
+
         // Load class slots, use try so the player can log in.
         if (config.contains("class-info"))
             for (String key : config.getConfigurationSection("class-info").getKeys(false))
@@ -115,10 +140,17 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
-        //Save the node states for the player
+        //Save the node levels for the player
         for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
-           config.set("skill-tree-nodes." + node.getTree().getId() + "." + node.getId(),data.getNodeState(node));
+            config.set("skill-tree-nodes." + node.getTree().getId() + "." + node.getId(), data.getNodeLevel(node));
         }
+
+        //Saves skill tree points
+        for (String treeId : data.getSkillTreePoints().keySet()) {
+            config.set("skill-tree-points." + treeId, data.getSkillTreePoint(treeId));
+        }
+        config.set("skill-tree-reallocation-points",data.getSkillTreeReallocationPoints());
+
         List<String> boundSkills = new ArrayList<>();
         data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
         config.set("bound-skills", boundSkills);

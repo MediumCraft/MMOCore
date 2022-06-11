@@ -29,6 +29,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 		this.provider = provider;
 	}
 
+	//TODO SkillTree pour SQL
 	@Override
 	public void loadData(PlayerData data) {
 		provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';", (result) -> {

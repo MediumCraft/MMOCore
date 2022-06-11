@@ -1,18 +1,25 @@
 package net.Indyuce.mmocore.tree.skilltree;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.manager.registry.RegisterObject;
-import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.NodeState;
+import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
+import net.Indyuce.mmocore.tree.skilltree.display.Icon;
+import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * A passive skill tree that features nodes, or passive skills.
@@ -32,32 +39,91 @@ import java.util.*;
  */
 public abstract class SkillTree extends PostLoadObject implements RegisterObject {
     private final String id, name;
-    private final Material guiMaterial;
+    private final List<String> lore=new ArrayList<>();
+    private final Material item;
     //2 different maps to get the nodes
+
+    //Represents all the coordinates that will be displayed as a path (between 2 nodes of the tree)
+    protected final ArrayList<IntegerCoordinates> paths = new ArrayList<>();
+    //Represents all the nodes
     protected final Map<IntegerCoordinates, SkillTreeNode> coordinatesNodes = new HashMap<>();
     protected final Map<String, SkillTreeNode> nodes = new HashMap<>();
     //Caches the height of the skill tree
     protected int minX, minY, maxX, maxY;
+    protected final HashMap<DisplayInfo, Icon> icons = new HashMap<>();
+    protected final HashSet<SkillTreeNode> roots = new HashSet<>();
 
     public SkillTree(ConfigurationSection config) {
         super(config);
         this.id = Objects.requireNonNull(config.getString("id"), "Could not find skill tree id");
-        this.name = Objects.requireNonNull(config.getString("name"), "Could not find skill tree name");
-        this.guiMaterial = Material.valueOf(MMOCoreUtils.toEnumName(Objects.requireNonNull(config.getString("material"))));
+        this.name = MythicLib.plugin.parseColors(Objects.requireNonNull(config.getString("name"), "Could not find skill tree name"));
+        Objects.requireNonNull(config.getStringList("lore"),"Could not find skill tree lore").forEach(str->lore.add(MythicLib.plugin.parseColors(str )));
+        this.item = Material.valueOf(MMOCoreUtils.toEnumName(Objects.requireNonNull(config.getString("item"))));
         Validate.isTrue(config.isConfigurationSection("nodes"), "Could not find any nodes in the tree");
         for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
             SkillTreeNode node = new SkillTreeNode(this, config.getConfigurationSection("nodes." + key));
+            nodes.put(node.getId(), node);
+        }
+        try {
+            if (config.contains("paths")) {
+                ConfigurationSection section = config.getConfigurationSection("paths");
+                for (String key : section.getKeys(false)) {
+                    if (section.contains(key + ".x") && section.contains(key + ".y")) {
+                        paths.add(new IntegerCoordinates(section.getInt(key + ".x"), section.getInt(key + ".y")));
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            Bukkit.getLogger().log(Level.WARNING, "Couldn't load paths for skill tree: " + id);
+        }
+
+
+        try {
+            //Load the icons of the skill tree.
+            for (String key : config.getConfigurationSection("icons").getKeys(false)) {
+                if (key.equalsIgnoreCase("path")) {
+                    icons.put(DisplayInfo.pathInfo, new Icon(config.getConfigurationSection("icons." + key)));
+                }
+                for (String size : config.getConfigurationSection("icons." + key).getKeys(false)) {
+                    if(key.equalsIgnoreCase("path")) {
+                        DisplayInfo displayInfo = DisplayInfo.pathInfo;
+                        Icon icon = new Icon(config.getConfigurationSection("icons." + key));
+                        icons.put(displayInfo, icon);
+
+                    }
+                    else {
+                        DisplayInfo displayInfo = new DisplayInfo(NodeState.valueOf(MMOCoreUtils.toEnumName(key)), Integer.parseInt(size));
+                        Icon icon = new Icon(config.getConfigurationSection("icons." + key + "." + size));
+                        icons.put(displayInfo, icon);
+                    }}
+            }
+        } catch (Exception e) {
+            Bukkit.getLogger().log(Level.WARNING, "Couldn't load icons for the skill tree " + id);
+            e.printStackTrace();
         }
     }
 
-    public void setupCoordinatesNodesMap() {
+    /**
+     * Used to setup everything related to coordinates when each node has its coordinates loaded.
+     */
+    public void coordinatesSetup() {
         for (SkillTreeNode node : nodes.values()) {
             coordinatesNodes.put(node.getCoordinates(), node);
+            if (node.isRoot())
+                roots.add(node);
         }
     }
+
 
     @Override
     protected abstract void whenPostLoaded(@NotNull ConfigurationSection configurationSection);
+
+    public Icon getIcon(DisplayInfo info) {
+        Validate.isTrue(icons.containsKey(info),"The icon corresponding to "+(info.getNodeState()==null? "path": "node-state: "+info.getNodeState()
+                +" ,size: "+info.getSize())+" doesn't exist in the icons of the skill-tree yml." );
+        return icons.get(info);
+    }
 
     public int getMaxX() {
         return maxX;
@@ -75,6 +141,9 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
         return maxY;
     }
 
+    public List<String> getLore() {
+        return lore;
+    }
 
     public static SkillTree loadSkillTree(ConfigurationSection config) {
         String string = config.getString("type");
@@ -98,6 +167,75 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
         return skillTree;
     }
 
+    public void addRoot(SkillTreeNode node) {
+        roots.add(node);
+    }
+
+
+    /**
+     * Recursively go through the skill trees to update the the node states
+     */
+    public void setupNodeState(PlayerData playerData) {
+        for (SkillTreeNode root : roots)
+            root.getTree().setupNodeStateFrom(root, playerData);
+    }
+
+
+    /**
+     * Update recursively the state of all the nodes that are children of this node (Used when we change the state of a node)
+     */
+    public void setupNodeStateFrom(SkillTreeNode node, PlayerData playerData) {
+          if (playerData.getNodeLevel(node) > 0) {
+            playerData.setNodeState(node, NodeState.UNLOCKED);
+        } else if (playerData.getNodeLevel(node) == 0 && node.isRoot()) {
+            playerData.setNodeState(node, NodeState.UNLOCKABLE);
+        } else {
+            boolean isUnlockableFromStrongParent = true;
+            boolean isUnlockableFromSoftParent = false;
+            boolean isFullyLockedFromStrongParent = false;
+            boolean isFullyLockedFromSoftParent = true;
+
+            for (SkillTreeNode strongParent : node.getStrongParents()) {
+                if (playerData.getNodeLevel(strongParent) < node.getParentNeededLevel(strongParent)) {
+                    isUnlockableFromStrongParent = false;
+                }
+                //We count the number of children the parent
+                int numberChildren = 0;
+                for (SkillTreeNode child : strongParent.getChildren())
+                    if (playerData.getNodeLevel(child) > 0)
+                        numberChildren++;
+
+                //We must check if the parent is Fully Locked or not and if it can unlock a new node(with its max children constraint)
+                if (numberChildren >= strongParent.getMaxChildren() || playerData.getNodeState(strongParent) == NodeState.FULLY_LOCKED)
+                    isFullyLockedFromStrongParent = true;
+            }
+            for (SkillTreeNode softParent : node.getSoftParents()) {
+                if (playerData.getNodeLevel(softParent) > node.getParentNeededLevel(softParent)) {
+                    isUnlockableFromSoftParent = true;
+                }
+                //We count the number of children the parent
+                int numberChildren = 0;
+                for (SkillTreeNode child : softParent.getChildren())
+                    if (playerData.getNodeLevel(child) > 0)
+                        numberChildren++;
+                if (numberChildren < softParent.getMaxChildren() && playerData.getNodeState(softParent) != NodeState.FULLY_LOCKED)
+                    isFullyLockedFromStrongParent = false;
+            }
+            boolean isFullyLocked = isFullyLockedFromSoftParent || isFullyLockedFromStrongParent;
+            boolean isUnlockable = isUnlockableFromSoftParent && isUnlockableFromStrongParent;
+            if (isFullyLocked)
+                playerData.setNodeState(node, NodeState.FULLY_LOCKED);
+            else if (isUnlockable)
+                playerData.setNodeState(node, NodeState.UNLOCKABLE);
+            else
+                playerData.setNodeState(node, NodeState.LOCKED);
+        }
+        //We recursively call the algorithm for all the children of the current node
+        for (SkillTreeNode child : node.getChildren())
+            setupNodeStateFrom(child, playerData);
+
+    }
+
     @Nullable
     /**
      * Returns null if it is not a node and returns the node type if it a node
@@ -110,10 +248,12 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
         return false;
     }
 
-    public abstract boolean isPath(IntegerCoordinates coordinates);
+    public boolean isPath(IntegerCoordinates coordinates) {
+        return paths.contains(coordinates);
+    }
 
-    public Material getGuiMaterial() {
-        return guiMaterial;
+    public Material getItem() {
+        return item;
     }
 
     @Override
@@ -131,7 +271,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
 
     @NotNull
     public SkillTreeNode getNode(IntegerCoordinates coords) {
-        return Objects.requireNonNull(nodes.get(coords), "Could not find node in tree '" + id + "' with coordinates '" + coords.toString() + "'");
+        return Objects.requireNonNull(coordinatesNodes.get(coords), "Could not find node in tree '" + id + "' with coordinates '" + coords.toString() + "'");
     }
 
     @NotNull

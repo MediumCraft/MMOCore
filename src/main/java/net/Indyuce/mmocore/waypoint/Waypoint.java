@@ -140,6 +140,11 @@ public class Waypoint implements Unlockable {
         while (pointsToCheck.size() != 0) {
             PathInfo checked = pointsToCheck.get(0);
             pointsToCheck.remove(0);
+            //If the point has already been checked we just pass.
+            if(checkedPoints.contains(checked.getFinalWaypoint()))
+                continue;
+            Bukkit.broadcastMessage(checked.getFinalWaypoint().id+" cost: "+checked.cost);
+
             paths.add(checked);
             checkedPoints.add(checked.getFinalWaypoint());
 

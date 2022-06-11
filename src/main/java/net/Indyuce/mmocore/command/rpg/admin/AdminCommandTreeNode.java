@@ -24,7 +24,8 @@ public class AdminCommandTreeNode extends CommandTreeNode {
 		addChild(new PointsCommandTreeNode("class", this, PlayerData::setClassPoints, PlayerData::giveClassPoints, PlayerData::getClassPoints));
 		addChild(new PointsCommandTreeNode("attribute", this, PlayerData::setAttributePoints, PlayerData::giveAttributePoints, PlayerData::getAttributePoints));
 		addChild(new PointsCommandTreeNode("attr-realloc", this, PlayerData::setAttributeReallocationPoints, PlayerData::giveAttributeReallocationPoints, PlayerData::getAttributeReallocationPoints));
-
+		addChild(new PointsCommandTreeNode("skill-tree-realloc",this,PlayerData::setSkillTreeReallocationPoints,PlayerData::giveSkillTreeReallocationPoints,PlayerData::getSkillTreeReallocationPoints));
+		addChild(new SkillTreePointsCommandTreeNode(this,(playerData,val,id)->playerData.setSkillTreePoints(id,val),(playerData, val, id)->playerData.giveSkillTreePoints(id,val),(playerData,id)->playerData.getSkillTreePoint(id)));
 		for (PlayerResource res : PlayerResource.values())
 			addChild(new ResourceCommandTreeNode(res.name().toLowerCase(), this, res));
 	}

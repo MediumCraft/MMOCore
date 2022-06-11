@@ -11,8 +11,8 @@ name: 'Combat Skill Tree'
 
 type: 'linked'
 
-#The material that will represent the skill tree in the GUI
-material: 'DIAMOND_SWORD'
+#The item that will represent the skill tree in the GUI
+item: 'DIAMOND_SWORD'
 
 nodes:
   strength:
@@ -26,4 +26,9 @@ nodes:
     coordinates:
       x: 1
       y: 0
+
+paths:
+  coordinates:
+    x: 2
+    y: 2
 
