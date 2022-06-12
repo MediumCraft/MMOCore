@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-import net.Indyuce.mmocore.loot.droptable.condition.Condition;
-import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
+import net.Indyuce.mmocore.loot.chest.condition.Condition;
+import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -73,7 +73,7 @@ public class DropTable extends PostLoadObject {
 	public List<ItemStack> collect(LootBuilder builder) {
 
 		for (DropItem item : drops)
-			if (item.rollChance() && builder.getCapacity() >= item.getWeight()) {
+			if (item.rollChance(builder.getEntity()) && builder.getCapacity() >= item.getWeight()) {
 				item.collect(builder);
 				builder.reduceCapacity(item.getWeight());
 			}

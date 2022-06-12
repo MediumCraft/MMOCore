@@ -55,8 +55,28 @@ protect-custom-mine: false
 # - mmocore
 # - dungeonsxl
 # - parties
-# - parties_and_friends
+# - party_and_friends
+# - mcmmo
 party-plugin: mmocore
+
+## Edit the plugin handling parties here.
+## Supported values (just copy and paste):
+## - mmocore
+## - beauty_quest
+## - quest_creator
+## - quests
+quest-plugin: mmocore
+
+# MythicLib introduces a CHANCE stat that is used in
+# several different systems in MMOCore. By changing these
+# weights you can define how much the Chance stat impacts
+# the different features implemented by MMOCore
+#
+# e.g setting some weight to 2 will DOUBLE the effect of
+# the chance stat in one particular system. The weights are
+# all set to 1 by default, this option is really server specific
+chance-stat-weight:
+  loot-chests: 1
 
 # Whether blocks generated with a "cobblegenerator" should
 # provide the player with experience points or not

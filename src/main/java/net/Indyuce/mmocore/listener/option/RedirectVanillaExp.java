@@ -16,7 +16,7 @@ public class RedirectVanillaExp implements Listener {
 
 	@EventHandler
 	public void a(PlayerExpChangeEvent event) {
-		int a = (int) (event.getAmount() * ratio);
+		double a = (event.getAmount() * ratio);
 		if (a > 0)
 			PlayerData.get(event.getPlayer()).giveExperience(a, EXPSource.VANILLA);
 	}

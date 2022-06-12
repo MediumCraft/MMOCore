@@ -1,13 +1,16 @@
 package net.Indyuce.mmocore.party;
 
-import net.Indyuce.mmocore.party.compat.*;
+import net.Indyuce.mmocore.party.compat.DungeonsXLPartyModule;
+import net.Indyuce.mmocore.party.compat.McMMOPartyModule;
+import net.Indyuce.mmocore.party.compat.PAFPartyModule;
+import net.Indyuce.mmocore.party.compat.PartiesPartyModule;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import org.bukkit.Bukkit;
 
 import javax.inject.Provider;
 
 public enum PartyModuleType {
-    DUNGEONS("Dungeons", DungeonsPartyModule::new),
+    // DUNGEONS("Dungeons", DungeonsPartyModule::new),
     DUNGEONSXL("DungeonsXL", DungeonsXLPartyModule::new),
     MCMMO("mcMMO", McMMOPartyModule::new),
     MMOCORE("MMOCore", MMOCorePartyModule::new),

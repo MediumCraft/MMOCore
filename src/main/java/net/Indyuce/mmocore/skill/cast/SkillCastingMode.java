@@ -19,16 +19,26 @@ public enum SkillCastingMode {
     SKILL_BAR(config -> new SkillBar(config)),
 
     /**
-     *
+     * When entering casting mode you can use the mouse scroller
+     * to navigate through the entire castable skill list. Then press
+     * one key to cast the one selected.
      */
     SKILL_SCROLL(config -> new SkillScroller(config)),
 
     /**
      * Initialize your skill combo by pressing some key.
      * <p>
-     * Then press a certain amount of keys to
+     * Then press a certain key combo. The config can be used
+     * to map key combos to skill bind slots, for instance LLR
+     * would cast the 2nd skill but LRL the 3rd one.
      */
     KEY_COMBOS(config -> new KeyCombos(config)),
+
+    /**
+     * Entirely disables skill casting.
+     */
+    NONE(config -> new Listener() {
+    });
 
     /**
      * Not implemented yet.

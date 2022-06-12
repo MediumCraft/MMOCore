@@ -67,6 +67,7 @@ leave-combat: '%&aYou left combat.'
 
 # Waypoints
 new-waypoint: '%&eYou unlocked the &6{waypoint} &ewaypoint!'
+new-waypoint-book: '%&eYou unlocked the &6{waypoint} &ewaypoint!'
 not-enough-stellium: '&cYou don''t have enough stellium: you need {more} more.'
 waypoint-cooldown: '&cPlease wait {cooldown} before using a waypoint again.'
 not-unlocked-waypoint: '&cYou have not unlocked that waypoint yet.'

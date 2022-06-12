@@ -4,7 +4,6 @@ import io.lumine.mythic.lib.version.VersionSound;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.loot.LootBuilder;
@@ -80,11 +79,11 @@ public class FishingListener implements Listener {
 
         public FishingData(Player player, FishHook hook, FishingDropTable table) {
             this.location = hook.getLocation();
-            this.caught = table.getRandomItem();
+            this.caught = table.getRandomItem(PlayerData.get(player));
             this.playerData = PlayerData.get(this.player = player);
             this.hook = hook;
 
-            this.fishStrength = (int) Math.floor(caught.rollTugs() * (1 - PlayerData.get(player).getStats().getStat(StatType.FISHING_STRENGTH) / 100));
+            this.fishStrength = (int) Math.floor(caught.rollTugs() * (1 - PlayerData.get(player).getStats().getStat("FISHING_STRENGTH") / 100));
             this.experienceDropped = caught.rollExperience();
 
             fishing.add(player.getUniqueId());
@@ -148,7 +147,7 @@ public class FishingListener implements Listener {
                     return;
                 }
 
-                if (currentPulls == 0 && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_CHANCE) / 100)
+                if (currentPulls == 0 && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat("CRITICAL_FISHING_CHANCE") / 100)
                     setCriticalFish();
 
                 // Check if enough pulls; if not, wait till the next fish event
@@ -165,7 +164,7 @@ public class FishingListener implements Listener {
                     (mainhand != null && mainhand.getType() == Material.FISHING_ROD) ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND, 1);
 
             // Critical fishing failure
-            if (!isCriticalFish() && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat(StatType.CRITICAL_FISHING_FAILURE_CHANCE) / 100) {
+            if (!isCriticalFish() && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat("CRITICAL_FISHING_FAILURE_CHANCE") / 100) {
                 player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));
                 hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
                 return;

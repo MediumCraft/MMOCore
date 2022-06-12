@@ -4,17 +4,19 @@ import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
 public class EnchantManager extends SpecificProfessionManager {
-	private final Map<Enchantment, Double> base = new HashMap<>();
+    private final Map<Enchantment, Double> base = new HashMap<>();
 
-	public EnchantManager() {
-		super("base-enchant-exp");
-	}
+    public EnchantManager() {
+        super("base-enchant-exp");
+    }
 
     @Override
     public void loadProfessionConfiguration(ConfigurationSection config) {
@@ -27,17 +29,20 @@ public class EnchantManager extends SpecificProfessionManager {
             }
     }
 
-	public void registerBaseExperience(Enchantment enchant, double value) {
-		base.put(enchant, value);
-	}
+    public void registerBaseExperience(Enchantment enchant, double value) {
+        base.put(enchant, value);
+    }
 
-	public double getBaseExperience(Enchantment enchant) {
-		return base.get(enchant);
-	}
+    @NotNull
+    public double getBaseExperience(Enchantment enchant) {
+        // Can be null if argument passed is an enchant with no config attached to it
+        @Nullable Double found = base.get(enchant);
+        return found == null ? 0 : found;
+    }
 
-	@Override
-	public void initialize(boolean clearBefore) {
-		if (clearBefore)
-			base.clear();
-	}
+    @Override
+    public void initialize(boolean clearBefore) {
+        if (clearBefore)
+            base.clear();
+    }
 }

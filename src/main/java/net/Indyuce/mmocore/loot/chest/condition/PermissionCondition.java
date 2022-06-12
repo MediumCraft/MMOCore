@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.loot.droptable.condition;
+package net.Indyuce.mmocore.loot.chest.condition;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.bukkit.entity.Player;
@@ -15,8 +15,6 @@ public class PermissionCondition extends Condition {
 
     @Override
     public boolean isMet(ConditionInstance entity) {
-        if (entity.getEntity() instanceof Player)
-            return entity.getEntity().hasPermission(perm);
-        return false;
+        return entity.getEntity() instanceof Player && entity.getEntity().hasPermission(perm);
     }
 }

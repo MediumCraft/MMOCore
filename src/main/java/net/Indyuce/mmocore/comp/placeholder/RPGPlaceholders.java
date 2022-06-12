@@ -5,7 +5,7 @@ import io.lumine.mythic.lib.api.util.AltChar;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
@@ -72,11 +72,11 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.equals("health") && player.isOnline()) {
-			return StatType.MAX_HEALTH.format(player.getPlayer().getHealth());
+			return StatInfo.valueOf("MAX_HEALTH").format(player.getPlayer().getHealth());
 		}
 
 		else if (identifier.equals("max_health") && player.isOnline()) {
-			return StatType.MAX_HEALTH.format(player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			return StatInfo.valueOf("MAX_HEALTH").format(player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 		}
 
 		else if (identifier.equals("health_bar") && player.isOnline()) {
@@ -153,7 +153,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return MythicLib.plugin.getMMOConfig().decimal.format(playerData.getMana());
 
 		else if (identifier.equals("mana_bar")) {
-			return playerData.getProfess().getManaDisplay().generateBar(playerData.getMana(), playerData.getStats().getStat(StatType.MAX_MANA));
+			return playerData.getProfess().getManaDisplay().generateBar(playerData.getMana(), playerData.getStats().getStat("MAX_MANA"));
 		}
 
 		else if (identifier.startsWith("exp_multiplier_")) {
@@ -173,7 +173,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.equals("stamina_bar")) {
 			StringBuilder format = new StringBuilder();
-			double ratio = 20 * playerData.getStamina() / playerData.getStats().getStat(StatType.MAX_STAMINA);
+			double ratio = 20 * playerData.getStamina() / playerData.getStats().getStat("MAX_STAMINA");
 			for (double j = 1; j < 20; j++)
 				format.append(ratio >= j ? MMOCore.plugin.configManager.staminaFull
 						: ratio >= j - .5 ? MMOCore.plugin.configManager.staminaHalf : MMOCore.plugin.configManager.staminaEmpty)
@@ -182,8 +182,8 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.startsWith("stat_")) {
-			StatType type = StatType.valueOf(identifier.substring(5).toUpperCase());
-			return type == null ? "Invalid Stat" : type.format(playerData.getStats().getStat(type));
+			StatInfo info = StatInfo.valueOf(identifier.substring(5).toUpperCase());
+			return info.format(playerData.getStats().getStat(info.name));
 		}
 
 		else if (identifier.equals("stellium"))
@@ -191,7 +191,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.equals("stellium_bar")) {
 			StringBuilder format = new StringBuilder();
-			double ratio = 20 * playerData.getStellium() / playerData.getStats().getStat(StatType.MAX_STELLIUM);
+			double ratio = 20 * playerData.getStellium() / playerData.getStats().getStat("MAX_STELLIUM");
 			for (double j = 1; j < 20; j++)
 				format.append(ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE).append(AltChar.listSquare);
 			return format.toString();

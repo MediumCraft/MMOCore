@@ -64,7 +64,7 @@ public class Profession extends PostLoadObject implements ExperienceObject {
 
         maxLevel = config.getInt("max-level");
 
-        if (config.contains("exp-sources")) {
+        if (config.contains("exp-sources"))
             for (String key : config.getStringList("exp-sources"))
                 try {
                     MMOCore.plugin.experience.registerSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
@@ -72,7 +72,6 @@ public class Profession extends PostLoadObject implements ExperienceObject {
                     MMOCore.plugin.getLogger().log(Level.WARNING,
                             "Could not register exp source '" + key + "' from profession '" + id + "': " + exception.getMessage());
                 }
-        }
     }
 
     @Override
@@ -127,7 +126,7 @@ public class Profession extends PostLoadObject implements ExperienceObject {
     @Override
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
         hologramLocation = !getOption(Profession.ProfessionOption.EXP_HOLOGRAMS) ? null
-                : hologramLocation == null ? getPlayerLocation(playerData) : hologramLocation;
+                : hologramLocation;
         playerData.getCollectionSkills().giveExperience(this, experience, EXPSource.SOURCE, hologramLocation);
     }
 

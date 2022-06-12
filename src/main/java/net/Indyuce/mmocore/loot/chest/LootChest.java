@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.loot.chest;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
+import net.Indyuce.mmocore.util.HashableLocation;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,7 +10,6 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
@@ -20,7 +20,7 @@ public class LootChest {
     private final ReplacedBlock block;
     @Nullable
     private final BukkitRunnable effectRunnable;
-    private final long date = System.currentTimeMillis();
+    private final BukkitRunnable closeRunnable;
 
     private boolean active = true;
 
@@ -36,6 +36,13 @@ public class LootChest {
         this.region = region;
         this.block = new ReplacedBlock(block);
         this.effectRunnable = tier.hasEffect() ? tier.getEffect().startNewRunnable(block.getLocation().add(.5, .5, .5)) : null;
+        closeRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                expire(false);
+            }
+        };
+        closeRunnable.runTaskLater(MMOCore.plugin, MMOCore.plugin.configManager.lootChestExpireTime);
     }
 
     public ChestTier getTier() {
@@ -50,15 +57,8 @@ public class LootChest {
         return region;
     }
 
-    public boolean hasPlayerNearby() {
-        for (Player player : block.loc.getWorld().getPlayers())
-            if (player.getLocation().distanceSquared(block.loc) < 625)
-                return true;
-        return false;
-    }
-
-    public boolean shouldExpire() {
-        return System.currentTimeMillis() - date > MMOCore.plugin.configManager.lootChestExpireTime;
+    public boolean isActive() {
+        return active;
     }
 
     /**
@@ -76,10 +76,14 @@ public class LootChest {
         Validate.isTrue(active, "Chest has already expired");
         active = false;
 
+        // Close runnable
+        if (!closeRunnable.isCancelled())
+            closeRunnable.cancel();
+
         // If a player is responsible of closing the chest, close it with sound
         if (player) {
-            MMOCore.plugin.soundManager.getSound(SoundEvent.CLOSE_LOOT_CHEST).playAt(block.loc);
-            block.loc.getWorld().spawnParticle(Particle.CRIT, block.loc.clone().add(.5, .5, .5), 16, 0, 0, 0, .5);
+            MMOCore.plugin.soundManager.getSound(SoundEvent.CLOSE_LOOT_CHEST).playAt(block.loc.bukkit());
+            block.loc.getWorld().spawnParticle(Particle.CRIT, block.loc.bukkit().add(.5, .5, .5), 16, 0, 0, 0, .5);
         }
 
         /*
@@ -87,7 +91,7 @@ public class LootChest {
          * off and accumulate on the ground (+during dev phase)
          */
         else
-            ((Chest) block.loc.getBlock().getState()).getBlockInventory().clear();
+            ((Chest) block.loc.bukkit().getBlock().getState()).getBlockInventory().clear();
 
         block.restore();
         if (effectRunnable != null)
@@ -97,22 +101,28 @@ public class LootChest {
     public static class ReplacedBlock {
         private final Material material;
         private final BlockData data;
-        private final Location loc;
+        private final HashableLocation loc;
 
         public ReplacedBlock(Block block) {
             this.material = block.getType();
             this.data = block.getBlockData();
-            this.loc = block.getLocation();
+            this.loc = new HashableLocation(block.getLocation());
         }
 
+        public HashableLocation getLocation() {
+            return loc;
+        }
+
+        @Deprecated
         public boolean matches(Location loc) {
-            return this.loc.getWorld().equals(loc.getWorld()) && this.loc.getBlockX() == loc.getBlockX() && this.loc.getBlockY() == loc.getBlockY()
-                    && this.loc.getBlockZ() == loc.getBlockZ();
+            return this.loc.getWorld().equals(loc.getWorld()) && this.loc.getX() == loc.getBlockX() && this.loc.getY() == loc.getBlockY()
+                    && this.loc.getZ() == loc.getBlockZ();
         }
 
         public void restore() {
-            loc.getBlock().setType(material);
-            loc.getBlock().setBlockData(data);
+            Block block = loc.bukkit().getBlock();
+            block.setType(material);
+            block.setBlockData(data);
         }
     }
 }

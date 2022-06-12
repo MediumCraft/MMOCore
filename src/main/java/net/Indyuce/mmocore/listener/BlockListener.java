@@ -11,7 +11,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.source.MineBlockExperienceSource;
 import net.Indyuce.mmocore.loot.LootBuilder;
-import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
+import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

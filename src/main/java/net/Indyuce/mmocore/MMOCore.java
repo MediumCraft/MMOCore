@@ -8,11 +8,10 @@ import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
-import net.Indyuce.mmocore.comp.MMOCoreTargetRestriction;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
@@ -32,7 +31,6 @@ import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
-import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.manager.*;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
@@ -41,6 +39,7 @@ import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
+import net.Indyuce.mmocore.party.MMOCoreTargetRestriction;
 import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
@@ -55,7 +54,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 public class MMOCore extends LuminePlugin {
@@ -78,6 +76,7 @@ public class MMOCore extends LuminePlugin {
 	public final LootChestManager lootChests = new LootChestManager();
 	public final MMOLoadManager loadManager = new MMOLoadManager();
 	public final RestrictionManager restrictionManager = new RestrictionManager();
+	public final StatManager statManager = new StatManager();
 	@Deprecated
 	public final SkillTreeManager skillTreeManager = new SkillTreeManager();
 
@@ -116,8 +115,10 @@ public class MMOCore extends LuminePlugin {
 			return;
 		}
 
-		// Register target restrictions due to MMOCore in MythicLib
+		// Register MMOCore-specific objects
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
+		MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
+
 
 		// Register extra objective, drop items...
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
@@ -190,23 +191,6 @@ public class MMOCore extends LuminePlugin {
 		}.runTaskTimer(MMOCore.plugin, 100, 20);
 
 		/*
-		 * Clean active loot chests every 5 minutes. Cannot register this runnable in
-		 * the loot chest manager because it is instanced when the plugin loads
-		 */
-		new BukkitRunnable() {
-			public void run() {
-				Iterator<LootChest> iterator = lootChests.getActive().iterator();
-				while (iterator.hasNext()) {
-					LootChest next = iterator.next();
-					if (next.shouldExpire()) {
-						iterator.remove();
-						next.expire(false);
-					}
-				}
-			}
-		}.runTaskTimer(this, 5 * 60 * 20, 5 * 60 * 20);
-
-		/*
 		 * For the sake of the lord, make sure they aren't using MMOItems Mana and
 		 * Stamina Addon...This should prevent a couple error reports produced by people
 		 * not reading the installation guide...
@@ -230,6 +214,19 @@ public class MMOCore extends LuminePlugin {
 			DebugMode.enableActionBar();
 		}
 
+		// Load quest module
+		try {
+			String questPluginName = UtilityMethods.enumName(getConfig().getString("quest-plugin"));
+			PartyModuleType moduleType = PartyModuleType.valueOf(questPluginName);
+			Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
+			partyModule = moduleType.provideModule();
+		} catch (RuntimeException exception) {
+			getLogger().log(Level.WARNING, "Could not initialize quest module: " + exception.getMessage());
+			partyModule = new MMOCorePartyModule();
+		}
+
+
+
 		// Load party module
 		try {
 			String partyPluginName = UtilityMethods.enumName(getConfig().getString("party-plugin"));
@@ -240,6 +237,7 @@ public class MMOCore extends LuminePlugin {
 			getLogger().log(Level.WARNING, "Could not initialize party module: " + exception.getMessage());
 			partyModule = new MMOCorePartyModule();
 		}
+
 
 		// Skill casting
 		try {
@@ -388,6 +386,7 @@ public class MMOCore extends LuminePlugin {
 
 		configManager = new ConfigManager();
 
+		statManager.initialize(clearBefore);
 		if (clearBefore)
 			MythicLib.plugin.getSkills().initialize(true);
 		skillManager.initialize(clearBefore);
@@ -416,8 +415,6 @@ public class MMOCore extends LuminePlugin {
 
 		if (getConfig().isConfigurationSection("action-bar"))
 			actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
-
-		StatType.load();
 
 		if (clearBefore)
 			PlayerData.getAll().forEach(PlayerData::update);

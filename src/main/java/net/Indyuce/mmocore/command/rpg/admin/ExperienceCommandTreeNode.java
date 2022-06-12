@@ -58,8 +58,8 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 			int amount;
 			try {
 				amount = Integer.parseInt(args[5]);
-				Validate.isTrue(amount > 0);
-			} catch (NumberFormatException exception) {
+				Validate.isTrue(amount >= 0);
+			} catch (RuntimeException exception) {
 				sender.sendMessage(ChatColor.RED + args[5] + " is not a valid number.");
 				return CommandResult.FAILURE;
 			}

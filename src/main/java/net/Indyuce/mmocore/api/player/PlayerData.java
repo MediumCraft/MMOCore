@@ -1,15 +1,11 @@
 package net.Indyuce.mmocore.api.player;
 
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.waypoint.CostType;
-import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
@@ -21,11 +17,9 @@ import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
@@ -33,11 +27,14 @@ import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
+import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.Party;
+import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
+import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -70,7 +67,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Nullable
     private PlayerClass profess;
-    private int level, experience, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
+    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
+    private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
     private SkillCastingHandler skillCasting;
@@ -88,8 +86,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     /**
      * Saves all the items that have been unlocked so far by
-     * the player. This can be used by other plugins by
-     * implementing the {@link Unlockable} interface
+     * the player. This is used for:
+     * - waypoints
+     * - skills
      *
      * @see {@link Unlockable}
      */
@@ -289,8 +288,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return guild != null;
     }
 
+    /**
+     * @return If the item is unlocked by the player
+     */
     public boolean hasUnlocked(Unlockable unlockable) {
-        throw new RuntimeException("Not implemented yet");
+        return unlockedItems.contains(unlockable.getUnlockNamespacedKey());
     }
 
     /**
@@ -299,7 +301,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @return If the item was already unlocked when calling this method
      */
     public boolean unlock(Unlockable unlockable) {
-        throw new RuntimeException("Not implemented yet");
+        return unlockedItems.add(unlockable.getUnlockNamespacedKey());
     }
 
     public void setLevel(int level) {
@@ -320,7 +322,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         giveExperience(total, source);
     }
 
-    public void setExperience(int value) {
+    public void setExperience(double value) {
         experience = Math.max(0, value);
         refreshVanillaExp();
     }
@@ -457,9 +459,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * Teleports the player to a specific waypoint. This applies
      * the stellium waypoint cost and plays the teleport animation.
      *
-     * @param waypoint Target waypoint
+     * @param target Target waypoint
      */
-    public void warp(Waypoint waypoint, CostType costType) {
+    public void warp(Waypoint target, double cost) {
 
         /*
          * This cooldown is only used internally to make sure the player is not
@@ -467,8 +469,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
          * player waypoints data
          */
         setLastActivity(PlayerActivity.USE_WAYPOINT);
-
-        final double cost = waypoint.getCost(costType);
         giveStellium(-cost, PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
 
         new BukkitRunnable() {
@@ -491,7 +491,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
                 MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(getPlayer());
                 if (t++ >= 100) {
-                    getPlayer().teleport(waypoint.getLocation());
+                    getPlayer().teleport(target.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_TELEPORT).playTo(getPlayer());
                     cancel();
@@ -518,7 +518,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @param value  Experience to give the player
      * @param source How the player earned experience
      */
-    public void giveExperience(int value, EXPSource source) {
+    public void giveExperience(double value, EXPSource source) {
         giveExperience(value, source, null, true);
     }
 
@@ -532,13 +532,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @param splitExp         Should the exp be split among party members
      */
     public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+        if (value <= 0)
+            return;
+
         if (hasReachedMaxLevel()) {
             setExperience(0);
             return;
         }
 
         value = MMOCore.plugin.boosterManager.calculateExp(null, value);
-        value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
+        value *= 1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100;
 
         // Splitting exp through party members
         AbstractParty party = getParty();
@@ -549,7 +552,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
         }
 
-        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, (int) value, source);
+        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
@@ -590,7 +593,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         refreshVanillaExp();
     }
 
-    public int getExperience() {
+    public double getExperience() {
         return experience;
     }
 
@@ -611,7 +614,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveMana(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_MANA);
+        double max = getStats().getStat("MAX_MANA");
         double newest = Math.max(0, Math.min(mana + amount, max));
         if (mana == newest)
             return;
@@ -636,7 +639,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveStamina(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_STAMINA);
+        double max = getStats().getStat("MAX_STAMINA");
         double newest = Math.max(0, Math.min(stamina + amount, max));
         if (stamina == newest)
             return;
@@ -661,7 +664,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveStellium(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_STELLIUM);
+        double max = getStats().getStat("MAX_STELLIUM");
         double newest = Math.max(0, Math.min(stellium + amount, max));
         if (stellium == newest)
             return;
@@ -696,15 +699,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setMana(double amount) {
-        mana = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_MANA)));
+        mana = Math.max(0, Math.min(amount, getStats().getStat("MAX_MANA")));
     }
 
     public void setStamina(double amount) {
-        stamina = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_STAMINA)));
+        stamina = Math.max(0, Math.min(amount, getStats().getStat("MAX_STAMINA")));
     }
 
     public void setStellium(double amount) {
-        stellium = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_STELLIUM)));
+        stellium = Math.max(0, Math.min(amount, getStats().getStat("MAX_STELLIUM")));
     }
 
     public boolean isFullyLoaded() {

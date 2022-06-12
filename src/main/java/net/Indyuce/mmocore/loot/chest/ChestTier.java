@@ -10,8 +10,7 @@ public class ChestTier {
 	private final TierEffect effect;
 	private final ScalingFormula capacity;
 	private final DropTable table;
-
-	public final double chance;
+	private final double chance;
 
 	public ChestTier(ConfigurationSection config) {
 		effect = config.isConfigurationSection("effect") ? new TierEffect(config.getConfigurationSection("effect")) : null;
@@ -22,6 +21,10 @@ public class ChestTier {
 
 	public double rollCapacity(PlayerData player) {
 		return capacity.calculate(player.getLevel());
+	}
+
+	public double getChance() {
+		return chance;
 	}
 
 	public DropTable getDropTable() {

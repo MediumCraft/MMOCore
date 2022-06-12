@@ -21,9 +21,7 @@ public interface ExperienceDispenser {
      * Called when experience is gained in main class/profession
      *
      * @param playerData       Player gaining the experience
-     * @param experience       Experience gained. Note that it is a double
-     *                         because it gets converted to an integer at
-     *                         the very last moment in MMOCore
+     * @param experience       Experience gained
      * @param hologramLocation Location of displayed hologram. When set to null
      *                         and if exp holograms are enabled it will take the
      *                         player's location instead.

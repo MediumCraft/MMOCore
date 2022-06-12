@@ -1,11 +1,13 @@
 package net.Indyuce.mmocore.util.item;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class ConfigItem {
     private final String name, id, texture;
@@ -15,10 +17,12 @@ public class ConfigItem {
     private final boolean unbreakable;
 
     public ConfigItem(ConfigurationSection config) {
-        id = config.getName();
+        id = UtilityMethods.enumName(config.getName());
         name = config.getString("name");
         lore = config.getStringList("lore");
-        material = Material.valueOf(config.getString("item"));
+        String itemFormat = Objects.requireNonNull(config.getString("item"), "Could not find item material");
+        Validate.isTrue(!itemFormat.contains(":"), "Invalid custom model data format, please use 'custom-model-data: X' instead");
+        material = Material.valueOf(UtilityMethods.enumName(itemFormat));
 
         Validate.notNull(name, "Name cannot be null");
         Validate.notNull(lore, "Lore can be empty but not null");

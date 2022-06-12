@@ -2,8 +2,9 @@ package net.Indyuce.mmocore.manager.profession;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.loot.droptable.condition.Condition;
-import net.Indyuce.mmocore.loot.droptable.condition.ConditionInstance;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.loot.chest.condition.Condition;
+import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
 import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,6 +30,11 @@ public class FishingManager extends SpecificProfessionManager {
 			} catch (IllegalArgumentException exception) {
 				MMOCore.log(Level.WARNING, "Could not load fishing drop table " + key + ": " + exception.getMessage());
 			}
+
+		// Link fishing stats to this profession
+		MMOCore.plugin.statManager.registerProfession("FISHING_STRENGTH", getLinkedProfession());
+		MMOCore.plugin.statManager.registerProfession("CRITICAL_FISHING_CHANCE", getLinkedProfession());
+		MMOCore.plugin.statManager.registerProfession("CRITICAL_FISHING_FAILURE_CHANCE", getLinkedProfession());
 	}
 
 	public FishingDropTable calculateDropTable(Entity entity) {
@@ -44,7 +50,6 @@ public class FishingManager extends SpecificProfessionManager {
 	public static class FishingDropTable {
 		private final Set<Condition> conditions = new HashSet<>();
 		private final List<FishingDropItem> items = new ArrayList<>();
-		private double maxWeight = 0;
 
 		public FishingDropTable(ConfigurationSection section) {
 			Validate.notNull(section, "Could not load config");
@@ -70,7 +75,6 @@ public class FishingManager extends SpecificProfessionManager {
 				try {
 					FishingDropItem dropItem = new FishingDropItem(new MMOLineConfig(str));
 					items.add(dropItem);
-					maxWeight += dropItem.getItem().getWeight();
 				} catch (RuntimeException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING,
 							"Could not load item '" + str + "' from fishing drop table '" + id + "': " + exception.getMessage());
@@ -90,12 +94,25 @@ public class FishingManager extends SpecificProfessionManager {
 			return conditions;
 		}
 
-		public FishingDropItem getRandomItem() {
-			double randomCoefficient = RANDOM.nextDouble() * maxWeight;
+		/**
+		 * The chance stat will make low weight items more
+		 * likely to be chosen by the algorithm
+		 *
+		 * @return Randomly computed fishing drop item
+		 */
+		public FishingDropItem getRandomItem(PlayerData player) {
+			double chance = player.getStats().getStat("CHANCE");
 
-			for (FishingDropItem item : items)
-				if ((randomCoefficient -= item.getItem().getWeight()) <= 0)
+			//chance=0 ->the tier.chance remains the same
+			//chance ->+inf -> the tier.chance becomes the same for everyone, uniform law
+			//chance=8-> tierChance=sqrt(tierChance)
+			double sum = 0;
+			double randomCoefficient=RANDOM.nextDouble();
+			for (FishingDropItem item : items) {
+				sum += Math.pow(item.getItem().getWeight(), 1 / Math.log(1 + chance));
+				if(sum<randomCoefficient)
 					return item;
+			}
 
 			throw new NullPointerException("Could not find item in drop table");
 		}

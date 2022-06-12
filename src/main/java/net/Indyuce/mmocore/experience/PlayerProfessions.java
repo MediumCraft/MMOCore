@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import org.apache.commons.lang.Validate;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class PlayerProfessions {
-    private final Map<String, Integer> exp = new HashMap<>();
+    private final Map<String, Double> exp = new HashMap<>();
     private final Map<String, Integer> level = new HashMap<>();
 
     private final PlayerData playerData;
@@ -41,7 +41,7 @@ public class PlayerProfessions {
     public PlayerProfessions load(ConfigurationSection config) {
         for (String key : config.getKeys(false))
             if (MMOCore.plugin.professionManager.has(key)) {
-                exp.put(key, config.getInt(key + ".exp"));
+                exp.put(key, config.getDouble(key + ".exp"));
                 level.put(key, config.getInt(key + ".level"));
             }
 
@@ -89,7 +89,7 @@ public class PlayerProfessions {
         for (Entry<String, JsonElement> entry : obj.entrySet())
             if (MMOCore.plugin.professionManager.has(entry.getKey())) {
                 JsonObject value = entry.getValue().getAsJsonObject();
-                exp.put(entry.getKey(), value.get("exp").getAsInt());
+                exp.put(entry.getKey(), value.get("exp").getAsDouble());
                 level.put(entry.getKey(), value.get("level").getAsInt());
             }
 
@@ -111,11 +111,11 @@ public class PlayerProfessions {
         return getLevel(profession.getId());
     }
 
-    public int getExperience(String id) {
-        return exp.getOrDefault(id, 0);
+    public double getExperience(String id) {
+        return exp.getOrDefault(id, 0.);
     }
 
-    public int getExperience(Profession profession) {
+    public double getExperience(Profession profession) {
         return getExperience(profession.getId());
     }
 
@@ -136,7 +136,7 @@ public class PlayerProfessions {
         level.put(profession.getId(), Math.max(1, current - value));
     }
 
-    public void setExperience(Profession profession, int value) {
+    public void setExperience(Profession profession, double value) {
         exp.put(profession.getId(), value);
     }
 
@@ -147,7 +147,7 @@ public class PlayerProfessions {
         giveExperience(profession, total, source);
     }
 
-    public void giveExperience(Profession profession, int value, EXPSource source) {
+    public void giveExperience(Profession profession, double value, EXPSource source) {
         giveExperience(profession, value, source, null);
     }
 
@@ -157,6 +157,8 @@ public class PlayerProfessions {
 
     public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation) {
         Validate.isTrue(playerData.isOnline(), "Cannot give experience to offline player");
+        if (value <= 0)
+            return;
 
         if (hasReachedMaxLevel(profession)) {
             setExperience(profession, 0);
@@ -166,19 +168,20 @@ public class PlayerProfessions {
         value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
 
         // Adds functionality for additional experience per profession.
-        value *= 1 + playerData.getStats().getInstance(StatType.ADDITIONAL_EXPERIENCE, profession).getTotal() / 100;
+        value *= 1 + playerData.getStats().getInstance("ADDITIONAL_EXPERIENCE_" + UtilityMethods.enumName(profession.getId())).getTotal() / 100;
 
         // Display hologram
         if (hologramLocation != null)
             MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
 
-        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, (int) value, source);
+        PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-        exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0) + event.getExperience()));
-        int needed, exp, level, oldLevel = getLevel(profession);
+        exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0.) + event.getExperience()));
+        int level, oldLevel = getLevel(profession);
+        double needed,exp;
 
         /*
          * Loop for exp overload when leveling up, will continue
@@ -195,7 +198,7 @@ public class PlayerProfessions {
             this.exp.put(profession.getId(), exp - needed);
             this.level.put(profession.getId(), level + 1);
             check = true;
-            playerData.giveExperience((int) profession.getExperience().calculate(level), null);
+            playerData.giveExperience(profession.getExperience().calculate(level), null);
         }
 
         if (check) {

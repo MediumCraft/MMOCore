@@ -13,17 +13,17 @@ import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.EXPSource;
-import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
 import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
@@ -51,7 +51,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final ExpCurve expCurve;
     private final ExperienceTable expTable;
 
-    private final Map<StatType, LinearValue> stats = new HashMap<>();
+    private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
 
@@ -124,7 +124,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         if (config.contains("attributes"))
             for (String key : config.getConfigurationSection("attributes").getKeys(false))
                 try {
-                    stats.put(StatType.valueOf(key.toUpperCase().replace("-", "_")),
+                    stats.put(UtilityMethods.enumName(key),
                             new LinearValue(config.getConfigurationSection("attributes." + key)));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load stat info '" + key + "' from class '"
@@ -298,6 +298,18 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return options.containsKey(option) ? options.get(option) : option.getDefault();
     }
 
+    @Override
+    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
+        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null
+                : hologramLocation;
+        playerData.giveExperience(experience, source, hologramLocation, true);
+    }
+
+    @Override
+    public boolean shouldHandle(PlayerData playerData) {
+        return equals(playerData.getProfess());
+    }
+
     @Nullable
     @Deprecated
     public ClassTrigger getClassTrigger(ClassTriggerType type) {
@@ -319,16 +331,11 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return eventTriggers.get(name);
     }
 
-    @Deprecated
-    public void setStat(StatType type, double base, double perLevel) {
-        setStat(type, new LinearValue(base, perLevel));
+    public void setDefaultStatFormula(String type, LinearValue value) {
+        stats.put(UtilityMethods.enumName(type), value);
     }
 
-    public void setStat(StatType type, LinearValue value) {
-        stats.put(type, value);
-    }
-
-    public double calculateStat(StatType stat, int level) {
+    public double calculateStat(String stat, int level) {
         return getStatInfo(stat).calculate(level);
     }
 
@@ -384,8 +391,15 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skills.values();
     }
 
-    private LinearValue getStatInfo(StatType type) {
-        return stats.containsKey(type) ? stats.get(type) : type.getDefault();
+    @NotNull
+    private LinearValue getStatInfo(String stat) {
+        LinearValue found = stats.get(stat);
+        return found == null ? StatInfo.valueOf(stat).getDefaultFormula() : found;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PlayerClass && ((PlayerClass) obj).id.equals(id);
     }
 
     public String getActionBar() {
@@ -394,30 +408,5 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public boolean hasActionBar() {
         return actionBarFormat != null;
-    }
-
-    @Override
-    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
-        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null
-                : hologramLocation == null ? getPlayerLocation(playerData) : hologramLocation;
-        playerData.giveExperience(experience, source, hologramLocation, true);
-    }
-
-    @Override
-    public boolean shouldHandle(PlayerData playerData) {
-        return equals(playerData.getProfess());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PlayerClass that = (PlayerClass) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

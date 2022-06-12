@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.Indyuce</groupId>
 	<artifactId>MMOCore</artifactId>
-	<version>1.9.2</version>
+	<version>1.9.3</version>
 	<name>MMOCore</name>
 	<description>Offer your players a brand new RPG experience!!</description>
 
@@ -41,8 +41,15 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
+
 				<configuration>
 					<source>9</source>
 					<target>9</target>
@@ -214,6 +221,33 @@
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!--Quest Plugin-->
+		<dependency>
+			<groupId>me.blackvein</groupId>
+			<artifactId>Quests</artifactId>
+			<version>4.4.1-b340</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fr.skytasul.quests</groupId>
+			<artifactId>BeautyQuests</artifactId>
+			<version>0.19.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.guillaumevdn</groupId>
+			<artifactId>QuestCreator</artifactId>
+			<version>6.39.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.guillaumevdn</groupId>
+			<artifactId>GCore</artifactId>
+			<version>8.39.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<!-- Guild plugins -->
 		<dependency>

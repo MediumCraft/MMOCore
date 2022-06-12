@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.api.player.profess.resource;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
 import org.bukkit.attribute.Attribute;
 
@@ -20,27 +19,27 @@ public enum PlayerResource {
             (data, amount) -> data.getPlayer().setHealth(amount)),
 
     MANA(PlayerData::getMana,
-            data -> data.getStats().getStat(StatType.MAX_MANA),
+            data -> data.getStats().getStat("MAX_MANA"),
             (data, amount) -> data.giveMana(amount, PlayerResourceUpdateEvent.UpdateReason.REGENERATION),
             (data, amount) -> data.giveMana(amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),
             (data, amount) -> data.giveMana(-amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),
             (data, amount) -> data.setMana(amount)),
 
     STAMINA(PlayerData::getStamina,
-            data -> data.getStats().getStat(StatType.MAX_STAMINA),
+            data -> data.getStats().getStat("MAX_STAMINA"),
             (data, amount) -> data.giveStamina(amount, PlayerResourceUpdateEvent.UpdateReason.REGENERATION),
             (data, amount) -> data.giveStamina(amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),
             (data, amount) -> data.giveStamina(-amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),
             (data, amount) -> data.setStamina(amount)),
 
     STELLIUM(PlayerData::getStellium,
-            data -> data.getStats().getStat(StatType.MAX_STELLIUM),
+            data -> data.getStats().getStat("MAX_STELLIUM"),
             (data, amount) -> data.giveStellium(amount, PlayerResourceUpdateEvent.UpdateReason.REGENERATION),
             (data, amount) -> data.giveStellium(amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),
             (data, amount) -> data.giveStellium(-amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),
             (data, amount) -> data.setStellium(amount));
 
-    private final StatType regenStat, maxRegenStat;
+    private final String regenStat, maxRegenStat;
     private final ClassOption offCombatRegen;
     private final Function<PlayerData, Double> current, max;
     private final BiConsumer<PlayerData, Double> regen;
@@ -54,8 +53,8 @@ public enum PlayerResource {
                    BiConsumer<PlayerData, Double> give,
                    BiConsumer<PlayerData, Double> take,
                    BiConsumer<PlayerData, Double> set) {
-        this.regenStat = StatType.valueOf(name() + "_REGENERATION");
-        this.maxRegenStat = StatType.valueOf("MAX_" + name() + "_REGENERATION");
+        this.regenStat = name() + "_REGENERATION";
+        this.maxRegenStat = "MAX_" + name() + "_REGENERATION";
         this.offCombatRegen = ClassOption.valueOf("OFF_COMBAT_" + name() + "_REGEN");
         this.current = current;
         this.max = max;
@@ -68,14 +67,14 @@ public enum PlayerResource {
     /**
      * @return Stat which corresponds to flat resource regeneration
      */
-    public StatType getRegenStat() {
+    public String getRegenStat() {
         return regenStat;
     }
 
     /**
      * @return Stat which corresponds to resource regeneration scaling with the player's max health
      */
-    public StatType getMaxRegenStat() {
+    public String getMaxRegenStat() {
         return maxRegenStat;
     }
 

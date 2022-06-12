@@ -5,11 +5,13 @@ import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
     private final RandomAmount amount;
+    double counter = 0;
 
     /**
      * Used to register experience sources with SPECIFIC experience outputs.
@@ -27,8 +29,8 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
         return amount;
     }
 
-    public int rollAmount() {
-        return amount.calculateInt();
+    public double rollAmount() {
+        return amount.calculate();
     }
 
     /**

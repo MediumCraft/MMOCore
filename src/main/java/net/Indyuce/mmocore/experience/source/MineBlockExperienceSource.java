@@ -15,7 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class MineBlockExperienceSource extends SpecificExperienceSource<Material> {
-    public final Material material;
+    private final Material material;
     private final boolean silkTouch;
     private final boolean crop;
 

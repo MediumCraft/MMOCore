@@ -58,8 +58,8 @@ public class BoosterManager {
 		return d;
 	}
 
-	public int calculateExp(Profession profession, double exp) {
-		return (int) (exp * getMultiplier(profession));
+	public double calculateExp(Profession profession, double exp) {
+		return (exp * getMultiplier(profession));
 	}
 
 	/**

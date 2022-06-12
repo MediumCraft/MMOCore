@@ -13,6 +13,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -33,7 +34,7 @@ public class LootChestRegion {
         }
     };
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     public LootChestRegion(ConfigurationSection config) {
         Validate.notNull(config, "Could not load config");
@@ -85,7 +86,7 @@ public class LootChestRegion {
         player.setLastActivity(PlayerActivity.LOOT_CHEST_SPAWN);
 
         // First randomly determine the chest tier
-        ChestTier tier = rollTier();
+        ChestTier tier = rollTier(player);
 
         // Find a random location, 20 trials max
         Location location = getRandomLocation(player.getPlayer().getLocation());
@@ -108,7 +109,7 @@ public class LootChestRegion {
         location.getBlock().setType(Material.CHEST);
         Chest chest = (Chest) location.getBlock().getState();
         tier.getDropTable().collect(builder).forEach(item -> {
-            Integer slot = slots.get(random.nextInt(slots.size()));
+            Integer slot = slots.get(RANDOM.nextInt(slots.size()));
             chest.getInventory().setItem(slot, item);
             slots.remove(slot);
         });
@@ -116,17 +117,39 @@ public class LootChestRegion {
         MMOCore.plugin.lootChests.register(lootChest);
     }
 
-    // TODO stat to increase chance to get higher tiers?
-    public ChestTier rollTier() {
+    /**
+     * @param player Player rolling the tier
+     * @return A randomly picked tiers taking into account tier spawn rates
+     *         and the player Chance attribute
+     */
+    @NotNull
+    public ChestTier rollTier(PlayerData player) {
+        double chance = player.getStats().getStat("CHANCE") * MMOCore.plugin.configManager.lootChestsChanceWeight;
 
-        double s = 0;
+        double sum = 0;
+        for (ChestTier tier : tiers)
+            sum += getTierCoefficient(tier.getChance(), chance);
+        Validate.isTrue(sum > 0, "No chest tier was found");
+
+        double cummulated = 0;
         for (ChestTier tier : tiers) {
-            if (random.nextDouble() < tier.chance / (1 - s))
+            cummulated += getTierCoefficient(tier.getChance(), chance);
+            if (RANDOM.nextDouble() < cummulated / sum)
                 return tier;
-            s += tier.chance;
         }
 
-        return tiers.stream().findAny().orElse(null);
+        throw new RuntimeException("Could not roll chest tier");
+    }
+
+    private static final double CHANCE_COEF = 7 / 100;
+
+    /**
+     * - Chance = 0    | tier coefficient is left unchanged.
+     * - Chance -> +oo | all tier coefficients are the same (1)
+     * - Chance = 50   | coefficients become their square roots
+     */
+    private double getTierCoefficient(double initialTierChance, double chance) {
+        return Math.pow(initialTierChance, 1 / Math.pow(1 + CHANCE_COEF * chance, 1 / 3));
     }
 
     public Location getRandomLocation(Location center) {
@@ -151,9 +174,9 @@ public class LootChestRegion {
          * Chooses a random direction and get the block in
          * that direction which has the same height as the player
          */
-        double a = random.nextDouble() * 2 * Math.PI;
+        double a = RANDOM.nextDouble() * 2 * Math.PI;
         Vector dir = new Vector(Math.cos(a), 0, Math.sin(a))
-                .multiply(algOptions.minRange + random.nextDouble() * (algOptions.maxRange - algOptions.minRange));
+                .multiply(algOptions.minRange + RANDOM.nextDouble() * (algOptions.maxRange - algOptions.minRange));
         Location random = center.add(dir);
 
         /*
