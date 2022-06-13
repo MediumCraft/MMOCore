@@ -2,7 +2,10 @@ package net.Indyuce.mmocore.tree;
 
 import com.gmail.nossr50.mcmmo.acf.annotation.HelpSearchTags;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.player.modifier.PlayerModifier;
+import io.lumine.mythic.lib.util.configobject.ConfigObject;
+import io.lumine.mythic.lib.util.configobject.LineConfigObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
@@ -17,6 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.logging.Level;
 
 //We must use generics to get the type of the corresponding tree
 public class SkillTreeNode implements Unlockable {
@@ -30,8 +34,8 @@ public class SkillTreeNode implements Unlockable {
     private final HashMap<NodeContext, List<String>> lores = new HashMap<>();
 
     //TODO modifiers depending on level with drop tables
-    private final HashMap<Integer, HashSet<PlayerModifier>> modifiers = new HashMap<>();
-    private final HashMap<Integer, HashSet<Trigger>> triggers = new HashMap<>();
+    private final HashMap<Integer, List<PlayerModifier>> modifiers = new HashMap<>();
+    private final HashMap<Integer, List<Trigger>> triggers = new HashMap<>();
     //The max level the skill tree node can have and the max amount of children it can have.
     private final int maxLevel, maxChildren, size;
     private final ArrayList<SkillTreeNode> children = new ArrayList<>();
@@ -43,7 +47,7 @@ public class SkillTreeNode implements Unlockable {
 
 
     private final HashMap<SkillTreeNode, Integer> softParents = new HashMap<>();
-    private final HashMap<SkillTreeNode ,Integer> strongParents = new HashMap<>();
+    private final HashMap<SkillTreeNode, Integer> strongParents = new HashMap<>();
 
 
     public SkillTreeNode(SkillTree tree, ConfigurationSection config) {
@@ -59,7 +63,7 @@ public class SkillTreeNode implements Unlockable {
         for (String state : Objects.requireNonNull(config.getConfigurationSection("lores")).getKeys(false)) {
             NodeState nodeState = NodeState.valueOf(MMOCoreUtils.toEnumName(state));
             if (nodeState == NodeState.UNLOCKED) {
-                //TODO: Message could'nt load ... instead of exception
+                //TODO: Message could'nt load ... instead of exce/*99+*-*99**9+-ption
                 ConfigurationSection section = config.getConfigurationSection("lores." + state);
                 for (String level : section.getKeys(false)) {
                     lores.put(new NodeContext(nodeState, Integer.parseInt(level)), section.getStringList(level));
@@ -68,6 +72,45 @@ public class SkillTreeNode implements Unlockable {
                 lores.put(new NodeContext(nodeState, 0), config.getStringList("lores." + state));
             }
         }
+        //We load the triggers
+        if (config.contains("triggers")) {
+            try {
+                ConfigurationSection section = config.getConfigurationSection("triggers");
+                for (String level : section.getKeys(false)) {
+                    int value = Integer.parseInt(level);
+                    for (String str : section.getStringList(level)) {
+                        Trigger trigger = MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(str));
+                        if (!triggers.containsKey(value)) {
+                            triggers.put(value, new ArrayList<>());
+                        }
+                        triggers.get(value).add(trigger);
+                    }
+                }
+            } catch (NumberFormatException e) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load triggers for the skill node " + tree.getId() + "." + id + " :Problem with the Number Format.");
+            }
+        }
+        //We load the player Modifiers
+        if (config.contains("modifiers")) {
+            try {
+                ConfigurationSection section = config.getConfigurationSection("modifiers");
+                for (String level : section.getKeys(false)) {
+                    int value = Integer.parseInt(level);
+                    for (String str : section.getStringList(level)) {
+                        PlayerModifier modifier = MythicLib.plugin.getModifiers().loadPlayerModifier(new LineConfigObject(new MMOLineConfig(str)));
+                        if (!modifiers.containsKey(value)) {
+                            modifiers.put(value, new ArrayList<>());
+                        }
+                        modifiers.get(value).add(modifier);
+                    }
+                }
+
+            } catch (NumberFormatException e) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load modifiers for the skill node " + tree.getId() + "." + id+ " :Problem with the Number Format.");
+            }
+        }
+
+
         maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
         maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
         //If coordinates are precised adn we are not wiht an automaticTree we set them up
@@ -88,6 +131,11 @@ public class SkillTreeNode implements Unlockable {
 
     public SkillTree getTree() {
         return tree;
+    }
+
+
+    public void setIsRoot() {
+        isRoot = true;
     }
 
     public boolean isRoot() {
@@ -148,19 +196,19 @@ public class SkillTreeNode implements Unlockable {
     }
 
     public String getName() {
-        return MythicLib.plugin.parseColors( name);
+        return MythicLib.plugin.parseColors(name);
     }
 
     public IntegerCoordinates getCoordinates() {
         return coordinates;
     }
 
-    public Set<PlayerModifier> getModifiers(int level) {
+    public List<PlayerModifier> getModifiers(int level) {
         return modifiers.get(level);
     }
 
 
-    public Set<Trigger> getTriggers(int level) {
+    public List<Trigger> getTriggers(int level) {
         return triggers.get(level);
     }
 
@@ -244,13 +292,12 @@ public class SkillTreeNode implements Unlockable {
     public List<String> getLore(PlayerData playerData) {
         Placeholders holders = getPlaceholders(playerData);
         List<String> parsedLore = new ArrayList<>();
-        NodeContext context= new NodeContext(playerData.getNodeState(this),playerData.getNodeLevel(this));
+        NodeContext context = new NodeContext(playerData.getNodeState(this), playerData.getNodeLevel(this));
         lores.get(context).forEach(string -> parsedLore.add(
-                MythicLib.plugin.parseColors( holders.apply(playerData.getPlayer(), string))));
+                MythicLib.plugin.parseColors(holders.apply(playerData.getPlayer(), string))));
         return parsedLore;
 
     }
-
 
 
     /**
@@ -313,8 +360,6 @@ public class SkillTreeNode implements Unlockable {
             return Objects.hash(nodeState, nodeLevel);
         }
     }
-
-
 
 
 }

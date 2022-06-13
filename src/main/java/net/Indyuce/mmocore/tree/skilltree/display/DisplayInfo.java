@@ -42,6 +42,8 @@ public class DisplayInfo {
         if(!(obj instanceof DisplayInfo))
             return false;
         DisplayInfo displayInfo= (DisplayInfo) obj;
+        if(nodeState==null)
+            return displayInfo.getNodeState()==null;
         return nodeState==displayInfo.getNodeState()&&size==displayInfo.getSize();
     }
 

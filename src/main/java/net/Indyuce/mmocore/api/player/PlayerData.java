@@ -3,9 +3,11 @@ package net.Indyuce.mmocore.api.player;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
+import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.NodeState;
@@ -78,7 +80,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Nullable
     private PlayerClass profess;
-    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints,skillTreeReallocationPoints;// skillReallocationPoints,
+    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints;// skillReallocationPoints,
     private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
@@ -217,12 +219,26 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return skillTreePoints.containsKey(treeId);
     }
 
+
+    public void removeModifiersFrom(SkillTree skillTree) {
+        for (SkillTreeNode node : skillTree.getNodes()) {
+            for (int i = 0; i < node.getMaxLevel(); i++) {
+                List<PlayerModifier> modifiers = node.getModifiers(i);
+                if (modifiers != null) {
+                    for (PlayerModifier modifier : modifiers) {
+                        modifier.unregister(getMMOPlayerData());
+                    }
+                }
+            }
+        }
+    }
+
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
         NodeState nodeState = nodeStates.get(node);
         //Check the State of the node
         if (nodeState != NodeState.UNLOCKED && nodeState != NodeState.UNLOCKABLE)
             return false;
-        return getNodeLevel(node)<node.getMaxLevel()&&(skillTreePoints.get(node.getTree().getId()) > 0 || skillTreePoints.get("global") > 0);
+        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.get(node.getTree().getId()) > 0 || skillTreePoints.get("global") > 0);
     }
 
     /**
@@ -231,14 +247,37 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public <T extends SkillTree> void incrementNodeLevel(SkillTreeNode node) {
         setNodeLevel(node, getNodeLevel(node) + 1);
+        //Triggers the triggers of the node
+        List<Trigger> triggers = node.getTriggers(getNodeLevel(node));
+        if (triggers != null) {
+            for (Trigger trigger : triggers) {
+                trigger.apply(this);
+            }
+
+        }
+
+        //Applies player modifiers
+        List<PlayerModifier> modifiers = node.getModifiers(getNodeLevel(node));
+
+        if (modifiers != null) {
+            Bukkit.broadcastMessage("Modifier: "+modifiers.size());
+            for (PlayerModifier modifier : modifiers) {
+                modifier.register(getMMOPlayerData());
+            }
+        }
+
+        Bukkit.broadcastMessage(playerStats.getStat(StatType.HEALTH_REGENERATION)+"");
+
         if (nodeStates.get(node) == NodeState.UNLOCKABLE)
             setNodeState(node, NodeState.UNLOCKED);
         if (skillTreePoints.get(node.getTree().getId()) > 0)
             withdrawSkillTreePoints(node.getTree().getId(), 1);
         else
             withdrawSkillTreePoints("global", 1);
-        //We unload the nodeStates map and reload it completely
-        nodeStates= new HashMap<>();
+        //We unload the nodeStates map (for the skill tree) and reload it completely
+        for (SkillTreeNode node1 : node.getTree().getNodes()) {
+            nodeStates.remove(node1);
+        }
         node.getTree().setupNodeState(this);
 
     }
@@ -250,13 +289,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         SkillTree skillTree = node.getTree();
 
         DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
+
         return skillTree.getIcon(displayInfo);
     }
 
 
     public Icon getIcon(SkillTree skillTree, IntegerCoordinates coordinates) {
+
         if (skillTree.isNode(coordinates)) {
             SkillTreeNode node = skillTree.getNode(coordinates);
+            if (nodeStates.get(node) == null) {
+                skillTree.getNodes().forEach(nodee -> Bukkit.broadcastMessage(nodee.getId() + "  " + nodeStates.get(nodee)));
+            }
             DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
             return skillTree.getIcon(displayInfo);
         }
@@ -399,7 +443,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void giveSkillTreeReallocationPoints(int amount) {
-        skillTreeReallocationPoints+=amount;
+        skillTreeReallocationPoints += amount;
     }
 
     @Override

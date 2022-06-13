@@ -1,18 +1,18 @@
-id: 'combat'
-name: '&4Combat'
+id: autocombat
+name: AutoCombat
+type: automatic
+item: GOLDEN_AXE
 lore: 
-- '&6This skill tree is used for combat abilities!'
-type: 'linked'
-item: 'DIAMOND_AXE'
+- '&6This autoskill tree is used for combat abilities!'
+
 nodes:
   strength:
     name: 'Combat strength'
-    coordinates:
-      x: 0
-      y: 0
-    
+    children: 
+      strong: 
+        force: 2
+      
     max-level: 2
-    is-root: true
     size: 1
     lores:
       unlocked:
@@ -32,9 +32,10 @@ nodes:
     name: 'Force'
     size: 1
     max-children: 1
-    coordinates:
-      x: 1
-      y: 0
+    children: 
+      strong: 
+        weaponry: 1
+        archery: 1
     lores:
       unlocked:
         1 : 
@@ -49,11 +50,7 @@ nodes:
         - '&aThis is skill is fully locked'
   
   weaponry:
-    name: 'Weaponry'
-    coordinates:
-      x: 2
-      y: 0
-  
+    name: 'Weaponry'  
     max-level: 2
     size: 1
     lores:
@@ -71,12 +68,12 @@ nodes:
   
   archery:
     name: 'Archery'
-    coordinates:
-      x: 1
-      y: 1
-  
+    
     max-level: 2
     size: 1
+    children: 
+      strong: 
+        archery2: 2
     lores:
       unlocked:
         1 : 
@@ -91,12 +88,12 @@ nodes:
         - '&aThis is skill is fully locked'
   archery2:
     name: 'Archery2'
-    coordinates:
-      x: 1
-      y: 2
-  
+
     max-level: 2
     size: 1
+    children: 
+      strong: 
+        archery3: 1
     lores:
       unlocked:
         1 : 
@@ -111,9 +108,6 @@ nodes:
         - '&aThis is skill is fully locked'
   archery3:
     name: 'Archery3'
-    coordinates:
-      x: 1
-      y: 3 
   
     max-level: 2
     size: 1
@@ -130,10 +124,7 @@ nodes:
       fully-locked: 
         - '&aThis is skill is fully locked'
 
-paths:
-  coordinates:
-    x: 2
-    y: 2
+
 
 icons: 
   unlocked:

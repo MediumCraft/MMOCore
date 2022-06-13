@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 public class SkillTreePointsCommandTreeNode extends CommandTreeNode {
     BiFunction<PlayerData, String,Integer> get;
 
-    public SkillTreePointsCommandTreeNode(CommandTreeNode parent, TriConsumer<PlayerData, Integer, String> give,
-                                          TriConsumer<PlayerData, Integer, String> set, BiFunction<PlayerData, String,Integer> get) {
+    public SkillTreePointsCommandTreeNode(CommandTreeNode parent, TriConsumer<PlayerData, Integer, String> set,
+                                          TriConsumer<PlayerData, Integer, String> give, BiFunction<PlayerData, String,Integer> get) {
         super(parent, "skill-tree-points");
         addChild(new ActionCommandTreeNode(this, "give", give));
         addChild(new ActionCommandTreeNode(this, "set", set));

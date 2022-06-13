@@ -181,7 +181,7 @@ public class SkillTreeViewer extends EditableInventory {
                 //If it is path we remove the display name and the lore.
                 else {
                     meta.setLore(new ArrayList<>());
-                    meta.setDisplayName("");
+                    meta.setDisplayName(" ");
                 }
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -297,6 +297,8 @@ public class SkillTreeViewer extends EditableInventory {
                     //We remove all the nodeStates progress
                     playerData.giveSkillTreePoints(skillTree.getId(), reallocated);
                     playerData.giveSkillTreeReallocationPoints(-1);
+                    //We unregister all the modifiers or the player
+                    playerData.removeModifiersFrom(skillTree);
                     for (SkillTreeNode node : skillTree.getNodes()) {
                         playerData.setNodeLevel(node, 0);
                         playerData.setNodeState(node, NodeState.LOCKED);
