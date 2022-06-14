@@ -4,11 +4,12 @@ import org.bukkit.event.HandlerList;
 
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import org.jetbrains.annotations.Nullable;
 
 public class PlayerLevelUpEvent extends PlayerDataEvent {
 	private static final HandlerList handlers = new HandlerList();
 
-	// if null, this is main level
+	// If null, this is main level
 	private final Profession profession;
 	private final int oldLevel, newLevel;
 
@@ -36,6 +37,7 @@ public class PlayerLevelUpEvent extends PlayerDataEvent {
 		return profession != null;
 	}
 
+	@Nullable
 	public Profession getProfession() {
 		return profession;
 	}
