@@ -59,13 +59,21 @@ protect-custom-mine: false
 # - mcmmo
 party-plugin: mmocore
 
-## Edit the plugin handling parties here.
-## Supported values (just copy and paste):
-## - mmocore
-## - beauty_quest
-## - quest_creator
-## - quests
+# Edit the plugin handling parties here.
+# Supported values (just copy and paste):
+# - mmocore
+# - beauty_quest
+# - quest_creator
+# - quests
 quest-plugin: mmocore
+
+# Edit the plugin handling guilds here.
+# Supported values (just copy and paste):
+# - mmocore
+# - guilds
+# - kingdomsx
+# - ultimate_clans
+guild-plugin: mmocore
 
 # MythicLib introduces a CHANCE stat that is used in
 # several different systems in MMOCore. By changing these
@@ -205,6 +213,10 @@ resource-bar-colors:
   stamina-whole: 'GREEN'
   stamina-half: 'DARK_GREEN'
   stamina-empty: 'WHITE'
+
+# When set to true, attributes are saved and
+# reset when a player changes their class.
+attributes-as-class-info: true
 
 # Whether or not the admin commands should display
 # the result of the command when ran.

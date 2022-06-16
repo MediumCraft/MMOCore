@@ -47,7 +47,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 		if (config.contains("guild")) {
 			Guild guild = provider.getGuildManager().getGuild(config.getString("guild"));
-			data.setGuild(guild.getMembers().has(data.getUniqueId()) ? guild : null);
+			data.setGuild(guild.hasMember(data.getUniqueId()) ? guild : null);
 		}
 		if (config.contains("attribute"))
 			data.getAttributes().load(config.getConfigurationSection("attribute"));

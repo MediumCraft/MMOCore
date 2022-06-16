@@ -27,7 +27,7 @@ public class GuildInvite extends Request {
     @Override
     public void whenAccepted() {
         guild.removeLastInvite(getCreator().getPlayer());
-        guild.getMembers().forEach(member -> {
+        guild.forEachMember(member -> {
                     if (Bukkit.getPlayer(member) != null) {
                         MMOCore.plugin.configManager.getSimpleMessage("guild-joined-other", "player",
                                 getTarget().getPlayer().getName()).send(Bukkit.getPlayer(member));

@@ -226,9 +226,9 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			else if (placeholder.equalsIgnoreCase("leader"))
 				return Bukkit.getOfflinePlayer(playerData.getGuild().getOwner()).getName();
 			else if (placeholder.equalsIgnoreCase("members"))
-				return "" + playerData.getGuild().getMembers().count();
+				return String.valueOf(playerData.getGuild().countMembers());
 			else if (placeholder.equalsIgnoreCase("online_members"))
-				return "" + playerData.getGuild().getMembers().countOnline();
+				return String.valueOf(playerData.getGuild().countOnlineMembers());
 		}
 
 		return null;

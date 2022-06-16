@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.guild;
 
-import net.Indyuce.mmocore.guild.compat.FactionsGuildModule;
 import net.Indyuce.mmocore.guild.compat.GuildsGuildModule;
 import net.Indyuce.mmocore.guild.compat.UltimateClansGuildModule;
 import net.Indyuce.mmocore.guild.provided.MMOCoreGuildModule;
@@ -9,7 +8,8 @@ import org.bukkit.Bukkit;
 import javax.inject.Provider;
 
 public enum GuildModuleType {
-    FACTIONS("Factions", FactionsGuildModule::new),
+    // Useless since MythicLib already supports FactionBridge
+    // FACTIONS("Factions", FactionsGuildModule::new),
     GUILDS("Guilds", GuildsGuildModule::new),
     KINGDOMSX("Guilds", GuildsGuildModule::new),
     MMOCORE("MMOCore", MMOCoreGuildModule::new),

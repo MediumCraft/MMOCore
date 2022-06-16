@@ -33,7 +33,7 @@ public abstract class GuildDataManager {
 	}
 
 	public void unregisterGuild(Guild guild) {
-		guild.getMembers().forEach(member -> guild.removeMember(member, true));
+		guild.forEachMember(member -> guild.removeMember(member, true));
 		// guild.getMembers().clear();
 		guilds.remove(guild.getId());
 		delete(guild);

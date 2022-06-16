@@ -6,7 +6,10 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.guild.AbstractGuild;
 import net.Indyuce.mmocore.guild.GuildModule;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class UltimateClansGuildModule implements GuildModule {
     private static final UClans API = (UClans) Bukkit.getPluginManager().getPlugin("UltimateCLans");
@@ -22,7 +25,13 @@ public class UltimateClansGuildModule implements GuildModule {
         private final ClanData clan;
 
         CustomGuild(ClanData clan) {
-            this.clan = clan;
+            this.clan = Objects.requireNonNull(clan);
+        }
+
+        @Override
+        public boolean hasMember(Player player) {
+            // List implementation. Pretty bad
+            return clan.getMembers().contains(player);
         }
     }
 }
