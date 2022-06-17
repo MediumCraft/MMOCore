@@ -124,7 +124,6 @@ public class MMOCore extends LuminePlugin {
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
 		MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
 
-
 		// Register extra objective, drop items...
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
 			loadManager.registerLoader(new WorldGuardMMOLoader());
