@@ -28,6 +28,7 @@ public class ConfigManager {
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight;
+    public int maxPartyLevelDifference;
 
     private final FileConfiguration messages;
     private final boolean chatInput;
@@ -99,6 +100,7 @@ public class ConfigManager {
         globalSkillCooldown = MMOCore.plugin.getConfig().getLong("global-skill-cooldown") * 50;
         noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
         lootChestsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.loot-chests");
+        maxPartyLevelDifference = MMOCore.plugin.getConfig().getInt("party.max-level-difference");
 
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
