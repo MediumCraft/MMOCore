@@ -172,6 +172,13 @@ public class EditablePartyView extends EditableInventory {
                         return;
                     }
 
+                    if (Math.abs(targetData.getLevel() - party.getLevel()) > MMOCore.plugin.configManager.maxPartyLevelDifference) {
+                        MMOCore.plugin.configManager.getSimpleMessage("high-level-difference", "player", target.getName()).send(player);
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                        open();
+                        return;
+                    }
+
                     party.sendInvite(playerData, targetData);
                     MMOCore.plugin.configManager.getSimpleMessage("sent-party-invite", "player", target.getName()).send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
