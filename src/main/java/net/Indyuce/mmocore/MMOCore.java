@@ -25,7 +25,10 @@ import net.Indyuce.mmocore.comp.region.WorldGuardMMOLoader;
 import net.Indyuce.mmocore.comp.region.WorldGuardRegionHandler;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
+import net.Indyuce.mmocore.guild.GuildModule;
+import net.Indyuce.mmocore.guild.GuildModuleType;
 import net.Indyuce.mmocore.guild.provided.Guild;
+import net.Indyuce.mmocore.guild.provided.MMOCoreGuildModule;
 import net.Indyuce.mmocore.listener.*;
 import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
@@ -97,6 +100,8 @@ public class MMOCore extends LuminePlugin {
 	// Modules
 	@NotNull
 	public PartyModule partyModule;
+	@NotNull
+	public GuildModule guildModule;
 
 	public boolean shouldDebugSQL = false;
 
@@ -118,7 +123,6 @@ public class MMOCore extends LuminePlugin {
 		// Register MMOCore-specific objects
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
 		MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
-
 
 		// Register extra objective, drop items...
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
@@ -216,8 +220,8 @@ public class MMOCore extends LuminePlugin {
 
 		// Load quest module
 		try {
-			String questPluginName = UtilityMethods.enumName(getConfig().getString("quest-plugin"));
-			PartyModuleType moduleType = PartyModuleType.valueOf(questPluginName);
+			String pluginName = UtilityMethods.enumName(getConfig().getString("quest-plugin"));
+			PartyModuleType moduleType = PartyModuleType.valueOf(pluginName);
 			Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
 			partyModule = moduleType.provideModule();
 		} catch (RuntimeException exception) {
@@ -225,12 +229,10 @@ public class MMOCore extends LuminePlugin {
 			partyModule = new MMOCorePartyModule();
 		}
 
-
-
 		// Load party module
 		try {
-			String partyPluginName = UtilityMethods.enumName(getConfig().getString("party-plugin"));
-			PartyModuleType moduleType = PartyModuleType.valueOf(partyPluginName);
+			String pluginName = UtilityMethods.enumName(getConfig().getString("party-plugin"));
+			PartyModuleType moduleType = PartyModuleType.valueOf(pluginName);
 			Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
 			partyModule = moduleType.provideModule();
 		} catch (RuntimeException exception) {
@@ -238,6 +240,16 @@ public class MMOCore extends LuminePlugin {
 			partyModule = new MMOCorePartyModule();
 		}
 
+		// Load guild module
+		try {
+			String pluginName = UtilityMethods.enumName(getConfig().getString("guild-plugin"));
+			GuildModuleType moduleType = GuildModuleType.valueOf(pluginName);
+			Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
+			guildModule = moduleType.provideModule();
+		} catch (RuntimeException exception) {
+			getLogger().log(Level.WARNING, "Could not initialize guild module: " + exception.getMessage());
+			guildModule = new MMOCoreGuildModule();
+		}
 
 		// Skill casting
 		try {

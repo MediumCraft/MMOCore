@@ -540,17 +540,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             return;
         }
 
-        value = MMOCore.plugin.boosterManager.calculateExp(null, value);
-        value *= 1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100;
-
         // Splitting exp through party members
-        AbstractParty party = getParty();
-        if (splitExp && party != null) {
-            List<PlayerData> onlineMembers = getParty().getOnlineMembers();
+        AbstractParty party;
+        if (splitExp && (party = getParty()) != null) {
+            List<PlayerData> onlineMembers = party.getOnlineMembers();
             value /= onlineMembers.size();
             for (PlayerData member : onlineMembers)
-                member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
+                if (!equals(member))
+                    member.giveExperience(value, source, null, false);
         }
+
+        // Apply buffs AFTER splitting exp
+        value *= (1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100) * MMOCore.plugin.boosterManager.getMultiplier(null);
 
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
         Bukkit.getPluginManager().callEvent(event);

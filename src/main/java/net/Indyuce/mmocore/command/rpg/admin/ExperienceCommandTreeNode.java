@@ -23,9 +23,9 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 
 		addChild(new ActionCommandTreeNode(this, "set", PlayerData::setExperience, PlayerProfessions::setExperience));
 		addChild(new ActionCommandTreeNode(this, "give", (data, value) -> data.giveExperience(value, EXPSource.COMMAND), (professions, profession,
-				value) -> professions.giveExperience(profession, value, EXPSource.COMMAND, professions.getPlayerData().getPlayer().getLocation())));
+				value) -> professions.giveExperience(profession, value, EXPSource.COMMAND)));
 		addChild(new ActionCommandTreeNode(this, "take", (data, value) -> data.giveExperience(-value, EXPSource.COMMAND), (professions, profession,
-				value) -> professions.giveExperience(profession, -value, EXPSource.COMMAND, professions.getPlayerData().getPlayer().getLocation())));
+				value) -> professions.giveExperience(profession, -value, EXPSource.COMMAND)));
 	}
 
 	public static class ActionCommandTreeNode extends CommandTreeNode {

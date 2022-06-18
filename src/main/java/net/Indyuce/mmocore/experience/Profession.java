@@ -127,7 +127,7 @@ public class Profession extends PostLoadObject implements ExperienceObject {
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
         hologramLocation = !getOption(Profession.ProfessionOption.EXP_HOLOGRAMS) ? null
                 : hologramLocation;
-        playerData.getCollectionSkills().giveExperience(this, experience, EXPSource.SOURCE, hologramLocation);
+        playerData.getCollectionSkills().giveExperience(this, experience, EXPSource.SOURCE, hologramLocation, true);
     }
 
     @Override

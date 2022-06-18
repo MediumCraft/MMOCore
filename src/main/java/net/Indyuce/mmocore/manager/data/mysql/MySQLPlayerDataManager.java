@@ -71,7 +71,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
 				if (!isEmpty(result.getString("guild"))) {
 					Guild guild = provider.getGuildManager().getGuild(result.getString("guild"));
-					data.setGuild(guild.getMembers().has(data.getUniqueId()) ? guild : null);
+					data.setGuild(guild.hasMember(data.getUniqueId()) ? guild : null);
 				}
 				if (!isEmpty(result.getString("attributes"))) data.getAttributes().load(result.getString("attributes"));
 				if (!isEmpty(result.getString("professions")))

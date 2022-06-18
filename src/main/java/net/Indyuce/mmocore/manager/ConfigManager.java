@@ -23,7 +23,7 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo;
+    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
@@ -99,6 +99,7 @@ public class ConfigManager {
         globalSkillCooldown = MMOCore.plugin.getConfig().getLong("global-skill-cooldown") * 50;
         noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
         lootChestsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.loot-chests");
+        attributesAsClassInfo = MMOCore.plugin.getConfig().getBoolean("attributes-as-class-info");
 
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);

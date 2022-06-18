@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.party.AbstractParty;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -147,15 +149,15 @@ public class PlayerProfessions {
         giveExperience(profession, total, source);
     }
 
-    public void giveExperience(Profession profession, double value, EXPSource source) {
-        giveExperience(profession, value, source, null);
-    }
-
     public boolean hasReachedMaxLevel(Profession profession) {
         return profession.hasMaxLevel() && getLevel(profession) >= profession.getMaxLevel();
     }
 
-    public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation) {
+    public void giveExperience(Profession profession, double value, EXPSource source) {
+        giveExperience(profession, value, source, null, true);
+    }
+
+    public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         Validate.isTrue(playerData.isOnline(), "Cannot give experience to offline player");
         if (value <= 0)
             return;
@@ -165,23 +167,31 @@ public class PlayerProfessions {
             return;
         }
 
-        value = MMOCore.plugin.boosterManager.calculateExp(profession, value);
+        // Splitting exp through party members
+        AbstractParty party;
+        if (splitExp && (party = playerData.getParty()) != null) {
+            List<PlayerData> onlineMembers = party.getOnlineMembers();
+            value /= onlineMembers.size();
+            for (PlayerData member : onlineMembers)
+                if (!member.equals(playerData))
+                    member.getCollectionSkills().giveExperience(profession, value, source, null, false);
+        }
 
-        // Adds functionality for additional experience per profession.
-        value *= 1 + playerData.getStats().getInstance("ADDITIONAL_EXPERIENCE_" + UtilityMethods.enumName(profession.getId())).getTotal() / 100;
-
-        // Display hologram
-        if (hologramLocation != null)
-            MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
+        // Apply buffs AFTER splitting exp
+        value *= (1 + playerData.getStats().getStat("ADDITIONAL_EXPERIENCE_" + UtilityMethods.enumName(profession.getId())) / 100) * MMOCore.plugin.boosterManager.getMultiplier(profession);
 
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(playerData, profession, value, source);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
+        // Display hologram
+        if (hologramLocation != null)
+            MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
+
         exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0.) + event.getExperience()));
         int level, oldLevel = getLevel(profession);
-        double needed,exp;
+        double needed, exp;
 
         /*
          * Loop for exp overload when leveling up, will continue
