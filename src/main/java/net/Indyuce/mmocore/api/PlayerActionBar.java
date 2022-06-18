@@ -49,7 +49,7 @@ public class PlayerActionBar extends BukkitRunnable {
                                 .replace("{stellium}", digit.format(data.getStellium()))
                                 .replace("{max_stellium}", StatInfo.valueOf("MAX_STELLIUM").format(data.getStats().getStat("MAX_STELLIUM")))
                                 .replace("{class}", data.getProfess().getName())
-                                .replace("{xp}", "" + data.getExperience())
+                                .replace("{xp}", MythicLib.plugin.getMMOConfig().decimal.format(data.getExperience()))
                                 .replace("{armor}", StatInfo.valueOf("ARMOR").format(data.getPlayer().getAttribute(Attribute.GENERIC_ARMOR).getValue()))
                                 .replace("{level}", "" + data.getLevel())
                                 .replace("{name}", data.getPlayer().getDisplayName())))));

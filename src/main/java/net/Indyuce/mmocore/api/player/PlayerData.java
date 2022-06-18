@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.player;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
@@ -560,7 +561,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         // Experience hologram
         if (hologramLocation != null && isOnline())
-            MMOCoreUtils.displayIndicator(hologramLocation, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", String.valueOf(event.getExperience())).message());
+            MMOCoreUtils.displayIndicator(hologramLocation, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", MythicLib.plugin.getMMOConfig().decimal.format(event.getExperience())).message());
 
         experience = Math.max(0, experience + event.getExperience());
 

@@ -187,7 +187,7 @@ public class PlayerProfessions {
 
         // Display hologram
         if (hologramLocation != null)
-            MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", "" + value).message());
+            MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", MythicLib.plugin.getMMOConfig().decimal.format(event.getExperience())).message());
 
         exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0.) + event.getExperience()));
         int level, oldLevel = getLevel(profession);

@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import io.lumine.mythic.lib.MythicLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +34,7 @@ public class InfoCommandTreeNode extends CommandTreeNode {
 		sender.sendMessage(ChatColor.YELLOW + "----------------------------------------------------");
 		sender.sendMessage(ChatColor.YELLOW + "Class: " + ChatColor.GOLD + playerData.getProfess().getName());
 		sender.sendMessage(ChatColor.YELLOW + "Level: " + ChatColor.GOLD + playerData.getLevel());
-		sender.sendMessage(ChatColor.YELLOW + "Experience: " + ChatColor.GOLD + playerData.getExperience() + ChatColor.YELLOW + " / " + ChatColor.GOLD
+		sender.sendMessage(ChatColor.YELLOW + "Experience: " + ChatColor.GOLD + MythicLib.plugin.getMMOConfig().decimal.format(playerData.getExperience()) + ChatColor.YELLOW + " / " + ChatColor.GOLD
 				+ playerData.getLevelUpExperience());
 		sender.sendMessage(ChatColor.YELLOW + "Class Points: " + ChatColor.GOLD + playerData.getClassPoints());
 		sender.sendMessage(ChatColor.YELLOW + "Quests: " + ChatColor.GOLD + playerData.getQuestData().getFinishedQuests().size() + ChatColor.YELLOW

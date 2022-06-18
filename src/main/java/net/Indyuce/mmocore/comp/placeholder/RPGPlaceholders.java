@@ -128,7 +128,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 					.valueOf(playerData.getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase()));
 
 		else if (identifier.equals("experience"))
-			return String.valueOf(playerData.getExperience());
+			return MythicLib.plugin.getMMOConfig().decimal.format(playerData.getExperience());
 
 		else if (identifier.equals("next_level"))
 			return String.valueOf(playerData.getLevelUpExperience());
