@@ -18,6 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.logging.Level;
+
 public class AttributeView extends EditableInventory {
 	public AttributeView() {
 		super("attribute-view");
@@ -47,12 +49,18 @@ public class AttributeView extends EditableInventory {
 
 	public static class AttributeItem extends InventoryItem {
 		private final PlayerAttribute attribute;
+		private int shiftCost;
 
 		public AttributeItem(String function, ConfigurationSection config) {
 			super(config);
 
 			attribute = MMOCore.plugin.attributeManager
 					.get(function.substring("attribute_".length()).toLowerCase().replace(" ", "-").replace("_", "-"));
+			shiftCost = config.getInt("shift-cost");
+			if (shiftCost < 1) {
+				MMOCore.log(Level.WARNING, "Level up points cost must not be less than 1. Using default value: 1");
+				shiftCost = 1;
+			}
 		}
 
 		@Override
@@ -66,6 +74,7 @@ public class AttributeView extends EditableInventory {
 			holders.register("max", attribute.getMax());
 			holders.register("current", total);
 			holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
+			holders.register("shift_points", shiftCost);
 			attribute.getBuffs().forEach(buff -> {
 				StatInfo info = StatInfo.valueOf(buff.getStat());
 				holders.register("buff_" + buff.getStat().toLowerCase(), info.format(buff.getValue()));
@@ -112,6 +121,7 @@ public class AttributeView extends EditableInventory {
 
 			if (item.getFunction().startsWith("attribute_")) {
 				PlayerAttribute attribute = ((AttributeItem) item).attribute;
+				int shiftCost = ((AttributeItem) item).shiftCost;
 
 				if (playerData.getAttributePoints() < 1) {
 					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point").send(player);
@@ -125,9 +135,21 @@ public class AttributeView extends EditableInventory {
 					MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
 					return;
 				}
-
-				ins.addBase(1);
-				playerData.giveAttributePoints(-1);
+				
+				if (event.isShiftClick()) {
+					if (playerData.getAttributePoints() < shiftCost) {
+						MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point-shift", "shift_points", "" + shiftCost).send(player);
+						MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+						return;
+					}
+					
+					ins.addBase(shiftCost);
+					playerData.giveAttributePoints(-shiftCost);
+				} else {
+					ins.addBase(1);
+					playerData.giveAttributePoints(-1);
+				}
+				
 				MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", "" + ins.getBase()).send(player);
 				MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_ATTRIBUTE).playTo(getPlayer());
 
