@@ -42,7 +42,8 @@ getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '"
 			+ "experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,"
 			+ "attributes LONGTEXT,professions LONGTEXT,times_claimed LONGTEXT,quests LONGTEXT,"
 			+ "waypoints LONGTEXT,friends LONGTEXT,skills LONGTEXT,bound_skills LONGTEXT,"
-			+ "class_info LONGTEXT,PRIMARY KEY (uuid));");
+			+ "class_info LONGTEXT,skill_tree_reallocation_points INT(11) DEFAULT 0,skill_tree_points"
+			+ " LONGTEXT,skill_tree_nodes_level LONGTEXT,PRIMARY KEY (uuid));");
 	}
 
 	@Override

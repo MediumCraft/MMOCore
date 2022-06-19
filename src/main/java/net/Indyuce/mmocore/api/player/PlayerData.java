@@ -62,6 +62,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -220,6 +221,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
 
+
+    public Set<Map.Entry<String,Integer>> getNodeLevelsEntrySet() {
+        HashMap<String,Integer> nodeLevelsString=new HashMap<>();
+        for(SkillTreeNode node:nodeLevels.keySet()) {
+            nodeLevelsString.put(node.getFullId(),nodeLevels.get(node));
+        }
+        return nodeLevelsString.entrySet();
+    }
+
     public void removeModifiersFrom(SkillTree skillTree) {
         for (SkillTreeNode node : skillTree.getNodes()) {
             for (int i = 0; i < node.getMaxLevel(); i++) {
@@ -331,6 +341,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public int getNodeLevel(SkillTreeNode node) {
+
+
         return nodeLevels.get(node);
     }
 

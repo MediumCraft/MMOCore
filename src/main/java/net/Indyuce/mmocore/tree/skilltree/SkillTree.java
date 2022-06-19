@@ -55,15 +55,24 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
     protected final List<SkillTreeNode> roots = new ArrayList<>();
 
     public SkillTree(ConfigurationSection config) {
+
         super(config);
         this.id = Objects.requireNonNull(config.getString("id"), "Could not find skill tree id");
         this.name = MythicLib.plugin.parseColors(Objects.requireNonNull(config.getString("name"), "Could not find skill tree name"));
         Objects.requireNonNull(config.getStringList("lore"), "Could not find skill tree lore").forEach(str -> lore.add(MythicLib.plugin.parseColors(str)));
         this.item = Material.valueOf(MMOCoreUtils.toEnumName(Objects.requireNonNull(config.getString("item"))));
         Validate.isTrue(config.isConfigurationSection("nodes"), "Could not find any nodes in the tree");
+
+
         for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
-            SkillTreeNode node = new SkillTreeNode(this, config.getConfigurationSection("nodes." + key));
-            nodes.put(node.getId(), node);
+            try {
+
+                SkillTreeNode node = new SkillTreeNode(this, config.getConfigurationSection("nodes." + key));
+                nodes.put(node.getId(), node);
+
+            } catch (Exception e) {
+                MMOCore.plugin.getLogger().log(Level.SEVERE,"Couldn't load skill tree node "+id+"."+key+": "+e.getMessage());
+            }
         }
         try {
             if (config.contains("paths")) {
@@ -141,24 +150,28 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
     }
 
     public static SkillTree loadSkillTree(ConfigurationSection config) {
-        String string = config.getString("type");
-
-        Validate.isTrue(string.equals("automatic") || string.equals("linked") || string.equals("custom"), "You must precise the type of the skill tree in the yml!" +
-                "\nAllowed values: 'automatic','linked','custom'");
         SkillTree skillTree = null;
-        if (string.equals("automatic")) {
-            skillTree = new AutomaticSkillTree(config);
-            skillTree.postLoad();
-        }
-        if (string.equals("linked")) {
-            skillTree = new LinkedSkillTree(config);
-            skillTree.postLoad();
-        }
-        if (string.equals("custom")) {
-            skillTree = new CustomSkillTree(config);
-            skillTree.postLoad();
-        }
 
+        try {
+            String string = config.getString("type");
+
+            Validate.isTrue(string.equals("automatic") || string.equals("linked") || string.equals("custom"), "You must precise the type of the skill tree in the yml!" +
+                    "\nAllowed values: 'automatic','linked','custom'");
+            if (string.equals("automatic")) {
+                skillTree = new AutomaticSkillTree(config);
+                skillTree.postLoad();
+            }
+            if (string.equals("linked")) {
+                skillTree = new LinkedSkillTree(config);
+                skillTree.postLoad();
+            }
+            if (string.equals("custom")) {
+                skillTree = new CustomSkillTree(config);
+                skillTree.postLoad();
+            }
+        } catch (Exception e) {
+            MMOCore.plugin.getLogger().log(Level.SEVERE, "Couldn't load skill tree " + config.getName() + ": " + e.getMessage());
+        }
         return skillTree;
     }
 
@@ -189,10 +202,10 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
         } else if (playerData.getNodeLevel(node) == 0 && node.isRoot()) {
             playerData.setNodeState(node, NodeState.UNLOCKABLE);
         } else {
-            boolean isUnlockableFromStrongParent = node.getStrongParents().size()==0?true:true;
-            boolean isUnlockableFromSoftParent =  node.getSoftParents().size()==0?true:false;
-            boolean isFullyLockedFromStrongParent =  node.getStrongParents().size()==0?false:false;
-            boolean isFullyLockedFromSoftParent =  node.getSoftParents().size()==0?false:true;
+            boolean isUnlockableFromStrongParent = node.getStrongParents().size() == 0 ? true : true;
+            boolean isUnlockableFromSoftParent = node.getSoftParents().size() == 0 ? true : false;
+            boolean isFullyLockedFromStrongParent = node.getStrongParents().size() == 0 ? false : false;
+            boolean isFullyLockedFromSoftParent = node.getSoftParents().size() == 0 ? false : true;
 
             for (SkillTreeNode strongParent : node.getStrongParents()) {
                 if (playerData.getNodeLevel(strongParent) < node.getParentNeededLevel(strongParent)) {
@@ -208,7 +221,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
                 if (numberChildren >= strongParent.getMaxChildren() || playerData.getNodeState(strongParent) == NodeState.FULLY_LOCKED)
                     isFullyLockedFromStrongParent = true;
             }
-
 
 
             for (SkillTreeNode softParent : node.getSoftParents()) {

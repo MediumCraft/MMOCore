@@ -77,8 +77,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         //Load skill tree nodes
 
         for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
-            String path = "skill-tree-nodes." + node.getTree().getId() + "." + node.getId();
-
+            String path = "skill-tree-nodes." + node.getFullId();
             if (config.contains(path))
                 data.setNodeLevel(node, config.getInt(path));
             else {
@@ -92,7 +91,6 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         if (section != null) {
             for (String key : section.getKeys(false))
                 data.setSkillTreePoints(key, section.getInt(key));
-
         }
         //Put 0 to the rest of the values if nothing has been given
         List<String> skillTreeIds = MMOCore.plugin.skillTreeManager.getAll().stream().map(SkillTree::getId).collect(Collectors.toList());
@@ -102,7 +100,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                 data.setSkillTreePoints(treeId, 0);
         }
 
-        data.setSkillTreeReallocationPoints(config.getInt("skill-tree-reallocation-points",0));
+        data.setSkillTreeReallocationPoints(config.getInt("skill-tree-reallocation-points", 0));
 
         // Load class slots, use try so the player can log in.
         if (config.contains("class-info"))
@@ -149,7 +147,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         for (String treeId : data.getSkillTreePoints().keySet()) {
             config.set("skill-tree-points." + treeId, data.getSkillTreePoint(treeId));
         }
-        config.set("skill-tree-reallocation-points",data.getSkillTreeReallocationPoints());
+        config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
 
         List<String> boundSkills = new ArrayList<>();
         data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));

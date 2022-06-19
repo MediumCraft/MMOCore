@@ -332,7 +332,7 @@ public class SkillTreeViewer extends EditableInventory {
                     int xOffset=offset%9-middleSlot%9;
                     int yOffset=offset/9-middleSlot/9;
                     x += xOffset;
-                    y += yOffset;
+                    y += yOffset-1;
                     open();
                     event.setCancelled(true);
                     return;

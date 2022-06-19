@@ -7,23 +7,26 @@ import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
-    private final ArrayList<SkillTreeNode> skillTreeNodes = new ArrayList<>();
+    private final HashMap<String,SkillTreeNode> skillTreeNodes = new HashMap<>();
 
     @Override
     public void register(SkillTree tree){
         super.register(tree);
-        tree.getNodes().forEach((node)->skillTreeNodes.add(node));
+        tree.getNodes().forEach((node)->skillTreeNodes.put(node.getFullId(),node));
     }
 
     public boolean has(int index) {
         return index>=0 &&index<registered.values().stream().collect(Collectors.toList()).size();
+    }
+
+
+    public SkillTreeNode getNode(String fullId) {
+        return skillTreeNodes.get(fullId);
     }
 
     /**
@@ -32,11 +35,11 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
      * @return The list of all the roots (e.g the nodes without any parents
      */
     public List<SkillTreeNode> getRootNodes() {
-        return skillTreeNodes.stream().filter(treeNode -> treeNode.getSoftParents().size()==0).collect(Collectors.toList());
+        return skillTreeNodes.values().stream().filter(treeNode -> treeNode.getSoftParents().size()==0).collect(Collectors.toList());
     }
 
-    public ArrayList<SkillTreeNode> getAllNodes() {
-        return skillTreeNodes;
+    public Collection<SkillTreeNode> getAllNodes() {
+        return skillTreeNodes.values();
     }
 
     public SkillTree get(int index) {

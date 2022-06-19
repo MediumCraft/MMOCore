@@ -52,6 +52,7 @@ public class SkillTreeNode implements Unlockable {
 
     public SkillTreeNode(SkillTree tree, ConfigurationSection config) {
 
+
         Validate.notNull(config, "Config cannot be null");
         this.id = config.getName();
         this.tree = tree;
@@ -106,7 +107,7 @@ public class SkillTreeNode implements Unlockable {
                 }
 
             } catch (NumberFormatException e) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load modifiers for the skill node " + tree.getId() + "." + id+ " :Problem with the Number Format.");
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load modifiers for the skill node " + tree.getId() + "." + id + " :Problem with the Number Format.");
             }
         }
 
@@ -114,9 +115,12 @@ public class SkillTreeNode implements Unlockable {
         maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
         maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
         //If coordinates are precised adn we are not wiht an automaticTree we set them up
-        if ((!(tree instanceof AutomaticSkillTree)) && config.contains("coordinates.x") && config.contains("coordinates.y")) {
+        if ((!(tree instanceof AutomaticSkillTree))) {
+             Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"),"No coordinates specified");
             coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
         }
+    }
+
         /*
         if (config.contains("modifiers")) {
             for (String key : config.getConfigurationSection("modifiers").getKeys(false)) {
@@ -125,8 +129,6 @@ public class SkillTreeNode implements Unlockable {
             }
         }
         */
-
-    }
 
 
     public SkillTree getTree() {
@@ -193,6 +195,11 @@ public class SkillTreeNode implements Unlockable {
 
     public String getId() {
         return id;
+    }
+
+
+    public String getFullId() {
+        return tree.getId() + "." + id;
     }
 
     public String getName() {
