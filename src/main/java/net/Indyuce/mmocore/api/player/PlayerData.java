@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.api.player;
 
-import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
@@ -29,7 +28,6 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
-import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
@@ -52,7 +50,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
@@ -601,17 +598,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             return;
         }
 
-        value = MMOCore.plugin.boosterManager.calculateExp(null, value);
-        value *= 1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100;
-
         // Splitting exp through party members
-        AbstractParty party = getParty();
-        if (splitExp && party != null) {
-            List<PlayerData> onlineMembers = getParty().getOnlineMembers();
+        AbstractParty party;
+        if (splitExp && (party = getParty()) != null) {
+            List<PlayerData> onlineMembers = party.getOnlineMembers();
             value /= onlineMembers.size();
             for (PlayerData member : onlineMembers)
-                member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
+                if (!equals(member))
+                    member.giveExperience(value, source, null, false);
         }
+
+        // Apply buffs AFTER splitting exp
+        value *= (1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100) * MMOCore.plugin.boosterManager.getMultiplier(null);
 
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
         Bukkit.getPluginManager().callEvent(event);
@@ -620,7 +618,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         // Experience hologram
         if (hologramLocation != null && isOnline())
-            MMOCoreUtils.displayIndicator(hologramLocation, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", String.valueOf(event.getExperience())).message());
+            MMOCoreUtils.displayIndicator(hologramLocation, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", MythicLib.plugin.getMMOConfig().decimal.format(event.getExperience())).message());
 
         experience = Math.max(0, experience + event.getExperience());
 

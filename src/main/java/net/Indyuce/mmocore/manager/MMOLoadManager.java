@@ -41,6 +41,7 @@ public class MMOLoadManager {
 		return load(Objective.class, config, loader -> loader.loadObjective(config, section));
 	}
 
+	@Deprecated
 	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
 		return load(ExperienceSource.class, config, loader -> loader.loadExperienceSource(config, dispenser));
 	}

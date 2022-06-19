@@ -59,13 +59,21 @@ protect-custom-mine: false
 # - mcmmo
 party-plugin: mmocore
 
-## Edit the plugin handling parties here.
-## Supported values (just copy and paste):
-## - mmocore
-## - beauty_quest
-## - quest_creator
-## - quests
+# Edit the plugin handling parties here.
+# Supported values (just copy and paste):
+# - mmocore
+# - beauty_quest
+# - quest_creator
+# - quests
 quest-plugin: mmocore
+
+# Edit the plugin handling guilds here.
+# Supported values (just copy and paste):
+# - mmocore
+# - guilds
+# - kingdomsx
+# - ultimate_clans
+guild-plugin: mmocore
 
 # MythicLib introduces a CHANCE stat that is used in
 # several different systems in MMOCore. By changing these
@@ -135,9 +143,20 @@ party:
   # to talk in the party chat.
   chat-prefix: '@'
 
-  # The max players that can be in
-  # any given party. Between 2-8.
+  # The max amount of players in a party
+  # Has to be higher than 2
   max-players: 8
+
+  # If the difference between a player's level and the
+  # initial party owner's level is higher that this
+  # value, then that player can't join the party.
+  #
+  # This prevents low level players from joining
+  # high level players and earning tons of EXP.
+  #
+  # Set to the max level possible if you want to disable
+  # that feature.
+  max-level-difference: 3
 
 # Redirects vanilla experience obtained to MMOCore
 # class experience. You can define the % of the vanilla
@@ -205,6 +224,11 @@ resource-bar-colors:
   stamina-whole: 'GREEN'
   stamina-half: 'DARK_GREEN'
   stamina-empty: 'WHITE'
+
+# When set to true, attributes are saved and
+# reset when a player changes their class.
+# Not implemented yet.
+# attributes-as-class-info: true
 
 # Whether or not the admin commands should display
 # the result of the command when ran.

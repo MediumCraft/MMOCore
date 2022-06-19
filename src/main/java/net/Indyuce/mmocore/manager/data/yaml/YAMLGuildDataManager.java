@@ -22,7 +22,7 @@ public class YAMLGuildDataManager extends GuildDataManager {
 		config.getConfig().set("owner", guild.getOwner().toString());
 
 		List<String> memberList = new ArrayList<>();
-		guild.getMembers().forEach(uuid -> memberList.add(uuid.toString()));
+		guild.forEachMember(uuid -> memberList.add(uuid.toString()));
 		config.getConfig().set("members", memberList);
 
 		config.save();

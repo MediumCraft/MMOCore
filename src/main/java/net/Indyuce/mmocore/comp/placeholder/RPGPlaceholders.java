@@ -128,7 +128,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 					.valueOf(playerData.getCollectionSkills().getLevel(identifier.substring(11).replace(" ", "-").replace("_", "-").toLowerCase()));
 
 		else if (identifier.equals("experience"))
-			return String.valueOf(playerData.getExperience());
+			return MythicLib.plugin.getMMOConfig().decimal.format(playerData.getExperience());
 
 		else if (identifier.equals("next_level"))
 			return String.valueOf(playerData.getLevelUpExperience());
@@ -226,9 +226,9 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			else if (placeholder.equalsIgnoreCase("leader"))
 				return Bukkit.getOfflinePlayer(playerData.getGuild().getOwner()).getName();
 			else if (placeholder.equalsIgnoreCase("members"))
-				return "" + playerData.getGuild().getMembers().count();
+				return String.valueOf(playerData.getGuild().countMembers());
 			else if (placeholder.equalsIgnoreCase("online_members"))
-				return "" + playerData.getGuild().getMembers().countOnline();
+				return String.valueOf(playerData.getGuild().countOnlineMembers());
 		}
 
 		return null;

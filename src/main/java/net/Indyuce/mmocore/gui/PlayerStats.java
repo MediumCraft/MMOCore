@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.version.VersionMaterial;
@@ -243,7 +244,7 @@ public class PlayerStats extends EditableInventory {
 				bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 
 			holders.register("percent", decimal.format(ratio * 100));
-			holders.register("exp", "" + data.getExperience());
+			holders.register("exp", MythicLib.plugin.getMMOConfig().decimal.format(data.getExperience()));
 			holders.register("level", "" + data.getLevel());
 			holders.register("class_points", "" + data.getClassPoints());
 			holders.register("skill_points", "" + data.getSkillPoints());

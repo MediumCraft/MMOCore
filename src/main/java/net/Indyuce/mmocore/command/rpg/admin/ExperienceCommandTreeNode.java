@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
@@ -23,9 +24,9 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 
 		addChild(new ActionCommandTreeNode(this, "set", PlayerData::setExperience, PlayerProfessions::setExperience));
 		addChild(new ActionCommandTreeNode(this, "give", (data, value) -> data.giveExperience(value, EXPSource.COMMAND), (professions, profession,
-				value) -> professions.giveExperience(profession, value, EXPSource.COMMAND, professions.getPlayerData().getPlayer().getLocation())));
+				value) -> professions.giveExperience(profession, value, EXPSource.COMMAND)));
 		addChild(new ActionCommandTreeNode(this, "take", (data, value) -> data.giveExperience(-value, EXPSource.COMMAND), (professions, profession,
-				value) -> professions.giveExperience(profession, -value, EXPSource.COMMAND, professions.getPlayerData().getPlayer().getLocation())));
+				value) -> professions.giveExperience(profession, -value, EXPSource.COMMAND)));
 	}
 
 	public static class ActionCommandTreeNode extends CommandTreeNode {
@@ -68,7 +69,7 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 			if (args[4].equalsIgnoreCase("main")) {
 				main.accept(data, amount);
 				CommandVerbose.verbose(sender, CommandVerbose.CommandType.EXPERIENCE, ChatColor.GOLD + player.getName() + ChatColor.YELLOW
-						+ " now has " + ChatColor.GOLD + data.getExperience() + ChatColor.YELLOW + " EXP.");
+						+ " now has " + ChatColor.GOLD + MythicLib.plugin.getMMOConfig().decimal.format(data.getExperience()) + ChatColor.YELLOW + " EXP.");
 				return CommandResult.SUCCESS;
 			}
 

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.manager.social;
 
 import net.Indyuce.mmocore.experience.Booster;
 import net.Indyuce.mmocore.experience.Profession;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class BoosterManager {
 	/**
 	 * @return Sums all current experience boosters values
 	 */
-	public double getMultiplier(Profession profession) {
+	public double getMultiplier(@Nullable Profession profession) {
 		double d = 1;
 
 		for (Booster booster : map)
@@ -56,10 +57,6 @@ public class BoosterManager {
 				d += booster.getExtra();
 
 		return d;
-	}
-
-	public double calculateExp(Profession profession, double exp) {
-		return (exp * getMultiplier(profession));
 	}
 
 	/**

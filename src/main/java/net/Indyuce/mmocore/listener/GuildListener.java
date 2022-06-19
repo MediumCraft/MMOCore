@@ -32,7 +32,7 @@ public class GuildListener implements Listener {
 			GuildChatEvent called = new GuildChatEvent(data, format.message());
 			Bukkit.getPluginManager().callEvent(called);
 			if (!called.isCancelled())
-				data.getGuild().getMembers().forEach(member -> {
+				data.getGuild().forEachMember(member -> {
 					Player p = Bukkit.getPlayer(member);
 					if (p != null)
 						format.send(p);

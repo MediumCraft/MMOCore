@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.gui.social.party.EditablePartyView.PartyViewInventory
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.party.AbstractParty;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -25,13 +26,21 @@ public class Party implements AbstractParty {
     /**
      * Owner has to change when previous owner leaves party
      */
+    @NotNull
     private PlayerData owner;
+
+    /**
+     * If the difference between a player level and the party
+     * level is too high then players cannot join the party.
+     */
+    private final int partyLevel;
 
     private final MMOCorePartyModule module;
 
     public Party(MMOCorePartyModule module, PlayerData owner) {
         this.owner = owner;
         this.module = module;
+        this.partyLevel = owner.getLevel();
 
         addMember(owner);
     }
@@ -57,6 +66,10 @@ public class Party implements AbstractParty {
                 online.add(member);
 
         return online;
+    }
+
+    public int getLevel() {
+        return partyLevel;
     }
 
     @Override
