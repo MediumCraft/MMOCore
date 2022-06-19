@@ -1,5 +1,9 @@
 package net.Indyuce.mmocore.manager.data;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import net.Indyuce.mmocore.MMOCore;
@@ -7,12 +11,18 @@ import net.Indyuce.mmocore.api.event.AsyncPlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
+import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.guild.provided.Guild;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public abstract class PlayerDataManager {
     private final static Map<UUID, PlayerData> data = Collections.synchronizedMap(new HashMap<>());
@@ -34,6 +44,63 @@ public abstract class PlayerDataManager {
     public PlayerData get(UUID uuid) {
         return Objects.requireNonNull(data.get(uuid), "Player data is not loaded");
     }
+
+
+    public static void loadDataFromJson(PlayerData data, String json) {
+        JsonObject object = MythicLib.plugin.getJson().parse(json, JsonObject.class);
+
+        data.setClassPoints(object.get("class_points").getAsInt());
+        data.setSkillPoints(object.get("skill_points").getAsInt());
+        data.setAttributePoints(object.get("attribute_points").getAsInt());
+        data.setAttributeReallocationPoints(object.get("attribute_realloc_points").getAsInt());
+        data.setLevel(object.get("level").getAsInt());
+        data.setExperience(object.get("experience").getAsInt());
+        if (object.has("class"))
+            data.setClass(MMOCore.plugin.classManager.get(object.get(("class")).getAsString()));
+
+        if (object.has("times_claimed")) {
+            JsonObject timesClaimed =object.get(("times_claimed")).getAsJsonObject();
+            timesClaimed.entrySet().forEach(entry -> data.getItemClaims().put(entry.getKey(), entry.getValue().getAsInt()));
+        }
+
+        if (object.has(("guild"))) {
+            Guild guild = MMOCore.plugin.dataProvider.getGuildManager().getGuild(object.get("guild").getAsString());
+            data.setGuild(guild.getMembers().has(data.getUniqueId()) ? guild : null);
+        }
+        if (object.has(("attributes"))) data.getAttributes().load(object.get("attributes").getAsString());
+        if (object.has(("professions")))
+            data.getCollectionSkills().load(object.get("professions").getAsString());
+        if (object.has(("quests"))) data.getQuestData().load(object.get("quests").getAsString());
+        data.getQuestData().updateBossBar();
+        if (object.has(("waypoints")))
+            data.getWaypoints().addAll(MMOCoreUtils.jsonArrayToList(object.get("waypoints").getAsString()));
+        if (object.has(("friends")))
+            MMOCoreUtils.jsonArrayToList(object.get("friends").getAsString()).forEach(str -> data.getFriends().add(UUID.fromString(str)))
+                    ;
+        if (object.has(("skills"))) {
+            JsonObject skillsObject = object.get("skills").getAsJsonObject();
+            for (Map.Entry<String, JsonElement> entry : skillsObject.entrySet())
+                data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
+        }
+        if (object.has(("bound_skills")))
+            for (String skill : MMOCoreUtils.jsonArrayToList(object.get("bound_skills").getAsString()))
+                if (data.getProfess().hasSkill(skill))
+                    data.getBoundSkills().add(data.getProfess().getSkill(skill));
+        if (object.has(("class_info"))) {
+            JsonObject classObject = object.get("class_info").getAsJsonObject();
+            for (Map.Entry<String, JsonElement> entry : classObject.entrySet()) {
+                try {
+                    PlayerClass profess = MMOCore.plugin.classManager.get(entry.getKey());
+                    Validate.notNull(profess, "Could not find class '" + entry.getKey() + "'");
+                    data.applyClassInfo(profess, new SavedClassInformation(entry.getValue().getAsJsonObject()));
+                } catch (IllegalArgumentException exception) {
+                    MMOCore.log(Level.WARNING, "Could not load class info '" + entry.getKey() + "': " + exception.getMessage());
+                }
+            }
+        }
+
+    }
+
 
     /**
      * Safely unregisters the player data from the map.

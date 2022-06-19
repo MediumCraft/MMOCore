@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.api.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import io.lumine.mythic.utils.holograms.Hologram;
@@ -26,9 +28,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MMOCoreUtils {
     public static boolean pluginItem(ItemStack item) {
@@ -138,6 +138,27 @@ public class MMOCoreUtils {
         }
 
         return result.toString();
+    }
+
+
+    public static Collection<String> jsonArrayToList(String json) {
+        return new ArrayList<>(Arrays.asList(MythicLib.plugin.getJson().parse(json, String[].class)));
+    }
+
+    public static String arrayToJsonString(Collection<String> array) {
+        JsonArray object = new JsonArray();
+        for (String str : array) {
+            object.add(str);
+        }
+        return object.toString();
+    }
+
+    public static String entrySetToJsonString(Set<Map.Entry<String, Integer>> entrySet) {
+        JsonObject object = new JsonObject();
+        for (Map.Entry<String, Integer> entry : entrySet) {
+            object.addProperty(entry.getKey(), entry.getValue());
+        }
+        return object.toString();
     }
 
     /**

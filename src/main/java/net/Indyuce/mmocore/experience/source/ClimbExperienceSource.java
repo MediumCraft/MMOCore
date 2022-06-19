@@ -30,8 +30,8 @@ public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
         else {
             String str = config.getString("type").toUpperCase().replace("-", "_");
             Validate.isTrue(str.equals("LADDER") ||
-                            str.equals("VINE") || str.equals("TWISTING_VINES_PLANT") || str.equals("WEEPING_VINES"),
-                    "ClimbExperienceSource problem: The type must be ladder, vine, twisted-vines or weeping-vines");
+                            str.equals("VINE") || str.equals("TWISTING_VINES") || str.equals("WEEPING_VINES"),
+                    "ClimbExperienceSource problem: The type must be ladder, vine, twisting-vines or weeping-vines");
 
             type = Material.valueOf(str);
         }

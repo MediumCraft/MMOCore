@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.player;
 
+import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
@@ -28,6 +29,7 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
@@ -50,6 +52,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
@@ -506,6 +509,64 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                             new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
+    }
+
+    public String toJson() {
+
+        //We create the JSON correspondign to player Data
+        JsonObject jsonObject = new JsonObject();
+        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, getUniqueId());
+        MMOCore.sqlDebug("Saving data for: '" + getUniqueId() + "'...");
+
+        jsonObject.addProperty("class_points", getClassPoints());
+        jsonObject.addProperty("skill_points", getSkillPoints());
+        jsonObject.addProperty("attribute_points", getAttributePoints());
+        jsonObject.addProperty("attribute_realloc_points", getAttributeReallocationPoints());
+        jsonObject.addProperty("level", getLevel());
+        jsonObject.addProperty("experience", getExperience());
+        jsonObject.addProperty("class", getProfess().getId());
+        jsonObject.addProperty("last_login", getLastLogin());
+        jsonObject.addProperty("guild", hasGuild() ? getGuild().getId() : null);
+
+        jsonObject.addProperty("waypoints", MMOCoreUtils.arrayToJsonString(getWaypoints()));
+        jsonObject.addProperty("friends", MMOCoreUtils.arrayToJsonString(getFriends().stream().map(UUID::toString).collect(Collectors.toList())));
+        jsonObject.addProperty("bound_skills", MMOCoreUtils.arrayToJsonString(getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).collect(Collectors.toList())));
+
+        jsonObject.addProperty("skills", MMOCoreUtils.entrySetToJsonString(mapSkillLevels().entrySet()));
+        jsonObject.addProperty("times_claimed", MMOCoreUtils.entrySetToJsonString(getItemClaims().entrySet()));
+
+        jsonObject.addProperty("attributes", getAttributes().toJsonString());
+        jsonObject.addProperty("professions", getCollectionSkills().toJsonString());
+        jsonObject.addProperty("quests", getQuestData().toJsonString());
+        jsonObject.addProperty("class_info", createClassInfoData(this).toString());
+
+        return jsonObject.toString();
+    }
+
+
+    public static JsonObject createClassInfoData(PlayerData data) {
+        JsonObject json = new JsonObject();
+        for (String c : data.getSavedClasses()) {
+            SavedClassInformation info = data.getClassInfo(c);
+            JsonObject classinfo = new JsonObject();
+            classinfo.addProperty("level", info.getLevel());
+            classinfo.addProperty("experience", info.getExperience());
+            classinfo.addProperty("skill-points", info.getSkillPoints());
+            classinfo.addProperty("attribute-points", info.getAttributePoints());
+            classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
+            JsonObject skillinfo = new JsonObject();
+            for (String skill : info.getSkillKeys())
+                skillinfo.addProperty(skill, info.getSkillLevel(skill));
+            classinfo.add("skill", skillinfo);
+            JsonObject attributeinfo = new JsonObject();
+            for (String attribute : info.getAttributeKeys())
+                attributeinfo.addProperty(attribute, info.getAttributeLevel(attribute));
+            classinfo.add("attribute", attributeinfo);
+
+            json.add(c, classinfo);
+        }
+
+        return json;
     }
 
     public boolean hasReachedMaxLevel() {
