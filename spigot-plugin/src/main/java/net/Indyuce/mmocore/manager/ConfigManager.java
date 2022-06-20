@@ -27,7 +27,7 @@ public class ConfigManager {
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public double lootChestsChanceWeight;
+    public double lootChestsChanceWeight, fishingDropsChanceWeight;
     public int maxPartyLevelDifference;
 
     private final FileConfiguration messages;
@@ -100,6 +100,7 @@ public class ConfigManager {
         globalSkillCooldown = MMOCore.plugin.getConfig().getLong("global-skill-cooldown") * 50;
         noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
         lootChestsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.loot-chests");
+        fishingDropsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.fishing-drops");
         maxPartyLevelDifference = MMOCore.plugin.getConfig().getInt("party.max-level-difference");
 
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);

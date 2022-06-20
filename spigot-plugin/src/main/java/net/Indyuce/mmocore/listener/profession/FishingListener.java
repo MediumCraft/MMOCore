@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.LootBuilder;
-import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
+import net.Indyuce.mmocore.loot.fishing.FishingDropItem;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

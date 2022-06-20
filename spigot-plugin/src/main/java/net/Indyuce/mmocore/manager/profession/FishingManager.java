@@ -3,9 +3,10 @@ package net.Indyuce.mmocore.manager.profession;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.loot.RandomWeightedRoll;
 import net.Indyuce.mmocore.loot.chest.condition.Condition;
 import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
-import net.Indyuce.mmocore.loot.droptable.dropitem.fishing.FishingDropItem;
+import net.Indyuce.mmocore.loot.fishing.FishingDropItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -15,8 +16,6 @@ import java.util.logging.Level;
 
 public class FishingManager extends SpecificProfessionManager {
 	private final Set<FishingDropTable> tables = new LinkedHashSet<>();
-
-	private static final Random RANDOM = new Random();
 
 	public FishingManager() {
 		super("on-fish");
@@ -96,25 +95,12 @@ public class FishingManager extends SpecificProfessionManager {
 
 		/**
 		 * The chance stat will make low weight items more
-		 * likely to be chosen by the algorithm
+		 * likely to be chosen by the algorithm.
 		 *
 		 * @return Randomly computed fishing drop item
 		 */
 		public FishingDropItem getRandomItem(PlayerData player) {
-			double chance = player.getStats().getStat("CHANCE");
-
-			//chance=0 ->the tier.chance remains the same
-			//chance ->+inf -> the tier.chance becomes the same for everyone, uniform law
-			//chance=8-> tierChance=sqrt(tierChance)
-			double sum = 0;
-			double randomCoefficient=RANDOM.nextDouble();
-			for (FishingDropItem item : items) {
-				sum += Math.pow(item.getItem().getWeight(), 1 / Math.log(1 + chance));
-				if(sum<randomCoefficient)
-					return item;
-			}
-
-			throw new NullPointerException("Could not find item in drop table");
+			return new RandomWeightedRoll<>(player, items, MMOCore.plugin.configManager.fishingDropsChanceWeight).rollItem();
 		}
 	}
 

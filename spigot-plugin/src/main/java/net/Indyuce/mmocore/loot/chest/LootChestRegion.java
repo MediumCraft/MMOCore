@@ -5,6 +5,7 @@ import net.Indyuce.mmocore.api.event.LootChestSpawnEvent;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.RandomWeightedRoll;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -124,32 +125,7 @@ public class LootChestRegion {
      */
     @NotNull
     public ChestTier rollTier(PlayerData player) {
-        double chance = player.getStats().getStat("CHANCE") * MMOCore.plugin.configManager.lootChestsChanceWeight;
-
-        double sum = 0;
-        for (ChestTier tier : tiers)
-            sum += getTierCoefficient(tier.getChance(), chance);
-        Validate.isTrue(sum > 0, "No chest tier was found");
-
-        double cummulated = 0;
-        for (ChestTier tier : tiers) {
-            cummulated += getTierCoefficient(tier.getChance(), chance);
-            if (RANDOM.nextDouble() < cummulated / sum)
-                return tier;
-        }
-
-        throw new RuntimeException("Could not roll chest tier");
-    }
-
-    private static final double CHANCE_COEF = 7 / 100;
-
-    /**
-     * - Chance = 0    | tier coefficient is left unchanged.
-     * - Chance -> +oo | all tier coefficients are the same (1)
-     * - Chance = 50   | coefficients become their square roots
-     */
-    private double getTierCoefficient(double initialTierChance, double chance) {
-        return Math.pow(initialTierChance, 1 / Math.pow(1 + CHANCE_COEF * chance, 1 / 3));
+        return new RandomWeightedRoll<>(player, tiers, MMOCore.plugin.configManager.lootChestsChanceWeight).rollItem();
     }
 
     public Location getRandomLocation(Location center) {

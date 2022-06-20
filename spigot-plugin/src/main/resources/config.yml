@@ -85,6 +85,7 @@ guild-plugin: mmocore
 # all set to 1 by default, this option is really server specific
 chance-stat-weight:
   loot-chests: 1
+  fishing-drops: 1
 
 # Whether blocks generated with a "cobblegenerator" should
 # provide the player with experience points or not
