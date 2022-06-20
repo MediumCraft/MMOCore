@@ -1,0 +1,33 @@
+player:
+  main: "player"
+  aliases: ["p", "profile"]
+attributes:
+  main: "attributes"
+  aliases: ["att", "stats"]
+class:
+  main: "class"
+  aliases: ["c"]
+waypoints:
+  main: "waypoints"
+  aliases: ["wp"]
+quests:
+  main: "quests"
+  aliases: ["q", "journal"]
+skills:
+  main: "skills"
+  aliases: ["s"]
+friends:
+  main: "friends"
+  aliases: ["f"]
+party:
+  main: "party"
+  aliases: []
+guild:
+  main: "guild"
+  aliases: []
+withdraw:
+  main: "withdraw"
+  aliases: ["w"]
+deposit:
+  main: "deposit"
+  aliases: ["d"]
