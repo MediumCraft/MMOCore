@@ -322,37 +322,37 @@ public class MMOCore extends LuminePlugin {
 			FileConfiguration config = new ConfigFile("commands").getConfig();
 
 			if (config.contains("player"))
-				commandMap.register("net/Indyuce/mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
+				commandMap.register("mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
 			if (config.contains("attributes"))
-				commandMap.register("net/Indyuce/mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
+				commandMap.register("mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
 			if (config.contains("class"))
-				commandMap.register("net/Indyuce/mmocore", new ClassCommand(config.getConfigurationSection("class")));
+				commandMap.register("mmocore", new ClassCommand(config.getConfigurationSection("class")));
 			if (config.contains("waypoints"))
-				commandMap.register("net/Indyuce/mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
+				commandMap.register("mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
 			if (config.contains("quests"))
-				commandMap.register("net/Indyuce/mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
+				commandMap.register("mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
 			if (config.contains("skills"))
-				commandMap.register("net/Indyuce/mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
+				commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
 			if (config.contains("friends"))
-				commandMap.register("net/Indyuce/mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
+				commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
 			if (config.contains("party"))
-				commandMap.register("net/Indyuce/mmocore", new PartyCommand(config.getConfigurationSection("party")));
+				commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
 			if (config.contains("guild"))
-				commandMap.register("net/Indyuce/mmocore", new GuildCommand(config.getConfigurationSection("guild")));
+				commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
 
 			if (hasEconomy() && economy.isValid()) {
 				if (config.contains("withdraw"))
-					commandMap.register("net/Indyuce/mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
+					commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
 				if (config.contains("deposit"))
-					commandMap.register("net/Indyuce/mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
+					commandMap.register("mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
 			}
 		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
 			ex.printStackTrace();
 		}
 
 		MMOCoreCommandTreeRoot mmoCoreCommand = new MMOCoreCommandTreeRoot();
-		getCommand("net/Indyuce/mmocore").setExecutor(mmoCoreCommand);
-		getCommand("net/Indyuce/mmocore").setTabCompleter(mmoCoreCommand);
+		getCommand("mmocore").setExecutor(mmoCoreCommand);
+		getCommand("mmocore").setTabCompleter(mmoCoreCommand);
 
 		if (getConfig().getBoolean("auto-save.enabled")) {
 			int autosave = getConfig().getInt("auto-save.interval") * 20;
