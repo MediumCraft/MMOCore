@@ -209,6 +209,11 @@ public class PlayerProfessions {
             this.level.put(profession.getId(), level + 1);
             check = true;
             playerData.giveExperience(profession.getExperience().calculate(level), null);
+
+            // Apply profession experience table
+            if (profession.hasExperienceTable())
+                profession.getExperienceTable().claim(playerData, level, profession);
+
         }
 
         if (check) {
@@ -218,10 +223,6 @@ public class PlayerProfessions {
                     .send(playerData.getPlayer());
             MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(playerData.getPlayer());
             playerData.getStats().updateStats();
-
-            // Apply profession experience table
-            if (profession.hasExperienceTable())
-                profession.getExperienceTable().claim(playerData, level, profession);
         }
 
         StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);

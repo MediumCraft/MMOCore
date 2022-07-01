@@ -14,15 +14,15 @@ public class ResourceExperienceSource extends SpecificExperienceSource<PlayerRes
     private final PlayerResource resource;
 
     /**
-     * Gives experience when the player uses a specific resoure. If no resource is precised it will trigger for
+     * Gives experience when the player uses a specific resource type. If no type is precised it will trigger for
      * mana, stamina and stellium. The amount specified si the xp given per resource consummed.
      */
     public ResourceExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
-        if (!config.contains("resource"))
+        if (!config.contains("type"))
             resource = null;
         else {
-            String str = config.getString("resource").toUpperCase().replace("-", "_");
+            String str = config.getString("type").toUpperCase().replace("-", "_");
             Validate.isTrue(str.equals("MANA") || str.equals("STELLIUM") || str.equals("STAMINA"),
                     "ResourceExperienceSource problem: The resource can only be mana, stamina or STELLIUM");
             resource = PlayerResource.valueOf(str);

@@ -351,8 +351,8 @@ public class MMOCore extends LuminePlugin {
 		}
 
 		MMOCoreCommandTreeRoot mmoCoreCommand = new MMOCoreCommandTreeRoot();
-		getCommand("net/Indyuce/mmocore").setExecutor(mmoCoreCommand);
-		getCommand("net/Indyuce/mmocore").setTabCompleter(mmoCoreCommand);
+		getCommand("mmocore").setExecutor(mmoCoreCommand);
+		getCommand("mmocore").setTabCompleter(mmoCoreCommand);
 
 		if (getConfig().getBoolean("auto-save.enabled")) {
 			int autosave = getConfig().getInt("auto-save.interval") * 20;
