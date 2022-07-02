@@ -225,15 +225,16 @@ public class SkillList extends EditableInventory {
     }
     
     public class UpgradeItem extends InventoryItem<SkillViewerInventory> {
-        private int shiftCost;
+        private int shiftCost=1;
     
         public UpgradeItem(ConfigurationSection config) {
             super(config);
-            
-            this.shiftCost = config.getInt("shift-cost");
-            if (shiftCost < 1) {
-                MMOCore.log(Level.WARNING, "Upgrade shift-cost cannot be less than 1. Using default value: 1");
-                shiftCost = 1;
+            if(config.contains("shift-cost")) {
+                this.shiftCost = config.getInt("shift-cost");
+                if (shiftCost < 1) {
+                    MMOCore.log(Level.WARNING, "Upgrade shift-cost cannot be less than 1. Using default value: 1");
+                    shiftCost = 1;
+                }
             }
             
         }

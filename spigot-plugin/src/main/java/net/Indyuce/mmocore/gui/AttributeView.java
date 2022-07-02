@@ -47,17 +47,19 @@ public class AttributeView extends EditableInventory {
 
 	public static class AttributeItem extends InventoryItem {
 		private final PlayerAttribute attribute;
-		private int shiftCost;
+		private int shiftCost=1;
 
 		public AttributeItem(String function, ConfigurationSection config) {
 			super(config);
 
 			attribute = MMOCore.plugin.attributeManager
 					.get(function.substring("attribute_".length()).toLowerCase().replace(" ", "-").replace("_", "-"));
-			shiftCost = config.getInt("shift-cost");
-			if (shiftCost < 1) {
-				MMOCore.log(Level.WARNING, "Level up points cost must not be less than 1. Using default value: 1");
-				shiftCost = 1;
+			if(config.contains("shift-cost")) {
+				shiftCost = config.getInt("shift-cost");
+				if (shiftCost < 1) {
+					MMOCore.log(Level.WARNING, "Level up points cost must not be less than 1. Using default value: 1");
+					shiftCost = 1;
+				}
 			}
 		}
 
