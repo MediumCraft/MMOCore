@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class SkillList extends EditableInventory {
     public SkillList() {
@@ -41,20 +42,7 @@ public class SkillList extends EditableInventory {
             return new LevelItem(config);
 
         if (function.equals("upgrade"))
-            return new InventoryItem<SkillViewerInventory>(config) {
-
-                @Override
-                public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-                    RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
-                    Placeholders holders = new Placeholders();
-
-                    holders.register("skill_caps", selected.getName().toUpperCase());
-                    holders.register("skill", selected.getName());
-                    holders.register("skill_points", "" + inv.getPlayerData().getSkillPoints());
-
-                    return holders;
-                }
-            };
+            return new UpgradeItem(config);
 
         if (function.equals("slot"))
             return new InventoryItem<SkillViewerInventory>(config) {
@@ -235,7 +223,35 @@ public class SkillList extends EditableInventory {
             return new Placeholders();
         }
     }
-
+    
+    public class UpgradeItem extends InventoryItem<SkillViewerInventory> {
+        private int shiftCost=1;
+    
+        public UpgradeItem(ConfigurationSection config) {
+            super(config);
+            if(config.contains("shift-cost")) {
+                this.shiftCost = config.getInt("shift-cost");
+                if (shiftCost < 1) {
+                    MMOCore.log(Level.WARNING, "Upgrade shift-cost cannot be less than 1. Using default value: 1");
+                    shiftCost = 1;
+                }
+            }
+            
+        }
+    
+        @Override
+        public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+            RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
+            Placeholders holders = new Placeholders();
+    
+            holders.register("skill_caps", selected.getName().toUpperCase());
+            holders.register("skill", selected.getName());
+            holders.register("skill_points", "" + inv.getPlayerData().getSkillPoints());
+            holders.register("shift_points", shiftCost);
+            return holders;
+        }
+    }
+    
     public class SkillViewerInventory extends GeneratedInventory {
 
         // Cached information
@@ -348,6 +364,8 @@ public class SkillList extends EditableInventory {
              * upgrading a player skill
              */
             if (item.getFunction().equals("upgrade")) {
+                int shiftCost = ((UpgradeItem) item).shiftCost;
+                
                 if (!playerData.hasSkillUnlocked(selected)) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
@@ -365,9 +383,21 @@ public class SkillList extends EditableInventory {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
-
-                playerData.giveSkillPoints(-1);
-                playerData.setSkillLevel(selected.getSkill(), playerData.getSkillLevel(selected.getSkill()) + 1);
+                
+                if (event.isShiftClick()) {
+                    if (playerData.getSkillPoints() < shiftCost) {
+                        MMOCore.plugin.configManager.getSimpleMessage("not-enough-skill-points-shift", "shift_points", "" + shiftCost).send(player);
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                        return;
+                    }
+                    
+                    playerData.giveSkillPoints(-shiftCost);
+                    playerData.setSkillLevel(selected.getSkill(), playerData.getSkillLevel(selected.getSkill()) + shiftCost);
+                } else {
+                    playerData.giveSkillPoints(-1);
+                    playerData.setSkillLevel(selected.getSkill(), playerData.getSkillLevel(selected.getSkill()) + 1);
+                }
+                
                 MMOCore.plugin.configManager.getSimpleMessage("upgrade-skill", "skill", selected.getSkill().getName(), "level",
                         "" + playerData.getSkillLevel(selected.getSkill())).send(player);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
