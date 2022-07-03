@@ -5,6 +5,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class ExperienceItem {
         Validate.isTrue(config.contains("triggers"));
         id = config.getName();
 
-        period = config.getInt("period", 0);
+        period = config.getInt("period", 1);
         firstTrigger = config.getInt("first-trigger", period);
         claimChance = config.getDouble("chance", 100) / 100;
         failReduction = config.getDouble("fail-reduction", 80) / 100;
@@ -71,7 +72,7 @@ public class ExperienceItem {
      *         account the randomness factor from the 'chance' parameter
      */
     public boolean roll(int professionLevel, int timesCollected) {
-        int claimsRequired = professionLevel + 1 - (firstTrigger - timesCollected * period);
+        int claimsRequired = (professionLevel + 1 - (firstTrigger + (timesCollected) * period));
         if (claimsRequired < 1)
             return false;
 
