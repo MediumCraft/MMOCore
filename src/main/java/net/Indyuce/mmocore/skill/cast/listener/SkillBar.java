@@ -105,8 +105,7 @@ public class SkillBar implements Listener {
 								"" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0)))
 						.replace("{skill}", data.getBoundSkill(j).getSkill().getName()));
 			}
-
-			return str.toString();
+			return MMOCore.plugin.placeholderParser.parse(data.getPlayer(),str.toString());
 		}
 
 		/**

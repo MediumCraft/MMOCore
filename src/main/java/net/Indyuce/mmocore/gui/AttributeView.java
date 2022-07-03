@@ -79,14 +79,19 @@ public class AttributeView extends EditableInventory {
 				StatInfo info = StatInfo.valueOf(buff.getStat());
 				holders.register("buff_" + buff.getStat().toLowerCase(), info.format(buff.getValue()));
 				holders.register("total_" + buff.getStat().toLowerCase(), info.format(buff.multiply(total).getValue()));
+				Bukkit.broadcastMessage(info.format(0.34));
+				Bukkit.broadcastMessage((new DecimalFormat(null)==null)+"");
 			});
+
 			return holders;
 		}
 	}
 
 	public class AttributeViewerInventory extends GeneratedInventory {
+
 		public AttributeViewerInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
+
 		}
 
 		@Override

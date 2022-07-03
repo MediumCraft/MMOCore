@@ -40,6 +40,7 @@ public abstract class EditableInventory {
 		this.slots = Math.min(Math.max(9, config.getInt("slots")), 54);
 		Validate.isTrue((slots % 9) == 0, "Slots must be a multiple of 9");
 
+
 		items.clear();
 		if (config.contains("items")) {
 			Validate.notNull(config.getConfigurationSection("items"), "Could not load item list");
