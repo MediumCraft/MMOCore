@@ -118,7 +118,7 @@ party-joined-other: '&6{player}&e joined your party!'
 transfer-party-ownership: '&eYou were transfered the party ownership.'
 kick-from-party: '&eYou successfully kicked &6{player}&e.'
 party-invite-cooldown: '&cPlease wait {cooldown} before inviting {player}.'
-high-level-difference: '&cYou cannot invite {player} as the level difference is too high.'
+high-level-difference: '&cYou cannot invite {player} as the level difference is too high ({diff}).'
 
 # Guilds
 guild-chat: '&a[{tag}] {player}: {message}'

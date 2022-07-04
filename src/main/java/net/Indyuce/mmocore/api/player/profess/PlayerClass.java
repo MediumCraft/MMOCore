@@ -8,9 +8,6 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.EXPSource;
-import net.Indyuce.mmocore.skill.list.Ambers;
-import net.Indyuce.mmocore.skill.list.Neptune_Gift;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
@@ -18,6 +15,7 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
@@ -188,11 +186,12 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     }
 
     /**
-     * Used to generate the default Human class if no one is
-     * specified after loading all the player classes. This is
-     * a very basic class that will make sure MMOCore can still
-     * continue to run without having to stop the server because
-     * some option was not provided
+     * Used to generate the default Human class if no one is specified
+     * after loading all the player classes.
+     * <p>
+     * This is a very basic class that will make sure MMOCore can still
+     * continue to run without having to stop the server because some
+     * option was not provided.
      */
     public PlayerClass(String id, String name, Material material) {
         super(null);
@@ -371,19 +370,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return getSkill(skill.getHandler().getId());
     }
 
-    /**
-     * Reduces map checkups when skills are being checked on events that are
-     * commonly called like EntityDamageEvent or regen events.
-     * <p>
-     * Examples:
-     * - {@link Neptune_Gift}
-     * - {@link Ambers}
-     */
-    public Optional<ClassSkill> findSkill(RegisteredSkill skill) {
-        ClassSkill found = skills.get(skill.getHandler().getId());
-        return found == null ? Optional.empty() : Optional.of(found);
-    }
-
     @Nullable
     public ClassSkill getSkill(String id) {
         return skills.get(id);
@@ -404,6 +390,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return obj instanceof PlayerClass && ((PlayerClass) obj).id.equals(id);
     }
 
+    @Nullable
     public String getActionBar() {
         return actionBarFormat;
     }

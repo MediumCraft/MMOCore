@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.util;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -9,7 +10,7 @@ public class HashableLocation {
     private final World world;
     private final int x, y, z;
 
-    public HashableLocation(Location loc) {
+    public HashableLocation(@NotNull Location loc) {
         this.world = loc.getWorld();
         this.x = loc.getBlockX();
         this.y = loc.getBlockY();

@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.gui.social.party;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.input.PlayerInput;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.party.provided.Party;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
@@ -148,7 +148,7 @@ public class EditablePartyView extends EditableInventory {
                     return;
                 }
 
-                MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.PARTY_INVITE, (input) -> {
+                MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.PARTY_INVITE, input -> {
                     Player target = Bukkit.getPlayer(input);
                     if (target == null) {
                         MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);
@@ -172,8 +172,9 @@ public class EditablePartyView extends EditableInventory {
                         return;
                     }
 
-                    if (Math.abs(targetData.getLevel() - party.getLevel()) > MMOCore.plugin.configManager.maxPartyLevelDifference) {
-                        MMOCore.plugin.configManager.getSimpleMessage("high-level-difference", "player", target.getName()).send(player);
+                    int levelDifference = Math.abs(targetData.getLevel() - party.getLevel());
+                    if (levelDifference > MMOCore.plugin.configManager.maxPartyLevelDifference) {
+                        MMOCore.plugin.configManager.getSimpleMessage("high-level-difference", "player", target.getName(), "diff", String.valueOf(levelDifference)).send(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                         open();
                         return;
