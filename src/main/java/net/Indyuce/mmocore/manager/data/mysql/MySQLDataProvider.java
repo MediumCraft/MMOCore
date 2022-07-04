@@ -45,14 +45,14 @@ getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '"
 			+ "experience INT(11) DEFAULT 0,class VARCHAR(20),guild VARCHAR(20),last_login LONG,"
 			+ "attributes LONGTEXT,professions LONGTEXT,times_claimed LONGTEXT,quests LONGTEXT,"
 			+ "waypoints LONGTEXT,friends LONGTEXT,skills LONGTEXT,bound_skills LONGTEXT,"
-			+ "class_info LONGTEXT, PRIMARY KEY (uuid));");//TODO
+			+ "class_info LONGTEXT, is_saved TINYINT, PRIMARY KEY (uuid));");
 
 
 		getResult("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata'" +
 				" AND COLUMN_NAME = 'is_saved'",(result)-> {
 			try {
 				if(!result.next())
-			executeUpdate("ALTER TABLE mmocore_playerdata ADD is_saved TINYINT");
+			executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN is_saved TINYINT");
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
