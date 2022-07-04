@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.gui.api;
 
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.TriggerItem;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
