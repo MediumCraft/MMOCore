@@ -18,6 +18,7 @@ import net.Indyuce.mmocore.experience.Booster;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.party.AbstractParty;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -222,6 +223,7 @@ public class PlayerStats extends EditableInventory {
 			ItemStack disp = super.display(inv, n);
 			if (disp.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
 				SkullMeta meta = (SkullMeta) disp.getItemMeta();
+
 				inv.dynamicallyUpdateItem(this, n, disp, current -> {
 					meta.setOwningPlayer(inv.getPlayer());
 					current.setItemMeta(meta);
