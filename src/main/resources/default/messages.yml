@@ -110,7 +110,7 @@ already-in-party: '&c{player} is already in your party.'
 party-invite:
 - '{"text":""}'
 - '{"text":"&6{player} &ehas invited you to their party!"}'
-- '[{"text":"        ","hoverEvent":{}},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/party accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             ","hoverEvent":{}},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/party deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
+- '[{"text":"        "},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/party accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             "},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/party deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
 - '{"text":""}'
 party-is-full: '&cSorry, your party is full.'
 party-joined: '&eYou successfully joined &6{owner}&e''s party.'
@@ -127,7 +127,7 @@ already-in-guild: '&c{player} is already in your guild.'
 guild-invite:
 - '{"text":""}'
 - '{"text":"&6{player} &ehas invited you to their guild!"}'
-- '[{"text":"        ","hoverEvent":{}},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/guild accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             ","hoverEvent":{}},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/guild deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
+- '[{"text":"        "},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/guild accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             "},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/guild deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
 - '{"text":""}'
 #guild-is-full: '&cSorry, your guild is full.' -Unused right now
 guild-joined: '&eYou successfully joined &6{owner}&e''s guild.'
