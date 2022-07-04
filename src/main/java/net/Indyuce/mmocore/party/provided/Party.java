@@ -160,6 +160,7 @@ public class Party implements AbstractParty {
         Request request = new PartyInvite(this, inviter, target);
         new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
                 .sendAsJSon(target.getPlayer());
+
         MMOCore.plugin.requestManager.registerRequest(request);
     }
 
