@@ -159,6 +159,9 @@ party:
   # that feature.
   max-level-difference: 3
 
+  # When enabled, being in a party also splits profession exp
+  profession-exp-split: false
+
 # Redirects vanilla experience obtained to MMOCore
 # class experience. You can define the % of the vanilla
 # experience that is being transfered as MMOCore exp.
