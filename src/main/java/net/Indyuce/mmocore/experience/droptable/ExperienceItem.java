@@ -51,7 +51,8 @@ public class ExperienceItem {
         Validate.isTrue(config.contains("triggers"));
         id = config.getName();
 
-        period = config.getInt("period", 1);
+        final int periodOption = config.getInt("period", 1);
+        period = periodOption == 0 ? Integer.MAX_VALUE : periodOption;
         firstTrigger = config.getInt("first-trigger", period);
         claimChance = config.getDouble("chance", 100) / 100;
         failReduction = config.getDouble("fail-reduction", 80) / 100;
@@ -72,7 +73,7 @@ public class ExperienceItem {
      *         account the randomness factor from the 'chance' parameter
      */
     public boolean roll(int professionLevel, int timesCollected) {
-        int claimsRequired = (professionLevel + 1 - (firstTrigger + (timesCollected) * period));
+        int claimsRequired = (professionLevel + 1 - (firstTrigger + timesCollected * period));
         if (claimsRequired < 1)
             return false;
 
