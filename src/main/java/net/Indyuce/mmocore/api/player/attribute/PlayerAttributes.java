@@ -136,10 +136,13 @@ public class PlayerAttributes {
 		 * @param value Amount of attribute points spent in the attribute
 		 */
 		public void addBase(int value) {
-			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 			setBase(spent + value);
+
+			// Apply exp table as many times as required
+			final PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 			if (attribute.hasExperienceTable())
-				attribute.getExperienceTable().claim(data, spent, attribute);
+				while (value-- > 0)
+					attribute.getExperienceTable().claim(data, spent, attribute);
 		}
 
 		/*
