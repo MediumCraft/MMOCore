@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.comp.mythicmobs.load;
 
+import io.lumine.mythic.api.adapters.AbstractItemStack;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.drops.DropMetadata;
-import io.lumine.mythic.api.drops.IMultiDrop;
+import io.lumine.mythic.api.drops.IItemDrop;
 import io.lumine.mythic.bukkit.adapters.BukkitItemStack;
 import io.lumine.mythic.core.drops.Drop;
-import io.lumine.mythic.core.drops.LootBag;
-import io.lumine.mythic.core.drops.droppables.ItemDrop;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -17,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
-public class GoldPouchDrop extends Drop implements IMultiDrop {
+public class GoldPouchDrop extends Drop implements IItemDrop {
     private final int min;
     private final int max;
 
@@ -30,10 +29,8 @@ public class GoldPouchDrop extends Drop implements IMultiDrop {
         max = config.getInteger("max", 10);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public LootBag get(DropMetadata metadata) {
-        LootBag loot = new LootBag(metadata);
+    public AbstractItemStack getDrop(DropMetadata dropMetadata, double v) {
         NBTItem nbt = NBTItem.get(new SimpleItemBuilder("MOB_GOLD_POUCH").build());
 
         ItemStack[] content = new ItemStack[18];
@@ -52,8 +49,7 @@ public class GoldPouchDrop extends Drop implements IMultiDrop {
         }
 
         nbt.addTag(new ItemTag("RpgPouchSize", 18), new ItemTag("RpgPouchMob", true), new ItemTag("RpgPouchInventory", MMOCoreUtils.toBase64(content)));
-        loot.add(new ItemDrop(this.getLine(), this.getConfig(), new BukkitItemStack(nbt.toItem())));
-        return loot;
+        return new BukkitItemStack(nbt.toItem());
     }
 
     private ItemStack setAmount(ItemStack item, int amount) {

@@ -1,17 +1,16 @@
 package net.Indyuce.mmocore.comp.mythicmobs.load;
 
+import io.lumine.mythic.api.adapters.AbstractItemStack;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.drops.DropMetadata;
-import io.lumine.mythic.api.drops.IMultiDrop;
+import io.lumine.mythic.api.drops.IItemDrop;
 import io.lumine.mythic.bukkit.adapters.BukkitItemStack;
 import io.lumine.mythic.core.drops.Drop;
-import io.lumine.mythic.core.drops.LootBag;
-import io.lumine.mythic.core.drops.droppables.ItemDrop;
 import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 
 import java.util.Random;
 
-public class CurrencyItemDrop extends Drop implements IMultiDrop {
+public class CurrencyItemDrop extends Drop implements IItemDrop {
     private final String key;
     private final int minw;
     private final int maxw;
@@ -26,12 +25,9 @@ public class CurrencyItemDrop extends Drop implements IMultiDrop {
         maxw = config.getInteger("maxw", 1);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public LootBag get(DropMetadata metadata) {
-        LootBag loot = new LootBag(metadata);
-        loot.add(new ItemDrop(this.getLine(), this.getConfig(), new BukkitItemStack(new CurrencyItemBuilder(key, random(minw, maxw)).build())));
-        return loot;
+    public AbstractItemStack getDrop(DropMetadata dropMetadata, double v) {
+        return new BukkitItemStack(new CurrencyItemBuilder(key, random(minw, maxw)).build());
     }
 
     private int random(int a, int b) {
