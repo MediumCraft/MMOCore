@@ -2,10 +2,9 @@ package net.Indyuce.mmocore.experience.droptable;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -15,19 +14,23 @@ import java.util.Random;
 public class ExperienceItem {
     private final String id;
 
-    //A period of 0 means the item will only trigger one time.
-    private final int period;
-    private final int firstTrigger;
+    private final int period, firstTrigger, lastTrigger;
     private final double claimChance, failReduction;
     private final List<Trigger> triggers;
 
     private static final Random random = new Random();
+
+    @Deprecated
+    public ExperienceItem(String id, int period, int firstTrigger, double claimChance, double failReduction, List<Trigger> triggers) {
+        this(id, period, firstTrigger, Integer.MAX_VALUE, claimChance, failReduction, triggers);
+    }
 
     /**
      * One item for an experience table
      *
      * @param period        The experience item is claimed every X level ups
      * @param firstTrigger  The experience item if claimed for the first time at X level ups.
+     * @param lastTrigger   The last level at which the item can be claimed.
      * @param claimChance   Chance for that item to be claimed every X level ups
      * @param failReduction Between 0 and 1, by how much the fail chance is reduced
      *                      every time the item is not claimed when leveling up.
@@ -37,13 +40,14 @@ public class ExperienceItem {
      *                      where n is the amount of successive claiming fails
      * @param triggers      Actions cast when the exp item is claimed
      */
-    public ExperienceItem(String id, int period, int firstTrigger, double claimChance, double failReduction, List<Trigger> triggers) {
+    public ExperienceItem(String id, int period, int firstTrigger, int lastTrigger, double claimChance, double failReduction, List<Trigger> triggers) {
         this.id = id;
         this.period = period;
         this.claimChance = claimChance;
         this.failReduction = failReduction;
         this.triggers = triggers;
         this.firstTrigger = firstTrigger;
+        this.lastTrigger = lastTrigger;
     }
 
     public ExperienceItem(ConfigurationSection config) {
@@ -52,8 +56,10 @@ public class ExperienceItem {
         id = config.getName();
 
         final int periodOption = config.getInt("period", 1);
+        // A period of 0 means the item will only trigger once
         period = periodOption == 0 ? Integer.MAX_VALUE : periodOption;
         firstTrigger = config.getInt("first-trigger", period);
+        lastTrigger = config.getInt("last-trigger", Integer.MAX_VALUE);
         claimChance = config.getDouble("chance", 100) / 100;
         failReduction = config.getDouble("fail-reduction", 80) / 100;
         triggers = new ArrayList<>();
@@ -73,6 +79,9 @@ public class ExperienceItem {
      *         account the randomness factor from the 'chance' parameter
      */
     public boolean roll(int professionLevel, int timesCollected) {
+        if (professionLevel > lastTrigger)
+            return false;
+
         int claimsRequired = (professionLevel + 1 - (firstTrigger + timesCollected * period));
         if (claimsRequired < 1)
             return false;
