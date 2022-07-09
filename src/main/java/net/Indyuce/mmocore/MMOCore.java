@@ -48,6 +48,10 @@ import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
+import net.Indyuce.mmocore.skill.custom.mechanic.ExperienceMechanic;
+import net.Indyuce.mmocore.skill.custom.mechanic.ManaMechanic;
+import net.Indyuce.mmocore.skill.custom.mechanic.StaminaMechanic;
+import net.Indyuce.mmocore.skill.custom.mechanic.StelliumMechanic;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -116,6 +120,12 @@ public class MMOCore extends LuminePlugin {
 		// Register MMOCore-specific objects
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
 		MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
+
+		// Skill creation
+		MythicLib.plugin.getSkills().registerMechanic("mana", config -> new ManaMechanic(config));
+		MythicLib.plugin.getSkills().registerMechanic("stamina", config -> new StaminaMechanic(config));
+		MythicLib.plugin.getSkills().registerMechanic("stellium", config -> new StelliumMechanic(config));
+		MythicLib.plugin.getSkills().registerMechanic("experience", config -> new ExperienceMechanic(config));
 
         // Register extra objective, drop items...
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
