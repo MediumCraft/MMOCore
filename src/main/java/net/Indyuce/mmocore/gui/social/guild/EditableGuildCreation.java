@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui.social.guild;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -34,10 +35,8 @@ public class EditableGuildCreation extends EditableInventory {
 		}
 
 		@Override
-		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
-			if (event.getInventory() != event.getClickedInventory())
-				return;
-
+		public void whenClicked(InventoryClickContext context, InventoryItem item) {
+			
 			if (item.getFunction().equals("create")) {
 				MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_CREATION_TAG, (input) -> {
 					if(MMOCore.plugin.dataProvider.getGuildManager().getConfig().shouldUppercaseTags())

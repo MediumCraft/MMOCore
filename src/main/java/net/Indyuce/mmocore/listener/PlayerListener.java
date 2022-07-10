@@ -7,6 +7,8 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.gui.api.ClickAction;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,10 +19,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.checkerframework.checker.units.qual.C;
 
 public class PlayerListener implements Listener {
 
@@ -38,8 +43,15 @@ public class PlayerListener implements Listener {
     // Register custom inventory clicks
     @EventHandler
     public void b(InventoryClickEvent event) {
-        if (event.getInventory().getHolder() instanceof PluginInventory)
-            ((PluginInventory) event.getInventory().getHolder()).whenClicked(event);
+        if (event.getInventory().getHolder() instanceof PluginInventory) {
+            int slot = event.getRawSlot();
+            if (event.getCurrentItem() != null && event.getCurrentItem().getItemMeta() != null)
+
+
+            ((PluginInventory) event.getInventory().getHolder())
+                    .whenClicked(new InventoryClickContext(slot,event.getCurrentItem(),event.getClick(),event));
+
+        }
     }
 
     // Register custom inventory close effect

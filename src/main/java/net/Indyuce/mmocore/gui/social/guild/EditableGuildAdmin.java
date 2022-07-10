@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui.social.guild;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -16,6 +17,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -134,7 +136,7 @@ public class EditableGuildAdmin extends EditableInventory {
 		}
 
 		@Override
-		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+		public void whenClicked(InventoryClickContext context, InventoryItem item) {
 
 			if (item.getFunction().equals("leave")) {
 				playerData.getGuild().removeMember(playerData.getUniqueId());
@@ -183,11 +185,11 @@ public class EditableGuildAdmin extends EditableInventory {
 				});
 			}
 
-			if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF) {
+			if (item.getFunction().equals("member") && context.getClickType() == ClickType.RIGHT) {
 				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
 					return;
 
-				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
+				OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(context.getItemStack().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
 				if (target.equals(player))
 					return;
 

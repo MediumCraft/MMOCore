@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
@@ -107,12 +108,12 @@ public class SubclassSelect extends EditableInventory {
 		}
 
 		@Override
-		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+		public void whenClicked(InventoryClickContext context, InventoryItem item) {
 			if (item.getFunction().equals("back"))
 				InventoryManager.CLASS_SELECT.newInventory(playerData).open();
 
 			if (item.getFunction().equals("class")) {
-				String tag = NBTItem.get(event.getCurrentItem()).getString("classId");
+				String tag = NBTItem.get(context.getItemStack()).getString("classId");
 				if (tag.equals(""))
 					return;
 

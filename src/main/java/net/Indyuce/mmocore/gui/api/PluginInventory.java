@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.gui.api;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -33,10 +34,9 @@ public abstract class PluginInventory implements InventoryHolder {
 	public void open() {
 		getPlayer().openInventory(getInventory());
 	}
+	
 
-	public abstract Inventory getInventory();
-
-	public abstract void whenClicked(InventoryClickEvent event);
+	public abstract void whenClicked(InventoryClickContext context);
 
 	public void whenClosed(InventoryCloseEvent event) {
 	}

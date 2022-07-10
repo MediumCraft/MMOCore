@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.gui.eco;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.util.item.SimpleItemBuilder;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -19,102 +20,105 @@ import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.util.SmartGive;
 
 public class DepositMenu extends PluginInventory {
-	private ItemStack depositItem;
-	private int deposit;
+    private ItemStack depositItem;
+    private int deposit;
 
-	public DepositMenu(Player player) {
-		super(player);
-	}
+    public DepositMenu(Player player) {
+        super(player);
+    }
 
-	@Override
-	public Inventory getInventory() {
-		Inventory inv = Bukkit.createInventory(this, 27, "Deposit");
+    @Override
+    public Inventory getInventory() {
+        Inventory inv = Bukkit.createInventory(this, 27, "Deposit");
 
-		inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "0").build());
+        inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "0").build());
 
-		new BukkitRunnable() {
+        new BukkitRunnable() {
 
-			@Override
-			public void run() {
-				if (inv.getViewers().size() < 1) {
-					cancel();
-					return;
-				}
+            @Override
+            public void run() {
+                if (inv.getViewers().size() < 1) {
+                    cancel();
+                    return;
+                }
 
-				updateDeposit(inv);
-			}
-		}.runTaskTimer(MMOCore.plugin, 0, 20);
-		return inv;
-	}
+                updateDeposit(inv);
+            }
+        }.runTaskTimer(MMOCore.plugin, 0, 20);
+        return inv;
+    }
 
-	@Override
-	public void whenClicked(InventoryClickEvent event) {
-		// event.setCancelled(true);
-		if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
-			return;
+    @Override
+    public void whenClicked(InventoryClickContext context) {
+        if (context.isClassic()) {
 
-		if (event.getCurrentItem().isSimilar(depositItem)) {
-			event.setCancelled(true);
+            // event.setCancelled(true);
+            if (context.getItemStack() == null || context.getItemStack().getType() == Material.AIR)
+                return;
 
-			updateDeposit(event.getInventory());
-			if (deposit <= 0)
-				return;
+            if (context.getItemStack().isSimilar(depositItem)) {
+                context.setCancelled(true);
 
-			EconomyResponse response = MMOCore.plugin.economy.getEconomy().depositPlayer(player, deposit);
-			if (!response.transactionSuccess())
-				return;
+                updateDeposit(context.getInventory());
+                if (deposit <= 0)
+                    return;
 
-			event.getInventory().clear();
-			player.closeInventory();
-			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-			MMOCore.plugin.configManager.getSimpleMessage("deposit", "worth", "" + deposit).send(player);
-			return;
-		}
+                EconomyResponse response = MMOCore.plugin.economy.getEconomy().depositPlayer(player, deposit);
+                if (!response.transactionSuccess())
+                    return;
 
-		int worth = NBTItem.get(event.getCurrentItem()).getInteger("RpgWorth");
-		if (worth < 1) {
-			event.setCancelled(true);
-		}
+                ;
+                player.closeInventory();
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
+                MMOCore.plugin.configManager.getSimpleMessage("deposit", "worth", "" + deposit).send(player);
+                return;
+            }
 
-		// in deposit menu
-		// if (event.getRawSlot() < 27) {
-		// int empty = player.getInventory().firstEmpty();
-		// if (empty < 0)
-		// return;
-		//
-		// player.playSound(player.getLocation(), Sound.ENTITY_SHULKER_TELEPORT,
-		// 1, 2);
-		// player.getInventory().addItem(event.getCurrentItem());
-		// event.setCurrentItem(null);
-		// updateDeposit(event.getInventory());
-		// return;
-		// }
+            int worth = NBTItem.get(context.getItemStack()).getInteger("RpgWorth");
+            if (worth < 1) {
+                context.setCancelled(true);
+            }
+        }
 
-		// in player inventory
-		// int empty = event.getInventory().firstEmpty();
-		// if (empty < 0)
-		// return;
-		//
-		// player.playSound(player.getLocation(),
-		// Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-		// event.getInventory().addItem(event.getCurrentItem());
-		// event.setCurrentItem(null);
-		// updateDeposit(event.getInventory());
-		// return;
-	}
+        // in deposit menu
+        // if (event.getRawSlot() < 27) {
+        // int empty = player.getInventory().firstEmpty();
+        // if (empty < 0)
+        // return;
+        //
+        // player.playSound(player.getLocation(), Sound.ENTITY_SHULKER_TELEPORT,
+        // 1, 2);
+        // player.getInventory().addItem(event.getCurrentItem());
+        // event.setCurrentItem(null);
+        // updateDeposit(event.getInventory());
+        // return;
+        // }
 
-	@Override
-	public void whenClosed(InventoryCloseEvent event) {
-		SmartGive smart = new SmartGive(player);
-		for (int j = 0; j < 26; j++) {
-			ItemStack item = event.getInventory().getItem(j);
-			if (item != null)
-				smart.give(item);
-		}
-	}
+        // in player inventory
+        // int empty = event.getInventory().firstEmpty();
+        // if (empty < 0)
+        // return;
+        //
+        // player.playSound(player.getLocation(),
+        // Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
+        // event.getInventory().addItem(event.getCurrentItem());
+        // event.setCurrentItem(null);
+        // updateDeposit(event.getInventory());
+        // return;
+    }
 
-	private void updateDeposit(Inventory inv) {
-		deposit = MMOCoreUtils.getWorth(inv.getContents());
-		inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "" + deposit).build());
-	}
+    @Override
+    public void whenClosed(InventoryCloseEvent event) {
+        SmartGive smart = new SmartGive(player);
+        for (int j = 0; j < 26; j++) {
+            ItemStack item = event.getInventory().getItem(j);
+            if (item != null)
+                smart.give(item);
+        }
+    }
+
+    private void updateDeposit(Inventory inv) {
+        deposit = MMOCoreUtils.getWorth(inv.getContents());
+        inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "" + deposit).build());
+    }
 }

@@ -1,14 +1,12 @@
 package net.Indyuce.mmocore;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.comp.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
 import io.lumine.mythic.utils.plugin.LuminePlugin;
-import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
-import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
-import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
-import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -16,6 +14,10 @@ import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
+import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
+import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicMobsMMOLoader;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderAPIParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderParser;
@@ -30,7 +32,6 @@ import net.Indyuce.mmocore.guild.GuildModuleType;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.guild.provided.MMOCoreGuildModule;
 import net.Indyuce.mmocore.listener.*;
-import net.Indyuce.mmocore.listener.bungee.GetMMOCorePlayerListener;
 import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
@@ -84,6 +85,8 @@ public class MMOCore extends LuminePlugin {
 	public final StatManager statManager = new StatManager();
 	@Deprecated
 	public final SkillTreeManager skillTreeManager = new SkillTreeManager();
+
+	public ProtocolManager protocolManager;
 
 	// Profession managers
 	public final CustomBlockManager mineManager = new CustomBlockManager();
@@ -184,12 +187,9 @@ public class MMOCore extends LuminePlugin {
 		// Checks if the server runs with Bungee
 		hasBungee = SpigotConfig.bungee & !Bukkit.getServer().getOnlineMode();
 
-        //Setups the channel for Bungee
-        if(hasBungee) {
-            getServer().getMessenger().registerOutgoingPluginChannel(this,"namespace:give_mmocore_player");
-            getServer().getMessenger().registerOutgoingPluginChannel(this,"namespace:get_mmocore_player");
-            getServer().getMessenger().registerIncomingPluginChannel(this,"namespace:get_mmocore_player",new GetMMOCorePlayerListener());
-        }
+
+
+
 
         /*
          * Resource regeneration. Must check if entity is dead otherwise regen will make
@@ -219,6 +219,9 @@ public class MMOCore extends LuminePlugin {
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
 			return;
 		}
+
+		//load protocolManager
+		protocolManager= ProtocolLibrary.getProtocolManager();
 
 		initializePlugin(false);
 

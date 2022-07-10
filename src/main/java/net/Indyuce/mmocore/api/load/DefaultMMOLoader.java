@@ -169,6 +169,9 @@ public class DefaultMMOLoader extends MMOLoader {
         if (config.getKey().equals("craftitem"))
             return new CraftItemExperienceSource(dispenser, config);
 
+        if (config.getKey().equals("fishitem"))
+            return new FishItemExperienceSource(dispenser, config);
+
         return null;
     }
 

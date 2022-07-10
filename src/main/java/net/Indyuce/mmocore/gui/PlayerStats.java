@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -171,7 +172,7 @@ public class PlayerStats extends EditableInventory {
 		}
 
 		@Override
-		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+		public void whenClicked(InventoryClickContext context, InventoryItem item) {
 			if (item.hasFunction())
 				if (item.getFunction().equals("boost-next")) {
 					boostOffset++;
