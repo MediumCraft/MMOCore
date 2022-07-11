@@ -2,9 +2,8 @@ package net.Indyuce.mmocore;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.comp.Metrics;
+import io.lumine.mythic.lib.metrics.bukkit.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
-import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
@@ -57,6 +56,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.spigotmc.SpigotConfig;
@@ -65,7 +65,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 
-public class MMOCore extends LuminePlugin {
+public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
 
 	public final WaypointManager waypointManager = new WaypointManager();
@@ -115,7 +115,8 @@ public class MMOCore extends LuminePlugin {
 		plugin = this;
 	}
 
-	public void load() {
+	@Override
+	public void onLoad() {
 
 		// Register MMOCore-specific objects
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
@@ -140,7 +141,8 @@ public class MMOCore extends LuminePlugin {
 			loadManager.registerLoader(new MythicMobsMMOLoader());
 	}
 
-	public void enable() {
+	@Override
+	public void onEnable() {
 		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
 		saveDefaultConfig();

@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.listener;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.utils.Schedulers;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
@@ -137,7 +136,7 @@ public class BlockListener implements Listener {
          * Finally enable block regen.
          */
         if (info.hasRegen())
-            Schedulers.sync().runLater(() -> MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !temporaryBlock), 1);
+            Bukkit.getScheduler().runTaskLater(MythicLib.plugin, () -> MMOCore.plugin.mineManager.initialize(info.startRegeneration(Bukkit.createBlockData(savedData), block.getLocation()), !temporaryBlock), 1);
     }
 
     /**
