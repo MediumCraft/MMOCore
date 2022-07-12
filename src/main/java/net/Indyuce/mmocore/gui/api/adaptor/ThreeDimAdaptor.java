@@ -212,7 +212,7 @@ public class ThreeDimAdaptor extends Adaptor {
 
         Vector xAxis=initalLocation.clone().toVector().subtract(generated.getPlayer().getLocation().toVector()).setY(0).normalize();
         Vector yAxis = new Vector(0, 1, 0);
-        Vector zAxis = xAxis.rotateAroundAxis(yAxis, -Math.PI / 2);
+        Vector zAxis = xAxis.clone().rotateAroundAxis(yAxis, -Math.PI / 2);
 
 
         //Empiric height of a line: 0.25
@@ -246,25 +246,29 @@ public class ThreeDimAdaptor extends Adaptor {
 
         double totalHeight=lineHeight*itemStack.getItemMeta().getLore().size();
         double totalLength=max*charSize;
-        Location topCorner=getLocation(n, 1).add(yAxis.clone().multiply(2 +totalHeight/2));
+        Location topCorner=getLocation(n, 1).add(yAxis.clone().multiply(armorStand.getHeight()*0.25 +totalHeight/2));
 
         //We remove the items that can be in the field of vision
-        for(ArmorStand otherArmorStand:armorStands.values()) {
+        for(int slot:armorStands.keySet()) {
+            ArmorStand otherArmorStand = armorStands.get(slot);
             if(!otherArmorStand.equals(armorStand)) {
                 //Calculates the direction between the player and otherArmorStand
-                Vector direction=otherArmorStand.getLocation().add(new Vector(0,0.25*otherArmorStand.getHeight(),0)).subtract(generated.getPlayer().getLocation()).toVector();
+                Vector direction=otherArmorStand.getLocation().add(new Vector(0,0.25*otherArmorStand.getHeight(),0)).subtract(generated.getPlayer().getLocation()).toVector().normalize();
                 //The vector between the plan and the player.
-                Vector vector=initalLocation.clone().toVector().subtract(generated.getPlayer().getLocation().toVector()).setY(0);
-                //The intersection between 'direction' and the plane
-                Vector projection=generated.getPlayer().getLocation().toVector().add(xAxis.clone().multiply(vector.dot(direction)));
-                Vector relativeProjection=projection.subtract(topCorner.toVector());
-                double z=zAxis.dot(relativeProjection);
-                double y=-yAxis.dot(relativeProjection);
-                Bukkit.broadcastMessage(otherArmorStand.getName()+" z:"+z+" y:"+y);
-                if(z>0&&z<totalLength&&y>0&&y<totalHeight) {
-                    hideArmorStand(armorStand);
-                }
+                //The plane normal is the xAxis
 
+                double t = (xAxis.clone().dot(topCorner.clone().subtract(generated.getPlayer().getLocation()).toVector())) / xAxis.clone().dot(direction);
+                Vector relativeProjection = generated.getPlayer().getLocation().toVector().add(direction.multiply(t)).subtract(topCorner.toVector());
+
+
+                //The intersection between 'direction' and the plane
+                //Vector projection=generated.getPlayer().getLocation().toVector().add(direction.clone().multiply(1/vector.dot(direction)));
+                //Vector relativeProjection=projection.subtract(topCorner.toVector());
+                double z=zAxis.dot(relativeProjection);
+                double y=(n/9-slot/9)*lineHeight+totalHeight/2;
+                if(z>0&&z<totalLength&&y>0&&y<totalHeight) {
+                    hideArmorStand(otherArmorStand);
+                }
 
 
 
