@@ -82,7 +82,8 @@ public class CastableSkill extends Skill {
             casterData.giveStamina(-getModifier("stamina"), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
         }
 
-        casterData.setLastActivity(PlayerActivity.CAST_SKILL);
+        if (!getTrigger().isPassive())
+            casterData.setLastActivity(PlayerActivity.CAST_SKILL);
     }
 
     @Override

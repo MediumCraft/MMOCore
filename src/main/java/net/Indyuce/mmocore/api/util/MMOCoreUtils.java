@@ -3,9 +3,8 @@ package net.Indyuce.mmocore.api.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.hologram.Hologram;
 import io.lumine.mythic.lib.version.VersionMaterial;
-import io.lumine.mythic.utils.holograms.Hologram;
-import io.lumine.mythic.utils.serialize.Position;
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,8 +63,7 @@ public class MMOCoreUtils {
      * @param message Message to display
      */
     public static void displayIndicator(Location loc, String message) {
-        Hologram holo = Hologram.create(Position.of(loc), Arrays.asList(message));
-        holo.spawn();
+        Hologram holo = Hologram.create(loc, Arrays.asList(message));
         Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> holo.despawn(), 20);
     }
 

@@ -24,9 +24,12 @@ import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExperienceObject;
+import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
+import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
+import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.Party;
@@ -36,9 +39,6 @@ import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
-import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
-import net.Indyuce.mmocore.experience.PlayerProfessions;
-import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.Validate;
@@ -589,8 +589,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *
      * @param value            Experience to give the player
      * @param source           How the player earned experience
-     * @param hologramLocation Location used to display the hologram. If it's null, no
-     *                         hologram will be displayed
+     * @param hologramLocation Location used to display the hologram.
+     *                         If it's null, no hologram will be displayed
      * @param splitExp         Should the exp be split among party members
      */
     public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {

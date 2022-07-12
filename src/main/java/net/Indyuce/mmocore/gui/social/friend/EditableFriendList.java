@@ -1,15 +1,15 @@
 package net.Indyuce.mmocore.gui.social.friend;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -130,8 +130,8 @@ public class EditableFriendList extends EditableInventory {
             if (inv.getPlayerData().getFriends().size() <= n)
                 return super.display(inv, n);
 
-            ItemStack disp = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n)).isOnline() ? online.display(inv, n) : offline.display(inv, n);
-            Player friend = Bukkit.getPlayer(inv.getPlayerData().getFriends().get(n));
+            final OfflinePlayer friend = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n));
+            ItemStack disp = (friend.isOnline() ? online : offline).display(inv, n);
             ItemMeta meta = disp.getItemMeta();
             meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, friend.getUniqueId().toString());
 

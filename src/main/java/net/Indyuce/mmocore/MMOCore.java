@@ -2,9 +2,8 @@ package net.Indyuce.mmocore;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.comp.Metrics;
+import io.lumine.mythic.lib.metrics.bukkit.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
-import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
@@ -48,11 +47,16 @@ import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
+import net.Indyuce.mmocore.skill.custom.mechanic.ExperienceMechanic;
+import net.Indyuce.mmocore.skill.custom.mechanic.ManaMechanic;
+import net.Indyuce.mmocore.skill.custom.mechanic.StaminaMechanic;
+import net.Indyuce.mmocore.skill.custom.mechanic.StelliumMechanic;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.spigotmc.SpigotConfig;
@@ -61,7 +65,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 
-public class MMOCore extends LuminePlugin {
+public class MMOCore extends JavaPlugin {
 	public static MMOCore plugin;
 
 	public final WaypointManager waypointManager = new WaypointManager();
@@ -107,25 +111,22 @@ public class MMOCore extends LuminePlugin {
 
 	public boolean shouldDebugSQL, hasBungee;
 
-	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 7;
-
 	public MMOCore() {
 		plugin = this;
 	}
 
-	public void load() {
-
-		// Check if the ML build matches
-		if (MYTHICLIB_COMPATIBILITY_INDEX != MythicLib.MMOCORE_COMPATIBILITY_INDEX) {
-			getLogger().log(Level.WARNING, "Your versions of MythicLib and MMOCore do not match. Make sure you are using the latest builds of both plugins");
-			disable();
-			return;
-		}
+	@Override
+	public void onLoad() {
 
 		// Register MMOCore-specific objects
 		MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
 		MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
 
+		// Skill creation
+		MythicLib.plugin.getSkills().registerMechanic("mana", config -> new ManaMechanic(config));
+		MythicLib.plugin.getSkills().registerMechanic("stamina", config -> new StaminaMechanic(config));
+		MythicLib.plugin.getSkills().registerMechanic("stellium", config -> new StelliumMechanic(config));
+		MythicLib.plugin.getSkills().registerMechanic("experience", config -> new ExperienceMechanic(config));
 
         // Register extra objective, drop items...
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
@@ -140,7 +141,8 @@ public class MMOCore extends LuminePlugin {
 			loadManager.registerLoader(new MythicMobsMMOLoader());
 	}
 
-	public void enable() {
+	@Override
+	public void onEnable() {
 		new SpigotPlugin(70575, this).checkForUpdate();
 		new Metrics(this);
 		saveDefaultConfig();

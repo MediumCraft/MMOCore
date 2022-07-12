@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.Indyuce</groupId>
     <artifactId>MMOCore</artifactId>
-    <version>1.9.3</version>
+    <version>1.9.5</version>
     <name>MMOCore</name>
     <description>Offer your players a brand new RPG experience!!</description>
 
@@ -125,12 +125,6 @@
         </dependency>
 
         <!-- Extra libs -->
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>io.papermc</groupId>
@@ -149,7 +143,7 @@
         <dependency>
             <groupId>io.lumine</groupId>
             <artifactId>MythicLib-dist</artifactId>
-            <version>1.3.1</version>
+            <version>1.3.4</version>
             <scope>provided</scope>
         </dependency>
 

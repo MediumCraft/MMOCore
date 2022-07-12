@@ -32,7 +32,7 @@ items:
         - ''
         - '&8When Leveled Up:'
         - '&7  +{buff_weapon_damage}% Weapon Damage (&a+{total_weapon_damage}%&7)'
-        - '&7  +{buff_max_health}% Max Health (&a+{total_max_health}&7)'
+        - '&7  +{buff_max_health}% Max Health (&a+{total_max_health}%&7)'
         - ''
         - '&eClick to level up for 1 attribute point.'
         - '&eShift-Click to level up for {shift_points} attribute points.'

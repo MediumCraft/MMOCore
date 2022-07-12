@@ -12,7 +12,6 @@ import io.lumine.mythic.lib.skill.result.SkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.util.configobject.ConfigObject;
-import io.lumine.mythic.lib.util.configobject.LineConfigObject;
 import net.Indyuce.mmocore.listener.ClassTriggers;
 import org.apache.commons.lang.Validate;
 
@@ -43,7 +42,7 @@ public class ClassTrigger {
         type = ClassTriggerType.valueOf(UtilityMethods.enumName(triggerTypeString));
 
         for (String key : mechanicStringList) {
-            ConfigObject config = new LineConfigObject(new MMOLineConfig(key));
+            ConfigObject config = new MMOLineConfig(key);
             Mechanic mechanic = MythicLib.plugin.getSkills().loadMechanic(config);
             skill.getMechanics().add(mechanic);
         }

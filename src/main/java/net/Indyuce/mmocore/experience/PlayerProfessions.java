@@ -169,7 +169,7 @@ public class PlayerProfessions {
 
         // Splitting exp through party members
         AbstractParty party;
-        if (splitExp && (party = playerData.getParty()) != null) {
+        if (splitExp && (party = playerData.getParty()) != null && MMOCore.plugin.configManager.splitProfessionExp) {
             List<PlayerData> onlineMembers = party.getOnlineMembers();
             value /= onlineMembers.size();
             for (PlayerData member : onlineMembers)

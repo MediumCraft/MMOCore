@@ -129,17 +129,8 @@ public class PlayerAttributes {
 			update();
 		}
 
-		/**
-		 * Adds X points to the base of the player attribute AND applies
-		 * the attribute experience table.
-		 *
-		 * @param value Amount of attribute points spent in the attribute
-		 */
 		public void addBase(int value) {
-			PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
 			setBase(spent + value);
-			if (attribute.hasExperienceTable())
-				attribute.getExperienceTable().claim(data, spent, attribute);
 		}
 
 		/*
