@@ -22,7 +22,7 @@ public abstract class EditableInventory {
     private String name;
     private int slots;
 
-    protected double radius, angleGap, verticalGap, curvature, verticalOffset;
+    protected double radius, angleGap, verticalGap, curvature, verticalOffset, interactSensitivity;
     /*
      * this set is linked so it keeps the order/priority in which the items are
      * loaded from the config.
@@ -47,7 +47,7 @@ public abstract class EditableInventory {
         this.verticalGap = config.getDouble("vertical-gap", 1);
         this.curvature = config.getDouble("curvature", 1);
         this.verticalOffset = config.getDouble("vertical-offset", 0);
-
+        this.interactSensitivity = config.getDouble("interact-sensitivity", 0.97);
 
         this.name = config.getString("name");
         Validate.notNull(name, "Name must not be null");
@@ -101,6 +101,10 @@ public abstract class EditableInventory {
 
     public double getVerticalGap() {
         return verticalGap;
+    }
+
+    public double getInteractSensitivity() {
+        return interactSensitivity;
     }
 
     public double getCurvature() {

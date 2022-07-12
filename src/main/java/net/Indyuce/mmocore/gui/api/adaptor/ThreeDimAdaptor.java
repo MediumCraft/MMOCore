@@ -12,10 +12,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -31,6 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -42,10 +40,18 @@ public class ThreeDimAdaptor extends Adaptor {
     private InteractListener interactListener;
     private final HashMap<Integer, ArmorStand> armorStands = new HashMap<>();
 
+    private final HashSet<ArmorStand> loreArmorStand = new HashSet<>();
+
+    private final HashMap<ItemStack,ArmorStand> hiddenArmorStand =new HashMap<>();
+
     private boolean firstTime = true;
 
     private final Vector direction = generated.getPlayer().getEyeLocation().getDirection().setY(0);
     private final Location location = generated.getPlayer().getLocation().add(new Vector(0, generated.getEditable().getVerticalOffset(), 0));
+
+    //Zoomed=-1 no armorstand are under zoom
+    private int zoomed = -1;
+
 
     public ThreeDimAdaptor(GeneratedInventory generated) {
         super(generated);
@@ -94,6 +100,8 @@ public class ThreeDimAdaptor extends Adaptor {
         //Closes the packet listener,the interact listener and destroys the armor stands.
         //MMOCore.plugin.protocolManager.removePacketListener(packetListener);
         interactListener.close();
+        removeLore();
+
         new BukkitRunnable() {
             double total_percentage = 1;
 
@@ -127,6 +135,10 @@ public class ThreeDimAdaptor extends Adaptor {
                 setInventoryItem(item, 1);
             }
         }
+        if (zoomed != -1) {
+            displayLore(zoomed);
+            armorStands.get(zoomed).teleport(getLocation(zoomed, 0.75));
+        }
     }
 
 
@@ -140,6 +152,7 @@ public class ThreeDimAdaptor extends Adaptor {
 
         for (ArmorStand armorStand : armorStands.values())
             armorStand.remove();
+        removeLore();
 
     }
 
@@ -184,6 +197,113 @@ public class ThreeDimAdaptor extends Adaptor {
         //armorStand.setBodyPose(new EulerAngle(-direction.getX(),0,-direction.getZ()));
 
         armorStands.put(n, armorStand);
+    }
+
+
+    public void displayLore(int n) {
+        ArmorStand armorStand = armorStands.get(n);
+        ItemStack itemStack = armorStand.getEquipment().getItem(EquipmentSlot.HEAD);
+
+        Location initalLocation = getLocation(n, 1);
+
+        for (ArmorStand armorStand1 : armorStands.values()) {
+            armorStand1.setCustomNameVisible(false);
+        }
+
+        Vector xAxis=initalLocation.clone().toVector().subtract(generated.getPlayer().getLocation().toVector()).setY(0).normalize();
+        Vector yAxis = new Vector(0, 1, 0);
+        Vector zAxis = xAxis.rotateAroundAxis(yAxis, -Math.PI / 2);
+
+
+        //Empiric height of a line: 0.25
+        //Empiric size of a char: 0.13
+        double lineHeight = 0.25;
+        double charSize = 0.09;
+        //We search the biggest line in the lore
+        int max=0;
+        for(String line:itemStack.getItemMeta().getLore()){
+            if(line.length()>max)
+                max=line.length();
+        }
+
+
+
+        initalLocation.add(zAxis.clone().multiply(max*charSize/2+0.8)).add(yAxis.clone().multiply(2 + 0.125 * itemStack.getItemMeta().getLore().size()));
+        for (String line : itemStack.getItemMeta().getLore()) {
+            if (line.length() != 0) {
+                ArmorStand as = (ArmorStand) initalLocation.getWorld().spawnEntity(initalLocation, EntityType.ARMOR_STAND);
+                as.setSmall(false);
+                as.setMarker(true);
+                as.setVisible(false);
+                as.setCustomNameVisible(true);
+                as.setCustomName(line);
+                loreArmorStand.add(as);
+            }
+
+            initalLocation.add(yAxis.clone().multiply(-lineHeight));
+
+        }
+
+        double totalHeight=lineHeight*itemStack.getItemMeta().getLore().size();
+        double totalLength=max*charSize;
+        Location topCorner=getLocation(n, 1).add(yAxis.clone().multiply(2 +totalHeight/2));
+
+        //We remove the items that can be in the field of vision
+        for(ArmorStand otherArmorStand:armorStands.values()) {
+            if(!otherArmorStand.equals(armorStand)) {
+                //Calculates the direction between the player and otherArmorStand
+                Vector direction=otherArmorStand.getLocation().add(new Vector(0,0.25*otherArmorStand.getHeight(),0)).subtract(generated.getPlayer().getLocation()).toVector();
+                //The vector between the plan and the player.
+                Vector vector=initalLocation.clone().toVector().subtract(generated.getPlayer().getLocation().toVector()).setY(0);
+                //The intersection between 'direction' and the plane
+                Vector projection=generated.getPlayer().getLocation().toVector().add(xAxis.clone().multiply(vector.dot(direction)));
+                Vector relativeProjection=projection.subtract(topCorner.toVector());
+                double z=zAxis.dot(relativeProjection);
+                double y=-yAxis.dot(relativeProjection);
+                Bukkit.broadcastMessage(otherArmorStand.getName()+" z:"+z+" y:"+y);
+                if(z>0&&z<totalLength&&y>0&&y<totalHeight) {
+                    hideArmorStand(armorStand);
+                }
+
+
+
+
+            }
+        }
+    }
+
+
+    /**
+     * Hide the item corrseponding to a certain armor stand if it hides the lore
+     */
+    public void hideArmorStand(ArmorStand armorStand) {
+        hiddenArmorStand.put(armorStand.getEquipment().getItem(EquipmentSlot.HEAD),armorStand);
+        armorStand.getEquipment().setItem(EquipmentSlot.HEAD,null);
+    }
+
+
+    /**
+     * Reestablishes all the item for armor stand
+     */
+    public void reestablishHiddenArmorStand() {
+        for (ItemStack item: hiddenArmorStand.keySet()) {
+            hiddenArmorStand.get(item).getEquipment().setItem(EquipmentSlot.HEAD,item);
+        }
+        hiddenArmorStand.clear();
+    }
+
+
+
+    public void removeLore() {
+        for (ArmorStand armorStand : loreArmorStand) {
+            armorStand.remove();
+        }
+        loreArmorStand.clear();
+
+        for (ArmorStand armorStand1 : armorStands.values()) {
+            armorStand1.setCustomNameVisible(true);
+        }
+        reestablishHiddenArmorStand();
     }
 
 
@@ -251,8 +371,41 @@ public class ThreeDimAdaptor extends Adaptor {
 
         @EventHandler
         public void onMove(PlayerMoveEvent e) {
-            if (e.getPlayer().equals(generated.getPlayer()) && !e.getFrom().getBlock().getLocation().equals(e.getTo().getBlock().getLocation()))
-                ThreeDimAdaptor.this.close();
+            if (e.getPlayer().equals(generated.getPlayer())) {
+                if (!e.getFrom().getBlock().getLocation().equals(e.getTo().getBlock().getLocation()))
+                    ThreeDimAdaptor.this.close();
+                else {
+                    //If the player no longer looks at the zoom as:
+                    if (zoomed != -1 && generated.getPlayer().getLocation().getDirection().normalize().dot(
+                            armorStands.get(zoomed).getLocation().add(new Vector(0, 0.25 * armorStands.get(zoomed).getHeight(), 0))
+                                    .subtract(generated.getPlayer().getLocation()).toVector().normalize()) < generated.getEditable().getInteractSensitivity()) {
+                        armorStands.get(zoomed).teleport(getLocation(zoomed, 1));
+                        zoomed = -1;
+                        removeLore();
+                    }
+                    if (zoomed == -1) {
+                        for (int n : armorStands.keySet()) {
+                            ArmorStand as = armorStands.get(n);
+                            Location asLocation = as.getLocation().add(new Vector(0, 0.25 * as.getHeight(), 0));
+
+
+                            double scalar = generated.getPlayer().getLocation().getDirection().normalize().dot(
+                                    asLocation.subtract(generated.getPlayer().getLocation()).toVector().normalize());
+
+                            if (scalar > generated.getEditable().getInteractSensitivity()) {
+                                as.teleport(getLocation(n, 0.75));
+                                zoomed = n;
+                                displayLore(zoomed);
+                            }
+
+
+                        }
+
+                    }
+                }
+
+            }
+
         }
 
         @EventHandler
