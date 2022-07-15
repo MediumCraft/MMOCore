@@ -23,7 +23,7 @@ public class MMOCoreCommandTreeRoot extends CommandTreeRoot implements CommandEx
 			(explorer, list) -> MMOCore.plugin.questManager.getAll().forEach(quest -> list.add(quest.getId())));
 
 	public MMOCoreCommandTreeRoot() {
-		super("net/Indyuce/mmocore", "mmocore.admin");
+		super("mmocore", "mmocore.admin");
 
 		addChild(new ReloadCommandTreeNode(this));
 		addChild(new CoinsCommandTreeNode(this));
