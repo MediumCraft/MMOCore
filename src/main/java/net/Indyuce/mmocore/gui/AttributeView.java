@@ -16,8 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.logging.Level;
-
 public class AttributeView extends EditableInventory {
 	public AttributeView() {
 		super("attribute-view");
@@ -47,20 +45,14 @@ public class AttributeView extends EditableInventory {
 
 	public static class AttributeItem extends InventoryItem {
 		private final PlayerAttribute attribute;
-		private int shiftCost=1;
+		private final int shiftCost;
 
 		public AttributeItem(String function, ConfigurationSection config) {
 			super(config);
 
 			attribute = MMOCore.plugin.attributeManager
 					.get(function.substring("attribute_".length()).toLowerCase().replace(" ", "-").replace("_", "-"));
-			if(config.contains("shift-cost")) {
-				shiftCost = config.getInt("shift-cost");
-				if (shiftCost < 1) {
-					MMOCore.log(Level.WARNING, "Level up points cost must not be less than 1. Using default value: 1");
-					shiftCost = 1;
-				}
-			}
+			shiftCost = Math.max(config.getInt("shift-cost"), 1);
 		}
 
 		@Override
@@ -124,7 +116,6 @@ public class AttributeView extends EditableInventory {
 
 			if (item.getFunction().startsWith("attribute_")) {
 				PlayerAttribute attribute = ((AttributeItem) item).attribute;
-				int shiftCost = ((AttributeItem) item).shiftCost;
 
 				if (playerData.getAttributePoints() < 1) {
 					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point").send(player);
@@ -140,16 +131,15 @@ public class AttributeView extends EditableInventory {
 				}
 
 				// Amount of points spent
-				int pointsSpent = 1;
+				final boolean shiftClick = event.isShiftClick();
+				int pointsSpent = shiftClick ? ((AttributeItem) item).shiftCost : 1;
+				if (attribute.hasMax())
+					pointsSpent = Math.min(pointsSpent, attribute.getMax() - ins.getBase());
 
-				if (event.isShiftClick()) {
-					if (playerData.getAttributePoints() < shiftCost) {
-						MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point-shift", "shift_points", "" + shiftCost).send(player);
-						MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-						return;
-					}
-
-					pointsSpent = shiftCost;
+				if (shiftClick && playerData.getAttributePoints() < pointsSpent) {
+					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point-shift", "shift_points", String.valueOf(pointsSpent)).send(player);
+					MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+					return;
 				}
 
 				ins.addBase(pointsSpent);

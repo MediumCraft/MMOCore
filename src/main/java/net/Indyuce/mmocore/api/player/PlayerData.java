@@ -804,12 +804,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         Validate.isTrue(isCasting(), "Player not in casting mode");
         skillCasting.close();
         this.skillCasting = null;
+        setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE, 0); // Reset action bar
     }
 
     public void displayActionBar(String message) {
-        if (!isOnline())
-            return;
-
         setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE);
         getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     }

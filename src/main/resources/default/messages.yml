@@ -156,8 +156,8 @@ cant-choose-new-class:
 # Attributes
 no-attribute-points-spent: '&cYou have not spent any attribute points.'
 not-attribute-reallocation-point: '&cYou do not have 1 reallocation point.'
-not-attribute-point: '&cYou do not have 1 attribute point.'
-not-attribute-point-shift: '&cYou do not have &4{shift_points} &cattribute points.'
+not-attribute-point: '&cYou have no attribute point.'
+not-attribute-point-shift: '&cYou must have &4{shift_points} &cattribute points.'
 attribute-points-reallocated: '&eYou successfully reset your attributes. You now have &6{points} &eattribute points.'
 attribute-max-points-hit: '&cYou cannot level up this attribute anymore.'
 attribute-level-up: '&eYou successfully leveled up your &6{attribute}&e.' # {level}
