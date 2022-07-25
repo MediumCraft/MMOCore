@@ -284,8 +284,9 @@ public class MMOCore extends JavaPlugin {
 				getLogger().log(Level.WARNING, "Could not load hotbar swapping: " + exception.getMessage());
 			}
 
-		if (getConfig().getBoolean("prevent-spawner-xp"))
+		if (getConfig().getBoolean("prevent-spawner-xp")) {
 			Bukkit.getPluginManager().registerEvents(new NoSpawnerEXP(), this);
+		}
 
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);

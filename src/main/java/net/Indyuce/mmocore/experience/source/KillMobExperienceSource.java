@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.experience.source;
 
-import com.guillaumevdn.questcreator.lib.event.PlayerKillEntityEvent;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.event.PlayerKillEntityEvent;
 import net.Indyuce.mmocore.MMOCore;
@@ -33,12 +32,12 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
             @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
             public void a(PlayerKillEntityEvent event) {
                 Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> {
-                    if (event.getKilled().isDead() && !event.getKilled().getPersistentDataContainer().has(new NamespacedKey(MMOCore.plugin,"spawner_spawned"),PersistentDataType.STRING)) {
+                    if (event.getTarget().isDead() && !event.getTarget().getPersistentDataContainer().has(new NamespacedKey(MMOCore.plugin,"spawner_spawned"),PersistentDataType.STRING)) {
                         PlayerData data = PlayerData.get(event.getPlayer());
 
                         for (KillMobExperienceSource source : getSources())
-                            if (source.matches(data, event.getKilled()))
-                                source.giveExperience(data, 1, MMOCoreUtils.getCenterLocation(event.getKilled()));
+                            if (source.matches(data, event.getTarget()))
+                                source.giveExperience(data, 1, MMOCoreUtils.getCenterLocation(event.getTarget()));
                     }
                 }, 2);
             }

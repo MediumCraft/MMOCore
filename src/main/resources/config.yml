@@ -219,8 +219,9 @@ ability-targeting-options:
   # Prevent heals/buffs UNLESS the player is in your party/guild
   cant-heal-neutrals: false
 
-# Prevents mobs spawned from spawners from giving XP points.
+# Prevents mobs spawned from spawners from giving  MMO XP points.
 prevent-spawner-xp: true
+
 
 # Timer for combat log to expire (in seconds)
 combat-log:
