@@ -107,6 +107,9 @@ public class SkillScroller implements Listener {
         CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
         casting.index = mod(casting.index + change, playerData.getBoundSkills().size());
         casting.onTick();
+
+        if (changeSound != null)
+            changeSound.playTo(event.getPlayer());
     }
 
     private int mod(int x, int n) {

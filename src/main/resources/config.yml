@@ -211,6 +211,14 @@ can-creative-cast: false
 # This replaces anvil inputs by chat inputs.
 use-chat-input: true
 
+ability-targeting-options:
+
+  # Prevent heals/buffs on players in a different guild
+  cant-heal-enemies: true
+
+  # Prevent heals/buffs UNLESS the player is in your party/guild
+  cant-heal-neutrals: false
+
 # Prevents mobs spawned from spawners from giving XP points.
 prevent-spawner-xp: true
 

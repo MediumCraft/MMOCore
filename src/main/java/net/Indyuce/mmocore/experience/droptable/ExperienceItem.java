@@ -55,9 +55,7 @@ public class ExperienceItem {
         Validate.isTrue(config.contains("triggers"));
         id = config.getName();
 
-        final int periodOption = config.getInt("period", 1);
-        // A period of 0 means the item will only trigger once
-        period = periodOption == 0 ? Integer.MAX_VALUE : periodOption;
+        period = config.getInt("period", 1);
         firstTrigger = config.getInt("first-trigger", period);
         lastTrigger = config.getInt("last-trigger", Integer.MAX_VALUE);
         claimChance = config.getDouble("chance", 100) / 100;
@@ -79,10 +77,17 @@ public class ExperienceItem {
      *         account the randomness factor from the 'chance' parameter
      */
     public boolean roll(int professionLevel, int timesCollected) {
+
+        // Check for the last triggering level
         if (professionLevel > lastTrigger)
             return false;
 
-        int claimsRequired = (professionLevel + 1 - (firstTrigger + timesCollected * period));
+        // A period of 0 means the item only triggers once
+        if (period == 0 && timesCollected > 0)
+            return false;
+
+        // Basic formula
+        final int claimsRequired = (professionLevel + 1 - (firstTrigger + timesCollected * period));
         if (claimsRequired < 1)
             return false;
 
