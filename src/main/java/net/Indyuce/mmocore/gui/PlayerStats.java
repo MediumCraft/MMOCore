@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.gui;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.api.stat.handler.StatHandler;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
@@ -131,13 +132,13 @@ public class PlayerStats extends EditableInventory {
                                     replaced = info.format(stats.getBase(info.name));
                                 } else if (holder.endsWith("_extra")) {
                                     StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 5)));
-                                    replaced = info.format(stats.getStat(info.name) - stats.getBase(info.name));
+                                    replaced = info.format(MythicLib.plugin.getStats().getTotalValue(info.name, stats.getMap()) - stats.getBase(info.name));
                                 } else if (holder.startsWith("attribute_")) {
                                     PlayerAttribute attr = MMOCore.plugin.attributeManager.get(holder.substring(10).replace("_", "-").toLowerCase());
                                     replaced = String.valueOf(inv.target.getAttributes().getAttribute(attr));
                                 } else {
                                     StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder));
-                                    replaced = info.format(stats.getStat(info.name));
+                                    replaced = info.format(MythicLib.plugin.getStats().getTotalValue(info.name, stats.getMap()));
                                 }
 
                                 str = str.replace("{" + holder + "}", replaced);
