@@ -115,6 +115,10 @@ attributes:
         base: 4.2
         per-level: 0.05
 
+
+#If true the player will need to have the mmocore.class.{class_name} permission
+needs-permission: false
+
 # Experience sources for main class experience.
 main-exp-sources:
 - 'killmob{type=ZOMBIE;amount=1-3}'

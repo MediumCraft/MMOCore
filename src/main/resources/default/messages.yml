@@ -152,7 +152,8 @@ start-quest: '&eYou successfully started &6{quest}&e.'
 
 cant-choose-new-class:
 - '&cYou need one class point to perform this action.'
-
+no-permission-for-class:
+- "&cYou don't have the permission to choose this class."
 # Attributes
 no-attribute-points-spent: '&cYou have not spent any attribute points.'
 not-attribute-reallocation-point: '&cYou do not have 1 reallocation point.'
