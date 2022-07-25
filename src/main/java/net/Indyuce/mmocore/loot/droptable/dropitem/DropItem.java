@@ -6,12 +6,15 @@ import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.loot.LootBuilder;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import org.bukkit.Bukkit;
 
 public abstract class DropItem {
     protected static final Random random = new Random();
 
     private final double chance, weight;
     private final RandomAmount amount;
+
+    private static final double CHANCE_COEFFICIENT = 7. / 100;
 
     public DropItem(MMOLineConfig config) {
         chance = config.args().length > 0 ? Double.parseDouble(config.args()[0]) : 1;
@@ -35,11 +38,21 @@ public abstract class DropItem {
         return amount.calculateInt();
     }
 
+
+
+    /**
+     * CHANCE stat = 0    | tier chances are unchanged
+     * CHANCE stat = +inf | uniform law for any drop item
+     * CHANCE stat = 100  | all tier chances are taken their square root
+     *
+     * @return The real weight of an item considering the player's CHANCE stat.
+     */
     /**
      * If the player chance is 0 the random value will remain the same. When he get lucks the chance gets closer to one.
      */
     public boolean rollChance(PlayerData player) {
-        return Math.pow(random.nextDouble(), 1 / Math.log(1 + player.getStats().getStat("CHANCE"))) < chance;
+        double value=random.nextDouble();
+        return value< Math.pow(chance, 1 / Math.pow(1 + CHANCE_COEFFICIENT * player.getStats().getStat("CHANCE"), 1.0 / 3.0));
     }
 
     public abstract void collect(LootBuilder builder);
