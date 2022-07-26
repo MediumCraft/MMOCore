@@ -38,6 +38,8 @@ options:
     off-combat-mana-regen: true
     off-combat-health-regen: true
 
+    needs-permission: false
+
 cast-particle:
     particle: SPELL_WITCH
 
@@ -77,11 +79,6 @@ attributes:
     movement-speed:
         base: .105
         per-level: 0
-
-
-
-#If true the player will need to have the mmocore.class.{class_name} permission
-needs-permission: false
 
 # Experience sources for main class experience.
 main-exp-sources:

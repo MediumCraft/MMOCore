@@ -75,6 +75,7 @@ resource:
 
 options:
     off-combat-health-regen: true
+    needs-permission: false
 
 attributes:
     max-health:
@@ -138,11 +139,6 @@ skills:
     GREATER_HEALINGS:
         level: 15
         max-level: 30
-
-
-#If true the player will need to have the mmocore.class.{class_name} permission
-needs-permission: false
-
 
 # Experience sources for main class experience.
 main-exp-sources:
