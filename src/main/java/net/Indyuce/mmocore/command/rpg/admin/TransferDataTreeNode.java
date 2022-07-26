@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.command.rpg;
+package net.Indyuce.mmocore.command.rpg.admin;
 
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import net.Indyuce.mmocore.MMOCore;
@@ -12,19 +12,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 
 /**
- * This command allows to transfer data from your actual datatype (yaml or sql) to the other one to make a change
- * in the data storage type.
+ * This command allows to transfer data from your actual storage type
+ * to the other one which lets the user switch between storage types.
  */
 public class TransferDataTreeNode extends CommandTreeNode {
-
-
     public TransferDataTreeNode(CommandTreeNode parent) {
         super(parent, "transferdata");
     }
 
     @Override
     public CommandResult execute(CommandSender commandSender, String[] strings) {
-        DataProvider provider=null;
+        DataProvider provider = null;
 
         try {
 
@@ -46,7 +44,7 @@ public class TransferDataTreeNode extends CommandTreeNode {
         } catch (Exception e) {
             commandSender.sendMessage("Couldn't transfer properly the data.");
             e.printStackTrace();
-            if(provider!=null&&provider instanceof MySQLDataProvider) {
+            if (provider != null && provider instanceof MySQLDataProvider) {
                 ((MySQLDataProvider) provider).close();
             }
             return CommandResult.FAILURE;
@@ -58,14 +56,12 @@ public class TransferDataTreeNode extends CommandTreeNode {
 
             @Override
             public void run() {
-                if(finalProvider !=null&& finalProvider instanceof MySQLDataProvider) {
+                if (finalProvider != null && finalProvider instanceof MySQLDataProvider) {
                     ((MySQLDataProvider) finalProvider).close();
                 }
             }
-        }.runTaskLater(MMOCore.plugin,200);
-
+        }.runTaskLater(MMOCore.plugin, 200);
 
         return CommandResult.SUCCESS;
-
     }
 }

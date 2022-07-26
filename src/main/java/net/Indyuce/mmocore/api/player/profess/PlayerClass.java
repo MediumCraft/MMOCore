@@ -61,8 +61,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
 
-    private final boolean needsPermission;
-
     @Deprecated
     private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
@@ -169,8 +167,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
         }
 
-        needsPermission =config.contains("needs-permission")?config.getBoolean("needs-permission"):false;
-
         /*
          * Must make sure all the resourceHandlers are registered
          * when the placer class is initialized.
@@ -210,7 +206,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         expTable = null;
         castParticle = new CastingParticle(Particle.SPELL_INSTANT);
         actionBarFormat = "";
-        needsPermission =false;
         this.icon = new ItemStack(material);
         setOption(ClassOption.DISPLAY, false);
         setOption(ClassOption.DEFAULT, false);
@@ -280,10 +275,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return expTable != null;
     }
 
-    public boolean needsPermission() {
-        return needsPermission;
-    }
-
     public ItemStack getIcon() {
         return icon.clone();
     }
@@ -305,7 +296,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     }
 
     public boolean hasOption(ClassOption option) {
-        return options.containsKey(option) ? options.get(option) : option.getDefault();
+        return options.getOrDefault(option, option.getDefault());
     }
 
     @Override

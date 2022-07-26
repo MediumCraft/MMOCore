@@ -11,6 +11,7 @@ display:
 options:
     default: true
     display: false
+    needs-permission: false # False by default
     
     # Only regens when out of combat
     off-combat-health-regen: false
@@ -18,11 +19,6 @@ options:
 
 # Must match an existing exp curve filename from the 'expcurves' folder
 exp-curve: levels
-
-
-#If true the player will need to have the mmocore.class.{class_name} permission
-needs-permission: false
-
 
 # Experience sources for main class experience.
 main-exp-sources:

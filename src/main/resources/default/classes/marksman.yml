@@ -73,8 +73,8 @@ skills:
 
 attributes:
     knockback-resistance:
-        base: 15
-        per-level: 1
+        base: .15
+        per-level: .01
     speed-malus-reduction:
         base: 10
         per-level: 2
@@ -84,11 +84,6 @@ attributes:
     movement-speed:
         base: .105
         per-level: 0
-
-
-#If true the player will need to have the mmocore.class.{class_name} permission
-needs-permission: false
-
 
 # Experience sources for main class experience.
 main-exp-sources:

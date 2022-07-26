@@ -38,6 +38,7 @@ max-level: 100
 # because it is a subclass of mage
 options:
     display: false
+    needs-permission: false
 
 exp-table: class_exp_table
 
@@ -98,9 +99,6 @@ skills:
     GREATER_HEALINGS:
         level: 15
         max-level: 30
-
-#If true the player will need to have the mmocore.class.{class_name} permission
-needs-permission: false
 
 # Experience sources for main class experience.
 main-exp-sources:

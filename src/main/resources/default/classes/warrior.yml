@@ -72,6 +72,7 @@ cast-particle:
 # Rage only decays when out of combat
 options:
     off-combat-mana-regen: true
+    needs-permission: false
 
 skills:
     DEEP_WOUND:
@@ -114,10 +115,6 @@ attributes:
     attack-speed:
         base: 4.2
         per-level: 0.05
-
-
-#If true the player will need to have the mmocore.class.{class_name} permission
-needs-permission: false
 
 # Experience sources for main class experience.
 main-exp-sources:
