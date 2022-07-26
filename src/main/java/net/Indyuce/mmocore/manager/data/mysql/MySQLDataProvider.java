@@ -8,7 +8,6 @@ import net.Indyuce.mmocore.manager.data.yaml.YAMLGuildDataManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.SQLException;
-import java.util.concurrent.CompletableFuture;
 
 public class MySQLDataProvider extends MMODataSource implements DataProvider {
 	private final MySQLPlayerDataManager playerManager = new MySQLPlayerDataManager(this);
