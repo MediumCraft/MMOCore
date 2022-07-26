@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.gui;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.api.stat.handler.StatHandler;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
@@ -124,14 +123,14 @@ public class PlayerStats extends EditableInventory {
 
                         public String apply(Player player, String str) {
                             while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
-                                String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
+                                final String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
                                 String replaced;
 
                                 if (holder.endsWith("_base")) {
                                     StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 5)));
                                     replaced = info.format(stats.getBase(info.name));
                                 } else if (holder.endsWith("_extra")) {
-                                    StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 5)));
+                                    StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 6)));
                                     replaced = info.format(MythicLib.plugin.getStats().getTotalValue(info.name, stats.getMap()) - stats.getBase(info.name));
                                 } else if (holder.startsWith("attribute_")) {
                                     PlayerAttribute attr = MMOCore.plugin.attributeManager.get(holder.substring(10).replace("_", "-").toLowerCase());

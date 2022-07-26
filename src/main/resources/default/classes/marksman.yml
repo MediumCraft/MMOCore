@@ -73,8 +73,8 @@ skills:
 
 attributes:
     knockback-resistance:
-        base: 15
-        per-level: 1
+        base: .15
+        per-level: .01
     speed-malus-reduction:
         base: 10
         per-level: 2
