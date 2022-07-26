@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.gui.api.item;
 
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,9 @@ public class Placeholders {
         // Internal placeholders
         while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
             String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
-            str = str.replace("{" + holder + "}", placeholders.getOrDefault(holder, "Error"));
+            @Nullable String found = placeholders.get(holder);
+            if (found != null)
+                str = str.replace("{" + holder + "}", found);
         }
 
         // External placeholders
