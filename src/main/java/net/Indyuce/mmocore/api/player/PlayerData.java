@@ -514,9 +514,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public String toJson() {
 
-        //We create the JSON correspondign to player Data
+        //We create the JSON corresponding to player Data
         JsonObject jsonObject = new JsonObject();
-        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, getUniqueId());
         MMOCore.sqlDebug("Saving data for: '" + getUniqueId() + "'...");
 
         jsonObject.addProperty("class_points", getClassPoints());

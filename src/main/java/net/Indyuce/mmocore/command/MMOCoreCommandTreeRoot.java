@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.command.rpg.CoinsCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.NoteCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.ReloadCommandTreeNode;
+import net.Indyuce.mmocore.command.rpg.TransferDataTreeNode;
 import net.Indyuce.mmocore.command.rpg.admin.AdminCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.booster.BoosterCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.debug.DebugCommandTreeNode;
@@ -26,6 +27,7 @@ public class MMOCoreCommandTreeRoot extends CommandTreeRoot implements CommandEx
 		super("mmocore", "mmocore.admin");
 
 		addChild(new ReloadCommandTreeNode(this));
+		addChild(new TransferDataTreeNode(this));
 		addChild(new CoinsCommandTreeNode(this));
 		addChild(new NoteCommandTreeNode(this));
 		addChild(new AdminCommandTreeNode(this));
