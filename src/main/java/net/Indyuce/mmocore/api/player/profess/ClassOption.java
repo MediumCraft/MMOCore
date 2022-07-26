@@ -2,51 +2,57 @@ package net.Indyuce.mmocore.api.player.profess;
 
 public enum ClassOption {
 
-	/**
-	 * If the class should be applied to newcomers
-	 */
-	DEFAULT,
+    /**
+     * If the class should be applied to newcomers
+     */
+    DEFAULT,
 
-	/**
-	 * If the class should in the /class GUI
-	 */
-	DISPLAY(true),
+    /**
+     * When set to true any player has to have the
+     * mmocore.class.lower_case_name permission to use the class
+     */
+    NEEDS_PERMISSION,
 
-	/**
-	 * Health only regens when out of combat
-	 */
-	OFF_COMBAT_HEALTH_REGEN,
+    /**
+     * If the class should in the /class GUI
+     */
+    DISPLAY(true),
 
-	/**
-	 * Mana only regens when out of combat
-	 */
-	OFF_COMBAT_MANA_REGEN,
+    /**
+     * Health only regens when out of combat
+     */
+    OFF_COMBAT_HEALTH_REGEN,
 
-	/**
-	 * Stamina only regens when out of combat
-	 */
-	OFF_COMBAT_STAMINA_REGEN,
+    /**
+     * Mana only regens when out of combat
+     */
+    OFF_COMBAT_MANA_REGEN,
 
-	/**
-	 * Stellium only regens when out of combat
-	 */
-	OFF_COMBAT_STELLIUM_REGEN;
+    /**
+     * Stamina only regens when out of combat
+     */
+    OFF_COMBAT_STAMINA_REGEN,
 
-	private final boolean def;
+    /**
+     * Stellium only regens when out of combat
+     */
+    OFF_COMBAT_STELLIUM_REGEN;
 
-	ClassOption() {
-		this(false);
-	}
+    private final boolean def;
 
-	ClassOption(boolean def) {
-		this.def = def;
-	}
+    ClassOption() {
+        this(false);
+    }
 
-	public boolean getDefault() {
-		return def;
-	}
+    ClassOption(boolean def) {
+        this.def = def;
+    }
 
-	public String getPath() {
-		return name().toLowerCase().replace("_", "-");
-	}
+    public boolean getDefault() {
+        return def;
+    }
+
+    public String getPath() {
+        return name().toLowerCase().replace("_", "-");
+    }
 }
