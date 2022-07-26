@@ -374,9 +374,8 @@ public class MMOCore extends JavaPlugin {
 			}.runTaskTimerAsynchronously(MMOCore.plugin, autosave, autosave);
 		}
 	}
-
-	public void disable() {
-
+	@Override
+	public void onDisable() {
 		// Save player data
 		for (PlayerData data : PlayerData.getAll())
 			if (data.isFullyLoaded()) {

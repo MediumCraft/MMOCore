@@ -110,7 +110,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 }
 
                                 //We now change the saved status to false because the data on SQL won't be the same as in the RAM
-                                MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId());
+                                MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(),provider);
 
                                 //We set the saved status to false
                                 sql.updateData("is_saved", 0);
@@ -155,7 +155,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
     @Override
     public void saveData(PlayerData data) {
 
-        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId());
+        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(),provider);
         MMOCore.sqlDebug("Saving data for: '" + data.getUniqueId() + "'...");
 
         sql.updateData("class_points", data.getClassPoints());
@@ -232,7 +232,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         @Override
         public void removeFriend(UUID uuid) {
             friends.remove(uuid);
-            new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, uuid).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
+            new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, uuid,provider).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
         }
 
         @Override
