@@ -338,7 +338,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void refreshVanillaExp() {
         if (!isOnline() || !MMOCore.plugin.configManager.overrideVanillaExp)
             return;
-
+        getPlayer().sendExperienceChange(0.01f);
         getPlayer().setLevel(getLevel());
         getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
     }

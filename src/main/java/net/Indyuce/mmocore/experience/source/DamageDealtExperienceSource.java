@@ -4,15 +4,18 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class DamageDealtExperienceSource extends SpecificExperienceSource<DamageType> {
@@ -43,6 +46,7 @@ public class DamageDealtExperienceSource extends SpecificExperienceSource<Damage
         return new ExperienceSourceManager<DamageDealtExperienceSource>() {
             @EventHandler
             public void onDamageDealt(PlayerAttackEvent e) {
+
                 PlayerData playerData = PlayerData.get(e.getPlayer());
                 for (DamageDealtExperienceSource source : getSources()) {
                     double value = 0;
@@ -62,10 +66,13 @@ public class DamageDealtExperienceSource extends SpecificExperienceSource<Damage
 
     @Override
     public boolean matchesParameter(PlayerData player, DamageType damageType) {
-        if (type == null)
+        if (type == null) {
             return true;
-        else
+        }
+        else {
             return type.equals(damageType);
+
+        }
     }
 
 }

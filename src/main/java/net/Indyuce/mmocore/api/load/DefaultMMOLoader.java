@@ -124,6 +124,10 @@ public class DefaultMMOLoader extends MMOLoader {
         if (config.getKey().equals("climb"))
             return new ClimbExperienceSource(dispenser, config);
 
+        if (config.getKey().equals("eat")) {
+            return new EatExperienceSource(dispenser, config);
+        }
+
         if (config.getKey().equals("damagedealt"))
             return new DamageDealtExperienceSource(dispenser, config);
 

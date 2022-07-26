@@ -126,7 +126,6 @@ public class PlayerStats extends EditableInventory {
                             while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
                                 String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
                                 String replaced;
-
                                 if (holder.endsWith("_base")) {
                                     StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 5)));
                                     replaced = info.format(stats.getBase(info.name));

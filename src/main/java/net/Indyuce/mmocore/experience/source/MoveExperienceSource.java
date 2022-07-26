@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -39,7 +40,8 @@ public class MoveExperienceSource extends SpecificExperienceSource {
                 double deltax = e.getTo().getBlockX() - e.getFrom().getBlockX();
                 double deltay = e.getTo().getBlockY() - e.getFrom().getBlockY();
                 double deltaz = e.getTo().getBlockZ() - e.getFrom().getBlockZ();
-                if (deltax != 0 && deltay != 0 && deltaz != 0) {
+                if (deltax != 0 || deltay != 0 || deltaz != 0) {
+
                     double delta = Math.sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
                     if (e.getPlayer().hasMetadata("NPC"))
                         return;
