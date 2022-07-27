@@ -156,8 +156,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                             "Could not load option '" + key + "' from class '" + key + "': " + exception.getMessage());
                 }
 
-        if (config.contains("main-exp-sources")) {
-            for (String key : config.getStringList("main-exp-sources"))
+        if (config.contains("main-exp-sources.yml")) {
+            for (String key : config.getStringList("main-exp-sources.yml"))
                 try {
                     ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this);
                     MMOCore.plugin.experience.registerSource(source);

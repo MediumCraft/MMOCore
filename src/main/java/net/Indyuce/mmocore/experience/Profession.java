@@ -64,8 +64,8 @@ public class Profession extends PostLoadObject implements ExperienceObject {
 
         maxLevel = config.getInt("max-level");
 
-        if (config.contains("exp-sources"))
-            for (String key : config.getStringList("exp-sources"))
+        if (config.contains("exp-sources.yml"))
+            for (String key : config.getStringList("exp-sources.yml"))
                 try {
                     MMOCore.plugin.experience.registerSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
                 } catch (IllegalArgumentException exception) {

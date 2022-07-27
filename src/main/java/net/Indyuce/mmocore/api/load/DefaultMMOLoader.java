@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.api.load;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.block.BlockType;
 import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
@@ -30,6 +32,9 @@ import net.Indyuce.mmocore.api.quest.trigger.StaminaTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StelliumTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import org.checkerframework.checker.units.qual.C;
+
+import java.util.logging.Level;
 
 public class DefaultMMOLoader extends MMOLoader {
 
@@ -118,6 +123,19 @@ public class DefaultMMOLoader extends MMOLoader {
 
     @Override
     public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+        if(config.getKey().equals("from")) {
+            String source=config.getString("source");
+            ConfigFile configFile= new ConfigFile("exp-sources");
+            if(!configFile.getConfig().contains(source)) {
+                MMOCore.plugin.getLogger().log(Level.WARNING,"Couldn't find "+source+" in experience-sources.yml");
+                return null;
+            }
+            for(String expSource: configFile.getConfig().getStringList(source)) {
+                loadExperienceSource(new MMOLineConfig(expSource),dispenser);
+            }
+        }
+
+
         if (config.getKey().equals("resource"))
             return new ResourceExperienceSource(dispenser, config);
 
