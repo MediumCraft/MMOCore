@@ -50,8 +50,8 @@ public class MMOLoadManager {
 		return load(List.class, config, loader -> loader.loadExperienceSource(config, dispenser));
 	}
 
-	public Trigger loadTrigger(MMOLineConfig config) {
-		return load(Trigger.class, config, loader -> loader.loadTrigger(config));
+	public List<Trigger> loadTrigger(MMOLineConfig config) {
+		return load(List.class, config, loader -> loader.loadTrigger(config));
 	}
 
 	public DropItem loadDropItem(MMOLineConfig config) {

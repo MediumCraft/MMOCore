@@ -100,7 +100,7 @@ public abstract class GeneratedInventory extends PluginInventory {
                 return;
 
             if (item instanceof TriggerItem)
-                ((TriggerItem) item).getTrigger().apply(getPlayerData());
+                ((TriggerItem) item).getTriggers().forEach(trigger->trigger.apply(getPlayerData()));
             else
                 whenClicked(event, item);
         }

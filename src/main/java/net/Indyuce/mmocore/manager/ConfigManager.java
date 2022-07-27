@@ -88,6 +88,7 @@ public class ConfigManager {
         loadDefaultFile("commands.yml");
         loadDefaultFile("exp-tables.yml");
         loadDefaultFile("exp-sources.yml");
+        loadDefaultFile("triggers.yml");
         loadDefaultFile("guilds.yml");
 
         commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));

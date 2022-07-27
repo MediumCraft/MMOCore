@@ -43,30 +43,43 @@ import java.util.logging.Level;
 public class DefaultMMOLoader extends MMOLoader {
 
     @Override
-    public Trigger loadTrigger(MMOLineConfig config) {
+    public List<Trigger> loadTrigger(MMOLineConfig config) {
+        if (config.getKey().equals("from")) {
+            String source = config.getString("source");
+            ConfigFile configFile = new ConfigFile("triggers");
+            if (!configFile.getConfig().contains(source)) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't find " + source + " in experience-sources.yml");
+                return null;
+            }
+            List<Trigger> list = new ArrayList<>();
+            for (String trigger : configFile.getConfig().getStringList(source)) {
+                list.addAll(loadTrigger(new MMOLineConfig(trigger)));
+            }
+            return list;
+        }
         if (config.getKey().equals("message"))
-            return new MessageTrigger(config);
+            return Arrays.asList(new MessageTrigger(config));
 
         if (config.getKey().equals("sound") || config.getKey().equals("playsound"))
-            return new SoundTrigger(config);
+            return Arrays.asList(new SoundTrigger(config));
 
         if (config.getKey().equals("mana"))
-            return new ManaTrigger(config);
+            return Arrays.asList(new ManaTrigger(config));
 
         if (config.getKey().equals("stamina"))
-            return new StaminaTrigger(config);
+            return Arrays.asList(new StaminaTrigger(config));
 
         if (config.getKey().equals("stellium"))
-            return new StelliumTrigger(config);
+            return Arrays.asList(new StelliumTrigger(config));
 
         if (config.getKey().equals("command"))
-            return new CommandTrigger(config);
+            return Arrays.asList(new CommandTrigger(config));
 
         if (config.getKey().equals("item") || config.getKey().equals("vanilla"))
-            return new ItemTrigger(config);
+            return Arrays.asList(new ItemTrigger(config));
 
         if (config.getKey().equals("exp") || config.getKey().equals("experience"))
-            return new ExperienceTrigger(config);
+            return Arrays.asList(new ExperienceTrigger(config));
 
         return null;
     }
@@ -126,19 +139,18 @@ public class DefaultMMOLoader extends MMOLoader {
     }
 
 
-
     @Override
     public List<ExperienceSource<?>> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
-        if(config.getKey().equals("from")) {
-            String source=config.getString("source");
-            ConfigFile configFile= new ConfigFile("exp-sources");
-            if(!configFile.getConfig().contains(source)) {
-                MMOCore.plugin.getLogger().log(Level.WARNING,"Couldn't find "+source+" in experience-sources.yml");
+        if (config.getKey().equals("from")) {
+            String source = config.getString("source");
+            ConfigFile configFile = new ConfigFile("exp-sources");
+            if (!configFile.getConfig().contains(source)) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't find " + source + " in experience-sources.yml");
                 return null;
             }
-            List<ExperienceSource<?>> list= new ArrayList<>();
-            for(String expSource: configFile.getConfig().getStringList(source)) {
-                list.addAll(loadExperienceSource(new MMOLineConfig(expSource),dispenser));
+            List<ExperienceSource<?>> list = new ArrayList<>();
+            for (String expSource : configFile.getConfig().getStringList(source)) {
+                list.addAll(loadExperienceSource(new MMOLineConfig(expSource), dispenser));
             }
             return list;
 

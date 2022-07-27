@@ -16,10 +16,10 @@ import java.util.List;
 public class MythicMobsMMOLoader extends MMOLoader {
 
     @Override
-    public Trigger loadTrigger(MMOLineConfig config) {
+    public List<Trigger> loadTrigger(MMOLineConfig config) {
 
         if (config.getKey().equalsIgnoreCase("mmskill") || config.getKey().equalsIgnoreCase("mythicmobskill"))
-            return new MythicSkillTrigger(config);
+            return Arrays.asList(new MythicSkillTrigger(config));
 
         return null;
     }

@@ -23,7 +23,7 @@ public class MMOLoader {
         return null;
     }
 
-    public Trigger loadTrigger(MMOLineConfig config) {
+    public List<Trigger> loadTrigger(MMOLineConfig config) {
         return null;
     }
 

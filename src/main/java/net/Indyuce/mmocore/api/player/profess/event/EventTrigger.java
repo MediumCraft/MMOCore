@@ -25,7 +25,7 @@ public class EventTrigger {
 
         for (String format : list)
             try {
-                triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(format)));
+                triggers.addAll(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(format)));
             } catch (IllegalArgumentException exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING,
                         "Could not load trigger '" + format + "' from event trigger '" + event + "': " + exception.getMessage());

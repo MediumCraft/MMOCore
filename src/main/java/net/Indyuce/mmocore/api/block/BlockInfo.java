@@ -52,7 +52,7 @@ public class BlockInfo {
 
 			for (String key : list)
 				try {
-					triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
+					triggers.addAll(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING,
 							"Could not load trigger '" + key + "' from block info '" + block.generateKey() + "': " + exception.getMessage());

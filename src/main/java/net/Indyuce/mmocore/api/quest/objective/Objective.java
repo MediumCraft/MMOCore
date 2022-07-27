@@ -30,7 +30,7 @@ public abstract class Objective {
 
         for (String key : config.getStringList("triggers"))
             try {
-                triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
+                triggers.addAll(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
             } catch (IllegalArgumentException exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING,
                         "Could not load trigger '" + key + "' from objective '" + id + "': " + exception.getMessage());
