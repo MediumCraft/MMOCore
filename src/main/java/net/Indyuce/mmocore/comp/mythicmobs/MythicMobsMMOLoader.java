@@ -10,6 +10,9 @@ import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MythicMobsMMOLoader extends MMOLoader {
 
     @Override
@@ -42,12 +45,12 @@ public class MythicMobsMMOLoader extends MMOLoader {
     }
 
     @Override
-    public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+    public List<ExperienceSource<?>> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
 
         if (config.getKey().equalsIgnoreCase("killmythicmob"))
-            return new KillMythicMobExperienceSource(dispenser, config);
+            return Arrays.asList(new KillMythicMobExperienceSource(dispenser, config));
         if (config.getKey().equalsIgnoreCase("killmythicfaction"))
-            return new KillMythicFactionExperienceSource(dispenser, config);
+            return Arrays.asList(new KillMythicFactionExperienceSource(dispenser, config));
 
         return null;
     }
