@@ -10,6 +10,8 @@ import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.List;
+
 /**
  * MMOLoader was initially an interface but it is now a
  * class so devs do not have to add a new method
@@ -33,7 +35,7 @@ public class MMOLoader {
         return null;
     }
 
-    public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+    public List<ExperienceSource<?>> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
         return null;
     }
 

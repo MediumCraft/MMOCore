@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.api.block.VanillaBlockType;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.*;
 import net.Indyuce.mmocore.loot.chest.condition.*;
+import org.apache.commons.math3.analysis.function.Exp;
 import org.bukkit.configuration.ConfigurationSection;
 
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
@@ -34,6 +35,9 @@ import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import org.checkerframework.checker.units.qual.C;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 public class DefaultMMOLoader extends MMOLoader {
@@ -121,8 +125,10 @@ public class DefaultMMOLoader extends MMOLoader {
         return null;
     }
 
+
+
     @Override
-    public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+    public List<ExperienceSource<?>> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
         if(config.getKey().equals("from")) {
             String source=config.getString("source");
             ConfigFile configFile= new ConfigFile("exp-sources");
@@ -130,66 +136,67 @@ public class DefaultMMOLoader extends MMOLoader {
                 MMOCore.plugin.getLogger().log(Level.WARNING,"Couldn't find "+source+" in experience-sources.yml");
                 return null;
             }
+            List<ExperienceSource<?>> list= new ArrayList<>();
             for(String expSource: configFile.getConfig().getStringList(source)) {
-                loadExperienceSource(new MMOLineConfig(expSource),dispenser);
+                list.addAll(loadExperienceSource(new MMOLineConfig(expSource),dispenser));
             }
+            return list;
+
         }
-
-
         if (config.getKey().equals("resource"))
-            return new ResourceExperienceSource(dispenser, config);
+            return Arrays.asList(new ResourceExperienceSource(dispenser, config));
 
         if (config.getKey().equals("climb"))
-            return new ClimbExperienceSource(dispenser, config);
+            return Arrays.asList(new ClimbExperienceSource(dispenser, config));
 
         if (config.getKey().equals("eat")) {
-            return new EatExperienceSource(dispenser, config);
+            return Arrays.asList(new EatExperienceSource(dispenser, config));
         }
 
         if (config.getKey().equals("damagedealt"))
-            return new DamageDealtExperienceSource(dispenser, config);
+            return Arrays.asList(new DamageDealtExperienceSource(dispenser, config));
 
         if (config.getKey().equals("damagetaken"))
-            return new DamageTakenExperienceSource(dispenser, config);
+            return Arrays.asList(new DamageTakenExperienceSource(dispenser, config));
 
         if (config.getKey().equals("move"))
-            return new MoveExperienceSource(dispenser, config);
+            return Arrays.asList(new MoveExperienceSource(dispenser, config));
 
         if (config.getKey().equals("play"))
-            return new PlayExperienceSource(dispenser, config);
+            return Arrays.asList(new PlayExperienceSource(dispenser, config));
 
         if (config.getKey().equals("projectile"))
-            return new ProjectileExperienceSource(dispenser, config);
+            return Arrays.asList(new ProjectileExperienceSource(dispenser, config));
 
         if (config.getKey().equals("ride"))
-            return new RideExperienceSource(dispenser, config);
+            return Arrays.asList(new RideExperienceSource(dispenser, config));
 
         if (config.getKey().equals("tame"))
-            return new TameExperienceSource(dispenser, config);
+            return Arrays.asList(new TameExperienceSource(dispenser, config));
 
         if (config.getKey().equals("killmob"))
-            return new KillMobExperienceSource(dispenser, config);
+            return Arrays.asList(new KillMobExperienceSource(dispenser, config));
 
         if (config.getKey().equals("mineblock"))
-            return new MineBlockExperienceSource(dispenser, config);
+            return Arrays.asList(new MineBlockExperienceSource(dispenser, config));
 
         if (config.getKey().equals("placeblock"))
-            return new PlaceBlockExperienceSource(dispenser, config);
+            return Arrays.asList(new PlaceBlockExperienceSource(dispenser, config));
 
         if (config.getKey().equals("brewpotion"))
-            return new BrewPotionExperienceSource(dispenser, config);
+            return Arrays.asList(new BrewPotionExperienceSource(dispenser, config));
 
         if (config.getKey().equals("smeltitem"))
-            return new SmeltItemExperienceSource(dispenser, config);
+            return Arrays.asList(new SmeltItemExperienceSource(dispenser, config));
 
         if (config.getKey().equals("enchantitem"))
-            return new EnchantItemExperienceSource(dispenser, config);
+            return Arrays.asList(new EnchantItemExperienceSource(dispenser, config));
 
         if (config.getKey().equals("repairitem"))
-            return new RepairItemExperienceSource(dispenser, config);
+            return Arrays.asList(new RepairItemExperienceSource(dispenser, config));
 
         if (config.getKey().equals("craftitem"))
-            return new CraftItemExperienceSource(dispenser, config);
+            return Arrays.asList(new CraftItemExperienceSource(dispenser, config));
 
         return null;
     }

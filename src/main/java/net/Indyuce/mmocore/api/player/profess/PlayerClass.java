@@ -84,7 +84,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 profileField.set(meta, gp);
                 icon.setItemMeta(meta);
             } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-                    | SecurityException exception) {
+                     | SecurityException exception) {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
 
@@ -159,8 +159,9 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         if (config.contains("main-exp-sources.yml")) {
             for (String key : config.getStringList("main-exp-sources.yml"))
                 try {
-                    ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this);
-                    MMOCore.plugin.experience.registerSource(source);
+                    List<ExperienceSource<?>> list = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this);
+                    for (ExperienceSource source : list)
+                        MMOCore.plugin.experience.registerSource(source);
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp source '" + key + "' from class '"
                             + id + "': " + exception.getMessage());

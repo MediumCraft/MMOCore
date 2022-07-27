@@ -41,9 +41,13 @@ public class MMOLoadManager {
 		return load(Objective.class, config, loader -> loader.loadObjective(config, section));
 	}
 
+	/**
+	 Returns a List of Experience Source as one experience source can be linked to others.
+	 Loading one exp source can in fact oad multiples if they are linked
+	 */
 	@Deprecated
-	public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
-		return load(ExperienceSource.class, config, loader -> loader.loadExperienceSource(config, dispenser));
+	public List<ExperienceSource<?>> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+		return load(List.class, config, loader -> loader.loadExperienceSource(config, dispenser));
 	}
 
 	public Trigger loadTrigger(MMOLineConfig config) {
