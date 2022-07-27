@@ -60,7 +60,7 @@ public class FishingManager extends SpecificProfessionManager {
 
 				for (String str : list)
 					try {
-						conditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(str)));
+						conditions.addAll(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(str)));
 					} catch (IllegalArgumentException exception) {
 						MMOCore.plugin.getLogger().log(Level.WARNING,
 								"Could not load condition '" + str + "' from fishing drop table '" + id + "': " + exception.getMessage());

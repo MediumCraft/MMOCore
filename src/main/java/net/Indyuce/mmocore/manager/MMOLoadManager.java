@@ -33,8 +33,8 @@ public class MMOLoadManager {
 		loaders.add(loader);
 	}
 
-	public Condition loadCondition(MMOLineConfig config) {
-		return load(Condition.class, config, loader -> loader.loadCondition(config));
+	public List<Condition> loadCondition(MMOLineConfig config) {
+		return load(List.class, config, loader -> loader.loadCondition(config));
 	}
 
 	public Objective loadObjective(MMOLineConfig config, ConfigurationSection section) {

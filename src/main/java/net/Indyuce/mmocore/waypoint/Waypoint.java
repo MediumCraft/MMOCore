@@ -60,7 +60,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
             List<String> conditions = config.getStringList("dynamic-conditions");
             for (String condition : conditions)
                 try {
-                    dynamicUseConditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(condition)));
+                    dynamicUseConditions.addAll(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(condition)));
                 } catch (RuntimeException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load condition '" + condition + "' from waypoint '" + id + "': " + exception.getMessage());
                 }

@@ -53,7 +53,7 @@ public class DropTable extends PostLoadObject {
 			}
 		for (String key : conditionsList)
 			try {
-				conditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
+				conditions.addAll(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING,
 						"Could not load condition '" + key + "' from table '" + id + "': " + exception.getMessage());

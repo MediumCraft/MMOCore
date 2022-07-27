@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class MMOLoader {
 
-    public Condition loadCondition(MMOLineConfig config) {
+    public List<Condition> loadCondition(MMOLineConfig config) {
         return null;
     }
 

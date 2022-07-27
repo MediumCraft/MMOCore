@@ -119,21 +119,36 @@ public class DefaultMMOLoader extends MMOLoader {
     }
 
     @Override
-    public Condition loadCondition(MMOLineConfig config) {
+    public List<Condition> loadCondition(MMOLineConfig config) {
+        if (config.getKey().equals("from")) {
+            String source = config.getString("source");
+            ConfigFile configFile = new ConfigFile("conditions");
+            if (!configFile.getConfig().contains(source)) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't find " + source + " in experience-sources.yml");
+                return null;
+            }
+            List<Condition> list = new ArrayList<>();
+            for (String condition : configFile.getConfig().getStringList(source)) {
+                list.addAll(loadCondition(new MMOLineConfig(condition)));
+            }
+            return list;
+
+        }
+
         if (config.getKey().equals("distance"))
-            return new DistanceCondition(config);
+            return Arrays.asList(new DistanceCondition(config));
 
         if (config.getKey().equals("world"))
-            return new WorldCondition(config);
+            return Arrays.asList(new WorldCondition(config));
 
         if (config.getKey().equals("biome"))
-            return new BiomeCondition(config);
+            return Arrays.asList(new BiomeCondition(config));
 
         if (config.getKey().equals("level"))
-            return new LevelCondition(config);
+            return Arrays.asList(new LevelCondition(config));
 
         if (config.getKey().equals("permission"))
-            return new PermissionCondition(config);
+            return Arrays.asList(new PermissionCondition(config));
 
         return null;
     }
