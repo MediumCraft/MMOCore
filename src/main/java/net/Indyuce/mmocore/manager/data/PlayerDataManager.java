@@ -8,6 +8,7 @@ import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.AsyncPlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
+import net.Indyuce.mmocore.api.player.SavingPlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -45,7 +46,7 @@ public abstract class PlayerDataManager {
     }
 
 
-    public static void loadDataFromJson(PlayerData data, String json) {
+    public static void loadDataFromJson(@NotNull PlayerData data, String json) {
         JsonObject object = MythicLib.plugin.getJson().parse(json, JsonObject.class);
 
         data.setClassPoints(object.get("class_points").getAsInt());
@@ -191,8 +192,12 @@ public abstract class PlayerDataManager {
     /**
      * Called when player data must be loaded from database or config.
      *
-     * @param data Player data to load
+     * @param uuid The uuid to load
+     * @param savingPlayerDataList the list where the data will be added.
      */
+    public abstract void loadSavingPlayerData(UUID uuid,List<SavingPlayerData> savingPlayerDataList);
+
+
     public abstract void loadData(PlayerData data);
 
     /**
@@ -202,7 +207,11 @@ public abstract class PlayerDataManager {
      *
      * @param data Player data to save
      */
-    public abstract void saveData(PlayerData data);
+    public void saveData(PlayerData data) {
+        saveData(data.getSavingPlayerData());
+    }
+
+    public abstract void saveData(SavingPlayerData data);
 
     public class DefaultPlayerData {
         private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;

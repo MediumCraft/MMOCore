@@ -100,6 +100,7 @@ public class PlayerQuests implements Closable {
             }
         }
 
+
         if (jo.has("finished"))
             for (Entry<String, JsonElement> entry : jo.getAsJsonObject("finished").entrySet())
                 finished.put(entry.getKey(), entry.getValue().getAsLong());

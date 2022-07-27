@@ -656,6 +656,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         refreshVanillaExp();
     }
 
+
+
     public double getExperience() {
         return experience;
     }
@@ -952,6 +954,34 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         else
             combat = new CombatRunnable(this);
     }
+
+    /**
+     * @return The savingPlayerData object corresponding to the playerData
+     */
+    public SavingPlayerData getSavingPlayerData() {
+        return new SavingPlayerData(
+                getUniqueId(),
+                getClassPoints(),
+                getSkillPoints(),
+                getAttributePoints(),
+                getAttributeReallocationPoints(),
+                getLevel(),
+                getExperience(),
+                getProfess().getId(),
+                getLastLogin(),
+                hasGuild() ? getGuild().getId() : null,
+                getWaypoints(),
+                getFriends(),
+                getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).toList(),
+                mapSkillLevels(),
+                getItemClaims(),
+                getAttributes().toJsonString(),
+                getCollectionSkills().toJsonString(),
+                getQuestData().toJsonString(),
+                createClassInfoData(this).toString());
+    }
+
+
 
     @Override
     public int hashCode() {

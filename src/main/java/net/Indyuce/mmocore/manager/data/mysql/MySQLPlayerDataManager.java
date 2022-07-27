@@ -7,25 +7,22 @@ import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.SavingPlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.net.Socket;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
-import static net.Indyuce.mmocore.api.player.PlayerData.createClassInfoData;
 
 public class MySQLPlayerDataManager extends PlayerDataManager {
     private final MySQLDataProvider provider;
@@ -110,7 +107,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 }
 
                                 //We now change the saved status to false because the data on SQL won't be the same as in the RAM
-                                MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(),provider);
+                                MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider);
 
                                 //We set the saved status to false
                                 sql.updateData("is_saved", 0);
@@ -152,38 +149,39 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         return s == null || s.equalsIgnoreCase("null") || s.equalsIgnoreCase("{}") || s.equalsIgnoreCase("[]") || s.equalsIgnoreCase("");
     }
 
+
     @Override
-    public void saveData(PlayerData data) {
+    public void saveData(SavingPlayerData data) {
 
-        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(),provider);
-        MMOCore.sqlDebug("Saving data for: '" + data.getUniqueId() + "'...");
+        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.uuid(), provider);
+        MMOCore.sqlDebug("Saving data for: '" + data.uuid() + "'...");
 
-        sql.updateData("class_points", data.getClassPoints());
-        sql.updateData("skill_points", data.getSkillPoints());
-        sql.updateData("attribute_points", data.getAttributePoints());
-        sql.updateData("attribute_realloc_points", data.getAttributeReallocationPoints());
-        sql.updateData("level", data.getLevel());
-        sql.updateData("experience", data.getExperience());
-        sql.updateData("class", data.getProfess().getId());
-        sql.updateData("last_login", data.getLastLogin());
-        sql.updateData("guild", data.hasGuild() ? data.getGuild().getId() : null);
+        sql.updateData("class_points", data.classPoints());
+        sql.updateData("skill_points", data.skillPoints());
+        sql.updateData("attribute_points", data.attributePoints());
+        sql.updateData("attribute_realloc_points", data.attributeReallocationPoints());
+        sql.updateData("level", data.level());
+        sql.updateData("experience", data.experience());
+        sql.updateData("class", data.classId());
+        sql.updateData("last_login", data.lastLogin());
+        sql.updateData("guild", data.guildId());
 
-        sql.updateJSONArray("waypoints", data.getWaypoints());
-        sql.updateJSONArray("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
-        sql.updateJSONArray("bound_skills", data.getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).collect(Collectors.toList()));
+        sql.updateJSONArray("waypoints", data.waypoints());
+        sql.updateJSONArray("friends", data.friends().stream().map(UUID::toString).collect(Collectors.toList()));
+        sql.updateJSONArray("bound_skills", data.boundSkills());
 
-        sql.updateJSONObject("skills", data.mapSkillLevels().entrySet());
-        sql.updateJSONObject("times_claimed", data.getItemClaims().entrySet());
+        sql.updateJSONObject("skills", data.skills().entrySet());
+        sql.updateJSONObject("times_claimed", data.itemClaims().entrySet());
 
-        sql.updateData("attributes", data.getAttributes().toJsonString());
-        sql.updateData("professions", data.getCollectionSkills().toJsonString());
-        sql.updateData("quests", data.getQuestData().toJsonString());
+        sql.updateData("attributes", data.attributes());
+        sql.updateData("professions", data.collectionsSkills());
+        sql.updateData("quests", data.questData());
 
-        sql.updateData("class_info", createClassInfoData(data).toString());
+        sql.updateData("class_info", data.classInfoData());
         sql.updateData("is_saved", 1);
 
-        MMOCore.sqlDebug("Saved data for: " + data.getUniqueId());
-        MMOCore.sqlDebug(String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
+        MMOCore.sqlDebug("Saved data for: " + data.uuid());
+        MMOCore.sqlDebug(String.format("{ class: %s, level: %d }", data.classId(), data.level()));
 
 
     }
@@ -193,6 +191,60 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
     @Override
     public OfflinePlayerData getOffline(UUID uuid) {
         return isLoaded(uuid) ? get(uuid) : new MySQLOfflinePlayerData(uuid);
+    }
+
+    @Override
+    public void loadSavingPlayerData(UUID uuid, List<SavingPlayerData> savingPlayerDataList) {
+
+        provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + uuid + "';", (result) -> {
+            try {
+
+
+                if (result.next()) {
+                    Map<String, Integer> skills = new HashMap<>();
+                    Map<String, Integer> itemClaims = new HashMap<>();
+
+                    if (!isEmpty(result.getString("skills"))) {
+                        JsonObject object = MythicLib.plugin.getJson().parse(result.getString("skills"), JsonObject.class);
+                        for (Entry<String, JsonElement> entry : object.entrySet())
+                            skills.put(entry.getKey(), entry.getValue().getAsInt());
+                    }
+
+                    if (!isEmpty(result.getString("times_claimed"))) {
+                        JsonObject json = new JsonParser().parse(result.getString("times_claimed")).getAsJsonObject();
+                        json.entrySet().forEach(entry -> itemClaims.put(entry.getKey(), entry.getValue().getAsInt()));
+                    }
+
+
+                    SavingPlayerData data = new SavingPlayerData(
+                            uuid,
+                            result.getInt("class_points"),
+                            result.getInt("skill_points"),
+                            result.getInt("attribute_points"),
+                            result.getInt("attribute_realloc_points"),
+                            result.getInt("level"),
+                            result.getInt("experience"),
+                            result.getString("class"),
+                            result.getLong("last_login"),
+                            result.getString("guild"),
+                            MMOCoreUtils.jsonArrayToList(result.getString("waypoints")).stream().collect(Collectors.toSet()),
+                            MMOCoreUtils.jsonArrayToList(result.getString("friends")).stream().map(str -> UUID.fromString(str)).toList(),
+                            MMOCoreUtils.jsonArrayToList(result.getString("bound_skills")).stream().toList(),
+                            skills,
+                            itemClaims,
+                            result.getString("attributes"),
+                            result.getString("professions"),
+                            result.getString("quests"),
+                            result.getString("class_info"));
+
+                    savingPlayerDataList.add(data);
+
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        });
     }
 
 
@@ -232,7 +284,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         @Override
         public void removeFriend(UUID uuid) {
             friends.remove(uuid);
-            new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, uuid,provider).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
+            new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, uuid, provider).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
         }
 
         @Override
@@ -256,5 +308,6 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         }
     }
 }
+
 
 
