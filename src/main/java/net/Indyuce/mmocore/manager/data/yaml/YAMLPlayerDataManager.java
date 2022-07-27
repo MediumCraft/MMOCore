@@ -3,8 +3,6 @@ package net.Indyuce.mmocore.manager.data.yaml;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.SavingPlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
@@ -14,6 +12,9 @@ import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
@@ -149,6 +150,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
     /**
      * Used to save Data from a SavingPlayerDataInstance (Data of an offline player)
+     *
      * @param data
      */
     @Override
@@ -257,6 +259,109 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
     @Override
     public void loadSavingPlayerData(UUID uuid, List<SavingPlayerData> savingPlayerDataList) {
+        FileConfiguration config = new ConfigFile(uuid).getConfig();
 
+        Map<String, Integer> skills = new HashMap<>();
+        config.getConfigurationSection("skill").getKeys(false).forEach(id -> skills.put(id, config.getInt("skill." + id)));
+
+        Map<String, Integer> itemClaims = new HashMap<>();
+        for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
+            itemClaims.put(key, config.getInt("times-claimed." + key));
+
+
+        //Creates the attributes json
+
+
+        ConfigurationSection section = config.getConfigurationSection("attributes");
+        JsonObject attributesJson = new JsonObject();
+        for (String key : section.getKeys(false)) {
+            String id = key.toLowerCase().replace("-", "_").replace(" ", "_");
+            attributesJson.addProperty(id, section.getInt(key));
+        }
+
+
+        //Creates the profession json
+
+
+        section = config.getConfigurationSection("profession");
+        JsonObject collectionSkillsJson = new JsonObject();
+        ;
+        for (String key : config.getKeys(false)) {
+            if (MMOCore.plugin.professionManager.has(key)) {
+                JsonObject object = new JsonObject();
+                object.addProperty("exp", section.getDouble(key + ".exp"));
+                object.addProperty("level", section.getInt(key + ".level"));
+
+                collectionSkillsJson.add(key, object);
+            }
+        }
+
+        //Creates the questJson
+
+        section = config.getConfigurationSection("quest");
+        JsonObject questsJson = new JsonObject();
+
+        if (section.contains("current")) {
+            JsonObject cur = new JsonObject();
+            cur.addProperty("id", section.getString("current.id"));
+            cur.addProperty("objective", section.getInt("current.objective"));
+            questsJson.add("current", cur);
+        }
+        JsonObject fin = new JsonObject();
+        if (section.contains("finished"))
+            for (String key : section.getConfigurationSection("finished").getKeys(false))
+                fin.addProperty(key, section.getLong("finished." + key));
+
+        if (fin.size() != 0)
+            questsJson.add("finished", fin);
+
+
+        JsonObject classInfoJson = new JsonObject();
+        // Load class slots, use try so the player can log in.
+        if (config.contains("class-info"))
+            for (String key : config.getConfigurationSection("class-info").getKeys(false)) {
+                SavedClassInformation info = new SavedClassInformation(config.getConfigurationSection("class-info." + key));
+                JsonObject classinfo = new JsonObject();
+                classinfo.addProperty("level", info.getLevel());
+                classinfo.addProperty("experience", info.getExperience());
+                classinfo.addProperty("skill-points", info.getSkillPoints());
+                classinfo.addProperty("attribute-points", info.getAttributePoints());
+                classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
+                JsonObject skillinfo = new JsonObject();
+                for (String skill : info.getSkillKeys())
+                    skillinfo.addProperty(skill, info.getSkillLevel(skill));
+                classinfo.add("skill", skillinfo);
+                JsonObject attributeinfo = new JsonObject();
+                for (String attribute : info.getAttributeKeys())
+                    attributeinfo.addProperty(attribute, info.getAttributeLevel(attribute));
+                classinfo.add("attribute", attributeinfo);
+                classInfoJson.add(key, classinfo);
+            }
+
+
+        SavingPlayerData data = new SavingPlayerData(
+                uuid,
+                config.getInt("class-points"),
+                config.getInt("skill-points"),
+                config.getInt("attribute-points"),
+                config.getInt("attribute-realloc-points"),
+                config.getInt("level"),
+                config.getInt("experience"),
+                config.getString("class"),
+                config.getLong("last-login"),
+                config.getString("guild"),
+                config.getStringList("waypoints").stream().collect(Collectors.toSet()),
+                config.getStringList("friends").stream().map(UUID::fromString).toList(),
+                config.getStringList("bound-skills"),
+                skills,
+                itemClaims,
+                attributesJson.toString(),
+                collectionSkillsJson.toString(),
+                questsJson.toString(),
+                classInfoJson.toString());
+
+        savingPlayerDataList.add(data);
     }
+
 }
+
