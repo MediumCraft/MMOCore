@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -14,6 +15,7 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -238,11 +240,13 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                             result.getString("class_info"));
 
                     savingPlayerDataList.add(data);
+                    Bukkit.broadcastMessage(new Gson().toJson(data));
 
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
 
         });
     }

@@ -19,6 +19,7 @@ import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -166,10 +167,11 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         config.set("level", data.level());
         config.set("experience", data.experience());
         config.set("class", data.classId());
-        config.set("waypoints", data.waypoints());
+        config.set("waypoints", data.waypoints().stream().toList());
         config.set("friends", data.friends());
         config.set("last-login", data.lastLogin());
-        config.set("guild", data.guildId());
+        if (data.guildId() != null)
+            config.set("guild", data.guildId());
 
         config.set("skill", null);
         data.skills().forEach((key1, value) -> config.set("skill." + key1, value));
@@ -185,7 +187,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         for (Map.Entry<String, JsonElement> entry : jo.entrySet()) {
             try {
                 String id = entry.getKey().toLowerCase().replace("_", "-").replace(" ", "-");
-                config.set("attributes." + id, entry.getValue().getAsInt());
+                config.set("attribute." + id, entry.getValue().getAsInt());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -248,6 +250,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                 MMOCore.log(Level.WARNING, "Could not load class info '" + entry.getKey() + "': " + exception.getMessage());
             }
         }
+
+        Bukkit.broadcastMessage("SAVED");
         file.save();
     }
 
@@ -262,11 +266,13 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         FileConfiguration config = new ConfigFile(uuid).getConfig();
 
         Map<String, Integer> skills = new HashMap<>();
-        config.getConfigurationSection("skill").getKeys(false).forEach(id -> skills.put(id, config.getInt("skill." + id)));
+        if (config.contains("skill"))
+            config.getConfigurationSection("skill").getKeys(false).forEach(id -> skills.put(id, config.getInt("skill." + id)));
 
         Map<String, Integer> itemClaims = new HashMap<>();
-        for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
-            itemClaims.put(key, config.getInt("times-claimed." + key));
+        if (config.contains("times-claimed"))
+            for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
+                itemClaims.put(key, config.getInt("times-claimed." + key));
 
 
         //Creates the attributes json
@@ -274,10 +280,11 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
         ConfigurationSection section = config.getConfigurationSection("attributes");
         JsonObject attributesJson = new JsonObject();
-        for (String key : section.getKeys(false)) {
-            String id = key.toLowerCase().replace("-", "_").replace(" ", "_");
-            attributesJson.addProperty(id, section.getInt(key));
-        }
+        if (section != null)
+            for (String key : section.getKeys(false)) {
+                String id = key.toLowerCase().replace("-", "_").replace(" ", "_");
+                attributesJson.addProperty(id, section.getInt(key));
+            }
 
 
         //Creates the profession json
@@ -285,16 +292,16 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
         section = config.getConfigurationSection("profession");
         JsonObject collectionSkillsJson = new JsonObject();
-        ;
-        for (String key : config.getKeys(false)) {
-            if (MMOCore.plugin.professionManager.has(key)) {
-                JsonObject object = new JsonObject();
-                object.addProperty("exp", section.getDouble(key + ".exp"));
-                object.addProperty("level", section.getInt(key + ".level"));
+        if (section != null)
+            for (String key : section.getKeys(false)) {
+                if (MMOCore.plugin.professionManager.has(key)) {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("exp", section.getDouble(key + ".exp"));
+                    object.addProperty("level", section.getInt(key + ".level"));
 
-                collectionSkillsJson.add(key, object);
+                    collectionSkillsJson.add(key, object);
+                }
             }
-        }
 
         //Creates the questJson
 
