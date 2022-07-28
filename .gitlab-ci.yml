@@ -1,0 +1,11 @@
+image: maven:3-openjdk-16-slim
+
+build:
+  stage: build
+  script:
+    - mvn clean package
+        
+deploy:
+  stage: deploy
+  script:
+    - mvn deploy
