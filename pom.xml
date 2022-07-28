@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.Indyuce</groupId>
 	<artifactId>MMOCore</artifactId>
-	<version>1.9.2</version>
+	<version>1.9.5</version>
 	<name>MMOCore</name>
 	<description>Offer your players a brand new RPG experience!!</description>
 
@@ -39,14 +39,6 @@
 		</resources>
 
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.1</version>
-				<configuration>
-					<outputDirectory>C:\Users\guill\Minecraft Server\Server\plugins</outputDirectory>
-				</configuration>
-			</plugin>
 
 
 			<plugin>
