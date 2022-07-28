@@ -1,33 +1,22 @@
-image: maven:3-openjdk-16-slim
-
-variables:
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-
-before_script:
-  - apt-get update -qq
-  # Setup SSH deploy keys
-  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "$SSH_PRIVATE_KEY")
-  - mkdir -p ~/.ssh
-  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
-cache:
-  paths:
-    - .m2/repository/
-    - target/
-
-build:
+build-job:
   stage: build
   script:
-    - mvn $MAVEN_CLI_OPTS clean package
-        
-deploy:
+    - echo "Hello, $GITLAB_USER_LOGIN!"
+
+test-job1:
+  stage: test
+  script:
+    - echo "This job tests something"
+
+test-job2:
+  stage: test
+  script:
+    - echo "This job tests something, but takes more time than test-job1."
+    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
+    - echo "which simulates a test that runs 20 seconds longer than test-job1"
+    - sleep 20
+
+deploy-prod:
   stage: deploy
   script:
-    - mvn $MAVEN_CLI_OPTS deploy
-    - ssh builder@proxy.mythiccraft.io -p 2222 "mkdir -p /tmp/builds/$CI_JOB_ID && exit"
-    - scp -rp -o StrictHostKeyChecking=no -o Port=2222 ./target/ builder@proxy.mythiccraft.io:/tmp/builds/$CI_JOB_ID/
-  only:
-    - master
+    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
