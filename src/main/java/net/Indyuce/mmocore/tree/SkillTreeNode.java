@@ -5,7 +5,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import io.lumine.mythic.lib.util.configobject.ConfigObject;
-import io.lumine.mythic.lib.util.configobject.LineConfigObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
@@ -80,11 +79,14 @@ public class SkillTreeNode implements Unlockable {
                 for (String level : section.getKeys(false)) {
                     int value = Integer.parseInt(level);
                     for (String str : section.getStringList(level)) {
-                        Trigger trigger = MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(str));
-                        if (!triggers.containsKey(value)) {
-                            triggers.put(value, new ArrayList<>());
+                        List<Trigger> triggerList = MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(str));
+                        for (Trigger trigger : triggerList) {
+                            if (!triggers.containsKey(value)) {
+                                triggers.put(value, new ArrayList<>());
+                            }
+                            triggers.get(value).add(trigger);
                         }
-                        triggers.get(value).add(trigger);
+
                     }
                 }
             } catch (NumberFormatException e) {
@@ -98,7 +100,7 @@ public class SkillTreeNode implements Unlockable {
                 for (String level : section.getKeys(false)) {
                     int value = Integer.parseInt(level);
                     for (String str : section.getStringList(level)) {
-                        PlayerModifier modifier = MythicLib.plugin.getModifiers().loadPlayerModifier(new LineConfigObject(new MMOLineConfig(str)));
+                        PlayerModifier modifier = MythicLib.plugin.getModifiers().loadPlayerModifier(new MMOLineConfig(str));
                         if (!modifiers.containsKey(value)) {
                             modifiers.put(value, new ArrayList<>());
                         }
@@ -116,7 +118,7 @@ public class SkillTreeNode implements Unlockable {
         maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
         //If coordinates are precised adn we are not wiht an automaticTree we set them up
         if ((!(tree instanceof AutomaticSkillTree))) {
-             Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"),"No coordinates specified");
+            Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"), "No coordinates specified");
             coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
         }
     }

@@ -88,6 +88,7 @@ public class MMOCore extends JavaPlugin {
     public final MMOLoadManager loadManager = new MMOLoadManager();
     public final RestrictionManager restrictionManager = new RestrictionManager();
     public final SkillTreeManager skillTreeManager = new SkillTreeManager();
+    public final StatManager statManager = new StatManager();
 
     // Profession managers
     public final CustomBlockManager mineManager = new CustomBlockManager();
@@ -142,7 +143,8 @@ public class MMOCore extends JavaPlugin {
             loadManager.registerLoader(new MythicMobsMMOLoader());
     }
 
-    public void enable() {
+    @Override
+    public void onEnable() {
         new SpigotPlugin(70575, this).checkForUpdate();
         new Metrics(this);
         saveDefaultConfig();
@@ -419,7 +421,7 @@ public class MMOCore extends JavaPlugin {
 
         // Drop tables must be loaded before professions
         dropTableManager.initialize(clearBefore);
-
+        statManager.initialize(clearBefore);
         professionManager.initialize(clearBefore);
         classManager.initialize(clearBefore);
 
