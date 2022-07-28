@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 
 public class YAMLOfflinePlayerData extends OfflinePlayerData {
 	private final ConfigFile config;

@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.api.player.profess.event;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import org.apache.commons.lang.Validate;
 
 import java.util.LinkedHashSet;
@@ -26,7 +25,7 @@ public class EventTrigger {
 
         for (String format : list)
             try {
-                triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(format)));
+                triggers.addAll(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(format)));
             } catch (IllegalArgumentException exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING,
                         "Could not load trigger '" + format + "' from event trigger '" + event + "': " + exception.getMessage());

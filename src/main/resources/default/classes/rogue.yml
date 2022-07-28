@@ -38,6 +38,8 @@ options:
     off-combat-mana-regen: true
     off-combat-health-regen: true
 
+    needs-permission: false
+
 cast-particle:
     particle: SPELL_WITCH
 

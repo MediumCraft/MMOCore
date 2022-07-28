@@ -6,15 +6,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.skill.RegisteredSkill;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.skill.RegisteredSkill;
-import net.Indyuce.mmocore.manager.data.PlayerDataManager.DefaultPlayerData;
 
 public class SavedClassInformation {
 	private final int level, skillPoints, attributePoints, attributeReallocationPoints;
@@ -60,7 +60,7 @@ public class SavedClassInformation {
 				player.getAttributes().mapPoints(), player.mapSkillLevels());
 	}
 
-	public SavedClassInformation(DefaultPlayerData data) {
+	public SavedClassInformation(PlayerDataManager.DefaultPlayerData data) {
 		this(data.getLevel(), 0, data.getSkillPoints(), data.getAttributePoints(), data.getAttrReallocPoints());
 	}
 

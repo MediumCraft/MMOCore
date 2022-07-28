@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.listener.option;
 
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

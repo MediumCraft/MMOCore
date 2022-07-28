@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.command.rpg.quest;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.quest.Quest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.quest.PlayerQuests;
-import net.Indyuce.mmocore.api.quest.Quest;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;

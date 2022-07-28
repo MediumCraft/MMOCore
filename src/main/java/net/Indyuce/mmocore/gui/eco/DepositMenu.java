@@ -1,5 +1,10 @@
 package net.Indyuce.mmocore.gui.eco;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.api.util.SmartGive;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.util.item.SimpleItemBuilder;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -12,109 +17,107 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
-import io.lumine.mythic.lib.api.item.NBTItem;
-import io.lumine.mythic.lib.api.util.SmartGive;
-
 public class DepositMenu extends PluginInventory {
-	private ItemStack depositItem;
-	private int deposit;
+    private ItemStack depositItem;
+    private int deposit;
 
-	public DepositMenu(Player player) {
-		super(player);
-	}
+    /**
+     * Every time an item is clicked in the inventory, an inventory
+     * update is scheduled. If nothing happens for the next 10 ticks
+     * then the update is processed. If another item is clicked within
+     * this delay the task is cancelled and scheduled for later
+     */
+    private BukkitRunnable updateRunnable;
 
-	@Override
-	public Inventory getInventory() {
-		Inventory inv = Bukkit.createInventory(this, 27, "Deposit");
+    public DepositMenu(Player player) {
+        super(player);
+    }
 
-		inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "0").build());
+    @Override
+    public Inventory getInventory() {
+        Inventory inv = Bukkit.createInventory(this, 27, "Deposit");
+        updateDeposit(inv);
+        return inv;
+    }
 
-		new BukkitRunnable() {
+    @Override
+    public void whenClicked(InventoryClickEvent event) {
+        if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
+            return;
 
-			@Override
-			public void run() {
-				if (inv.getViewers().size() < 1) {
-					cancel();
-					return;
-				}
+        if (event.getCurrentItem().isSimilar(depositItem)) {
+            event.setCancelled(true);
 
-				updateDeposit(inv);
-			}
-		}.runTaskTimer(MMOCore.plugin, 0, 20);
-		return inv;
-	}
+            updateDeposit(event.getInventory());
+            if (deposit <= 0)
+                return;
 
-	@Override
-	public void whenClicked(InventoryClickEvent event) {
-		// event.setCancelled(true);
-		if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
-			return;
+            EconomyResponse response = MMOCore.plugin.economy.getEconomy().depositPlayer(player, deposit);
+            if (!response.transactionSuccess())
+                return;
 
-		if (event.getCurrentItem().isSimilar(depositItem)) {
-			event.setCancelled(true);
+            event.getInventory().clear();
+            player.closeInventory();
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
+            MMOCore.plugin.configManager.getSimpleMessage("deposit", "worth", String.valueOf(deposit)).send(player);
+            return;
+        }
 
-			updateDeposit(event.getInventory());
-			if (deposit <= 0)
-				return;
+        int worth = NBTItem.get(event.getCurrentItem()).getInteger("RpgWorth");
+        if (worth < 1)
+            event.setCancelled(true);
+        else
+            scheduleUpdate(event.getInventory());
+    }
 
-			EconomyResponse response = MMOCore.plugin.economy.getEconomy().depositPlayer(player, deposit);
-			if (!response.transactionSuccess())
-				return;
+    @Override
+    public void whenClosed(InventoryCloseEvent event) {
 
-			event.getInventory().clear();
-			player.closeInventory();
-			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-			MMOCore.plugin.configManager.getSimpleMessage("deposit", "worth", "" + deposit).send(player);
-			return;
-		}
+        // Cancel runnable
+        if (updateRunnable != null)
+            updateRunnable.cancel();
 
-		int worth = NBTItem.get(event.getCurrentItem()).getInteger("RpgWorth");
-		if (worth < 1) {
-			event.setCancelled(true);
-		}
+        // Give all items back
+        SmartGive smart = new SmartGive(player);
+        for (int j = 0; j < 26; j++) {
+            ItemStack item = event.getInventory().getItem(j);
+            if (item != null)
+                smart.give(item);
+        }
+    }
 
-		// in deposit menu
-		// if (event.getRawSlot() < 27) {
-		// int empty = player.getInventory().firstEmpty();
-		// if (empty < 0)
-		// return;
-		//
-		// player.playSound(player.getLocation(), Sound.ENTITY_SHULKER_TELEPORT,
-		// 1, 2);
-		// player.getInventory().addItem(event.getCurrentItem());
-		// event.setCurrentItem(null);
-		// updateDeposit(event.getInventory());
-		// return;
-		// }
+    private BukkitRunnable newUpdateRunnable(Inventory inv) {
+        return new BukkitRunnable() {
 
-		// in player inventory
-		// int empty = event.getInventory().firstEmpty();
-		// if (empty < 0)
-		// return;
-		//
-		// player.playSound(player.getLocation(),
-		// Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-		// event.getInventory().addItem(event.getCurrentItem());
-		// event.setCurrentItem(null);
-		// updateDeposit(event.getInventory());
-		// return;
-	}
+            @Override
+            public void run() {
+                updateDeposit(inv);
+            }
+        };
+    }
 
-	@Override
-	public void whenClosed(InventoryCloseEvent event) {
-		SmartGive smart = new SmartGive(player);
-		for (int j = 0; j < 26; j++) {
-			ItemStack item = event.getInventory().getItem(j);
-			if (item != null)
-				smart.give(item);
-		}
-	}
+    private void scheduleUpdate(Inventory inv) {
+        if (updateRunnable != null)
+            updateRunnable.cancel();
 
-	private void updateDeposit(Inventory inv) {
-		deposit = MMOCoreUtils.getWorth(inv.getContents());
-		inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", "" + deposit).build());
-	}
+        updateRunnable = new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                updateRunnable = null;
+                updateDeposit(inv);
+            }
+        };
+        updateRunnable.runTaskLater(MMOCore.plugin, 10);
+    }
+
+    private void updateDeposit(Inventory inv) {
+        if (updateRunnable != null) {
+            updateRunnable.cancel();
+            updateRunnable = null;
+        }
+
+        deposit = MMOCoreUtils.getWorth(inv.getContents());
+        inv.setItem(26, depositItem = new SimpleItemBuilder("DEPOSIT_ITEM").addPlaceholders("worth", String.valueOf(deposit)).build());
+    }
 }

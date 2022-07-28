@@ -2,10 +2,11 @@ package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -15,7 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class MineBlockExperienceSource extends SpecificExperienceSource<Material> {
-    public final Material material;
+    private final Material material;
     private final boolean silkTouch;
     private final boolean crop;
 
@@ -39,7 +40,8 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 
     @Override
     public ExperienceSourceManager<MineBlockExperienceSource> newManager() {
-        return new ExperienceSourceManager<MineBlockExperienceSource>() {
+        return
+                new ExperienceSourceManager<MineBlockExperienceSource>() {
             @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
             public void a(BlockBreakEvent event) {
                 if (event.getPlayer().getGameMode() != GameMode.SURVIVAL)
@@ -63,11 +65,13 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
     }
 
     private boolean hasSilkTouch(ItemStack item) {
+
         return item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH);
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, Material obj) {
+
         return material == obj;
     }
 }

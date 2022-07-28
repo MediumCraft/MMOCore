@@ -2,9 +2,9 @@ package net.Indyuce.mmocore.comp.vault;
 
 import java.util.logging.Level;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.milkbowl.vault.economy.Economy;
 
 public class VaultEconomy {

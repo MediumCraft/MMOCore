@@ -38,6 +38,7 @@ max-level: 100
 # because it is a subclass of mage
 options:
     display: false
+    needs-permission: false
 
 exp-table: class_exp_table
 

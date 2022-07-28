@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.guild.provided;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.Request;
-import net.Indyuce.mmocore.manager.InventoryManager;
 import org.bukkit.Bukkit;
 
 public class GuildInvite extends Request {
@@ -27,7 +27,7 @@ public class GuildInvite extends Request {
     @Override
     public void whenAccepted() {
         guild.removeLastInvite(getCreator().getPlayer());
-        guild.getMembers().forEach(member -> {
+        guild.forEachMember(member -> {
                     if (Bukkit.getPlayer(member) != null) {
                         MMOCore.plugin.configManager.getSimpleMessage("guild-joined-other", "player",
                                 getTarget().getPlayer().getName()).send(Bukkit.getPlayer(member));

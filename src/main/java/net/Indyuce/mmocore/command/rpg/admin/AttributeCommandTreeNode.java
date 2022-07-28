@@ -1,15 +1,15 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 
@@ -61,7 +61,7 @@ public class AttributeCommandTreeNode extends CommandTreeNode {
 				return CommandResult.FAILURE;
 			}
 
-			AttributeInstance instance = PlayerData.get(player).getAttributes().getInstance(attribute);
+			PlayerAttributes.AttributeInstance instance = PlayerData.get(player).getAttributes().getInstance(attribute);
 			instance.setBase(Math.min(attribute.getMax(), instance.getBase() + c * amount));
 			CommandVerbose.verbose(sender, CommandVerbose.CommandType.ATTRIBUTE, ChatColor.GOLD + player.getName() + ChatColor.YELLOW
 					+ " now has " + ChatColor.GOLD + instance.getBase() + ChatColor.YELLOW + " " + attribute.getName() + ".");

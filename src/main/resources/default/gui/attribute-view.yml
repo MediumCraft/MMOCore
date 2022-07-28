@@ -22,6 +22,7 @@ items:
     str:
         slots: [11]
         function: attribute_strength
+        shift-cost: 10
         name: '&a{name}'
         item: GOLDEN_APPLE
         lore: # {buffs} returns amount of buffs
@@ -31,13 +32,16 @@ items:
         - ''
         - '&8When Leveled Up:'
         - '&7  +{buff_weapon_damage}% Weapon Damage (&a+{total_weapon_damage}%&7)'
-        - '&7  +{buff_max_health} Max Health (&a+{total_max_health}&7)'
+        - '&7  +{buff_max_health}% Max Health (&a+{total_max_health}%&7)'
         - ''
         - '&eClick to level up for 1 attribute point.'
+        - '&eShift-Click to level up for {shift_points} attribute points.'
+        - ''
         - '&e◆ Current Attribute Points: {attribute_points}'
     dex:
         slots: [13]
         function: attribute_dexterity
+        shift-cost: 10
         name: '&a{name}'
         item: LEATHER_BOOTS
         hide-flags: true
@@ -49,13 +53,16 @@ items:
         - '&8When Leveled Up:'
         - '&7  +{buff_physical_damage}% Physical Damage (&a+{total_physical_damage}%&7)'
         - '&7  +{buff_projectile_damage}% Projectile Damage (&a+{total_projectile_damage}%&7)'
-        - '&7  +{buff_attack_speed} Attack Speed (&a+{total_attack_speed}&7)'
+        - '&7  +{buff_attack_speed}% Attack Speed (&a+{total_attack_speed}&7)'
         - ''
         - '&eClick to level up for 1 attribute point.'
+        - '&eShift-Click to level up for {shift_points} attribute points.'
+        - ''
         - '&e◆ Current Attribute Points: {attribute_points}'
     int:
         slots: [15]
         function: attribute_intelligence
+        shift-cost: 10
         name: '&a{name}'
         item: BOOK
         lore:
@@ -68,4 +75,6 @@ items:
         - '&7  +{buff_cooldown_reduction}% Cooldown Reduction (&a+{total_cooldown_reduction}%&7)'
         - ''
         - '&eClick to level up for 1 attribute point.'
+        - '&eShift-Click to level up for {shift_points} attribute points.'
+        - ''
         - '&e◆ Current Attribute Points: {attribute_points}'

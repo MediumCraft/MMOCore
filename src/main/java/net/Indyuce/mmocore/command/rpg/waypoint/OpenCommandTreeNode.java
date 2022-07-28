@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command.rpg.waypoint;
 
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ public class OpenCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		InventoryManager.WAYPOINTS.newInventory(net.Indyuce.mmocore.api.player.PlayerData.get(player)).open();
+		InventoryManager.WAYPOINTS.newInventory(PlayerData.get(player)).open();
 		return CommandResult.SUCCESS;
 	}
 }

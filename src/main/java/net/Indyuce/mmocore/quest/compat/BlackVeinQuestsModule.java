@@ -14,9 +14,9 @@ public class BlackVeinQuestsModule implements QuestModule<BlackVeinQuestsModule.
 
 
     @Override
-    public BlackVeinQuestQuest getQuest(String id) {
-        Quest quest=plugin.getQuestById(id);
-        return quest==null?null:new BlackVeinQuestQuest(quest);
+    public BlackVeinQuestQuest getQuestOrThrow(String id) {
+        Quests plugin = (Quests) Bukkit.getPluginManager().getPlugin("Quests");
+        return plugin.getQuestById(id)==null?null:new BlackVeinQuestQuest(plugin.getQuestById(id));
     }
 
 

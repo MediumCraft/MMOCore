@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.waypoint.Waypoint;
+import net.Indyuce.mmocore.api.ConfigFile;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -25,6 +25,7 @@ public class WaypointManager implements MMOCoreManager {
         return waypoints.containsKey(id);
     }
 
+    @Nullable
     public Waypoint get(String id) {
         return waypoints.get(id);
     }
@@ -54,6 +55,13 @@ public class WaypointManager implements MMOCoreManager {
                 register(new Waypoint(config.getConfigurationSection(key)));
             } catch (RuntimeException exception) {
                 MMOCore.log(Level.WARNING, "Could not load waypoint '" + key + "': " + exception.getMessage());
+            }
+
+        for (Waypoint waypoint : waypoints.values())
+            try {
+                waypoint.postLoad();
+            } catch (RuntimeException exception) {
+                MMOCore.log(Level.WARNING, "Could not post-load waypoint '" + waypoint.getId() + "': " + exception.getMessage());
             }
     }
 }

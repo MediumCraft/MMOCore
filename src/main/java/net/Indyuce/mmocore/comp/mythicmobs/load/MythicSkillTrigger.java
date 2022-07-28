@@ -5,7 +5,6 @@ import io.lumine.mythic.api.mobs.GenericCaster;
 import io.lumine.mythic.api.skills.Skill;
 import io.lumine.mythic.api.skills.SkillCaster;
 import io.lumine.mythic.api.skills.SkillMetadata;
-import io.lumine.mythic.api.skills.SkillTrigger;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.skills.SkillMetadataImpl;
@@ -15,7 +14,6 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import org.apache.commons.lang.Validate;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 

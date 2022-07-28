@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
@@ -171,7 +171,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 			if (args.length > 4 && args[4].equalsIgnoreCase("-reallocate")) {
 
 				int points = 0;
-				for (AttributeInstance ins : data.getAttributes().getInstances()) {
+				for (PlayerAttributes.AttributeInstance ins : data.getAttributes().getInstances()) {
 					points += ins.getBase();
 					ins.setBase(0);
 				}

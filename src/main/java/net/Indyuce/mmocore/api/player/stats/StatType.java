@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.api.player.stats;
 
-import io.lumine.mythic.lib.MythicLib;
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.Profession;
-import org.bukkit.configuration.file.FileConfiguration;
+import net.Indyuce.mmocore.player.stats.StatInfo;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
+import java.util.Objects;
 
+@Deprecated
 public enum StatType {
 
     // Vanilla stats
@@ -87,17 +87,17 @@ public enum StatType {
     /**
      * Reduces amount of tugs needed to fish
      */
-    FISHING_STRENGTH("fishing"),
+    FISHING_STRENGTH,
 
     /**
      * Chance of instant success when fishing
      */
-    CRITICAL_FISHING_CHANCE("fishing"),
+    CRITICAL_FISHING_CHANCE,
 
     /**
      * Chance of crit fishing failure
      */
-    CRITICAL_FISHING_FAILURE_CHANCE("fishing"),
+    CRITICAL_FISHING_FAILURE_CHANCE,
 
     /**
      * Chance of dropping more minerals when mining.
@@ -114,49 +114,35 @@ public enum StatType {
      */
     LUCK_OF_THE_FIELD;
 
-    private String profession;
-
-    private LinearValue defaultInfo;
-    private DecimalFormat format;
-
-    StatType() {
-        // Completely custom stat
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    StatType(String profession) {
-        this.profession = profession;
-    }
-
+    @Deprecated
     public String getProfession() {
-        return profession;
+        return findProfession().getId();
     }
 
+    @Deprecated
+    @Nullable
     public Profession findProfession() {
-        return MMOCore.plugin.professionManager.get(profession);
+        return StatInfo.valueOf(name()).profession;
     }
 
+    @Deprecated
     public boolean hasProfession() {
-        return profession != null;
+        return findProfession() != null;
     }
 
+    @Deprecated
+    @NotNull
     public LinearValue getDefault() {
-        return defaultInfo;
+        return StatInfo.valueOf(name()).getDefaultFormula();
     }
 
+    @Deprecated
     public boolean matches(Profession profession) {
-        return this.profession != null && this.profession.equals(profession.getId());
+        return Objects.equals(findProfession(), profession);
     }
 
+    @Deprecated
     public String format(double value) {
-        return format.format(value);
-    }
-
-    public static void load() {
-        FileConfiguration config = new ConfigFile("stats").getConfig();
-        for (StatType stat : values()) {
-            stat.defaultInfo = config.contains("default." + stat.name()) ? new LinearValue(config.getConfigurationSection("default." + stat.name())) : new LinearValue(0, 0);
-            stat.format = MythicLib.plugin.getMMOConfig().newDecimalFormat(config.contains("decimal-format." + stat.name()) ? config.getString("decimal-format." + stat.name()) : "0.#");
-        }
+        return StatInfo.valueOf(name()).format(value);
     }
 }

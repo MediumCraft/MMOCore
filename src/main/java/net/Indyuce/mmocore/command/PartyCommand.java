@@ -2,6 +2,9 @@ package net.Indyuce.mmocore.command;
 
 import java.util.UUID;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.MMOCommandEvent;
+import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,12 +14,9 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.party.provided.PartyInvite;
 import net.Indyuce.mmocore.api.player.social.Request;
-import net.Indyuce.mmocore.manager.InventoryManager;
 
 public class PartyCommand extends BukkitCommand {
 

@@ -33,6 +33,5 @@ public class MMOCoreCommandTreeRoot extends CommandTreeRoot implements CommandEx
 		addChild(new BoosterCommandTreeNode(this));
 		addChild(new WaypointsCommandTreeNode(this));
 		addChild(new QuestCommandTreeNode(this));
-		addChild(new WaypointsCommandTreeNode(this));
 	}
 }

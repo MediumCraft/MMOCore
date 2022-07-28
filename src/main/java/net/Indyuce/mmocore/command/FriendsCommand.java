@@ -2,11 +2,11 @@ package net.Indyuce.mmocore.command;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
+import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.social.Request;
-import net.Indyuce.mmocore.manager.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

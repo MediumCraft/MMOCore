@@ -75,6 +75,7 @@ resource:
 
 options:
     off-combat-health-regen: true
+    needs-permission: false
 
 attributes:
     max-health:

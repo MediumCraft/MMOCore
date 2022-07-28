@@ -4,8 +4,8 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
-import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
+import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -107,6 +107,9 @@ public class SkillScroller implements Listener {
         CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
         casting.index = mod(casting.index + change, playerData.getBoundSkills().size());
         casting.onTick();
+
+        if (changeSound != null)
+            changeSound.playTo(event.getPlayer());
     }
 
     private int mod(int x, int n) {

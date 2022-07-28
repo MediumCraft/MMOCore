@@ -4,8 +4,8 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.LootChestSpawnEvent;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.RandomWeightedRoll;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,6 +14,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -34,7 +35,7 @@ public class LootChestRegion {
         }
     };
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     public LootChestRegion(ConfigurationSection config) {
         Validate.notNull(config, "Could not load config");
@@ -109,7 +110,7 @@ public class LootChestRegion {
         location.getBlock().setType(Material.CHEST);
         Chest chest = (Chest) location.getBlock().getState();
         tier.getDropTable().collect(builder).forEach(item -> {
-            Integer slot = slots.get(random.nextInt(slots.size()));
+            Integer slot = slots.get(RANDOM.nextInt(slots.size()));
             chest.getInventory().setItem(slot, item);
             slots.remove(slot);
         });
@@ -117,26 +118,14 @@ public class LootChestRegion {
         MMOCore.plugin.lootChests.register(lootChest);
     }
 
+    /**
+     * @param player Player rolling the tier
+     * @return A randomly picked tiers taking into account tier spawn rates
+     *         and the player Chance attribute
+     */
+    @NotNull
     public ChestTier rollTier(PlayerData player) {
-        double chance = player.getStats().getStat(StatType.CHANCE);
-
-        //chance=0 ->the tier.chance remains the same
-        //chance ->+inf -> the tier.chance becomes the same for everyone, uniform law
-        //chance=8-> tierChance=sqrt(tierChance)
-        double sum = 0;
-        for (ChestTier tier : tiers) {
-            sum += Math.pow(tier.chance, 1 / Math.log(1 + chance));
-        }
-        double randomCoefficient=random.nextDouble();
-        double s=0;
-        for (ChestTier tier : tiers) {
-            s+=Math.pow(tier.chance, 1 / Math.pow((1 + chance),1/3))/sum;
-            if (randomCoefficient < s)
-                return tier;
-        }
-
-
-        throw new NullPointerException("Could not find item in the tier list");
+        return new RandomWeightedRoll<>(player, tiers, MMOCore.plugin.configManager.lootChestsChanceWeight).rollItem();
     }
 
     public Location getRandomLocation(Location center) {
@@ -161,9 +150,9 @@ public class LootChestRegion {
          * Chooses a random direction and get the block in
          * that direction which has the same height as the player
          */
-        double a = random.nextDouble() * 2 * Math.PI;
+        double a = RANDOM.nextDouble() * 2 * Math.PI;
         Vector dir = new Vector(Math.cos(a), 0, Math.sin(a))
-                .multiply(algOptions.minRange + random.nextDouble() * (algOptions.maxRange - algOptions.minRange));
+                .multiply(algOptions.minRange + RANDOM.nextDouble() * (algOptions.maxRange - algOptions.minRange));
         Location random = center.add(dir);
 
         /*

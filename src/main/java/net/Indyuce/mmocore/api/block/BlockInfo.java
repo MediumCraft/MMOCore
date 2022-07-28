@@ -5,9 +5,9 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.condition.type.BlockCondition;
 import io.lumine.mythic.lib.api.condition.type.MMOCondition;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.loot.droptable.DropTable;
 import net.Indyuce.mmocore.loot.LootBuilder;
-import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -52,7 +52,7 @@ public class BlockInfo {
 
 			for (String key : list)
 				try {
-					triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
+					triggers.addAll(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING,
 							"Could not load trigger '" + key + "' from block info '" + block.generateKey() + "': " + exception.getMessage());

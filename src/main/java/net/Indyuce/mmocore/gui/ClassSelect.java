@@ -14,7 +14,6 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.manager.SoundManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -83,6 +82,7 @@ public class ClassSelect extends EditableInventory {
 					lore.add(index + j, profess.getAttributeDescription().get(j));
 			}
 
+
 			meta.setLore(lore);
 			item.setItemMeta(meta);
 			return NBTItem.get(item).addTag(new ItemTag("classId", profess.getId())).toItem();
@@ -116,6 +116,12 @@ public class ClassSelect extends EditableInventory {
 				}
 
 				PlayerClass profess = MMOCore.plugin.classManager.get(tag);
+				if (profess.hasOption(ClassOption.NEEDS_PERMISSION) && !player.hasPermission("mmocore.class." + profess.getId().toLowerCase())) {
+					MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
+					new ConfigMessage("no-permission-for-class").send(player);
+					return;
+				}
+
 				if (profess.equals(playerData.getProfess())) {
 					MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
 					MMOCore.plugin.configManager.getSimpleMessage("already-on-class", "class", profess.getName()).send(player);

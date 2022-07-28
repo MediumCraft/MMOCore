@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.util.item.ConfigItem;
+import net.Indyuce.mmocore.api.ConfigFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
 

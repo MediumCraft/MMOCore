@@ -4,6 +4,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class ExperienceTable {
      */
     public void claim(PlayerData levelingUp, int professionLevel, ExperienceObject object) {
         for (ExperienceItem item : items) {
+
             int timesClaimed = levelingUp.getClaims(object, this, item);
             if (!item.roll(professionLevel, timesClaimed))
                 continue;

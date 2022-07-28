@@ -3,10 +3,10 @@ package net.Indyuce.mmocore.command.rpg.booster;
 import java.util.Iterator;
 import java.util.UUID;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.Booster;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;

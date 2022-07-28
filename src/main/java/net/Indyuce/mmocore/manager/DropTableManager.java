@@ -8,12 +8,12 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import io.lumine.mythic.lib.api.util.PostLoadObject;
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.loot.droptable.DropTable;
 
 public class DropTableManager implements MMOCoreManager {

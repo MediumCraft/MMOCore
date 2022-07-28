@@ -1,16 +1,17 @@
 package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
-import org.apache.commons.lang3.Validate;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class EatExperienceSource extends SpecificExperienceSource<ItemStack> {
@@ -36,13 +37,13 @@ public class EatExperienceSource extends SpecificExperienceSource<ItemStack> {
         return new ExperienceSourceManager<EatExperienceSource>() {
 
             @EventHandler
-            public void a(FoodLevelChangeEvent e) {
-                if (!(e.getEntity() instanceof Player) || e.getEntity().hasMetadata("NPC"))
-                    return;
-                PlayerData playerData = PlayerData.get((OfflinePlayer) e.getEntity());
-                for (EatExperienceSource source : getSources()) {
-                    if (source.matchesParameter(playerData, e.getItem()))
-                        source.giveExperience(playerData, e.getFoodLevel(), null);
+            public void a(PlayerItemConsumeEvent e) {
+                if(!e.getPlayer().hasMetadata("NPC")) {
+                    PlayerData playerData = PlayerData.get(e.getPlayer());
+                    for (EatExperienceSource source : getSources()) {
+                        if (source.matchesParameter(playerData, e.getItem()))
+                            source.giveExperience(playerData, 1, null);
+                    }
                 }
             }
         };

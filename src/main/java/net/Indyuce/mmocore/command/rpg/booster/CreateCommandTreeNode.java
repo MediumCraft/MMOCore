@@ -2,12 +2,12 @@ package net.Indyuce.mmocore.command.rpg.booster;
 
 import java.util.Arrays;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.experience.Booster;
 import net.Indyuce.mmocore.experience.Profession;

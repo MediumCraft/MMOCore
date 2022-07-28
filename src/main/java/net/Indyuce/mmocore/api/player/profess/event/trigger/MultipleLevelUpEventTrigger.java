@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.api.player.profess.event.trigger;
 
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -1,22 +1,14 @@
 package net.Indyuce.mmocore.api.player;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
-import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.tree.IntegerCoordinates;
-import net.Indyuce.mmocore.tree.NodeState;
-import net.Indyuce.mmocore.tree.SkillTreeNode;
-import net.Indyuce.mmocore.tree.skilltree.AutomaticSkillTree;
-import net.Indyuce.mmocore.tree.skilltree.LinkedSkillTree;
-import net.Indyuce.mmocore.tree.skilltree.SkillTree;
-import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
-import net.Indyuce.mmocore.tree.skilltree.display.Icon;
+import net.Indyuce.mmocore.waypoint.CostType;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
@@ -47,7 +39,6 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
-import net.java.truecommons.shed.Link;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.Validate;
@@ -62,8 +53,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
@@ -113,6 +102,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
+    // NON-FINAL player data stuff made public to facilitate field change
+    public int skillGuiDisplayOffset;
     public boolean noCooldown;
     public CombatRunnable combat;
 
@@ -179,6 +170,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         } catch (NullPointerException exception) {
             MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
         }
+
         int j = 0;
         while (j < boundSkills.size())
             try {
@@ -501,8 +493,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return guild != null;
     }
 
+    /**
+     * @return If the item is unlocked by the player
+     */
     public boolean hasUnlocked(Unlockable unlockable) {
-        throw new RuntimeException("Not implemented yet");
+        return unlockedItems.contains(unlockable.getUnlockNamespacedKey());
     }
 
     /**
@@ -511,7 +506,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @return If the item was already unlocked when calling this method
      */
     public boolean unlock(Unlockable unlockable) {
-        throw new RuntimeException("Not implemented yet");
+        return unlockedItems.add(unlockable.getUnlockNamespacedKey());
     }
 
     public void setLevel(int level) {
@@ -544,7 +539,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void refreshVanillaExp() {
         if (!isOnline() || !MMOCore.plugin.configManager.overrideVanillaExp)
             return;
-
+        getPlayer().sendExperienceChange(0.01f);
         getPlayer().setLevel(getLevel());
         getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
     }
@@ -718,6 +713,63 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         }.runTaskTimer(MMOCore.plugin, 0, 1);
     }
 
+    public String toJson() {
+
+        //We create the JSON corresponding to player Data
+        JsonObject jsonObject = new JsonObject();
+        MMOCore.sqlDebug("Saving data for: '" + getUniqueId() + "'...");
+
+        jsonObject.addProperty("class_points", getClassPoints());
+        jsonObject.addProperty("skill_points", getSkillPoints());
+        jsonObject.addProperty("attribute_points", getAttributePoints());
+        jsonObject.addProperty("attribute_realloc_points", getAttributeReallocationPoints());
+        jsonObject.addProperty("level", getLevel());
+        jsonObject.addProperty("experience", getExperience());
+        jsonObject.addProperty("class", getProfess().getId());
+        jsonObject.addProperty("last_login", getLastLogin());
+        jsonObject.addProperty("guild", hasGuild() ? getGuild().getId() : null);
+
+        jsonObject.addProperty("waypoints", MMOCoreUtils.arrayToJsonString(getWaypoints()));
+        jsonObject.addProperty("friends", MMOCoreUtils.arrayToJsonString(getFriends().stream().map(UUID::toString).collect(Collectors.toList())));
+        jsonObject.addProperty("bound_skills", MMOCoreUtils.arrayToJsonString(getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).collect(Collectors.toList())));
+
+        jsonObject.addProperty("skills", MMOCoreUtils.entrySetToJsonString(mapSkillLevels().entrySet()));
+        jsonObject.addProperty("times_claimed", MMOCoreUtils.entrySetToJsonString(getItemClaims().entrySet()));
+
+        jsonObject.addProperty("attributes", getAttributes().toJsonString());
+        jsonObject.addProperty("professions", getCollectionSkills().toJsonString());
+        jsonObject.addProperty("quests", getQuestData().toJsonString());
+        jsonObject.addProperty("class_info", createClassInfoData(this).toString());
+
+        return jsonObject.toString();
+    }
+
+
+    public static JsonObject createClassInfoData(PlayerData data) {
+        JsonObject json = new JsonObject();
+        for (String c : data.getSavedClasses()) {
+            SavedClassInformation info = data.getClassInfo(c);
+            JsonObject classinfo = new JsonObject();
+            classinfo.addProperty("level", info.getLevel());
+            classinfo.addProperty("experience", info.getExperience());
+            classinfo.addProperty("skill-points", info.getSkillPoints());
+            classinfo.addProperty("attribute-points", info.getAttributePoints());
+            classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
+            JsonObject skillinfo = new JsonObject();
+            for (String skill : info.getSkillKeys())
+                skillinfo.addProperty(skill, info.getSkillLevel(skill));
+            classinfo.add("skill", skillinfo);
+            JsonObject attributeinfo = new JsonObject();
+            for (String attribute : info.getAttributeKeys())
+                attributeinfo.addProperty(attribute, info.getAttributeLevel(attribute));
+            classinfo.add("attribute", attributeinfo);
+
+            json.add(c, classinfo);
+        }
+
+        return json;
+    }
+
     public boolean hasReachedMaxLevel() {
         return getProfess().getMaxLevel() > 0 && getLevel() >= getProfess().getMaxLevel();
     }
@@ -742,6 +794,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @param splitExp         Should the exp be split among party members
      */
     public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+        if (value <= 0)
+            return;
+
         if (hasReachedMaxLevel()) {
             setExperience(0);
             return;
@@ -751,13 +806,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
 
         // Splitting exp through party members
-        AbstractParty party = getParty();
-        if (splitExp && party != null) {
-            List<PlayerData> onlineMembers = getParty().getOnlineMembers();
+        AbstractParty party;
+        if (splitExp && (party = getParty()) != null) {
+            List<PlayerData> onlineMembers = party.getOnlineMembers();
             value /= onlineMembers.size();
             for (PlayerData member : onlineMembers)
-                member.giveExperience(value, EXPSource.PARTY_SHARING, null, false);
+                if (!equals(member))
+                    member.giveExperience(value, source, null, false);
         }
+
+        // Apply buffs AFTER splitting exp
+        value *= (1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100) * MMOCore.plugin.boosterManager.getMultiplier(null);
 
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
         Bukkit.getPluginManager().callEvent(event);
@@ -766,7 +825,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         // Experience hologram
         if (hologramLocation != null && isOnline())
-            MMOCoreUtils.displayIndicator(hologramLocation, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", String.valueOf(event.getExperience())).message());
+            MMOCoreUtils.displayIndicator(hologramLocation, MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", MythicLib.plugin.getMMOConfig().decimal.format(event.getExperience())).message());
 
         experience = Math.max(0, experience + event.getExperience());
 
@@ -781,6 +840,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
             experience -= needed;
             level = getLevel() + 1;
+
+            // Apply class experience table
+            if (getProfess().hasExperienceTable())
+                getProfess().getExperienceTable().claim(this, level, getProfess());
         }
 
         if (level > oldLevel) {
@@ -799,6 +862,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         refreshVanillaExp();
     }
+
+
 
     public double getExperience() {
         return experience;
@@ -821,7 +886,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveMana(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_MANA);
+        double max = getStats().getStat("MAX_MANA");
         double newest = Math.max(0, Math.min(mana + amount, max));
         if (mana == newest)
             return;
@@ -846,7 +911,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveStamina(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_STAMINA);
+        double max = getStats().getStat("MAX_STAMINA");
         double newest = Math.max(0, Math.min(stamina + amount, max));
         if (stamina == newest)
             return;
@@ -871,7 +936,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void giveStellium(double amount, PlayerResourceUpdateEvent.UpdateReason reason) {
 
         // Avoid calling useless event
-        double max = getStats().getStat(StatType.MAX_STELLIUM);
+        double max = getStats().getStat("MAX_STELLIUM");
         double newest = Math.max(0, Math.min(stellium + amount, max));
         if (stellium == newest)
             return;
@@ -906,15 +971,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setMana(double amount) {
-        mana = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_MANA)));
+        mana = Math.max(0, Math.min(amount, getStats().getStat("MAX_MANA")));
     }
 
     public void setStamina(double amount) {
-        stamina = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_STAMINA)));
+        stamina = Math.max(0, Math.min(amount, getStats().getStat("MAX_STAMINA")));
     }
 
     public void setStellium(double amount) {
-        stellium = Math.max(0, Math.min(amount, getStats().getStat(StatType.MAX_STELLIUM)));
+        stellium = Math.max(0, Math.min(amount, getStats().getStat("MAX_STELLIUM")));
     }
 
     public boolean isFullyLoaded() {
@@ -947,6 +1012,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         Validate.isTrue(isCasting(), "Player not in casting mode");
         skillCasting.close();
         this.skillCasting = null;
+        setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE, 0); // Reset action bar
     }
 
     public void displayActionBar(String message) {
@@ -1098,6 +1164,34 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         else
             combat = new CombatRunnable(this);
     }
+
+    /**
+     * @return The savingPlayerData object corresponding to the playerData
+     */
+    public SavingPlayerData getSavingPlayerData() {
+        return new SavingPlayerData(
+                getUniqueId(),
+                getClassPoints(),
+                getSkillPoints(),
+                getAttributePoints(),
+                getAttributeReallocationPoints(),
+                getLevel(),
+                getExperience(),
+                getProfess().getId(),
+                getLastLogin(),
+                hasGuild() ? getGuild().getId() : null,
+                getWaypoints(),
+                getFriends(),
+                getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).toList(),
+                mapSkillLevels(),
+                getItemClaims(),
+                getAttributes().toJsonString(),
+                getCollectionSkills().toJsonString(),
+                getQuestData().toJsonString(),
+                createClassInfoData(this).toString());
+    }
+
+
 
     @Override
     public int hashCode() {

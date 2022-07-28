@@ -11,6 +11,7 @@ display:
 options:
     default: true
     display: false
+    needs-permission: false # False by default
     
     # Only regens when out of combat
     off-combat-health-regen: false

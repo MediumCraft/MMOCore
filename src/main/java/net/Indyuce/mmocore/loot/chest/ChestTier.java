@@ -2,16 +2,16 @@ package net.Indyuce.mmocore.loot.chest;
 
 import io.lumine.mythic.lib.api.math.ScalingFormula;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.loot.droptable.DropTable;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.loot.Weighted;
+import net.Indyuce.mmocore.loot.droptable.DropTable;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class ChestTier {
+public class ChestTier implements Weighted {
 	private final TierEffect effect;
 	private final ScalingFormula capacity;
 	private final DropTable table;
-
-	public final double chance;
+	private final double chance;
 
 	public ChestTier(ConfigurationSection config) {
 		effect = config.isConfigurationSection("effect") ? new TierEffect(config.getConfigurationSection("effect")) : null;
@@ -22,6 +22,15 @@ public class ChestTier {
 
 	public double rollCapacity(PlayerData player) {
 		return capacity.calculate(player.getLevel());
+	}
+
+	public double getChance() {
+		return chance;
+	}
+
+	@Override
+	public double getWeight() {
+		return chance;
 	}
 
 	public DropTable getDropTable() {

@@ -23,10 +23,12 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo;
+    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
+    public double lootChestsChanceWeight, fishingDropsChanceWeight;
+    public int maxPartyLevelDifference;
 
     private final FileConfiguration messages;
     private final boolean chatInput;
@@ -88,18 +90,25 @@ public class ConfigManager {
         loadDefaultFile("loot-chests.yml");
         loadDefaultFile("commands.yml");
         loadDefaultFile("exp-tables.yml");
+        loadDefaultFile("exp-sources.yml");
+        loadDefaultFile("triggers.yml");
+        loadDefaultFile("conditions.yml");
         loadDefaultFile("guilds.yml");
 
         commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));
 
         messages = new ConfigFile("messages").getConfig();
-        chatInput = MMOCore.plugin.getConfig().getBoolean("use-chat-input");
+        chatInput = true; // MMOCore.plugin.getConfig().getBoolean("use-chat-input")
         partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
         combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000L;
-        lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 1000L;
+        lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 20;
         lootChestPlayerCooldown = (long) MMOCore.plugin.getConfig().getDouble("player-cooldown") * 1000L;
         globalSkillCooldown = MMOCore.plugin.getConfig().getLong("global-skill-cooldown") * 50;
         noSkillBoundPlaceholder = getSimpleMessage("no-skill-placeholder").message();
+        lootChestsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.loot-chests");
+        fishingDropsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.fishing-drops");
+        maxPartyLevelDifference = MMOCore.plugin.getConfig().getInt("party.max-level-difference");
+        splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
 
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
@@ -145,7 +154,7 @@ public class ConfigManager {
     }
 
     public SimpleMessage getSimpleMessage(String key, String... placeholders) {
-        String format = messages.getString(key, "");
+        String format = messages.getString(key, "{MessageNotFound:\"" + key + "\"}");
         for (int j = 0; j < placeholders.length - 1; j += 2)
             format = format.replace("{" + placeholders[j] + "}", placeholders[j + 1]);
         return new SimpleMessage(MythicLib.plugin.parseColors(format));

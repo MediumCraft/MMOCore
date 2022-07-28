@@ -6,12 +6,10 @@ import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
 import io.lumine.mythic.lib.skill.Skill;
 import io.lumine.mythic.lib.skill.SkillMetadata;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
-import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import org.jetbrains.annotations.NotNull;
 
 public class CastableSkill extends Skill {
     private final ClassSkill skill;
@@ -84,7 +82,8 @@ public class CastableSkill extends Skill {
             casterData.giveStamina(-getModifier("stamina"), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
         }
 
-        casterData.setLastActivity(PlayerActivity.CAST_SKILL);
+        if (!getTrigger().isPassive())
+            casterData.setLastActivity(PlayerActivity.CAST_SKILL);
     }
 
     @Override

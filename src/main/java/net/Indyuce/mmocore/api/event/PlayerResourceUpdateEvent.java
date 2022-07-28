@@ -1,5 +1,9 @@
 package net.Indyuce.mmocore.api.event;
 
+import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
+import net.Indyuce.mmocore.api.quest.trigger.StaminaTrigger;
+import net.Indyuce.mmocore.api.quest.trigger.StelliumTrigger;
+import net.Indyuce.mmocore.command.rpg.admin.ResourceCommandTreeNode;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.skill.list.Neptune_Gift;
@@ -104,14 +108,14 @@ public class PlayerResourceUpdateEvent extends PlayerDataEvent implements Cancel
 
 		/**
 		 * Used by quests triggers
-		 * - {@link net.Indyuce.mmocore.api.quest.trigger.ManaTrigger}
-		 * - {@link net.Indyuce.mmocore.api.quest.trigger.StaminaTrigger}
-		 * - {@link net.Indyuce.mmocore.api.quest.trigger.StelliumTrigger}
+		 * - {@link ManaTrigger}
+		 * - {@link StaminaTrigger}
+		 * - {@link StelliumTrigger}
 		 */
 		TRIGGER,
 
 		/**
-		 * When using the resource command {@link net.Indyuce.mmocore.command.rpg.admin.ResourceCommandTreeNode}
+		 * When using the resource command {@link ResourceCommandTreeNode}
 		 */
 		COMMAND,
 

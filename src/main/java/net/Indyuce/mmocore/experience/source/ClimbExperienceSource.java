@@ -6,11 +6,9 @@ import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.util.Vector;
 
 public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
     //Can be Ladder,Vines,Twisting Vines,Weeping Vines.
@@ -30,8 +28,8 @@ public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
         else {
             String str = config.getString("type").toUpperCase().replace("-", "_");
             Validate.isTrue(str.equals("LADDER") ||
-                            str.equals("VINE") || str.equals("TWISTING_VINES_PLANT") || str.equals("WEEPING_VINES"),
-                    "ClimbExperienceSource problem: The type must be ladder, vine, twisted-vines or weeping-vines");
+                            str.equals("VINE") || str.equals("TWISTING_VINES") || str.equals("WEEPING_VINES"),
+                    "ClimbExperienceSource problem: The type must be ladder, vine, twisting-vines or weeping-vines");
 
             type = Material.valueOf(str);
         }

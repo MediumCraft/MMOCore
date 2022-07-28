@@ -8,14 +8,13 @@ import javax.annotation.Nullable;
 public interface QuestModule<T extends AbstractQuest> {
 
     /**
-     * @return Quest with given name
+     * @return Quest with given identifier
      */
     @Nullable
     public T getQuest(String id);
 
     /**
-     * @return If a specific player did a certain quest
+     * @return If a specific player has made a certain quest
      */
     public boolean hasCompletedQuest(String quest, Player player);
-
 }

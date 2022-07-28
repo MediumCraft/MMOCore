@@ -19,7 +19,10 @@ public enum EXPSource {
 
     /**
      * When party members share exp
+     *
+     * @deprecated Not used anymore
      */
+    @Deprecated
     PARTY_SHARING,
 
     /**

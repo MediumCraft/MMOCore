@@ -1,13 +1,12 @@
 package net.Indyuce.mmocore.loot.chest;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.loot.chest.particle.ChestParticleEffect;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.loot.chest.particle.ChestParticleEffect;
 
 public class TierEffect {
 	private final ChestParticleEffect type;

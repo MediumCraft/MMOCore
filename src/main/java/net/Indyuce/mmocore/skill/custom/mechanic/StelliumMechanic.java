@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 public class StelliumMechanic extends TargetMechanic {
     private final DoubleFormula amount;
+    private final Operation operation;
     private final PlayerResourceUpdateEvent.UpdateReason reason;
 
     public StelliumMechanic(ConfigObject config) {
@@ -22,12 +23,18 @@ public class StelliumMechanic extends TargetMechanic {
 
         amount = new DoubleFormula(config.getString("amount"));
         reason = PlayerResourceUpdateEvent.UpdateReason.valueOf(UtilityMethods.enumName(config.getString("reason", "CUSTOM")));
+        operation = config.contains("operation") ? Operation.valueOf(config.getString("operation").toUpperCase()) : Operation.GIVE;
     }
 
     @Override
     public void cast(SkillMetadata meta, Entity target) {
         Validate.isTrue(target instanceof Player, "Target is not a player");
         PlayerData targetData = PlayerData.get(target.getUniqueId());
-        targetData.giveStellium(amount.evaluate(meta), reason);
+        if (operation == Operation.GIVE)
+            targetData.giveStellium(amount.evaluate(meta), reason);
+        else if (operation == Operation.SET)
+            targetData.setStellium(amount.evaluate(meta));
+        else if (operation == Operation.TAKE)
+            targetData.giveStellium(-amount.evaluate(meta), reason);
     }
 }

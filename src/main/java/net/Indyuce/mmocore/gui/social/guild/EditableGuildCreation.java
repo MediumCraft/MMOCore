@@ -1,12 +1,12 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.manager.data.GuildDataManager.GuildConfiguration.NamingRules;
 import org.bukkit.Sound;
@@ -39,14 +39,14 @@ public class EditableGuildCreation extends EditableInventory {
 				return;
 
 			if (item.getFunction().equals("create")) {
-				MMOCore.plugin.configManager.newPlayerInput(player, InputType.GUILD_CREATION_TAG, (input) -> {
+				MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_CREATION_TAG, (input) -> {
 					if(MMOCore.plugin.dataProvider.getGuildManager().getConfig().shouldUppercaseTags())
 						input = input.toUpperCase();
 						
 					if(check(player, input, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getTagRules())) {
 						String tag = input;
 						
-						MMOCore.plugin.configManager.newPlayerInput(player, InputType.GUILD_CREATION_NAME, (name) -> {								
+						MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_CREATION_NAME, (name) -> {
 							if(check(player, name, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getNameRules())) {
 								MMOCore.plugin.dataProvider.getGuildManager().newRegisteredGuild(playerData.getUniqueId(), name, tag);
 								MMOCore.plugin.dataProvider.getGuildManager().getGuild(tag.toLowerCase()).addMember(playerData.getUniqueId());

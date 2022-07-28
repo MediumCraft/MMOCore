@@ -1,16 +1,14 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -25,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
 import java.util.UUID;
 
 public class EditableGuildAdmin extends EditableInventory {
@@ -43,7 +42,7 @@ public class EditableGuildAdmin extends EditableInventory {
 		return new GuildViewInventory(data, this);
 	}
 
-	public static class MemberDisplayItem extends InventoryItem {
+	public static class MemberDisplayItem extends InventoryItem<GuildViewInventory> {
 		public MemberDisplayItem(MemberItem memberItem, ConfigurationSection config) {
 			super(memberItem, config);
 		}
@@ -54,8 +53,8 @@ public class EditableGuildAdmin extends EditableInventory {
 		}
 
 		@Override
-		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
-			PlayerData member = PlayerData.get(inv.getPlayerData().getGuild().getMembers().get(n));
+		public Placeholders getPlaceholders(GuildViewInventory inv, int n) {
+			PlayerData member = PlayerData.get(inv.members.get(n));
 
 			Placeholders holders = new Placeholders();
 
@@ -68,8 +67,8 @@ public class EditableGuildAdmin extends EditableInventory {
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			UUID uuid = inv.getPlayerData().getGuild().getMembers().get(n);
+		public ItemStack display(GuildViewInventory inv, int n) {
+			UUID uuid = inv.members.get(n);
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
 			ItemStack disp = super.display(inv, n);
@@ -87,7 +86,7 @@ public class EditableGuildAdmin extends EditableInventory {
 		}
 	}
 
-	public static class MemberItem extends SimplePlaceholderItem {
+	public static class MemberItem extends SimplePlaceholderItem<GuildViewInventory> {
 		private final InventoryItem empty;
 		private final MemberDisplayItem member;
 
@@ -102,8 +101,8 @@ public class EditableGuildAdmin extends EditableInventory {
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			return inv.getPlayerData().getGuild().getMembers().count() > n ? member.display(inv, n) : empty.display(inv, n);
+		public ItemStack display(GuildViewInventory inv, int n) {
+			return inv.getPlayerData().getGuild().countMembers() > n ? member.display(inv, n) : empty.display(inv, n);
 		}
 
 		@Override
@@ -115,6 +114,8 @@ public class EditableGuildAdmin extends EditableInventory {
 	public class GuildViewInventory extends GeneratedInventory {
 		private final int max;
 
+		private List<UUID> members;
+
 		public GuildViewInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
 
@@ -122,8 +123,14 @@ public class EditableGuildAdmin extends EditableInventory {
 		}
 
 		@Override
+		public void open() {
+			members = playerData.getGuild().listMembers();
+			super.open();
+		}
+
+		@Override
 		public String calculateName() {
-			return getName().replace("{max}", "" + max).replace("{players}", "" + getPlayerData().getGuild().getMembers().count());
+			return getName().replace("{max}", "" + max).replace("{players}", "" + getPlayerData().getGuild().countMembers());
 		}
 
 		@Override
@@ -138,13 +145,13 @@ public class EditableGuildAdmin extends EditableInventory {
 
 			if (item.getFunction().equals("invite")) {
 
-				if (playerData.getGuild().getMembers().count() >= max) {
+				if (playerData.getGuild().countMembers() >= max) {
 					MMOCore.plugin.configManager.getSimpleMessage("guild-is-full").send(player);
 					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					return;
 				}
 
-				MMOCore.plugin.configManager.newPlayerInput(player, InputType.GUILD_INVITE, (input) -> {
+				MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_INVITE, (input) -> {
 					Player target = Bukkit.getPlayer(input);
 					if (target == null) {
 						MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);
@@ -162,7 +169,7 @@ public class EditableGuildAdmin extends EditableInventory {
 					}
 
 					PlayerData targetData = PlayerData.get(target);
-					if (playerData.getGuild().getMembers().has(target.getUniqueId())) {
+					if (playerData.getGuild().hasMember(target.getUniqueId())) {
 						MMOCore.plugin.configManager.getSimpleMessage("already-in-guild", "player", target.getName()).send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();

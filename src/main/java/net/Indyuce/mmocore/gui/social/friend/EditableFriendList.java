@@ -130,8 +130,8 @@ public class EditableFriendList extends EditableInventory {
             if (inv.getPlayerData().getFriends().size() <= n)
                 return super.display(inv, n);
 
-            ItemStack disp = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n)).isOnline() ? online.display(inv, n) : offline.display(inv, n);
-            Player friend = Bukkit.getPlayer(inv.getPlayerData().getFriends().get(n));
+            final OfflinePlayer friend = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n));
+            ItemStack disp = (friend.isOnline() ? online : offline).display(inv, n);
             ItemMeta meta = disp.getItemMeta();
             meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, friend.getUniqueId().toString());
 

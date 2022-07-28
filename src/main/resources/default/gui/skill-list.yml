@@ -87,9 +87,11 @@ items:
   upgrade:
     slots: [ 15 ]
     function: upgrade
+    shift-cost: 10
     item: GREEN_STAINED_GLASS_PANE
     name: '&a&lUPGRADE {skill_caps}'
     lore:
       - '&7Costs 1 skill point.'
+      - '&7Shift-Click to spend {shift_points} points'
       - ''
       - '&eCurrent Skill Points: {skill_points}'

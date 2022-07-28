@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.party.provided;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.listener.PartyListener;
 import net.Indyuce.mmocore.party.PartyModule;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;

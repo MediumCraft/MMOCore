@@ -3,10 +3,9 @@ package net.Indyuce.mmocore.loot.chest.condition;
 import java.util.List;
 import java.util.stream.Stream;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-
-import net.Indyuce.mmocore.MMOCore;
 
 public class ConditionInstance {
 	private final Entity entity;

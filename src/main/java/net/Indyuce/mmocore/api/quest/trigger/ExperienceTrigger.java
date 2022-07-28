@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.SimpleExperienceObject;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
-import net.Indyuce.mmocore.experience.dispenser.ProfessionExperienceDispenser;
-import net.Indyuce.mmocore.experience.dispenser.SimpleExperienceDispenser;
 import org.apache.commons.lang.Validate;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import io.lumine.mythic.lib.api.MMOLineConfig;
@@ -28,9 +27,9 @@ public class ExperienceTrigger extends Trigger {
 		if (config.contains("profession")) {
 			String id = config.getString("profession").toLowerCase().replace("_", "-");
 			Validate.isTrue(MMOCore.plugin.professionManager.has(id), "Could not find profession");
-			dispenser = new ProfessionExperienceDispenser(MMOCore.plugin.professionManager.get(id));
+			dispenser = MMOCore.plugin.professionManager.get(id);
 		} else
-			dispenser = new SimpleExperienceDispenser();
+			dispenser = new SimpleExperienceObject();
 		amount = new RandomAmount(config.getString("amount"));
 		source = config.contains("source") ? EXPSource.valueOf(config.getString("source").toUpperCase()) : EXPSource.QUEST;
 	}

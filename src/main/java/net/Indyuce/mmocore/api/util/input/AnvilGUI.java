@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.util.input;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Consumer;
 
-import net.Indyuce.mmocore.MMOCore;
 import io.lumine.mythic.lib.MythicLib;
 
 public class AnvilGUI extends PlayerInput {

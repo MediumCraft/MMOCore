@@ -52,7 +52,7 @@ public class ClassTriggers implements Listener {
     public void onAttack(PlayerAttackEvent event) {
         for (Map.Entry<DamageType, ClassTriggerType> entry : damageTriggers.entrySet())
             if (event.getDamage().hasType(entry.getKey()))
-                applyTriggers(event.getPlayer(), entry.getValue()); //, () -> new TriggerMetadata(event.getAttack(), event.getEntity())
+                applyTriggers(event.getPlayer(), entry.getValue(), () -> new TriggerMetadata(event.getAttack(), event.getEntity()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -88,6 +88,16 @@ public class ClassTriggers implements Listener {
         return applyTriggers(PlayerData.get(player), type, triggerMetaProvider);
     }
 
+    /**
+     * Apply class shortcut skills from a specific class trigger type.
+     *
+     * @param player              Player triggering
+     * @param type                Trigger type
+     * @param triggerMetaProvider Small optimization: if no shortcut skill is found
+     *                            with the corresponding trigger type, trigger meta
+     *                            is not calculated which saves computations
+     * @return Skill result or null if no shortcut skill was cast
+     */
     @Nullable
     private SkillResult applyTriggers(PlayerData player, ClassTriggerType type, Provider<TriggerMetadata> triggerMetaProvider) {
         ClassTrigger trigger = player.getProfess().getClassTrigger(type);

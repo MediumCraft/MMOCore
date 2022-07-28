@@ -5,8 +5,8 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
@@ -105,8 +105,7 @@ public class SkillBar implements Listener {
 								"" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0)))
 						.replace("{skill}", data.getBoundSkill(j).getSkill().getName()));
 			}
-
-			return str.toString();
+			return MMOCore.plugin.placeholderParser.parse(data.getPlayer(),str.toString());
 		}
 
 		/**

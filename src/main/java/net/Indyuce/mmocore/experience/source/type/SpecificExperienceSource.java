@@ -1,11 +1,10 @@
 package net.Indyuce.mmocore.experience.source.type;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 

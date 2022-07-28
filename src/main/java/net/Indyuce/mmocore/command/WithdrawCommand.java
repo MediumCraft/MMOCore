@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +10,6 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.eco.Withdraw;
 
 public class WithdrawCommand extends BukkitCommand {

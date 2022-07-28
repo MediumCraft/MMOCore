@@ -1,18 +1,15 @@
 package net.Indyuce.mmocore.experience.source;
 
-import com.mojang.datafixers.types.Func;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.damage.DamageType;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.xml.sax.SAXParseException;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -20,9 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MoveExperienceSource extends SpecificExperienceSource {
-    MovingType type;
-
-
+    private final MovingType type;
 
     public MoveExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
@@ -42,18 +37,19 @@ public class MoveExperienceSource extends SpecificExperienceSource {
         return new ExperienceSourceManager<MoveExperienceSource>() {
             @EventHandler
             public void onMove(PlayerMoveEvent e) {
-                double deltax=e.getTo().getBlockX()-e.getFrom().getBlockX();
-                double deltay=e.getTo().getBlockY()-e.getFrom().getBlockY();
-                double deltaz=e.getTo().getBlockZ()-e.getFrom().getBlockZ();
-                if(deltax!=0&&deltay!=0&&deltaz!=0) {
-                    double delta=Math.sqrt(deltax*deltax+deltay*deltay+deltaz*deltaz);
-                    if(e.getPlayer().hasMetadata("NPC"))
+                double deltax = e.getTo().getBlockX() - e.getFrom().getBlockX();
+                double deltay = e.getTo().getBlockY() - e.getFrom().getBlockY();
+                double deltaz = e.getTo().getBlockZ() - e.getFrom().getBlockZ();
+                if (deltax != 0 || deltay != 0 || deltaz != 0) {
+
+                    double delta = Math.sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
+                    if (e.getPlayer().hasMetadata("NPC"))
                         return;
-                    Player player=e.getPlayer();
-                    PlayerData playerData =PlayerData.get(player);
-                    for(MoveExperienceSource source:getSources()) {
-                        if(source.matchesParameter(playerData,null)) {
-                            giveExperience(playerData,delta,null);
+                    Player player = e.getPlayer();
+                    PlayerData playerData = PlayerData.get(player);
+                    for (MoveExperienceSource source : getSources()) {
+                        if (source.matchesParameter(playerData, null)) {
+                            giveExperience(playerData, delta, null);
                         }
                     }
                 }
@@ -63,13 +59,13 @@ public class MoveExperienceSource extends SpecificExperienceSource {
 
     @Override
     public boolean matchesParameter(PlayerData player, Object obj) {
-        return type==null||type.matches(player.getPlayer());
+        return type == null || type.matches(player.getPlayer());
     }
 
     public enum MovingType {
         SNEAK(Player::isSneaking),
-        FLY((p)->p.isFlying()||p.isGliding()),
-        SWIM((p)->p.getLocation().getBlock().isLiquid()),
+        FLY((p) -> p.isFlying() || p.isGliding()),
+        SWIM((p) -> p.getLocation().getBlock().isLiquid()),
         SPRINT(Player::isSprinting),
         WALK((p) -> !p.isSneaking() && !p.isSprinting() && !p.isFlying() && !p.getLocation().getBlock().isLiquid());
 
@@ -80,7 +76,7 @@ public class MoveExperienceSource extends SpecificExperienceSource {
         }
 
         public boolean matches(Player player) {
-            return !player.isInsideVehicle()&&matching.apply(player);
+            return !player.isInsideVehicle() && matching.apply(player);
         }
 
     }

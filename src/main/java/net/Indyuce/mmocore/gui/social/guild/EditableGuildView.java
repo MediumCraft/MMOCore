@@ -1,15 +1,15 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.OfflinePlayerData;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.api.player.OfflinePlayerData;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
 import java.util.UUID;
 
 public class EditableGuildView extends EditableInventory {
@@ -35,7 +36,7 @@ public class EditableGuildView extends EditableInventory {
 		return function.equals("member") ? new MemberItem(config) : (function.equals("next") || function.equals("previous") || function.equals("disband") || function.equals("invite")) ? new ConditionalItem(function, config) : new SimplePlaceholderItem(config);
 	}
 
-	public static class MemberDisplayItem extends InventoryItem {
+	public static class MemberDisplayItem extends InventoryItem<GuildViewInventory> {
 		public MemberDisplayItem(MemberItem memberItem, ConfigurationSection config) {
 			super(memberItem, config);
 		}
@@ -46,8 +47,8 @@ public class EditableGuildView extends EditableInventory {
 		}
 
 		@Override
-		public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
-			UUID uuid = inv.getPlayerData().getGuild().getMembers().get(n);
+		public Placeholders getPlaceholders(GuildViewInventory inv, int n) {
+			UUID uuid = inv.members.get(n);
 			Placeholders holders = new Placeholders();
 			/*
 			 * Will never be null since a players name will always be recorded
@@ -64,8 +65,8 @@ public class EditableGuildView extends EditableInventory {
 		}
 
 		@Override
-		public ItemStack display(GeneratedInventory inv, int n) {
-			UUID uuid = inv.getPlayerData().getGuild().getMembers().get(n);
+		public ItemStack display(GuildViewInventory inv, int n) {
+			UUID uuid = inv.members.get(n);
 
 			ItemStack disp = super.display(inv, n);
 			ItemMeta meta = disp.getItemMeta();
@@ -99,7 +100,7 @@ public class EditableGuildView extends EditableInventory {
 		@Override
 		public ItemStack display(GuildViewInventory inv, int n) {
 			int index = n * inv.getPage();
-			return inv.getPlayerData().getGuild().getMembers().count() > index ? member.display(inv, index) : empty.display(inv, index);
+			return inv.getPlayerData().getGuild().countMembers() > index ? member.display(inv, index) : empty.display(inv, index);
 		}
 
 		@Override
@@ -120,7 +121,7 @@ public class EditableGuildView extends EditableInventory {
 		public ItemStack display(GuildViewInventory inv, int n) {
 
 			if (function.equals("next"))
-				if (inv.getPage() == (inv.getPlayerData().getGuild().getMembers().count() + 20)
+				if (inv.getPage() == (inv.getPlayerData().getGuild().countMembers() + 20)
 						/ inv.getByFunction("member").getSlots().size())
 					return null;
 			if (function.equals("previous") && inv.getPage() == 1)
@@ -136,19 +137,26 @@ public class EditableGuildView extends EditableInventory {
 	}
 
 	public class GuildViewInventory extends GeneratedInventory {
-		private int page = 1;
 		private final int maxpages;
+
+		private int page = 1;
+		private List<UUID> members;
 
 		public GuildViewInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
 
-			maxpages = (playerData.getGuild().getMembers().count() + 20)
-					/ editable.getByFunction("member").getSlots().size();
+			maxpages = (playerData.getGuild().countMembers() + 20) / editable.getByFunction("member").getSlots().size();
+		}
+
+		@Override
+		public void open() {
+			members = playerData.getGuild().listMembers();
+			super.open();
 		}
 
 		@Override
 		public String calculateName() {
-			return getName().replace("{online_players}", "" + getPlayerData().getGuild().getMembers().countOnline()).replace("{page}", "" + page).replace("{maxpages}", "" + maxpages).replace("{players}", "" + getPlayerData().getGuild().getMembers().count()).replace("{tag}", getPlayerData().getGuild().getTag()).replace("{name}", getPlayerData().getGuild().getName());
+			return getName().replace("{online_players}", "" + getPlayerData().getGuild().countOnlineMembers()).replace("{page}", "" + page).replace("{maxpages}", "" + maxpages).replace("{players}", String.valueOf(getPlayerData().getGuild().countMembers())).replace("{tag}", getPlayerData().getGuild().getTag()).replace("{name}", getPlayerData().getGuild().getName());
 		}
 
 		@Override
@@ -192,7 +200,7 @@ public class EditableGuildView extends EditableInventory {
 				 * Sound.ENTITY_VILLAGER_NO, 1, 1); return; }
 				 */
 
-				MMOCore.plugin.configManager.newPlayerInput(player, InputType.GUILD_INVITE, (input) -> {
+				MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_INVITE, (input) -> {
 					Player target = Bukkit.getPlayer(input);
 					if (target == null) {
 						MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);
@@ -209,7 +217,7 @@ public class EditableGuildView extends EditableInventory {
 					}
 
 					PlayerData targetData = PlayerData.get(target);
-					if (playerData.getGuild().getMembers().has(targetData.getUniqueId())) {
+					if (playerData.getGuild().hasMember(targetData.getUniqueId())) {
 						MMOCore.plugin.configManager.getSimpleMessage("already-in-guild", "player", target.getName()).send(player);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						open();

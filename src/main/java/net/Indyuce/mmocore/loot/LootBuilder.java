@@ -3,9 +3,8 @@ package net.Indyuce.mmocore.loot;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.inventory.ItemStack;
-
 import net.Indyuce.mmocore.api.player.PlayerData;
+import org.bukkit.inventory.ItemStack;
 
 public class LootBuilder {
 	private final PlayerData player;

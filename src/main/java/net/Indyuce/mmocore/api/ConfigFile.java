@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.guild.provided.Guild;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.guild.provided.Guild;
 
 public class ConfigFile {
 	private final File file;

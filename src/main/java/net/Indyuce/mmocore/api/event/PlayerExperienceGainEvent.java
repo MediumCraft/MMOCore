@@ -2,10 +2,10 @@ package net.Indyuce.mmocore.api.event;
 
 import javax.annotation.Nullable;
 
+import net.Indyuce.mmocore.experience.EXPSource;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;
 

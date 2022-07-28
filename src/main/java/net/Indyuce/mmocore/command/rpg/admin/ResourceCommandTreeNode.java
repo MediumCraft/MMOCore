@@ -2,9 +2,9 @@ package net.Indyuce.mmocore.command.rpg.admin;
 
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
+import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -12,6 +12,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class AttributeModifier extends PlayerModifier {
     private final String attribute;
@@ -74,9 +75,10 @@ public class AttributeModifier extends PlayerModifier {
     public AttributeModifier(ConfigObject object) {
         super(object.getString("key"), EquipmentSlot.OTHER, ModifierSource.OTHER);
 
+        String str = Objects.requireNonNull(object.getString("value"));
+        type = str.toCharArray()[str.length() - 1] == '%' ? ModifierType.RELATIVE : ModifierType.FLAT;
+        value = Double.parseDouble(type == ModifierType.RELATIVE ? str.substring(0, str.length() - 1) : str);
         this.attribute = object.getString("attribute");
-        this.value = object.getDouble("value");
-        type = object.getBoolean("multiplicative", false) ? ModifierType.RELATIVE : ModifierType.FLAT;
     }
 
     public String getAttribute() {

@@ -1,15 +1,16 @@
-package net.Indyuce.mmocore.loot.droptable.dropitem.fishing;
+package net.Indyuce.mmocore.loot.fishing;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.Indyuce.mmocore.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.Weighted;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class FishingDropItem {
+public class FishingDropItem implements Weighted {
 	private final RandomAmount experience, tugs;
 	private final DropItem dropItem;
 
@@ -23,9 +24,9 @@ public class FishingDropItem {
 		Validate.isTrue(dropItem.getWeight() > 0, "A fishing drop table item must have a strictly positive weight");
 	}
 
-	@Deprecated
-	public int getWeight() {
-		return (int) Math.floor(getItem().getWeight());
+	@Override
+	public double getWeight() {
+		return dropItem.getWeight();
 	}
 
 	public DropItem getItem() {

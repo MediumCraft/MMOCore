@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.damage.DamageType;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,15 +21,15 @@ public class DamageTakenExperienceSource extends SpecificExperienceSource<Entity
     private final EntityDamageEvent.DamageCause cause;
 
     /**
-     * Gives experience when a player takes damage from a certain cause. If no cause is given it will give xp for all
+     * Gives experience when a player takes damage of a certain type. If no cause is given it will give xp for all
      * the damage causes. The random value you give correspond to the xp you get per damage taken.
      */
     public DamageTakenExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
-        if (!config.contains("cause"))
+        if (!config.contains("type"))
             cause = null;
         else {
-            String str = config.getString("cause").toUpperCase().replace("-", "_");
+            String str = config.getString("type").toUpperCase().replace("-", "_");
             //Checks if the damage type correspond to a value of the damage type enum
             Validate.isTrue(Arrays.stream(EntityDamageEvent.DamageCause.values()).map(Objects::toString).collect(Collectors.toList()).contains(str),
                     "Cause not allowed. Go check at all the Damage Causes in EntityDamageEvent.DamageCause enum.");

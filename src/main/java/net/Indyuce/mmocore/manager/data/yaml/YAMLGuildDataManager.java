@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.GuildDataManager;
@@ -22,7 +22,7 @@ public class YAMLGuildDataManager extends GuildDataManager {
 		config.getConfig().set("owner", guild.getOwner().toString());
 
 		List<String> memberList = new ArrayList<>();
-		guild.getMembers().forEach(uuid -> memberList.add(uuid.toString()));
+		guild.forEachMember(uuid -> memberList.add(uuid.toString()));
 		config.getConfig().set("members", memberList);
 
 		config.save();

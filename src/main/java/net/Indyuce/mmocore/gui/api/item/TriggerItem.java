@@ -4,16 +4,17 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.List;
+
 public class TriggerItem extends InventoryItem {
-    private final Trigger trigger;
+    private final List<Trigger> triggers;
 
     public TriggerItem(ConfigurationSection config, String format) {
         super(config);
 
-        trigger = MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(format));
+        triggers = MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(format));
     }
 
     @Override
@@ -21,7 +22,7 @@ public class TriggerItem extends InventoryItem {
         return new Placeholders();
     }
 
-    public Trigger getTrigger() {
-        return trigger;
+    public List<Trigger> getTriggers() {
+        return triggers;
     }
 }

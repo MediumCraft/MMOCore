@@ -8,26 +8,27 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
-import net.Indyuce.mmocore.api.player.stats.StatType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
+import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
-import net.Indyuce.mmocore.experience.dispenser.ClassExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
+import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
 import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
@@ -51,7 +52,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final ExpCurve expCurve;
     private final ExperienceTable expTable;
 
-    private final Map<StatType, LinearValue> stats = new HashMap<>();
+    private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
 
@@ -83,7 +84,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 profileField.set(meta, gp);
                 icon.setItemMeta(meta);
             } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-                    | SecurityException exception) {
+                     | SecurityException exception) {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
 
@@ -124,7 +125,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         if (config.contains("attributes"))
             for (String key : config.getConfigurationSection("attributes").getKeys(false))
                 try {
-                    stats.put(StatType.valueOf(key.toUpperCase().replace("-", "_")),
+                    stats.put(UtilityMethods.enumName(key),
                             new LinearValue(config.getConfigurationSection("attributes." + key)));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load stat info '" + key + "' from class '"
@@ -155,12 +156,12 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                             "Could not load option '" + key + "' from class '" + key + "': " + exception.getMessage());
                 }
 
-        if (config.contains("main-exp-sources")) {
-            ExperienceDispenser dispenser = new ClassExperienceDispenser(this);
-            for (String key : config.getStringList("main-exp-sources"))
+        if (config.contains("main-exp-sources.yml")) {
+            for (String key : config.getStringList("main-exp-sources.yml"))
                 try {
-                    ExperienceSource<?> source = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), dispenser);
-                    MMOCore.plugin.experience.registerSource(source);
+                    List<ExperienceSource<?>> list = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this);
+                    for (ExperienceSource source : list)
+                        MMOCore.plugin.experience.registerSource(source);
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp source '" + key + "' from class '"
                             + id + "': " + exception.getMessage());
@@ -187,11 +188,12 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     }
 
     /**
-     * Used to generate the default Human class if no one is
-     * specified after loading all the player classes. This is
-     * a very basic class that will make sure MMOCore can still
-     * continue to run without having to stop the server because
-     * some option was not provided
+     * Used to generate the default Human class if no one is specified
+     * after loading all the player classes.
+     * <p>
+     * This is a very basic class that will make sure MMOCore can still
+     * continue to run without having to stop the server because some
+     * option was not provided.
      */
     public PlayerClass(String id, String name, Material material) {
         super(null);
@@ -205,7 +207,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         expTable = null;
         castParticle = new CastingParticle(Particle.SPELL_INSTANT);
         actionBarFormat = "";
-
         this.icon = new ItemStack(material);
         setOption(ClassOption.DISPLAY, false);
         setOption(ClassOption.DEFAULT, false);
@@ -296,7 +297,19 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     }
 
     public boolean hasOption(ClassOption option) {
-        return options.containsKey(option) ? options.get(option) : option.getDefault();
+        return options.getOrDefault(option, option.getDefault());
+    }
+
+    @Override
+    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
+        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null
+                : hologramLocation;
+        playerData.giveExperience(experience, source, hologramLocation, true);
+    }
+
+    @Override
+    public boolean shouldHandle(PlayerData playerData) {
+        return equals(playerData.getProfess());
     }
 
     @Nullable
@@ -320,16 +333,11 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return eventTriggers.get(name);
     }
 
-    @Deprecated
-    public void setStat(StatType type, double base, double perLevel) {
-        setStat(type, new LinearValue(base, perLevel));
+    public void setDefaultStatFormula(String type, LinearValue value) {
+        stats.put(UtilityMethods.enumName(type), value);
     }
 
-    public void setStat(StatType type, LinearValue value) {
-        stats.put(type, value);
-    }
-
-    public double calculateStat(StatType stat, int level) {
+    public double calculateStat(String stat, int level) {
         return getStatInfo(stat).calculate(level);
     }
 
@@ -363,19 +371,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return getSkill(skill.getHandler().getId());
     }
 
-    /**
-     * Reduces map checkups when skills are being checked on events that are
-     * commonly called like EntityDamageEvent or regen events.
-     * <p>
-     * Examples:
-     * - {@link net.Indyuce.mmocore.skill.list.Neptune_Gift}
-     * - {@link net.Indyuce.mmocore.skill.list.Ambers}
-     */
-    public Optional<ClassSkill> findSkill(RegisteredSkill skill) {
-        ClassSkill found = skills.get(skill.getHandler().getId());
-        return found == null ? Optional.empty() : Optional.of(found);
-    }
-
     @Nullable
     public ClassSkill getSkill(String id) {
         return skills.get(id);
@@ -385,8 +380,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skills.values();
     }
 
-    private LinearValue getStatInfo(StatType type) {
-        return stats.containsKey(type) ? stats.get(type) : type.getDefault();
+    @NotNull
+    private LinearValue getStatInfo(String stat) {
+        LinearValue found = stats.get(stat);
+        return found == null ? StatInfo.valueOf(stat).getDefaultFormula() : found;
     }
 
     @Override
@@ -394,6 +391,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return obj instanceof PlayerClass && ((PlayerClass) obj).id.equals(id);
     }
 
+    @Nullable
     public String getActionBar() {
         return actionBarFormat;
     }

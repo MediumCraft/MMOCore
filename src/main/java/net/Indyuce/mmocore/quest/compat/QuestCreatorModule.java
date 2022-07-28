@@ -14,7 +14,7 @@ import java.util.List;
 public class QuestCreatorModule implements QuestModule<QuestCreatorModule.QuestCreatorQuest>{
 
     @Override
-    public QuestCreatorQuest getQuest(String id) {
+    public QuestCreatorQuest getQuestOrThrow(String id) {
         return new QuestCreatorQuest(id);
     }
 
@@ -34,14 +34,15 @@ public class QuestCreatorModule implements QuestModule<QuestCreatorModule.QuestC
 
 
     /**
-     *QC ElementModel corresponds to our quest and their quests correspond to our Quest progress class
+     * QC ElementModel corresponds to our quest and their
+     * quests correspond to our Quest progress class
      */
 
     public class QuestCreatorQuest implements AbstractQuest {
         ElementModel questModel;
 
         public QuestCreatorQuest(String modelId) {
-            questModel=ConfigQC.models.getElement(modelId).orNull();
+            questModel = ConfigQC.models.getElement(modelId).orNull();
         }
 
         @Override

@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.gui.social.friend;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;

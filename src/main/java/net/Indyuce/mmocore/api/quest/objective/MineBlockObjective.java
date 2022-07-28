@@ -1,5 +1,8 @@
 package net.Indyuce.mmocore.api.quest.objective;
 
+import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
+import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
+import net.Indyuce.mmocore.api.quest.QuestProgress;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
@@ -7,9 +10,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
-import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
-import net.Indyuce.mmocore.api.quest.QuestProgress;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class MineBlockObjective extends Objective {

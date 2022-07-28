@@ -2,12 +2,12 @@ package net.Indyuce.mmocore.listener;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.waypoint.Waypoint;
+import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.waypoint.Waypoint;
-import net.Indyuce.mmocore.waypoint.WaypointOption;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,7 +52,19 @@ public class WaypointsListener implements Listener {
             return;
 
         NBTItem nbtItem = NBTItem.get(event.getItem());
-        if (Objects.equals(nbtItem.getString("MMOCoreItemId"), "WAYPOINT_BOOK"))
-            InventoryManager.WAYPOINTS.newInventory(PlayerData.get(event.getPlayer())).open();
+        if (Objects.equals(nbtItem.getString("MMOCoreItemId"), "WAYPOINT_BOOK")) {
+            String waypointId = nbtItem.getString("WaypointBookId");
+            Waypoint waypoint = MMOCore.plugin.waypointManager.get(waypointId);
+            if (waypoint == null)
+                return;
+
+            PlayerData playerData = PlayerData.get(event.getPlayer());
+            if (playerData.hasWaypoint(waypoint))
+                return;
+
+            playerData.unlockWaypoint(waypoint);
+            event.getItem().setAmount(event.getItem().getAmount() - 1); // Consume item
+            MMOCore.plugin.configManager.getSimpleMessage("new-waypoint-book", "waypoint", waypoint.getName()).send(event.getPlayer());
+        }
     }
 }

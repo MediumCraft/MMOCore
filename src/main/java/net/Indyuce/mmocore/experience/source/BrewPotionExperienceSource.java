@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.player.PlayerData;

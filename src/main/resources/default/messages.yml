@@ -67,6 +67,7 @@ leave-combat: '%&aYou left combat.'
 
 # Waypoints
 new-waypoint: '%&eYou unlocked the &6{waypoint} &ewaypoint!'
+new-waypoint-book: '%&eYou unlocked the &6{waypoint} &ewaypoint!'
 not-enough-stellium: '&cYou don''t have enough stellium: you need {more} more.'
 waypoint-cooldown: '&cPlease wait {cooldown} before using a waypoint again.'
 not-unlocked-waypoint: '&cYou have not unlocked that waypoint yet.'
@@ -109,7 +110,7 @@ already-in-party: '&c{player} is already in your party.'
 party-invite:
 - '{"text":""}'
 - '{"text":"&6{player} &ehas invited you to their party!"}'
-- '[{"text":"        ","hoverEvent":{}},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/party accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             ","hoverEvent":{}},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/party deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
+- '[{"text":"        "},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/party accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             "},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/party deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
 - '{"text":""}'
 party-is-full: '&cSorry, your party is full.'
 party-joined: '&eYou successfully joined &6{owner}&e''s party.'
@@ -117,6 +118,7 @@ party-joined-other: '&6{player}&e joined your party!'
 transfer-party-ownership: '&eYou were transfered the party ownership.'
 kick-from-party: '&eYou successfully kicked &6{player}&e.'
 party-invite-cooldown: '&cPlease wait {cooldown} before inviting {player}.'
+high-level-difference: '&cYou cannot invite {player} as the level difference is too high ({diff}).'
 
 # Guilds
 guild-chat: '&a[{tag}] {player}: {message}'
@@ -125,7 +127,7 @@ already-in-guild: '&c{player} is already in your guild.'
 guild-invite:
 - '{"text":""}'
 - '{"text":"&6{player} &ehas invited you to their guild!"}'
-- '[{"text":"        ","hoverEvent":{}},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/guild accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             ","hoverEvent":{}},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/guild deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
+- '[{"text":"        "},{"text":"&8[&a&lACCEPT&8]","clickEvent":{"action":"run_command","value":"/guild accept {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to accept!"}},{"text":"&r             "},{"text":"&8[&c&lDENY&8]","clickEvent":{"action":"run_command","value":"/guild deny {uuid}"},"hoverEvent":{"action":"show_text","value":"&eClick to deny."}}]'
 - '{"text":""}'
 #guild-is-full: '&cSorry, your guild is full.' -Unused right now
 guild-joined: '&eYou successfully joined &6{owner}&e''s guild.'
@@ -150,11 +152,13 @@ start-quest: '&eYou successfully started &6{quest}&e.'
 
 cant-choose-new-class:
 - '&cYou need one class point to perform this action.'
-
+no-permission-for-class:
+- "&cYou don't have the permission to choose this class."
 # Attributes
 no-attribute-points-spent: '&cYou have not spent any attribute points.'
-not-attribute-reallocation-point: '&cYou do not have 1 attribute reallocation point.'
-not-attribute-point: '&cYou do not have 1 attribute point.'
+not-attribute-reallocation-point: '&cYou do not have 1 reallocation point.'
+not-attribute-point: '&cYou don''t have 1 attribute point.'
+not-attribute-point-shift: '&cYou must have &4{shift_points} &cattribute points.'
 attribute-points-reallocated: '&eYou successfully reset your attributes. You now have &6{points} &eattribute points.'
 attribute-max-points-hit: '&cYou cannot level up this attribute anymore.'
 attribute-level-up: '&eYou successfully leveled up your &6{attribute}&e.' # {level}
@@ -162,6 +166,7 @@ attribute-level-up: '&eYou successfully leveled up your &6{attribute}&e.' # {lev
 # Skills
 no-class-skill: '&cYour class has no skill.'
 not-enough-skill-points: '&cYou need one skill point.'
+not-enough-skill-points-shift: '&cYou need {shift_points} skill points.'
 upgrade-skill: '&eYour &6{skill} &eis now Level &6{level}&e!'
 not-unlocked-skill: '&cYou have not unlocked that skill yet.'
 no-skill-bound: '&cYou don''t have any skill bound to this slot.'

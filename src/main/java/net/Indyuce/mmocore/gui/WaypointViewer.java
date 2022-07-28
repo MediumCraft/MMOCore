@@ -1,18 +1,17 @@
 package net.Indyuce.mmocore.gui;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
-import net.Indyuce.mmocore.waypoint.CostType;
 import net.Indyuce.mmocore.waypoint.Waypoint;
-import net.Indyuce.mmocore.waypoint.WaypointOption;
+import net.Indyuce.mmocore.waypoint.WaypointPath;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,8 +20,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class WaypointViewer extends EditableInventory {
     public WaypointViewer() {
@@ -68,7 +71,6 @@ public class WaypointViewer extends EditableInventory {
         private final SimplePlaceholderItem noWaypoint, locked;
         private final WaypointItemHandler availWaypoint, noStellium, notLinked, notDynamic, currentWayPoint;
 
-
         public WaypointItem(ConfigurationSection config) {
             super(Material.BARRIER, config);
 
@@ -79,7 +81,6 @@ public class WaypointViewer extends EditableInventory {
             Validate.notNull(config.getConfigurationSection("current-waypoint"), "Could not load 'current-waypoint' config");
             Validate.notNull(config.getConfigurationSection("not-enough-stellium"), "Could not load 'not-enough-stellium' config");
             Validate.notNull(config.getConfigurationSection("display"), "Could not load 'display' config");
-
 
             noWaypoint = new SimplePlaceholderItem(config.getConfigurationSection("no-waypoint"));
             locked = new SimplePlaceholderItem(config.getConfigurationSection("locked"));
@@ -107,14 +108,12 @@ public class WaypointViewer extends EditableInventory {
             if (inv.current != null && inv.current.equals(waypoint))
                 return currentWayPoint.display(inv, n);
 
-
             if (!inv.getPlayerData().hasWaypoint(waypoint))
                 return locked.display(inv, n);
 
             // Waypoints are not linked
             if (inv.current != null && !inv.paths.containsKey(waypoint))
                 return notLinked.display(inv, n);
-
 
             // Not dynamic waypoint
             if (inv.current == null && !inv.paths.containsKey(waypoint))
@@ -123,7 +122,6 @@ public class WaypointViewer extends EditableInventory {
             //Normal cost
             if (inv.paths.get(waypoint).getCost() > inv.getPlayerData().getStellium())
                 return noStellium.display(inv, n);
-
 
             return availWaypoint.display(inv, n);
         }
@@ -144,6 +142,16 @@ public class WaypointViewer extends EditableInventory {
             // If a player can teleport to another waypoint given his location
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
             ItemMeta meta = disp.getItemMeta();
+
+            // Add waypoint lore if not empty
+            if (!waypoint.getLore().isEmpty()) {
+                List<String> lore = meta.getLore();
+                Placeholders placeholders = new Placeholders();
+                for (String str : waypoint.getLore())
+                    lore.add(0, ChatColor.GRAY + placeholders.apply(inv.getPlayer(), str));
+                meta.setLore(lore);
+            }
+
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(new NamespacedKey(MMOCore.plugin, "waypointId"), PersistentDataType.STRING, waypoint.getId());
             disp.setItemMeta(meta);
@@ -160,7 +168,7 @@ public class WaypointViewer extends EditableInventory {
                 holders.register("current_cost", inv.paths.get(waypoint).getCost());
                 holders.register("normal_cost", decimal.format(inv.paths.containsKey(waypoint) ? inv.paths.get(waypoint).getCost() : Double.POSITIVE_INFINITY));
                 holders.register("dynamic_cost", decimal.format(waypoint.getDynamicCost()));
-                holders.register("intermediary_waypoints", inv.paths.containsKey(waypoint) ? inv.paths.get(waypoint).displayIntermediaryWayPoints(inv.waypointCostType.equals(CostType.DYNAMIC_USE)) : "none");
+                holders.register("intermediary_waypoints", inv.paths.containsKey(waypoint) ? inv.paths.get(waypoint).displayIntermediaryWayPoints(inv.isDynamicUse()) : "None");
             }
 
             return holders;
@@ -169,9 +177,9 @@ public class WaypointViewer extends EditableInventory {
 
     public class WaypointViewerInventory extends GeneratedInventory {
         private final List<Waypoint> waypoints = new ArrayList<>(MMOCore.plugin.waypointManager.getAll());
+        @Nullable
         private final Waypoint current;
-        private final Map<Waypoint, Waypoint.PathInfo> paths = new HashMap<>();
-        private final CostType waypointCostType;
+        private final Map<Waypoint, WaypointPath> paths = new HashMap<>();
 
         private int page;
 
@@ -179,37 +187,38 @@ public class WaypointViewer extends EditableInventory {
             super(playerData, editable);
 
             this.current = current;
-            if (current != null) {
-                for (Waypoint.PathInfo pathInfo : current.getAllPath())
+            if (current != null)
+                for (WaypointPath pathInfo : current.getAllPath())
                     paths.put(pathInfo.getFinalWaypoint(), pathInfo);
-            }
+
             if (current == null) {
 
                 //Iterate through all the dynamic points and find all the points it is linked to and the path
                 HashMap<Waypoint, Double> dynamicPoints = new HashMap<>();
                 //We first check all the dynamic waypoints
                 for (Waypoint waypoint : waypoints) {
-                    if (waypoint.canHaveDynamicUse(playerData.getPlayer())) {
-                        paths.put(waypoint, new Waypoint.PathInfo(waypoint, waypoint.getDynamicCost()));
+                    if (waypoint.mayBeUsedDynamically(playerData.getPlayer())) {
+                        paths.put(waypoint, new WaypointPath(waypoint, waypoint.getDynamicCost()));
                         dynamicPoints.put(waypoint, waypoint.getDynamicCost());
                     }
                 }
-                for(Waypoint source: dynamicPoints.keySet()){
-                    for (Waypoint.PathInfo target : source.getAllPath()) {
-                        if (!paths.containsKey(target.getFinalWaypoint()) || paths.get(target.getFinalWaypoint()).getCost() > target.getCost()+dynamicPoints.get(source)) {
+                for (Waypoint source : dynamicPoints.keySet()) {
+                    for (WaypointPath target : source.getAllPath()) {
+                        if (!paths.containsKey(target.getFinalWaypoint()) || paths.get(target.getFinalWaypoint()).getCost() > target.getCost() + dynamicPoints.get(source)) {
                             paths.put(target.getFinalWaypoint(), target.addCost(dynamicPoints.get(source)));
                         }
                     }
                 }
-
             }
-
-            this.waypointCostType = current == null ? CostType.DYNAMIC_USE : CostType.NORMAL_USE;
         }
 
         @Override
         public String calculateName() {
             return getName();
+        }
+
+        public boolean isDynamicUse() {
+            return current == null;
         }
 
         @Override
@@ -260,7 +269,6 @@ public class WaypointViewer extends EditableInventory {
                 }
 
                 // Stellium cost
-                CostType costType = current == null ? CostType.DYNAMIC_USE : CostType.NORMAL_USE;
                 double withdraw = paths.get(waypoint).getCost();
                 double left = withdraw - playerData.getStellium();
                 if (left > 0) {

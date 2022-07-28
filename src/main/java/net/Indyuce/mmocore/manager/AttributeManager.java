@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.api.ConfigFile;
 
 public class AttributeManager implements MMOCoreManager {
 	private final Map<String, PlayerAttribute> map = new HashMap<>();

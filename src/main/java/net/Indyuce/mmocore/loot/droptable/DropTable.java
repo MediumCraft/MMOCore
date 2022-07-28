@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import net.Indyuce.mmocore.loot.chest.condition.Condition;
 import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
-import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.loot.LootBuilder;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
@@ -53,7 +53,7 @@ public class DropTable extends PostLoadObject {
 			}
 		for (String key : conditionsList)
 			try {
-				conditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
+				conditions.addAll(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING,
 						"Could not load condition '" + key + "' from table '" + id + "': " + exception.getMessage());

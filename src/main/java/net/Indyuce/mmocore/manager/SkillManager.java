@@ -2,13 +2,13 @@ package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
+import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.list.Ambers;
 import net.Indyuce.mmocore.skill.list.Neptune_Gift;
-import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

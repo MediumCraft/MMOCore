@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -16,7 +17,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 import io.lumine.mythic.lib.api.util.SmartGive;
 

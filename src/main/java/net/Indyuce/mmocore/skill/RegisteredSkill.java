@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.player.Unlockable;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class RegisteredSkill {
+public class RegisteredSkill implements Unlockable {
     private final SkillHandler<?> handler;
     private final String name;
     private final Map<String, LinearValue> defaultModifiers = new HashMap<>();
@@ -43,6 +44,11 @@ public class RegisteredSkill {
         this.icon = icon;
         this.lore = lore;
         this.triggerType = triggerType;
+    }
+
+    @Override
+    public String getUnlockNamespacedKey() {
+        return "registered_skill:" + handler.getId().toLowerCase();
     }
 
     public SkillHandler<?> getHandler() {

@@ -2,14 +2,14 @@ package net.Indyuce.mmocore.command.rpg.admin;
 
 import java.util.function.BiConsumer;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.api.player.PlayerData;

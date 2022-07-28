@@ -7,11 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.Quest;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class QuestManager implements MMOCoreManager {
 	private final Map<String, Quest> quests = new LinkedHashMap<>();

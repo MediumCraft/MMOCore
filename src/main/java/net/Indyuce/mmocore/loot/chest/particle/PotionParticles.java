@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.loot.chest.particle;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import net.Indyuce.mmocore.MMOCore;
 
 public class PotionParticles extends BukkitRunnable {
 	private double r, g, b;

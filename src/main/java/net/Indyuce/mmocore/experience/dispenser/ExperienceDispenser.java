@@ -1,8 +1,9 @@
 package net.Indyuce.mmocore.experience.dispenser;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.ExperienceObject;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,16 +12,17 @@ import org.jetbrains.annotations.Nullable;
  * Used to differenciate between the main class experience and
  * experience given in a specific profession. Also being used to
  * monitor EXP holograms.
+ *
+ * @deprecated Merged with {@link ExperienceObject}
  */
+@Deprecated
 public interface ExperienceDispenser {
 
     /**
      * Called when experience is gained in main class/profession
      *
      * @param playerData       Player gaining the experience
-     * @param experience       Experience gained. Note that it is a double
-     *                         because it gets converted to an integer at
-     *                         the very last moment in MMOCore
+     * @param experience       Experience gained
      * @param hologramLocation Location of displayed hologram. When set to null
      *                         and if exp holograms are enabled it will take the
      *                         player's location instead.

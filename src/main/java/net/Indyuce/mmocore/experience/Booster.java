@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.experience;
 
+import net.Indyuce.mmocore.manager.social.BoosterManager;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,7 +16,7 @@ public class Booster {
 	 * Length is not final because boosters can stacks. This allows to reduce
 	 * the amount of boosters displayed in the main player menu
 	 * 
-	 * See {@link net.Indyuce.mmocore.manager.social.BoosterManager#register(Booster)}
+	 * See {@link BoosterManager#register(Booster)}
 	 */
 	private long length;
 

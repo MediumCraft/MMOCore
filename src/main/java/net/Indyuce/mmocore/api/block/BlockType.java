@@ -2,19 +2,17 @@ package net.Indyuce.mmocore.api.block;
 
 import org.bukkit.block.Block;
 
-import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
-
 public interface BlockType {
 
 	/**
 	 * Called when placing temporary blocks
 	 */
-	void place(RegeneratingBlock placed);
+	void place(BlockInfo.RegeneratingBlock placed);
 
 	/**
 	 * Called when regenerating an older block with block regen
 	 */
-	void regenerate(RegeneratingBlock regenerating);
+	void regenerate(BlockInfo.RegeneratingBlock regenerating);
 
 	/**
 	 * Generates a key used to store the BlockInfo instance in the manager map,

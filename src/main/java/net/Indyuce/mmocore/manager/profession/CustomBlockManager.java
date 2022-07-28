@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.manager.profession;
 import io.papermc.lib.PaperLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.block.BlockInfo;
-import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 import net.Indyuce.mmocore.api.block.BlockType;
 import net.Indyuce.mmocore.api.block.SkullBlockType;
 import net.Indyuce.mmocore.api.block.VanillaBlockType;
@@ -33,7 +32,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 	 * Blocks that are regenerating and that must be refreshed whenever the
 	 * server reloads or shuts down not to hurt the world map
 	 */
-	private final Set<RegeneratingBlock> active = new HashSet<>();
+	private final Set<BlockInfo.RegeneratingBlock> active = new HashSet<>();
 
 	/**
 	 * Stores conditions which must be met to apply custom mining
@@ -93,7 +92,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 	 *                      a "block chain", no regen should be scheduled as
 	 *                      there is already one
 	 */
-	public void initialize(RegeneratingBlock info, boolean scheduleRegen) {
+	public void initialize(BlockInfo.RegeneratingBlock info, boolean scheduleRegen) {
 		if (scheduleRegen) {
 			active.add(info);
 			Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> regen(info, false), info.getRegeneratingBlock().getRegenerationInfo().getTime());
@@ -112,7 +111,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 	 *                 the server shuts down, it iterates through active blocks.
 	 *                 This prevents any issue when editing lists being iterated
 	 */
-	private void regen(RegeneratingBlock info, boolean shutdown) {
+	private void regen(BlockInfo.RegeneratingBlock info, boolean shutdown) {
 
 		// Get the chunk and load it async if needed.
 		PaperLib.getChunkAtAsync(info.getLocation()).whenComplete((chunk, ex) -> {
@@ -138,7 +137,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 	 */
 	public boolean isTemporaryBlock(Block block) {
 		Location loc = block.getLocation();
-		for (RegeneratingBlock info : active)
+		for (BlockInfo.RegeneratingBlock info : active)
 			if (info.getLocation().getBlockX() == loc.getBlockX() && info.getLocation().getBlockY() == loc.getBlockY()
 					&& info.getLocation().getBlockZ() == loc.getBlockZ())
 				return true;
@@ -190,7 +189,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 
 		for (String key : MMOCore.plugin.getConfig().getStringList("custom-mine-conditions"))
 			try {
-				customMineConditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
+				customMineConditions.addAll(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load custom mining condition '" + key + "': " + exception.getMessage());
 			}

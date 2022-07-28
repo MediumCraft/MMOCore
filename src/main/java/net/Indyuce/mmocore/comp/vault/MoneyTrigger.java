@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.comp.vault;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 

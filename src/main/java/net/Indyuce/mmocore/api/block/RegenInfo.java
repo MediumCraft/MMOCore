@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.api.block;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
-import net.Indyuce.mmocore.MMOCore;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class RegenInfo {

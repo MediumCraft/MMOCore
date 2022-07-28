@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.util.input;
 
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,8 +8,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.util.Consumer;
-
-import net.Indyuce.mmocore.MMOCore;
 
 public class ChatInput extends PlayerInput {
 	public ChatInput(Player player, InputType type, Consumer<String> output) {

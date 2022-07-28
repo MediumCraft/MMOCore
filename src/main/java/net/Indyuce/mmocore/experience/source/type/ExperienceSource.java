@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.experience.source.type;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
+import net.Indyuce.mmocore.api.player.PlayerData;
 
 public abstract class ExperienceSource<T> {
     private final ExperienceDispenser dispenser;

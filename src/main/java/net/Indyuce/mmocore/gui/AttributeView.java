@@ -5,14 +5,13 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerAttributeUseEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes.AttributeInstance;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
-import net.Indyuce.mmocore.manager.SoundManager;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -46,12 +45,14 @@ public class AttributeView extends EditableInventory {
 
 	public static class AttributeItem extends InventoryItem {
 		private final PlayerAttribute attribute;
+		private final int shiftCost;
 
 		public AttributeItem(String function, ConfigurationSection config) {
 			super(config);
 
 			attribute = MMOCore.plugin.attributeManager
 					.get(function.substring("attribute_".length()).toLowerCase().replace(" ", "-").replace("_", "-"));
+			shiftCost = Math.max(config.getInt("shift-cost"), 1);
 		}
 
 		@Override
@@ -65,17 +66,22 @@ public class AttributeView extends EditableInventory {
 			holders.register("max", attribute.getMax());
 			holders.register("current", total);
 			holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
+			holders.register("shift_points", shiftCost);
 			attribute.getBuffs().forEach(buff -> {
-				holders.register("buff_" + buff.getStat().toLowerCase(), buff.getValue());
-				holders.register("total_" + buff.getStat().toLowerCase(), buff.multiply(total).getValue());
+				StatInfo info = StatInfo.valueOf(buff.getStat());
+				holders.register("buff_" + buff.getStat().toLowerCase(), info.format(buff.getValue()));
+				holders.register("total_" + buff.getStat().toLowerCase(), info.format(buff.multiply(total).getValue()));
 			});
+
 			return holders;
 		}
 	}
 
 	public class AttributeViewerInventory extends GeneratedInventory {
+
 		public AttributeViewerInventory(PlayerData playerData, EditableInventory editable) {
 			super(playerData, editable);
+
 		}
 
 		@Override
@@ -117,16 +123,34 @@ public class AttributeView extends EditableInventory {
 					return;
 				}
 
-				AttributeInstance ins = playerData.getAttributes().getInstance(attribute);
+				PlayerAttributes.AttributeInstance ins = playerData.getAttributes().getInstance(attribute);
 				if (attribute.hasMax() && ins.getBase() >= attribute.getMax()) {
 					MMOCore.plugin.configManager.getSimpleMessage("attribute-max-points-hit").send(player);
 					MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
 					return;
 				}
 
-				ins.addBase(1);
-				playerData.giveAttributePoints(-1);
-				MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", "" + ins.getBase()).send(player);
+				// Amount of points spent
+				final boolean shiftClick = event.isShiftClick();
+				int pointsSpent = shiftClick ? ((AttributeItem) item).shiftCost : 1;
+				if (attribute.hasMax())
+					pointsSpent = Math.min(pointsSpent, attribute.getMax() - ins.getBase());
+
+				if (shiftClick && playerData.getAttributePoints() < pointsSpent) {
+					MMOCore.plugin.configManager.getSimpleMessage("not-attribute-point-shift", "shift_points", String.valueOf(pointsSpent)).send(player);
+					MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+					return;
+				}
+
+				ins.addBase(pointsSpent);
+				playerData.giveAttributePoints(-pointsSpent);
+
+				// Apply exp table as many times as required
+				if (attribute.hasExperienceTable())
+					while (pointsSpent-- > 0)
+						attribute.getExperienceTable().claim(playerData, ins.getBase(), attribute);
+
+				MMOCore.plugin.configManager.getSimpleMessage("attribute-level-up", "attribute", attribute.getName(), "level", String.valueOf(ins.getBase())).send(player);
 				MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_ATTRIBUTE).playTo(getPlayer());
 
 				PlayerAttributeUseEvent playerAttributeUseEvent = new PlayerAttributeUseEvent(playerData, attribute);

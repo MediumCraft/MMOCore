@@ -1,14 +1,15 @@
 package net.Indyuce.mmocore.party.provided;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.gui.api.PluginInventory;
+import net.Indyuce.mmocore.gui.social.party.EditablePartyView;
+import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.Request;
-import net.Indyuce.mmocore.gui.api.PluginInventory;
-import net.Indyuce.mmocore.gui.social.party.EditablePartyView.PartyViewInventory;
-import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.party.AbstractParty;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -25,13 +26,21 @@ public class Party implements AbstractParty {
     /**
      * Owner has to change when previous owner leaves party
      */
+    @NotNull
     private PlayerData owner;
+
+    /**
+     * If the difference between a player level and the party
+     * level is too high then players cannot join the party.
+     */
+    private final int partyLevel;
 
     private final MMOCorePartyModule module;
 
     public Party(MMOCorePartyModule module, PlayerData owner) {
         this.owner = owner;
         this.module = module;
+        this.partyLevel = owner.getLevel();
 
         addMember(owner);
     }
@@ -57,6 +66,10 @@ public class Party implements AbstractParty {
                 online.add(member);
 
         return online;
+    }
+
+    public int getLevel() {
+        return partyLevel;
     }
 
     @Override
@@ -94,7 +107,7 @@ public class Party implements AbstractParty {
 
     public void removeMember(PlayerData data, boolean notify) {
         if (data.isOnline() && data.getPlayer().getOpenInventory() != null
-                && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
+                && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof EditablePartyView.PartyViewInventory)
             InventoryManager.PARTY_CREATION.newInventory(data).open();
 
         members.remove(data);
@@ -133,7 +146,7 @@ public class Party implements AbstractParty {
     private void updateOpenInventories() {
         for (PlayerData member : members)
             if (member.isOnline() && member.getPlayer().getOpenInventory() != null
-                    && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PartyViewInventory)
+                    && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof EditablePartyView.PartyViewInventory)
                 ((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
     }
 
@@ -147,6 +160,7 @@ public class Party implements AbstractParty {
         Request request = new PartyInvite(this, inviter, target);
         new ConfigMessage("party-invite").addPlaceholders("player", inviter.getPlayer().getName(), "uuid", request.getUniqueId().toString())
                 .sendAsJSon(target.getPlayer());
+
         MMOCore.plugin.requestManager.registerRequest(request);
     }
 

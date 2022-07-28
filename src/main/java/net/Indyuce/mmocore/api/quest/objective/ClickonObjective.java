@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.api.quest.objective;
 
+import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
+import net.Indyuce.mmocore.api.quest.QuestProgress;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
-import net.Indyuce.mmocore.api.quest.QuestProgress;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class ClickonObjective extends Objective {

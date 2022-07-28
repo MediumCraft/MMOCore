@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.gui.*;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.social.friend.EditableFriendList;
 import net.Indyuce.mmocore.gui.social.friend.EditableFriendRemoval;
 import net.Indyuce.mmocore.gui.social.guild.EditableGuildCreation;
 import net.Indyuce.mmocore.gui.social.guild.EditableGuildView;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyCreation;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView;
+import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
 
 public class InventoryManager {
     public static final PlayerStats PLAYER_STATS = new PlayerStats();

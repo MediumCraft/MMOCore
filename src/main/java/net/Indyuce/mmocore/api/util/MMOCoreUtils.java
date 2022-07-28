@@ -1,9 +1,10 @@
 package net.Indyuce.mmocore.api.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.hologram.Hologram;
 import io.lumine.mythic.lib.version.VersionMaterial;
-import io.lumine.mythic.utils.holograms.Hologram;
-import io.lumine.mythic.utils.serialize.Position;
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -104,8 +105,7 @@ public class MMOCoreUtils {
      * @param message Message to display
      */
     public static void displayIndicator(Location loc, String message) {
-        Hologram holo = Hologram.create(Position.of(loc), Arrays.asList(message));
-        holo.spawn();
+        Hologram holo = Hologram.create(loc, Arrays.asList(message));
         Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> holo.despawn(), 20);
     }
 
@@ -180,6 +180,27 @@ public class MMOCoreUtils {
         return result.toString();
     }
 
+
+    public static Collection<String> jsonArrayToList(String json) {
+        return new ArrayList<>(Arrays.asList(MythicLib.plugin.getJson().parse(json, String[].class)));
+    }
+
+    public static String arrayToJsonString(Collection<String> array) {
+        JsonArray object = new JsonArray();
+        for (String str : array) {
+            object.add(str);
+        }
+        return object.toString();
+    }
+
+    public static String entrySetToJsonString(Set<Map.Entry<String, Integer>> entrySet) {
+        JsonObject object = new JsonObject();
+        for (Map.Entry<String, Integer> entry : entrySet) {
+            object.addProperty(entry.getKey(), entry.getValue());
+        }
+        return object.toString();
+    }
+
     /**
      * Method to get all entities surrounding a location. This method does not
      * take every entity in the world but rather takes all the entities from the
@@ -236,7 +257,7 @@ public class MMOCoreUtils {
      */
     public static void decreaseDurability(Player player, EquipmentSlot slot, int damage) {
         ItemStack item = player.getInventory().getItem(slot);
-        if (!item.hasItemMeta() || !(item.getItemMeta() instanceof Damageable) || item.getItemMeta().isUnbreakable())
+        if (item == null || item.getType().getMaxDurability() == 0 || !item.hasItemMeta() || !(item.getItemMeta() instanceof Damageable) || item.getItemMeta().isUnbreakable())
             return;
 
         PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, item, damage);

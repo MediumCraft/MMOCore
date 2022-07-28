@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class TameExperienceSource extends SpecificExperienceSource {
-
-
     public TameExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
     }
@@ -22,6 +20,7 @@ public class TameExperienceSource extends SpecificExperienceSource {
     @Override
     public ExperienceSourceManager<TameExperienceSource> newManager() {
         return new ExperienceSourceManager<TameExperienceSource>() {
+
             @EventHandler
             public void onWolfHit(EntityDamageByEntityEvent e) {
                 if(e.getDamager() instanceof Wolf) {
