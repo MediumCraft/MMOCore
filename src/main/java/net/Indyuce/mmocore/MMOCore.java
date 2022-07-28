@@ -13,7 +13,6 @@ import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
 import net.Indyuce.mmocore.comp.placeholder.DefaultParser;
 import net.Indyuce.mmocore.comp.placeholder.PlaceholderAPIParser;
@@ -226,12 +225,6 @@ public class MMOCore extends JavaPlugin {
 
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
 			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
-
-		// Enable debug mode for extra debug tools
-		if (getConfig().contains("debug")) {
-			DebugMode.setLevel(getConfig().getInt("debug", 0));
-			DebugMode.enableActionBar();
-		}
 
         // Load quest module
         try {
@@ -451,16 +444,8 @@ public class MMOCore extends JavaPlugin {
 		log(Level.INFO, message);
 	}
 
-	public static void debug(int value, String message) {
-		debug(value, Level.INFO, message);
-	}
-
 	public static void log(Level level, String message) {
 		plugin.getLogger().log(level, message);
-	}
-
-	public static void debug(int value, Level level, String message) {
-		if (DebugMode.level > (value - 1)) plugin.getLogger().log(level, message);
 	}
 
 	public File getJarFile() {

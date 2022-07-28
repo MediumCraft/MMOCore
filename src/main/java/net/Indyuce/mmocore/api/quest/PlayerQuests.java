@@ -110,13 +110,9 @@ public class PlayerQuests implements Closable {
             }
         }
 
-
         if (jo.has("finished"))
             for (Entry<String, JsonElement> entry : jo.getAsJsonObject("finished").entrySet())
                 finished.put(entry.getKey(), entry.getValue().getAsLong());
-
-        for (Entry<String, Long> entry : finished.entrySet())
-            MMOCore.log("Finished: (" + entry.getKey() + ") - at: " + entry.getValue());
     }
 
     public QuestProgress getCurrent() {
