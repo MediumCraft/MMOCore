@@ -278,7 +278,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             }
         }
 
-        Bukkit.broadcastMessage(playerStats.getStat(StatType.HEALTH_REGENERATION)+"");
+        Bukkit.broadcastMessage(playerStats.getStat("HEALTH_REGENERATION")+"");
 
         if (nodeStates.get(node) == NodeState.UNLOCKABLE)
             setNodeState(node, NodeState.UNLOCKED);
@@ -812,8 +812,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             return;
         }
 
-        value = MMOCore.plugin.boosterManager.calculateExp(null, value);
-        value *= 1 + getStats().getStat(StatType.ADDITIONAL_EXPERIENCE) / 100;
+        // Apply buffs AFTER splitting exp
+        value *= (1 + getStats().getStat("ADDITIONAL_EXPERIENCE") / 100) * MMOCore.plugin.boosterManager.getMultiplier(null);
+
 
         // Splitting exp through party members
         AbstractParty party;
