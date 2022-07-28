@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import io.lumine.mythic.lib.manager.StatManager;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerAttributeUseEvent;
@@ -11,7 +12,6 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
-import net.Indyuce.mmocore.player.stats.StatInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -68,9 +68,9 @@ public class AttributeView extends EditableInventory {
 			holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
 			holders.register("shift_points", shiftCost);
 			attribute.getBuffs().forEach(buff -> {
-				StatInfo info = StatInfo.valueOf(buff.getStat());
-				holders.register("buff_" + buff.getStat().toLowerCase(), info.format(buff.getValue()));
-				holders.register("total_" + buff.getStat().toLowerCase(), info.format(buff.multiply(total).getValue()));
+				final String stat = buff.getStat();
+				holders.register("buff_" + buff.getStat().toLowerCase(), StatManager.format(stat, buff.getValue()));
+				holders.register("total_" + buff.getStat().toLowerCase(), StatManager.format(stat, buff.multiply(total).getValue()));
 			});
 
 			return holders;

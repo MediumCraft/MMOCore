@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.manager;
 
-import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -9,7 +8,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +21,6 @@ public class StatManager implements MMOCoreManager {
             loaded.clear();
 
         FileConfiguration config = new ConfigFile("stats").getConfig();
-
-        // Read decimal formats
-        for (String key : config.getConfigurationSection("decimal-format").getKeys(false))
-            registerDecimalFormat(key, MythicLib.plugin.getMMOConfig().newDecimalFormat(config.getString("decimal-format." + key)));
 
         // Read default formulas
         for (String key : config.getConfigurationSection("default").getKeys(false))
@@ -48,10 +42,6 @@ public class StatManager implements MMOCoreManager {
 
     public void registerDefaultFormula(String stat, LinearValue defaultFormula) {
         compute(stat).defaultInfo = defaultFormula;
-    }
-
-    public void registerDecimalFormat(String stat, DecimalFormat format) {
-        compute(stat).format = format;
     }
 
     /**

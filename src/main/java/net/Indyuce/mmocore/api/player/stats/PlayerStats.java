@@ -45,7 +45,7 @@ public class PlayerStats {
     }
 
     /**
-     * MMOCore base stat value differs from the on in MythicLib.
+     * MMOCore base stat value differs from the one in MythicLib.
      * <p>
      * MythicLib: the base stat value is only defined for stats
      * which are based on vanilla player attributes. It corresponds
@@ -58,7 +58,7 @@ public class PlayerStats {
      * @return MMOCore base stat value
      */
     public double getBase(String stat) {
-        Profession profession = StatInfo.valueOf(stat).profession;
+        final Profession profession = StatInfo.valueOf(stat).profession;
         return data.getProfess().calculateStat(stat, profession == null ? data.getLevel() : data.getCollectionSkills().getLevel(profession));
     }
 
@@ -70,17 +70,16 @@ public class PlayerStats {
      * see {@link PlayerData#update()} for more info
      */
     public synchronized void updateStats() {
-        for (StatType stat : StatType.values()) { // TODO fix
-            StatInstance instance = getMap().getInstance(stat.name());
+        for (StatInstance instance : getMap().getInstances()) {
             StatInstance.ModifierPacket packet = instance.newPacket();
 
             // Remove old stat modifiers
             packet.removeIf(str -> str.equals("mmocoreClass"));
 
             // Add newest one
-            double total = getBase(stat.name()) - instance.getBase();
+            double total = getBase(instance.getStat()) - instance.getBase();
             if (total != 0)
-                packet.addModifier(new StatModifier("mmocoreClass", stat.name(), total, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
+                packet.addModifier(new StatModifier("mmocoreClass", instance.getStat(), total, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
 
             // Then update the stat
             packet.runUpdate();

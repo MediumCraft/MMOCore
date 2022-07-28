@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.player.stats;
 
+import io.lumine.mythic.lib.manager.StatManager;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.Profession;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
 import java.util.Objects;
 
 /**
@@ -29,20 +29,14 @@ public class StatInfo {
      */
     public LinearValue defaultInfo;
 
-    /**
-     * How that stat displays anywhere in GUIs
-     */
-    public DecimalFormat format;
-
-    private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = new DecimalFormat("0.#");
-
     public StatInfo(String name) {
         this.name = name;
     }
 
     @NotNull
+    @Deprecated
     public String format(double d) {
-        return (format == null ? DEFAULT_DECIMAL_FORMAT : format).format(d);
+        return StatManager.format(name, d);
     }
 
     @NotNull

@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.api;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.manager.StatManager;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -40,17 +41,17 @@ public class PlayerActionBar extends BukkitRunnable {
                 data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(MMOCore.plugin.placeholderParser.parse(data.getPlayer(),
                         MythicLib.plugin.parseColors((data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : config.format)
                                 .replace("{health}", digit.format(data.getPlayer().getHealth()))
-                                .replace("{max_health}", StatInfo.valueOf("MAX_HEALTH").format(data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
+                                .replace("{max_health}", StatManager.format("MAX_HEALTH", data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
                                 .replace("{mana_icon}", data.getProfess().getManaDisplay().getIcon())
                                 .replace("{mana}", digit.format(data.getMana()))
-                                .replace("{max_mana}", StatInfo.valueOf("MAX_MANA").format(data.getStats().getStat("MAX_MANA")))
+                                .replace("{max_mana}", StatManager.format("MAX_MANA", data.getStats().getStat("MAX_MANA")))
                                 .replace("{stamina}", digit.format(data.getStamina()))
-                                .replace("{max_stamina}", StatInfo.valueOf("MAX_STAMINA").format(data.getStats().getStat("MAX_STAMINA")))
+                                .replace("{max_stamina}", StatManager.format("MAX_STAMINA", data.getStats().getStat("MAX_STAMINA")))
                                 .replace("{stellium}", digit.format(data.getStellium()))
-                                .replace("{max_stellium}", StatInfo.valueOf("MAX_STELLIUM").format(data.getStats().getStat("MAX_STELLIUM")))
+                                .replace("{max_stellium}", StatManager.format("MAX_STELLIUM", data.getStats().getStat("MAX_STELLIUM")))
                                 .replace("{class}", data.getProfess().getName())
                                 .replace("{xp}", MythicLib.plugin.getMMOConfig().decimal.format(data.getExperience()))
-                                .replace("{armor}", StatInfo.valueOf("ARMOR").format(data.getPlayer().getAttribute(Attribute.GENERIC_ARMOR).getValue()))
+                                .replace("{armor}", StatManager.format("ARMOR", data.getPlayer().getAttribute(Attribute.GENERIC_ARMOR).getValue()))
                                 .replace("{level}", "" + data.getLevel())
                                 .replace("{name}", data.getPlayer().getDisplayName())))));
             }

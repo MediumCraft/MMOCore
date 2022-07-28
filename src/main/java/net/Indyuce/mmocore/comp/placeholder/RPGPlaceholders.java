@@ -2,11 +2,11 @@ package net.Indyuce.mmocore.comp.placeholder;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.util.AltChar;
+import io.lumine.mythic.lib.manager.StatManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.player.stats.StatInfo;
+import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.party.AbstractParty;
@@ -71,13 +71,11 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		}
 
-		else if (identifier.equals("health") && player.isOnline()) {
-			return StatInfo.valueOf("MAX_HEALTH").format(player.getPlayer().getHealth());
-		}
+		else if (identifier.equals("health"))
+			return StatManager.format("MAX_HEALTH", player.getPlayer().getHealth());
 
-		else if (identifier.equals("max_health") && player.isOnline()) {
-			return StatInfo.valueOf("MAX_HEALTH").format(player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-		}
+		else if (identifier.equals("max_health"))
+			return StatManager.format("MAX_HEALTH", player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 
 		else if (identifier.equals("health_bar") && player.isOnline()) {
 			StringBuilder format = new StringBuilder();
@@ -182,8 +180,8 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.startsWith("stat_")) {
-			StatInfo info = StatInfo.valueOf(identifier.substring(5).toUpperCase());
-			return info.format(playerData.getStats().getStat(info.name));
+			final String stat = identifier.substring(5).toUpperCase();
+			return StatManager.format(identifier.substring(5), playerData.getStats().getStat(stat));
 		}
 
 		else if (identifier.equals("stellium"))

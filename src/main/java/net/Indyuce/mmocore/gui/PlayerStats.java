@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
+import io.lumine.mythic.lib.manager.StatManager;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -98,7 +99,7 @@ public class PlayerStats extends EditableInventory {
                     holders.register("percent", decimal.format(ratio * 100));
                     for (StatInfo stat : MMOCore.plugin.statManager.getLoaded())
                         if (Objects.equals(stat.profession, profession))
-                            holders.register(stat.name.toLowerCase(), stat.format(stats.getStat(stat.name)));
+                            holders.register(stat.name.toLowerCase(), StatManager.format(stat.name, stats.getStat(stat.name)));
 
                     return holders;
                 }
@@ -126,17 +127,17 @@ public class PlayerStats extends EditableInventory {
                                 final String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
                                 String replaced;
                                 if (holder.endsWith("_base")) {
-                                    StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 5)));
-                                    replaced = info.format(stats.getBase(info.name));
+                                    final String stat = UtilityMethods.enumName(holder.substring(0, holder.length() - 5));
+                                    replaced = StatManager.format(stat, stats.getBase(stat));
                                 } else if (holder.endsWith("_extra")) {
-                                    StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder.substring(0, holder.length() - 6)));
-                                    replaced = info.format(MythicLib.plugin.getStats().getTotalValue(info.name, stats.getMap()) - stats.getBase(info.name));
+                                    final String stat = UtilityMethods.enumName(holder.substring(0, holder.length() - 6));
+                                    replaced = StatManager.format(stat, MythicLib.plugin.getStats().getTotalValue(stat, stats.getMap()) - stats.getBase(stat));
                                 } else if (holder.startsWith("attribute_")) {
-                                    PlayerAttribute attr = MMOCore.plugin.attributeManager.get(holder.substring(10).replace("_", "-").toLowerCase());
+                                    final PlayerAttribute attr = MMOCore.plugin.attributeManager.get(holder.substring(10).replace("_", "-").toLowerCase());
                                     replaced = String.valueOf(inv.target.getAttributes().getAttribute(attr));
                                 } else {
-                                    StatInfo info = StatInfo.valueOf(UtilityMethods.enumName(holder));
-                                    replaced = info.format(MythicLib.plugin.getStats().getTotalValue(info.name, stats.getMap()));
+                                    final String stat = UtilityMethods.enumName(holder);
+                                    replaced = StatManager.format(stat, MythicLib.plugin.getStats().getTotalValue(stat, stats.getMap()));
                                 }
 
                                 str = str.replace("{" + holder + "}", replaced);
