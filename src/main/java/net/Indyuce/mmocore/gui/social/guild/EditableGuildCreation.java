@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
@@ -39,14 +40,14 @@ public class EditableGuildCreation extends EditableInventory {
 				return;
 
 			if (item.getFunction().equals("create")) {
-				MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_CREATION_TAG, (input) -> {
+				new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_TAG, (input) -> {
 					if(MMOCore.plugin.dataProvider.getGuildManager().getConfig().shouldUppercaseTags())
 						input = input.toUpperCase();
 						
 					if(check(player, input, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getTagRules())) {
 						String tag = input;
-						
-						MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_CREATION_NAME, (name) -> {
+
+						new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_NAME, (name) -> {
 							if(check(player, name, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getNameRules())) {
 								MMOCore.plugin.dataProvider.getGuildManager().newRegisteredGuild(playerData.getUniqueId(), name, tag);
 								MMOCore.plugin.dataProvider.getGuildManager().getGuild(tag.toLowerCase()).addMember(playerData.getUniqueId());

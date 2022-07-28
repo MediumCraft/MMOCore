@@ -12,6 +12,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -22,19 +23,28 @@ import java.util.logging.Level;
 
 public class PlayerQuests implements Closable {
     private final PlayerData playerData;
+    private final Map<String, Long> finished = new HashMap<>();
+
+    @Nullable
     private final BossBar bossbar;
     private final NamespacedKey bossbarNamespacedKey;
-    private final Map<String, Long> finished = new HashMap<>();
 
     private QuestProgress current;
 
     public PlayerQuests(PlayerData playerData) {
         this.playerData = playerData;
 
-        bossbarNamespacedKey = new NamespacedKey(MMOCore.plugin, "mmocore_quest_progress_" + playerData.getUniqueId().toString());
-        bossbar = Bukkit.createBossBar(bossbarNamespacedKey, "", BarColor.PURPLE, BarStyle.SEGMENTED_20);
-        if (playerData.isOnline())
-            bossbar.addPlayer(playerData.getPlayer());
+        if (MMOCore.plugin.configManager.questBossBar) {
+            bossbarNamespacedKey = new NamespacedKey(MMOCore.plugin, "mmocore_quest_progress_" + playerData.getUniqueId().toString());
+            bossbar = Bukkit.createBossBar(bossbarNamespacedKey, "", BarColor.PURPLE, BarStyle.SEGMENTED_20);
+            if (playerData.isOnline())
+                bossbar.addPlayer(playerData.getPlayer());
+
+            // Bossbar is disabled
+        } else {
+            bossbarNamespacedKey = null;
+            bossbar = null;
+        }
     }
 
     public PlayerQuests load(ConfigurationSection config) {
@@ -50,7 +60,7 @@ public class PlayerQuests implements Closable {
                 finished.put(key, config.getLong("finished." + key));
 
         /*
-         * must update the boss bar once the instance is loaded, otherwise it
+         * Must update the boss bar once the instance is loaded, otherwise it
          * won't detect the current quest. THE BOSS BAR UPDATE is in the player
          * data class, this way it is still set invisible even if the player has
          * no quest data
@@ -187,6 +197,11 @@ public class PlayerQuests implements Closable {
     }
 
     public void updateBossBar() {
+
+        // Bossbar is disabled
+        if (bossbar == null)
+            return;
+
         if (!hasCurrent() || !current.getProgress().getObjective().hasLore()) {
             bossbar.setVisible(false);
             return;

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.gui.social.party;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
@@ -148,7 +149,7 @@ public class EditablePartyView extends EditableInventory {
                     return;
                 }
 
-                MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.PARTY_INVITE, input -> {
+                new ChatInput(player, PlayerInput.InputType.PARTY_INVITE, input -> {
                     Player target = Bukkit.getPlayer(input);
                     if (target == null) {
                         MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);

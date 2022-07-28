@@ -23,7 +23,7 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp;
+    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, questBossBar;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
@@ -31,7 +31,6 @@ public class ConfigManager {
     public int maxPartyLevelDifference;
 
     private final FileConfiguration messages;
-    private final boolean chatInput;
 
     /*
      * the instance must be created after the other managers since all it does
@@ -95,7 +94,6 @@ public class ConfigManager {
         commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));
 
         messages = new ConfigFile("messages").getConfig();
-        chatInput = true; // MMOCore.plugin.getConfig().getBoolean("use-chat-input")
         partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
         combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000L;
         lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 20;
@@ -106,6 +104,7 @@ public class ConfigManager {
         fishingDropsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.fishing-drops");
         maxPartyLevelDifference = MMOCore.plugin.getConfig().getInt("party.max-level-difference");
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
+        questBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
 
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
@@ -125,8 +124,9 @@ public class ConfigManager {
         }
     }
 
+    @Deprecated
     public PlayerInput newPlayerInput(Player player, InputType type, Consumer<String> output) {
-        return chatInput ? new ChatInput(player, type, output) : new AnvilGUI(player, type, output);
+        return  new ChatInput(player, type, output) ;
     }
 
     public void loadDefaultFile(String name) {

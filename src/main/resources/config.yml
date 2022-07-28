@@ -162,6 +162,12 @@ party:
   # When enabled, being in a party also splits profession exp
   profession-exp-split: false
 
+# Not relevant when not using MMOCore as quest plugin
+mmocore-quests:
+
+  # Disable boss bar indicating the current objective
+  disable-boss-bar: false
+
 # Redirects vanilla experience obtained to MMOCore
 # class experience. You can define the % of the vanilla
 # experience that is being transfered as MMOCore exp.
@@ -207,10 +213,6 @@ hotbar-swapping:
 # in creative mode to enter casting mode
 can-creative-cast: false
 
-# Use this option if you're having issue with Anvil GUIs.
-# This replaces anvil inputs by chat inputs.
-use-chat-input: true
-
 ability-targeting-options:
 
   # Prevent heals/buffs on players in a different guild
@@ -221,7 +223,6 @@ ability-targeting-options:
 
 # Prevents mobs spawned from spawners from giving  MMO XP points.
 prevent-spawner-xp: true
-
 
 # Timer for combat log to expire (in seconds)
 combat-log:

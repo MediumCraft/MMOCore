@@ -14,6 +14,7 @@ import org.bukkit.util.Consumer;
 
 import io.lumine.mythic.lib.MythicLib;
 
+@Deprecated
 public class AnvilGUI extends PlayerInput {
 	private final int containerId;
 	private final Inventory inventory;

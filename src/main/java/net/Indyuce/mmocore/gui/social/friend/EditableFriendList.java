@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui.social.friend;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
@@ -191,7 +192,7 @@ public class EditableFriendList extends EditableInventory {
                     return;
                 }
 
-                MMOCore.plugin.configManager.newPlayerInput(player, InputType.FRIEND_REQUEST, (input) -> {
+                new ChatInput(player, InputType.FRIEND_REQUEST, (input) -> {
                     Player target = Bukkit.getPlayer(input);
                     if (target == null) {
                         MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);

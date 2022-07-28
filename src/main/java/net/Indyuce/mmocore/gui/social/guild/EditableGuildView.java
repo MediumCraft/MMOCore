@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.gui.social.guild;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
@@ -200,7 +201,7 @@ public class EditableGuildView extends EditableInventory {
 				 * Sound.ENTITY_VILLAGER_NO, 1, 1); return; }
 				 */
 
-				MMOCore.plugin.configManager.newPlayerInput(player, PlayerInput.InputType.GUILD_INVITE, (input) -> {
+				new ChatInput(player, PlayerInput.InputType.GUILD_INVITE, (input) -> {
 					Player target = Bukkit.getPlayer(input);
 					if (target == null) {
 						MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);
