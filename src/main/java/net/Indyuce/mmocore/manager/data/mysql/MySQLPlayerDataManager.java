@@ -133,6 +133,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
+                        cancel();
                     }
                 });
             }

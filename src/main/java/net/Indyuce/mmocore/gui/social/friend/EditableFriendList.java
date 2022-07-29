@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -19,8 +20,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -170,7 +170,7 @@ public class EditableFriendList extends EditableInventory {
         }
 
         @Override
-        public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+        public void whenClicked(InventoryClickContext context, InventoryItem item) {
             if (item.getFunction().equals("previous")) {
                 page--;
                 open();
@@ -222,8 +222,8 @@ public class EditableFriendList extends EditableInventory {
                 });
             }
 
-            if (item.getFunction().equals("friend") && event.getAction() == InventoryAction.PICKUP_HALF) {
-                String tag = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
+            if (item.getFunction().equals("friend") && context.getClickType() == ClickType.RIGHT) {
+                String tag = context.getItemStack().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
                 if (tag == null || tag.isEmpty())
                     return;
 

@@ -2,19 +2,19 @@ package net.Indyuce.mmocore.gui;
 
 import io.lumine.mythic.lib.manager.StatManager;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerAttributeUseEvent;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
-import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.api.SoundEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.api.EditableInventory;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class AttributeView extends EditableInventory {
 	public AttributeView() {
@@ -90,7 +90,7 @@ public class AttributeView extends EditableInventory {
 		}
 
 		@Override
-		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+		public void whenClicked(InventoryClickContext context, InventoryItem item) {
 
 			if (item.getFunction().equalsIgnoreCase("reallocation")) {
 				int spent = playerData.getAttributes().countSkillPoints();
@@ -131,7 +131,7 @@ public class AttributeView extends EditableInventory {
 				}
 
 				// Amount of points spent
-				final boolean shiftClick = event.isShiftClick();
+				final boolean shiftClick = context.getClickType().isShiftClick();
 				int pointsSpent = shiftClick ? ((AttributeItem) item).shiftCost : 1;
 				if (attribute.hasMax())
 					pointsSpent = Math.min(pointsSpent, attribute.getMax() - ins.getBase());

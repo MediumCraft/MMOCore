@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.Quest;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -15,12 +16,16 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.units.qual.N;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -162,9 +167,12 @@ public class QuestViewer extends EditableInventory {
 			meta.setDisplayName(holders.apply(inv.getPlayer(), getName()));
 			meta.addItemFlags(ItemFlag.values());
 			meta.setLore(lore);
+
+
+			meta.getPersistentDataContainer().set(new NamespacedKey(MMOCore.plugin,"quest_id"), PersistentDataType.STRING,quest.getId());
 			item.setItemMeta(meta);
 
-			return NBTItem.get(item).addTag(new ItemTag("questId", quest.getId())).toItem();
+			return item;
 		}
 
 		private Placeholders getPlaceholders(PlayerData data, Quest quest) {
@@ -207,7 +215,7 @@ public class QuestViewer extends EditableInventory {
 		}
 
 		@Override
-		public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+		public void whenClicked(InventoryClickContext context, InventoryItem item) {
 			if (item.getFunction().equals("previous")) {
 				page--;
 				open();
@@ -221,11 +229,12 @@ public class QuestViewer extends EditableInventory {
 			}
 
 			if (item.getFunction().equals("quest")) {
-				String tag = NBTItem.get(event.getCurrentItem()).getString("questId");
-				if (tag.equals(""))
+				String questId = context.getItemStack().getItemMeta().getPersistentDataContainer()
+						.get(new NamespacedKey(MMOCore.plugin,"quest_id"), PersistentDataType.STRING);
+				if (questId.equals(""))
 					return;
 
-				Quest quest = MMOCore.plugin.questManager.get(tag);
+				Quest quest = MMOCore.plugin.questManager.get(questId);
 
 				if (playerData.getQuestData().hasCurrent()) {
 
@@ -233,7 +242,7 @@ public class QuestViewer extends EditableInventory {
 					 * check if the player is cancelling his ongoing quest.
 					 */
 					if (playerData.getQuestData().hasCurrent(quest)) {
-						if (event.getAction() == InventoryAction.PICKUP_HALF) {
+						if (context.getClickType() == ClickType.RIGHT) {
 							playerData.getQuestData().start(null);
 							MMOCore.plugin.soundManager.getSound(SoundEvent.CANCEL_QUEST).playTo(player);
 							MMOCore.plugin.configManager.getSimpleMessage("cancel-quest").send(player);

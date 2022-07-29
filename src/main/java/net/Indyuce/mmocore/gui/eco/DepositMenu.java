@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.util.SmartGive;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.util.item.SimpleItemBuilder;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -41,11 +42,11 @@ public class DepositMenu extends PluginInventory {
     }
 
     @Override
-    public void whenClicked(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
+    public void whenClicked(InventoryClickContext event) {
+        if (event.getItemStack() == null || event.getItemStack().getType() == Material.AIR)
             return;
 
-        if (event.getCurrentItem().isSimilar(depositItem)) {
+        if (event.getItemStack().isSimilar(depositItem)) {
             event.setCancelled(true);
 
             updateDeposit(event.getInventory());
@@ -63,7 +64,7 @@ public class DepositMenu extends PluginInventory {
             return;
         }
 
-        int worth = NBTItem.get(event.getCurrentItem()).getInteger("RpgWorth");
+        int worth = NBTItem.get(event.getItemStack()).getInteger("RpgWorth");
         if (worth < 1)
             event.setCancelled(true);
         else

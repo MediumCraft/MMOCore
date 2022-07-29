@@ -1,20 +1,22 @@
 package net.Indyuce.mmocore.gui.social.party;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
+import net.Indyuce.mmocore.gui.api.item.InventoryItem;
+import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
-import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.party.provided.Party;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -131,7 +133,7 @@ public class EditablePartyView extends EditableInventory {
         }
 
         @Override
-        public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+        public void whenClicked(InventoryClickContext context, InventoryItem item) {
             Party party = (Party) playerData.getParty();
 
             if (item.getFunction().equals("leave")) {
@@ -188,11 +190,11 @@ public class EditablePartyView extends EditableInventory {
                 });
             }
 
-            if (item.getFunction().equals("member") && event.getAction() == InventoryAction.PICKUP_HALF) {
+            if (item.getFunction().equals("member") && context.getClickType() == ClickType.RIGHT) {
                 if (!party.getOwner().equals(playerData))
                     return;
 
-                OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
+                OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(context.getItemStack().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
                 if (target.equals(player))
                     return;
 

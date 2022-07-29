@@ -27,6 +27,7 @@ import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
+import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
@@ -83,6 +84,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
     private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
+
 
     /**
      * Saves all the items that have been unlocked so far by
@@ -243,6 +245,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public int getSkillPoints() {
         return skillPoints;
     }
+
+
 
     @Override
     public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {

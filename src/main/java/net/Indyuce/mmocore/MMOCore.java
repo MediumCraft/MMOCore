@@ -28,7 +28,6 @@ import net.Indyuce.mmocore.guild.GuildModuleType;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.guild.provided.MMOCoreGuildModule;
 import net.Indyuce.mmocore.listener.*;
-import net.Indyuce.mmocore.listener.bungee.GetMMOCorePlayerListener;
 import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
@@ -110,6 +109,8 @@ public class MMOCore extends JavaPlugin {
 
 	public boolean shouldDebugSQL, hasBungee;
 
+	private static final int MYTHICLIB_COMPATIBILITY_INDEX = 7;
+
 	public MMOCore() {
 		plugin = this;
 	}
@@ -185,12 +186,9 @@ public class MMOCore extends JavaPlugin {
 		// Checks if the server runs with Bungee
 		hasBungee = SpigotConfig.bungee & !Bukkit.getServer().getOnlineMode();
 
-        //Setups the channel for Bungee
-        if(hasBungee) {
-            getServer().getMessenger().registerOutgoingPluginChannel(this,"namespace:give_mmocore_player");
-            getServer().getMessenger().registerOutgoingPluginChannel(this,"namespace:get_mmocore_player");
-            getServer().getMessenger().registerIncomingPluginChannel(this,"namespace:get_mmocore_player",new GetMMOCorePlayerListener());
-        }
+
+
+
 
         /*
          * Resource regeneration. Must check if entity is dead otherwise regen will make
@@ -277,9 +275,8 @@ public class MMOCore extends JavaPlugin {
 				getLogger().log(Level.WARNING, "Could not load hotbar swapping: " + exception.getMessage());
 			}
 
-		if (getConfig().getBoolean("prevent-spawner-xp")) {
+		if (getConfig().getBoolean("prevent-spawner-xp"))
 			Bukkit.getPluginManager().registerEvents(new NoSpawnerEXP(), this);
-		}
 
 		if (getConfig().getBoolean("death-exp-loss.enabled"))
 			Bukkit.getPluginManager().registerEvents(new DeathExperienceLoss(), this);
@@ -300,12 +297,12 @@ public class MMOCore extends JavaPlugin {
 
 		/*
 		 * Initialize player data from all online players. This is very important to do
-		 * that after registering all the classes otherwise the player datas can't
+		 * that after registering all the professses otherwise the player datas can't
 		 * recognize what profess the player has and professes will be lost
 		 */
 		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player.getUniqueId()));
 
-		// Load guild data after loading player data
+		// load guild data after loading player data
 		dataProvider.getGuildManager().load();
 
 		// Command

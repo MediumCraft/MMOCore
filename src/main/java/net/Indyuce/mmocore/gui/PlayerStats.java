@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.experience.Booster;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -22,7 +23,6 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -183,7 +183,7 @@ public class PlayerStats extends EditableInventory {
         }
 
         @Override
-        public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+        public void whenClicked(InventoryClickContext event, InventoryItem item) {
             if (item.hasFunction())
                 if (item.getFunction().equals("boost-next")) {
                     boostOffset++;

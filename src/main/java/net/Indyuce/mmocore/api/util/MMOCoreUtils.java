@@ -85,6 +85,11 @@ public class MMOCoreUtils {
         return t;
     }
 
+    public static String toEnumName(String str) {
+        return str.replace("-","_").replace(" ","_").toUpperCase();
+    }
+
+
     public static String toBase64(ItemStack[] items) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

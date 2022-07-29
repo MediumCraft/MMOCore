@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,8 +39,15 @@ public class PlayerListener implements Listener {
     // Register custom inventory clicks
     @EventHandler
     public void b(InventoryClickEvent event) {
-        if (event.getInventory().getHolder() instanceof PluginInventory)
-            ((PluginInventory) event.getInventory().getHolder()).whenClicked(event);
+        if (event.getInventory().getHolder() instanceof PluginInventory) {
+            int slot = event.getRawSlot();
+            if (event.getCurrentItem() != null && event.getCurrentItem().getItemMeta() != null)
+
+
+            ((PluginInventory) event.getInventory().getHolder())
+                    .whenClicked(new InventoryClickContext(slot,event.getCurrentItem(),event.getClick(),event));
+
+        }
     }
 
     // Register custom inventory close effect

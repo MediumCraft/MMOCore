@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.loot.chest.condition.Condition;
 import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.ItemStack;
 
 import net.Indyuce.mmocore.loot.LootBuilder;
@@ -30,7 +31,7 @@ public class DropTable extends PostLoadObject {
 
 	public DropTable(String id) {
 		super(null);
-
+		ArmorStand armorStand;
 		this.id = id;
 	}
 

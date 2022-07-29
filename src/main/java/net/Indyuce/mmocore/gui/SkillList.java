@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -17,6 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -283,7 +285,7 @@ public class SkillList extends EditableInventory {
         }
 
         @Override
-        public void whenClicked(InventoryClickEvent event, InventoryItem item) {
+        public void whenClicked(InventoryClickContext context, InventoryItem item) {
 
             /*
             if (skillSlots.contains(event.getRawSlot())
@@ -296,7 +298,7 @@ public class SkillList extends EditableInventory {
             */
 
             if (item.getFunction().equals("skill")) {
-                int index = skillSlots.size() * page + skillSlots.indexOf(event.getRawSlot());
+                int index = skillSlots.size() * page + skillSlots.indexOf(context.getSlot());
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 2);
                 selected = skills.get(index);
                 open();
@@ -321,11 +323,11 @@ public class SkillList extends EditableInventory {
              * binding or unbinding skills.
              */
             if (item.getFunction().equals("slot")) {
-                int index = slotSlots.indexOf(event.getRawSlot());
+                int index = slotSlots.indexOf(context.getSlot());
 
 
                 // unbind if there is a current spell.
-                if (event.getAction() == InventoryAction.PICKUP_HALF) {
+                if (context.getClickType() == ClickType.RIGHT) {
                     if (!playerData.hasSkillBound(index)) {
                         MMOCore.plugin.configManager.getSimpleMessage("no-skill-bound").send(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
@@ -384,7 +386,7 @@ public class SkillList extends EditableInventory {
                     return;
                 }
                 
-                if (event.isShiftClick()) {
+                if (context.getClickType().isShiftClick()) {
                     if (playerData.getSkillPoints() < shiftCost) {
                         MMOCore.plugin.configManager.getSimpleMessage("not-enough-skill-points-shift", "shift_points", "" + shiftCost).send(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);

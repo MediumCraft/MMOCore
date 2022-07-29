@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.gui.api;
 
-import io.lumine.mythic.lib.MythicLib;
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.api.adaptor.Adaptor;
+import net.Indyuce.mmocore.gui.api.adaptor.ClassicAdaptor;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.TriggerItem;
-import org.bukkit.Bukkit;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,13 +16,13 @@ import java.util.function.Consumer;
 public abstract class GeneratedInventory extends PluginInventory {
     private final EditableInventory editable;
     private final List<InventoryItem> loaded = new ArrayList<>();
-
-    private Inventory open;
+    private final Adaptor adaptor;
 
     public GeneratedInventory(PlayerData playerData, EditableInventory editable) {
         super(playerData);
 
         this.editable = editable;
+        this.adaptor = editable.getAdaptorType().supply(this);
     }
 
     public List<InventoryItem> getLoaded() {
@@ -59,13 +58,8 @@ public abstract class GeneratedInventory extends PluginInventory {
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, editable.getSlots(), MythicLib.plugin.getPlaceholderParser().parse(getPlayer(), calculateName()));
-
-        for (InventoryItem item : editable.getItems())
-            if (item.canDisplay(this))
-                item.setDisplayed(inv, this);
-
-        return inv;
+        Validate.isTrue(adaptor instanceof ClassicAdaptor);
+        return ((ClassicAdaptor) adaptor).getInventory();
     }
 
     public void open() {
@@ -76,7 +70,7 @@ public abstract class GeneratedInventory extends PluginInventory {
          */
         loaded.clear();
 
-        getPlayer().openInventory(open = getInventory());
+        adaptor.open();
     }
 
     /**
@@ -85,28 +79,24 @@ public abstract class GeneratedInventory extends PluginInventory {
      */
     @Deprecated
     public void dynamicallyUpdateItem(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
-        Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-            update.accept(placed);
-            open.setItem(item.getSlots().get(n), placed);
-        });
+        adaptor.dynamicallyUpdateItem(item, n, placed, update);
+
     }
 
-    public void whenClicked(InventoryClickEvent event) {
-        event.setCancelled(true);
+    public void whenClicked(InventoryClickContext context) {
+        context.setCancelled(true);
+        InventoryItem item = getBySlot(context.getSlot());
+        if (item == null)
+            return;
 
-        if (event.getClickedInventory() != null && event.getClickedInventory().equals(event.getInventory())) {
-            InventoryItem item = getBySlot(event.getSlot());
-            if (item == null)
-                return;
-
-            if (item instanceof TriggerItem)
-                ((TriggerItem) item).getTrigger().apply(getPlayerData());
-            else
-                whenClicked(event, item);
-        }
+        if (item instanceof TriggerItem)
+            ((TriggerItem) item).getTrigger().apply(getPlayerData());
+        else
+            whenClicked(context, item);
     }
+
 
     public abstract String calculateName();
 
-    public abstract void whenClicked(InventoryClickEvent event, InventoryItem item);
+    public abstract void whenClicked(InventoryClickContext context, InventoryItem item);
 }
