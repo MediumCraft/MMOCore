@@ -170,8 +170,10 @@ public class PlayerQuests implements Closable {
     public void close() {
 
         // Remove boss bar
-        bossbar.removeAll();
-        Bukkit.removeBossBar(bossbarNamespacedKey);
+        if (bossbar != null) {
+            bossbar.removeAll();
+            Bukkit.removeBossBar(bossbarNamespacedKey);
+        }
 
         // Close current objective progress
         closeCurrentQuest();
