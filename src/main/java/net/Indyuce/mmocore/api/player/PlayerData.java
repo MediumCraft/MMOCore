@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.api.player;
 
-import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.TemporaryPlayerData;
@@ -30,7 +29,6 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
-import net.Indyuce.mmocore.manager.data.mysql.MySQLTableEditor;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
@@ -53,8 +51,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
-
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
 
@@ -105,7 +101,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
-    public int skillGuiDisplayOffset;
     public boolean noCooldown;
     public CombatRunnable combat;
 
@@ -311,8 +306,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void setLevel(int level) {
         this.level = Math.max(1, level);
 
-        getStats().updateStats();
-        refreshVanillaExp();
+        if (isOnline()) {
+            getStats().updateStats();
+            refreshVanillaExp();
+        }
     }
 
     public void takeLevels(int value) {
@@ -328,7 +325,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setExperience(double value) {
         experience = Math.max(0, value);
-        refreshVanillaExp();
+
+        if (isOnline())
+            refreshVanillaExp();
     }
 
     /**
@@ -336,8 +335,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * This updates the exp bar to display the player class level and exp.
      */
     public void refreshVanillaExp() {
-        if (!isOnline() || !MMOCore.plugin.configManager.overrideVanillaExp)
+        if (!MMOCore.plugin.configManager.overrideVanillaExp)
             return;
+
         getPlayer().sendExperienceChange(0.01f);
         getPlayer().setLevel(getLevel());
         getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
@@ -512,63 +512,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         }.runTaskTimer(MMOCore.plugin, 0, 1);
     }
 
-    public String toJson() {
-
-        //We create the JSON corresponding to player Data
-        JsonObject jsonObject = new JsonObject();
-        MMOCore.sqlDebug("Saving data for: '" + getUniqueId() + "'...");
-
-        jsonObject.addProperty("class_points", getClassPoints());
-        jsonObject.addProperty("skill_points", getSkillPoints());
-        jsonObject.addProperty("attribute_points", getAttributePoints());
-        jsonObject.addProperty("attribute_realloc_points", getAttributeReallocationPoints());
-        jsonObject.addProperty("level", getLevel());
-        jsonObject.addProperty("experience", getExperience());
-        jsonObject.addProperty("class", getProfess().getId());
-        jsonObject.addProperty("last_login", getLastLogin());
-        jsonObject.addProperty("guild", hasGuild() ? getGuild().getId() : null);
-
-        jsonObject.addProperty("waypoints", MMOCoreUtils.arrayToJsonString(getWaypoints()));
-        jsonObject.addProperty("friends", MMOCoreUtils.arrayToJsonString(getFriends().stream().map(UUID::toString).collect(Collectors.toList())));
-        jsonObject.addProperty("bound_skills", MMOCoreUtils.arrayToJsonString(getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).collect(Collectors.toList())));
-
-        jsonObject.addProperty("skills", MMOCoreUtils.entrySetToJsonString(mapSkillLevels().entrySet()));
-        jsonObject.addProperty("times_claimed", MMOCoreUtils.entrySetToJsonString(getItemClaims().entrySet()));
-
-        jsonObject.addProperty("attributes", getAttributes().toJsonString());
-        jsonObject.addProperty("professions", getCollectionSkills().toJsonString());
-        jsonObject.addProperty("quests", getQuestData().toJsonString());
-        jsonObject.addProperty("class_info", createClassInfoData(this).toString());
-
-        return jsonObject.toString();
-    }
-
-
-    public static JsonObject createClassInfoData(PlayerData data) {
-        JsonObject json = new JsonObject();
-        for (String c : data.getSavedClasses()) {
-            SavedClassInformation info = data.getClassInfo(c);
-            JsonObject classinfo = new JsonObject();
-            classinfo.addProperty("level", info.getLevel());
-            classinfo.addProperty("experience", info.getExperience());
-            classinfo.addProperty("skill-points", info.getSkillPoints());
-            classinfo.addProperty("attribute-points", info.getAttributePoints());
-            classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
-            JsonObject skillinfo = new JsonObject();
-            for (String skill : info.getSkillKeys())
-                skillinfo.addProperty(skill, info.getSkillLevel(skill));
-            classinfo.add("skill", skillinfo);
-            JsonObject attributeinfo = new JsonObject();
-            for (String attribute : info.getAttributeKeys())
-                attributeinfo.addProperty(attribute, info.getAttributeLevel(attribute));
-            classinfo.add("attribute", attributeinfo);
-
-            json.add(c, classinfo);
-        }
-
-        return json;
-    }
-
     public boolean hasReachedMaxLevel() {
         return getProfess().getMaxLevel() > 0 && getLevel() >= getProfess().getMaxLevel();
     }
@@ -655,8 +598,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         refreshVanillaExp();
     }
-
-
 
     public double getExperience() {
         return experience;
@@ -899,7 +840,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 iterator.remove();
 
         // Update stats
-        getStats().updateStats();
+        if (isOnline())
+            getStats().updateStats();
     }
 
     public boolean hasSkillBound(int slot) {
@@ -935,7 +877,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
@@ -954,34 +896,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         else
             combat = new CombatRunnable(this);
     }
-
-    /**
-     * @return The savingPlayerData object corresponding to the playerData
-     */
-    public SavingPlayerData getSavingPlayerData() {
-        return new SavingPlayerData(
-                getUniqueId(),
-                getClassPoints(),
-                getSkillPoints(),
-                getAttributePoints(),
-                getAttributeReallocationPoints(),
-                getLevel(),
-                getExperience(),
-                getProfess().getId(),
-                getLastLogin(),
-                hasGuild() ? getGuild().getId() : null,
-                getWaypoints(),
-                getFriends(),
-                getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).toList(),
-                mapSkillLevels(),
-                getItemClaims(),
-                getAttributes().toJsonString(),
-                getCollectionSkills().toJsonString(),
-                getQuestData().toJsonString(),
-                createClassInfoData(this).toString());
-    }
-
-
 
     @Override
     public int hashCode() {

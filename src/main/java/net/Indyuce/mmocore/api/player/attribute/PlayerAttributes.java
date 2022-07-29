@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,15 +90,12 @@ public class PlayerAttributes {
 		return map;
 	}
 
+	@NotNull
 	public AttributeInstance getInstance(String attribute) {
-		if (instances.containsKey(attribute))
-			return instances.get(attribute);
-
-		AttributeInstance ins = new AttributeInstance(attribute);
-		instances.put(attribute, ins);
-		return ins;
+		return instances.computeIfAbsent(attribute, AttributeInstance::new);
 	}
 
+	@NotNull
 	public AttributeInstance getInstance(PlayerAttribute attribute) {
 		return getInstance(attribute.getId());
 	}
@@ -126,7 +124,8 @@ public class PlayerAttributes {
 		public void setBase(int value) {
 			spent = Math.max(0, value);
 
-			update();
+			if (data.isOnline())
+				update();
 		}
 
 		public void addBase(int value) {

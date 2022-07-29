@@ -11,6 +11,8 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerStats {
     private final PlayerData data;

@@ -34,11 +34,10 @@ public class PlayerQuests implements Closable {
     public PlayerQuests(PlayerData playerData) {
         this.playerData = playerData;
 
-        if (MMOCore.plugin.configManager.questBossBar) {
+        if (MMOCore.plugin.configManager.questBossBar && playerData.isOnline()) {
             bossbarNamespacedKey = new NamespacedKey(MMOCore.plugin, "mmocore_quest_progress_" + playerData.getUniqueId().toString());
             bossbar = Bukkit.createBossBar(bossbarNamespacedKey, "", BarColor.PURPLE, BarStyle.SEGMENTED_20);
-            if (playerData.isOnline())
-                bossbar.addPlayer(playerData.getPlayer());
+            bossbar.addPlayer(playerData.getPlayer());
 
             // Bossbar is disabled
         } else {

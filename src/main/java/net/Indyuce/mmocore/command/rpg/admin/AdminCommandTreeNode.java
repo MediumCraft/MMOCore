@@ -15,7 +15,7 @@ public class AdminCommandTreeNode extends CommandTreeNode {
 		addChild(new InfoCommandTreeNode(this));
 		addChild(new ClassCommandTreeNode(this));
 		addChild(new ForceClassCommandTreeNode(this));
-		addChild(new TransferDataTreeNode(this));
+		addChild(new ExportDataTreeNode(this));
 
 		addChild(new ExperienceCommandTreeNode(this));
 		addChild(new LevelCommandTreeNode(this));
