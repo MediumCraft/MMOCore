@@ -300,12 +300,12 @@ public class MMOCore extends JavaPlugin {
 
 		/*
 		 * Initialize player data from all online players. This is very important to do
-		 * that after registering all the professses otherwise the player datas can't
+		 * that after registering all the classes otherwise the player datas can't
 		 * recognize what profess the player has and professes will be lost
 		 */
 		Bukkit.getOnlinePlayers().forEach(player -> dataProvider.getDataManager().setup(player.getUniqueId()));
 
-		// load guild data after loading player data
+		// Load guild data after loading player data
 		dataProvider.getGuildManager().load();
 
 		// Command

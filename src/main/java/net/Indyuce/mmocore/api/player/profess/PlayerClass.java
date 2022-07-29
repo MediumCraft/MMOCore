@@ -380,6 +380,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skills.values();
     }
 
+    public Set<String> getStats() {
+        return stats.keySet();
+    }
+
     @NotNull
     private LinearValue getStatInfo(String stat) {
         LinearValue found = stats.get(stat);

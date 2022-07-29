@@ -1,3 +1,4 @@
+# Caution, these are very case sensitive!
 default:
     ATTACK_DAMAGE:
         base: 1
@@ -26,7 +27,7 @@ default:
     HEALTH_REGENERATION:
         base: .1
         per-level: 0
-        
+
     # Max Resource
     MAX_MANA:
         base: 20
@@ -37,7 +38,7 @@ default:
     MAX_STELLIUM:
         base: 20
         per-level: 0
-    
+
     # Resource Regeneration
     MANA_REGENERATION:
         base: .166
@@ -48,12 +49,12 @@ default:
     STELLIUM_REGENERATION:
         base: .01
         per-level: 0
-    
+
     # Increases main class experience earned.
     ADDITIONAL_EXPERIENCE:
         base: 0
         per-level: 0
-    
+
     # Reduces skill cooldowns by X%
     COOLDOWN_REDUCTION:
         base: 0
@@ -63,32 +64,32 @@ default:
     CHANCE:
         base: 0
         per-level: 0
-    
+
     # Dealt by skills
     SKILL_DAMAGE:
         base: 0
         per-level: 0
-    
+
     # Physical skill damage
     PHYSICAL_DAMAGE:
         base: 0
         per-level: 0
-    
+
     # Magic skill damage
     MAGIC_DAMAGE:
         base: 0
         per-level: 0
-    
+
     # Dealt by any weapon
     WEAPON_DAMAGE:
         base: 0
         per-level: 0
-    
+
     # Dealt by projectile skills or weapons
     PROJECTILE_DAMAGE:
         base: 0
         per-level: 0
-    
+
     # Reduces the amount of tugs needed to fish fishes.
     # (When set to 30, 30% of the tugs will be removed).
     FISHING_STRENGTH:
@@ -96,14 +97,14 @@ default:
         per-level: 0.3
         min: 0
         max: 40
-    
+
     # Chance of instantly fishing.
     CRITICAL_FISHING_CHANCE:
         base: 5
         per-level: 0
         min: 0
         max: 70
-            
+
     # Chance of being dragged in the waters
     # by the fish when trying to catch it,
     # once the player has NOT successfully

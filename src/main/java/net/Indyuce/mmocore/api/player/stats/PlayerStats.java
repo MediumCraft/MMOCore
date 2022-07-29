@@ -6,10 +6,11 @@ import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
-import net.Indyuce.mmocore.skill.ClassSkill;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.player.stats.StatInfo;
+import net.Indyuce.mmocore.skill.ClassSkill;
 
 public class PlayerStats {
     private final PlayerData data;
@@ -70,14 +71,15 @@ public class PlayerStats {
      * see {@link PlayerData#update()} for more info
      */
     public synchronized void updateStats() {
-        for (StatInstance instance : getMap().getInstances()) {
-            StatInstance.ModifierPacket packet = instance.newPacket();
+        for (String stat : MMOCore.plugin.statManager.getRegistered()) {
+            final StatInstance instance = getMap().getInstance(stat);
+            final StatInstance.ModifierPacket packet = instance.newPacket();
 
-            // Remove old stat modifiers
-            packet.removeIf(str -> str.equals("mmocoreClass"));
+            // Remove old stat modifier
+            packet.remove("mmocoreClass");
 
             // Add newest one
-            double total = getBase(instance.getStat()) - instance.getBase();
+            final double total = getBase(instance.getStat()) - instance.getBase();
             if (total != 0)
                 packet.addModifier(new StatModifier("mmocoreClass", instance.getStat(), total, ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
 

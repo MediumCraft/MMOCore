@@ -221,7 +221,7 @@ items:
         - ''
         - '✤ Knockback Resistance: &f{knockback_resistance} &7(&f{knockback_resistance_base} &7+ &f{knockback_resistance_extra}&7)'
         - '✤ Movement Speed: &f{movement_speed} &7(&f{movement_speed_base} &7+ &f{movement_speed_extra}&7)'
-        - '✤ Speed Malus Reduction: &f{speed_malus_reduction} &7(&f{speed_malus_reduction_base} &7+ &f{speed_malus_reduction_extra}&7)'
+        - '✤ Speed Malus Reduction: &f{speed_malus_reduction}% &7(&f{speed_malus_reduction_base} &7+ &f{speed_malus_reduction_extra}&7)'
     int:
         slots: [34]
         function: stats

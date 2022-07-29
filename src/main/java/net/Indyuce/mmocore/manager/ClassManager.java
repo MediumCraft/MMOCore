@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
 import net.Indyuce.mmocore.api.player.profess.event.trigger.*;
 import org.apache.commons.lang.Validate;
@@ -46,6 +46,7 @@ public class ClassManager implements MMOCoreManager {
 
     public void register(PlayerClass playerClass) {
         map.put(playerClass.getId(), playerClass);
+        MMOCore.plugin.statManager.getRegistered().addAll(playerClass.getStats());
     }
 
     public boolean has(String id) {
@@ -75,8 +76,8 @@ public class ClassManager implements MMOCoreManager {
             map.clear();
 
             /*
-             * Do not clear the list of trigger listeners, since it's only setup
-             * once the server loads and it is never modified.
+             * Does not clear the list of trigger listeners, since it's
+             * only setup once the server loads and it is never modified.
              */
             triggerHandlers.forEach(HandlerList::unregisterAll);
         }
