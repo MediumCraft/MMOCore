@@ -9,7 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.List;
 
 public class TriggerItem extends InventoryItem {
-    private final List<Trigger> triggers;
+    private final Trigger triggers;
 
     public TriggerItem(ConfigurationSection config, String format) {
         super(config);
@@ -22,7 +22,7 @@ public class TriggerItem extends InventoryItem {
         return new Placeholders();
     }
 
-    public List<Trigger> getTriggers() {
+    public Trigger getTrigger() {
         return triggers;
     }
 }

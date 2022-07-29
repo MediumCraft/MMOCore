@@ -1,25 +1,22 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import net.Indyuce.mmocore.comp.mythicmobs.load.*;
 import net.Indyuce.mmocore.api.load.MMOLoader;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmocore.comp.mythicmobs.load.*;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class MythicMobsMMOLoader extends MMOLoader {
 
     @Override
-    public List<Trigger> loadTrigger(MMOLineConfig config) {
+    public Trigger loadTrigger(MMOLineConfig config) {
 
         if (config.getKey().equalsIgnoreCase("mmskill") || config.getKey().equalsIgnoreCase("mythicmobskill"))
-            return Arrays.asList(new MythicSkillTrigger(config));
+            return new MythicSkillTrigger(config);
 
         return null;
     }
@@ -45,12 +42,12 @@ public class MythicMobsMMOLoader extends MMOLoader {
     }
 
     @Override
-    public List<ExperienceSource<?>> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+    public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
 
         if (config.getKey().equalsIgnoreCase("killmythicmob"))
-            return Arrays.asList(new KillMythicMobExperienceSource(dispenser, config));
+            return new KillMythicMobExperienceSource(dispenser, config);
         if (config.getKey().equalsIgnoreCase("killmythicfaction"))
-            return Arrays.asList(new KillMythicFactionExperienceSource(dispenser, config));
+            return new KillMythicFactionExperienceSource(dispenser, config);
 
         return null;
     }

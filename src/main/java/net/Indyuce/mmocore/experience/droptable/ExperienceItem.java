@@ -63,7 +63,7 @@ public class ExperienceItem {
         triggers = new ArrayList<>();
 
         for (String triggerFormat : config.getStringList("triggers"))
-            triggers.addAll(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(triggerFormat)));
+            triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(triggerFormat)));
     }
 
     public String getId() {

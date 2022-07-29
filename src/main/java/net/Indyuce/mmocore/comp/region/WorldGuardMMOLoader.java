@@ -1,20 +1,17 @@
 package net.Indyuce.mmocore.comp.region;
 
-import net.Indyuce.mmocore.loot.chest.condition.Condition;
-import net.Indyuce.mmocore.api.load.MMOLoader;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-
-import java.util.Arrays;
-import java.util.List;
+import net.Indyuce.mmocore.api.load.MMOLoader;
+import net.Indyuce.mmocore.loot.chest.condition.Condition;
 
 public class WorldGuardMMOLoader extends MMOLoader {
 
-	@Override
-	public List<Condition> loadCondition(MMOLineConfig config) {
+    @Override
+    public Condition loadCondition(MMOLineConfig config) {
 
-		if (config.getKey().equals("region"))
-			return Arrays.asList(new RegionCondition(config));
+        if (config.getKey().equals("region"))
+            return new RegionCondition(config);
 
-		return null;
-	}
+        return null;
+    }
 }

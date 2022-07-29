@@ -189,7 +189,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 
 		for (String key : MMOCore.plugin.getConfig().getStringList("custom-mine-conditions"))
 			try {
-				customMineConditions.addAll(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
+				customMineConditions.add(MMOCore.plugin.loadManager.loadCondition(new MMOLineConfig(key)));
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load custom mining condition '" + key + "': " + exception.getMessage());
 			}

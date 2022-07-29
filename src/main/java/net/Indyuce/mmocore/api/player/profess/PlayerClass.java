@@ -19,7 +19,6 @@ import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
 import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
@@ -27,7 +26,6 @@ import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -159,9 +157,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         if (config.contains("main-exp-sources.yml")) {
             for (String key : config.getStringList("main-exp-sources.yml"))
                 try {
-                    List<ExperienceSource<?>> list = MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this);
-                    for (ExperienceSource source : list)
-                        MMOCore.plugin.experience.registerSource(source);
+                    MMOCore.plugin.experience.registerSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp source '" + key + "' from class '"
                             + id + "': " + exception.getMessage());

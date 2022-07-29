@@ -6,7 +6,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -69,10 +67,7 @@ public class Profession extends PostLoadObject implements ExperienceObject {
         if (config.contains("exp-sources"))
             for (String key : config.getStringList("exp-sources"))
                 try {
-                    List<ExperienceSource<?>> experienceSourceList=MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this);
-                    for(ExperienceSource experienceSource: experienceSourceList) {
-                        MMOCore.plugin.experience.registerSource(experienceSource);
-                    }
+                    MMOCore.plugin.experience.registerSource(MMOCore.plugin.loadManager.loadExperienceSource(new MMOLineConfig(key), this));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING,
                             "Could not register exp source '" + key + "' from profession '" + id + "': " + exception.getMessage());
