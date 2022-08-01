@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.player.Unlockable;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,8 +35,15 @@ public class RegisteredSkill implements Unlockable {
         // Trigger type
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
 
+        // Load default modifier formulas
         for (String mod : handler.getModifiers())
             defaultModifiers.put(mod, config.contains(mod) ? new LinearValue(config.getConfigurationSection(mod)) : LinearValue.ZERO);
+
+        /*
+         * This is so that SkillAPI skill level matches the MMOCore skill level
+         * https://gitlab.com/phoenix-dvpmt/mmocore/-/issues/531
+         */
+        defaultModifiers.put("level", new IntegerLinearValue(0, 1));
     }
 
     public RegisteredSkill(SkillHandler<?> handler, String name, ItemStack icon, List<String> lore, @Nullable TriggerType triggerType) {
