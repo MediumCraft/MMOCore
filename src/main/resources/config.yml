@@ -59,14 +59,6 @@ protect-custom-mine: false
 # - mcmmo
 party-plugin: mmocore
 
-# Edit the plugin handling parties here.
-# Supported values (just copy and paste):
-# - mmocore
-# - beauty_quest
-# - quest_creator
-# - quests
-quest-plugin: mmocore
-
 # Edit the plugin handling guilds here.
 # Supported values (just copy and paste):
 # - mmocore

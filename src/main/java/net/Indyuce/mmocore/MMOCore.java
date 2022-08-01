@@ -186,10 +186,6 @@ public class MMOCore extends JavaPlugin {
 		// Checks if the server runs with Bungee
 		hasBungee = SpigotConfig.bungee & !Bukkit.getServer().getOnlineMode();
 
-
-
-
-
         /*
          * Resource regeneration. Must check if entity is dead otherwise regen will make
          * the 'respawn' button glitched plus HURT entity effect bug
@@ -223,17 +219,6 @@ public class MMOCore extends JavaPlugin {
 
 		if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
 			Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
-
-        // Load quest module
-        try {
-            String questPluginName = UtilityMethods.enumName(getConfig().getString("quest-plugin"));
-            PartyModuleType moduleType = PartyModuleType.valueOf(questPluginName);
-            Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
-            partyModule = moduleType.provideModule();
-        } catch (RuntimeException exception) {
-            getLogger().log(Level.WARNING, "Could not initialize quest module: " + exception.getMessage());
-            partyModule = new MMOCorePartyModule();
-        }
 
         // Load party module
         try {
