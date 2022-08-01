@@ -92,7 +92,7 @@
     <repositories>
         <repository>
             <id>phoenix</id>
-            <url>https://la-grange-evasion.pro.dns-orange.fr/repository/maven-public/</url>
+            <url>https://nexus.phoenixdvpt.fr/repository/maven-public/</url>
         </repository>
 
         <repository>
