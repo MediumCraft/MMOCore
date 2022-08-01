@@ -2,7 +2,6 @@ package net.Indyuce.mmocore.api.player;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
-import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
@@ -27,7 +26,6 @@ import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
-import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
@@ -114,29 +112,23 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     /**
      * If the player data was loaded using temporary data.
-     * See {@link TemporaryPlayerData} for more info
      */
     private final boolean usingTemporaryData;
 
     public PlayerData(MMOPlayerData mmoData) {
-        this(mmoData, false);
-    }
-
-    public PlayerData(MMOPlayerData mmoData, TemporaryPlayerData tempData) {
-        this(mmoData, true);
-
-        mana = tempData.getDouble("mana");
-        stamina = tempData.getDouble("stamina");
-        stellium = tempData.getDouble("stellium");
-    }
-
-    private PlayerData(MMOPlayerData mmoData, boolean usingTemporaryData) {
         super(mmoData.getUniqueId());
 
         this.mmoData = mmoData;
-        this.playerStats = new PlayerStats(this);
-        this.questData = new PlayerQuests(this);
-        this.usingTemporaryData = usingTemporaryData;
+        questData = new PlayerQuests(this);
+        playerStats = new PlayerStats(this);
+
+        // Load temporary data if necessary
+        final @Nullable TemporaryPlayerData tempData = mmoData.getExternalData("mmocore", TemporaryPlayerData.class);
+        if (usingTemporaryData = tempData != null) {
+            mana = tempData.mana;
+            stamina = tempData.stamina;
+            stellium = tempData.stellium;
+        }
     }
 
     /**
@@ -245,7 +237,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public int getSkillPoints() {
         return skillPoints;
     }
-
 
 
     @Override

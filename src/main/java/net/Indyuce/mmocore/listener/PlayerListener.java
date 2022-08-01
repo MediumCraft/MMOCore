@@ -1,11 +1,10 @@
 
 package net.Indyuce.mmocore.listener;
 
-import io.lumine.mythic.lib.api.event.TemporaryDataSavedEvent;
-import io.lumine.mythic.lib.player.TemporaryPlayerData;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.TemporaryPlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
@@ -44,8 +43,8 @@ public class PlayerListener implements Listener {
             if (event.getCurrentItem() != null && event.getCurrentItem().getItemMeta() != null)
 
 
-            ((PluginInventory) event.getInventory().getHolder())
-                    .whenClicked(new InventoryClickContext(slot,event.getCurrentItem(),event.getClick(),event));
+                ((PluginInventory) event.getInventory().getHolder())
+                        .whenClicked(new InventoryClickContext(slot, event.getCurrentItem(), event.getClick(), event));
 
         }
     }
@@ -77,6 +76,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void e(PlayerQuitEvent event) {
         PlayerData playerData = PlayerData.get(event.getPlayer());
+        playerData.getMMOPlayerData().setExternalData("mmocore", new TemporaryPlayerData(playerData));
         MMOCore.plugin.dataProvider.getDataManager().unregisterSafe(playerData);
     }
 
@@ -98,20 +98,5 @@ public class PlayerListener implements Listener {
             event.setCancelled(bukkitEvent.isCancelled());
             event.setAmount(bukkitEvent.getAmount());
         }
-    }
-
-    /**
-     * See {@link TemporaryPlayerData} and {@link TemporaryDataSavedEvent}
-     * <p>
-     * This temporarily saves:
-     * - player resources including mana, stamina and stellium
-     */
-    @EventHandler
-    public void h(TemporaryDataSavedEvent event) {
-        TemporaryPlayerData temp = event.getTemporaryData();
-        PlayerData playerData = PlayerData.get(event.getPlayer().getUniqueId());
-        temp.set("mana", playerData.getMana());
-        temp.set("stamina", playerData.getStamina());
-        temp.set("stellium", playerData.getStellium());
     }
 }
