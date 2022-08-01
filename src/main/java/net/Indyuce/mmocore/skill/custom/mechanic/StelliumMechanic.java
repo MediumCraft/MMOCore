@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.skill.custom.mechanic;
 
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.script.mechanic.type.TargetMechanic;
 import io.lumine.mythic.lib.skill.SkillMetadata;
-import io.lumine.mythic.lib.skill.custom.mechanic.type.TargetMechanic;
 import io.lumine.mythic.lib.util.DoubleFormula;
 import io.lumine.mythic.lib.util.configobject.ConfigObject;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;

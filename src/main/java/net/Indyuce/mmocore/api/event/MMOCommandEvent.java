@@ -5,6 +5,10 @@ import org.bukkit.event.HandlerList;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
 
+/**
+ * @deprecated Use Bukkit event instead
+ */
+@Deprecated
 public class MMOCommandEvent extends PlayerDataEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;

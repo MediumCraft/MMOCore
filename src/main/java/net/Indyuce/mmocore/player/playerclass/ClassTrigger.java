@@ -3,10 +3,10 @@ package net.Indyuce.mmocore.player.playerclass;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.script.Script;
+import io.lumine.mythic.lib.script.mechanic.Mechanic;
 import io.lumine.mythic.lib.skill.SimpleSkill;
 import io.lumine.mythic.lib.skill.Skill;
-import io.lumine.mythic.lib.skill.custom.CustomSkill;
-import io.lumine.mythic.lib.skill.custom.mechanic.Mechanic;
 import io.lumine.mythic.lib.skill.handler.MythicLibSkillHandler;
 import io.lumine.mythic.lib.skill.result.SkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
@@ -34,7 +34,7 @@ import java.util.List;
 @Deprecated
 public class ClassTrigger {
     private final ClassTriggerType type;
-    private final CustomSkill skill = new CustomSkill("classTrigger", false);
+    private final Script skill = new Script("classTrigger", false);
     private final Skill castableSkill = new SimpleSkill(TriggerType.CAST, new MythicLibSkillHandler(skill));
 
     public ClassTrigger(String triggerTypeString, List<String> mechanicStringList) {

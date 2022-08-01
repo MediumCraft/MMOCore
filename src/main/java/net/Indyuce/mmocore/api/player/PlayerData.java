@@ -902,13 +902,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     @Override
-    public int hashCode() {
-        return mmoData.hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerData that = (PlayerData) o;
+        return getUniqueId().equals(that.mmoData.getUniqueId());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof PlayerData && ((PlayerData) obj).getUniqueId().equals(getUniqueId());
+    public int hashCode() {
+        return mmoData.hashCode();
     }
 
     public static PlayerData get(OfflinePlayer player) {
