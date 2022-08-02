@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.experience.source.type;
 
+import io.lumine.mythic.core.drops.droppables.ExperienceDrop;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -23,6 +24,17 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
         config.validate("amount");
         amount = new RandomAmount(config.getString("amount"));
     }
+
+
+    /**
+     * Used for FromExperienceSource
+     * @param dispenser
+     */
+    public SpecificExperienceSource(ExperienceDispenser dispenser) {
+        super(dispenser);
+        amount=new RandomAmount(0,0);
+    }
+
 
     public RandomAmount getAmount() {
         return amount;

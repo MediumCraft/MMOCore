@@ -17,6 +17,9 @@ public class DefaultMMOLoader extends MMOLoader {
 
     @Override
     public Trigger loadTrigger(MMOLineConfig config) {
+        if(config.getKey().equals("from"))
+            return new FromTrigger(config);
+
         if (config.getKey().equals("message"))
             return new MessageTrigger(config);
 
@@ -80,6 +83,9 @@ public class DefaultMMOLoader extends MMOLoader {
 
     @Override
     public Condition loadCondition(MMOLineConfig config) {
+        if(config.getKey().equals("from")) {
+            return new FromCondition(config);
+        }
         if (config.getKey().equals("distance"))
             return new DistanceCondition(config);
 
@@ -100,6 +106,9 @@ public class DefaultMMOLoader extends MMOLoader {
 
     @Override
     public ExperienceSource<?> loadExperienceSource(MMOLineConfig config, ExperienceDispenser dispenser) {
+        if(config.getKey().equals("from"))
+            return new FromExperienceSource(dispenser,config);
+
         if (config.getKey().equals("resource"))
             return new ResourceExperienceSource(dispenser, config);
 
