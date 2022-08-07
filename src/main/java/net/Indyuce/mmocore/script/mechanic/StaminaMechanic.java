@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.skill.custom.mechanic;
+package net.Indyuce.mmocore.script.mechanic;
 
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.SkillMetadata;
@@ -11,12 +11,12 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class ManaMechanic extends TargetMechanic {
+public class StaminaMechanic extends TargetMechanic {
     private final DoubleFormula amount;
     private final Operation operation;
     private final PlayerResourceUpdateEvent.UpdateReason reason;
 
-    public ManaMechanic(ConfigObject config) {
+    public StaminaMechanic(ConfigObject config) {
         super(config);
 
         config.validateKeys("amount");
@@ -31,10 +31,10 @@ public class ManaMechanic extends TargetMechanic {
         Validate.isTrue(target instanceof Player, "Target is not a player");
         PlayerData targetData = PlayerData.get(target.getUniqueId());
         if (operation == Operation.GIVE)
-            targetData.giveMana(amount.evaluate(meta), reason);
+            targetData.giveStamina(amount.evaluate(meta), reason);
         else if (operation == Operation.SET)
-            targetData.setMana(amount.evaluate(meta));
+            targetData.setStamina(amount.evaluate(meta));
         else if (operation == Operation.TAKE)
-            targetData.giveMana(-amount.evaluate(meta), reason);
+            targetData.giveStamina(-amount.evaluate(meta), reason);
     }
 }

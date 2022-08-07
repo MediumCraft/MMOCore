@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.tree;
 
 import com.gmail.nossr50.mcmmo.acf.annotation.HelpSearchTags;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import io.lumine.mythic.lib.util.configobject.ConfigObject;
@@ -27,6 +28,7 @@ public class SkillTreeNode implements Unlockable {
     private final String name, id;
     private IntegerCoordinates coordinates;
     private boolean isRoot;
+
     /**
      * The lore corresponding to each level
      */
@@ -35,64 +37,58 @@ public class SkillTreeNode implements Unlockable {
     //TODO modifiers depending on level with drop tables
     private final HashMap<Integer, List<PlayerModifier>> modifiers = new HashMap<>();
     private final HashMap<Integer, List<Trigger>> triggers = new HashMap<>();
+
     //The max level the skill tree node can have and the max amount of children it can have.
     private final int maxLevel, maxChildren, size;
     private final ArrayList<SkillTreeNode> children = new ArrayList<>();
+
     /**
-     * Associates the required level to each parent
-     * You only need to have the requirement for one of your softParents but you need to fulfill the requirements
-     * of all of your strong parents.
+     * Associates the required level to each parent.
+     * <p>
+     * You only need to have the requirement for one of your softParents
+     * but you need to fulfill the requirements of all of your strong parents.
      **/
-
-
     private final HashMap<SkillTreeNode, Integer> softParents = new HashMap<>();
     private final HashMap<SkillTreeNode, Integer> strongParents = new HashMap<>();
 
-
     public SkillTreeNode(SkillTree tree, ConfigurationSection config) {
-
-
         Validate.notNull(config, "Config cannot be null");
         this.id = config.getName();
         this.tree = tree;
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
-        isRoot = config.contains("is-root") ? config.getBoolean("is-root") ? true : false : false;
+        isRoot = config.getBoolean("is-root", false);
 
         //We initialize the value of the lore for each skill tree node.
         for (String state : Objects.requireNonNull(config.getConfigurationSection("lores")).getKeys(false)) {
-            NodeState nodeState = NodeState.valueOf(MMOCoreUtils.toEnumName(state));
+            NodeState nodeState = NodeState.valueOf(UtilityMethods.enumName(state));
             if (nodeState == NodeState.UNLOCKED) {
                 //TODO: Message could'nt load ... instead of exce/*99+*-*99**9+-ption
                 ConfigurationSection section = config.getConfigurationSection("lores." + state);
-                for (String level : section.getKeys(false)) {
+                for (String level : section.getKeys(false))
                     lores.put(new NodeContext(nodeState, Integer.parseInt(level)), section.getStringList(level));
-                }
+
             } else {
                 lores.put(new NodeContext(nodeState, 0), config.getStringList("lores." + state));
             }
         }
+
         //We load the triggers
         if (config.contains("triggers")) {
             try {
                 ConfigurationSection section = config.getConfigurationSection("triggers");
-                for (String level : section.getKeys(false)) {
-                    int value = Integer.parseInt(level);
-                    for (String str : section.getStringList(level)) {
-                        List<Trigger> triggerList = MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(str));
-                        for (Trigger trigger : triggerList) {
-                            if (!triggers.containsKey(value)) {
-                                triggers.put(value, new ArrayList<>());
-                            }
-                            triggers.get(value).add(trigger);
-                        }
-
-                    }
+                for (String levelFormat : section.getKeys(false)) {
+                    final int level = Integer.parseInt(levelFormat);
+                    final List<Trigger> triggers = new ArrayList<>();
+                    for (String str : section.getStringList(levelFormat))
+                        triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(str)));
+                    this.triggers.put(level, triggers);
                 }
             } catch (NumberFormatException e) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load triggers for the skill node " + tree.getId() + "." + id + " :Problem with the Number Format.");
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load triggers for skill node " + tree.getId() + "." + id + " : Problem with the Number Format.");
             }
         }
+
         //We load the player Modifiers
         if (config.contains("modifiers")) {
             try {
@@ -216,17 +212,14 @@ public class SkillTreeNode implements Unlockable {
         return modifiers.get(level);
     }
 
-
     public List<Trigger> getTriggers(int level) {
         return triggers.get(level);
     }
-
 
     @Override
     public String getUnlockNamespacedKey() {
         return "skill_tree:" + tree.getId() + "_" + coordinates.getX() + "_" + coordinates.getY();
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -308,7 +301,6 @@ public class SkillTreeNode implements Unlockable {
 
     }
 
-
     /**
      * @param namespacedKey Something like "skill_tree:tree_name_1_5"
      * @return The corresponding skill tree node
@@ -369,6 +361,4 @@ public class SkillTreeNode implements Unlockable {
             return Objects.hash(nodeState, nodeLevel);
         }
     }
-
-
 }

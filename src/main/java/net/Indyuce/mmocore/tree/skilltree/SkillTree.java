@@ -1,11 +1,12 @@
 package net.Indyuce.mmocore.tree.skilltree;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.manager.registry.RegisterObject;
+import net.Indyuce.mmocore.manager.registry.RegisteredObject;
 import net.Indyuce.mmocore.tree.NodeState;
 import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
 import net.Indyuce.mmocore.tree.skilltree.display.Icon;
@@ -13,7 +14,6 @@ import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +38,7 @@ import java.util.logging.Level;
  * @author Ka0rX
  * @see {@link SkillTreeNode}
  */
-public abstract class SkillTree extends PostLoadObject implements RegisterObject {
+public abstract class SkillTree extends PostLoadObject implements RegisteredObject {
     private final String id, name;
     private final List<String> lore = new ArrayList<>();
     private final Material item;
@@ -55,14 +55,13 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
     protected final List<SkillTreeNode> roots = new ArrayList<>();
 
     public SkillTree(ConfigurationSection config) {
-
         super(config);
+
         this.id = Objects.requireNonNull(config.getString("id"), "Could not find skill tree id");
         this.name = MythicLib.plugin.parseColors(Objects.requireNonNull(config.getString("name"), "Could not find skill tree name"));
         Objects.requireNonNull(config.getStringList("lore"), "Could not find skill tree lore").forEach(str -> lore.add(MythicLib.plugin.parseColors(str)));
-        this.item = Material.valueOf(MMOCoreUtils.toEnumName(Objects.requireNonNull(config.getString("item"))));
+        this.item = Material.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("item"))));
         Validate.isTrue(config.isConfigurationSection("nodes"), "Could not find any nodes in the tree");
-
 
         for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
             try {
@@ -71,7 +70,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
                 nodes.put(node.getId(), node);
 
             } catch (Exception e) {
-                MMOCore.plugin.getLogger().log(Level.SEVERE,"Couldn't load skill tree node "+id+"."+key+": "+e.getMessage());
+                MMOCore.plugin.getLogger().log(Level.SEVERE, "Couldn't load skill tree node " + id + "." + key + ": " + e.getMessage());
             }
         }
         try {
@@ -97,7 +96,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
                     continue;
                 }
                 for (String size : config.getConfigurationSection("icons." + key).getKeys(false)) {
-                    DisplayInfo displayInfo = new DisplayInfo(NodeState.valueOf(MMOCoreUtils.toEnumName(key)), Integer.parseInt(size));
+                    DisplayInfo displayInfo = new DisplayInfo(NodeState.valueOf(UtilityMethods.enumName(key)), Integer.parseInt(size));
                     Icon icon = new Icon(config.getConfigurationSection("icons." + key + "." + size));
                     icons.put(displayInfo, icon);
 
@@ -251,10 +250,10 @@ public abstract class SkillTree extends PostLoadObject implements RegisterObject
 
     }
 
-    @Nullable
     /**
      * Returns null if it is not a node and returns the node type if it a node
      */
+    @Nullable
     public boolean isNode(IntegerCoordinates coordinates) {
         for (SkillTreeNode node : nodes.values()) {
             if (node.getCoordinates().equals(coordinates))

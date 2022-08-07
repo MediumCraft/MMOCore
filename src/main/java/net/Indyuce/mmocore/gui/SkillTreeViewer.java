@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
+import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -14,11 +15,10 @@ import net.Indyuce.mmocore.tree.NodeState;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import net.Indyuce.mmocore.tree.skilltree.display.Icon;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -28,7 +28,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class SkillTreeViewer extends EditableInventory {
@@ -214,10 +213,10 @@ public class SkillTreeViewer extends EditableInventory {
         private final int maxTreeListPage;
         private final SkillTree skillTree;
 
-
         public SkillTreeInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
-            skillTree = playerData.getCachedSkillTree();
+
+            skillTree = playerData.getOpenedSkillTree();
             maxTreeListPage = (MMOCore.plugin.skillTreeManager.getAll().size() - 1) / editable.getByFunction("skill-tree").getSlots().size();
             //We get the width and height of the GUI(corresponding to the slots given)
             List<Integer> slots = editable.getByFunction("skill-tree-node").getSlots();
@@ -266,9 +265,7 @@ public class SkillTreeViewer extends EditableInventory {
         }
 
         @Override
-        public void whenClicked(InventoryClickEvent event, InventoryItem item) {
-
-
+        public void whenClicked(InventoryClickContext event, InventoryItem item) {
             if (item.getFunction().equals("next-tree-list-page")) {
                 treeListPage++;
                 open();
@@ -313,9 +310,8 @@ public class SkillTreeViewer extends EditableInventory {
                 }
             }
 
-
             if (item.getFunction().equals("skill-tree")) {
-                String id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(
+                String id = event.getItemStack().getItemMeta().getPersistentDataContainer().get(
                         new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING);
                 playerData.setCachedSkillTree(MMOCore.plugin.skillTreeManager.get(id));
                 MMOCore.plugin.soundManager.getSound(SoundEvent.CHANGE_SKILL_TREE).playTo(player);
@@ -327,7 +323,7 @@ public class SkillTreeViewer extends EditableInventory {
 
             if (item.getFunction().equals("skill-tree-node")) {
 
-                if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
+                if (event.getClickType() == ClickType.RIGHT) {
                     int offset = event.getSlot();
                     int xOffset=offset%9-middleSlot%9;
                     int yOffset=offset/9-middleSlot/9;
@@ -338,8 +334,8 @@ public class SkillTreeViewer extends EditableInventory {
                     return;
                 }
 
-                else if (event.getAction() == InventoryAction.PICKUP_ALL) {
-                    PersistentDataContainer container = event.getCurrentItem().getItemMeta().getPersistentDataContainer();
+                else if (event.getClickType() == ClickType.LEFT) {
+                    PersistentDataContainer container = event.getItemStack().getItemMeta().getPersistentDataContainer();
                     int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
                     int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
                     SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));

@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.tree.skilltree.display;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,7 +22,7 @@ public class Icon {
         return customModelData;
     }
     public Icon(ConfigurationSection config) {
-        this(Material.valueOf(Objects.requireNonNull(MMOCoreUtils.toEnumName(
+        this(Material.valueOf(Objects.requireNonNull(UtilityMethods.enumName(
                 config.getString("item")))),config.contains("model-data")?config.getInt("model-data"):0);
     }
 

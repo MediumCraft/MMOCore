@@ -53,10 +53,6 @@ public class MMOCoreUtils {
         return builder.toString();
     }
 
-    public static String toEnumName(String str) {
-        return str.replace("-", "_").toUpperCase();
-    }
-
     /**
      *
      * @param value an integer you want to convert
@@ -126,11 +122,6 @@ public class MMOCoreUtils {
                 t += MythicLib.plugin.getVersion().getWrapper().getNBTItem(item).getInteger("RpgWorth") * item.getAmount();
         return t;
     }
-
-    public static String toEnumName(String str) {
-        return str.replace("-","_").replace(" ","_").toUpperCase();
-    }
-
 
     public static String toBase64(ItemStack[] items) {
         try {

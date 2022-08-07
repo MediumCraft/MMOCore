@@ -231,11 +231,6 @@ resource-bar-colors:
   stamina-half: 'DARK_GREEN'
   stamina-empty: 'WHITE'
 
-# When set to true, attributes are saved and
-# reset when a player changes their class.
-# Not implemented yet.
-# attributes-as-class-info: true
-
 # Whether or not the admin commands should display
 # the result of the command when ran.
 # For Example: "Players Level is now 10."

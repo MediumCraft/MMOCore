@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.skill.custom.mechanic;
+package net.Indyuce.mmocore.script.mechanic;
 
 import io.lumine.mythic.lib.script.mechanic.type.TargetMechanic;
 import io.lumine.mythic.lib.skill.SkillMetadata;

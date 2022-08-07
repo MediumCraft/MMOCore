@@ -1,8 +1,8 @@
-package net.Indyuce.mmocore.skill.custom.mechanic;
+package net.Indyuce.mmocore.script.mechanic;
 
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.script.mechanic.type.TargetMechanic;
 import io.lumine.mythic.lib.skill.SkillMetadata;
+import io.lumine.mythic.lib.script.mechanic.type.TargetMechanic;
 import io.lumine.mythic.lib.util.DoubleFormula;
 import io.lumine.mythic.lib.util.configobject.ConfigObject;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
@@ -11,12 +11,12 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class StelliumMechanic extends TargetMechanic {
+public class ManaMechanic extends TargetMechanic {
     private final DoubleFormula amount;
     private final Operation operation;
     private final PlayerResourceUpdateEvent.UpdateReason reason;
 
-    public StelliumMechanic(ConfigObject config) {
+    public ManaMechanic(ConfigObject config) {
         super(config);
 
         config.validateKeys("amount");
@@ -31,10 +31,10 @@ public class StelliumMechanic extends TargetMechanic {
         Validate.isTrue(target instanceof Player, "Target is not a player");
         PlayerData targetData = PlayerData.get(target.getUniqueId());
         if (operation == Operation.GIVE)
-            targetData.giveStellium(amount.evaluate(meta), reason);
+            targetData.giveMana(amount.evaluate(meta), reason);
         else if (operation == Operation.SET)
-            targetData.setStellium(amount.evaluate(meta));
+            targetData.setMana(amount.evaluate(meta));
         else if (operation == Operation.TAKE)
-            targetData.giveStellium(-amount.evaluate(meta), reason);
+            targetData.giveMana(-amount.evaluate(meta), reason);
     }
 }

@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.command;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,7 +19,7 @@ public class CommandVerbose {
 
         for (CommandType type : CommandType.values())
             try {
-                values.put(type, VerboseValue.valueOf(config.getString(MMOCoreUtils.toEnumName(type.name()), "TRUE").toUpperCase()));
+                values.put(type, VerboseValue.valueOf(config.getString(UtilityMethods.enumName(type.name()), "TRUE").toUpperCase()));
             } catch (IllegalArgumentException exception) {
                 values.put(type, VerboseValue.TRUE);
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load command verbose action for " + type.name());

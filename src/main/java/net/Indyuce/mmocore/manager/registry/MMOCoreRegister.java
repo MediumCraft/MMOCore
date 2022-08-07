@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class MMOCoreRegister<T extends RegisterObject> implements MMOCoreManager {
+public abstract class MMOCoreRegister<T extends RegisteredObject> implements MMOCoreManager {
     protected final Map<String, T> registered = new HashMap<>();
 
     public void register(T t) {

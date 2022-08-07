@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.skill.custom.mechanic;
+package net.Indyuce.mmocore.script.mechanic;
 
 public enum Operation {
     GIVE,

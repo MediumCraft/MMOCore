@@ -3,14 +3,11 @@ package net.Indyuce.mmocore;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.version.SpigotPlugin;
-import io.lumine.mythic.utils.plugin.LuminePlugin;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.PlayerActionBar;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.player.stats.StatType;
-import net.Indyuce.mmocore.api.util.debug.DebugMode;
 import net.Indyuce.mmocore.command.*;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
@@ -34,7 +31,6 @@ import net.Indyuce.mmocore.listener.event.PlayerPressKeyListener;
 import net.Indyuce.mmocore.listener.option.*;
 import net.Indyuce.mmocore.listener.profession.FishingListener;
 import net.Indyuce.mmocore.listener.profession.PlayerCollectStats;
-import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.manager.*;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
@@ -48,10 +44,10 @@ import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
-import net.Indyuce.mmocore.skill.custom.mechanic.ExperienceMechanic;
-import net.Indyuce.mmocore.skill.custom.mechanic.ManaMechanic;
-import net.Indyuce.mmocore.skill.custom.mechanic.StaminaMechanic;
-import net.Indyuce.mmocore.skill.custom.mechanic.StelliumMechanic;
+import net.Indyuce.mmocore.script.mechanic.ExperienceMechanic;
+import net.Indyuce.mmocore.script.mechanic.StaminaMechanic;
+import net.Indyuce.mmocore.script.mechanic.ManaMechanic;
+import net.Indyuce.mmocore.script.mechanic.StelliumMechanic;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,7 +60,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 public class MMOCore extends JavaPlugin {
@@ -110,15 +105,12 @@ public class MMOCore extends JavaPlugin {
     public GuildModule guildModule;
     public boolean shouldDebugSQL = false;
 
-    private static final int MYTHICLIB_COMPATIBILITY_INDEX = 7;
-
     public MMOCore() {
         plugin = this;
     }
 
     @Override
     public void onLoad() {
-
 
         // Register MMOCore-specific objects
         MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
@@ -201,7 +193,6 @@ public class MMOCore extends JavaPlugin {
             }
         }.runTaskTimer(MMOCore.plugin, 100, 20);
 
-
         /*
          * For the sake of the lord, make sure they aren't using MMOItems Mana and
          * Stamina Addon...This should prevent a couple error reports produced by people
@@ -219,24 +210,6 @@ public class MMOCore extends JavaPlugin {
 
         if (getConfig().getBoolean("vanilla-exp-redirection.enabled"))
             Bukkit.getPluginManager().registerEvents(new RedirectVanillaExp(getConfig().getDouble("vanilla-exp-redirection.ratio")), this);
-
-        // Enable debug mode for extra debug tools
-        if (getConfig().contains("debug")) {
-            DebugMode.setLevel(getConfig().getInt("debug", 0));
-            DebugMode.enableActionBar();
-        }
-
-        // Load quest module
-        try {
-            String questPluginName = UtilityMethods.enumName(getConfig().getString("quest-plugin"));
-            PartyModuleType moduleType = PartyModuleType.valueOf(questPluginName);
-            Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
-            partyModule = moduleType.provideModule();
-        } catch (RuntimeException exception) {
-            getLogger().log(Level.WARNING, "Could not initialize quest module: " + exception.getMessage());
-            partyModule = new MMOCorePartyModule();
-        }
-
 
         // Load party module
         try {
@@ -438,7 +411,6 @@ public class MMOCore extends JavaPlugin {
         if (getConfig().isConfigurationSection("action-bar"))
             actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
 
-
         if (clearBefore)
             PlayerData.getAll().forEach(PlayerData::update);
     }
@@ -447,16 +419,8 @@ public class MMOCore extends JavaPlugin {
         log(Level.INFO, message);
     }
 
-    public static void debug(int value, String message) {
-        debug(value, Level.INFO, message);
-    }
-
     public static void log(Level level, String message) {
         plugin.getLogger().log(level, message);
-    }
-
-    public static void debug(int value, Level level, String message) {
-        if (DebugMode.level > (value - 1)) plugin.getLogger().log(level, message);
     }
 
     public File getJarFile() {
