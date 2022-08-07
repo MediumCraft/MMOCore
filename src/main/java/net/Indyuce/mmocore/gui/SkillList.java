@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -14,6 +15,7 @@ import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -45,6 +47,23 @@ public class SkillList extends EditableInventory {
 
         if (function.equals("upgrade"))
             return new UpgradeItem(config);
+
+        if (function.equals("reallocation")) {
+
+            return new InventoryItem(config) {
+
+                @Override
+                public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
+                    Placeholders holders = new Placeholders();
+                    holders.register("skill_points", inv.getPlayerData().getSkillPoints());
+                    holders.register("points", inv.getPlayerData().getSkillReallocationPoints());
+                    holders.register("total", inv.getPlayerData().countSkillPointsWhenReallocate());
+                    return holders;
+                }
+            };
+        }
+
+
 
         if (function.equals("slot"))
             return new InventoryItem<SkillViewerInventory>(config) {
@@ -306,6 +325,35 @@ public class SkillList extends EditableInventory {
                 selected = skills.get(index);
                 open();
                 return;
+            }
+
+            if(item.getFunction().equals("reallocation")) {
+
+
+
+                int spent= getPlayerData().countSkillPointsWhenReallocate();
+
+                if (spent < 1) {
+                    MMOCore.plugin.configManager.getSimpleMessage("no-skill-points-spent").send(player);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                    return;
+                }
+
+                if (playerData.getSkillReallocationPoints() < 1) {
+                    MMOCore.plugin.configManager.getSimpleMessage("not-skill-reallocation-point").send(player);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                    return;
+                }
+
+
+                for(ClassSkill skill:playerData.getProfess().getSkills()) {
+                    playerData.setSkillLevel(skill.getSkill(), 1);
+                }
+                playerData.giveSkillPoints(spent);
+                playerData.setSkillReallocationPoints(playerData.getSkillReallocationPoints()-1);
+                MMOCore.plugin.configManager.getSimpleMessage("skill-points-reallocated", "points", "" + playerData.getSkillPoints()).send(player);
+                MMOCore.plugin.soundManager.getSound(SoundEvent.RESET_SKILLS).playTo(getPlayer());
+                open();
             }
 
             if (item.getFunction().equals("previous")) {

@@ -33,6 +33,18 @@ items:
     name: '&aPrevious'
     lore: { }
 
+  reallocate:
+    slots: [26]
+    function: reallocation
+    item: CAULDRON
+    name: '&aReallocate Skill Points'
+    lore:
+      - ''
+      - 'You have spent a total of &6{total}&7 skill points.'
+      - '&7Right click to reallocate them.'
+      - ''
+      - '&eCosts 1 skill reallocation point.'
+      - '&e◆ Skill Reallocation Points: &6{points}'
 
     #switch:
     #
@@ -87,11 +99,9 @@ items:
   upgrade:
     slots: [ 15 ]
     function: upgrade
-    shift-cost: 10
     item: GREEN_STAINED_GLASS_PANE
     name: '&a&lUPGRADE {skill_caps}'
     lore:
       - '&7Costs 1 skill point.'
-      - '&7Shift-Click to spend {shift_points} points'
       - ''
       - '&eCurrent Skill Points: {skill_points}'

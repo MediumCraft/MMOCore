@@ -66,7 +66,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Nullable
     private PlayerClass profess;
-    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints;// skillReallocationPoints,
+    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
@@ -238,6 +238,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return skillPoints;
     }
 
+    public void giveSkillReallocationPoints(int value) {
+        skillReallocationPoints+=value;
+    }
+
+    public int countSkillPointsWhenReallocate() {
+        int sum = 0;
+        for(ClassSkill skill:getProfess().getSkills()) {
+            //0 if the skill is level 1(just unlocked) or 0 locked.
+            sum+=Math.max(0,getSkillLevel(skill.getSkill())-1);
+        }
+        return sum;
+    }
+
 
     @Override
     public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {
@@ -348,6 +361,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setAttributeReallocationPoints(int value) {
         attributeReallocationPoints = Math.max(0, value);
+    }
+
+    public void setSkillReallocationPoints(int value) {
+        skillReallocationPoints = Math.max(0, value);
+    }
+
+    public int getSkillReallocationPoints() {
+        return skillReallocationPoints;
     }
 
     public void setSkillPoints(int value) {
@@ -851,7 +872,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         Validate.notNull(skill, "Skill cannot be null");
 
 
-
         if (boundSkills.size() < getProfess().getMaxBoundSkills())
             boundSkills.add(skill);
         else
@@ -875,7 +895,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())

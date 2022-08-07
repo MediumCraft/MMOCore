@@ -31,8 +31,10 @@ default-playerdata:
   level: 1
   class-points: 0
   skill-points: 0
+  skill-realloc-points: 0
   attribute-points: 0
   attribute-realloc-points: 0
+
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
