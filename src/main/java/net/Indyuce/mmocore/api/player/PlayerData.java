@@ -773,10 +773,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
             }
             getStats().updateStats();
-
-            // Apply class experience table
-            if (getProfess().hasExperienceTable())
-                getProfess().getExperienceTable().claim(this, level, getProfess());
         }
 
         refreshVanillaExp();
