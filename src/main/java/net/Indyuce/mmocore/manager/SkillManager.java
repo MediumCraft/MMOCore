@@ -26,6 +26,7 @@ public class SkillManager implements MMOCoreManager {
         skills.put(skill.getHandler().getId().toUpperCase(), skill);
     }
 
+
     @Nullable
     public RegisteredSkill getSkill(String id) {
         return skills.get(id.toUpperCase());

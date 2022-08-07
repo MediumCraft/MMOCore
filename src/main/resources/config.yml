@@ -89,6 +89,7 @@ skill-casting:
   mode: SKILL_BAR
   open: SWAP_HANDS
 
+
 loot-chests:
 
   # Time in seconds it takes for a loot chest to
@@ -246,6 +247,7 @@ resource-bar-colors:
 # false - Never verbose
 command-verbose:
   attribute: true
+  skill: true
   class: true
   experience: true
   level: true

@@ -849,7 +849,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setBoundSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (boundSkills.size() < 6)
+
+
+
+        if (boundSkills.size() < getProfess().getMaxBoundSkills())
             boundSkills.add(skill);
         else
             boundSkills.set(slot, skill);

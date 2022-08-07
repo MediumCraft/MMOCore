@@ -54,6 +54,8 @@ mana:
 cast-particle:
     particle: SPELL_INSTANT
 
+
+
 # Special resource regeneration: (when out of combat),
 # players can regen a set % of their maximum mana/missing mana.
 # This % can scale with the player level.
@@ -139,6 +141,11 @@ skills:
     GREATER_HEALINGS:
         level: 15
         max-level: 30
+
+
+
+#The number of skills a player can bound.
+max-bound-skills: 6
 
 # Experience sources for main class experience.
 main-exp-sources:

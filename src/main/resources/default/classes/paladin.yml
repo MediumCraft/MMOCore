@@ -30,6 +30,8 @@ display:
 # Must match an existing exp curve filename from the 'expcurves' folder
 exp-curve: levels
 
+
+
 # The maximum level players can reach
 max-level: 100
 
@@ -74,6 +76,11 @@ attributes:
     movement-speed:
         base: .095
         per-level: 0
+
+
+
+#The number of skills a player can bound.
+max-bound-skills: 5
 
 # Experience sources for main class experience.
 main-exp-sources:

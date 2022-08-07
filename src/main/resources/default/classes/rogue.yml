@@ -33,6 +33,7 @@ max-level: 100
 
 exp-table: class_exp_table
 
+
 options:
     # Mana and health regen only applies when out of combat
     off-combat-mana-regen: true
@@ -79,6 +80,10 @@ attributes:
     movement-speed:
         base: .105
         per-level: 0
+
+
+#The number of skills a player can bound.
+max-bound-skills: 5
 
 # Experience sources for main class experience.
 main-exp-sources:

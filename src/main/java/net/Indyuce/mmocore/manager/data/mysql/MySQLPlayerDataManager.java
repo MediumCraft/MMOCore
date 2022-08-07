@@ -35,6 +35,11 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
+                //To prevent infinite loops
+                if (System.currentTimeMillis() - startTime > 4000) {
+                    cancel();
+                    return;
+                }
 
                 provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';", (result) -> {
                     try {
@@ -145,7 +150,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
     @Override
     public void saveData(PlayerData data) {
 
-        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(),provider);
+        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider);
         MMOCore.sqlDebug("Saving data for: '" + data.getUniqueId() + "'...");
 
         sql.updateData("class_points", data.getClassPoints());

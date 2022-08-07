@@ -49,7 +49,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final int maxLevel, displayOrder;
     private final ExpCurve expCurve;
     private final ExperienceTable expTable;
-
+    private final int maxBoundSkills;
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
@@ -100,7 +100,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 ? MMOCore.plugin.experience.getCurveOrThrow(
                 config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
-
+        maxBoundSkills = config.getInt("max-bound-skills", 6);
         ExperienceTable expTable = null;
         if (config.contains("exp-table"))
             try {
@@ -206,7 +206,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         this.icon = new ItemStack(material);
         setOption(ClassOption.DISPLAY, false);
         setOption(ClassOption.DEFAULT, false);
-
+        maxBoundSkills = 6;
         for (PlayerResource resource : PlayerResource.values())
             resourceHandlers.put(resource, new ResourceRegeneration(resource));
     }
@@ -260,6 +260,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Override
     public ExpCurve getExpCurve() {
         return expCurve;
+    }
+
+    public int getMaxBoundSkills() {
+        return maxBoundSkills;
     }
 
     @NotNull
