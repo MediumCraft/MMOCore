@@ -8,11 +8,10 @@ import com.guillaumevdn.questcreator.lib.quest.QuestEndType;
 import net.Indyuce.mmocore.quest.AbstractQuest;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
-
 import java.util.Arrays;
 import java.util.List;
 
-public class QuestCreatorModule implements QuestModule<QuestCreatorModule.QuestCreatorQuest> {
+public class QuestCreatorModule implements QuestModule<QuestCreatorModule.QuestCreatorQuest>{
 
     @Override
     public QuestCreatorQuest getQuestOrThrow(String id) {
@@ -21,22 +20,24 @@ public class QuestCreatorModule implements QuestModule<QuestCreatorModule.QuestC
 
     @Override
     public boolean hasCompletedQuest(String questId, Player player) {
-        UserQC playerData = UserQC.cachedOrNull(player);
-        Validate.notNull(playerData, "QuestCreator User hasn't been loaded!");
-
-        // Gets all the quests the player has  succeeded at
-        List<QuestHistoryElement> elements = playerData.getQuestHistory().getElements(questId, Arrays.asList(QuestEndType.SUCCESS), 0);
-        for (QuestHistoryElement el : elements)
-            if (el.getModelId().equals(questId))
+        UserQC playerData=UserQC.cachedOrNull(player);
+        if(playerData==null)
+            return false;
+        //Gets all the quests the player has  succeeded at
+        List<QuestHistoryElement> elements=playerData.getQuestHistory().getElements(questId, Arrays.asList(QuestEndType.SUCCESS),0);
+        for(QuestHistoryElement el:elements) {
+            if(el.getModelId().equals(questId))
                 return true;
-
+        }
         return false;
     }
+
 
     /**
      * QC ElementModel corresponds to our quest and their
      * quests correspond to our Quest progress class
      */
+
     public class QuestCreatorQuest implements AbstractQuest {
         ElementModel questModel;
 

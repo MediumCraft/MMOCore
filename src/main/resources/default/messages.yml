@@ -157,7 +157,7 @@ no-permission-for-class:
 # Attributes
 no-attribute-points-spent: '&cYou have not spent any attribute points.'
 not-attribute-reallocation-point: '&cYou do not have 1 reallocation point.'
-not-attribute-point: '&cYou have no attribute point.'
+not-attribute-point: '&cYou don''t have 1 attribute point.'
 not-attribute-point-shift: '&cYou must have &4{shift_points} &cattribute points.'
 attribute-points-reallocated: '&eYou successfully reset your attributes. You now have &6{points} &eattribute points.'
 attribute-max-points-hit: '&cYou cannot level up this attribute anymore.'
@@ -173,3 +173,12 @@ no-skill-bound: '&cYou don''t have any skill bound to this slot.'
 not-active-skill: '&cThis is not an active skill.'
 skill-max-level-hit: '&cYou already hit the max level for that skill.'
 no-skill-placeholder: 'No Skill Bound'
+
+#Skill Tree
+no-skill-tree-points-spent: '&cYou have not spent any skill tree points.'
+locked-node: '&cThis skill is locked!'
+upgrade-skill-node: '&eYour skill node &6{skill-node} &eis now Level &6{level}&e!'
+skill-node-max-level-hit: '&cYou already hit the max level for that skill node.'
+not-enough-skill-tree-points: '&cYou need one skill tree point.'
+reallocated-points: '&eYou successfully reset the skill tree {skill-tree}. &eYou now have &6{points} &eskill tree points.'
+not-skill-tree-reallocation-point: '&cYou do not have 1 skill tree reallocation point.'

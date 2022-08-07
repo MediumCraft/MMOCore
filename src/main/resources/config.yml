@@ -250,6 +250,7 @@ command-verbose:
   experience: true
   level: true
   nocd: true
+  skill-tree-points: true
   points: true
   reset: true
   resource: true

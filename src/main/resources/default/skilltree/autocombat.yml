@@ -1,0 +1,143 @@
+id: autocombat
+name: AutoCombat
+type: automatic
+item: GOLDEN_AXE
+lore: 
+- '&6This autoskill tree is used for combat abilities!'
+
+nodes:
+  strength:
+    name: 'Combat strength'
+    children: 
+      strong: 
+        force: 2
+      
+    max-level: 2
+    size: 1
+    lores:
+      unlocked:
+        1 : 
+          - "&eYou are level 1"
+        2: 
+          - "&eYou are level 2"
+      locked:
+        - "&4This skill is locked"
+      unlockable: 
+        - "&aThis skill is unlockable"
+      fully-locked: 
+        - '&aThis is skill is fully locked'
+    #modifers
+  
+  force:
+    name: 'Force'
+    size: 1
+    max-children: 1
+    children: 
+      strong: 
+        weaponry: 1
+        archery: 1
+    lores:
+      unlocked:
+        1 : 
+          - "&eYou are level 1"
+        2: 
+          - "&eYou are level 2"
+      locked:
+        - "&4This skill is locked"
+      unlockable: 
+        - "&aThis skill is unlockable"
+      fully-locked: 
+        - '&aThis is skill is fully locked'
+  
+  weaponry:
+    name: 'Weaponry'  
+    max-level: 2
+    size: 1
+    lores:
+      unlocked:
+        1 : 
+          - "&eYou are level 1"
+        2: 
+          - "&eYou are level 2"
+      locked:
+        - "&4This skill is locked"
+      unlockable: 
+        - "&aThis skill is unlockable"
+      fully-locked: 
+        - '&aThis is skill is fully locked'
+  
+  archery:
+    name: 'Archery'
+    
+    max-level: 2
+    size: 1
+    children: 
+      strong: 
+        archery2: 2
+    lores:
+      unlocked:
+        1 : 
+          - "&eYou are level 1"
+        2: 
+          - "&eYou are level 2"
+      locked:
+        - "&4This skill is locked"
+      unlockable: 
+        - "&aThis skill is unlockable"
+      fully-locked: 
+        - '&aThis is skill is fully locked'
+  archery2:
+    name: 'Archery2'
+
+    max-level: 2
+    size: 1
+    children: 
+      strong: 
+        archery3: 1
+    lores:
+      unlocked:
+        1 : 
+          - "&eYou are level 1"
+        2: 
+          - "&eYou are level 2"
+      locked:
+        - "&4This skill is locked"
+      unlockable: 
+        - "&aThis skill is unlockable"
+      fully-locked: 
+        - '&aThis is skill is fully locked'
+  archery3:
+    name: 'Archery3'
+  
+    max-level: 2
+    size: 1
+    lores:
+      unlocked:
+        1 : 
+          - "&eYou are level 1"
+        2: 
+          - "&eYou are level 2"
+      locked:
+        - "&4This skill is locked"
+      unlockable: 
+        - "&aThis skill is unlockable"
+      fully-locked: 
+        - '&aThis is skill is fully locked'
+
+
+
+icons: 
+  unlocked:
+    1: 
+      item: 'GREEN_DYE'
+  locked: 
+    1: 
+      item: "BROWN_DYE"
+  unlockable:
+    1:
+      item: "BLUE_DYE"
+  fully-locked:
+    1:
+      item: "BLACK_DYE"
+  path: 
+    item: "WHITE_DYE"
