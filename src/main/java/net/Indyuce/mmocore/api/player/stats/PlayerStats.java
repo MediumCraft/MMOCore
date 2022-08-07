@@ -6,13 +6,13 @@ import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
+import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import io.lumine.mythic.lib.player.skill.PassiveSkillMap;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
-import org.apache.commons.lang.Validate;
-import org.jetbrains.annotations.NotNull;
 
 public class PlayerStats {
     private final PlayerData data;
@@ -96,9 +96,15 @@ public class PlayerStats {
          *
          * This updates the player's PASSIVE skills
          */
-        data.getMMOPlayerData().getPassiveSkillMap().removeModifiers("MMOCorePassiveSkill");
+        final PassiveSkillMap skillMap = data.getMMOPlayerData().getPassiveSkillMap();
+        skillMap.removeModifiers("MMOCorePassiveSkill");
         for (ClassSkill skill : data.getProfess().getSkills())
             if (skill.getSkill().getTrigger().isPassive())
-                data.getMMOPlayerData().getPassiveSkillMap().addModifier(skill.toPassive(data));
+                skillMap.addModifier(skill.toPassive(data));
+
+        // This updates the player's class SCRIPTS
+        skillMap.removeModifiers("MMOCoreClassScript");
+        for (PassiveSkill script : data.getProfess().getScripts())
+            skillMap.addModifier(script);
     }
 }

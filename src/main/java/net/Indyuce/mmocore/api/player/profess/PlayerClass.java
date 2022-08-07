@@ -5,7 +5,15 @@ import com.mojang.authlib.properties.Property;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.player.modifier.ModifierSource;
+import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import io.lumine.mythic.lib.script.Script;
+import io.lumine.mythic.lib.skill.SimpleSkill;
+import io.lumine.mythic.lib.skill.Skill;
+import io.lumine.mythic.lib.skill.handler.MythicLibSkillHandler;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -20,8 +28,6 @@ import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
-import net.Indyuce.mmocore.player.playerclass.ClassTrigger;
-import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
@@ -45,24 +51,28 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final List<String> description = new ArrayList<>(), attrDescription = new ArrayList<>();
     private final ItemStack icon;
     private final Map<ClassOption, Boolean> options = new HashMap<>();
-    private final ManaDisplayOptions manaDisplay;
     private final int maxLevel, displayOrder;
+
+    @NotNull
+    private final ManaDisplayOptions manaDisplay;
+
+    @NotNull
     private final ExpCurve expCurve;
+
+    @Nullable
     private final ExperienceTable expTable;
+
+    @NotNull
+    private final CastingParticle castParticle;
 
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
-
-    @Deprecated
-    private final Map<String, ClassTrigger> classTriggers = new HashMap<>();
-
+    private final List<PassiveSkill> classScripts = new LinkedList<>();
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
 
     @Deprecated
     private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
-
-    private final CastingParticle castParticle;
 
     public PlayerClass(String id, FileConfiguration config) {
         super(config);
@@ -82,7 +92,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 profileField.set(meta, gp);
                 icon.setItemMeta(meta);
             } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-                     | SecurityException exception) {
+                    | SecurityException exception) {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
 
@@ -110,15 +120,26 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             }
         this.expTable = expTable;
 
+        if (config.contains("scripts"))
+            for (String key : config.getConfigurationSection("scripts").getKeys(false))
+                try {
+                    final TriggerType trigger = TriggerType.valueOf(UtilityMethods.enumName(key));
+                    final Script script = MythicLib.plugin.getSkills().loadScript(config.getConfigurationSection("scripts." + key));
+                    final Skill castSkill = new SimpleSkill(trigger, new MythicLibSkillHandler(script));
+                    final PassiveSkill skill = new PassiveSkill("MMOCoreClassScript", castSkill, EquipmentSlot.OTHER, ModifierSource.OTHER);
+                    classScripts.add(skill);
+                } catch (IllegalArgumentException exception) {
+                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load script '" + key + "' from class '" + id + "': " + exception.getMessage());
+                }
+
         if (config.contains("triggers"))
-            for (String key : config.getConfigurationSection("triggers").getKeys(false)) {
+            for (String key : config.getConfigurationSection("triggers").getKeys(false))
                 try {
                     String format = key.toLowerCase().replace("_", "-").replace(" ", "-");
                     eventTriggers.put(format, new EventTrigger(format, config.getStringList("triggers." + key)));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.log(Level.WARNING, "Could not load trigger '" + key + "' from class '" + id + "':" + exception.getMessage());
                 }
-            }
 
         if (config.contains("attributes"))
             for (String key : config.getConfigurationSection("attributes").getKeys(false))
@@ -308,10 +329,15 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return equals(playerData.getProfess());
     }
 
-    @Nullable
-    @Deprecated
-    public ClassTrigger getClassTrigger(ClassTriggerType type) {
-        return classTriggers.get(type);
+    /**
+     * @return A list of passive skills which correspond to class
+     * scripts wrapped in a format recognized by MythicLib.
+     * Class scripts are handled just like
+     * passive skills
+     */
+    @NotNull
+    public List<PassiveSkill> getScripts() {
+        return classScripts;
     }
 
     @Deprecated
