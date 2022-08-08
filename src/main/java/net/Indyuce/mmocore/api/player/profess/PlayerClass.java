@@ -25,7 +25,10 @@ import net.Indyuce.mmocore.player.playerclass.ClassTriggerType;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import net.Indyuce.mmocore.skill.cast.KeyCombo;
+import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -53,6 +56,12 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
+
+    @Nullable
+    //If the class redefines its own key combos.
+    private final HashMap<KeyCombo,Integer> combos= new HashMap<>();
+    private int longestCombo;
+
 
     @Deprecated
     private final Map<String, ClassTrigger> classTriggers = new HashMap<>();
@@ -110,6 +119,26 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             }
         this.expTable = expTable;
 
+
+        ConfigurationSection section=config.getConfigurationSection("combos");
+        if(section!=null) {
+            // Load different combos
+            for (String key : section.getKeys(false))
+                try {
+                    int spellSlot = Integer.valueOf(key);
+                    Validate.isTrue(spellSlot >= 0, "Spell slot must be at least 0");
+                    Validate.isTrue(!combos.values().contains(spellSlot), "There is already a key combo with the same skill slot");
+                    KeyCombo combo = new KeyCombo();
+                    for (String str : section.getStringList(key))
+                        combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
+
+                    combos.put(combo, spellSlot);
+                    longestCombo = Math.max(longestCombo, combo.countKeys());
+                } catch (RuntimeException exception) {
+                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
+                }
+
+        }
         if (config.contains("triggers"))
             for (String key : config.getConfigurationSection("triggers").getKeys(false)) {
                 try {
@@ -323,6 +352,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return eventTriggers.keySet();
     }
 
+
     @Deprecated
     public boolean hasEventTriggers(String name) {
         return eventTriggers.containsKey(name);
@@ -382,6 +412,15 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public Set<String> getStats() {
         return stats.keySet();
+    }
+
+    @Nullable
+    public HashMap<KeyCombo, Integer> getCombos() {
+        return combos;
+    }
+
+    public int getLongestCombo() {
+        return longestCombo;
     }
 
     @NotNull

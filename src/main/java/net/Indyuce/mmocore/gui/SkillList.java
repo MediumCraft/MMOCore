@@ -376,15 +376,13 @@ public class SkillList extends EditableInventory {
             if (item.getFunction().equals("slot")) {
                 int index = slotSlots.indexOf(context.getSlot());
 
-
-                // unbind if there is a current spell.
+KEy                // unbind if there is a current spell.
                 if (context.getClickType() == ClickType.RIGHT) {
                     if (!playerData.hasSkillBound(index)) {
                         MMOCore.plugin.configManager.getSimpleMessage("no-skill-bound").send(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                         return;
                     }
-
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
                     playerData.unbindSkill(index);
                     open();
@@ -399,6 +397,7 @@ public class SkillList extends EditableInventory {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
+
 
                 if (!playerData.hasSkillUnlocked(selected)) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
