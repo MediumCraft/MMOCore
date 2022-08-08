@@ -20,13 +20,15 @@ public class AdminCommandTreeNode extends CommandTreeNode {
         addChild(new ExperienceCommandTreeNode(this));
         addChild(new LevelCommandTreeNode(this));
         addChild(new AttributeCommandTreeNode(this));
+        addChild(new SkillCommandTreeNode(this));
 
         addChild(new PointsCommandTreeNode("skill", this, PlayerData::setSkillPoints, PlayerData::giveSkillPoints, PlayerData::getSkillPoints));
         addChild(new PointsCommandTreeNode("class", this, PlayerData::setClassPoints, PlayerData::giveClassPoints, PlayerData::getClassPoints));
         addChild(new PointsCommandTreeNode("attribute", this, PlayerData::setAttributePoints, PlayerData::giveAttributePoints, PlayerData::getAttributePoints));
         addChild(new PointsCommandTreeNode("attr-realloc", this, PlayerData::setAttributeReallocationPoints, PlayerData::giveAttributeReallocationPoints, PlayerData::getAttributeReallocationPoints));
-        addChild(new PointsCommandTreeNode("skill-realloc",this,PlayerData::setSkillReallocationPoints,PlayerData::giveSkillReallocationPoints,PlayerData::getSkillReallocationPoints));
-        addChild(new SkillCommandTreeNode(this));
+        addChild(new PointsCommandTreeNode("skill-realloc", this, PlayerData::setSkillReallocationPoints, PlayerData::giveSkillReallocationPoints, PlayerData::getSkillReallocationPoints));
+        addChild(new PointsCommandTreeNode("skill-tree-realloc", this, PlayerData::setSkillTreeReallocationPoints, PlayerData::giveSkillTreeReallocationPoints, PlayerData::getSkillTreeReallocationPoints));
+
         for (PlayerResource res : PlayerResource.values())
             addChild(new ResourceCommandTreeNode(res.name().toLowerCase(), this, res));
     }

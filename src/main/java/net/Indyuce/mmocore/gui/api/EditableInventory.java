@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.gui.api;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.adaptor.AdaptorType;
@@ -39,7 +40,7 @@ public abstract class EditableInventory {
 
     public void reload(FileConfiguration config) {
         this.config = config;
-        this.adaptorType = AdaptorType.valueOf(MMOCoreUtils.toEnumName(config.getString("adaptor-type", "classic-adaptor")));
+        this.adaptorType = AdaptorType.valueOf(UtilityMethods.enumName(config.getString("adaptor-type", "classic-adaptor")));
         Validate.notNull(adaptorType, config.getString("adaptor-type") + " does not correspond to an adaptor-type.");//TODO
 
         this.name = config.getString("name");

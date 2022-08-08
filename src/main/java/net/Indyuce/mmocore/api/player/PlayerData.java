@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.player;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
+import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -18,6 +19,7 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -34,6 +36,13 @@ import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
+import net.Indyuce.mmocore.tree.IntegerCoordinates;
+import net.Indyuce.mmocore.tree.NodeState;
+import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.tree.skilltree.LinkedSkillTree;
+import net.Indyuce.mmocore.tree.skilltree.SkillTree;
+import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
+import net.Indyuce.mmocore.tree.skilltree.display.Icon;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.md_5.bungee.api.ChatMessageType;
@@ -50,6 +59,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
 
@@ -66,11 +77,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Nullable
     private PlayerClass profess;
-    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillReallocationPoints;
+    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
     private SkillCastingHandler skillCasting;
+    private SkillTree cachedSkillTree;
 
     private final PlayerQuests questData;
     private final PlayerStats playerStats;
@@ -83,6 +95,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
     private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
 
+    private final Map<SkillTreeNode, Integer> nodeLevels = new HashMap<>();
+    private final Map<SkillTreeNode, NodeState> nodeStates = new HashMap<>();
+    private final Map<String, Integer> skillTreePoints = new HashMap<>();
 
     /**
      * Saves all the items that have been unlocked so far by
@@ -159,6 +174,158 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             }
     }
 
+    public void setupNodeState() {
+        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+            if (skillTree instanceof LinkedSkillTree) {
+                LinkedSkillTree linkedSkillTree = (LinkedSkillTree) skillTree;
+                linkedSkillTree.setupNodeState(this);
+            } else {
+                skillTree.setupNodeState(this);
+            }
+    }
+
+    public void setSkillTreePoints(String treeId, int points) {
+        skillTreePoints.put(treeId, points);
+    }
+
+    public void giveSkillTreePoints(String id, int val) {
+        skillTreePoints.put(id, skillTreePoints.get(id) + val);
+    }
+
+    public int countSkillTreePoints(SkillTree skillTree) {
+        return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(nodeLevels::get).sum();
+    }
+
+    public Map<String, Integer> getSkillTreePoints() {
+        return skillTreePoints;
+    }
+
+    public boolean containsSkillPointTreeId(String treeId) {
+        return skillTreePoints.containsKey(treeId);
+    }
+
+    public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
+        HashMap<String, Integer> nodeLevelsString = new HashMap<>();
+        for (SkillTreeNode node : nodeLevels.keySet()) {
+            nodeLevelsString.put(node.getFullId(), nodeLevels.get(node));
+        }
+        return nodeLevelsString.entrySet();
+    }
+
+    public void removeModifiersFrom(SkillTree skillTree) {
+        for (SkillTreeNode node : skillTree.getNodes()) {
+            for (int i = 0; i < node.getMaxLevel(); i++) {
+                List<PlayerModifier> modifiers = node.getModifiers(i);
+                if (modifiers != null) {
+                    for (PlayerModifier modifier : modifiers) {
+                        modifier.unregister(getMMOPlayerData());
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean canIncrementNodeLevel(SkillTreeNode node) {
+        NodeState nodeState = nodeStates.get(node);
+        //Check the State of the node
+        if (nodeState != NodeState.UNLOCKED && nodeState != NodeState.UNLOCKABLE)
+            return false;
+        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.get(node.getTree().getId()) > 0 || skillTreePoints.get("global") > 0);
+    }
+
+    /**
+     * Increments the node level by one, change the states of branches of the tree.
+     * Consumes skill tree points from the tree first and then consumes the global skill-tree points ('all')
+     */
+    public <T extends SkillTree> void incrementNodeLevel(SkillTreeNode node) {
+        setNodeLevel(node, getNodeLevel(node) + 1);
+        //Triggers the triggers of the node
+        List<Trigger> triggers = node.getTriggers(getNodeLevel(node));
+        if (triggers != null) {
+            for (Trigger trigger : triggers) {
+                trigger.apply(this);
+            }
+
+        }
+
+        //Applies player modifiers
+        List<PlayerModifier> modifiers = node.getModifiers(getNodeLevel(node));
+        if (modifiers != null)
+            for (PlayerModifier modifier : modifiers) {
+                modifier.register(getMMOPlayerData());
+            }
+
+        if (nodeStates.get(node) == NodeState.UNLOCKABLE)
+            setNodeState(node, NodeState.UNLOCKED);
+        if (skillTreePoints.get(node.getTree().getId()) > 0)
+            withdrawSkillTreePoints(node.getTree().getId(), 1);
+        else
+            withdrawSkillTreePoints("global", 1);
+        //We unload the nodeStates map (for the skill tree) and reload it completely
+        for (SkillTreeNode node1 : node.getTree().getNodes()) {
+            nodeStates.remove(node1);
+        }
+        node.getTree().setupNodeState(this);
+    }
+
+    /**
+     * Returns the icon the node should have.
+     */
+    public Icon getIcon(SkillTreeNode node) {
+        SkillTree skillTree = node.getTree();
+
+        DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
+
+        return skillTree.getIcon(displayInfo);
+    }
+
+    public Icon getIcon(SkillTree skillTree, IntegerCoordinates coordinates) {
+
+        if (skillTree.isNode(coordinates)) {
+            SkillTreeNode node = skillTree.getNode(coordinates);
+            if (nodeStates.get(node) == null) {
+                skillTree.getNodes().forEach(nodee -> Bukkit.broadcastMessage(nodee.getId() + "  " + nodeStates.get(nodee)));
+            }
+            DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
+            return skillTree.getIcon(displayInfo);
+        }
+        if (skillTree.isPath(coordinates))
+            return skillTree.getIcon(DisplayInfo.pathInfo);
+        return null;
+    }
+
+    public int getSkillTreePoint(String treeId) {
+        return skillTreePoints.get(treeId);
+    }
+
+    public void withdrawSkillTreePoints(String treeId, int withdraw) {
+        skillTreePoints.put(treeId, skillTreePoints.get(treeId) - withdraw);
+    }
+
+    public void setNodeState(SkillTreeNode node, NodeState nodeState) {
+        nodeStates.put(node, nodeState);
+    }
+
+    public NodeState getNodeState(SkillTreeNode node) {
+        return nodeStates.get(node);
+    }
+
+    public boolean hasNodeState(SkillTreeNode node) {
+        return nodeStates.containsKey(node);
+    }
+
+    public int getNodeLevel(SkillTreeNode node) {
+        return nodeLevels.get(node);
+    }
+
+    public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
+        nodeLevels.put(node, nodeLevel);
+    }
+
+    public void addNodeLevel(SkillTreeNode node) {
+        nodeLevels.put(node, nodeLevels.get(node) + 1);
+    }
+
     @Override
     public void close() {
 
@@ -217,6 +384,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return Math.max(1, level);
     }
 
+    public void setCachedSkillTree(SkillTree cachedSkillTree) {
+        this.cachedSkillTree = cachedSkillTree;
+    }
+
+    @NotNull
+    public SkillTree getOpenedSkillTree() {
+        if (cachedSkillTree == null)
+            return MMOCore.plugin.skillTreeManager.getAll().stream().findFirst().get();
+        return cachedSkillTree;
+    }
+
     @Nullable
     public AbstractParty getParty() {
         return MMOCore.plugin.partyModule.getParty(this);
@@ -251,6 +429,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return sum;
     }
 
+    public int getAttributePoints() {
+        return attributePoints;
+    }
+
+    public int getAttributeReallocationPoints() {
+        return attributeReallocationPoints;
+    }
+
+    public int getSkillTreeReallocationPoints() {
+        return skillTreeReallocationPoints;
+    }
 
     @Override
     public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {
@@ -278,14 +467,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     // public int getSkillReallocationPoints() {
     // return skillReallocationPoints;
     // }
-
-    public int getAttributePoints() {
-        return attributePoints;
-    }
-
-    public int getAttributeReallocationPoints() {
-        return attributeReallocationPoints;
-    }
 
     public boolean isOnline() {
         return mmoData.isOnline();
@@ -377,6 +558,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setClassPoints(int value) {
         classPoints = Math.max(0, value);
+    }
+
+    public void setSkillTreeReallocationPoints(int value) {
+        skillTreeReallocationPoints = Math.max(0, value);
     }
 
     public boolean hasSavedClass(PlayerClass profess) {
@@ -614,7 +799,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
             }
             getStats().updateStats();
-
         }
 
         refreshVanillaExp();
@@ -807,6 +991,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skills.remove(skill);
     }
 
+    @Deprecated
     public boolean hasSkillUnlocked(RegisteredSkill skill) {
         return getProfess().hasSkill(skill.getHandler().getId()) && hasSkillUnlocked(getProfess().getSkill(skill.getHandler().getId()));
     }
@@ -849,6 +1034,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         setAttributeReallocationPoints(attributeReallocationPoints + value);
     }
 
+    public void giveSkillTreeReallocationPoints(int value) {
+        setSkillTreeReallocationPoints(skillTreeReallocationPoints + value);
+    }
+
     public CooldownMap getCooldownMap() {
         return mmoData.getCooldownMap();
     }
@@ -876,8 +1065,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setBoundSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-
-
         if (boundSkills.size() < getProfess().getMaxBoundSkills())
             boundSkills.add(skill);
         else
@@ -903,6 +1090,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @return If the player can change its current class to
      * a subclass
      */
+    @Deprecated
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
             if (getLevel() >= subclass.getLevel())

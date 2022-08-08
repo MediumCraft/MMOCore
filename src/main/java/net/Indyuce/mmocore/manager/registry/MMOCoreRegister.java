@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class MMOCoreRegister<T extends RegisterObject> implements MMOCoreManager {
+public abstract class MMOCoreRegister<T extends RegisteredObject> implements MMOCoreManager {
     protected final Map<String, T> registered = new HashMap<>();
 
     public void register(T t) {
@@ -20,6 +20,9 @@ public abstract class MMOCoreRegister<T extends RegisterObject> implements MMOCo
 
     public T get(String id) {
         return Objects.requireNonNull(registered.get(id), "Could not find " + getRegisteredObjectName() + " with ID '" + id + "'");
+    }
+    public boolean has(String id){
+        return registered.containsKey(id);
     }
 
     public Collection<T> getAll() {

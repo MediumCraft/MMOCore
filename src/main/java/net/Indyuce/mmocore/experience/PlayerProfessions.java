@@ -213,7 +213,6 @@ public class PlayerProfessions {
             // Apply profession experience table
             if (profession.hasExperienceTable())
                 profession.getExperienceTable().claim(playerData, level, profession);
-
         }
 
         if (check) {

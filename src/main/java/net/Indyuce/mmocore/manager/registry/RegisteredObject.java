@@ -1,6 +1,6 @@
 package net.Indyuce.mmocore.manager.registry;
 
-public interface RegisterObject {
+public interface RegisteredObject {
 
     /**
      * Identifier used to register an object

@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -18,7 +19,7 @@ public class CommandVerbose {
 
         for (CommandType type : CommandType.values())
             try {
-                values.put(type, VerboseValue.valueOf(config.getString(type.name().toLowerCase(), "TRUE").toUpperCase()));
+                values.put(type, VerboseValue.valueOf(config.getString(UtilityMethods.enumName(type.name()), "TRUE").toUpperCase()));
             } catch (IllegalArgumentException exception) {
                 values.put(type, VerboseValue.TRUE);
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load command verbose action for " + type.name());
@@ -55,6 +56,7 @@ public class CommandVerbose {
         LEVEL,
         NOCD,
         POINTS,
+        SKILL_TREE_POINTS,
         RESET,
         RESOURCE,
         WAYPOINT;
