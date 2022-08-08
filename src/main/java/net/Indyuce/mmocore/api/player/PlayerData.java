@@ -601,7 +601,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void lockWaypoint(Waypoint waypoint) {
-        waypoints.remove(waypoint);
+        waypoints.remove(waypoint.getId());
     }
 
 

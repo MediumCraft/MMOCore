@@ -171,8 +171,8 @@ public class KeyCombos implements Listener {
 
         CustomSkillCastingHandler(PlayerData caster) {
             super(caster, 10);
-            if (!caster.getProfess().getCombos().isEmpty()) {
-                classCombos = caster.getProfess().getCombos();
+            if (!caster.getProfess().getKeyCombos().isEmpty()) {
+                classCombos = caster.getProfess().getKeyCombos();
                 classLongestCombo = caster.getProfess().getLongestCombo();
             } else {
                 classCombos = combos;

@@ -18,10 +18,10 @@ public class WaypointCommandTreeNode extends CommandTreeNode {
     public WaypointCommandTreeNode(CommandTreeNode parent) {
         super(parent, "waypoint");
         addChild(new ActionCommandTreeNode(this, "unlock",
-                (playerData, waypoint) -> !playerData.getWaypoints().contains(waypoint)
+                (playerData, waypoint) -> !playerData.hasWaypoint(waypoint)
                 , (playerData, waypoint) -> playerData.unlockWaypoint(waypoint)));
         addChild(new ActionCommandTreeNode(this, "lock",
-                (playerData, waypoint) -> playerData.getWaypoints().contains(waypoint)
+                (playerData, waypoint) -> playerData.hasWaypoint(waypoint)
                 , (playerData, waypoint) -> playerData.lockWaypoint(waypoint)));
     }
 
@@ -49,21 +49,21 @@ public class WaypointCommandTreeNode extends CommandTreeNode {
 
         @Override
         public CommandResult execute(CommandSender sender, String[] args) {
-            Player player = Bukkit.getPlayer(args[0]);
+            Player player = Bukkit.getPlayer(args[3]);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[0] + ".");
+                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
                 return CommandResult.FAILURE;
             }
 
-            Waypoint waypoint = MMOCore.plugin.waypointManager.get(args[1]);
+            Waypoint waypoint = MMOCore.plugin.waypointManager.get(args[4]);
             if (waypoint == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the waypoint called " + args[1] + ".");
+                sender.sendMessage(ChatColor.RED + "Could not find the waypoint called " + args[4] + ".");
                 return CommandResult.FAILURE;
             }
 
             PlayerData playerData = PlayerData.get(player);
             if (!check.apply(playerData, waypoint)) {
-                sender.sendMessage(ChatColor.RED + "The waypoint " + args[1] + "is already in this state.");
+                sender.sendMessage(ChatColor.RED + "The waypoint " + args[4] + " is already in this state.");
                 return CommandResult.FAILURE;
             }
             change.accept(playerData, waypoint);
