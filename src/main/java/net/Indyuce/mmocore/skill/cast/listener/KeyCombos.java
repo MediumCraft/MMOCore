@@ -104,7 +104,6 @@ public class KeyCombos implements Listener {
         }
 
 
-
         // Adding pressed key
         CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
         casting.current.registerKey(event.getPressed());
@@ -173,18 +172,21 @@ public class KeyCombos implements Listener {
         CustomSkillCastingHandler(PlayerData caster) {
             super(caster, 10);
             if (!caster.getProfess().getCombos().isEmpty()) {
-                classCombos=caster.getProfess().getCombos();
-                classLongestCombo=caster.getProfess().getLongestCombo();
+                classCombos = caster.getProfess().getCombos();
+                classLongestCombo = caster.getProfess().getLongestCombo();
             } else {
                 classCombos = combos;
-                classLongestCombo=longestCombo;
+                classLongestCombo = longestCombo;
             }
         }
 
         @Override
         public void onTick() {
             if (actionBarOptions != null)
-                getCaster().displayActionBar(actionBarOptions.format(this));
+                if (actionBarOptions.isSubtitle)
+                    getCaster().getPlayer().sendTitle(" ", actionBarOptions.format(this), 0, 20, 0);
+                else
+                    getCaster().displayActionBar(actionBarOptions.format(this));
         }
 
     }
@@ -198,11 +200,13 @@ public class KeyCombos implements Listener {
          * the current player's key combo on the action bar
          */
         private final Map<PlayerKey, String> keyNames = new HashMap<>();
+        private final boolean isSubtitle;
 
         ActionBarOptions(ConfigurationSection config) {
+
             this.separator = Objects.requireNonNull(config.getString("separator"), "Could not find action bar option 'separator'");
             this.noKey = Objects.requireNonNull(config.getString("no-key"), "Could not find action bar option 'no-key'");
-
+            this.isSubtitle = config.getBoolean("is-subtitle", false);
             for (PlayerKey key : PlayerKey.values())
                 keyNames.put(key, Objects.requireNonNull(config.getString("key-name." + key.name()), "Could not find translation for key " + key.name()));
         }

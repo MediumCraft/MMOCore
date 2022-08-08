@@ -239,14 +239,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void giveSkillReallocationPoints(int value) {
-        skillReallocationPoints+=value;
+        skillReallocationPoints += value;
     }
 
     public int countSkillPointsWhenReallocate() {
         int sum = 0;
-        for(ClassSkill skill:getProfess().getSkills()) {
+        for (ClassSkill skill : getProfess().getSkills()) {
             //0 if the skill is level 1(just unlocked) or 0 locked.
-            sum+=Math.max(0,getSkillLevel(skill.getSkill())-1);
+            sum += Math.max(0, getSkillLevel(skill.getSkill()) - 1);
         }
         return sum;
     }
@@ -414,6 +414,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void unlockWaypoint(Waypoint waypoint) {
         waypoints.add(waypoint.getId());
     }
+
+    public void lockWaypoint(Waypoint waypoint) {
+        waypoints.remove(waypoint);
+    }
+
 
     /**
      * @deprecated Provide a heal reason with {@link #heal(double, PlayerResourceUpdateEvent.UpdateReason)}
@@ -769,6 +774,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE);
         getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     }
+
 
     @Deprecated
     public void setAttribute(PlayerAttribute attribute, int value) {

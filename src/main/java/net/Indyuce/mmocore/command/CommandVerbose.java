@@ -56,7 +56,8 @@ public class CommandVerbose {
         NOCD,
         POINTS,
         RESET,
-        RESOURCE
+        RESOURCE,
+        WAYPOINT;
     }
 
     private enum VerboseValue {

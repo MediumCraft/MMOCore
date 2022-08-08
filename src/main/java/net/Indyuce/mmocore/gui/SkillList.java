@@ -376,7 +376,7 @@ public class SkillList extends EditableInventory {
             if (item.getFunction().equals("slot")) {
                 int index = slotSlots.indexOf(context.getSlot());
 
-KEy                // unbind if there is a current spell.
+                // unbind if there is a current spell.
                 if (context.getClickType() == ClickType.RIGHT) {
                     if (!playerData.hasSkillBound(index)) {
                         MMOCore.plugin.configManager.getSimpleMessage("no-skill-bound").send(player);

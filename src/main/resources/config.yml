@@ -257,3 +257,4 @@ command-verbose:
   points: true
   reset: true
   resource: true
+  waypoint: true
