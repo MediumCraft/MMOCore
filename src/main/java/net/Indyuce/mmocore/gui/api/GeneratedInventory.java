@@ -20,7 +20,6 @@ public abstract class GeneratedInventory extends PluginInventory {
 
     public GeneratedInventory(PlayerData playerData, EditableInventory editable) {
         super(playerData);
-
         this.editable = editable;
         this.adaptor = editable.getAdaptorType().supply(this);
     }
@@ -30,6 +29,7 @@ public abstract class GeneratedInventory extends PluginInventory {
     }
 
     public EditableInventory getEditable() {
+
         return editable;
     }
 
@@ -62,8 +62,8 @@ public abstract class GeneratedInventory extends PluginInventory {
         return ((ClassicAdaptor) adaptor).getInventory();
     }
 
+    @Override
     public void open() {
-
         /*
          * Very important, in order to prevent ghost items, the loaded items map
          * must be cleared when the inventory is updated or open at least twice
@@ -75,7 +75,7 @@ public abstract class GeneratedInventory extends PluginInventory {
 
     /**
      * @deprecated Not a fan of that implementation.
-     *         Better work with {@link InventoryItem#setDisplayed(Inventory, GeneratedInventory)}
+     * Better work with {@link InventoryItem#setDisplayed(Inventory, GeneratedInventory)}
      */
     @Deprecated
     public void dynamicallyUpdateItem(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
@@ -83,6 +83,7 @@ public abstract class GeneratedInventory extends PluginInventory {
 
     }
 
+    @Override
     public void whenClicked(InventoryClickContext context) {
         context.setCancelled(true);
         InventoryItem item = getBySlot(context.getSlot());

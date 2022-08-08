@@ -16,7 +16,7 @@ import java.util.*;
 public abstract class PlayerDataManager {
     private final static Map<UUID, PlayerData> data = Collections.synchronizedMap(new HashMap<>());
 
-    private DefaultPlayerData defaultData = new DefaultPlayerData(1, 0, 0, 0, 0);
+    private DefaultPlayerData defaultData = new DefaultPlayerData(1, 0, 0, 0, 0,0);
 
     public PlayerData get(OfflinePlayer player) {
         return get(player.getUniqueId());
@@ -134,7 +134,7 @@ public abstract class PlayerDataManager {
     public abstract void saveData(PlayerData data);
 
     public class DefaultPlayerData {
-        private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints;
+        private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints,skillReallocPoints;
 
         public DefaultPlayerData(ConfigurationSection config) {
             level = config.getInt("level", 1);
@@ -142,14 +142,17 @@ public abstract class PlayerDataManager {
             skillPoints = config.getInt("skill-points");
             attributePoints = config.getInt("attribute-points");
             attrReallocPoints = config.getInt("attribute-realloc-points");
+            skillReallocPoints=config.getInt("skill-realloc-points",0);
         }
 
-        public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints) {
+        public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints,int skillReallocPoints) {
             this.level = level;
             this.classPoints = classPoints;
             this.skillPoints = skillPoints;
             this.attributePoints = attributePoints;
             this.attrReallocPoints = attrReallocPoints;
+            this.skillReallocPoints=skillReallocPoints;
+
         }
 
         public int getLevel() {
@@ -170,6 +173,10 @@ public abstract class PlayerDataManager {
 
         public int getAttributePoints() {
             return attributePoints;
+        }
+
+        public int getSkillReallocPoints() {
+            return skillReallocPoints;
         }
 
         public void apply(PlayerData player) {

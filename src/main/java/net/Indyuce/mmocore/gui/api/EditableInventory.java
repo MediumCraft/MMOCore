@@ -19,11 +19,11 @@ import java.util.logging.Level;
 public abstract class EditableInventory {
     private final String id;
 
+    private FileConfiguration config;
     private AdaptorType adaptorType;
     private String name;
     private int slots;
 
-    protected double radius, angleGap, verticalGap, curvature, verticalOffset, interactSensitivity;
 
     /*
      * This set is linked so it keeps the order/priority in
@@ -39,16 +39,9 @@ public abstract class EditableInventory {
     }
 
     public void reload(FileConfiguration config) {
-
+        this.config = config;
         this.adaptorType = AdaptorType.valueOf(UtilityMethods.enumName(config.getString("adaptor-type", "classic-adaptor")));
         Validate.notNull(adaptorType, config.getString("adaptor-type") + " does not correspond to an adaptor-type.");//TODO
-
-        this.radius = config.getDouble("radius", 2);
-        this.angleGap = config.getDouble("angle-gap", 10);
-        this.verticalGap = config.getDouble("vertical-gap", 1);
-        this.curvature = config.getDouble("curvature", 1);
-        this.verticalOffset = config.getDouble("vertical-offset", 0);
-        this.interactSensitivity = config.getDouble("interact-sensitivity", 0.97);
 
         this.name = config.getString("name");
         Validate.notNull(name, "Name must not be null");
@@ -91,28 +84,9 @@ public abstract class EditableInventory {
         return adaptorType;
     }
 
-    public double getRadius() {
-        return radius;
-    }
 
-    public double getAngleGap() {
-        return angleGap;
-    }
-
-    public double getVerticalGap() {
-        return verticalGap;
-    }
-
-    public double getInteractSensitivity() {
-        return interactSensitivity;
-    }
-
-    public double getCurvature() {
-        return curvature;
-    }
-
-    public double getVerticalOffset() {
-        return verticalOffset;
+    public FileConfiguration getConfig() {
+        return config;
     }
 
     public InventoryItem getByFunction(String function) {

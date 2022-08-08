@@ -48,10 +48,13 @@ public class ThreeDimAdaptor extends Adaptor {
 
     private final HashMap<ItemStack, ArmorStand> hiddenArmorStand = new HashMap<>();
 
+    protected double radius, angleGap, verticalGap, curvature, verticalOffset, interactSensitivity;
+
+
     private boolean firstTime = true;
 
     private final Vector direction = generated.getPlayer().getEyeLocation().getDirection().setY(0);
-    private final Location location = generated.getPlayer().getLocation().add(new Vector(0, generated.getEditable().getVerticalOffset(), 0));
+    private final Location location;
 
     //Zoomed=-1 no armorstand are under zoom
     private int zoomed = -1;
@@ -59,6 +62,14 @@ public class ThreeDimAdaptor extends Adaptor {
 
     public ThreeDimAdaptor(GeneratedInventory generated) {
         super(generated);
+
+        this.radius = generated.getEditable().getConfig().getDouble("radius", 2);
+        this.angleGap = generated.getEditable().getConfig().getDouble("angle-gap", 10);
+        this.verticalGap = generated.getEditable().getConfig().getDouble("vertical-gap", 1);
+        this.curvature = generated.getEditable().getConfig().getDouble("curvature", 1);
+        this.verticalOffset = generated.getEditable().getConfig().getDouble("vertical-offset", 0);
+        this.interactSensitivity = generated.getEditable().getConfig().getDouble("interact-sensitivity", 0.97);
+        location = generated.getPlayer().getLocation().add(new Vector(0, verticalOffset, 0));
     }
 
 
@@ -180,9 +191,12 @@ public class ThreeDimAdaptor extends Adaptor {
 
     private void setItem(ItemStack item, int n, double percentage) {
         Location location = getLocation(n, percentage);
+        if(item.getType().toString().contains("SKULL")||item.getType().toString().contains("HEAD")) {
+            location.add(new Vector(0,4.9,0));
+        }
         //We create the armorStand corresponding to display the item
         ArmorStand armorStand = (ArmorStand) generated.getPlayer().getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
-        armorStand.setVisible(false);
+        armorStand.setVisible(true);
         armorStand.setSmall(false);
         armorStand.setArms(true);
         armorStand.setGravity(false);
@@ -317,13 +331,13 @@ public class ThreeDimAdaptor extends Adaptor {
 
         Location cloneLocation = location.clone();
         Vector cloneDirection = direction.clone().rotateAroundAxis(new Vector(0, 1, 0),
-                -((n % 9) - 4) * generated.getEditable().getAngleGap() * Math.PI / 180);
+                -((n % 9) - 4) * angleGap * Math.PI / 180);
 
         //Curvature of 1: r=cst Curvature of 1: r=R/cos(angle) (a plane)
-        double radius = percentage * generated.getEditable().getRadius() / Math.cos((1 - generated.getEditable().getCurvature())
-                * -((n % 9) - 4) * generated.getEditable().getAngleGap() * Math.PI / 180);
+        double radius = percentage * this.radius / Math.cos((1 - curvature)
+                * -((n % 9) - 4) * angleGap * Math.PI / 180);
         cloneDirection = cloneDirection.normalize().multiply(radius);
-        cloneDirection.add(new Vector(0, percentage * generated.getEditable().getVerticalGap() * ((generated.getEditable().getSlots() - n - 1) / 9), 1));
+        cloneDirection.add(new Vector(0, percentage * verticalGap * ((generated.getEditable().getSlots() - n - 1) / 9), 1));
         //We get the final direction
         cloneLocation.add(cloneDirection);
 
@@ -380,33 +394,36 @@ public class ThreeDimAdaptor extends Adaptor {
                 if (!e.getFrom().getBlock().getLocation().equals(e.getTo().getBlock().getLocation()))
                     ThreeDimAdaptor.this.close();
                 else {
-                    //If the player no longer looks at the zoom as:
-                    if (zoomed != -1 && generated.getPlayer().getLocation().getDirection().normalize().dot(
-                            armorStands.get(zoomed).getLocation().add(new Vector(0, 0.25 * armorStands.get(zoomed).getHeight(), 0))
-                                    .subtract(generated.getPlayer().getLocation()).toVector().normalize()) < generated.getEditable().getInteractSensitivity()) {
-                        armorStands.get(zoomed).teleport(getLocation(zoomed, 1));
-                        zoomed = -1;
-                        removeLore();
+                    int closest = -1;
+                    double closestScalar = 1;
+                    for (int n : armorStands.keySet()) {
+                        ArmorStand as = armorStands.get(n);
+                        Location asLocation = as.getLocation().add(new Vector(0, 0.25 * as.getHeight(), 0));
+
+
+                        double scalar = generated.getPlayer().getLocation().getDirection().normalize().dot(
+                                asLocation.subtract(generated.getPlayer().getLocation()).toVector().normalize());
+
+                        if (scalar > interactSensitivity && scalar < closestScalar) {
+                            closestScalar = scalar;
+                            closest = n;
+                        }
                     }
-                    if (zoomed == -1) {
-                        for (int n : armorStands.keySet()) {
-                            ArmorStand as = armorStands.get(n);
-                            Location asLocation = as.getLocation().add(new Vector(0, 0.25 * as.getHeight(), 0));
 
-
-                            double scalar = generated.getPlayer().getLocation().getDirection().normalize().dot(
-                                    asLocation.subtract(generated.getPlayer().getLocation()).toVector().normalize());
-
-                            if (scalar > generated.getEditable().getInteractSensitivity()) {
-                                as.teleport(getLocation(n, 0.75));
-                                zoomed = n;
-                                displayLore(zoomed);
-                            }
-
-
+                    if (closest != zoomed) {
+                        if (zoomed != -1) {
+                            removeLore();
+                            armorStands.get(zoomed).teleport(getLocation(zoomed, 1));
+                        }
+                        if (closest != -1) {
+                            armorStands.get(zoomed).teleport(getLocation(closest, 0.75));
+                            zoomed = closest;
+                            displayLore(closest);
                         }
 
                     }
+
+
                 }
 
             }
@@ -416,7 +433,11 @@ public class ThreeDimAdaptor extends Adaptor {
         @EventHandler
         public void onInteract(PlayerInteractAtEntityEvent event) {
             if (event.getPlayer().equals(generated.getPlayer()))
-                if (event.getRightClicked() instanceof ArmorStand armorStand) {
+                if (event.getRightClicked() instanceof ArmorStand armorStand)
+                    event.setCancelled(true);
+
+
+        /*
                     if (armorStands.values().contains(armorStand)) {
                         PersistentDataContainer container = armorStand.getPersistentDataContainer();
                         int slot = container.get(new NamespacedKey(MMOCore.plugin, "slot"), PersistentDataType.INTEGER);
@@ -428,6 +449,7 @@ public class ThreeDimAdaptor extends Adaptor {
                         generated.whenClicked(new InventoryClickContext(slot, armorStand.getEquipment().getItem(EquipmentSlot.HEAD), clickType, event));
                     }
                 }
+        */
         }
 
         @EventHandler
@@ -465,35 +487,40 @@ public class ThreeDimAdaptor extends Adaptor {
             }
         }
 
-
         @EventHandler
         public void onDamage(EntityDamageByEntityEvent event) {
-
-            if (event.getDamager() instanceof Player player) {
+            if (event.getDamager() instanceof Player player)
                 if (player.equals(generated.getPlayer()))
-                    if (event.getEntity() instanceof ArmorStand armorStand) {
-                        if (armorStands.values().contains(armorStand)) {
-                            PersistentDataContainer container = armorStand.getPersistentDataContainer();
-                            int slot = container.get(new NamespacedKey(MMOCore.plugin, "slot"), PersistentDataType.INTEGER);
-                            ClickType clickType;
-                            if (player.isSneaking())
-                                clickType = ClickType.SHIFT_LEFT;
-                            else
-                                clickType = ClickType.LEFT;
-
-                            ItemStack itemStack = armorStand.getEquipment().getItem(EquipmentSlot.HEAD);
-                            generated.whenClicked(new InventoryClickContext(slot, itemStack, clickType, event));
-                        }
-                    }
-            }
-
+                    if (event.getEntity() instanceof ArmorStand armorStand)
+                        if (armorStands.values().contains(armorStand))
+                            event.setCancelled(true);
         }
+
+
+        /*
+    PersistentDataContainer container = armorStand.getPersistentDataContainer();
+    int slot = container.get(new NamespacedKey(MMOCore.plugin, "slot"), PersistentDataType.INTEGER);
+    ClickType clickType;
+                        if(player.isSneaking())
+    clickType =ClickType.SHIFT_LEFT;
+                        else
+    clickType =ClickType.LEFT;
+
+    ItemStack itemStack = armorStand.getEquipment().getItem(EquipmentSlot.HEAD);
+                        generated.whenClicked(new
+
+    InventoryClickContext(slot, itemStack, clickType, event));
+}
+                }
+                        }
+
+        */
+
 
         @Override
         public void whenClosed() {
 
 
         }
-
     }
 }

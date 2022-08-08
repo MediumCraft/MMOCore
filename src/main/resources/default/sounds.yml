@@ -19,6 +19,7 @@ select-class: UI_TOAST_CHALLENGE_COMPLETE
 
 level-attribute: ENTITY_PLAYER_LEVELUP
 reset-attributes: ENTITY_PLAYER_LEVELUP
+reset-skills: ENTITY_PLAYER_LEVELUP
 
 level-skill-tree-node: ENTITY_PLAYER_LEVELUP
 reset-skill-tree: ENTITY_PLAYER_LEVELUP

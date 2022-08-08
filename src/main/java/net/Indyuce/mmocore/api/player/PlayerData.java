@@ -77,7 +77,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Nullable
     private PlayerClass profess;
-    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints;// skillReallocationPoints,
+    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
@@ -416,6 +416,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return skillPoints;
     }
 
+    public void giveSkillReallocationPoints(int value) {
+        skillReallocationPoints+=value;
+    }
+
+    public int countSkillPointsWhenReallocate() {
+        int sum = 0;
+        for(ClassSkill skill:getProfess().getSkills()) {
+            //0 if the skill is level 1(just unlocked) or 0 locked.
+            sum+=Math.max(0,getSkillLevel(skill.getSkill())-1);
+        }
+        return sum;
+    }
+
     public int getAttributePoints() {
         return attributePoints;
     }
@@ -529,6 +542,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setAttributeReallocationPoints(int value) {
         attributeReallocationPoints = Math.max(0, value);
+    }
+
+    public void setSkillReallocationPoints(int value) {
+        skillReallocationPoints = Math.max(0, value);
+    }
+
+    public int getSkillReallocationPoints() {
+        return skillReallocationPoints;
     }
 
     public void setSkillPoints(int value) {
@@ -1038,7 +1059,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setBoundSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (boundSkills.size() < 6)
+        if (boundSkills.size() < getProfess().getMaxBoundSkills())
             boundSkills.add(skill);
         else
             boundSkills.set(slot, skill);

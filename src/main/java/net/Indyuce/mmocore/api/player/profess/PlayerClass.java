@@ -31,12 +31,15 @@ import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import net.Indyuce.mmocore.skill.cast.KeyCombo;
+import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -65,10 +68,16 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @NotNull
     private final CastingParticle castParticle;
 
+    private final int maxBoundSkills;
+    private final List<PassiveSkill> classScripts = new LinkedList();
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
-    private final List<PassiveSkill> classScripts = new LinkedList<>();
+
+    // If the class redefines its own key combos.
+    private final Map<KeyCombo, Integer> combos = new HashMap<>();
+    private int longestCombo;
+
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
 
     @Deprecated
@@ -110,7 +119,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 ? MMOCore.plugin.experience.getCurveOrThrow(
                 config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
-
+        maxBoundSkills = config.getInt("max-bound-skills", 6);
         ExperienceTable expTable = null;
         if (config.contains("exp-table"))
             try {
@@ -130,6 +139,23 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                     classScripts.add(skill);
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load script '" + key + "' from class '" + id + "': " + exception.getMessage());
+                }
+
+        // Load different combos
+        if (config.contains("key-combos"))
+            for (String key : config.getConfigurationSection("key-combos").getKeys(false))
+                try {
+                    int spellSlot = Integer.valueOf(key);
+                    Validate.isTrue(spellSlot >= 0, "Spell slot must be at least 0");
+                    Validate.isTrue(!combos.values().contains(spellSlot), "There is already a key combo with the same skill slot");
+                    KeyCombo combo = new KeyCombo();
+                    for (String str : config.getStringList("key-combos." + key))
+                        combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
+
+                    combos.put(combo, spellSlot);
+                    longestCombo = Math.max(longestCombo, combo.countKeys());
+                } catch (RuntimeException exception) {
+                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
                 }
 
         if (config.contains("triggers"))
@@ -227,7 +253,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         this.icon = new ItemStack(material);
         setOption(ClassOption.DISPLAY, false);
         setOption(ClassOption.DEFAULT, false);
-
+        maxBoundSkills = 6;
         for (PlayerResource resource : PlayerResource.values())
             resourceHandlers.put(resource, new ResourceRegeneration(resource));
     }
@@ -281,6 +307,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Override
     public ExpCurve getExpCurve() {
         return expCurve;
+    }
+
+    public int getMaxBoundSkills() {
+        return maxBoundSkills;
     }
 
     @NotNull
@@ -404,6 +434,15 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public Set<String> getStats() {
         return stats.keySet();
+    }
+
+    @Nullable
+    public Map<KeyCombo, Integer> getKeyCombos() {
+        return combos;
+    }
+
+    public int getLongestCombo() {
+        return longestCombo;
     }
 
     @NotNull

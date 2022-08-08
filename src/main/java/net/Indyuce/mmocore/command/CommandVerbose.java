@@ -50,6 +50,7 @@ public class CommandVerbose {
 
     public enum CommandType {
         ATTRIBUTE,
+        SKILL,
         CLASS,
         EXPERIENCE,
         LEVEL,

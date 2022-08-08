@@ -31,8 +31,10 @@ default-playerdata:
   level: 1
   class-points: 0
   skill-points: 0
+  skill-realloc-points: 0
   attribute-points: 0
   attribute-realloc-points: 0
+
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
@@ -88,6 +90,7 @@ should-cobblestone-generators-give-exp: false
 skill-casting:
   mode: SKILL_BAR
   open: SWAP_HANDS
+
 
 loot-chests:
 
@@ -241,6 +244,7 @@ resource-bar-colors:
 # false - Never verbose
 command-verbose:
   attribute: true
+  skill: true
   class: true
   experience: true
   level: true

@@ -35,6 +35,11 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
+                //To prevent infinite loops
+                if (System.currentTimeMillis() - startTime > 4000) {
+                    cancel();
+                    return;
+                }
 
                 provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + data.getUniqueId() + "';", (result) -> {
                     try {
@@ -55,6 +60,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
                                 data.setClassPoints(result.getInt("class_points"));
                                 data.setSkillPoints(result.getInt("skill_points"));
+                                data.setSkillReallocationPoints(result.getInt("skill_reallocation_points"));
                                 data.setAttributePoints(result.getInt("attribute_points"));
                                 data.setAttributeReallocationPoints(result.getInt("attribute_realloc_points"));
                                 data.setLevel(result.getInt("level"));
@@ -121,6 +127,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                             data.setLevel(getDefaultData().getLevel());
                             data.setClassPoints(getDefaultData().getClassPoints());
                             data.setSkillPoints(getDefaultData().getSkillPoints());
+                            data.setSkillReallocationPoints(getDefaultData().getSkillReallocPoints());
                             data.setAttributePoints(getDefaultData().getAttributePoints());
                             data.setAttributeReallocationPoints(getDefaultData().getAttrReallocPoints());
                             data.setExperience(0);
@@ -145,11 +152,12 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
     @Override
     public void saveData(PlayerData data) {
 
-        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(),provider);
+        MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider);
         MMOCore.sqlDebug("Saving data for: '" + data.getUniqueId() + "'...");
 
         sql.updateData("class_points", data.getClassPoints());
         sql.updateData("skill_points", data.getSkillPoints());
+        sql.updateData("skill_reallocation_points",data.getSkillReallocationPoints());
         sql.updateData("attribute_points", data.getAttributePoints());
         sql.updateData("attribute_realloc_points", data.getAttributeReallocationPoints());
         sql.updateData("level", data.getLevel());

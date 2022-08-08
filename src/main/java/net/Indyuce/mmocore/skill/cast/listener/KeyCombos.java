@@ -49,13 +49,6 @@ public class KeyCombos implements Listener {
     @Nullable
     private final SoundObject beginComboSound, comboClickSound, failComboSound;
 
-    /**
-     * Essentially the inverse of the {@link #combos} map. This maps
-     * the skill slot to the corresponding key combo. There's no problem
-     * because the maps are 100% bijective
-     */
-    private static final Map<Integer, KeyCombo> PUBLIC_COMBOS = new HashMap<>();
-
     public KeyCombos(ConfigurationSection config) {
 
         int longestCombo = 0;
@@ -72,8 +65,6 @@ public class KeyCombos implements Listener {
 
                 combos.put(combo, spellSlot);
                 longestCombo = Math.max(longestCombo, combo.countKeys());
-
-                PUBLIC_COMBOS.put(spellSlot, combo);
             } catch (RuntimeException exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
             }
@@ -112,6 +103,7 @@ public class KeyCombos implements Listener {
         }
 
 
+
         // Adding pressed key
         CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
         casting.current.registerKey(event.getPressed());
@@ -123,8 +115,8 @@ public class KeyCombos implements Listener {
         event.setCancelled(true);
 
         // Hash current combo and check
-        if (combos.containsKey(casting.current)) {
-            int spellSlot = combos.get(casting.current) - 1;
+        if (casting.classCombos.containsKey(casting.current)) {
+            int spellSlot = casting.classCombos.get(casting.current) - 1;
             playerData.leaveCastingMode();
 
             // Cast spell
@@ -136,7 +128,7 @@ public class KeyCombos implements Listener {
         }
 
         // Check if current combo is too large
-        if (casting.current.countKeys() >= longestCombo) {
+        if (casting.current.countKeys() >= casting.classLongestCombo) {
             playerData.leaveCastingMode();
             if (failComboSound != null)
                 failComboSound.playTo(player);
@@ -167,19 +159,35 @@ public class KeyCombos implements Listener {
             event.setCancelled(true);
     }
 
+
+    /**
+     * Loads the player current combos & the combos applicable to the player (combos defined in its class or the default combos of the config.yml)
+     */
     private class CustomSkillCastingHandler extends SkillCastingHandler {
         private final KeyCombo current = new KeyCombo();
+        //Combos used: default combos from the config or the combos defined in the player class.
+        private final Map<KeyCombo, Integer> classCombos;
+        private int classLongestCombo;
 
         CustomSkillCastingHandler(PlayerData caster) {
             super(caster, 10);
+            if (!caster.getProfess().getKeyCombos().isEmpty()) {
+                classCombos=caster.getProfess().getKeyCombos();
+                classLongestCombo=caster.getProfess().getLongestCombo();
+            } else {
+                classCombos = combos;
+                classLongestCombo=longestCombo;
+            }
         }
 
         @Override
         public void onTick() {
             if (actionBarOptions != null)
-                getCaster().displayActionBar(actionBarOptions.format(current));
+                getCaster().displayActionBar(actionBarOptions.format(this));
         }
+
     }
+
 
     private class ActionBarOptions {
         private final String separator, noKey;
@@ -198,17 +206,18 @@ public class KeyCombos implements Listener {
                 keyNames.put(key, Objects.requireNonNull(config.getString("key-name." + key.name()), "Could not find translation for key " + key.name()));
         }
 
-        public String format(KeyCombo currentCombo) {
+        public String format(CustomSkillCastingHandler casting) {
 
             // Join all keys with separator
-            String builder = currentCombo.countKeys() == 0 ? noKey : keyNames.get(currentCombo.getAt(0));
+            String builder = casting.current.countKeys() == 0 ? noKey : keyNames.get(casting.current.getAt(0));
             int j = 1;
-            for (; j < currentCombo.countKeys(); j++)
-                builder += separator + keyNames.get(currentCombo.getAt(j));
+            for (; j < casting.current.countKeys(); j++)
+                builder += separator + keyNames.get(casting.current.getAt(j));
 
             // All remaining
-            for (; j < longestCombo; j++)
+            for (; j < casting.classLongestCombo; j++)
                 builder += separator + noKey;
+
 
             return MythicLib.plugin.parseColors(builder);
         }

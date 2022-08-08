@@ -20,6 +20,9 @@ options:
 # Must match an existing exp curve filename from the 'expcurves' folder
 exp-curve: levels
 
+#The number of skills a player can bound.
+max-bound-skills: 5
+
 # Experience sources for main class experience.
 main-exp-sources:
 - 'killmob{type=ZOMBIE;amount=1-3}'
