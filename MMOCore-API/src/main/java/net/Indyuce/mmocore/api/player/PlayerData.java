@@ -137,7 +137,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         playerStats = new PlayerStats(this);
 
         // Load temporary data if necessary
-        final @Nullable TemporaryPlayerData tempData = mmoData.getExternalData("net/Indyuce/mmocore", TemporaryPlayerData.class);
+        final @Nullable TemporaryPlayerData tempData = mmoData.getExternalData("mmocore", TemporaryPlayerData.class);
         if (usingTemporaryData = tempData != null) {
             mana = tempData.mana;
             stamina = tempData.stamina;

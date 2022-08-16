@@ -37,7 +37,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 	@Override
 	public String getIdentifier() {
-		return "net/Indyuce/mmocore";
+		return "mmocore";
 	}
 
 	@Override
