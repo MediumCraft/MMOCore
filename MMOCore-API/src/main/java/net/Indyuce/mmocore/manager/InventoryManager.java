@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.Indyuce.mmocore.MMOCore;
-import mmocore.gui.*;
 import net.Indyuce.mmocore.gui.social.friend.EditableFriendList;
 import net.Indyuce.mmocore.gui.*;
 import net.Indyuce.mmocore.gui.social.friend.EditableFriendRemoval;

@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.comp.mythicmobs;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import mmocore.comp.mythicmobs.load.*;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;

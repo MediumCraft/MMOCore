@@ -5,7 +5,7 @@
     <parent>
         <artifactId>MMOCore</artifactId>
         <groupId>net.Indyuce</groupId>
-        <version>1.9.5-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,6 +17,18 @@
     </properties>
 
     <build>
+
+        <!--
+        Includes default files in the Bukkit module
+        -->
+        <resources>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
 
             <!--
@@ -27,7 +39,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <finalName>${project.name}-${revision}</finalName>
+                    <finalName>MMOCore-${revision}</finalName>
                     <outputDirectory>../target/</outputDirectory>
                 </configuration>
             </plugin>
@@ -96,8 +108,22 @@
             <groupId>net.Indyuce</groupId>
             <artifactId>MMOCore-API</artifactId>
             <version>${revision}</version>
-            <scope>compile</scope>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Spigot API -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-1.17.1</artifactId>
+            <version>dev</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.lumine</groupId>
+            <artifactId>MythicLib-dist</artifactId>
+            <version>1.3.4-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
