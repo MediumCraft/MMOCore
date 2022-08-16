@@ -1,4 +1,19 @@
-Private repository for MMOCore.
+Official repository for MMOCore
 
-Issues: https://git.lumine.io/mythiccraft/mmocore/-/issues  
-Wiki: https://git.lumine.io/mythiccraft/mmocore/-/wikis/home
+### Using MMOCore as dependency
+Register the PhoenixDev repo
+```
+<repository>
+    <id>phoenix</id>
+    <url>https://nexus.phoenixdvpt.fr/repository/maven-public/</url>
+</repository>
+```
+And then add MMOCore-API as dependency
+```
+<dependency>
+    <groupId>net.Indyuce</groupId>
+    <artifactId>MMOCore-API</artifactId>
+    <version>1.9.5-SNAPSHOT</version>
+    <scope>provided</scope>
+</dependency>
+```
