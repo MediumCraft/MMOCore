@@ -76,6 +76,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     // If the class redefines its own key combos.
     private final Map<KeyCombo, Integer> combos = new HashMap<>();
+
+    private final Set<PlayerKey> firstComboKeys= new HashSet<>();
+
+
     private int longestCombo;
 
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
@@ -153,6 +157,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                         combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
 
                     combos.put(combo, spellSlot);
+                    firstComboKeys.add(combo.getAt(0));
                     longestCombo = Math.max(longestCombo, combo.countKeys());
                 } catch (RuntimeException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
@@ -439,6 +444,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     public Map<KeyCombo, Integer> getKeyCombos() {
         return combos;
+    }
+
+    public Set<PlayerKey> getFirstComboKeys() {
+        return firstComboKeys;
     }
 
     public int getLongestCombo() {
