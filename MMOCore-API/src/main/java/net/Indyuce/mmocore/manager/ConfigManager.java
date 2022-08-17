@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
@@ -21,21 +21,14 @@ import java.util.logging.Level;
 
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
-
-    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, questBossBar;
-    public String partyChatPrefix, noSkillBoundPlaceholder;
-    public ChatColor staminaFull, staminaHalf, staminaEmpty;
-    public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public double lootChestsChanceWeight, fishingDropsChanceWeight;
-    public int maxPartyLevelDifference,maxBoundSkills;
-
+    public final boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo, splitProfessionExp, questBossBar;
+    public final String partyChatPrefix, noSkillBoundPlaceholder;
+    public final ChatColor staminaFull, staminaHalf, staminaEmpty;
+    public final long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
+    public final double lootChestsChanceWeight, fishingDropsChanceWeight;
+    public final int maxPartyLevelDifference, maxBoundSkills;
     private final FileConfiguration messages;
 
-    /*
-     * the instance must be created after the other managers since all it does
-     * is to update them based on the config except for the classes which are
-     * already loaded based on the config
-     */
     public ConfigManager() {
         // loadDefaultFile("recipes", "brewing.yml");
         // loadDefaultFile("recipes", "furnace.yml");
@@ -74,6 +67,7 @@ public class ConfigManager {
             loadDefaultFile("expcurves", "levels.txt");
             loadDefaultFile("expcurves", "mining.txt");
         }
+
         if(!new File(MMOCore.plugin.getDataFolder()+"/skilltree").exists()) {
             loadDefaultFile("skilltree","combat.yml");
         }
@@ -115,7 +109,8 @@ public class ConfigManager {
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
-        maxBoundSkills= MMOCore.plugin.getConfig().getInt("max-bound-skills",6);
+        maxBoundSkills = MMOCore.plugin.getConfig().getInt("max-bound-skills",6);
+        overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp");
     }
 
     private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {

@@ -4,7 +4,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.modifier.PlayerModifier;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -32,6 +31,7 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
@@ -416,14 +416,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void giveSkillReallocationPoints(int value) {
-        skillReallocationPoints+=value;
+        skillReallocationPoints += value;
     }
 
     public int countSkillPointsWhenReallocate() {
         int sum = 0;
-        for(ClassSkill skill:getProfess().getSkills()) {
+        for (ClassSkill skill : getProfess().getSkills()) {
             //0 if the skill is level 1(just unlocked) or 0 locked.
-            sum+=Math.max(0,getSkillLevel(skill.getSkill())-1);
+            sum += Math.max(0, getSkillLevel(skill.getSkill()) - 1);
         }
         return sum;
     }
@@ -526,7 +526,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (!MMOCore.plugin.configManager.overrideVanillaExp)
             return;
 
-        getPlayer().sendExperienceChange(0.01f);
         getPlayer().setLevel(getLevel());
         getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
     }
@@ -1081,7 +1080,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {
