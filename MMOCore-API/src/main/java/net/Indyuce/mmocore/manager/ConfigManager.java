@@ -27,7 +27,7 @@ public class ConfigManager {
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight, fishingDropsChanceWeight;
-    public int maxPartyLevelDifference,maxBoundSkills;
+    public int maxPartyLevelDifference,maxBoundSkills,waypointWarpTime;
 
     private final FileConfiguration messages;
 
@@ -116,6 +116,7 @@ public class ConfigManager {
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
         maxBoundSkills= MMOCore.plugin.getConfig().getInt("max-bound-skills",6);
+        waypointWarpTime=MMOCore.plugin.getConfig().getInt("waypoint-warp-time",5);
     }
 
     private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {
