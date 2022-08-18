@@ -49,6 +49,24 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
                 exception.printStackTrace();
             }
         });
+        // Add 'skill_tree_realloc_points' if it doesn't exist
+        getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_tree_realloc_points'", result -> {
+            try {
+                if (!result.next())
+                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN is_saved TINYINT");
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        });
+        // Add 'skill_tree_points' if it doesn't exist
+        getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_tree_points'", result -> {
+            try {
+                if (!result.next())
+                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN is_saved TINYINT");
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        });
     }
 
     @Override

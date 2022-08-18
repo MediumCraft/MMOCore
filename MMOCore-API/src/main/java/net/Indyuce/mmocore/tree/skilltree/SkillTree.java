@@ -152,7 +152,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
 
         try {
             String string = config.getString("type");
-
+            Validate.notNull(string, "You must precise a type for the skill tree.");
             Validate.isTrue(string.equals("automatic") || string.equals("linked") || string.equals("custom"), "You must precise the type of the skill tree in the yml!" +
                     "\nAllowed values: 'automatic','linked','custom'");
             if (string.equals("automatic")) {
@@ -168,7 +168,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 skillTree.postLoad();
             }
         } catch (Exception e) {
-            MMOCore.plugin.getLogger().log(Level.SEVERE, "Couldn't load skill tree " + config.getName() + ": " + e.getMessage());
+            MMOCore.log("Couldn't load skill tree " + config.getString("id") + ": " + e.getMessage());
         }
         return skillTree;
     }

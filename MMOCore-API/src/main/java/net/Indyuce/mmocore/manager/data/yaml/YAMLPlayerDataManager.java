@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -72,6 +73,14 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         }
         data.setSkillTreePoints("global", config.getInt("skill-tree-points.global", 0));
 
+        for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
+            data.setNodeLevel(node, config.getInt("skill-tree-level." + node.getFullId(), 0));
+        }
+        data.setupNodeState();
+
+        for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
+            MMOCore.log(node.getFullId()+"   " +data.getNodeState(node)+"");
+        }
 
         if (config.contains("times-claimed"))
             for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
@@ -112,6 +121,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.getSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
+        //Saves the nodes levels
+        MMOCore.plugin.skillTreeManager.getAllNodes().forEach(node -> config.set("skill-tree-level." + node.getFullId(), data.getNodeLevel(node)));
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 

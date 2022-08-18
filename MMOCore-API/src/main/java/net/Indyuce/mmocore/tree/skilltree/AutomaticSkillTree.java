@@ -44,7 +44,7 @@ public class AutomaticSkillTree extends SkillTree {
             }
 
         }
-        //We find the root of the tree wich is
+        //We find the root of the tree which is
         for (SkillTreeNode node : nodes.values()) {
             if (node.getSoftParents().size() == 0 && node.getStrongParents().size() == 0) {
                 Validate.isTrue(roots.size() == 0, "You can't have 2 roots on one automatic skill tree. You have " + (roots.size() != 0 ? roots.get(0).getName() : "") + " and " + node.getName() + ".");

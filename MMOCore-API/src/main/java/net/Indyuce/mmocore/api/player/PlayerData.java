@@ -283,7 +283,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (skillTree.isNode(coordinates)) {
             SkillTreeNode node = skillTree.getNode(coordinates);
             if (nodeStates.get(node) == null) {
-                skillTree.getNodes().forEach(nodee -> Bukkit.broadcastMessage(nodee.getId() + "  " + nodeStates.get(nodee)));
+                skillTree.getNodes().forEach(nodee -> Bukkit.broadcastMessage(nodee.getFullId() + "  " + nodeStates.get(nodee)));
             }
             DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
             return skillTree.getIcon(displayInfo);
