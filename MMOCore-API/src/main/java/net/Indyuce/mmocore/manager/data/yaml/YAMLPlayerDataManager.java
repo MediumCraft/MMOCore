@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,9 +79,6 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         }
         data.setupNodeState();
 
-        for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
-            MMOCore.log(node.getFullId()+"   " +data.getNodeState(node)+"");
-        }
 
         if (config.contains("times-claimed"))
             for (String key : config.getConfigurationSection("times-claimed").getKeys(true))

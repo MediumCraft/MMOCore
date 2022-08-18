@@ -175,12 +175,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setupNodeState() {
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
-            if (skillTree instanceof LinkedSkillTree) {
-                LinkedSkillTree linkedSkillTree = (LinkedSkillTree) skillTree;
-                linkedSkillTree.setupNodeState(this);
-            } else {
-                skillTree.setupNodeState(this);
-            }
+            skillTree.setupNodeState(this);
+
     }
 
     public void setSkillTreePoints(String treeId, int points) {
@@ -226,7 +222,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public <T extends SkillTree> void incrementNodeLevel(SkillTreeNode node) {
         setNodeLevel(node, getNodeLevel(node) + 1);
         //Claims the nodes experience table.
-        node.getExperienceTable().claim(this,getNodeLevel(node),node);
+        node.getExperienceTable().claim(this, getNodeLevel(node), node);
 
         if (nodeStates.get(node) == NodeState.UNLOCKABLE)
             setNodeState(node, NodeState.UNLOCKED);
@@ -364,8 +360,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @NotNull
     public SkillTree getOpenedSkillTree() {
         if (cachedSkillTree == null) {
-            Optional<SkillTree> optionnal=MMOCore.plugin.skillTreeManager.getAll().stream().findFirst();
-            return optionnal.isPresent()?optionnal.get():null;
+            Optional<SkillTree> optionnal = MMOCore.plugin.skillTreeManager.getAll().stream().findFirst();
+            return optionnal.isPresent() ? optionnal.get() : null;
         }
         return cachedSkillTree;
     }
@@ -674,7 +670,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((MMOCore.plugin.configManager.waypointWarpTime+20 - t) / 20)).send(getPlayer());
+                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((MMOCore.plugin.configManager.waypointWarpTime + 20 - t) / 20)).send(getPlayer());
                 if (t++ >= MMOCore.plugin.configManager.waypointWarpTime) {
                     getPlayer().teleport(target.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
@@ -683,11 +679,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (t / Math.PI * 1.5/MMOCore.plugin.configManager.waypointWarpTime + .5));
+                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (t / Math.PI * 1.5 / MMOCore.plugin.configManager.waypointWarpTime + .5));
                 double r = Math.sin((double) t / MMOCore.plugin.configManager.waypointWarpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE,
-                            getPlayer().getLocation().add(Math.cos((double) 5*t /MMOCore.plugin.configManager.waypointWarpTime + j) * r, (double) 2*t / MMOCore.plugin.configManager.waypointWarpTime, Math.sin((double) 5*t / MMOCore.plugin.configManager.waypointWarpTime + j) * r), 1,
+                            getPlayer().getLocation().add(Math.cos((double) 5 * t / MMOCore.plugin.configManager.waypointWarpTime + j) * r, (double) 2 * t / MMOCore.plugin.configManager.waypointWarpTime, Math.sin((double) 5 * t / MMOCore.plugin.configManager.waypointWarpTime + j) * r), 1,
                             new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);

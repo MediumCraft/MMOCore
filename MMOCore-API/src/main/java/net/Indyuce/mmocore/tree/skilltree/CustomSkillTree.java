@@ -44,13 +44,14 @@ public class CustomSkillTree extends SkillTree {
                 }
             }
         }
+        setupRoots();
     }
 
 
     private void setupRoots() {
+
         //We find the roots of the tree which don't have any parents
         for (SkillTreeNode node : nodes.values()) {
-
             if (node.getSoftParents().size()+node.getStrongParents().size() == 0) {
                 //We mark the node as a root also
                 roots.add(node);

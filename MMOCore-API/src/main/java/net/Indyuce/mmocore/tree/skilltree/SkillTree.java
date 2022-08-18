@@ -102,7 +102,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 }
             }
         } catch (Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Couldn't load icons for the skill tree " + id);
+            MMOCore.log( "Couldn't load icons for the skill tree " + id);
             e.printStackTrace();
         }
     }
@@ -182,9 +182,8 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
      * Recursively go through the skill trees to update the the node states
      */
     public void setupNodeState(PlayerData playerData) {
-        Bukkit.broadcastMessage(getId()+(this instanceof CustomSkillTree)+"  "+roots.size());
         for (SkillTreeNode root : roots)
-            root.getTree().setupNodeStateFrom(root, playerData);
+            setupNodeStateFrom(root, playerData);
     }
 
 
@@ -295,7 +294,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     public boolean isNode(String name) {
         return nodes.containsKey(name);
     }
-
 
     @Override
     public boolean equals(Object o) {
