@@ -23,11 +23,15 @@ public class Placeholders {
         while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
             String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
             @Nullable String found = placeholders.get(holder);
+
+            /*
+             * Do NOT replace the placeholder unless a corresponding value has
+             * been found. This simple workaround fixes an issue with PAPI
+             * math expansions which interferes with MMOCore placeholders since
+             * it uses {....} as well.
+             */
             if (found != null)
                 str = str.replace("{" + holder + "}", found);
-            else
-                str = str.replace("{" + holder + "}", "PHE");
-
         }
 
         // External placeholders
