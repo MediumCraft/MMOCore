@@ -211,19 +211,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeLevelsString.entrySet();
     }
 
-    public void removeModifiersFrom(SkillTree skillTree) {
-        for (SkillTreeNode node : skillTree.getNodes()) {
-            for (int i = 0; i < node.getMaxLevel(); i++) {
-                List<PlayerModifier> modifiers = node.getModifiers(i);
-                if (modifiers != null) {
-                    for (PlayerModifier modifier : modifiers) {
-                        modifier.unregister(getMMOPlayerData());
-                    }
-                }
-            }
-        }
-    }
-
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
         NodeState nodeState = nodeStates.get(node);
         //Check the State of the node
@@ -238,21 +225,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public <T extends SkillTree> void incrementNodeLevel(SkillTreeNode node) {
         setNodeLevel(node, getNodeLevel(node) + 1);
-        //Triggers the triggers of the node
-        List<Trigger> triggers = node.getTriggers(getNodeLevel(node));
-        if (triggers != null) {
-            for (Trigger trigger : triggers) {
-                trigger.apply(this);
-            }
-
-        }
-
-        //Applies player modifiers
-        List<PlayerModifier> modifiers = node.getModifiers(getNodeLevel(node));
-        if (modifiers != null)
-            for (PlayerModifier modifier : modifiers) {
-                modifier.register(getMMOPlayerData());
-            }
+        //Claims the nodes experience table.
+        node.getExperienceTable().claim(this,getNodeLevel(node),node);
 
         if (nodeStates.get(node) == NodeState.UNLOCKABLE)
             setNodeState(node, NodeState.UNLOCKED);

@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.command.CommandVerbose;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
+import net.Indyuce.mmocore.util.TriConsumer;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -88,10 +89,6 @@ public class ExperienceCommandTreeNode extends CommandTreeNode {
 		}
 	}
 
-	@FunctionalInterface
-	interface TriConsumer<A, B, C> {
-		void accept(A a, B b, C c);
-	}
 
 	@Override
 	public CommandResult execute(CommandSender sender, String[] args) {

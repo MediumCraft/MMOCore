@@ -15,6 +15,7 @@ import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,6 +27,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class SkillTreeViewer extends EditableInventory {
@@ -159,19 +161,25 @@ public class SkillTreeViewer extends EditableInventory {
          */
         @Override
         public ItemStack display(SkillTreeInventory inv, int n) {
-            int slot = getSlots().get(n);
-            int deltaX = (slot - inv.getMinSlot()) % 9;
-            int deltaY = (slot - inv.getMinSlot()) / 9;
-            IntegerCoordinates coordinates = new IntegerCoordinates(inv.getX() + deltaX, inv.getY() + deltaY);
+            IntegerCoordinates coordinates = inv.getCoordinates(n);
             if (inv.getSkillTree().isNode(coordinates) || inv.getSkillTree().isPath(coordinates)) {
                 Icon icon = inv.getPlayerData().getIcon(inv.getSkillTree(), coordinates);
                 ItemStack item = super.display(inv, n, icon.getMaterial(), icon.getCustomModelData());
                 ItemMeta meta = item.getItemMeta();
                 if (inv.getSkillTree().isNode(coordinates)) {
                     SkillTreeNode node = inv.getSkillTree().getNode(coordinates);
-                    List<String> lore = new ArrayList<>(node.getLore(inv.getPlayerData()));
-                    lore.add("");
-                    getLore().forEach(str -> lore.add(MythicLib.plugin.parseColors(getPlaceholders(inv, n).apply(inv.getPlayer(), str))));
+                    List<String> lore = new ArrayList<>();
+
+                    getLore().forEach(str -> {
+                        if (str.contains("{node-lore}")) {
+                            lore.addAll(node.getLore(inv.getPlayerData()));
+                        } else if (str.contains("{strong-parents}")) {
+                            lore.addAll(getParentsLore(inv, node, node.getStrongParents()));
+                        } else if (str.contains("{soft-parents}")) {
+                            lore.addAll(getParentsLore(inv, node, node.getSoftParents()));
+                        } else
+                            lore.add(getPlaceholders(inv, n).apply(inv.getPlayer(), str));
+                    });
                     meta.setLore(lore);
                     meta.setDisplayName(node.getName());
                 }
@@ -191,10 +199,32 @@ public class SkillTreeViewer extends EditableInventory {
         }
 
 
+        /**
+         * Soft&Strong children lore for the node
+         */
+        public List<String> getParentsLore(SkillTreeInventory inv, SkillTreeNode node, Collection<SkillTreeNode> parents) {
+            List<String> lore = new ArrayList<>();
+            for (SkillTreeNode parent : parents) {
+                int level = inv.getPlayerData().getNodeLevel(parent);
+                ChatColor color = level >= node.getParentNeededLevel(parent) ? ChatColor.GREEN : ChatColor.RED;
+                lore.add(ChatColor.GRAY + "◆" + parent.getName() + ": " + color + node.getParentNeededLevel(parent));
+            }
+            return lore;
+        }
+
+
         @Override
         public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
             Placeholders holders = new Placeholders();
             holders.register("skill-tree", inv.getSkillTree().getName());
+            if (inv.getSkillTree().isNode(inv.getCoordinates(n))) {
+                SkillTreeNode node = inv.getNode(n);
+                holders.register("current-level", inv.getPlayerData().getNodeLevel(node));
+                holders.register("current-state", inv.getPlayerData().getNodeState(node));
+                holders.register("max-level", node.getMaxLevel());
+                holders.register("max-children", node.getMaxChildren());
+                holders.register("size", node.getSize());
+            }
             holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
             holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
             return holders;
@@ -210,6 +240,7 @@ public class SkillTreeViewer extends EditableInventory {
         private int treeListPage;
         private final int maxTreeListPage;
         private final SkillTree skillTree;
+        private final List<Integer> slots;
 
         public SkillTreeInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
@@ -217,7 +248,7 @@ public class SkillTreeViewer extends EditableInventory {
             skillTree = playerData.getOpenedSkillTree();
             maxTreeListPage = (MMOCore.plugin.skillTreeManager.getAll().size() - 1) / editable.getByFunction("skill-tree").getSlots().size();
             //We get the width and height of the GUI(corresponding to the slots given)
-            List<Integer> slots = editable.getByFunction("skill-tree-node").getSlots();
+            slots = editable.getByFunction("skill-tree-node").getSlots();
             minSlot = 64;
             maxSlot = 0;
             for (int slot : slots) {
@@ -253,6 +284,19 @@ public class SkillTreeViewer extends EditableInventory {
         public String calculateName() {
             return getEditable().getName().replace("{skill-tree-name}", skillTree.getName()).replace("{skill-tree-id}", skillTree.getId());
         }
+
+        public IntegerCoordinates getCoordinates(int n) {
+            int slot = slots.get(n);
+            int deltaX = (slot - getMinSlot()) % 9;
+            int deltaY = (slot - getMinSlot()) / 9;
+            IntegerCoordinates coordinates = new IntegerCoordinates(getX() + deltaX, getY() + deltaY);
+            return coordinates;
+        }
+
+        public SkillTreeNode getNode(int n) {
+            return getSkillTree().getNode(getCoordinates(n));
+        }
+
 
         public SkillTree getSkillTree() {
             return skillTree;
@@ -292,8 +336,6 @@ public class SkillTreeViewer extends EditableInventory {
                     //We remove all the nodeStates progress
                     playerData.giveSkillTreePoints(skillTree.getId(), reallocated);
                     playerData.giveSkillTreeReallocationPoints(-1);
-                    //We unregister all the modifiers or the player
-                    playerData.removeModifiersFrom(skillTree);
                     for (SkillTreeNode node : skillTree.getNodes()) {
                         playerData.setNodeLevel(node, 0);
                         playerData.setNodeState(node, NodeState.LOCKED);
@@ -323,16 +365,14 @@ public class SkillTreeViewer extends EditableInventory {
 
                 if (event.getClickType() == ClickType.RIGHT) {
                     int offset = event.getSlot();
-                    int xOffset=offset%9-middleSlot%9;
-                    int yOffset=offset/9-middleSlot/9;
+                    int xOffset = offset % 9 - middleSlot % 9;
+                    int yOffset = offset / 9 - middleSlot / 9;
                     x += xOffset;
-                    y += yOffset-1;
+                    y += yOffset - 1;
                     open();
                     event.setCancelled(true);
                     return;
-                }
-
-                else if (event.getClickType() == ClickType.LEFT) {
+                } else if (event.getClickType() == ClickType.LEFT) {
                     PersistentDataContainer container = event.getItemStack().getItemMeta().getPersistentDataContainer();
                     int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
                     int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);

@@ -1,26 +1,26 @@
 package net.Indyuce.mmocore.tree;
 
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.quest.trigger.Trigger;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.ExpCurve;
+import net.Indyuce.mmocore.experience.ExperienceObject;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.tree.skilltree.AutomaticSkillTree;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 //We must use generics to get the type of the corresponding tree
-public class SkillTreeNode implements Unlockable {
+public class SkillTreeNode implements Unlockable, ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
     private IntegerCoordinates coordinates;
@@ -29,11 +29,9 @@ public class SkillTreeNode implements Unlockable {
     /**
      * The lore corresponding to each level
      */
-    private final HashMap<NodeContext, List<String>> lores = new HashMap<>();
+    private final List<String> lore = new ArrayList<>();
 
-    //TODO modifiers depending on level with drop tables
-    private final HashMap<Integer, List<PlayerModifier>> modifiers = new HashMap<>();
-    private final HashMap<Integer, List<Trigger>> triggers = new HashMap<>();
+    private final ExperienceTable experienceTable;
 
     //The max level the skill tree node can have and the max amount of children it can have.
     private final int maxLevel, maxChildren, size;
@@ -55,56 +53,10 @@ public class SkillTreeNode implements Unlockable {
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
-
-        //We initialize the value of the lore for each skill tree node.
-        for (String state : Objects.requireNonNull(config.getConfigurationSection("lores")).getKeys(false)) {
-            NodeState nodeState = NodeState.valueOf(UtilityMethods.enumName(state));
-            if (nodeState == NodeState.UNLOCKED) {
-                //TODO: Message could'nt load ... instead of exce/*99+*-*99**9+-ption
-                ConfigurationSection section = config.getConfigurationSection("lores." + state);
-                for (String level : section.getKeys(false))
-                    lores.put(new NodeContext(nodeState, Integer.parseInt(level)), section.getStringList(level));
-
-            } else {
-                lores.put(new NodeContext(nodeState, 0), config.getStringList("lores." + state));
-            }
-        }
-
-        //We load the triggers
-        if (config.contains("triggers")) {
-            try {
-                ConfigurationSection section = config.getConfigurationSection("triggers");
-                for (String levelFormat : section.getKeys(false)) {
-                    final int level = Integer.parseInt(levelFormat);
-                    final List<Trigger> triggers = new ArrayList<>();
-                    for (String str : section.getStringList(levelFormat))
-                        triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(str)));
-                    this.triggers.put(level, triggers);
-                }
-            } catch (NumberFormatException e) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load triggers for skill node " + tree.getId() + "." + id + " : Problem with the Number Format.");
-            }
-        }
-
-        //We load the player Modifiers
-        if (config.contains("modifiers")) {
-            try {
-                ConfigurationSection section = config.getConfigurationSection("modifiers");
-                for (String level : section.getKeys(false)) {
-                    int value = Integer.parseInt(level);
-                    for (String str : section.getStringList(level)) {
-                        PlayerModifier modifier = MythicLib.plugin.getModifiers().loadPlayerModifier(new MMOLineConfig(str));
-                        if (!modifiers.containsKey(value)) {
-                            modifiers.put(value, new ArrayList<>());
-                        }
-                        modifiers.get(value).add(modifier);
-                    }
-                }
-
-            } catch (NumberFormatException e) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Couldn't load modifiers for the skill node " + tree.getId() + "." + id + " :Problem with the Number Format.");
-            }
-        }
+        lore.addAll(config.getStringList("lore"));
+        String expTableId = config.getString("experience-table");
+        Validate.notNull(expTableId, "You must specify an exp table for " + getFullId() + ".");
+        this.experienceTable = MMOCore.plugin.experience.getTableOrThrow(expTableId);
 
 
         maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
@@ -115,15 +67,6 @@ public class SkillTreeNode implements Unlockable {
             coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
         }
     }
-
-        /*
-        if (config.contains("modifiers")) {
-            for (String key : config.getConfigurationSection("modifiers").getKeys(false)) {
-                PlayerModifier mod = MythicLib.plugin.getModifiers().loadPlayerModifier(new ConfigSectionObject(config.getConfigurationSection(key)));
-                modifiers.put(1, mod);
-            }
-        }
-        */
 
 
     public SkillTree getTree() {
@@ -205,12 +148,26 @@ public class SkillTreeNode implements Unlockable {
         return coordinates;
     }
 
-    public List<PlayerModifier> getModifiers(int level) {
-        return modifiers.get(level);
+    @Override
+    public String getKey() {
+        return "skill_tree_node:" + getFullId().replace("-", "_");
     }
 
-    public List<Trigger> getTriggers(int level) {
-        return triggers.get(level);
+    @Nullable
+    @Override
+    public ExpCurve getExpCurve() {
+        throw new RuntimeException("Attributes don't have experience");
+    }
+
+    @Override
+    @NotNull
+    public ExperienceTable getExperienceTable() {
+        return Objects.requireNonNull(experienceTable);
+    }
+
+    @Override
+    public boolean hasExperienceTable() {
+        return experienceTable != null;
     }
 
     @Override
@@ -239,60 +196,13 @@ public class SkillTreeNode implements Unlockable {
         holders.register("level", playerData.getNodeLevel(this));
         holders.register("max-level", getMaxLevel());
         holders.register("max-children", getMaxChildren());
-
-        //List of all the children of the node
-        String str = "";
-        for (SkillTreeNode node : getChildren())
-            str += node.getName() + ",";
-        //We remove the last comma
-        if (str.length() != 0)
-            str = str.substring(0, str.length() - 1);
-        holders.register("children", str);
-
-        //list of parents with the level needed for each of them
-        str = "";
-        for (SkillTreeNode node : getSoftParents())
-            str += node.getName() + " " + MMOCoreUtils.toRomanNumerals(getParentNeededLevel(node)) + ",";
-        //We remove the last comma
-        if (str.length() != 0)
-            str = str.substring(0, str.length() - 1);
-        holders.register("soft-parents-level", str);
-
-        //list of parents
-        str = "";
-        for (SkillTreeNode node : getSoftParents())
-            str += node.getName() + ",";
-        //We remove the last comma
-        if (str.length() != 0)
-            str = str.substring(0, str.length() - 1);
-        holders.register("soft-parents", str);
-
-        //list of parents with the level needed for each of them
-        str = "";
-        for (SkillTreeNode node : getStrongParents())
-            str += node.getName() + " " + MMOCoreUtils.toRomanNumerals(getParentNeededLevel(node)) + ",";
-        //We remove the last comma
-        if (str.length() != 0)
-            str = str.substring(0, str.length() - 1);
-        holders.register("strong-parents-level", str);
-
-        //list of parents
-        str = "";
-        for (SkillTreeNode node : getStrongParents())
-            str += node.getName() + ",";
-        //We remove the last comma
-        if (str.length() != 0)
-            str = str.substring(0, str.length() - 1);
-        holders.register("strong-parents", str);
-
         return holders;
     }
 
     public List<String> getLore(PlayerData playerData) {
         Placeholders holders = getPlaceholders(playerData);
         List<String> parsedLore = new ArrayList<>();
-        NodeContext context = new NodeContext(playerData.getNodeState(this), playerData.getNodeLevel(this));
-        lores.get(context).forEach(string -> parsedLore.add(
+        lore.forEach(string -> parsedLore.add(
                 MythicLib.plugin.parseColors(holders.apply(playerData.getPlayer(), string))));
         return parsedLore;
 
@@ -318,6 +228,16 @@ public class SkillTreeNode implements Unlockable {
         }
         String treeId = treeIdBuilder.toString();
         return MMOCore.plugin.skillTreeManager.get(treeId).getNode(coords);
+    }
+
+    @Override
+    public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, @NotNull EXPSource source) {
+        throw new RuntimeException("Attributes don't have experience");
+    }
+
+    @Override
+    public boolean shouldHandle(PlayerData playerData) {
+        throw new RuntimeException("Attributes don't have experience");
     }
 
     public class NodeContext {

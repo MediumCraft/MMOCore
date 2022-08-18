@@ -1,4 +1,8 @@
 # GUI display name
+name: Your Character
+
+
+# GUI display name
 name: '&eCurrent Skill Tree: &6{skill-tree-name}'
 
 # Number of slots in your inventory. Must be
@@ -9,18 +13,31 @@ items:
   skill-tree:
     name: '{skill-tree-node}'
     function: skill-tree
-    slots: [9,18,27,36]
+    slots: [9,18,27]
     lore: 'Description: {skill-tree-description}'
 
   next-tree-list-page:
     function: 'next-tree-list-page'
     item: ARROW
-    slots: [ 45 ]
+    slots: [ 36 ]
 
   previous-tree-list-page:
     function: 'previous-tree-list-page'
     item: 'ARROW'
     slots: [ 0 ]
+
+  reallocation:
+    function: reallocation
+    item: CAULDRON
+    slots: [45]
+    name: '&aReallocate Skill Tree Points'
+    lore:
+      - ''
+      - 'You have spent a total of &6{total}&7 skill tree points.'
+      - '&7Right click to reallocate them.'
+      - ''
+      - '&eCosts 1 attribute reallocation point.'
+      - '&e◆ Skill Tree Reallocation Points: &6{realloc-points}'
 
   skill-tree-node:
 
@@ -28,6 +45,19 @@ items:
     slots: [2,3,4,5,6,7,8,11,12,13,14,15,16,17,20,21,22,23,24,25,26,29,30,31,32,33,34,35,38,39,40,41,42,43,44]
     #The lore that will be displayed after the lore of the node
     lore:
+      - '&7Current State: &6{current-state}'
+      - '&7Current Level: &6{current-level}'
+      - '&7Max Level: &6{max-level}'
+      - '--------------------'
+      - '&7⧆ &6Requirements: '
+      - '&fStrong Parents: '
+      - '{strong-parents}'
+      - ''
+      - '&fSoft Parents: '
+      - '{soft-parents}'
+      - '--------------------'
+      - '{custom-lore}'
+      - '--------------------'
       - '&eCurrent {skill-tree} &epoints: &6{skill-tree-points}'
       - '&eCurrent global points: &6{global-points}'
 

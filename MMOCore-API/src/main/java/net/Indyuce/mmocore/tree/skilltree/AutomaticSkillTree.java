@@ -96,15 +96,15 @@ public class AutomaticSkillTree extends SkillTree {
             SkillTreeNode child = node.getChildren().get(i);
 
             if (childrenSize % 2 == 1 && i == 0) {
-                child.setCoordinates(new IntegerCoordinates(x, y - 2));
+                child.setCoordinates(new IntegerCoordinates(x, y - 1));
                 leftOffset += 2 + nodeBranches.get(child).getLeftBranches();
                 rightOffset += 2 + nodeBranches.get(child).getRightBranches();
             } else if (i % 2 == 0) {
-                child.setCoordinates(new IntegerCoordinates(x - leftOffset - 2 - nodeBranches.get(child).getWidth(), y - 2));
+                child.setCoordinates(new IntegerCoordinates(x - leftOffset - 2 - nodeBranches.get(child).getWidth(), y - 1));
                 for (SkillTreeNode skillTree : nodeBranches.keySet())
                     leftOffset += 2 + nodeBranches.get(child).getWidth();
             } else {
-                child.setCoordinates(new IntegerCoordinates(x + rightOffset + 2 + nodeBranches.get(child).getWidth(), y - 2));
+                child.setCoordinates(new IntegerCoordinates(x + rightOffset + 2 + nodeBranches.get(child).getWidth(), y - 1));
                 rightOffset += 2 + nodeBranches.get(child).getWidth();
             }
 
@@ -149,9 +149,9 @@ public class AutomaticSkillTree extends SkillTree {
                 leftBranches += nodeBranches.get(child).getLeftBranches();
                 rightBranches += nodeBranches.get(child).getRightBranches();
             } else if (i % 2 == 0) {
-                leftBranches += nodeBranches.get(child).getWidth() + 2;
+                leftBranches += nodeBranches.get(child).getWidth();
             } else {
-                rightBranches += nodeBranches.get(child).getWidth() + 2;
+                rightBranches += nodeBranches.get(child).getWidth();
             }
         }
 
