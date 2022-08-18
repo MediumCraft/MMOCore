@@ -100,7 +100,16 @@ public class SkillTreeViewer extends EditableInventory {
             ItemMeta meta = item.getItemMeta();
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.setDisplayName(skillTree.getName());
-            meta.setLore(skillTree.getLore());
+            Placeholders holders= getPlaceholders(inv,n);
+            List<String> lore = new ArrayList<>();
+            getLore().forEach(string -> {
+                if (string.contains("{tree-lore}")) {
+                    lore.addAll(skillTree.getLore());
+                }
+                else
+                    lore.add(holders.apply(inv.getPlayer(),string));
+            });
+            meta.setLore(lore);
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING, skillTree.getId());
             item.setItemMeta(meta);
@@ -114,6 +123,8 @@ public class SkillTreeViewer extends EditableInventory {
             Placeholders holders = new Placeholders();
             holders.register("name", skillTree.getName());
             holders.register("id", skillTree.getId());
+            holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
+            holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
             return holders;
         }
     }
@@ -376,6 +387,10 @@ public class SkillTreeViewer extends EditableInventory {
                     PersistentDataContainer container = event.getItemStack().getItemMeta().getPersistentDataContainer();
                     int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
                     int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
+                    if(!skillTree.isNode(new IntegerCoordinates(x,y))) {
+                        event.setCancelled(true);
+                        return;
+                    }
                     SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));
                     if (playerData.canIncrementNodeLevel(node)) {
                         playerData.incrementNodeLevel(node);

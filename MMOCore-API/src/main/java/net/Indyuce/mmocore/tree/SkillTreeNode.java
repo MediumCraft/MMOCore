@@ -29,7 +29,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
     /**
      * The lore corresponding to each level
      */
-    private final List<String> lore = new ArrayList<>();
+    private final Map<Integer,List<String>> lores = new HashMap<>();
 
     private final ExperienceTable experienceTable;
 
@@ -53,7 +53,15 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
-        lore.addAll(config.getStringList("lore"));
+        if(config.contains("lores")) {
+            for(String key: config.getConfigurationSection("lores").getKeys(false)) {
+                try {
+                    lores.put(Integer.parseInt(key),config.getStringList("lores."+key));
+                }catch (NumberFormatException e) {
+                    throw new RuntimeException("You must only specifiy integers in lores.");
+                }
+            }
+        }
         String expTableId = config.getString("experience-table");
         Validate.notNull(expTableId, "You must specify an exp table for " + getFullId() + ".");
         this.experienceTable = MMOCore.plugin.experience.getTableOrThrow(expTableId);
@@ -202,6 +210,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
     public List<String> getLore(PlayerData playerData) {
         Placeholders holders = getPlaceholders(playerData);
         List<String> parsedLore = new ArrayList<>();
+        List<String> lore= lores.get(playerData.getNodeLevel(this));
         lore.forEach(string -> parsedLore.add(
                 MythicLib.plugin.parseColors(holders.apply(playerData.getPlayer(), string))));
         return parsedLore;

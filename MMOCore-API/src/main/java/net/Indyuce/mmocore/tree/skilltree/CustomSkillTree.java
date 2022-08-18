@@ -29,6 +29,7 @@ public class CustomSkillTree extends SkillTree {
             ConfigurationSection section = config.getConfigurationSection("nodes."+node.getId() + ".children.soft");
             if (section != null) {
                 for (String child : section.getKeys(false)) {
+                    Validate.isTrue(isNode(child),"The node "+child+ "defined in children.soft of"+node.getId()+"doesn't exist.");
                     node.addChild(getNode(child));
                     getNode(child).addParent(node, section.getInt(child), ParentType.SOFT);
                 }
@@ -36,23 +37,26 @@ public class CustomSkillTree extends SkillTree {
             section = config.getConfigurationSection("nodes."+node.getId() + ".children.strong");
             if (section != null) {
                 for (String child : section.getKeys(false)) {
+                    Validate.isTrue(isNode(child),"The node "+child+ "defined in children.strong of"+node.getId()+"doesn't exist.");
+
                     node.addChild(getNode(child));
                     getNode(child).addParent(node, section.getInt(child), ParentType.STRONG);
                 }
             }
-            Bukkit.broadcastMessage(node.getSoftParents().size()+" strong: "+node.getStrongParents().size());
-
         }
+    }
+
+
+    private void setupRoots() {
         //We find the roots of the tree which don't have any parents
         for (SkillTreeNode node : nodes.values()) {
-            if (node.getSoftParents().size() == 0 && node.getStrongParents().size() == 0) {
+
+            if (node.getSoftParents().size()+node.getStrongParents().size() == 0) {
                 //We mark the node as a root also
                 roots.add(node);
                 node.setIsRoot();
             }
         }
-        Bukkit.broadcastMessage("" + roots.size());
-
     }
 
 }

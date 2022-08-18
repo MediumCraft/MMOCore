@@ -1,8 +1,4 @@
 # GUI display name
-name: Your Character
-
-
-# GUI display name
 name: '&eCurrent Skill Tree: &6{skill-tree-name}'
 
 # Number of slots in your inventory. Must be
@@ -14,7 +10,14 @@ items:
     name: '{skill-tree-node}'
     function: skill-tree
     slots: [9,18,27]
-    lore: 'Description: {skill-tree-description}'
+    lore:
+      - ''
+      - '&aDescription:'
+      - '{tree-lore}'
+      - ''
+      - '--------------------'
+      - '&e◆Current {name} &epoints: &6{skill-tree-points}'
+      - '&e◆Current Global points: &6{global-points}'
 
   next-tree-list-page:
     function: 'next-tree-list-page'
@@ -48,6 +51,8 @@ items:
       - '&7Current State: &6{current-state}'
       - '&7Current Level: &6{current-level}'
       - '&7Max Level: &6{max-level}'
+      - '&7Max Children: &6{max-children}'
+      - '&7Size: &6{size}'
       - '--------------------'
       - '&7⧆ &6Requirements: '
       - '&fStrong Parents: '
@@ -56,7 +61,7 @@ items:
       - '&fSoft Parents: '
       - '{soft-parents}'
       - '--------------------'
-      - '{custom-lore}'
+      - '{node-lore}'
       - '--------------------'
       - '&eCurrent {skill-tree} &epoints: &6{skill-tree-points}'
       - '&eCurrent global points: &6{global-points}'

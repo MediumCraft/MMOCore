@@ -12,7 +12,10 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,6 +64,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 data.setClassPoints(result.getInt("class_points"));
                                 data.setSkillPoints(result.getInt("skill_points"));
                                 data.setSkillReallocationPoints(result.getInt("skill_reallocation_points"));
+                                data.setSkillTreeReallocationPoints(result.getInt("skill_tree_reallocation_points"));
                                 data.setAttributePoints(result.getInt("attribute_points"));
                                 data.setAttributeReallocationPoints(result.getInt("attribute_realloc_points"));
                                 data.setLevel(result.getInt("level"));
@@ -72,6 +76,22 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                     JsonObject json = new JsonParser().parse(result.getString("times_claimed")).getAsJsonObject();
                                     json.entrySet().forEach(entry -> data.getItemClaims().put(entry.getKey(), entry.getValue().getAsInt()));
                                 }
+                                if(!isEmpty(result.getString("skill_tree_points"))) {
+                                    JsonObject json = new JsonParser().parse(result.getString("skill_tree_points")).getAsJsonObject();
+                                    for(SkillTree skillTree: MMOCore.plugin.skillTreeManager.getAll()) {
+                                        data.setSkillTreePoints(skillTree.getId(),json.has(skillTree.getId())?json.get(skillTree.getId()).getAsInt():0);
+                                    }
+                                    data.setSkillTreePoints("global",json.has("global")?json.get("global").getAsInt():0);
+
+                                }
+                                if(!isEmpty(result.getString("skill_tree_levels"))) {
+                                    JsonObject json = new JsonParser().parse(result.getString("skill_tree_levels")).getAsJsonObject();
+                                    for(SkillTreeNode skillTreeNode: MMOCore.plugin.skillTreeManager.getAllNodes()) {
+                                        data.setNodeLevel(skillTreeNode,json.has(skillTreeNode.getFullId())?json.get(skillTreeNode.getFullId()).getAsInt():0);
+                                    }
+                                }
+                                data.setupNodeState();
+
 
                                 if (!isEmpty(result.getString("guild"))) {
                                     Guild guild = MMOCore.plugin.dataProvider.getGuildManager().getGuild(result.getString("guild"));
@@ -160,6 +180,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         sql.updateData("skill_reallocation_points",data.getSkillReallocationPoints());
         sql.updateData("attribute_points", data.getAttributePoints());
         sql.updateData("attribute_realloc_points", data.getAttributeReallocationPoints());
+        sql.updateData("skill_tree_reallocation_points",data.getSkillTreeReallocationPoints());
+
         sql.updateData("level", data.getLevel());
         sql.updateData("experience", data.getExperience());
         sql.updateData("class", data.getProfess().getId());
@@ -172,6 +194,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
         sql.updateJSONObject("skills", data.mapSkillLevels().entrySet());
         sql.updateJSONObject("times_claimed", data.getItemClaims().entrySet());
+        sql.updateJSONObject("skill_tree_points",data.getSkillTreePoints().entrySet());
+        sql.updateJSONObject("skill_tree_levels",data.getNodeLevelsEntrySet());
+
 
         sql.updateData("attributes", data.getAttributes().toJsonString());
         sql.updateData("professions", data.getCollectionSkills().toJsonString());

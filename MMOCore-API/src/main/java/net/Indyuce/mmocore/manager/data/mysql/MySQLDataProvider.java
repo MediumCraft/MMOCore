@@ -49,11 +49,21 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
                 exception.printStackTrace();
             }
         });
-        // Add 'skill_tree_realloc_points' if it doesn't exist
-        getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_tree_realloc_points'", result -> {
+
+        // Add 'skill_reallocation_points' if it doesn't exist
+        getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_reallocation_points'", result -> {
             try {
                 if (!result.next())
-                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN is_saved TINYINT");
+                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN skill_reallocation_points INT(11)");
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        });
+        // Add 'skill_tree_reallocation_points' if it doesn't exist
+        getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_tree_reallocation_points'", result -> {
+            try {
+                if (!result.next())
+                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN skill_tree_reallocation_points INT(11)");
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
@@ -62,7 +72,16 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
         getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_tree_points'", result -> {
             try {
                 if (!result.next())
-                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN is_saved TINYINT");
+                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN skill_tree_points LONGTEXT");
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        });
+        // Add 'skill_tree_levels' if it doesn't exist
+        getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_tree_levels'", result -> {
+            try {
+                if (!result.next())
+                    executeUpdate("ALTER TABLE mmocore_playerdata ADD COLUMN skill_tree_levels LONGTEXT");
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }

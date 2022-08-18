@@ -1,0 +1,170 @@
+id: customcombat
+name: CustomCombat
+type: custom
+item: GOLDEN_AXE
+lore: 
+- '&6This autoskill tree is used for combat abilities!'
+
+nodes:
+  strength:
+    name: 'Combat strength'
+    children: 
+      strong: 
+        force: 2
+        agility: 1
+        wisdom: 3
+    experience-table: class_exp_table
+    max-level: 3
+    size: 1
+    coordinates:
+      x: 0
+      y: 0
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1: 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+      
+  wisdom:
+    name: 'Wisdom'
+    size: 1
+    max-children: 2
+    max-level: 2
+    coordinates:
+      x: -1
+      y: 0
+    experience-table: class_exp_table
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1: 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+
+  agility:
+    name: 'Agility'
+    size: 1
+    max-children: 2
+    max-level: 2
+    experience-table: class_exp_table
+    coordinates:
+      x: 1
+      y: 0
+    children: 
+      strong: 
+        agility2: 1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1: 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  
+  agility2:
+    name: 'Agility2'
+    size: 1
+    max-children: 2
+    max-level: 2
+    experience-table: class_exp_table
+    coordinates:
+      x: 1
+      y: -1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1: 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+
+  force:
+    name: 'Force'
+    size: 1
+    max-children: 1
+    max-level: 2
+    children: 
+      strong: 
+        weaponry: 1
+        archery: 1
+    experience-table: class_exp_table
+    coordinates:
+      x: 0
+      y: 1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1: 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  
+  weaponry:
+    name: 'Weaponry'  
+    max-level: 2
+    size: 1
+    coordinates:
+      x: 1
+      y: 1
+    experience-table: class_exp_table
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1: 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  
+  archery:
+    name: 'Archery'
+    max-level: 2
+    size: 1
+    experience-table: class_exp_table
+    coordinates:
+      x: 0
+      y: -1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1: 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  
+
+icons:
+  unlocked:
+    1: 
+      item: 'YELLOW_DYE'
+      model-data: 1
+    2: 
+      item: 'ORANGE_DYE'
+      model-data: 0
+  locked: 
+    1: 
+      item: "BROWN_DYE"
+  unlockable:
+    1:
+      item: "BLUE_DYE"
+  fully-locked:
+    1:
+      item: "BLACK_DYE"
+  path: 
+    item: "WHITE_DYE"

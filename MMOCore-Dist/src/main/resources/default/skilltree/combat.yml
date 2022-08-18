@@ -1,0 +1,141 @@
+id: 'combat'
+name: '&4Combat'
+lore: 
+  - '&6This skill tree is used for combat abilities!'
+type: 'linked'
+item: 'DIAMOND_AXE'
+nodes:
+  strength:
+    name: 'Combat strength'
+    coordinates:
+      x: 0
+      y: 0
+    
+    max-level: 2
+    is-root: true
+    size: 1
+    experience-table: class_exp_table
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1 : 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+    
+
+
+  force:
+    name: 'Force'
+    size: 1
+    max-children: 1
+    experience-table: class_exp_table
+    coordinates:
+      x: 1
+      y: 0
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1 : 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  
+  weaponry:
+    name: 'Weaponry'
+    coordinates:
+      x: 2
+      y: 0
+    experience-table: class_exp_table
+    max-level: 2
+    size: 1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1 : 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  
+  archery:
+    name: 'Archery'
+    coordinates:
+      x: 1
+      y: 1
+    experience-table: class_exp_table
+    max-level: 2
+    size: 1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1 : 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  archery2:
+    name: 'Archery2'
+    coordinates:
+      x: 1
+      y: 2
+    experience-table: class_exp_table
+    max-level: 2
+    size: 1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1 : 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  archery3:
+    name: 'Archery3'
+    coordinates:
+      x: 1
+      y: 3 
+    
+    max-level: 2
+    size: 1
+    lores:
+      0:
+        - "&eThis lore will be shown when level 0"
+      1 : 
+        - "&eThis lore will be shown when level 1"
+      2: 
+        - "&eThis lore will be shown when level 2"
+      3: 
+        - "&eThis lore will be shown when level 3"
+  
+
+paths:
+  path1:
+    x: 2
+    y: 2
+  path2: 
+    x: 2
+    y: 3
+
+icons: 
+  unlocked:
+    1: 
+      item: 'GREEN_DYE'
+  locked: 
+    1: 
+      item: "BROWN_DYE"
+  unlockable:
+    1:
+      item: "BLUE_DYE"
+  fully-locked:
+    1:
+      item: "BLACK_DYE"
+  path: 
+    item: "WHITE_DYE"

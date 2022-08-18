@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
 
 
 public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
-    private final HashMap<String,SkillTreeNode> skillTreeNodes = new HashMap<>();
+    private final HashMap<String, SkillTreeNode> skillTreeNodes = new HashMap<>();
 
     @Override
-    public void register(SkillTree tree){
+    public void register(SkillTree tree) {
         super.register(tree);
-        tree.getNodes().forEach((node)->skillTreeNodes.put(node.getFullId(),node));
+        tree.getNodes().forEach((node) -> skillTreeNodes.put(node.getFullId(), node));
     }
 
     public boolean has(int index) {
-        return index>=0 &&index<registered.values().stream().collect(Collectors.toList()).size();
+        return index >= 0 && index < registered.values().stream().collect(Collectors.toList()).size();
     }
 
 
@@ -35,7 +35,7 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
      * @return The list of all the roots (e.g the nodes without any parents
      */
     public List<SkillTreeNode> getRootNodes() {
-        return skillTreeNodes.values().stream().filter(treeNode -> treeNode.getSoftParents().size()==0).collect(Collectors.toList());
+        return skillTreeNodes.values().stream().filter(treeNode -> treeNode.getSoftParents().size() == 0).collect(Collectors.toList());
     }
 
     public Collection<SkillTreeNode> getAllNodes() {
@@ -71,7 +71,9 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
                 load(child);
             }
         } else {
-            register(SkillTree.loadSkillTree(YamlConfiguration.loadConfiguration(file)));
+            SkillTree skillTree = SkillTree.loadSkillTree(YamlConfiguration.loadConfiguration(file));
+            if (skillTree != null)
+                register(skillTree);
         }
     }
 }

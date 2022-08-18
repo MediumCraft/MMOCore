@@ -76,6 +76,8 @@ public class ConfigManager {
         }
         if(!new File(MMOCore.plugin.getDataFolder()+"/skilltree").exists()) {
             loadDefaultFile("skilltree","combat.yml");
+            loadDefaultFile("skilltree","autocombat.yml");
+            loadDefaultFile("skilltree","customcombat.yml");
         }
 
         loadDefaultFile("attributes.yml");
