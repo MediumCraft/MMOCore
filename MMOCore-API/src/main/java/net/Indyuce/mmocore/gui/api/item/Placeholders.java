@@ -19,9 +19,17 @@ public class Placeholders {
         // Remove conditions first
         str = removeCondition(str);
 
+        /*
+         * For MMOCore not to loop on unparsable placeholders, it keeps
+         * track of the "last placeholder" parsed. The 'explored' string
+         * has NO parsed placeholder.
+         */
+        String explored = str;
+
         // Internal placeholders
-        while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
-            String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
+        while (explored.contains("{") && explored.substring(explored.indexOf("{")).contains("}")) {
+            final int begin = explored.indexOf("{"), end = explored.indexOf("}");
+            final String holder = explored.substring(begin + 1, end);
             @Nullable String found = placeholders.get(holder);
 
             /*
@@ -32,6 +40,9 @@ public class Placeholders {
              */
             if (found != null)
                 str = str.replace("{" + holder + "}", found);
+
+            // Increase counter
+            explored = explored.substring(end + 1);
         }
 
         // External placeholders
