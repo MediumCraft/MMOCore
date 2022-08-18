@@ -69,8 +69,8 @@ public class ConfigManager {
             loadDefaultFile("expcurves", "mining.txt");
         }
 
-        if (!new File(MMOCore.plugin.getDataFolder() + "/skilltree").exists())
-            loadDefaultFile("skilltree", "combat.yml");
+/*        if (!new File(MMOCore.plugin.getDataFolder() + "/skilltree").exists())
+            loadDefaultFile("skilltree", "combat.yml");*/
 
         loadDefaultFile("attributes.yml");
         loadDefaultFile("items.yml");
