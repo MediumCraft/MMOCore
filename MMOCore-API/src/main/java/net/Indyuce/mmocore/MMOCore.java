@@ -236,7 +236,7 @@ public class MMOCore extends JavaPlugin {
         // Load MMOCore-Bukkit module
         try {
             Class.forName("net.Indyuce.mmocore.MMOCoreBukkit").getConstructor(MMOCore.class).newInstance(this);
-        } catch(Throwable exception) {
+        } catch (Throwable exception) {
             throw new RuntimeException("Cannot run an API build on Spigot!");
         }
 
@@ -368,7 +368,7 @@ public class MMOCore extends JavaPlugin {
         classManager.initialize(clearBefore);
 
         InventoryManager.load();
-
+        skillTreeManager.initialize(clearBefore);
         questManager.initialize(clearBefore);
         lootChests.initialize(clearBefore);
         restrictionManager.initialize(clearBefore);

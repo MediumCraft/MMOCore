@@ -389,8 +389,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @NotNull
     public SkillTree getOpenedSkillTree() {
-        if (cachedSkillTree == null)
-            return MMOCore.plugin.skillTreeManager.getAll().stream().findFirst().get();
+        if (cachedSkillTree == null) {
+            Optional<SkillTree> optionnal=MMOCore.plugin.skillTreeManager.getAll().stream().findFirst();
+            return optionnal.isPresent()?optionnal.get():null;
+        }
         return cachedSkillTree;
     }
 

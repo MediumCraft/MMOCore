@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.command;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.manager.InventoryManager;
@@ -17,16 +18,20 @@ public class SkillTreeCommand extends BukkitCommand {
         setAliases(config.getStringList("aliases"));
         setDescription("Opens the skills menu.");
     }
+
     @Override
     public boolean execute(@NotNull CommandSender sender, String s, String[] args) {
         if (!(sender instanceof Player))
             return false;
         PlayerData data = PlayerData.get((Player) sender);
-        MMOCommandEvent event = new MMOCommandEvent(data, "skills");
+        MMOCommandEvent event = new MMOCommandEvent(data, "skilltree");
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled())
             return true;
-        InventoryManager.TREE_VIEW.newInventory(data).open();
+        if (MMOCore.plugin.skillTreeManager.getAll().size() != 0) {
+            InventoryManager.TREE_VIEW.newInventory(data).open();
+            return false;
+        }
         return true;
     }
 

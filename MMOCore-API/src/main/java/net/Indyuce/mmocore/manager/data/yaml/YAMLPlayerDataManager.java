@@ -30,7 +30,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
         data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
         data.setSkillPoints(config.getInt("skill-points", getDefaultData().getSkillPoints()));
-        data.setSkillReallocationPoints(config.getInt("skill-reallocation-points",getDefaultData().getSkillReallocPoints()));
+        data.setSkillReallocationPoints(config.getInt("skill-reallocation-points", getDefaultData().getSkillReallocPoints()));
+        data.setSkillTreeReallocationPoints(config.getInt("skill-tree-reallocation-points", getDefaultData().getSkillTreeReallocPoints()));
         data.setAttributePoints(config.getInt("attribute-points", getDefaultData().getAttributePoints()));
         data.setAttributeReallocationPoints(config.getInt("attribute-realloc-points", getDefaultData().getAttrReallocPoints()));
         data.setLevel(config.getInt("level", getDefaultData().getLevel()));
@@ -66,6 +67,12 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                 if (data.getProfess().hasSkill(id))
                     data.getBoundSkills().add(data.getProfess().getSkill(id));
 
+        for (String key : MMOCore.plugin.skillTreeManager.getAll().stream().map(skillTree -> skillTree.getId()).toList()) {
+            data.setSkillTreePoints(key, config.getInt("skill-tree-points." + key, 0));
+        }
+        data.setSkillTreePoints("global", config.getInt("skill-tree-points.global", 0));
+
+
         if (config.contains("times-claimed"))
             for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
                 data.getItemClaims().put(key, config.getInt("times-claimed." + key));
@@ -91,7 +98,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
         config.set("class-points", data.getClassPoints());
         config.set("skill-points", data.getSkillPoints());
-        config.set("skill-reallocation-points",data.getSkillReallocationPoints());
+        config.set("skill-reallocation-points", data.getSkillReallocationPoints());
         config.set("attribute-points", data.getAttributePoints());
         // config.set("skill-realloc-points", skillReallocationPoints);
         config.set("attribute-realloc-points", data.getAttributeReallocationPoints());
@@ -102,7 +109,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         config.set("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
         config.set("last-login", data.getLastLogin());
         config.set("guild", data.hasGuild() ? data.getGuild().getId() : null);
-
+        data.getSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
+        config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
