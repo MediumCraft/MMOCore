@@ -10,11 +10,13 @@ import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.skill.cast.KeyCombo;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,10 +34,15 @@ public class KeyCombos implements Listener {
      * hash code method
      */
     private final Map<KeyCombo, Integer> combos = new HashMap<>();
+    /**
+     * All the keys that are at the start of a combo.
+     */
+    private final Set<PlayerKey> firstComboKeys = new HashSet<>();
 
     /**
      * Key players need to press to start a combo
      */
+    private final boolean needsInitializerKey;
     private final PlayerKey initializerKey;
     private final int longestCombo;
 
@@ -64,6 +71,7 @@ public class KeyCombos implements Listener {
                     combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
 
                 combos.put(combo, spellSlot);
+                firstComboKeys.add(combo.getAt(0));
                 longestCombo = Math.max(longestCombo, combo.countKeys());
             } catch (RuntimeException exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
@@ -79,8 +87,13 @@ public class KeyCombos implements Listener {
         comboClickSound = config.contains("sound.combo-key") ? new SoundObject(config.getConfigurationSection("sound.combo-key")) : null;
         failComboSound = config.contains("sound.fail-combo") ? new SoundObject(config.getConfigurationSection("sound.fail-combo")) : null;
 
+        needsInitializerKey = config.getBoolean("needs-initializer-key", true);
+
+
         // Find initializer key
-        initializerKey = PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("initializer-key"), "Could not find initializer key")));
+        initializerKey = needsInitializerKey ? PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(
+                config.getString("initializer-key"), "Could not find initializer key"))) : null;
+
     }
 
     @EventHandler
@@ -89,19 +102,35 @@ public class KeyCombos implements Listener {
         Player player = playerData.getPlayer();
 
         if (!event.getData().isCasting()) {
-            if (event.getPressed() == initializerKey) {
+            if (needsInitializerKey) {
+                if (event.getPressed() == initializerKey) {
 
-                // Always cancel event
-                event.setCancelled(true);
+                    // Always cancel event
+                    event.setCancelled(true);
 
-                // Start combo
-                playerData.setSkillCasting(new CustomSkillCastingHandler(playerData));
-                if (beginComboSound != null)
-                    beginComboSound.playTo(player);
+                    // Start combo
+                    playerData.setSkillCasting(new CustomSkillCastingHandler(playerData));
+                    if (beginComboSound != null)
+                        beginComboSound.playTo(player);
+                }
+                return;
+            } else {
+                Set<PlayerKey> firstKeys = playerData.getProfess().getFirstComboKeys().isEmpty() ? firstComboKeys : playerData.getProfess().getFirstComboKeys();
+                if (firstKeys.contains(event.getPressed())) {
+
+                    // Always cancel event
+                    event.setCancelled(true);
+
+                    // Start combo
+                    CustomSkillCastingHandler casting =new CustomSkillCastingHandler(playerData);
+                    playerData.setSkillCasting(casting);
+                    casting.current.registerKey(event.getPressed());
+                    if (beginComboSound != null)
+                        beginComboSound.playTo(player);
+                }
+                return;
             }
-            return;
         }
-
 
 
         // Adding pressed key
@@ -172,54 +201,63 @@ public class KeyCombos implements Listener {
         CustomSkillCastingHandler(PlayerData caster) {
             super(caster, 10);
             if (!caster.getProfess().getKeyCombos().isEmpty()) {
-                classCombos=caster.getProfess().getKeyCombos();
-                classLongestCombo=caster.getProfess().getLongestCombo();
+                classCombos = caster.getProfess().getKeyCombos();
+                classLongestCombo = caster.getProfess().getLongestCombo();
             } else {
                 classCombos = combos;
-                classLongestCombo=longestCombo;
+                classLongestCombo = longestCombo;
             }
         }
 
         @Override
         public void onTick() {
             if (actionBarOptions != null)
-                getCaster().displayActionBar(actionBarOptions.format(this));
+                if (actionBarOptions.isSubtitle)
+                    getCaster().getPlayer().sendTitle(" ", actionBarOptions.format(this), 0, 20, 0);
+                else
+                    getCaster().displayActionBar(actionBarOptions.format(this));
         }
 
     }
 
 
     private class ActionBarOptions {
-        private final String separator, noKey;
+        private final String separator, noKey, prefix, suffix;
 
         /**
          * Saves the names for all the players keys. Used when displaying
          * the current player's key combo on the action bar
          */
         private final Map<PlayerKey, String> keyNames = new HashMap<>();
+        private final boolean isSubtitle;
 
         ActionBarOptions(ConfigurationSection config) {
+            this.prefix = config.contains("prefix") ? config.getString("prefix") : "";
+            this.suffix = config.contains("suffix") ? config.getString("suffix") : "";
             this.separator = Objects.requireNonNull(config.getString("separator"), "Could not find action bar option 'separator'");
             this.noKey = Objects.requireNonNull(config.getString("no-key"), "Could not find action bar option 'no-key'");
-
+            this.isSubtitle = config.getBoolean("" + "", false);
             for (PlayerKey key : PlayerKey.values())
                 keyNames.put(key, Objects.requireNonNull(config.getString("key-name." + key.name()), "Could not find translation for key " + key.name()));
         }
 
         public String format(CustomSkillCastingHandler casting) {
+            StringBuilder builder = new StringBuilder();
+            Placeholders holders = MMOCore.plugin.actionBarManager.getActionBarPlaceholder(casting.getCaster());
 
+            builder.append(prefix);
             // Join all keys with separator
-            String builder = casting.current.countKeys() == 0 ? noKey : keyNames.get(casting.current.getAt(0));
+            builder.append(casting.current.countKeys() == 0 ? noKey : keyNames.get(casting.current.getAt(0)));
             int j = 1;
             for (; j < casting.current.countKeys(); j++)
-                builder += separator + keyNames.get(casting.current.getAt(j));
+                builder.append(separator + keyNames.get(casting.current.getAt(j)));
 
             // All remaining
             for (; j < casting.classLongestCombo; j++)
-                builder += separator + noKey;
+                builder.append(separator + noKey);
 
-
-            return MythicLib.plugin.parseColors(builder);
+            builder.append(suffix);
+            return holders.apply(casting.getCaster().getPlayer(), builder.toString());
         }
     }
 }

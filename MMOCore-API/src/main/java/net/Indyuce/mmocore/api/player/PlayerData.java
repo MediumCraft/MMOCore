@@ -598,6 +598,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         waypoints.add(waypoint.getId());
     }
 
+    public void lockWaypoint(Waypoint waypoint) {
+        waypoints.remove(waypoint.getId());
+    }
+
+
     /**
      * @deprecated Provide a heal reason with {@link #heal(double, PlayerResourceUpdateEvent.UpdateReason)}
      */
@@ -692,8 +697,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((120 - t) / 20)).send(getPlayer());
-                if (t++ >= 100) {
+                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((MMOCore.plugin.configManager.waypointWarpTime+20 - t) / 20)).send(getPlayer());
+                if (t++ >= MMOCore.plugin.configManager.waypointWarpTime) {
                     getPlayer().teleport(target.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_TELEPORT).playTo(getPlayer());
@@ -701,11 +706,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (t / Math.PI * .015 + .5));
-                double r = Math.sin((double) t / 100 * Math.PI);
+                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (t / Math.PI * 1.5/MMOCore.plugin.configManager.waypointWarpTime + .5));
+                double r = Math.sin((double) t / MMOCore.plugin.configManager.waypointWarpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE,
-                            getPlayer().getLocation().add(Math.cos((double) t / 20 + j) * r, (double) t / 50, Math.sin((double) t / 20 + j) * r), 1,
+                            getPlayer().getLocation().add(Math.cos((double) 5*t /MMOCore.plugin.configManager.waypointWarpTime + j) * r, (double) 2*t / MMOCore.plugin.configManager.waypointWarpTime, Math.sin((double) 5*t / MMOCore.plugin.configManager.waypointWarpTime + j) * r), 1,
                             new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -951,6 +956,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE);
         getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     }
+
 
     @Deprecated
     public void setAttribute(PlayerAttribute attribute, int value) {

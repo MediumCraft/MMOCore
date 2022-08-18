@@ -25,6 +25,9 @@ public class Placeholders {
             @Nullable String found = placeholders.get(holder);
             if (found != null)
                 str = str.replace("{" + holder + "}", found);
+            else
+                str = str.replace("{" + holder + "}", "PHE");
+
         }
 
         // External placeholders

@@ -227,6 +227,9 @@ combat-log:
 # skills, etc.) when selecting a new class
 save-default-class-info: false
 
+#Time taken in ticks to teleport using waypoints.
+waypoint-warp-time: 100
+
 # Change this to the name of the color you want for
 # the different resource bar placeholders
 resource-bar-colors:
@@ -253,3 +256,4 @@ command-verbose:
   points: true
   reset: true
   resource: true
+  waypoint: true

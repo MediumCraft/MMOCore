@@ -12,6 +12,7 @@ public class WaypointsCommandTreeNode extends CommandTreeNode {
 		addChild(new OpenCommandTreeNode(this));
 		addChild(new TeleportCommandTreeNode(this));
 		addChild(new ItemCommandTreeNode(this));
+		addChild(new LockCommandTreeNode(this));
 	}
 
 	@Override

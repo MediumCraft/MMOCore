@@ -34,12 +34,12 @@ import net.Indyuce.mmocore.skill.cast.KeyCombo;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -76,6 +76,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     // If the class redefines its own key combos.
     private final Map<KeyCombo, Integer> combos = new HashMap<>();
+
+    private final Set<PlayerKey> firstComboKeys= new HashSet<>();
+
+
     private int longestCombo;
 
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
@@ -153,6 +157,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                         combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
 
                     combos.put(combo, spellSlot);
+                    firstComboKeys.add(combo.getAt(0));
                     longestCombo = Math.max(longestCombo, combo.countKeys());
                 } catch (RuntimeException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
@@ -439,6 +444,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     public Map<KeyCombo, Integer> getKeyCombos() {
         return combos;
+    }
+
+    public Set<PlayerKey> getFirstComboKeys() {
+        return firstComboKeys;
     }
 
     public int getLongestCombo() {

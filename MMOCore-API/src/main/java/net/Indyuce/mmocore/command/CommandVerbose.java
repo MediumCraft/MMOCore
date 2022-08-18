@@ -58,7 +58,8 @@ public class CommandVerbose {
         POINTS,
         SKILL_TREE_POINTS,
         RESET,
-        RESOURCE
+        RESOURCE,
+        WAYPOINT;
     }
 
     private enum VerboseValue {
