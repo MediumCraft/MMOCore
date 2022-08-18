@@ -92,19 +92,22 @@ public class AutomaticSkillTree extends SkillTree {
 
         int leftOffset = 0;
         int rightOffset = 0;
+
+
+
         for (int i = 0; i < childrenSize; i++) {
             SkillTreeNode child = node.getChildren().get(i);
+            int yOffset = childrenSize == 1 || child.getChildren().size()== 1 ? 1 : 2;
 
             if (childrenSize % 2 == 1 && i == 0) {
-                child.setCoordinates(new IntegerCoordinates(x, y - 1));
+                child.setCoordinates(new IntegerCoordinates(x, y - yOffset));
                 leftOffset += 2 + nodeBranches.get(child).getLeftBranches();
                 rightOffset += 2 + nodeBranches.get(child).getRightBranches();
             } else if (i % 2 == 0) {
-                child.setCoordinates(new IntegerCoordinates(x - leftOffset - 2 - nodeBranches.get(child).getWidth(), y - 1));
-                for (SkillTreeNode skillTree : nodeBranches.keySet())
-                    leftOffset += 2 + nodeBranches.get(child).getWidth();
+                child.setCoordinates(new IntegerCoordinates(x - leftOffset - 2 - nodeBranches.get(child).getWidth(), y - yOffset));
+                leftOffset += 2 + nodeBranches.get(child).getWidth();
             } else {
-                child.setCoordinates(new IntegerCoordinates(x + rightOffset + 2 + nodeBranches.get(child).getWidth(), y - 1));
+                child.setCoordinates(new IntegerCoordinates(x + rightOffset + 2 + nodeBranches.get(child).getWidth(), y - yOffset));
                 rightOffset += 2 + nodeBranches.get(child).getWidth();
             }
 
@@ -112,12 +115,16 @@ public class AutomaticSkillTree extends SkillTree {
             int childX = child.getCoordinates().getX();
             int childY = child.getCoordinates().getY();
 
-            int parentX=node.getCoordinates().getX();
-
-            paths.add(new IntegerCoordinates(childX, childY + 1));
+            int parentX = node.getCoordinates().getX();
+            int parentY = node.getCoordinates().getY();
             int offset = childX > parentX ? -1 : 1;
+            while (childY + 1 != parentY) {
+                paths.add(new IntegerCoordinates(childX, childY + 1));
+                childY++;
+
+            }
             while (childX != parentX) {
-                paths.add(new IntegerCoordinates(childX, childY + 2));
+                paths.add(new IntegerCoordinates(childX, childY + 1));
                 childX += offset;
             }
 
