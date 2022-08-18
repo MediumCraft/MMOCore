@@ -236,7 +236,7 @@ public class KeyCombos implements Listener {
             this.suffix = config.contains("suffix") ? config.getString("suffix") : "";
             this.separator = Objects.requireNonNull(config.getString("separator"), "Could not find action bar option 'separator'");
             this.noKey = Objects.requireNonNull(config.getString("no-key"), "Could not find action bar option 'no-key'");
-            this.isSubtitle = config.getBoolean("is-subtitle", false);
+            this.isSubtitle = config.getBoolean("" + "", false);
             for (PlayerKey key : PlayerKey.values())
                 keyNames.put(key, Objects.requireNonNull(config.getString("key-name." + key.name()), "Could not find translation for key " + key.name()));
         }
