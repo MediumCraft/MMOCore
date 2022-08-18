@@ -683,7 +683,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             final int x = getPlayer().getLocation().getBlockX();
             final int y = getPlayer().getLocation().getBlockY();
             final int z = getPlayer().getLocation().getBlockZ();
-            final double warpTime = target.getWarpTime();
+            final int warpTime = target.getWarpTime();
             int t;
 
             public void run() {
@@ -697,7 +697,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", String.valueOf((warpTime + 20 - t) / 20)).send(getPlayer());
+                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", String.valueOf((warpTime - t) / 20)).send(getPlayer());
                 if (t++ >= warpTime) {
                     getPlayer().teleport(target.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
@@ -706,7 +706,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (.5 + t / warpTime * 1.5));
+                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (.5 + t * 1.5 / warpTime));
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
