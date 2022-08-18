@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
@@ -68,9 +68,9 @@ public class ConfigManager {
             loadDefaultFile("expcurves", "levels.txt");
             loadDefaultFile("expcurves", "mining.txt");
         }
-        if(!new File(MMOCore.plugin.getDataFolder()+"/skilltree").exists()) {
-            loadDefaultFile("skilltree","combat.yml");
-        }
+
+        if (!new File(MMOCore.plugin.getDataFolder() + "/skilltree").exists())
+            loadDefaultFile("skilltree", "combat.yml");
 
         loadDefaultFile("attributes.yml");
         loadDefaultFile("items.yml");
@@ -109,7 +109,8 @@ public class ConfigManager {
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
-        maxBoundSkills= MMOCore.plugin.getConfig().getInt("max-bound-skills",6);
+        maxBoundSkills = MMOCore.plugin.getConfig().getInt("max-bound-skills", 6);
+        overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp");
     }
 
     private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {
@@ -123,7 +124,7 @@ public class ConfigManager {
 
     @Deprecated
     public PlayerInput newPlayerInput(Player player, InputType type, Consumer<String> output) {
-        return  new ChatInput(player, type, output) ;
+        return new ChatInput(player, type, output);
     }
 
     public void loadDefaultFile(String name) {
