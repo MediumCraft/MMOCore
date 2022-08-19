@@ -1,10 +1,7 @@
 package net.Indyuce.mmocore.party;
 
-import net.Indyuce.mmocore.party.compat.DungeonsXLPartyModule;
-import net.Indyuce.mmocore.party.compat.McMMOPartyModule;
-import net.Indyuce.mmocore.party.compat.PAFPartyModule;
+import net.Indyuce.mmocore.party.compat.*;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.compat.PartiesPartyModule;
 import org.bukkit.Bukkit;
 
 import javax.inject.Provider;
@@ -16,6 +13,7 @@ public enum PartyModuleType {
     MMOCORE("MMOCore", MMOCorePartyModule::new),
     PARTIES("Parties", PartiesPartyModule::new),
     PARTY_AND_FRIENDS("PartyAndFriends", PAFPartyModule::new),
+    PARTY_AND_FRIENDS_EXTENDED_BUNGEECORD_VELOCITY("Spigot-Party-API-PAF", PAFProxyExtendedPartyModule::new),
     ;
 
     private final String pluginName;

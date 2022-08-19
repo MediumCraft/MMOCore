@@ -58,6 +58,7 @@ protect-custom-mine: false
 # - dungeonsxl
 # - parties
 # - party_and_friends
+# - party_and_friends_extended_bungeecord_velocity
 # - mcmmo
 party-plugin: mmocore
 
