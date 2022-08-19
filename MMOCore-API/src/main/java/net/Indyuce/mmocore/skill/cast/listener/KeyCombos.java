@@ -238,7 +238,7 @@ public class KeyCombos implements Listener {
 
         public String format(CustomSkillCastingHandler casting) {
             StringBuilder builder = new StringBuilder();
-            Placeholders holders = MMOCore.plugin.actionBarManager.getActionBarPlaceholder(casting.getCaster());
+            Placeholders holders = MMOCore.plugin.actionBarManager.getActionBarPlaceholders(casting.getCaster());
 
             builder.append(prefix);
             // Join all keys with separator
