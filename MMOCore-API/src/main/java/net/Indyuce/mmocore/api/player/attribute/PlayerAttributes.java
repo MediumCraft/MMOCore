@@ -101,7 +101,12 @@ public class PlayerAttributes {
 		return getInstance(attribute.getId());
 	}
 
+	@Deprecated
 	public int countSkillPoints() {
+		return countPoints();
+	}
+
+	public int countPoints() {
 		int n = 0;
 		for (AttributeInstance ins : instances.values())
 			n += ins.getBase();
