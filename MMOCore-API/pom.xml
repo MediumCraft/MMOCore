@@ -121,6 +121,11 @@
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
 
+        <!-- Party and Friends Repository -->
+        <repository>
+            <id>simonsators Repo</id>
+            <url>https://simonsator.de/repo</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -199,9 +204,10 @@
         </dependency>
 
         <!-- Party plugins -->
+        
         <dependency>
             <groupId>de.simonsator</groupId>
-            <artifactId>PartyAndFriends</artifactId>
+            <artifactId>DevelopmentPAFSpigot</artifactId>
             <version>1.0.65</version>
             <scope>provided</scope>
         </dependency>
