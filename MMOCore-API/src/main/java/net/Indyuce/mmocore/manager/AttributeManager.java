@@ -8,10 +8,13 @@ import java.util.logging.Level;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.ConfigFile;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AttributeManager implements MMOCoreManager {
 	private final Map<String, PlayerAttribute> map = new HashMap<>();
 
+	@Nullable
 	public PlayerAttribute get(String id) {
 		return map.get(id);
 	}
@@ -20,6 +23,7 @@ public class AttributeManager implements MMOCoreManager {
 		return map.containsKey(id);
 	}
 
+	@NotNull
 	public Collection<PlayerAttribute> getAll() {
 		return map.values();
 	}

@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.player.attribute;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.modifier.Closeable;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
@@ -110,11 +111,12 @@ public class PlayerAttributes {
 	public class AttributeInstance {
 		private int spent;
 
-		private final String id;
+		private final String id, enumName;
 		private final Map<String, AttributeModifier> map = new HashMap<>();
 
-		public AttributeInstance(String attribute) {
-			id = attribute;
+		public AttributeInstance(String id) {
+			this.id = id;
+			this.enumName = UtilityMethods.enumName(this.id);
 		}
 
 		public int getBase() {
@@ -146,9 +148,13 @@ public class PlayerAttributes {
 				if (attr.getType() == ModifierType.FLAT)
 					d += attr.getValue();
 
+			d += data.getMMOPlayerData().getStatMap().getStat("ADDITIONAL_" + enumName);
+
 			for (AttributeModifier attr : map.values())
 				if (attr.getType() == ModifierType.RELATIVE)
 					d *= attr.getValue();
+
+			d *= 1 + data.getMMOPlayerData().getStatMap().getStat("ADDITIONAL_" + enumName + "_PERCENT") / 100;
 
 			// cast to int at the last moment
 			return (int) d;
