@@ -16,7 +16,7 @@
     <description>Offer your players a brand new RPG experience!!</description>
 
     <properties>
-        <revision>1.10.1-SNAPSHOT</revision>
+        <revision>1.10.3-SNAPSHOT</revision>
         <downloadSources>false</downloadSources>
         <downloadJavadocs>false</downloadJavadocs>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
