@@ -30,15 +30,6 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
                         + "waypoints LONGTEXT,friends LONGTEXT,skills LONGTEXT,bound_skills LONGTEXT,"
                         + "class_info LONGTEXT, is_saved TINYINT, PRIMARY KEY (uuid));");
 
-        // Add 'skill_reallocation_points' if it doesn't exist
-        getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'skill_reallocation_points'", result -> {
-            try {
-                if (!result.next())
-                    executeUpdateAsync("ALTER TABLE mmocore_playerdata ADD COLUMN skill_reallocation_points INT(11) DEFAULT 0");
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-        });
 
         // Add 'times_claimed' if it doesn't exist
         getResultAsync("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = 'mmocore_playerdata' AND COLUMN_NAME = 'times_claimed'", result -> {
