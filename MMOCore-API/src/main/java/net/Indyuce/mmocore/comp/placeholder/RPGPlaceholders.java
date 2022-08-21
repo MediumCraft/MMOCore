@@ -109,7 +109,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.startsWith("profession_experience_"))
-			return String.valueOf(
+			return MythicLib.plugin.getMMOConfig().decimal.format(
 					playerData.getCollectionSkills().getExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase()));
 
 		else if (identifier.startsWith("profession_next_level_"))

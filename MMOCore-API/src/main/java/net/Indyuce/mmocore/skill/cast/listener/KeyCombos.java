@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.skill.cast.listener;
 
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.event.skill.PlayerCastSkillEvent;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
@@ -8,15 +7,14 @@ import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.skill.cast.PlayerKey;
-import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.skill.cast.KeyCombo;
+import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,15 +32,18 @@ public class KeyCombos implements Listener {
      * hash code method
      */
     private final Map<KeyCombo, Integer> combos = new HashMap<>();
+
     /**
      * All the keys that are at the start of a combo.
      */
     private final Set<PlayerKey> firstComboKeys = new HashSet<>();
 
     /**
-     * Key players need to press to start a combo
+     * Key players need to press to start a combo. If it's set to
+     * null then the player can press any key which starts a combo.
+     * These "starting keys" are saved in {@link #firstComboKeys}
      */
-    private final boolean needsInitializerKey;
+    @Nullable
     private final PlayerKey initializerKey;
     private final int longestCombo;
 
@@ -58,9 +59,8 @@ public class KeyCombos implements Listener {
 
     public KeyCombos(ConfigurationSection config) {
 
-        int longestCombo = 0;
-
         // Load different combos
+        int currentLongestCombo = 0;
         for (String key : config.getConfigurationSection("combos").getKeys(false))
             try {
                 int spellSlot = Integer.valueOf(key);
@@ -72,12 +72,12 @@ public class KeyCombos implements Listener {
 
                 combos.put(combo, spellSlot);
                 firstComboKeys.add(combo.getAt(0));
-                longestCombo = Math.max(longestCombo, combo.countKeys());
+                currentLongestCombo = Math.max(currentLongestCombo, combo.countKeys());
             } catch (RuntimeException exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
             }
 
-        this.longestCombo = longestCombo;
+        this.longestCombo = currentLongestCombo;
 
         // Load player key names
         actionBarOptions = config.contains("action-bar") ? new ActionBarOptions(config.getConfigurationSection("action-bar")) : null;
@@ -87,13 +87,9 @@ public class KeyCombos implements Listener {
         comboClickSound = config.contains("sound.combo-key") ? new SoundObject(config.getConfigurationSection("sound.combo-key")) : null;
         failComboSound = config.contains("sound.fail-combo") ? new SoundObject(config.getConfigurationSection("sound.fail-combo")) : null;
 
-        needsInitializerKey = config.getBoolean("needs-initializer-key", true);
-
-
         // Find initializer key
-        initializerKey = needsInitializerKey ? PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(
+        initializerKey = config.contains("initializer-key") ? PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(
                 config.getString("initializer-key"), "Could not find initializer key"))) : null;
-
     }
 
     @EventHandler
@@ -102,7 +98,7 @@ public class KeyCombos implements Listener {
         Player player = playerData.getPlayer();
 
         if (!event.getData().isCasting()) {
-            if (needsInitializerKey) {
+            if (initializerKey != null) {
                 if (event.getPressed() == initializerKey) {
 
                     // Always cancel event
@@ -122,7 +118,7 @@ public class KeyCombos implements Listener {
                     event.setCancelled(true);
 
                     // Start combo
-                    CustomSkillCastingHandler casting =new CustomSkillCastingHandler(playerData);
+                    CustomSkillCastingHandler casting = new CustomSkillCastingHandler(playerData);
                     playerData.setSkillCasting(casting);
                     casting.current.registerKey(event.getPressed());
                     if (beginComboSound != null)
@@ -131,7 +127,6 @@ public class KeyCombos implements Listener {
                 return;
             }
         }
-
 
         // Adding pressed key
         CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
@@ -243,7 +238,7 @@ public class KeyCombos implements Listener {
 
         public String format(CustomSkillCastingHandler casting) {
             StringBuilder builder = new StringBuilder();
-            Placeholders holders = MMOCore.plugin.actionBarManager.getActionBarPlaceholder(casting.getCaster());
+            Placeholders holders = MMOCore.plugin.actionBarManager.getActionBarPlaceholders(casting.getCaster());
 
             builder.append(prefix);
             // Join all keys with separator

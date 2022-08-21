@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.manager;
 
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.SoundObject;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class SoundManager implements MMOCoreManager {
     private final Map<SoundEvent, SoundObject> sounds = new HashMap<>();
@@ -25,6 +27,10 @@ public class SoundManager implements MMOCoreManager {
 
         FileConfiguration config = new ConfigFile("sounds").getConfig();
         for (SoundEvent sound : SoundEvent.values())
-            sounds.put(sound, new SoundObject(config.getString(sound.name().replace("_", "-").toLowerCase())));
+            try {
+                sounds.put(sound, new SoundObject(config.getString(sound.name().replace("_", "-").toLowerCase())));
+            } catch (RuntimeException exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load sound for '" + sound.name() + "': " + exception.getMessage());
+            }
     }
 }

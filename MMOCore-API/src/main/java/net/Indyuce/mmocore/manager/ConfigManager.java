@@ -74,12 +74,13 @@ public class ConfigManager {
             loadDefaultFile("expcurves", "levels.txt");
             loadDefaultFile("expcurves", "mining.txt");
         }
+        /*
         if(!new File(MMOCore.plugin.getDataFolder()+"/skilltree").exists()) {
             loadDefaultFile("skilltree","combat.yml");
             loadDefaultFile("skilltree","autocombat.yml");
             loadDefaultFile("skilltree","customcombat.yml");
         }
-
+        */
         loadDefaultFile("attributes.yml");
         loadDefaultFile("items.yml");
         loadDefaultFile("messages.yml");
@@ -117,8 +118,8 @@ public class ConfigManager {
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
-        maxBoundSkills= MMOCore.plugin.getConfig().getInt("max-bound-skills",6);
-        waypointWarpTime=MMOCore.plugin.getConfig().getInt("waypoint-warp-time",5);
+        maxBoundSkills = MMOCore.plugin.getConfig().getInt("max-bound-skills", 6);
+        overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp");
     }
 
     private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {

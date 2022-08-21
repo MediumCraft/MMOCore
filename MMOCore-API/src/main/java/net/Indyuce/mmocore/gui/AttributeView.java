@@ -31,7 +31,7 @@ public class AttributeView extends EditableInventory {
 					Placeholders holders = new Placeholders();
 					holders.register("attribute_points", inv.getPlayerData().getAttributePoints());
 					holders.register("points", inv.getPlayerData().getAttributeReallocationPoints());
-					holders.register("total", inv.getPlayerData().getAttributes().countSkillPoints());
+					holders.register("total", inv.getPlayerData().getAttributes().countPoints());
 					return holders;
 				}
 			};
@@ -93,7 +93,7 @@ public class AttributeView extends EditableInventory {
 		public void whenClicked(InventoryClickContext context, InventoryItem item) {
 
 			if (item.getFunction().equalsIgnoreCase("reallocation")) {
-				int spent = playerData.getAttributes().countSkillPoints();
+				int spent = playerData.getAttributes().countPoints();
 				if (spent < 1) {
 					MMOCore.plugin.configManager.getSimpleMessage("no-attribute-points-spent").send(player);
 					MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());

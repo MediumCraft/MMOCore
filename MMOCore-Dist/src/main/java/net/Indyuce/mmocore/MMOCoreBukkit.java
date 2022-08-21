@@ -16,7 +16,7 @@ public class MMOCoreBukkit {
      * all the listeners required for MMOCore to run
      */
     public MMOCoreBukkit(MMOCore plugin) {
-        if (plugin.configManager.overrideVanillaExp = plugin.getConfig().getBoolean("override-vanilla-exp"))
+        if (plugin.configManager.overrideVanillaExp)
             Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), plugin);
 
         if (plugin.getConfig().getBoolean("hotbar-swapping.enabled"))

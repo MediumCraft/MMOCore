@@ -6,7 +6,7 @@ import io.lumine.mythic.lib.version.SpigotPlugin;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.PlayerActionBar;
+import net.Indyuce.mmocore.manager.ActionBarManager;
 import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.command.*;
@@ -64,7 +64,7 @@ public class MMOCore extends JavaPlugin {
     public final SoundManager soundManager = new SoundManager();
     public final RequestManager requestManager = new RequestManager();
     public final ConfigItemManager configItems = new ConfigItemManager();
-    public final PlayerActionBar actionBarManager = new PlayerActionBar();
+    public final ActionBarManager actionBarManager = new ActionBarManager();
     public final SkillManager skillManager = new SkillManager();
     public final ClassManager classManager = new ClassManager();
     public final DropTableManager dropTableManager = new DropTableManager();
@@ -111,11 +111,11 @@ public class MMOCore extends JavaPlugin {
         MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
         MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
 
-        // Skill creation
+        // Custom scripts
         MythicLib.plugin.getSkills().registerMechanic("mana", config -> new ManaMechanic(config));
         MythicLib.plugin.getSkills().registerMechanic("stamina", config -> new StaminaMechanic(config));
         MythicLib.plugin.getSkills().registerMechanic("stellium", config -> new StelliumMechanic(config));
-        MythicLib.plugin.getSkills().registerMechanic("experience", config -> new ExperienceMechanic(config));
+        MythicLib.plugin.getSkills().registerMechanic("mmocore_experience", config -> new ExperienceMechanic(config));
 
         // Register extra objective, drop items...
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)

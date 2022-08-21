@@ -114,11 +114,8 @@ action-bar:
   # (This doesn't change any other action bars provided by MMOCore.)
   enabled: true
 
-  # The decimal format for stats (not including stat formats in stats.yml)
-  decimal: "0.#"
-
-  # The amount of miliseconds the bar will be faded
-  #out when displaying other action bars.
+  # The amount of milliseconds the bar will be
+  # faded out when displaying other action bars.
   time-out: 60
 
   # The amount of ticks before updating the info

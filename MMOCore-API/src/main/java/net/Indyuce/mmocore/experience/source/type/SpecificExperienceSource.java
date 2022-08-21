@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
     private final RandomAmount amount;
-    double counter = 0;
 
     /**
      * Used to register experience sources with SPECIFIC experience outputs.
@@ -20,20 +19,21 @@ public abstract class SpecificExperienceSource<T> extends ExperienceSource<T> {
     public SpecificExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser);
 
-        config.validate("amount");
+        config.validateKeys("amount");
         amount = new RandomAmount(config.getString("amount"));
     }
 
 
     /**
      * Used for FromExperienceSource
+     *
      * @param dispenser
      */
     public SpecificExperienceSource(ExperienceDispenser dispenser) {
         super(dispenser);
-        amount=new RandomAmount(0,0);
-    }
 
+        amount = new RandomAmount(0, 0);
+    }
 
     public RandomAmount getAmount() {
         return amount;

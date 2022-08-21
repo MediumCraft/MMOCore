@@ -656,12 +656,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             final int x = getPlayer().getLocation().getBlockX();
             final int y = getPlayer().getLocation().getBlockY();
             final int z = getPlayer().getLocation().getBlockZ();
+            final int warpTime = target.getWarpTime();
             int t;
 
             public void run() {
-                if (!isOnline())
-                    return;
-                if (getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y
+                if (!isOnline() || getPlayer().getLocation().getBlockX() != x
+                        || getPlayer().getLocation().getBlockY() != y
                         || getPlayer().getLocation().getBlockZ() != z) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CANCELLED).playTo(getPlayer());
                     MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
@@ -670,8 +670,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", "" + ((MMOCore.plugin.configManager.waypointWarpTime + 20 - t) / 20)).send(getPlayer());
-                if (t++ >= MMOCore.plugin.configManager.waypointWarpTime) {
+                MMOCore.plugin.configManager.getSimpleMessage("warping-comencing", "left", String.valueOf((warpTime - t) / 20)).send(getPlayer());
+                if (t++ >= warpTime) {
                     getPlayer().teleport(target.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_TELEPORT).playTo(getPlayer());
@@ -679,12 +679,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     return;
                 }
 
-                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (t / Math.PI * 1.5 / MMOCore.plugin.configManager.waypointWarpTime + .5));
-                double r = Math.sin((double) t / MMOCore.plugin.configManager.waypointWarpTime * Math.PI);
+                MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (.5 + t * 1.5 / warpTime));
+                final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
-                    getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE,
-                            getPlayer().getLocation().add(Math.cos((double) 5 * t / MMOCore.plugin.configManager.waypointWarpTime + j) * r, (double) 2 * t / MMOCore.plugin.configManager.waypointWarpTime, Math.sin((double) 5 * t / MMOCore.plugin.configManager.waypointWarpTime + j) * r), 1,
-                            new Particle.DustOptions(Color.PURPLE, 1.25f));
+                    getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
+                            Math.cos((double) 5 * t / warpTime + j) * r,
+                            (double) 2 * t / warpTime,
+                            Math.sin((double) 5 * t / warpTime + j) * r),
+                            1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
     }

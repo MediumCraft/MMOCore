@@ -23,6 +23,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
     private final Location loc;
     private final List<String> lore;
     private final double radiusSquared;
+    private final int warpTime;
 
     /**
      * Set that saves all the waypoints accessible when in this waypoint.
@@ -48,6 +49,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
 
         loc = readLocation(Objects.requireNonNull(config.getString("location"), "Could not read location"));
         radiusSquared = Math.pow(config.getDouble("radius"), 2);
+        warpTime = config.getInt("warp-time", 100);
 
         dynamicCost = config.getDouble("cost.dynamic-use");
         normalCost = config.getDouble("cost.normal-use");
@@ -95,10 +97,17 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         return loc;
     }
 
+    public int getWarpTime() {
+        return warpTime;
+    }
+
     public double getDynamicCost() {
         return dynamicCost;
     }
 
+    /**
+     * @deprecated Not implemented yet
+     */
     @Deprecated
     public double getSetSpawnCost() {
         return setSpawnCost;
