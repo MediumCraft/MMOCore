@@ -35,7 +35,6 @@ default-playerdata:
   attribute-points: 0
   attribute-realloc-points: 0
 
-
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
 # 'custom-mine-conditions: []' to disable custom mining entirely.
@@ -90,7 +89,6 @@ should-cobblestone-generators-give-exp: false
 skill-casting:
   mode: SKILL_BAR
   open: SWAP_HANDS
-
 
 loot-chests:
 
@@ -205,6 +203,7 @@ hotbar-swapping:
 # in creative mode to enter casting mode
 can-creative-cast: false
 
+# Not implemented yet
 ability-targeting-options:
 
   # Prevent heals/buffs on players in a different guild
