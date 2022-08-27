@@ -16,10 +16,9 @@ public class CommandVerbose {
 
     public void reload(ConfigurationSection config) {
         values.clear();
-
         for (CommandType type : CommandType.values())
             try {
-                values.put(type, VerboseValue.valueOf(config.getString(UtilityMethods.enumName(type.name()), "TRUE").toUpperCase()));
+                values.put(type, VerboseValue.valueOf(config.getString(UtilityMethods.ymlName(type.name()), "TRUE").toUpperCase()));
             } catch (IllegalArgumentException exception) {
                 values.put(type, VerboseValue.TRUE);
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load command verbose action for " + type.name());
