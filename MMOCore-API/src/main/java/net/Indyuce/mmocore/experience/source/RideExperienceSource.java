@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.bukkit.event.EventPriority.HIGHEST;
+
 public class RideExperienceSource extends SpecificExperienceSource<EntityType> {
     private final EntityType type;
 
@@ -39,7 +41,7 @@ public class RideExperienceSource extends SpecificExperienceSource<EntityType> {
     @Override
     public ExperienceSourceManager<RideExperienceSource> newManager() {
         return new ExperienceSourceManager<RideExperienceSource>() {
-            @EventHandler
+            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
             public void onRide(PlayerMoveEvent e) {
 
                 if (e.getPlayer().isInsideVehicle()) {

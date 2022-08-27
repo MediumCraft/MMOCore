@@ -10,6 +10,8 @@ import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import org.apache.commons.lang.Validate;
 import org.bukkit.event.EventHandler;
 
+import static org.bukkit.event.EventPriority.HIGHEST;
+
 public class ResourceExperienceSource extends SpecificExperienceSource<PlayerResource> {
     private final PlayerResource resource;
 
@@ -34,7 +36,7 @@ public class ResourceExperienceSource extends SpecificExperienceSource<PlayerRes
     @Override
     public ExperienceSourceManager<ResourceExperienceSource> newManager() {
         return new ExperienceSourceManager<ResourceExperienceSource>() {
-            @EventHandler
+            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
             public void onResource(PlayerResourceUpdateEvent e) {
                 if (e.getPlayer().hasMetadata("NPC"))
                     return;

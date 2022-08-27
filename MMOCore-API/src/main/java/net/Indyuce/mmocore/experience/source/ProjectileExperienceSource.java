@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.bukkit.event.EventPriority.HIGHEST;
+
 public class ProjectileExperienceSource extends SpecificExperienceSource<Projectile> {
     private final ProjectileType projectileType;
 
@@ -43,14 +45,14 @@ public class ProjectileExperienceSource extends SpecificExperienceSource<Project
         return new ExperienceSourceManager<ProjectileExperienceSource>() {
             HashMap<Projectile, Location> projectiles = new HashMap<>();
 
-            @EventHandler
+            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
             public void onHit(ProjectileHitEvent e) {
                 if (e.getHitBlock() != null && projectiles.containsKey(e.getEntity()))
                     projectiles.remove(e.getEntity());
 
             }
 
-            @EventHandler
+            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
             public void onDamage(EntityDamageByEntityEvent e) {
 
                 if (e.getEntity() instanceof Projectile) {

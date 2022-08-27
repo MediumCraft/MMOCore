@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.bukkit.event.EventPriority.MONITOR;
+
 public class MoveExperienceSource extends SpecificExperienceSource {
     private final MovingType type;
 
@@ -34,7 +36,7 @@ public class MoveExperienceSource extends SpecificExperienceSource {
     @Override
     public ExperienceSourceManager<MoveExperienceSource> newManager() {
         return new ExperienceSourceManager<MoveExperienceSource>() {
-            @EventHandler
+            @EventHandler(priority = MONITOR,ignoreCancelled = true)
             public void onMove(PlayerMoveEvent e) {
                 double deltax = e.getTo().getBlockX() - e.getFrom().getBlockX();
                 double deltay = e.getTo().getBlockY() - e.getFrom().getBlockY();

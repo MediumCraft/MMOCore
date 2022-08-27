@@ -10,10 +10,13 @@ import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static org.bukkit.event.EventPriority.MONITOR;
 
 public class DamageDealtExperienceSource extends SpecificExperienceSource<DamageType> {
     private final DamageType type;
@@ -41,9 +44,9 @@ public class DamageDealtExperienceSource extends SpecificExperienceSource<Damage
     @Override
     public ExperienceSourceManager<DamageDealtExperienceSource> newManager() {
         return new ExperienceSourceManager<DamageDealtExperienceSource>() {
-            @EventHandler
+            //It isn't triggered when the PlayerAttackEvent gets cancelled
+            @EventHandler(priority = MONITOR,ignoreCancelled = true)
             public void onDamageDealt(PlayerAttackEvent e) {
-
                 PlayerData playerData = PlayerData.get(e.getPlayer());
                 for (DamageDealtExperienceSource source : getSources()) {
                     double value = 0;

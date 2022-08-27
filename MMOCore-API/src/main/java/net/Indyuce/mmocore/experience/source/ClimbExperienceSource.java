@@ -10,6 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import static org.bukkit.event.EventPriority.HIGHEST;
+import static org.bukkit.event.EventPriority.MONITOR;
+
 public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
     //Can be Ladder,Vines,Twisting Vines,Weeping Vines.
     private final Material type;
@@ -41,7 +44,7 @@ public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
     @Override
     public ExperienceSourceManager<ClimbExperienceSource> newManager() {
         return new ExperienceSourceManager<ClimbExperienceSource>() {
-            @EventHandler
+            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
             public void onClimb(PlayerMoveEvent e) {
                 double delta=e.getTo().getBlockY()-e.getFrom().getBlockY();
                 if (delta > 0) {

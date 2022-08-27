@@ -11,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import static org.bukkit.event.EventPriority.MONITOR;
+
 public class EatExperienceSource extends SpecificExperienceSource<ItemStack> {
     private final Material type;
 
@@ -33,7 +35,7 @@ public class EatExperienceSource extends SpecificExperienceSource<ItemStack> {
     public ExperienceSourceManager<EatExperienceSource> newManager() {
         return new ExperienceSourceManager<EatExperienceSource>() {
 
-            @EventHandler
+            @EventHandler(priority = MONITOR,ignoreCancelled = true)
             public void a(PlayerItemConsumeEvent e) {
                 if(!e.getPlayer().hasMetadata("NPC")) {
                     PlayerData playerData = PlayerData.get(e.getPlayer());

@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.bukkit.event.EventPriority.HIGHEST;
+
 public class DamageTakenExperienceSource extends SpecificExperienceSource<EntityDamageEvent.DamageCause> {
     private final EntityDamageEvent.DamageCause cause;
 
@@ -40,7 +42,8 @@ public class DamageTakenExperienceSource extends SpecificExperienceSource<Entity
     @Override
     public ExperienceSourceManager<DamageTakenExperienceSource> newManager() {
         return new ExperienceSourceManager<DamageTakenExperienceSource>() {
-            @EventHandler
+            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
+
             public void onDamageTaken(EntityDamageEvent e) {
                 if (e.getEntity() instanceof Player && !e.getEntity().hasMetadata("NPC")) {
                     double amount = e.getDamage();
