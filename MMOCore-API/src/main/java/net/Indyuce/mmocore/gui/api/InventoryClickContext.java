@@ -12,7 +12,6 @@ public class InventoryClickContext {
     private final ClickType clickType;
 
     private final Cancellable event;
-
     private Inventory inv;
 
     public InventoryClickContext(int slot, ItemStack itemStack, ClickType clickType, Cancellable event) {
@@ -20,6 +19,14 @@ public class InventoryClickContext {
         this.itemStack = itemStack;
         this.clickType = clickType;
         this.event = event;
+    }
+
+    public InventoryClickContext(int slot, ItemStack itemStack, ClickType clickType, Cancellable event, Inventory inv) {
+        this.slot = slot;
+        this.itemStack = itemStack;
+        this.clickType = clickType;
+        this.event = event;
+        this.inv = inv;
     }
 
     public void setCancelled(boolean val) {
