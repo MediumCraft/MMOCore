@@ -42,6 +42,15 @@ public class SkillTreeViewer extends EditableInventory {
         if (function.equals("skill-tree")) {
             return new SkillTreeItem(config);
         }
+        if (function.equals("up"))
+            return new SimplePlaceholderItem(config);
+        if (function.equals("left"))
+            return new SimplePlaceholderItem(config);
+        if (function.equals("down"))
+            return new SimplePlaceholderItem(config);
+        if (function.equals("right"))
+            return new SimplePlaceholderItem(config);
+
         if (function.equals("reallocation"))
             return new InventoryItem<SkillTreeInventory>(config) {
 
@@ -100,14 +109,13 @@ public class SkillTreeViewer extends EditableInventory {
             ItemMeta meta = item.getItemMeta();
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.setDisplayName(skillTree.getName());
-            Placeholders holders= getPlaceholders(inv,n);
+            Placeholders holders = getPlaceholders(inv, n);
             List<String> lore = new ArrayList<>();
             getLore().forEach(string -> {
                 if (string.contains("{tree-lore}")) {
                     lore.addAll(skillTree.getLore());
-                }
-                else
-                    lore.add(holders.apply(inv.getPlayer(),string));
+                } else
+                    lore.add(holders.apply(inv.getPlayer(), string));
             });
             meta.setLore(lore);
             PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -323,6 +331,24 @@ public class SkillTreeViewer extends EditableInventory {
                 treeListPage++;
                 open();
             }
+            if (item.getFunction().equals("up")) {
+                y--;
+                open();
+
+            }
+            if (item.getFunction().equals("right")) {
+                x++;
+                open();
+            }
+            if (item.getFunction().equals("down")) {
+                y++;
+                open();
+            }
+            if (item.getFunction().equals("left")) {
+                x--;
+                open();
+            }
+
 
             if (item.getFunction().equals("previous-tree-list-page")) {
                 treeListPage--;
@@ -373,21 +399,11 @@ public class SkillTreeViewer extends EditableInventory {
             }
 
             if (item.getFunction().equals("skill-tree-node")) {
-
-                if (event.getClickType() == ClickType.RIGHT) {
-                    int offset = event.getSlot();
-                    int xOffset = offset % 9 - middleSlot % 9;
-                    int yOffset = offset / 9 - middleSlot / 9;
-                    x += xOffset;
-                    y += yOffset - 1;
-                    open();
-                    event.setCancelled(true);
-                    return;
-                } else if (event.getClickType() == ClickType.LEFT) {
+                if (event.getClickType() == ClickType.LEFT) {
                     PersistentDataContainer container = event.getItemStack().getItemMeta().getPersistentDataContainer();
                     int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
                     int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
-                    if(!skillTree.isNode(new IntegerCoordinates(x,y))) {
+                    if (!skillTree.isNode(new IntegerCoordinates(x, y))) {
                         event.setCancelled(true);
                         return;
                     }

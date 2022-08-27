@@ -69,7 +69,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
         maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
         maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
-        //If coordinates are precised adn we are not wiht an automaticTree we set them up
+        //If coordinates are precised adn we are not with an automaticTree we set them up
         if ((!(tree instanceof AutomaticSkillTree))) {
             Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"), "No coordinates specified");
             coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));

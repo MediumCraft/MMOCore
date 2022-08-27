@@ -26,21 +26,18 @@ public class CustomSkillTree extends SkillTree {
         //We setup the children and parents for each node.
         for (SkillTreeNode node : nodes.values()) {
 
-            ConfigurationSection section = config.getConfigurationSection("nodes."+node.getId() + ".children.soft");
+            ConfigurationSection section = config.getConfigurationSection("nodes."+node.getId() + ".parents.soft");
             if (section != null) {
-                for (String child : section.getKeys(false)) {
-                    Validate.isTrue(isNode(child),"The node "+child+ "defined in children.soft of"+node.getId()+"doesn't exist.");
-                    node.addChild(getNode(child));
-                    getNode(child).addParent(node, section.getInt(child), ParentType.SOFT);
+                for (String parent : section.getKeys(false)) {
+                    node.addParent(getNode(parent),section.getInt(parent),ParentType.SOFT);
+                    getNode(parent).addChild(node);
                 }
             }
-            section = config.getConfigurationSection("nodes."+node.getId() + ".children.strong");
+            section = config.getConfigurationSection("nodes."+node.getId() + ".parents.strong");
             if (section != null) {
-                for (String child : section.getKeys(false)) {
-                    Validate.isTrue(isNode(child),"The node "+child+ "defined in children.strong of"+node.getId()+"doesn't exist.");
-
-                    node.addChild(getNode(child));
-                    getNode(child).addParent(node, section.getInt(child), ParentType.STRONG);
+                for (String parent : section.getKeys(false)) {
+                    node.addParent(getNode(parent),section.getInt(parent),ParentType.STRONG);
+                    getNode(parent).addChild(node);
                 }
             }
         }

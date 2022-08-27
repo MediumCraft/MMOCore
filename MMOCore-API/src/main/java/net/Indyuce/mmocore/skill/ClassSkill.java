@@ -97,7 +97,8 @@ public class ClassSkill implements CooldownObject {
     private String applyPlaceholders(Map<String, String> placeholders, String str) {
         while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
             String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
-            str = str.replace("{" + holder + "}", placeholders.getOrDefault(holder, "PHE"));
+            if(placeholders.containsKey(holder))
+            str = str.replace("{" + holder + "}",placeholders.get(holder));
         }
         return str;
     }
