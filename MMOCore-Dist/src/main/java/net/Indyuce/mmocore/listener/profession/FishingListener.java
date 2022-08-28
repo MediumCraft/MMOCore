@@ -135,7 +135,7 @@ public class FishingListener implements Listener {
             location.getWorld().spawnParticle(Particle.CRIT, location, 0, 2 * (RANDOM.nextDouble() - .5), 3, 2 * (RANDOM.nextDouble() - .5), .6);
         }
 
-        @EventHandler
+        @EventHandler(priority = EventPriority.LOWEST)
         public void a(PlayerFishEvent event) {
             if (event.getPlayer().equals(player) && (event.getState() == State.CAUGHT_FISH || event.getState() == State.FAILED_ATTEMPT || event.getState() == State.REEL_IN)) {
 
