@@ -1,8 +1,8 @@
-/bin/
-/.m2/
-/target/
-/.settings/
-/.idea/
+bin/
+.m2/
+target/
+.settings/
+.idea/
 .classpath
 .project
 MMOCore.eml
