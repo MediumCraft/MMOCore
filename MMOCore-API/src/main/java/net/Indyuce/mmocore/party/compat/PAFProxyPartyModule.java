@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PAFProxyExtendedPartyModule implements PartyModule {
+public class PAFProxyPartyModule implements PartyModule {
 
 	@Nullable
 	@Override
