@@ -60,7 +60,10 @@ public class SkillTreeViewer extends EditableInventory {
                     holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
                     holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
                     holders.register("realloc-points", inv.getPlayerData().getSkillTreeReallocationPoints());
-                    holders.register("total", inv.getPlayerData().countSkillTreePoints(inv.getSkillTree()));
+                    int maxPointSpent=inv.getSkillTree().getMaxPointSpent();
+                    holders.register("max-point-spent",maxPointSpent==Integer.MAX_VALUE?"∞":maxPointSpent);
+                    holders.register("point-spent",inv.getPlayerData().getPointSpent(inv.getSkillTree()));
+
                     return holders;
                 }
             };
@@ -131,6 +134,9 @@ public class SkillTreeViewer extends EditableInventory {
             Placeholders holders = new Placeholders();
             holders.register("name", skillTree.getName());
             holders.register("id", skillTree.getId());
+            int maxPointSpent=inv.getSkillTree().getMaxPointSpent();
+            holders.register("max-point-spent",maxPointSpent==Integer.MAX_VALUE?"∞":maxPointSpent);
+            holders.register("point-spent",inv.getPlayerData().getPointSpent(inv.getSkillTree()));
             holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
             holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
             return holders;
@@ -244,6 +250,9 @@ public class SkillTreeViewer extends EditableInventory {
                 holders.register("max-children", node.getMaxChildren());
                 holders.register("size", node.getSize());
             }
+            int maxPointSpent=inv.getSkillTree().getMaxPointSpent();
+            holders.register("max-point-spent",maxPointSpent==Integer.MAX_VALUE?"∞":maxPointSpent);
+            holders.register("point-spent",inv.getPlayerData().getPointSpent(inv.getSkillTree()));
             holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
             holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
             return holders;
@@ -408,6 +417,14 @@ public class SkillTreeViewer extends EditableInventory {
                         return;
                     }
                     SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));
+                    if(playerData.getPointSpent(skillTree)>= skillTree.getMaxPointSpent()) {
+                        MMOCore.plugin.configManager.getSimpleMessage("max-points-reached").send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        event.setCancelled(true);
+                        return;
+
+                    }
+
                     if (playerData.canIncrementNodeLevel(node)) {
                         playerData.incrementNodeLevel(node);
                         MMOCore.plugin.configManager.getSimpleMessage("upgrade-skill-node", "skill-node", node.getName(), "level", "" + playerData.getNodeLevel(node)).send(player);

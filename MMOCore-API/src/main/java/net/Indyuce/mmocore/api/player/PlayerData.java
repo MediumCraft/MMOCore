@@ -93,7 +93,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
     private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
-
+    /**
+     * Maps each skill tree to the number of points spent in it. Just in cache memory.
+     */
+    private final HashMap<SkillTree,Integer> pointSpent= new HashMap<>();
     private final Map<SkillTreeNode, Integer> nodeLevels = new HashMap<>();
     private final Map<SkillTreeNode, NodeState> nodeStates = new HashMap<>();
     private final Map<String, Integer> skillTreePoints = new HashMap<>();
@@ -176,8 +179,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void setupNodeState() {
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
             skillTree.setupNodeState(this);
-
     }
+
+
+    public int getPointSpent(SkillTree skillTree) {
+        return pointSpent.get(skillTree);
+    }
+
 
     public void setSkillTreePoints(String treeId, int points) {
         skillTreePoints.put(treeId, points);
@@ -288,6 +296,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
+        int delta=nodeLevel-nodeLevels.getOrDefault(node,0);
+        pointSpent.put(node.getTree(),pointSpent.getOrDefault(node.getTree(),0)+delta);
         nodeLevels.put(node, nodeLevel);
     }
 

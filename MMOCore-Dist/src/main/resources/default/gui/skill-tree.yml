@@ -6,6 +6,32 @@ name: '&eCurrent Skill Tree: &6{skill-tree-name}'
 slots: 54
 
 items:
+
+  up:
+    function: up
+    item: PLAYER_HEAD
+    name: "Up"
+    texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTk5YWFmMjQ1NmE2MTIyZGU4ZjZiNjI2ODNmMmJjMmVlZDlhYmI4MWZkNWJlYTFiNGMyM2E1ODE1NmI2NjkifX19
+    slots: [ 52 ]
+  down:
+    function: down
+    item: PLAYER_HEAD
+    name: "Down"
+    texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkxMmQ0NWIxYzc4Y2MyMjQ1MjcyM2VlNjZiYTJkMTU3NzdjYzI4ODU2OGQ2YzFiNjJhNTQ1YjI5YzcxODcifX19
+    slots: [ 51 ]
+  right:
+    function: right
+    item: PLAYER_HEAD
+    name: "Right"
+    texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTNmYzUyMjY0ZDhhZDllNjU0ZjQxNWJlZjAxYTIzOTQ3ZWRiY2NjY2Y2NDkzNzMyODliZWE0ZDE0OTU0MWY3MCJ9fX0=
+    slots: [ 50 ]
+  left:
+    function: left
+    item: PLAYER_HEAD
+    name: "Left"
+    texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWYxMzNlOTE5MTlkYjBhY2VmZGMyNzJkNjdmZDg3YjRiZTg4ZGM0NGE5NTg5NTg4MjQ0NzRlMjFlMDZkNTNlNiJ9fX0=
+    slots: [ 49 ]
+
   skill-tree:
     name: '{skill-tree-node}'
     function: skill-tree
@@ -16,17 +42,21 @@ items:
       - '{tree-lore}'
       - ''
       - '--------------------'
+      - '&e◆Max points&e: &6{max-point-spent}'
+      - '&e◆Points spent&e:&6 {point-spent}'
       - '&e◆Current {name} &epoints: &6{skill-tree-points}'
       - '&e◆Current Global points: &6{global-points}'
 
   next-tree-list-page:
     function: 'next-tree-list-page'
     item: ARROW
+    name: "Next Page"
     slots: [ 36 ]
 
   previous-tree-list-page:
     function: 'previous-tree-list-page'
     item: 'ARROW'
+    name: "Previous Page"
     slots: [ 0 ]
 
   reallocation:
@@ -36,7 +66,8 @@ items:
     name: '&aReallocate Skill Tree Points'
     lore:
       - ''
-      - 'You have spent a total of &6{total}&7 skill tree points.'
+      - '&7You have spent a total of &6{point-spent}&7 skill tree points.'
+      - '&7The maximum points that can be spent is: &6{max-point-spent}'
       - '&7Right click to reallocate them.'
       - ''
       - '&eCosts 1 attribute reallocation point.'
@@ -63,6 +94,8 @@ items:
       - '--------------------'
       - '{node-lore}'
       - '--------------------'
-      - '&eCurrent {skill-tree} &epoints: &6{skill-tree-points}'
-      - '&eCurrent global points: &6{global-points}'
+      - '&e◆Max points for {skill-tree}&e: &6{max-point-spent}'
+      - '&e◆Points spent for {skill-tree}&e:&6 {point-spent}'
+      - '&e◆Current {skill-tree} &epoints: &6{skill-tree-points}'
+      - '&e◆Current &6global&e points: &6{global-points}'
 

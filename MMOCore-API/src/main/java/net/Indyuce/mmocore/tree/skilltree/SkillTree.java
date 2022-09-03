@@ -12,7 +12,6 @@ import net.Indyuce.mmocore.tree.skilltree.display.Icon;
 import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +47,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     //Represents all the nodes
     protected final Map<IntegerCoordinates, SkillTreeNode> coordinatesNodes = new HashMap<>();
     protected final Map<String, SkillTreeNode> nodes = new HashMap<>();
+    protected final int maxPointSpent;
     //Caches the height of the skill tree
     protected int minX, minY, maxX, maxY;
     protected final HashMap<DisplayInfo, Icon> icons = new HashMap<>();
@@ -61,7 +61,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         Objects.requireNonNull(config.getStringList("lore"), "Could not find skill tree lore").forEach(str -> lore.add(MythicLib.plugin.parseColors(str)));
         this.item = Material.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("item"))));
         Validate.isTrue(config.isConfigurationSection("nodes"), "Could not find any nodes in the tree");
-
+        this.maxPointSpent =config.getInt("max-point-spent",Integer.MAX_VALUE);
         for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
             try {
 
@@ -147,6 +147,10 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         return lore;
     }
 
+    public int getMaxPointSpent() {
+        return maxPointSpent;
+    }
+
     public static SkillTree loadSkillTree(ConfigurationSection config) {
         SkillTree skillTree = null;
 
@@ -222,7 +226,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
 
 
             for (SkillTreeNode softParent : node.getSoftParents()) {
-                if (playerData.getNodeLevel(softParent) > node.getParentNeededLevel(softParent)) {
+                if (playerData.getNodeLevel(softParent) >= node.getParentNeededLevel(softParent)) {
                     isUnlockableFromSoftParent = true;
                 }
                 //We count the number of children the parent
