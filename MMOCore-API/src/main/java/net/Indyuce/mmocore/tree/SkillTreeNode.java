@@ -210,6 +210,8 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
     public List<String> getLore(PlayerData playerData) {
         Placeholders holders = getPlaceholders(playerData);
         List<String> parsedLore = new ArrayList<>();
+        if(!lores.containsKey(playerData.getNodeLevel(this)))
+            return parsedLore;
         List<String> lore= lores.get(playerData.getNodeLevel(this));
         lore.forEach(string -> parsedLore.add(
                 MythicLib.plugin.parseColors(holders.apply(playerData.getPlayer(), string))));
