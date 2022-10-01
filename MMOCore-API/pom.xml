@@ -121,6 +121,11 @@
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
 
+        <!-- Party and Friends Repository -->
+        <repository>
+            <id>simonsators Repo</id>
+            <url>https://simonsator.de/repo</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -194,8 +199,22 @@
         <!-- Party plugins -->
         <dependency>
             <groupId>de.simonsator</groupId>
-            <artifactId>PartyAndFriends</artifactId>
+            <artifactId>DevelopmentPAFSpigot</artifactId>
             <version>1.0.65</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.simonsator</groupId>
+            <artifactId>Party-and-Friends-MySQL-Edition-Spigot-API</artifactId>
+            <version>1.5.4-RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.simonsator</groupId>
+            <artifactId>spigot-party-api-for-party-and-friends</artifactId>
+            <version>1.0.4-RELEASE</version>
             <scope>provided</scope>
         </dependency>
 
