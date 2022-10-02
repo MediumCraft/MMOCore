@@ -45,7 +45,6 @@ public class StatTrigger extends Trigger {
      * Not a problem to store twice the stat modifiers are there only remain in the RAM.
      */
     public void remove(PlayerData playerData) {
-        Bukkit.broadcastMessage(totalAmount+"");
         totalAmount-=amount;
         new StatModifier("trigger", stat, totalAmount, type).register(playerData.getMMOPlayerData());
     }
