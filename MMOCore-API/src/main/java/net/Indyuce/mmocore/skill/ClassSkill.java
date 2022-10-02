@@ -5,6 +5,8 @@ import io.lumine.mythic.lib.player.cooldown.CooldownObject;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import io.lumine.mythic.lib.script.condition.Condition;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -89,7 +91,7 @@ public class ClassSkill implements CooldownObject {
         Map<String, String> placeholders = calculateModifiers(x);
         placeholders.put("mana_name", data.getProfess().getManaDisplay().getName());
         placeholders.put("mana_color", data.getProfess().getManaDisplay().getFull().toString());
-        skill.getLore().forEach(str -> list.add(applyPlaceholders(placeholders, str)));
+        skill.getLore().forEach(str -> list.add(MMOCore.plugin.placeholderParser.parse(data.getPlayer(), applyPlaceholders(placeholders, str))));
 
         return list;
     }
