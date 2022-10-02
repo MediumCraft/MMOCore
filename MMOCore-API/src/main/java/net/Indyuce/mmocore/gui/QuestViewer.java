@@ -226,7 +226,7 @@ public class QuestViewer extends EditableInventory {
 			if (item.getFunction().equals("quest")) {
 				String questId = context.getItemStack().getItemMeta().getPersistentDataContainer()
 						.get(new NamespacedKey(MMOCore.plugin,"quest_id"), PersistentDataType.STRING);
-				if (questId.equals(""))
+				if (questId==null||questId.equals(""))
 					return;
 
 				Quest quest = MMOCore.plugin.questManager.get(questId);
