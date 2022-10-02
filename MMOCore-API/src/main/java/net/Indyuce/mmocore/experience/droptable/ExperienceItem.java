@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.experience.droptable;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -74,7 +75,7 @@ public class ExperienceItem {
      * @param professionLevel The profession level the player just reached
      * @param timesCollected  Amount of times the exp item has already been claimed by the player
      * @return If the item should be claimed right now taking into
-     *         account the randomness factor from the 'chance' parameter
+     * account the randomness factor from the 'chance' parameter
      */
     public boolean roll(int professionLevel, int timesCollected) {
 
@@ -99,4 +100,27 @@ public class ExperienceItem {
         for (Trigger trigger : triggers)
             trigger.apply(levelingUp);
     }
+
+    /**
+     * Used when the player level is reset to 0 ( reallocate point in skill tree for instance)
+     * Creates an opposite playerModifier to compensate all the effect that existed before.
+     */
+    public void removeStatTriggers(PlayerData playerData) {
+        for (Trigger trigger : triggers) {
+            if (trigger instanceof StatTrigger statTrigger)
+                statTrigger.remove(playerData);
+        }
+    }
+
+    /**
+     * Used when a player connects back to give back all the stats that he should have.
+     * @param playerData
+     */
+    public void applyStatTriggers(PlayerData playerData) {
+        for (Trigger trigger : triggers) {
+            if (trigger instanceof StatTrigger statTrigger)
+                statTrigger.apply(playerData);
+        }
+    }
+
 }

@@ -15,7 +15,6 @@ import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +90,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                         data.setNodeLevel(skillTreeNode,json.has(skillTreeNode.getFullId())?json.get(skillTreeNode.getFullId()).getAsInt():0);
                                     }
                                 }
-                                data.setupNodeState();
+                                data.setupSkillTree();
 
 
                                 if (!isEmpty(result.getString("guild"))) {

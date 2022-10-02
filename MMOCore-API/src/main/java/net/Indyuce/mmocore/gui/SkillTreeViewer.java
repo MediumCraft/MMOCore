@@ -383,8 +383,10 @@ public class SkillTreeViewer extends EditableInventory {
                     playerData.giveSkillTreePoints(skillTree.getId(), reallocated);
                     playerData.giveSkillTreeReallocationPoints(-1);
                     for (SkillTreeNode node : skillTree.getNodes()) {
+                        node.getExperienceTable().reset(playerData,node);
                         playerData.setNodeLevel(node, 0);
                         playerData.setNodeState(node, NodeState.LOCKED);
+
                     }
                     skillTree.setupNodeState(playerData);
                     MMOCore.plugin.configManager.getSimpleMessage("reallocated-points", "points", "" + playerData.getSkillTreePoint(skillTree.getId()), "skill-tree", skillTree.getName()).send(player);

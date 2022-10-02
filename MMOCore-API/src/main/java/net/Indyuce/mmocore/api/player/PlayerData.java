@@ -3,7 +3,6 @@ package net.Indyuce.mmocore.api.player;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
-import io.lumine.mythic.lib.player.modifier.PlayerModifier;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
@@ -20,7 +19,6 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
-import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -39,7 +37,6 @@ import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.NodeState;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
-import net.Indyuce.mmocore.tree.skilltree.LinkedSkillTree;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
 import net.Indyuce.mmocore.tree.skilltree.display.Icon;
@@ -96,7 +93,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     /**
      * Maps each skill tree to the number of points spent in it. Just in cache memory.
      */
-    private final HashMap<SkillTree,Integer> pointSpent= new HashMap<>();
+    private final HashMap<SkillTree, Integer> pointSpent = new HashMap<>();
     private final Map<SkillTreeNode, Integer> nodeLevels = new HashMap<>();
     private final Map<SkillTreeNode, NodeState> nodeStates = new HashMap<>();
     private final Map<String, Integer> skillTreePoints = new HashMap<>();
@@ -176,9 +173,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             }
     }
 
-    public void setupNodeState() {
+    public void setupSkillTree() {
+        //Node states setup
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
             skillTree.setupNodeState(this);
+
+        //Stat triggers setup
+        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
+            for(SkillTreeNode node: skillTree.getNodes()) {
+                node.getExperienceTable().claimStatTriggers(this,node);
+            }
+        }
+
     }
 
 
@@ -296,8 +302,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
-        int delta=nodeLevel-nodeLevels.getOrDefault(node,0);
-        pointSpent.put(node.getTree(),pointSpent.getOrDefault(node.getTree(),0)+delta);
+        int delta = nodeLevel - nodeLevels.getOrDefault(node, 0);
+        pointSpent.put(node.getTree(), pointSpent.getOrDefault(node.getTree(), 0) + delta);
         nodeLevels.put(node, nodeLevel);
     }
 
@@ -693,9 +699,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                            Math.cos((double) 5 * t / warpTime + j) * r,
-                            (double) 2 * t / warpTime,
-                            Math.sin((double) 5 * t / warpTime + j) * r),
+                                    Math.cos((double) 5 * t / warpTime + j) * r,
+                                    (double) 2 * t / warpTime,
+                                    Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);

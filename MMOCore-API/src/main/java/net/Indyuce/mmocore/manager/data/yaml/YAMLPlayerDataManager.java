@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.manager.data.yaml;
 
+import com.massivecraft.factions.Conf;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -11,7 +12,7 @@ import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,9 +43,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));
 
         if (!data.hasUsedTemporaryData() && data.isOnline()) {
-            data.setMana(config.contains("mana")?config.getDouble("mana"):data.getStats().getStat("MAX_MANA"));
-            data.setStamina(config.contains("stamina")?config.getDouble("stamina"):data.getStats().getStat("MAX_STAMINA"));
-            data.setStellium(config.contains("stellium")?config.getDouble("stellium"):data.getStats().getStat("MAX_STELLIUM"));
+            data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
+            data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
+            data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
         }
 
         if (config.contains("guild")) {
@@ -74,26 +75,41 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         }
         data.setSkillTreePoints("global", config.getInt("skill-tree-points.global", 0));
 
+
+        if (config.contains("times-claimed"))
+            for (String key : config.getConfigurationSection("times-claimed").getKeys(false)) {
+                ConfigurationSection section = config.getConfigurationSection("times-claimed." + key);
+                if (section != null)
+                    for (String key1 : section.getKeys(false)) {
+                        ConfigurationSection section1 = section.getConfigurationSection(key1);
+                        if (section1 != null)
+                            for (String key2 : config.getConfigurationSection("times-claimed." + key + "." + key1).getKeys(false)) {
+                                data.getItemClaims().put(key + "." + key1 + "." + key2, config.getInt("times-claimed." + key + "." + key1 + "." + key2));
+
+                            }
+                    }
+            }
+
         for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
             data.setNodeLevel(node, config.getInt("skill-tree-level." + node.getFullId(), 0));
         }
-        data.setupNodeState();
-
-
-        if (config.contains("times-claimed"))
-            for (String key : config.getConfigurationSection("times-claimed").getKeys(true))
-                data.getItemClaims().put(key, config.getInt("times-claimed." + key));
+        data.setupSkillTree();
 
         // Load class slots, use try so the player can log in.
         if (config.contains("class-info"))
-            for (String key : config.getConfigurationSection("class-info").getKeys(false))
+            for (
+                    String key : config.getConfigurationSection("class-info").
+
+                    getKeys(false))
                 try {
                     PlayerClass profess = MMOCore.plugin.classManager.get(key);
                     Validate.notNull(profess, "Could not find class '" + key + "'");
                     data.applyClassInfo(profess, new SavedClassInformation(config.getConfigurationSection("class-info." + key)));
-                } catch (IllegalArgumentException exception) {
+                } catch (
+                        IllegalArgumentException exception) {
                     MMOCore.log(Level.WARNING, "Could not load class info '" + key + "': " + exception.getMessage());
                 }
+
 
         data.setFullyLoaded();
     }
@@ -119,9 +135,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.getSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
-        config.set("mana",data.getMana());
-        config.set("stellium",data.getStellium());
-        config.set("stamina",data.getStamina());
+        config.set("mana", data.getMana());
+        config.set("stellium", data.getStellium());
+        config.set("stamina", data.getStamina());
         //Saves the nodes levels
         MMOCore.plugin.skillTreeManager.getAllNodes().forEach(node -> config.set("skill-tree-level." + node.getFullId(), data.getNodeLevel(node)));
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));

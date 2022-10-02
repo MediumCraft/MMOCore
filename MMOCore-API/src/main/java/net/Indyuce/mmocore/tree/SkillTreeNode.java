@@ -145,7 +145,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
 
     public String getFullId() {
-        return tree.getId() + "." + id;
+        return tree.getId() + "_" + id;
     }
 
     public String getName() {
@@ -158,7 +158,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
     @Override
     public String getKey() {
-        return "skill_tree_node:" + getFullId().replace("-", "_");
+        return "node_" + getFullId().replace("-", "_");
     }
 
     @Nullable
