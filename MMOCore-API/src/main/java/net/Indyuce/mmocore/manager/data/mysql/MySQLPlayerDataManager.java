@@ -56,9 +56,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
                                 // Initialize custom resources
                                 if (!data.hasUsedTemporaryData()) {
-                                    data.setMana(data.getStats().getStat("MAX_MANA"));
-                                    data.setStamina(data.getStats().getStat("MAX_STAMINA"));
-                                    data.setStellium(data.getStats().getStat("MAX_STELLIUM"));
+                                    data.setMana(result.getFloat("mana"));
+                                    data.setStellium(result.getFloat("stellium"));
+                                    data.setStamina(result.getFloat("stamina"));
                                 }
 
                                 data.setClassPoints(result.getInt("class_points"));
@@ -69,6 +69,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 data.setAttributeReallocationPoints(result.getInt("attribute_realloc_points"));
                                 data.setLevel(result.getInt("level"));
                                 data.setExperience(result.getInt("experience"));
+
                                 if (!isEmpty(result.getString("class")))
                                     data.setClass(MMOCore.plugin.classManager.get(result.getString("class")));
 
@@ -181,7 +182,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         sql.updateData("attribute_points", data.getAttributePoints());
         sql.updateData("attribute_realloc_points", data.getAttributeReallocationPoints());
         sql.updateData("skill_tree_reallocation_points",data.getSkillTreeReallocationPoints());
-
+        sql.updateData("mana",data.getMana());
+        sql.updateData("stellium",data.getStellium());
+        sql.updateData("stamina",data.getStamina());
         sql.updateData("level", data.getLevel());
         sql.updateData("experience", data.getExperience());
         sql.updateData("class", data.getProfess().getId());

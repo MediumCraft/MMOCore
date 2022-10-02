@@ -19,7 +19,10 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
             "skill_reallocation_points", "INT(11)",
             "skill_tree_reallocation_points", "INT(11)",
             "skill_tree_points", "LONGTEXT",
-            "skill_tree_levels", "LONGTEXT"};
+            "skill_tree_levels", "LONGTEXT",
+            "mana","FLOAT",
+            "stamina","FLOAT",
+            "stellium","FLOAT"};
 
     public MySQLDataProvider(FileConfiguration config) {
         this.setup(config);

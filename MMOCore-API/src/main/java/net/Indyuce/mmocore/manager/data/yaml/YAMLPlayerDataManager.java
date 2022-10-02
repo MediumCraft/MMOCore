@@ -42,9 +42,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));
 
         if (!data.hasUsedTemporaryData() && data.isOnline()) {
-            data.setMana(data.getStats().getStat("MAX_MANA"));
-            data.setStamina(data.getStats().getStat("MAX_STAMINA"));
-            data.setStellium(data.getStats().getStat("MAX_STELLIUM"));
+            data.setMana(config.contains("mana")?config.getDouble("mana"):data.getStats().getStat("MAX_MANA"));
+            data.setStamina(config.contains("stamina")?config.getDouble("stamina"):data.getStats().getStat("MAX_STAMINA"));
+            data.setStellium(config.contains("stellium")?config.getDouble("stellium"):data.getStats().getStat("MAX_STELLIUM"));
         }
 
         if (config.contains("guild")) {
@@ -119,6 +119,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.getSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
+        config.set("mana",data.getMana());
+        config.set("stellium",data.getStellium());
+        config.set("stamina",data.getStamina());
         //Saves the nodes levels
         MMOCore.plugin.skillTreeManager.getAllNodes().forEach(node -> config.set("skill-tree-level." + node.getFullId(), data.getNodeLevel(node)));
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
