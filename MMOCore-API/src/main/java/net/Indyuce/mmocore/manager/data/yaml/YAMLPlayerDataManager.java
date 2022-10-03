@@ -71,7 +71,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                 if (data.getProfess().hasSkill(id)) {
                     ClassSkill skill = data.getProfess().getSkill(id);
                     if (skill.getSkill().getTrigger().isPassive())
-                        data.addPassiveBoundSkill(skill);
+                        data.addPassiveBoundSkill(skill.toPassive(data));
                     else
                         data.getBoundSkills().add(skill);
 
@@ -152,7 +152,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
         List<String> boundSkills = new ArrayList<>();
         data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
-        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
+        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
         config.set("bound-skills", boundSkills);
 
         config.set("attribute", null);

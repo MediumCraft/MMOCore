@@ -64,7 +64,7 @@ public class SkillList extends EditableInventory {
             return new SlotItem(config) {
                 @Override
                 public ItemStack display(SkillViewerInventory inv, int n) {
-                    if (n >= inv.getPlayerData().getProfess().getMaxBoundSkills()) {
+                    if (n >= inv.getPlayerData().getProfess().getMaxBoundActiveSkills()) {
                         return new ItemStack(Material.AIR);
                     }
                     ItemStack item = super.display(inv, n);
@@ -115,7 +115,9 @@ public class SkillList extends EditableInventory {
                 public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
                     Placeholders holders= super.getPlaceholders(inv, n);
                     String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
-                    RegisteredSkill skill = inv.getPlayerData().hasPassiveSkillBound(n) ? inv.getPlayerData().getBoundPassiveSkill(n).getSkill() : null;
+                    RegisteredSkill skill = inv.getPlayerData().hasPassiveSkillBound(n) ?
+                            MMOCore.plugin.skillManager.getSkill(inv.getPlayerData().getBoundPassiveSkill(n).getTriggeredSkill().getHandler().getId())
+                            : null;
                     holders.register("skill", skill == null ? none : skill.getName());
                     return holders;
                 }
@@ -453,7 +455,7 @@ public class SkillList extends EditableInventory {
                 }
 
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-                playerData.setBoundPassiveSkill(index, selected);
+                playerData.setBoundPassiveSkill(index, selected.toPassive(playerData));
                 open();
                 return;
             }

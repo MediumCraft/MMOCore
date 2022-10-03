@@ -68,7 +68,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @NotNull
     private final CastingParticle castParticle;
 
-    private final int maxBoundSkills, maxBoundPassiveSkills;
+    private final int maxBoundActiveSkills, maxBoundPassiveSkills;
     private final List<PassiveSkill> classScripts = new LinkedList();
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
@@ -123,8 +123,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 ? MMOCore.plugin.experience.getCurveOrThrow(
                 config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
-        maxBoundSkills = config.getInt("max-bound-skills", 6);
-        maxBoundPassiveSkills = config.getInt("max-bound-passive-skills", 3);
+        maxBoundActiveSkills = config.getInt("max-bound-active-skills", MMOCore.plugin.configManager.maxBoundActiveSkills);
+        maxBoundPassiveSkills = config.getInt("max-bound-passive-skills", MMOCore.plugin.configManager.maxBoundPassiveSkills);
         ExperienceTable expTable = null;
         if (config.contains("exp-table"))
             try {
@@ -259,7 +259,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         this.icon = new ItemStack(material);
         setOption(ClassOption.DISPLAY, false);
         setOption(ClassOption.DEFAULT, false);
-        maxBoundSkills = 6;
+        maxBoundActiveSkills = 6;
         maxBoundPassiveSkills=3;
         for (PlayerResource resource : PlayerResource.values())
             resourceHandlers.put(resource, new ResourceRegeneration(resource));
@@ -316,8 +316,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return expCurve;
     }
 
-    public int getMaxBoundSkills() {
-        return maxBoundSkills;
+    public int getMaxBoundActiveSkills() {
+        return maxBoundActiveSkills;
     }
     public int getMaxBoundPassiveSkills() {
         return maxBoundPassiveSkills;

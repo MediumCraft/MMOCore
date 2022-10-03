@@ -125,6 +125,11 @@ public class ClassSkill implements CooldownObject {
         return new CastableSkill(this, caster.getSkillLevel(getSkill()));
     }
 
+    /**
+     * Be careful, this method creates a new UUID each time it is called. Need to be remembered when trying to unregister passive skill
+     * from PassiveSkillMap.
+     * @return
+     */
     public PassiveSkill toPassive(PlayerData caster) {
         Validate.isTrue(skill.getTrigger().isPassive(), "Skill is active");
         return new PassiveSkill("MMOCorePassiveSkill", toCastable(caster), EquipmentSlot.OTHER, ModifierSource.OTHER);

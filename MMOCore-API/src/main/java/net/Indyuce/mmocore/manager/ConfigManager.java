@@ -27,9 +27,10 @@ public class ConfigManager {
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight, fishingDropsChanceWeight;
-    public int maxPartyLevelDifference,maxBoundSkills,waypointWarpTime;
+    public int maxPartyLevelDifference,maxBoundActiveSkills,maxBoundPassiveSkills,waypointWarpTime;
 
     private final FileConfiguration messages;
+
 
     /*
      * the instance must be created after the other managers since all it does
@@ -118,7 +119,8 @@ public class ConfigManager {
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
-        maxBoundSkills = MMOCore.plugin.getConfig().getInt("max-bound-skills", 6);
+        maxBoundActiveSkills = MMOCore.plugin.getConfig().getInt("max-bound-active-skills", 6);
+        maxBoundPassiveSkills = MMOCore.plugin.getConfig().getInt("max-bound-passive-skills", 3);
         overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp");
     }
 
