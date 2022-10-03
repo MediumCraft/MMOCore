@@ -102,8 +102,8 @@ skills:
 
 
 #The number of skills a player can bound.
-max-bound-skills: 6
-
+max-bound-active-skills: 6
+max-bound-passive-skills: 4
 
 # Experience sources for main class experience.
 main-exp-sources:

@@ -21,7 +21,9 @@ options:
 exp-curve: levels
 
 #The number of skills a player can bound.
-max-bound-skills: 5
+max-bound-active-skills: 5
+
+max-bound-passive-skills: 3
 
 # Experience sources for main class experience.
 main-exp-sources:
