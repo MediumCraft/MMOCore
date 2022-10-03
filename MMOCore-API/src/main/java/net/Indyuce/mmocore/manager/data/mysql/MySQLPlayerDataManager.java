@@ -12,6 +12,7 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
@@ -76,18 +77,18 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                     JsonObject json = new JsonParser().parse(result.getString("times_claimed")).getAsJsonObject();
                                     json.entrySet().forEach(entry -> data.getItemClaims().put(entry.getKey(), entry.getValue().getAsInt()));
                                 }
-                                if(!isEmpty(result.getString("skill_tree_points"))) {
+                                if (!isEmpty(result.getString("skill_tree_points"))) {
                                     JsonObject json = new JsonParser().parse(result.getString("skill_tree_points")).getAsJsonObject();
-                                    for(SkillTree skillTree: MMOCore.plugin.skillTreeManager.getAll()) {
-                                        data.setSkillTreePoints(skillTree.getId(),json.has(skillTree.getId())?json.get(skillTree.getId()).getAsInt():0);
+                                    for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
+                                        data.setSkillTreePoints(skillTree.getId(), json.has(skillTree.getId()) ? json.get(skillTree.getId()).getAsInt() : 0);
                                     }
-                                    data.setSkillTreePoints("global",json.has("global")?json.get("global").getAsInt():0);
+                                    data.setSkillTreePoints("global", json.has("global") ? json.get("global").getAsInt() : 0);
 
                                 }
-                                if(!isEmpty(result.getString("skill_tree_levels"))) {
+                                if (!isEmpty(result.getString("skill_tree_levels"))) {
                                     JsonObject json = new JsonParser().parse(result.getString("skill_tree_levels")).getAsJsonObject();
-                                    for(SkillTreeNode skillTreeNode: MMOCore.plugin.skillTreeManager.getAllNodes()) {
-                                        data.setNodeLevel(skillTreeNode,json.has(skillTreeNode.getFullId())?json.get(skillTreeNode.getFullId()).getAsInt():0);
+                                    for (SkillTreeNode skillTreeNode : MMOCore.plugin.skillTreeManager.getAllNodes()) {
+                                        data.setNodeLevel(skillTreeNode, json.has(skillTreeNode.getFullId()) ? json.get(skillTreeNode.getFullId()).getAsInt() : 0);
                                     }
                                 }
                                 data.setupSkillTree();
@@ -114,9 +115,14 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                         data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
                                 }
                                 if (!isEmpty(result.getString("bound_skills")))
-                                    for (String skill : MMOCoreUtils.jsonArrayToList(result.getString("bound_skills")))
-                                        if (data.getProfess().hasSkill(skill))
-                                            data.getBoundSkills().add(data.getProfess().getSkill(skill));
+                                    for (String id : MMOCoreUtils.jsonArrayToList(result.getString("bound_skills")))
+                                        if (data.getProfess().hasSkill(id)) {
+                                            ClassSkill skill = data.getProfess().getSkill(id);
+                                            if (skill.getSkill().getTrigger().isPassive())
+                                                data.addPassiveBoundSkill(skill);
+                                            else
+                                                data.getBoundSkills().add(skill);
+                                        }
                                 if (!isEmpty(result.getString("class_info"))) {
                                     JsonObject object = MythicLib.plugin.getJson().parse(result.getString("class_info"), JsonObject.class);
                                     for (Entry<String, JsonElement> entry : object.entrySet()) {
@@ -177,13 +183,13 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
         sql.updateData("class_points", data.getClassPoints());
         sql.updateData("skill_points", data.getSkillPoints());
-        sql.updateData("skill_reallocation_points",data.getSkillReallocationPoints());
+        sql.updateData("skill_reallocation_points", data.getSkillReallocationPoints());
         sql.updateData("attribute_points", data.getAttributePoints());
         sql.updateData("attribute_realloc_points", data.getAttributeReallocationPoints());
-        sql.updateData("skill_tree_reallocation_points",data.getSkillTreeReallocationPoints());
-        sql.updateData("mana",data.getMana());
-        sql.updateData("stellium",data.getStellium());
-        sql.updateData("stamina",data.getStamina());
+        sql.updateData("skill_tree_reallocation_points", data.getSkillTreeReallocationPoints());
+        sql.updateData("mana", data.getMana());
+        sql.updateData("stellium", data.getStellium());
+        sql.updateData("stamina", data.getStamina());
         sql.updateData("level", data.getLevel());
         sql.updateData("experience", data.getExperience());
         sql.updateData("class", data.getProfess().getId());
@@ -192,12 +198,15 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
         sql.updateJSONArray("waypoints", data.getWaypoints());
         sql.updateJSONArray("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
-        sql.updateJSONArray("bound_skills", data.getBoundSkills().stream().map(skill -> skill.getSkill().getHandler().getId()).collect(Collectors.toList()));
+        List<String> boundSkills = new ArrayList<>();
+        data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
+        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
+        sql.updateJSONArray("bound_skills", boundSkills);
 
         sql.updateJSONObject("skills", data.mapSkillLevels().entrySet());
         sql.updateJSONObject("times_claimed", data.getItemClaims().entrySet());
-        sql.updateJSONObject("skill_tree_points",data.getSkillTreePoints().entrySet());
-        sql.updateJSONObject("skill_tree_levels",data.getNodeLevelsEntrySet());
+        sql.updateJSONObject("skill_tree_points", data.getSkillTreePoints().entrySet());
+        sql.updateJSONObject("skill_tree_levels", data.getNodeLevelsEntrySet());
 
 
         sql.updateData("attributes", data.getAttributes().toJsonString());

@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -67,8 +68,14 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             config.getConfigurationSection("skill").getKeys(false).forEach(id -> data.setSkillLevel(id, config.getInt("skill." + id)));
         if (config.contains("bound-skills"))
             for (String id : config.getStringList("bound-skills"))
-                if (data.getProfess().hasSkill(id))
-                    data.getBoundSkills().add(data.getProfess().getSkill(id));
+                if (data.getProfess().hasSkill(id)) {
+                    ClassSkill skill = data.getProfess().getSkill(id);
+                    if (skill.getSkill().getTrigger().isPassive())
+                        data.addPassiveBoundSkill(skill);
+                    else
+                        data.getBoundSkills().add(skill);
+
+                }
 
         for (String key : MMOCore.plugin.skillTreeManager.getAll().stream().map(skillTree -> skillTree.getId()).toList()) {
             data.setSkillTreePoints(key, config.getInt("skill-tree-points." + key, 0));
@@ -145,6 +152,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
         List<String> boundSkills = new ArrayList<>();
         data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
+        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
         config.set("bound-skills", boundSkills);
 
         config.set("attribute", null);

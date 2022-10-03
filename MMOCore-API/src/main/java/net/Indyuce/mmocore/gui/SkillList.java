@@ -60,28 +60,8 @@ public class SkillList extends EditableInventory {
             };
         }
 
-        if (function.equals("slot"))
-            return new InventoryItem<SkillViewerInventory>(config) {
-                private final String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
-                private final Material emptyMaterial = Material
-                        .valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
-                private final int emptyCMD = config.getInt("empty-custom-model-data", getModelData());
-
-                @Override
-                public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-                    RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
-                    RegisteredSkill skill = inv.getPlayerData().hasSkillBound(n) ? inv.getPlayerData().getBoundSkill(n).getSkill() : null;
-
-                    Placeholders holders = new Placeholders();
-
-                    holders.register("skill", skill == null ? none : skill.getName());
-                    holders.register("index", "" + (n + 1));
-                    holders.register("slot", MMOCoreUtils.intToRoman(n + 1));
-                    holders.register("selected", selected == null ? none : selected.getName());
-
-                    return holders;
-                }
-
+        if (function.equals("active-slot"))
+            return new SlotItem(config) {
                 @Override
                 public ItemStack display(SkillViewerInventory inv, int n) {
                     if (n >= inv.getPlayerData().getProfess().getMaxBoundSkills()) {
@@ -89,11 +69,11 @@ public class SkillList extends EditableInventory {
                     }
                     ItemStack item = super.display(inv, n);
                     if (!inv.getPlayerData().hasSkillBound(n)) {
-                        item.setType(emptyMaterial);
+                        item.setType(super.emptyMaterial);
 
                         if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
                             ItemMeta meta = item.getItemMeta();
-                            meta.setCustomModelData(emptyCMD);
+                            meta.setCustomModelData(super.emptyCMD);
                             item.setItemMeta(meta);
                         }
                     }
@@ -101,10 +81,46 @@ public class SkillList extends EditableInventory {
                 }
 
                 @Override
-                public boolean hasDifferentDisplay() {
-                    return true;
+                public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+                    Placeholders holders= super.getPlaceholders(inv, n);
+                    String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
+                    RegisteredSkill skill = inv.getPlayerData().hasSkillBound(n) ? inv.getPlayerData().getBoundSkill(n).getSkill() : null;
+                    holders.register("skill", skill == null ? none : skill.getName());
+                    return holders;
+                }
+
+            };
+        if (function.equals("passive-slot"))
+            return new SlotItem(config) {
+                @Override
+                public ItemStack display(SkillViewerInventory inv, int n) {
+                    if (n >= inv.getPlayerData().getProfess().getMaxBoundPassiveSkills()) {
+                        return new ItemStack(Material.AIR);
+                    }
+                    ItemStack item = super.display(inv, n);
+                    if (!inv.getPlayerData().hasPassiveSkillBound(n)) {
+                        item.setType(super.emptyMaterial);
+
+                        if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
+                            ItemMeta meta = item.getItemMeta();
+                            meta.setCustomModelData(super.emptyCMD);
+                            item.setItemMeta(meta);
+                        }
+                    }
+                    return item;
+                }
+
+
+                @Override
+                public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+                    Placeholders holders= super.getPlaceholders(inv, n);
+                    String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
+                    RegisteredSkill skill = inv.getPlayerData().hasPassiveSkillBound(n) ? inv.getPlayerData().getBoundPassiveSkill(n).getSkill() : null;
+                    holders.register("skill", skill == null ? none : skill.getName());
+                    return holders;
                 }
             };
+
         if (function.equals("previous"))
             return new SimplePlaceholderItem<SkillViewerInventory>(config) {
 
@@ -181,6 +197,40 @@ public class SkillList extends EditableInventory {
             return new Placeholders();
         }
     }
+
+    public class SlotItem extends InventoryItem<SkillViewerInventory> {
+        private final String none;
+        private final Material emptyMaterial;
+        private final int emptyCMD;
+
+        public SlotItem(ConfigurationSection config) {
+            super(config);
+            none = MythicLib.plugin.parseColors(config.getString("no-skill"));
+            emptyMaterial = Material
+                    .valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
+            emptyCMD = config.getInt("empty-custom-model-data", getModelData());
+        }
+
+        @Override
+        public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+            RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
+
+            Placeholders holders = new Placeholders();
+
+            holders.register("index", "" + (n + 1));
+            holders.register("slot", MMOCoreUtils.intToRoman(n + 1));
+            holders.register("selected", selected == null ? none : selected.getName());
+
+            return holders;
+        }
+
+        @Override
+        public boolean hasDifferentDisplay() {
+            return true;
+        }
+    }
+
+    ;
 
     public class SkillItem extends InventoryItem<SkillViewerInventory> {
         public SkillItem(ConfigurationSection config) {
@@ -276,7 +326,8 @@ public class SkillList extends EditableInventory {
         // Cached information
         private final List<ClassSkill> skills;
         private final List<Integer> skillSlots;
-        private final List<Integer> slotSlots;
+        private final List<Integer> activeSlotSlots;
+        private final List<Integer> passiveSlotSlots;
 
         //The skill the player Selected
         private ClassSkill selected;
@@ -287,7 +338,8 @@ public class SkillList extends EditableInventory {
 
             skills = new ArrayList<>(playerData.getProfess().getSkills());
             skillSlots = getEditable().getByFunction("skill").getSlots();
-            slotSlots = getEditable().getByFunction("slot").getSlots();
+            activeSlotSlots = getEditable().getByFunction("active-slot").getSlots();
+            passiveSlotSlots = getEditable().getByFunction("passive-slot").getSlots();
             selected = skills.get(page * skillSlots.size());
         }
 
@@ -322,11 +374,10 @@ public class SkillList extends EditableInventory {
                 return;
             }
 
-            if(item.getFunction().equals("reallocation")) {
+            if (item.getFunction().equals("reallocation")) {
 
 
-
-                int spent= getPlayerData().countSkillPointsWhenReallocate();
+                int spent = getPlayerData().countSkillPointsWhenReallocate();
 
                 if (spent < 1) {
                     MMOCore.plugin.configManager.getSimpleMessage("no-skill-points-spent").send(player);
@@ -341,11 +392,11 @@ public class SkillList extends EditableInventory {
                 }
 
 
-                for(ClassSkill skill:playerData.getProfess().getSkills()) {
+                for (ClassSkill skill : playerData.getProfess().getSkills()) {
                     playerData.setSkillLevel(skill.getSkill(), 1);
                 }
                 playerData.giveSkillPoints(spent);
-                playerData.setSkillReallocationPoints(playerData.getSkillReallocationPoints()-1);
+                playerData.setSkillReallocationPoints(playerData.getSkillReallocationPoints() - 1);
                 MMOCore.plugin.configManager.getSimpleMessage("skill-points-reallocated", "points", "" + playerData.getSkillPoints()).send(player);
                 MMOCore.plugin.soundManager.getSound(SoundEvent.RESET_SKILLS).playTo(getPlayer());
                 open();
@@ -366,10 +417,53 @@ public class SkillList extends EditableInventory {
             }
 
             /*
+             * binding or unbinding  passive skills.
+             */
+
+            if (item.getFunction().equals("passive-slot")) {
+                int index = passiveSlotSlots.indexOf(context.getSlot());
+
+                // unbind if there is a current spell.
+                if (context.getClickType() == ClickType.RIGHT) {
+                    if (!playerData.hasPassiveSkillBound(index)) {
+                        MMOCore.plugin.configManager.getSimpleMessage("no-skill-bound").send(player);
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                        return;
+                    }
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
+                    playerData.unbindPassiveSkill(index);
+                    open();
+                    return;
+                }
+
+                if (selected == null)
+                    return;
+
+                if (!selected.getSkill().getTrigger().isPassive()) {
+                    MMOCore.plugin.configManager.getSimpleMessage("not-passive-skill").send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                    return;
+                }
+
+
+                if (!playerData.hasSkillUnlocked(selected)) {
+                    MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                    return;
+                }
+
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
+                playerData.setBoundPassiveSkill(index, selected);
+                open();
+                return;
+            }
+
+
+            /*
              * binding or unbinding skills.
              */
-            if (item.getFunction().equals("slot")) {
-                int index = slotSlots.indexOf(context.getSlot());
+            if (item.getFunction().equals("active-slot")) {
+                int index = activeSlotSlots.indexOf(context.getSlot());
 
                 // unbind if there is a current spell.
                 if (context.getClickType() == ClickType.RIGHT) {

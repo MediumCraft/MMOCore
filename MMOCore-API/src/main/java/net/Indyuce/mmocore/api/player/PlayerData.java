@@ -86,6 +86,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Set<String> waypoints = new HashSet<>();
     private final Map<String, Integer> skills = new HashMap<>();
     private final List<ClassSkill> boundSkills = new ArrayList<>();
+    private final List<ClassSkill> boundPassiveSkills = new ArrayList<>();
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
@@ -180,8 +181,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         //Stat triggers setup
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
-            for(SkillTreeNode node: skillTree.getNodes()) {
-                node.getExperienceTable().claimStatTriggers(this,node);
+            for (SkillTreeNode node : skillTree.getNodes()) {
+                node.getExperienceTable().claimStatTriggers(this, node);
             }
         }
 
@@ -1049,6 +1050,29 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return slot >= boundSkills.size() ? null : boundSkills.get(slot);
     }
 
+    public void setBoundPassiveSkill(int slot, ClassSkill skill) {
+        Validate.notNull(skill, "Skill cannot be null");
+        if (boundPassiveSkills.size() < getProfess().getMaxBoundSkills())
+            boundPassiveSkills.add(skill);
+        else
+            boundPassiveSkills.set(slot, skill);
+        boundPassiveSkills.get(slot).toPassive(this).register(getMMOPlayerData());
+
+    }
+
+    public boolean hasPassiveSkillBound(int slot) {
+        return slot < boundPassiveSkills.size();
+    }
+
+    public ClassSkill getBoundPassiveSkill(int slot) {
+        return slot >= boundPassiveSkills.size() ? null : boundPassiveSkills.get(slot);
+    }
+
+    public void addPassiveBoundSkill(ClassSkill skill) {
+        boundPassiveSkills.add(skill);
+        skill.toPassive(this).register(getMMOPlayerData());
+    }
+
     public void setBoundSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
         if (boundSkills.size() < getProfess().getMaxBoundSkills())
@@ -1061,8 +1085,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         boundSkills.remove(slot);
     }
 
+    public void unbindPassiveSkill(int slot) {
+        boundPassiveSkills.get(slot).toPassive(this).unregister(getMMOPlayerData());
+        boundPassiveSkills.remove(slot);
+
+    }
+
     public List<ClassSkill> getBoundSkills() {
         return boundSkills;
+    }
+
+    public List<ClassSkill> getBoundPassiveSkills() {
+        return boundPassiveSkills;
     }
 
     public boolean isInCombat() {
