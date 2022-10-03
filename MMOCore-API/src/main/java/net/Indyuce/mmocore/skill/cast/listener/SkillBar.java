@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import org.bukkit.GameMode;
@@ -81,7 +82,8 @@ public class SkillBar implements Listener {
              */
             if (slot >= 0 && getCaster().hasSkillBound(slot)) {
                 PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null));
+                int delay= getCaster().getBoundSkill(slot).getDelay(getCaster());
+                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null),delay);
             }
         }
 

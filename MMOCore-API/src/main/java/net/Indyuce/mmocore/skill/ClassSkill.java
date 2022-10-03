@@ -52,6 +52,7 @@ public class ClassSkill implements CooldownObject {
         }
     }
 
+
     public RegisteredSkill getSkill() {
         return skill;
     }
@@ -79,6 +80,15 @@ public class ClassSkill implements CooldownObject {
 
     public double getModifier(String modifier, int level) {
         return Objects.requireNonNull(modifiers.get(modifier), "Could not find modifier '" + modifier + "'").calculate(level);
+    }
+
+    /**
+     * Gives the delay to launch the skill
+     *
+     * @return
+     */
+    public int getDelay(PlayerData data) {
+        return modifiers.containsKey("delay") ? (int) modifiers.get("delay").calculate(data.getSkillLevel(getSkill())) : 0;
     }
 
     public List<String> calculateLore(PlayerData data) {
@@ -125,9 +135,11 @@ public class ClassSkill implements CooldownObject {
         return new CastableSkill(this, caster.getSkillLevel(getSkill()));
     }
 
+
     /**
      * Be careful, this method creates a new UUID each time it is called. Need to be remembered when trying to unregister passive skill
      * from PassiveSkillMap.
+     *
      * @return
      */
     public PassiveSkill toPassive(PlayerData caster) {
