@@ -223,7 +223,7 @@ public class PlayerProfessions {
         if (check) {
             Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
             new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
-            new ConfigMessage("profession-level-up").addPlaceholders("level", "" + level, "profession", profession.getId(), "profession-name", profession.getName())
+            new ConfigMessage("profession-level-up").addPlaceholders("level", String.valueOf(level), "profession", profession.getName())
                     .send(playerData.getPlayer());
             MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(playerData.getPlayer());
             playerData.getStats().updateStats();
@@ -234,7 +234,7 @@ public class PlayerProfessions {
         for (int j = 0; j < 20; j++)
             bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
         if (playerData.isOnline())
-            MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getId(), "profession-name", profession.getName(), "progress", bar.toString(), "ratio",
+            MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
                     MythicLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
     }
 }

@@ -5,13 +5,13 @@ import io.lumine.mythic.lib.player.cooldown.CooldownObject;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import io.lumine.mythic.lib.script.condition.Condition;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -101,12 +101,12 @@ public class ClassSkill implements CooldownObject {
         Map<String, String> placeholders = calculateModifiers(x);
         placeholders.put("mana_name", data.getProfess().getManaDisplay().getName());
         placeholders.put("mana_color", data.getProfess().getManaDisplay().getFull().toString());
-        skill.getLore().forEach(str -> list.add(MMOCore.plugin.placeholderParser.parse(data.getPlayer(), applyPlaceholders(placeholders, str))));
+        skill.getLore().forEach(str -> list.add(applyPlaceholders(data.getPlayer(), placeholders, str)));
 
         return list;
     }
 
-    private String applyPlaceholders(Map<String, String> placeholders, String str) {
+    private String applyPlaceholders(Player player, Map<String, String> placeholders, String str) {
         String explored = str;
         while (explored.contains("{") && explored.substring(explored.indexOf("{")).contains("}")) {
             final int begin = explored.indexOf("{"), end = explored.indexOf("}");
@@ -118,7 +118,7 @@ public class ClassSkill implements CooldownObject {
             // Increase counter
             explored = explored.substring(end + 1);
         }
-        return str;
+        return MMOCore.plugin.placeholderParser.parse(player, str);
     }
 
     private Map<String, String> calculateModifiers(int x) {

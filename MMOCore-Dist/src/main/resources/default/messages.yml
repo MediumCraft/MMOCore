@@ -6,8 +6,8 @@ level-up:
 - '&eUse &6/p &eto see your new statistics!'
 - ''
 profession-level-up:
-- '&eYou are now level &6{level}&e in &6{profession-name}&e!'
-exp-notification: '%&f{profession-name} &e{progress} &e{ratio}%'
+- '&eYou are now level &6{level}&e in &6{profession}&e!'
+exp-notification: '%&f{profession} &e{progress} &e{ratio}%'
 exp-hologram: '&e+{exp} EXP!'
 class-select: '&eYou are now a &6{class}&e!'
 already-on-class: '&cYou are already a {class}.'

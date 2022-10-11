@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class LinearValue {
     private final double base, perLevel, min, max;
-    private final boolean hasmin, hasmax;
+    private final boolean hasMin, hasMax;
 
     public static final LinearValue ZERO = new LinearValue(0, 0, 0, 0);
 
@@ -20,8 +20,8 @@ public class LinearValue {
     public LinearValue(double base, double perLevel) {
         this.base = base;
         this.perLevel = perLevel;
-        hasmin = false;
-        hasmax = false;
+        hasMin = false;
+        hasMax = false;
         min = 0;
         max = 0;
     }
@@ -39,8 +39,8 @@ public class LinearValue {
     public LinearValue(double base, double perLevel, double min, double max) {
         this.base = base;
         this.perLevel = perLevel;
-        hasmin = true;
-        hasmax = true;
+        hasMin = true;
+        hasMax = true;
         this.min = min;
         this.max = max;
     }
@@ -53,8 +53,8 @@ public class LinearValue {
     public LinearValue(LinearValue value) {
         base = value.base;
         perLevel = value.perLevel;
-        hasmin = value.hasmin;
-        hasmax = value.hasmax;
+        hasMin = value.hasMin;
+        hasMax = value.hasMax;
         min = value.min;
         max = value.max;
     }
@@ -67,10 +67,10 @@ public class LinearValue {
     public LinearValue(ConfigurationSection config) {
         base = config.getDouble("base");
         perLevel = config.getDouble("per-level");
-        hasmin = config.contains("min");
-        hasmax = config.contains("max");
-        min = hasmin ? config.getDouble("min") : 0;
-        max = hasmax ? config.getDouble("max") : 0;
+        hasMin = config.contains("min");
+        hasMax = config.contains("max");
+        min = hasMin ? config.getDouble("min") : 0;
+        max = hasMax ? config.getDouble("max") : 0;
     }
 
     public double getBaseValue() {
@@ -90,11 +90,11 @@ public class LinearValue {
     }
 
     public boolean hasMax() {
-        return hasmax;
+        return hasMax;
     }
 
     public boolean hasMin() {
-        return hasmin;
+        return hasMin;
     }
 
     public String getDisplay(int level) {
@@ -104,9 +104,9 @@ public class LinearValue {
     public double calculate(int level) {
         double value = base + perLevel * (level - 1);
 
-        if (hasmin) value = Math.max(min, value);
+        if (hasMin) value = Math.max(min, value);
 
-        if (hasmax) value = Math.min(max, value);
+        if (hasMax) value = Math.min(max, value);
 
         return value;
     }
@@ -118,8 +118,8 @@ public class LinearValue {
                 ", perLevel=" + perLevel +
                 ", min=" + min +
                 ", max=" + max +
-                ", hasmin=" + hasmin +
-                ", hasmax=" + hasmax +
+                ", hasmin=" + hasMin +
+                ", hasmax=" + hasMax +
                 '}';
     }
 }
