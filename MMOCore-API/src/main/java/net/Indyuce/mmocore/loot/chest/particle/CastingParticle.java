@@ -1,13 +1,13 @@
 package net.Indyuce.mmocore.loot.chest.particle;
 
-import java.util.function.Consumer;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.function.Consumer;
 
 public class CastingParticle {
     private final Consumer<Location> display;
@@ -22,8 +22,7 @@ public class CastingParticle {
         if (config.contains("color")) {
             final float size = (float) config.getDouble("size") == 0 ? 1 : (float) Math.max(config.getDouble("size"), 0);
             Color color = Color.fromRGB(config.getInt("color.red"), config.getInt("color.green"), config.getInt("color.blue"));
-
-            display = (loc) -> loc.getWorld().spawnParticle(particle, loc, 1, new Particle.DustOptions(color, size));
+            display = loc -> loc.getWorld().spawnParticle(particle, loc, 1, new Particle.DustOptions(color, size));
             return;
         }
 
@@ -31,16 +30,11 @@ public class CastingParticle {
             format = config.getString("material");
             Validate.notNull(format, "Could not read material name");
             Material material = Material.valueOf(format.toUpperCase().replace("-", "_").replace(" ", "_"));
-            if (material == Material.DIRT && particle == Particle.SUSPENDED)
-                display = (loc) -> {
-                    return;
-                };
-            else
-                display = (loc) -> loc.getWorld().spawnParticle(particle, loc, 1, material.createBlockData());
+            display = loc -> loc.getWorld().spawnParticle(particle, loc, 1, material.createBlockData());
             return;
         }
 
-        display = (loc) -> loc.getWorld().spawnParticle(particle, loc, 0);
+        display = loc -> loc.getWorld().spawnParticle(particle, loc, 0);
     }
 
     public CastingParticle(Particle particle) {
