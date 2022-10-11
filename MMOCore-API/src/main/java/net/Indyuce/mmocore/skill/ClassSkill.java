@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -96,35 +97,18 @@ public class ClassSkill implements CooldownObject {
     }
 
     public List<String> calculateLore(PlayerData data, int x) {
-        List<String> list = new ArrayList<>();
 
-        Map<String, String> placeholders = calculateModifiers(x);
-        placeholders.put("mana_name", data.getProfess().getManaDisplay().getName());
-        placeholders.put("mana_color", data.getProfess().getManaDisplay().getFull().toString());
-        skill.getLore().forEach(str -> list.add(applyPlaceholders(data.getPlayer(), placeholders, str)));
+        // Calculate placeholders
+        Placeholders placeholders = new Placeholders();
+        modifiers.keySet().forEach(modifier -> placeholders.register(modifier, modifiers.get(modifier).getDisplay(x)));
+        placeholders.register("mana_name", data.getProfess().getManaDisplay().getName());
+        placeholders.register("mana_color", data.getProfess().getManaDisplay().getFull().toString());
+
+        // Build string arraylist
+        List<String> list = new ArrayList<>();
+        skill.getLore().forEach(str -> list.add(placeholders.apply(data.getPlayer(), str)));
 
         return list;
-    }
-
-    private String applyPlaceholders(Player player, Map<String, String> placeholders, String str) {
-        String explored = str;
-        while (explored.contains("{") && explored.substring(explored.indexOf("{")).contains("}")) {
-            final int begin = explored.indexOf("{"), end = explored.indexOf("}");
-            String holder = explored.substring(begin + 1, end);
-
-            if (placeholders.containsKey(holder))
-                str = str.replace("{" + holder + "}", placeholders.get(holder));
-
-            // Increase counter
-            explored = explored.substring(end + 1);
-        }
-        return MMOCore.plugin.placeholderParser.parse(player, str);
-    }
-
-    private Map<String, String> calculateModifiers(int x) {
-        Map<String, String> map = new HashMap<>();
-        modifiers.keySet().forEach(modifier -> map.put(modifier, modifiers.get(modifier).getDisplay(x)));
-        return map;
     }
 
     private LinearValue readLinearValue(LinearValue current, ConfigurationSection config) {
