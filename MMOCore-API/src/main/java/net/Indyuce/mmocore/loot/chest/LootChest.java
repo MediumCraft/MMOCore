@@ -10,6 +10,8 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
@@ -80,18 +82,27 @@ public class LootChest {
         if (!closeRunnable.isCancelled())
             closeRunnable.cancel();
 
-        // If a player is responsible of closing the chest, close it with sound
+        /*
+         * If a player is responsible of closing the chest, play the
+         * closing sound and drop its content before clearing it
+         */
         if (player) {
             MMOCore.plugin.soundManager.getSound(SoundEvent.CLOSE_LOOT_CHEST).playAt(block.loc.bukkit());
             block.loc.getWorld().spawnParticle(Particle.CRIT, block.loc.bukkit().add(.5, .5, .5), 16, 0, 0, 0, .5);
+
+            final Inventory chestInv = ((Chest) block.loc.bukkit().getBlock().getState()).getBlockInventory();
+            final Location centerLoc = block.findCenterLocation();
+            for (ItemStack drop : chestInv.getContents())
+                if (drop != null && drop.getType() != Material.AIR)
+                    block.getLocation().getWorld().dropItem(centerLoc, drop);
+
+            chestInv.clear();
         }
 
         /*
          * Must clean block inventory before replacing block otherwise loots fly
          * off and accumulate on the ground (+during dev phase)
          */
-        else
-            ((Chest) block.loc.bukkit().getBlock().getState()).getBlockInventory().clear();
 
         block.restore();
         if (effectRunnable != null)
@@ -111,6 +122,10 @@ public class LootChest {
 
         public HashableLocation getLocation() {
             return loc;
+        }
+
+        public Location findCenterLocation() {
+            return new Location(getLocation().getWorld(), loc.getX() + .5, loc.getY() + .5, loc.getZ() + .5);
         }
 
         @Deprecated
