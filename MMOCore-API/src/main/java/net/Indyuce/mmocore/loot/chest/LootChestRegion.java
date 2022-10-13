@@ -96,6 +96,7 @@ public class LootChestRegion {
 
         LootChest lootChest = new LootChest(tier, this, location.getBlock());
         LootBuilder builder = new LootBuilder(player, tier.rollCapacity(player));
+        tier.getDropTable().collect(builder);
 
         LootChestSpawnEvent event = new LootChestSpawnEvent(player, lootChest, builder);
         Bukkit.getPluginManager().callEvent(event);
@@ -108,7 +109,7 @@ public class LootChestRegion {
 
         location.getBlock().setType(Material.CHEST);
         Chest chest = (Chest) location.getBlock().getState();
-        tier.getDropTable().collect(builder).forEach(item -> {
+        builder.getLoot().forEach(item -> {
             Integer slot = slots.get(RANDOM.nextInt(slots.size()));
             chest.getInventory().setItem(slot, item);
             slots.remove(slot);
