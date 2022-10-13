@@ -188,6 +188,12 @@ death-exp-loss:
 #Default max bound active and passive skills.
 #These value can be modified for each class in the class yml.
 max-bound-active-skills: 6
+
+#If you want players to bound their passive skills.
+#If false, all the passive skills unlocked will be active
+#Also set max-bound-passive-skills to 0 if seting passive-skill-need-bound to false.
+passive-skill-need-bound: true
+
 max-bound-passive-skills: 3
 
 # Fun extra RPG feature that switches the player's hotbar with

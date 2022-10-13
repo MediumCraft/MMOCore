@@ -34,7 +34,7 @@ items:
     lore: { }
 
   reallocate:
-    slots: [26]
+    slots: [45]
     function: reallocation
     item: CAULDRON
     name: '&aReallocate Skill Points'
@@ -46,19 +46,7 @@ items:
       - '&eCosts 1 skill reallocation point.'
       - '&e◆ Skill Reallocation Points: &6{points}'
 
-    #switch:
-    #
-    #    slots: [28]
-    #    function: switch
-    #    item: PLAYER_HEAD
-    #    binding:
-    #       item: PINK_STAINED_GLASS
-    #        name: '&aSwitch to Binding'
-    #       lore: {}
-    #    upgrading:
-    #       item: PINK_STAINED_GLASS
-    #        name: '&aSwitch to Upgrading'
-    #       lore: {}
+
   passive-skill-slot:
     slots: [ 7,16,25,34,43,52 ]
     function: passive-slot

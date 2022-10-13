@@ -22,7 +22,7 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar;
+    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
@@ -115,7 +115,7 @@ public class ConfigManager {
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
         staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
-
+        passiveSkillNeedBound = MMOCore.plugin.getConfig().getBoolean("passive-skill-need-bound");
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
@@ -135,7 +135,7 @@ public class ConfigManager {
 
     @Deprecated
     public PlayerInput newPlayerInput(Player player, InputType type, Consumer<String> output) {
-        return  new ChatInput(player, type, output) ;
+        return new ChatInput(player, type, output);
     }
 
     public void loadDefaultFile(String name) {
