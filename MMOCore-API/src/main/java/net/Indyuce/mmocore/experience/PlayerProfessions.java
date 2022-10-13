@@ -101,7 +101,8 @@ public class PlayerProfessions {
                 playerData.getItemClaims().put("profession." + entry.getKey(), entry.getValue().getAsInt());
 
         for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
-            profession.getExperienceTable().claimStatTriggers(playerData, profession);
+            if (profession.hasExperienceTable())
+                profession.getExperienceTable().claimStatTriggers(playerData, profession);
         }
 
     }

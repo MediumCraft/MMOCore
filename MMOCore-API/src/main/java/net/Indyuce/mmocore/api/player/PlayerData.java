@@ -190,7 +190,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
 
     public int getPointSpent(SkillTree skillTree) {
-        return pointSpent.get(skillTree);
+        return pointSpent.getOrDefault(skillTree,0);
     }
 
 
@@ -199,7 +199,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void giveSkillTreePoints(String id, int val) {
-        skillTreePoints.put(id, skillTreePoints.get(id) + val);
+        skillTreePoints.put(id, skillTreePoints.getOrDefault(id,0) + val);
     }
 
     public int countSkillTreePoints(SkillTree skillTree) {
@@ -296,7 +296,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public int getNodeLevel(SkillTreeNode node) {
-        return nodeLevels.get(node);
+        return nodeLevels.getOrDefault(node,0);
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
