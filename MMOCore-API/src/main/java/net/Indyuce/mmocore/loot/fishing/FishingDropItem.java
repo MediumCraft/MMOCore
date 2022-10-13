@@ -15,18 +15,22 @@ public class FishingDropItem implements Weighted {
 	private final DropItem dropItem;
 
 	public FishingDropItem(MMOLineConfig config) {
-		config.validate("tugs", "experience");
+		config.validateKeys("tugs", "experience");
 
 		tugs = new RandomAmount(config.getString("tugs"));
 		experience = new RandomAmount(config.getString("experience"));
 
 		dropItem = MMOCore.plugin.loadManager.loadDropItem(config);
-		Validate.isTrue(dropItem.getWeight() > 0, "A fishing drop table item must have a strictly positive weight");
 	}
 
+	/**
+	 * An item cannot have a negative weight. Since drop items have 0 weight
+	 * by default, MMOCore takes 1 as minimum value if the item weight is
+	 * negative or equal to 0
+	 */
 	@Override
 	public double getWeight() {
-		return dropItem.getWeight();
+		return dropItem.getWeight() <= 0 ? 1 : 0;
 	}
 
 	public DropItem getItem() {
