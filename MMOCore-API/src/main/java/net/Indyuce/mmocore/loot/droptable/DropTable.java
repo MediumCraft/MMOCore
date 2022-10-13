@@ -71,6 +71,10 @@ public class DropTable extends PostLoadObject {
 		drops.add(item);
 	}
 
+	public Set<DropItem> getDrops() {
+		return drops;
+	}
+
 	public List<ItemStack> collect(LootBuilder builder) {
 
 		for (DropItem item : drops)
