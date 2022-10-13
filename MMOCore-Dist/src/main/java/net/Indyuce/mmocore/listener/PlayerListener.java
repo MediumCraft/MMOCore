@@ -38,11 +38,12 @@ public class PlayerListener implements Listener {
     // Register custom inventory clicks
     @EventHandler
     public void b(InventoryClickEvent event) {
-        if (event.getInventory().getHolder() instanceof PluginInventory) {
-            event.setCancelled(true);
+        if (event.getInventory().getHolder() instanceof PluginInventory pluginInventory) {
+            if (pluginInventory.shouldCancel()) {
+                event.setCancelled(true);
+            }
             if (event.getCurrentItem() != null && event.getCurrentItem().getItemMeta() != null)
-                ((PluginInventory) event.getInventory().getHolder())
-                        .whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory()));
+                pluginInventory.whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory()));
         }
     }
 
