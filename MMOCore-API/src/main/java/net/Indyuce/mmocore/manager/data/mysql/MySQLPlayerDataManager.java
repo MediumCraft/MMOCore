@@ -6,11 +6,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
@@ -21,8 +21,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -56,11 +58,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 MMOCore.sqlDebug("Loading data for: '" + data.getUniqueId() + "'...");
 
                                 // Initialize custom resources
-                                if (!data.hasUsedTemporaryData()) {
-                                    data.setMana(result.getFloat("mana"));
-                                    data.setStellium(result.getFloat("stellium"));
-                                    data.setStamina(result.getFloat("stamina"));
-                                }
+                                data.setMana(result.getFloat("mana"));
+                                data.setStellium(result.getFloat("stellium"));
+                                data.setStamina(result.getFloat("stamina"));
 
                                 data.setClassPoints(result.getInt("class_points"));
                                 data.setSkillPoints(result.getInt("skill_points"));

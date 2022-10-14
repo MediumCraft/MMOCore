@@ -4,7 +4,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -31,6 +30,7 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
@@ -125,25 +125,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     private boolean fullyLoaded = false;
 
-    /**
-     * If the player data was loaded using temporary data.
-     */
-    private final boolean usingTemporaryData;
-
     public PlayerData(MMOPlayerData mmoData) {
         super(mmoData.getUniqueId());
 
         this.mmoData = mmoData;
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
-
-        // Load temporary data if necessary
-        final @Nullable TemporaryPlayerData tempData = mmoData.getExternalData("mmocore", TemporaryPlayerData.class);
-        if (usingTemporaryData = tempData != null) {
-            mana = tempData.mana;
-            stamina = tempData.stamina;
-            stellium = tempData.stellium;
-        }
     }
 
     /**
@@ -190,7 +177,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
 
     public int getPointSpent(SkillTree skillTree) {
-        return pointSpent.getOrDefault(skillTree,0);
+        return pointSpent.getOrDefault(skillTree, 0);
     }
 
 
@@ -199,7 +186,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void giveSkillTreePoints(String id, int val) {
-        skillTreePoints.put(id, skillTreePoints.getOrDefault(id,0) + val);
+        skillTreePoints.put(id, skillTreePoints.getOrDefault(id, 0) + val);
     }
 
     public int countSkillTreePoints(SkillTree skillTree) {
@@ -296,7 +283,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public int getNodeLevel(SkillTreeNode node) {
-        return nodeLevels.getOrDefault(node,0);
+        return nodeLevels.getOrDefault(node, 0);
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
@@ -697,9 +684,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                                    Math.cos((double) 5 * t / warpTime + j) * r,
-                                    (double) 2 * t / warpTime,
-                                    Math.sin((double) 5 * t / warpTime + j) * r),
+                            Math.cos((double) 5 * t / warpTime + j) * r,
+                            (double) 2 * t / warpTime,
+                            Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -916,10 +903,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.fullyLoaded = true;
     }
 
-    public boolean hasUsedTemporaryData() {
-        return usingTemporaryData;
-    }
-
     public boolean isCasting() {
         return skillCasting != null;
     }
@@ -1110,7 +1093,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {

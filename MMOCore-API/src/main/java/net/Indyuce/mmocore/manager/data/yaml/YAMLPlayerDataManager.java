@@ -1,11 +1,10 @@
 package net.Indyuce.mmocore.manager.data.yaml;
 
-import com.massivecraft.factions.Conf;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
@@ -17,7 +16,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -43,11 +44,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         if (config.contains("class"))
             data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));
 
-        if (!data.hasUsedTemporaryData() && data.isOnline()) {
-            data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
-            data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
-            data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
-        }
+        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
+        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
+        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
 
         if (config.contains("guild")) {
             Guild guild = provider.getGuildManager().getGuild(config.getString("guild"));

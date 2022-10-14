@@ -4,7 +4,6 @@ package net.Indyuce.mmocore.listener;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.TemporaryPlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
@@ -74,7 +73,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void e(PlayerQuitEvent event) {
         PlayerData playerData = PlayerData.get(event.getPlayer());
-        playerData.getMMOPlayerData().setExternalData("mmocore", new TemporaryPlayerData(playerData));
         MMOCore.plugin.dataProvider.getDataManager().unregisterSafe(playerData);
     }
 
