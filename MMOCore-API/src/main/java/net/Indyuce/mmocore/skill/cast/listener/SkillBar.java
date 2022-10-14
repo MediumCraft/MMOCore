@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.SoundEvent;
+import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
@@ -137,13 +138,7 @@ public class SkillBar implements Listener {
 
         @Override
         public void onTick() {
-            if (j % 20 == 0) getCaster().displayActionBar(getFormat(getCaster()));
-
-            for (int k = 0; k < 2; k++) {
-                double a = (double) j++ / 5;
-                getCaster().getProfess().getCastParticle()
-                        .display(getCaster().getPlayer().getLocation().add(Math.cos(a), 1 + Math.sin(a / 3) / 1.3, Math.sin(a)));
-            }
+            if (j++ % 20 == 0) getCaster().displayActionBar(getFormat(getCaster()));
         }
     }
 }

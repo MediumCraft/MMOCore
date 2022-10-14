@@ -25,6 +25,7 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExpCurve;
+import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.player.stats.StatInfo;
@@ -32,7 +33,6 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.KeyCombo;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
-import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -65,7 +65,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     private final ExperienceTable expTable;
 
-    @NotNull
+    @Nullable
     private final CastingParticle castParticle;
 
     private final int maxBoundActiveSkills, maxBoundPassiveSkills;
@@ -193,9 +193,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                             + id + "': " + exception.getMessage());
                 }
 
-        castParticle = config.contains("cast-particle")
-                ? new CastingParticle(config.getConfigurationSection("cast-particle"))
-                : new CastingParticle(Particle.SPELL_INSTANT);
+        castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
 
         if (config.contains("options"))
             for (String key : config.getConfigurationSection("options").getKeys(false))
@@ -337,6 +335,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return icon.clone();
     }
 
+    @Nullable
     public CastingParticle getCastParticle() {
         return castParticle;
     }
