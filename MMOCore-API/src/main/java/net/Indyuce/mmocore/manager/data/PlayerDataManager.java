@@ -2,10 +2,10 @@ package net.Indyuce.mmocore.manager.data;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.AsyncPlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,7 +16,7 @@ import java.util.*;
 public abstract class PlayerDataManager {
     private final static Map<UUID, PlayerData> data = Collections.synchronizedMap(new HashMap<>());
 
-    private DefaultPlayerData defaultData = new DefaultPlayerData(1, 0, 0, 0, 0, 0,0);
+    private DefaultPlayerData defaultData = new DefaultPlayerData(1, 0, 0, 0, 0, 0, 0);
 
     public PlayerData get(OfflinePlayer player) {
         return get(player.getUniqueId());
@@ -45,19 +45,11 @@ public abstract class PlayerDataManager {
 
         // Save data async if required
         if (playerData.isFullyLoaded())
-            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-                saveData(playerData);
+            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> saveData(playerData));
 
-                // Unregister once the data was saved
-                playerData.close();
-                data.remove(playerData.getUniqueId());
-            });
-
-            // Just unregister data without saving
-        else {
-            playerData.close();
-            data.remove(playerData.getUniqueId());
-        }
+        // Close and unregister data instantly if no error occured
+        playerData.close();
+        data.remove(playerData.getUniqueId());
     }
 
     /**
