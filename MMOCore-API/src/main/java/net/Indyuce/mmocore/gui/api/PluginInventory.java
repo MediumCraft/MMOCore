@@ -8,6 +8,10 @@ import org.bukkit.inventory.InventoryHolder;
 public abstract class PluginInventory implements InventoryHolder {
     protected final Player player;
     protected final PlayerData playerData;
+    /**
+     * If all the clicks sould be cancelled for the inventory
+     */
+    private boolean shouldCancel = true;
 
     public PluginInventory(PlayerData playerData) {
         this.playerData = playerData;
@@ -19,12 +23,25 @@ public abstract class PluginInventory implements InventoryHolder {
         this.playerData = player.getOpenInventory() != null && player.getOpenInventory().getTopInventory().getHolder() instanceof PluginInventory ? ((PluginInventory) player.getOpenInventory().getTopInventory().getHolder()).playerData : PlayerData.get(player);
     }
 
+    public PluginInventory(Player player, boolean shouldCancel) {
+        this(player);
+        this.shouldCancel=shouldCancel;
+    }
+    public PluginInventory(PlayerData playerData, boolean shouldCancel) {
+        this(playerData);
+        this.shouldCancel=shouldCancel;
+    }
+
     public PlayerData getPlayerData() {
         return playerData;
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public boolean shouldCancel() {
+        return shouldCancel;
     }
 
     /**

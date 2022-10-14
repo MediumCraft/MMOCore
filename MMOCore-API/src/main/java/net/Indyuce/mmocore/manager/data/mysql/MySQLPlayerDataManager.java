@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -110,7 +111,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 if (!isEmpty(result.getString("friends")))
                                     MMOCoreUtils.jsonArrayToList(result.getString("friends")).forEach(str -> data.getFriends().add(UUID.fromString(str)));
                                 if (!isEmpty(result.getString("skills"))) {
-                                    JsonObject object = MythicLib.plugin.getJson().parse(result.getString("skills"), JsonObject.class);
+                                    JsonObject  object=new Gson().fromJson(result.getString("skills"), JsonObject.class);
                                     for (Entry<String, JsonElement> entry : object.entrySet())
                                         data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
                                 }

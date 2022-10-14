@@ -30,7 +30,7 @@ public class DepositMenu extends PluginInventory {
     private BukkitRunnable updateRunnable;
 
     public DepositMenu(Player player) {
-        super(player);
+        super(player,false);
     }
 
     @Override
