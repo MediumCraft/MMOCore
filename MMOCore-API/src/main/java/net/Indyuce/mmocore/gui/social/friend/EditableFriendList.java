@@ -223,7 +223,7 @@ public class EditableFriendList extends EditableInventory {
             }
 
             if (item.getFunction().equals("friend") && context.getClickType() == ClickType.RIGHT) {
-                String tag = context.getItemStack().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
+                String tag = context.getClickedItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
                 if (tag == null || tag.isEmpty())
                     return;
 

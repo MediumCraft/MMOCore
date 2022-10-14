@@ -192,7 +192,7 @@ public class EditablePartyView extends EditableInventory {
                 if (!party.getOwner().equals(playerData))
                     return;
 
-                OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(context.getItemStack().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
+                OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(context.getClickedItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
                 if (target.equals(player))
                     return;
 

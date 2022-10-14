@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
-    /*
+    /**
      * Load player data. Event priority is set to LOW as most plugins
      * do not change their priority which is NORMAL by default. Making
      * it low is important because MMOCore is a core plugin so other plugins
@@ -35,16 +35,19 @@ public class PlayerListener implements Listener {
         MMOCore.plugin.dataProvider.getDataManager().setup(event.getPlayer().getUniqueId());
     }
 
-    // Register custom inventory clicks
+    /**
+     * Register custom inventory clicks
+     */
     @EventHandler
     public void b(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof PluginInventory)
-            if (event.getCurrentItem() != null && event.getCurrentItem().getItemMeta() != null)
-                ((PluginInventory) event.getInventory().getHolder())
-                        .whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory()));
+            ((PluginInventory) event.getInventory().getHolder())
+                    .whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory()));
     }
 
-    // Register custom inventory close effect
+    /**
+     * Register custom inventory close effect
+     */
     @EventHandler
     public void c(InventoryCloseEvent event) {
         if (event.getInventory().getHolder() instanceof PluginInventory)
@@ -76,12 +79,12 @@ public class PlayerListener implements Listener {
     }
 
     /**
-     * Using the Bukkit health update event is not a good way of interacting
-     * with MMOCore health regeneration. The PlayerResourceUpdateEvent
-     * should be heavily prioritized if possible.
+     * Using the Bukkit health update event is not a good way of
+     * interacting with MMOCore health regeneration. The
+     * PlayerResourceUpdateEvent should be heavily prioritized if possible.
      * <p>
-     * This method makes sure that all the plugins which utilize this event
-     * can also communicate with MMOCore
+     * This method makes sure that all the plugins which
+     * utilize this event can also communicate with MMOCore
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void g(PlayerResourceUpdateEvent event) {

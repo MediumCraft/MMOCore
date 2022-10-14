@@ -236,7 +236,7 @@ public class WaypointViewer extends EditableInventory {
             }
 
             if (item.getFunction().equals("waypoint")) {
-                PersistentDataContainer container = context.getItemStack().getItemMeta().getPersistentDataContainer();
+                PersistentDataContainer container = context.getClickedItem().getItemMeta().getPersistentDataContainer();
                 String tag = container.has(new NamespacedKey(MMOCore.plugin, "waypointId"), PersistentDataType.STRING) ?
                         container.get(new NamespacedKey(MMOCore.plugin, "waypointId"), PersistentDataType.STRING) : "";
 

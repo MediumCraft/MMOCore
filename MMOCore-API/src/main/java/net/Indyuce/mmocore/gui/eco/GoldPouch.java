@@ -35,7 +35,12 @@ public class GoldPouch extends PluginInventory {
     @Override
     public void whenClicked(InventoryClickContext context) {
 
-        ItemStack item = context.getItemStack();
+        ItemStack item = context.getClickedItem();
+        if (item == null || item.getType() == Material.AIR) {
+            context.setCancelled(true);
+            return;
+        }
+
         NBTItem nbt = NBTItem.get(item);
         if (!nbt.hasTag("RpgWorth")) {
             context.setCancelled(true);
@@ -52,7 +57,7 @@ public class GoldPouch extends PluginInventory {
                     return;
 
                 player.playSound(player.getLocation(), Sound.ENTITY_SHULKER_TELEPORT, 1, 2);
-                player.getInventory().addItem(context.getItemStack());
+                player.getInventory().addItem(context.getClickedItem());
                 context.getInventory().setItem(context.getSlot(), null);
             }
 

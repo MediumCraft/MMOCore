@@ -30,7 +30,7 @@ public class DepositMenu extends PluginInventory {
     private BukkitRunnable updateRunnable;
 
     public DepositMenu(Player player) {
-        super(player,false);
+        super(player);
     }
 
     @Override
@@ -42,10 +42,10 @@ public class DepositMenu extends PluginInventory {
 
     @Override
     public void whenClicked(InventoryClickContext event) {
-        if (event.getItemStack() == null || event.getItemStack().getType() == Material.AIR)
+        if (event.getClickedItem() == null || event.getClickedItem().getType() == Material.AIR)
             return;
 
-        if (event.getItemStack().isSimilar(depositItem)) {
+        if (event.getClickedItem().isSimilar(depositItem)) {
             event.setCancelled(true);
 
             updateDeposit(event.getInventory());
@@ -63,7 +63,7 @@ public class DepositMenu extends PluginInventory {
             return;
         }
 
-        int worth = NBTItem.get(event.getItemStack()).getInteger("RpgWorth");
+        int worth = NBTItem.get(event.getClickedItem()).getInteger("RpgWorth");
         if (worth < 1)
             event.setCancelled(true);
         else

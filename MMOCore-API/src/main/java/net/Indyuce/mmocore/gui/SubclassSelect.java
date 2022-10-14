@@ -112,7 +112,7 @@ public class SubclassSelect extends EditableInventory {
 				InventoryManager.CLASS_SELECT.newInventory(playerData).open();
 
 			if (item.getFunction().equals("class")) {
-				String tag = NBTItem.get(context.getItemStack()).getString("classId");
+				String tag = NBTItem.get(context.getClickedItem()).getString("classId");
 				if (tag.equals(""))
 					return;
 

@@ -236,7 +236,7 @@ public class EditableGuildView extends EditableInventory {
 				if (!playerData.getGuild().getOwner().equals(playerData.getUniqueId()))
 					return;
 
-				String tag = context.getItemStack().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
+				String tag = context.getClickedItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
 				if (tag == null || tag.isEmpty())
 					return;
 

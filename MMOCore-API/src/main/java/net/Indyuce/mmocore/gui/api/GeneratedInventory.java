@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.gui.api.item.TriggerItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,6 @@ public abstract class GeneratedInventory extends PluginInventory {
     @Deprecated
     public void dynamicallyUpdateItem(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
         adaptor.dynamicallyUpdateItem(item, n, placed, update);
-
     }
 
     @Override
@@ -96,8 +96,7 @@ public abstract class GeneratedInventory extends PluginInventory {
             whenClicked(context, item);
     }
 
-
     public abstract String calculateName();
 
-    public abstract void whenClicked(InventoryClickContext context, InventoryItem item);
+    public abstract void whenClicked(@NotNull InventoryClickContext context, @NotNull InventoryItem item);
 }

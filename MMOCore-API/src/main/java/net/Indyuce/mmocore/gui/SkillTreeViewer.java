@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.gui;
 
-import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.tree.NodeState;
@@ -399,7 +398,7 @@ public class SkillTreeViewer extends EditableInventory {
             }
 
             if (item.getFunction().equals("skill-tree")) {
-                String id = event.getItemStack().getItemMeta().getPersistentDataContainer().get(
+                String id = event.getClickedItem().getItemMeta().getPersistentDataContainer().get(
                         new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING);
                 playerData.setCachedSkillTree(MMOCore.plugin.skillTreeManager.get(id));
                 MMOCore.plugin.soundManager.getSound(SoundEvent.CHANGE_SKILL_TREE).playTo(player);
@@ -411,7 +410,7 @@ public class SkillTreeViewer extends EditableInventory {
 
             if (item.getFunction().equals("skill-tree-node")) {
                 if (event.getClickType() == ClickType.LEFT) {
-                    PersistentDataContainer container = event.getItemStack().getItemMeta().getPersistentDataContainer();
+                    PersistentDataContainer container = event.getClickedItem().getItemMeta().getPersistentDataContainer();
                     int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
                     int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
                     if (!skillTree.isNode(new IntegerCoordinates(x, y))) {

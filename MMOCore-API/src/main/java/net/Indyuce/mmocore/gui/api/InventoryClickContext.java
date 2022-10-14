@@ -1,10 +1,10 @@
 package net.Indyuce.mmocore.gui.api;
 
-
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class InventoryClickContext {
     private final int slot;
@@ -41,7 +41,13 @@ public class InventoryClickContext {
         return slot;
     }
 
-    public ItemStack getItemStack() {
+    /**
+     * @return The Bukkit InventoryClickEvent's current item. This is the item
+     *         which the player just clicked on. The item on the player's
+     *         cursor is NOT provided by click contexts
+     */
+    @Nullable
+    public ItemStack getClickedItem() {
         return itemStack;
     }
 

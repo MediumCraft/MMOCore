@@ -105,7 +105,7 @@ public class ClassSelect extends EditableInventory {
         @Override
         public void whenClicked(InventoryClickContext context, InventoryItem item) {
             if (item.getFunction().equals("class")) {
-                String classId = context.getItemStack().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(MMOCore.plugin, "class_id"), PersistentDataType.STRING);
+                String classId = context.getClickedItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(MMOCore.plugin, "class_id"), PersistentDataType.STRING);
                 if (classId.equals(""))
                     return;
 
