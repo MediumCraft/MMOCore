@@ -11,12 +11,14 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class StatTrigger extends Trigger {
     private final String stat;
     private final double amount;
     private final ModifierType type;
     private double totalAmount;
+    private final UUID uuid =UUID.randomUUID();
 
     public StatTrigger(MMOLineConfig config) {
         super(config);
@@ -35,7 +37,7 @@ public class StatTrigger extends Trigger {
     @Override
     public void apply(PlayerData player) {
         totalAmount+=amount;
-        new StatModifier("trigger",stat,totalAmount,type).register(player.getMMOPlayerData());
+        new StatModifier("trigger."+uuid.toString(),stat,totalAmount,type).register(player.getMMOPlayerData());
     }
 
 
@@ -46,6 +48,6 @@ public class StatTrigger extends Trigger {
      */
     public void remove(PlayerData playerData) {
         totalAmount-=amount;
-        new StatModifier("trigger", stat, totalAmount, type).register(playerData.getMMOPlayerData());
+        new StatModifier("trigger."+uuid.toString(), stat, totalAmount, type).register(playerData.getMMOPlayerData());
     }
 }
