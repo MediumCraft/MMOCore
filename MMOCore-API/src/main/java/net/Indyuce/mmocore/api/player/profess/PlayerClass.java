@@ -31,10 +31,8 @@ import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
-import net.Indyuce.mmocore.skill.cast.KeyCombo;
-import net.Indyuce.mmocore.skill.cast.PlayerKey;
+import net.Indyuce.mmocore.skill.cast.ComboMap;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -73,16 +71,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
-
-    // If the class redefines its own key combos.
-    private final Map<KeyCombo, Integer> combos = new HashMap<>();
-
-    private final Set<PlayerKey> firstComboKeys= new HashSet<>();
-
-
-    private int longestCombo;
-
     private final Map<PlayerResource, ResourceRegeneration> resourceHandlers = new HashMap<>();
+
+    @Nullable
+    private final ComboMap comboMap;
 
     @Deprecated
     private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
@@ -147,22 +139,14 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         // Load different combos
+        ComboMap comboMap = null;
         if (config.contains("key-combos"))
-            for (String key : config.getConfigurationSection("key-combos").getKeys(false))
-                try {
-                    int spellSlot = Integer.valueOf(key);
-                    Validate.isTrue(spellSlot >= 0, "Spell slot must be at least 0");
-                    Validate.isTrue(!combos.values().contains(spellSlot), "There is already a key combo with the same skill slot");
-                    KeyCombo combo = new KeyCombo();
-                    for (String str : config.getStringList("key-combos." + key))
-                        combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
-
-                    combos.put(combo, spellSlot);
-                    firstComboKeys.add(combo.getAt(0));
-                    longestCombo = Math.max(longestCombo, combo.countKeys());
-                } catch (RuntimeException exception) {
-                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
-                }
+            try {
+                comboMap = new ComboMap(config.getConfigurationSection("key-combos"));
+            } catch (Exception exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load combo map from class '" + id + "': " + exception.getMessage());
+            }
+        this.comboMap = comboMap;
 
         if (config.contains("triggers"))
             for (String key : config.getConfigurationSection("triggers").getKeys(false))
@@ -252,6 +236,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         displayOrder = 0;
         expCurve = ExpCurve.DEFAULT;
         expTable = null;
+        comboMap = null;
         castParticle = new CastingParticle(Particle.SPELL_INSTANT);
         actionBarFormat = "";
         this.icon = new ItemStack(material);
@@ -446,16 +431,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     }
 
     @Nullable
-    public Map<KeyCombo, Integer> getKeyCombos() {
-        return combos;
-    }
-
-    public Set<PlayerKey> getFirstComboKeys() {
-        return firstComboKeys;
-    }
-
-    public int getLongestCombo() {
-        return longestCombo;
+    public ComboMap getComboMap() {
+        return comboMap;
     }
 
     @NotNull

@@ -11,10 +11,10 @@ import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.skill.cast.ComboMap;
 import net.Indyuce.mmocore.skill.cast.KeyCombo;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
-import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,30 +22,18 @@ import org.bukkit.event.Listener;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.logging.Level;
 
 public class KeyCombos implements Listener {
 
-    /**
-     * Using instances of KeyCombo as keys work because
-     * {@link KeyCombo} has a working implementation for the
-     * hash code method
-     */
-    private final Map<KeyCombo, Integer> combos = new HashMap<>();
-
-    /**
-     * All the keys that are at the start of a combo.
-     */
-    private final Set<PlayerKey> firstComboKeys = new HashSet<>();
+    private final ComboMap comboMap;
 
     /**
      * Key players need to press to start a combo. If it's set to
      * null then the player can press any key which starts a combo.
-     * These "starting keys" are saved in {@link #firstComboKeys}
+     * These "starting keys" are saved in the combo map
      */
     @Nullable
     private final PlayerKey initializerKey;
-    private final int longestCombo;
 
     /**
      * Handles the display of the action bar when casting a skill.
@@ -58,28 +46,7 @@ public class KeyCombos implements Listener {
     private final SoundObject beginComboSound, comboClickSound, failComboSound;
 
     public KeyCombos(ConfigurationSection config) {
-
-        // Load different combos
-        int currentLongestCombo = 0;
-        for (String key : config.getConfigurationSection("combos").getKeys(false))
-            try {
-                int spellSlot = Integer.valueOf(key);
-                Validate.isTrue(spellSlot >= 0, "Spell slot must be at least 0");
-                Validate.isTrue(!combos.values().contains(spellSlot), "There is already a key combo with the same skill slot");
-                KeyCombo combo = new KeyCombo();
-                for (String str : config.getStringList("combos." + key))
-                    combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
-
-                combos.put(combo, spellSlot);
-                firstComboKeys.add(combo.getAt(0));
-                currentLongestCombo = Math.max(currentLongestCombo, combo.countKeys());
-            } catch (RuntimeException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load key combo '" + key + "': " + exception.getMessage());
-            }
-
-        this.longestCombo = currentLongestCombo;
-
-        // Load player key names
+        comboMap = new ComboMap(config.getConfigurationSection("combos"));
         actionBarOptions = config.contains("action-bar") ? new ActionBarOptions(config.getConfigurationSection("action-bar")) : null;
 
         // Load sounds
@@ -97,48 +64,55 @@ public class KeyCombos implements Listener {
         PlayerData playerData = event.getData();
         Player player = playerData.getPlayer();
 
-        if (!event.getData().isCasting()) {
-            if (initializerKey != null) {
-                if (event.getPressed() == initializerKey) {
+        // Start combo when there is an initializer key
+        if (!event.getData().isCasting() && initializerKey != null) {
+            if (event.getPressed() == initializerKey) {
 
-                    // Start combo
-                    playerData.setSkillCasting(new CustomSkillCastingHandler(playerData));
-                    if (beginComboSound != null)
-                        beginComboSound.playTo(player);
-                }
-                return;
-            } else {
-                Set<PlayerKey> firstKeys = playerData.getProfess().getFirstComboKeys().isEmpty() ? firstComboKeys : playerData.getProfess().getFirstComboKeys();
-                if (firstKeys.contains(event.getPressed())) {
+                // Cancel event if necessary
+                if (event.getPressed().shouldCancelEvent())
+                    event.setCancelled(true);
 
-                    // Always cancel drop event
-                    if (event.getPressed().equals(PlayerKey.DROP))
-                        event.setCancelled(true);
+                // Start combo
+                playerData.setSkillCasting(new CustomSkillCastingHandler(playerData));
+                if (beginComboSound != null)
+                    beginComboSound.playTo(player);
+            }
+            return;
+        }
 
-                    // Start combo
-                    CustomSkillCastingHandler casting = new CustomSkillCastingHandler(playerData);
-                    playerData.setSkillCasting(casting);
-                    casting.current.registerKey(event.getPressed());
-                    if (beginComboSound != null)
-                        beginComboSound.playTo(player);
-                }
-                return;
+        CustomSkillCastingHandler casting = null;
+
+        // Player is already casting
+        if (event.getData().isCasting())
+            casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
+
+            // Start combo when there is NO initializer key
+        else {
+            final ComboMap comboMap = Objects.requireNonNullElse(playerData.getProfess().getComboMap(), this.comboMap);
+            if (comboMap.isComboStart(event.getPressed())) {
+                casting = new CustomSkillCastingHandler(playerData);
+                playerData.setSkillCasting(casting);
+                if (beginComboSound != null)
+                    beginComboSound.playTo(player);
             }
         }
 
+        if (casting == null)
+            return;
+
         // Adding pressed key
-        CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
         casting.current.registerKey(event.getPressed());
         casting.onTick();
         if (comboClickSound != null)
             comboClickSound.playTo(player);
 
-        // Always cancel event
-        event.setCancelled(true);
+        // Cancel event if necessary
+        if (event.getPressed().shouldCancelEvent())
+            event.setCancelled(true);
 
         // Hash current combo and check
-        if (casting.classCombos.containsKey(casting.current)) {
-            int spellSlot = casting.classCombos.get(casting.current) - 1;
+        if (casting.combos.getCombos().containsKey(casting.current)) {
+            final int spellSlot = casting.combos.getCombos().get(casting.current) - 1;
             playerData.leaveCastingMode();
 
             // Cast spell
@@ -150,7 +124,7 @@ public class KeyCombos implements Listener {
         }
 
         // Check if current combo is too large
-        if (casting.current.countKeys() >= casting.classLongestCombo) {
+        if (casting.current.countKeys() >= casting.combos.getLongest()) {
             playerData.leaveCastingMode();
             if (failComboSound != null)
                 failComboSound.playTo(player);
@@ -181,25 +155,17 @@ public class KeyCombos implements Listener {
             event.setCancelled(true);
     }
 
-
     /**
      * Loads the player current combos & the combos applicable to the player (combos defined in its class or the default combos of the config.yml)
      */
     private class CustomSkillCastingHandler extends SkillCastingHandler {
         private final KeyCombo current = new KeyCombo();
-        //Combos used: default combos from the config or the combos defined in the player class.
-        private final Map<KeyCombo, Integer> classCombos;
-        private int classLongestCombo;
+        private final ComboMap combos;
 
         CustomSkillCastingHandler(PlayerData caster) {
             super(caster, 10);
-            if (!caster.getProfess().getKeyCombos().isEmpty()) {
-                classCombos = caster.getProfess().getKeyCombos();
-                classLongestCombo = caster.getProfess().getLongestCombo();
-            } else {
-                classCombos = combos;
-                classLongestCombo = longestCombo;
-            }
+
+            combos = Objects.requireNonNullElse(caster.getProfess().getComboMap(), comboMap);
         }
 
         @Override
@@ -210,9 +176,7 @@ public class KeyCombos implements Listener {
                 else
                     getCaster().displayActionBar(actionBarOptions.format(this));
         }
-
     }
-
 
     private class ActionBarOptions {
         private final String separator, noKey, prefix, suffix;
@@ -229,7 +193,7 @@ public class KeyCombos implements Listener {
             this.suffix = config.contains("suffix") ? config.getString("suffix") : "";
             this.separator = Objects.requireNonNull(config.getString("separator"), "Could not find action bar option 'separator'");
             this.noKey = Objects.requireNonNull(config.getString("no-key"), "Could not find action bar option 'no-key'");
-            this.isSubtitle = config.getBoolean("" + "", false);
+            this.isSubtitle = config.getBoolean("is-subtitle", false);
             for (PlayerKey key : PlayerKey.values())
                 keyNames.put(key, Objects.requireNonNull(config.getString("key-name." + key.name()), "Could not find translation for key " + key.name()));
         }
@@ -246,7 +210,7 @@ public class KeyCombos implements Listener {
                 builder.append(separator + keyNames.get(casting.current.getAt(j)));
 
             // All remaining
-            for (; j < casting.classLongestCombo; j++)
+            for (; j < casting.combos.getLongest(); j++)
                 builder.append(separator + noKey);
 
             builder.append(suffix);
