@@ -7,6 +7,7 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.PartyModule;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PartiesPartyModule implements PartyModule {
-    private final PartiesAPI api = Parties.getApi();
 
     @Nullable
     @Override
     public AbstractParty getParty(PlayerData playerData) {
-        Party party = api.getParty(playerData.getUniqueId());
+        PartiesAPI api= Parties.getApi();
+        PartyPlayer partyPlayer = api.getPartyPlayer(playerData.getUniqueId());
+        Party party = api.getParty(partyPlayer.getPartyId());
         return party == null ? null : new CustomParty(party);
     }
 
