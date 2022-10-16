@@ -1,11 +1,13 @@
 package net.Indyuce.mmocore.tree.skilltree;
 
+import io.lumine.mythic.lib.skill.Skill;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.tree.NodeState;
 import net.Indyuce.mmocore.tree.IntegerCoordinates;
 import net.Indyuce.mmocore.tree.ParentType;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,56 +58,75 @@ public class LinkedSkillTree extends SkillTree {
         Validate.notNull(root, "Their must be a node(the root of the tree) at the coordinates (0,0) ");
     }
 
-
     @Override
-    public void setupNodeStateFrom(SkillTreeNode node, PlayerData playerData) {
+    public void setupNodeState(PlayerData playerData) {
+        //Values are labelled as Unlockable
+        for (SkillTreeNode root : roots)
+            playerData.setNodeState(root, NodeState.UNLOCKABLE);
 
-        int x = node.getCoordinates().getX();
-        int y = node.getCoordinates().getY();
-        List<IntegerCoordinates> checkCoordinates = Arrays.asList(new IntegerCoordinates(x + 1, y),
-                new IntegerCoordinates(x - 1, y), new IntegerCoordinates(x, y + 1), new IntegerCoordinates(x, y - 1));
-        if (playerData.getNodeLevel(node) > 0) {
-            playerData.setNodeState(node, NodeState.UNLOCKED);
-        } else if (playerData.getNodeLevel(node) == 0 && node.isRoot()) {
-            playerData.setNodeState(node, NodeState.UNLOCKABLE);
-        } else {
-            boolean isUnlockable = false;
-            for (IntegerCoordinates coordinates : checkCoordinates) {
-                if (isNode(coordinates))
-                    if (isNode(coordinates) && playerData.getNodeState(getNode(coordinates)) == NodeState.UNLOCKED && numberNeighbours(coordinates, playerData) <= getNode(coordinates).getMaxChildren())
-                        isUnlockable = true;
-            }
-            if (isUnlockable)
+        //All the nodes with level >0 are unlocked
+        for (SkillTreeNode node : nodes.values()) {
+            if (playerData.getNodeLevel(node) > 0)
+                playerData.setNodeState(node, NodeState.UNLOCKED);
+        }
+        //Setup unlockable nodes
+        for (SkillTreeNode node : nodes.values()) {
+            if (isUnlockable(node, playerData)&&!playerData.hasNodeState(node))
                 playerData.setNodeState(node, NodeState.UNLOCKABLE);
-            else {
-                List<SkillTreeNode> parents = new ArrayList<>();
-                parents.add(node);
-                boolean isFullyLocked = isFullyLockedFrom(node, parents, playerData);
-
-                if (isFullyLocked)
-                    playerData.setNodeState(node, NodeState.FULLY_LOCKED);
-                else
-                    playerData.setNodeState(node, NodeState.LOCKED);
-            }
-
         }
 
-        //We call the recursive algorithm on the rest of the points. Doesn't call the algorithm if already loaded.
-        for (IntegerCoordinates coordinates : checkCoordinates) {
-            if (isNode(coordinates) && !playerData.hasNodeState(getNode(coordinates)))
-                setupNodeStateFrom(getNode(coordinates), playerData);
+        labelLockedNodes(playerData);
+
+        //We label all the remaining nodes to FULLY LOCKED
+        for (SkillTreeNode node : nodes.values()) {
+            if (!playerData.hasNodeState(node))
+                playerData.setNodeState(node, NodeState.FULLY_LOCKED);
+        }
+
+    }
+
+    /**
+     * We recursively label all the locked node who are connected to an unlockable node
+     **/
+    private void labelLockedNodes(PlayerData playerData) {
+        List<SkillTreeNode> unlockableNodes = nodes.values().stream().filter(node -> playerData.getNodeState(node) == NodeState.UNLOCKABLE).toList();
+        for (SkillTreeNode node : unlockableNodes) {
+            labelLockedNodesFrom(playerData, node);
         }
     }
 
+    private void labelLockedNodesFrom(PlayerData data, SkillTreeNode node) {
+        for (IntegerCoordinates coor : getCheckCoordinates(node.getCoordinates())) {
+            if (isNode(coor) && !data.hasNodeState(getNode(coor))) {
+                data.setNodeState(getNode(coor), NodeState.LOCKED);
+                labelLockedNodesFrom(data,getNode(coor));
+            }
+                }
+    }
 
-    //Counts the number of Unlocked Nieghbourgs of a node for a certain playerData
-    private int numberNeighbours(IntegerCoordinates coor, PlayerData playerData) {
+    private List<IntegerCoordinates> getCheckCoordinates(IntegerCoordinates coor) {
+        return Arrays.asList(new IntegerCoordinates(coor.getX() + 1, coor.getY()),
+                new IntegerCoordinates(coor.getX() - 1, coor.getY()), new IntegerCoordinates(coor.getX(), coor.getY() + 1), new IntegerCoordinates(coor.getX(), coor.getY() - 1));
+    }
+
+
+    private boolean isUnlockable(SkillTreeNode node, PlayerData playerData) {
+
+        boolean isUnlockable = false;
+        for (IntegerCoordinates coordinates : getCheckCoordinates(node.getCoordinates())) {
+            if (isNode(coordinates))
+                if (isNode(coordinates) && playerData.getNodeState(getNode(coordinates)) == NodeState.UNLOCKED && countUnlockedNeighbours(coordinates, playerData) <= getNode(coordinates).getMaxChildren())
+                    isUnlockable = true;
+        }
+        return isUnlockable;
+    }
+
+    //Counts the number of unlocked neighbours of a node for a certain playerData
+    private int countUnlockedNeighbours(IntegerCoordinates coor, PlayerData playerData) {
         int number = 0;
         int x = coor.getX();
         int y = coor.getY();
-        List<IntegerCoordinates> checkCoordinates = Arrays.asList(new IntegerCoordinates(x + 1, y),
-                new IntegerCoordinates(x - 1, y), new IntegerCoordinates(x, y + 1), new IntegerCoordinates(x, y - 1));
-        for (IntegerCoordinates coordinates : checkCoordinates) {
+        for (IntegerCoordinates coordinates : getCheckCoordinates(coor)) {
             if (isNode(coordinates) && playerData.getNodeLevel(getNode(coordinates)) > 0)
                 number++;
         }
@@ -113,40 +134,4 @@ public class LinkedSkillTree extends SkillTree {
     }
 
 
-    /**
-     * A recursive algorithm to see if a node is fully locked or not in a linked skill tree
-     */
-    public boolean isFullyLockedFrom(SkillTreeNode current, List<SkillTreeNode> parents, PlayerData playerData) {
-        if (!parents.contains(current) && (playerData.getNodeState(current) == NodeState.UNLOCKABLE || playerData.getNodeState(current) == NodeState.UNLOCKED)) {
-            //If the node is unlocked either we say it is not fully locked if a path can be found either wer return true is not path can be found down this way
-            if (numberNeighbours(current.getCoordinates(), playerData) <= getNode(current.getCoordinates()).getMaxChildren()) {
-                return false;
-            } else
-                return true;
-        }
-        //We verify that the node is unlocked or unlockable and can have links the first node
-
-        int x = current.getCoordinates().getX();
-        int y = current.getCoordinates().getY();
-        List<IntegerCoordinates> checkCoordinates = Arrays.asList(new IntegerCoordinates(x + 1, y),
-                new IntegerCoordinates(x - 1, y), new IntegerCoordinates(x, y + 1), new IntegerCoordinates(x, y - 1));
-        //We filter coordinates with only nodes that are not parents and not fully locked
-        //We also need to have the number of neighbour <=max-child(max-child=1 -> can have 1 neighbour but if it has 2 it will make the other branches fully blocked
-        checkCoordinates = checkCoordinates.stream().filter(coor -> isNode(coor)
-                && playerData.getNodeState(getNode(coor)) != NodeState.FULLY_LOCKED
-                && !parents.contains(getNode(coor))
-        ).collect(Collectors.toList());
-
-        boolean isFullyLocked = true;
-
-        parents.add(current);
-        for (IntegerCoordinates coordinates : checkCoordinates) {
-            if (!isFullyLockedFrom(getNode(coordinates), parents, playerData)) {
-                isFullyLocked = false;
-                //Very important to break to stop the recursion algorithm once one unlockable point has been found
-                break;
-            }
-        }
-        return isFullyLocked;
-    }
 }
