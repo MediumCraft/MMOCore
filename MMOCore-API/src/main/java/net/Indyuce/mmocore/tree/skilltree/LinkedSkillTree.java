@@ -60,7 +60,7 @@ public class LinkedSkillTree extends SkillTree {
 
     @Override
     public void setupNodeState(PlayerData playerData) {
-        //Values are labelled as Unlockable
+        //Values are labelled as unlockable
         for (SkillTreeNode root : roots)
             playerData.setNodeState(root, NodeState.UNLOCKABLE);
 
@@ -71,7 +71,7 @@ public class LinkedSkillTree extends SkillTree {
         }
         //Setup unlockable nodes
         for (SkillTreeNode node : nodes.values()) {
-            if (isUnlockable(node, playerData)&&!playerData.hasNodeState(node))
+            if (isUnlockable(node, playerData) && !playerData.hasNodeState(node))
                 playerData.setNodeState(node, NodeState.UNLOCKABLE);
         }
 
@@ -86,7 +86,7 @@ public class LinkedSkillTree extends SkillTree {
     }
 
     /**
-     * We recursively label all the locked node who are connected to an unlockable node
+     * We recursively label all the locked nodes who are connected to an unlockable node.
      **/
     private void labelLockedNodes(PlayerData playerData) {
         List<SkillTreeNode> unlockableNodes = nodes.values().stream().filter(node -> playerData.getNodeState(node) == NodeState.UNLOCKABLE).toList();
@@ -99,9 +99,9 @@ public class LinkedSkillTree extends SkillTree {
         for (IntegerCoordinates coor : getCheckCoordinates(node.getCoordinates())) {
             if (isNode(coor) && !data.hasNodeState(getNode(coor))) {
                 data.setNodeState(getNode(coor), NodeState.LOCKED);
-                labelLockedNodesFrom(data,getNode(coor));
+                labelLockedNodesFrom(data, getNode(coor));
             }
-                }
+        }
     }
 
     private List<IntegerCoordinates> getCheckCoordinates(IntegerCoordinates coor) {
@@ -121,11 +121,11 @@ public class LinkedSkillTree extends SkillTree {
         return isUnlockable;
     }
 
-    //Counts the number of unlocked neighbours of a node for a certain playerData
+    /**
+     * Counts the number of unlocked neighbours of a node for a certain playerData
+     **/
     private int countUnlockedNeighbours(IntegerCoordinates coor, PlayerData playerData) {
         int number = 0;
-        int x = coor.getX();
-        int y = coor.getY();
         for (IntegerCoordinates coordinates : getCheckCoordinates(coor)) {
             if (isNode(coordinates) && playerData.getNodeLevel(getNode(coordinates)) > 0)
                 number++;
