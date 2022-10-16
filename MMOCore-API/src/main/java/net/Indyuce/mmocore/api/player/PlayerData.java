@@ -223,6 +223,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeLevelsString.entrySet();
     }
 
+    public Map<SkillTreeNode, Integer> getNodeLevels() {
+        return nodeLevels;
+    }
+
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
         NodeState nodeState = nodeStates.get(node);
         //Check the State of the node
@@ -304,6 +308,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         int delta = nodeLevel - nodeLevels.getOrDefault(node, 0);
         pointSpent.put(node.getTree(), pointSpent.getOrDefault(node.getTree(), 0) + delta);
         nodeLevels.put(node, nodeLevel);
+    }
+
+    public void resetSkillTree(SkillTree skillTree) {
+        for (SkillTreeNode node : skillTree.getNodes()) {
+            node.getExperienceTable().reset(this,node);
+            setNodeLevel(node, 0);
+        }
+        skillTree.setupNodeState(this);
     }
 
     public void addNodeLevel(SkillTreeNode node) {
