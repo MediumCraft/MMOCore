@@ -76,16 +76,16 @@ public class SavedClassInformation {
 
     public SavedClassInformation(PlayerData player) {
         this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(), player.getAttributeReallocationPoints()
-                ,player.getSkillTreeReallocationPoints(),player.getSkillReallocationPoints(),
+                , player.getSkillTreeReallocationPoints(), player.getSkillReallocationPoints(),
                 player.getAttributes().mapPoints(), player.mapSkillLevels(), player.getSkillTreePoints(), player.getNodeLevels());
     }
 
     public SavedClassInformation(PlayerDataManager.DefaultPlayerData data) {
-        this(data.getLevel(), 0, data.getSkillPoints(), data.getAttributePoints(), data.getAttrReallocPoints(),data.getSkillTreeReallocPoints(),data.getSkillReallocPoints());
+        this(data.getLevel(), 0, data.getSkillPoints(), data.getAttributePoints(), data.getAttrReallocPoints(), data.getSkillTreeReallocPoints(), data.getSkillReallocPoints());
     }
 
-    public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints,int skillTreeReallocationPoints,int skillReallocationPoints) {
-        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints,skillTreeReallocationPoints,skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+    public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints) {
+        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
     }
 
     public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints,
@@ -139,16 +139,37 @@ public class SavedClassInformation {
         registerSkillLevel(skill.getHandler().getId(), level);
     }
 
+    public int getSkillTreeReallocationPoints() {
+        return skillTreeReallocationPoints;
+    }
+
+    public int getSkillReallocationPoints() {
+        return skillReallocationPoints;
+    }
+
     public void registerSkillLevel(String attribute, int level) {
         skills.put(attribute, level);
     }
 
-    public Set<String> getAttributeKeys() {
-        return attributes.keySet();
+
+    public Set<SkillTreeNode> getNodeKeys() {
+        return nodeLevels.keySet();
     }
 
-    public int getAttributeLevel(PlayerAttribute attribute) {
-        return getAttributeLevel(attribute.getId());
+    public int getNodeLevel(SkillTreeNode node) {
+        return nodeLevels.get(node);
+    }
+
+    public Set<String> getSkillTreePointsKeys() {
+        return skillTreePoints.keySet();
+    }
+
+    public int getSkillTreePoints(String skillTreeId) {
+        return skillTreePoints.get(skillTreeId);
+    }
+
+    public Set<String> getAttributeKeys() {
+        return attributes.keySet();
     }
 
     public int getAttributeLevel(String id) {
