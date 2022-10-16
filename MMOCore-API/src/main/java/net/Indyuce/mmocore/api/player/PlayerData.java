@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
@@ -312,10 +313,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Override
     public void close() {
 
-        // Remove from party
-        AbstractParty party = getParty();
-        if (party != null && party instanceof Party)
-            ((Party) party).removeMember(this);
+        // Remove from party if it is MMO Party Module
+        if(MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
+            AbstractParty party = getParty();
+            if (party != null && party instanceof Party)
+                ((Party) party).removeMember(this);
+        }
 
         // Close quest data
         questData.close();
