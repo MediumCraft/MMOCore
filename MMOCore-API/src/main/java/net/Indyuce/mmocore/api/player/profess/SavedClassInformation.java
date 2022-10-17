@@ -1,12 +1,7 @@
 package net.Indyuce.mmocore.api.player.profess;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import de.erethon.dungeonsxl.player.DPlayerData;
-import io.lumine.mythic.lib.skill.Skill;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
@@ -16,8 +11,10 @@ import net.Indyuce.mmocore.tree.SkillTreeNode;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class SavedClassInformation {
     private final int level, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
@@ -26,6 +23,9 @@ public class SavedClassInformation {
     private final Map<String, Integer> skills;
     private final Map<String, Integer> skillTreePoints;
     private final Map<SkillTreeNode, Integer> nodeLevels;
+    /**
+     * Stores the tableItemsClaims values but only for skill tree node as it is class based.
+     */
     private final Map<String,Integer> nodeTimesClaimed;
 
     public SavedClassInformation(ConfigurationSection config) {
@@ -210,14 +210,15 @@ public class SavedClassInformation {
          * resets information which much be reset after everything is saved.
          */
 
+        player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
+        player.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
+
+        // We reset the experience table for each skill tree node to remove the perm stat.
         for (SkillTree skillTree : player.getProfess().getSkillTrees())
             for (SkillTreeNode node : skillTree.getNodes())
                 node.getExperienceTable().reset(player, node);
         player.getNodeLevels().clear();
         player.getNodeStates().clear();
-
-        player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
-        player.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
 
         while (player.hasSkillBound(0))
             player.unbindSkill(0);
@@ -238,13 +239,14 @@ public class SavedClassInformation {
         (skills).forEach(player::setSkillLevel);
         attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
         skillTreePoints.forEach((skillTree, point) -> player.setSkillTreePoints(skillTree, point));
+        //Setup node levels and node state.
         nodeLevels.forEach((node, level) -> player.setNodeLevel(node, level));
         for(SkillTree skillTree: profess.getSkillTrees())
             skillTree.setupNodeState(player);
+
         //Add the values to the times claimed table and claims the corresponding stat triggers.
         nodeTimesClaimed.forEach((str,val)->player.setClaims(str,val));
-        nodeLevels.keySet().forEach(node -> node.getExperienceTable().claimStatTriggers(player, node));
-        //We claim back the stats triggers
+        //We claim back the stats triggers for all the skill tree nodes of the new class.
         for(SkillTree skillTree:profess.getSkillTrees())
             for(SkillTreeNode node:skillTree.getNodes())
                 node.getExperienceTable().claimStatTriggers(player,node);
