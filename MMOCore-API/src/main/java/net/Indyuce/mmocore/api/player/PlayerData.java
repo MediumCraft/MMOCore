@@ -80,7 +80,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private double mana, stamina, stellium;
     private Guild guild;
     private SkillCastingHandler skillCasting;
-    private SkillTree cachedSkillTree;
     private final PlayerQuests questData;
     private final PlayerStats playerStats;
     private final List<UUID> friends = new ArrayList<>();
@@ -406,18 +405,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return Math.max(1, level);
     }
 
-    public void setCachedSkillTree(SkillTree cachedSkillTree) {
-        this.cachedSkillTree = cachedSkillTree;
-    }
 
-    @NotNull
-    public SkillTree getOpenedSkillTree() {
-        if (cachedSkillTree == null) {
-            Optional<SkillTree> optionnal = MMOCore.plugin.skillTreeManager.getAll().stream().findFirst();
-            return optionnal.isPresent() ? optionnal.get() : null;
-        }
-        return cachedSkillTree;
-    }
+
+
 
     @Nullable
     public AbstractParty getParty() {

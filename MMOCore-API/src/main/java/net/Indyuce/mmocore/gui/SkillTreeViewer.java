@@ -60,9 +60,9 @@ public class SkillTreeViewer extends EditableInventory {
                     holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
                     holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
                     holders.register("realloc-points", inv.getPlayerData().getSkillTreeReallocationPoints());
-                    int maxPointSpent=inv.getSkillTree().getMaxPointSpent();
-                    holders.register("max-point-spent",maxPointSpent==Integer.MAX_VALUE?"∞":maxPointSpent);
-                    holders.register("point-spent",inv.getPlayerData().getPointSpent(inv.getSkillTree()));
+                    int maxPointSpent = inv.getSkillTree().getMaxPointSpent();
+                    holders.register("max-point-spent", maxPointSpent == Integer.MAX_VALUE ? "∞" : maxPointSpent);
+                    holders.register("point-spent", inv.getPlayerData().getPointSpent(inv.getSkillTree()));
 
                     return holders;
                 }
@@ -102,7 +102,7 @@ public class SkillTreeViewer extends EditableInventory {
         @Override
         public ItemStack display(SkillTreeInventory inv, int n) {
             int index = inv.getEditable().getByFunction("skill-tree").getSlots().size() * inv.treeListPage + n;
-            if (inv.skillTrees.size()>=index) {
+            if (inv.skillTrees.size() <= index) {
                 return new ItemStack(Material.AIR);
             }
             SkillTree skillTree = inv.skillTrees.get(index);
@@ -134,9 +134,9 @@ public class SkillTreeViewer extends EditableInventory {
             Placeholders holders = new Placeholders();
             holders.register("name", skillTree.getName());
             holders.register("id", skillTree.getId());
-            int maxPointSpent=inv.getSkillTree().getMaxPointSpent();
-            holders.register("max-point-spent",maxPointSpent==Integer.MAX_VALUE?"∞":maxPointSpent);
-            holders.register("point-spent",inv.getPlayerData().getPointSpent(inv.getSkillTree()));
+            int maxPointSpent = inv.getSkillTree().getMaxPointSpent();
+            holders.register("max-point-spent", maxPointSpent == Integer.MAX_VALUE ? "∞" : maxPointSpent);
+            holders.register("point-spent", inv.getPlayerData().getPointSpent(inv.getSkillTree()));
             holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
             holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
             return holders;
@@ -250,9 +250,9 @@ public class SkillTreeViewer extends EditableInventory {
                 holders.register("max-children", node.getMaxChildren());
                 holders.register("size", node.getSize());
             }
-            int maxPointSpent=inv.getSkillTree().getMaxPointSpent();
-            holders.register("max-point-spent",maxPointSpent==Integer.MAX_VALUE?"∞":maxPointSpent);
-            holders.register("point-spent",inv.getPlayerData().getPointSpent(inv.getSkillTree()));
+            int maxPointSpent = inv.getSkillTree().getMaxPointSpent();
+            holders.register("max-point-spent", maxPointSpent == Integer.MAX_VALUE ? "∞" : maxPointSpent);
+            holders.register("point-spent", inv.getPlayerData().getPointSpent(inv.getSkillTree()));
             holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoint(inv.getSkillTree().getId()));
             holders.register("global-points", inv.getPlayerData().getSkillTreePoint("global"));
             return holders;
@@ -268,14 +268,14 @@ public class SkillTreeViewer extends EditableInventory {
         private int treeListPage;
         private final int maxTreeListPage;
         private final List<SkillTree> skillTrees;
-        private final SkillTree skillTree;
+        private SkillTree skillTree;
         private final List<Integer> slots;
 
         public SkillTreeInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
 
-            skillTree = playerData.getOpenedSkillTree();
-            skillTrees=playerData.getProfess().getSkillTrees();
+            skillTrees = playerData.getProfess().getSkillTrees();
+            skillTree = skillTrees.get(0);
             maxTreeListPage = (skillTrees.size() - 1) / editable.getByFunction("skill-tree").getSlots().size();
             //We get the width and height of the GUI(corresponding to the slots given)
             slots = editable.getByFunction("skill-tree-node").getSlots();
@@ -398,10 +398,9 @@ public class SkillTreeViewer extends EditableInventory {
             if (item.getFunction().equals("skill-tree")) {
                 String id = event.getItemStack().getItemMeta().getPersistentDataContainer().get(
                         new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING);
-                playerData.setCachedSkillTree(MMOCore.plugin.skillTreeManager.get(id));
                 MMOCore.plugin.soundManager.getSound(SoundEvent.CHANGE_SKILL_TREE).playTo(player);
-
-                newInventory(playerData).open();
+                skillTree=MMOCore.plugin.skillTreeManager.get(id);
+                open();
                 event.setCancelled(true);
                 return;
             }
@@ -416,7 +415,7 @@ public class SkillTreeViewer extends EditableInventory {
                         return;
                     }
                     SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));
-                    if(playerData.getPointSpent(skillTree)>= skillTree.getMaxPointSpent()) {
+                    if (playerData.getPointSpent(skillTree) >= skillTree.getMaxPointSpent()) {
                         MMOCore.plugin.configManager.getSimpleMessage("max-points-reached").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
                         event.setCancelled(true);

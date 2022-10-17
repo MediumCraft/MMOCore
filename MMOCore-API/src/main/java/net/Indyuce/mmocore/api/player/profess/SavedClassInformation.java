@@ -186,7 +186,7 @@ public class SavedClassInformation {
     }
 
     public int getAttributeLevel(String id) {
-        return attributes.get(id);
+        return attributes.getOrDefault(id,0);
     }
 
     public void registerAttributeLevel(PlayerAttribute attribute, int level) {
@@ -239,6 +239,8 @@ public class SavedClassInformation {
         attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
         skillTreePoints.forEach((skillTree, point) -> player.setSkillTreePoints(skillTree, point));
         nodeLevels.forEach((node, level) -> player.setNodeLevel(node, level));
+        for(SkillTree skillTree: profess.getSkillTrees())
+            skillTree.setupNodeState(player);
         //Add the values to the times claimed table and claims the corresponding stat triggers.
         nodeTimesClaimed.forEach((str,val)->player.setClaims(str,val));
         nodeLevels.keySet().forEach(node -> node.getExperienceTable().claimStatTriggers(player, node));
