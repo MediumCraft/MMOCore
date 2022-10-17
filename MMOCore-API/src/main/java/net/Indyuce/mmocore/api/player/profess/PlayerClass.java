@@ -33,6 +33,7 @@ import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.KeyCombo;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.experience.ExperienceObject;
+import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -55,7 +56,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final ItemStack icon;
     private final Map<ClassOption, Boolean> options = new HashMap<>();
     private final int maxLevel, displayOrder;
-
     @NotNull
     private final ManaDisplayOptions manaDisplay;
 
@@ -69,6 +69,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     private final CastingParticle castParticle;
 
     private final int maxBoundActiveSkills, maxBoundPassiveSkills;
+
+    private final List<SkillTree> skillTrees = new ArrayList<>();
     private final List<PassiveSkill> classScripts = new LinkedList();
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
@@ -77,7 +79,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     // If the class redefines its own key combos.
     private final Map<KeyCombo, Integer> combos = new HashMap<>();
 
-    private final Set<PlayerKey> firstComboKeys= new HashSet<>();
+    private final Set<PlayerKey> firstComboKeys = new HashSet<>();
 
 
     private int longestCombo;
@@ -105,7 +107,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 profileField.set(meta, gp);
                 icon.setItemMeta(meta);
             } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-                    | SecurityException exception) {
+                     | SecurityException exception) {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
 
@@ -133,6 +135,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from class '" + id + "': " + exception.getMessage());
             }
         this.expTable = expTable;
+        if (config.contains("skill-trees"))
+            config.getStringList("skill-trees").forEach(str-> skillTrees.add(MMOCore.plugin.skillTreeManager.get(str)));
 
         if (config.contains("scripts"))
             for (String key : config.getConfigurationSection("scripts").getKeys(false))
@@ -260,7 +264,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         setOption(ClassOption.DISPLAY, false);
         setOption(ClassOption.DEFAULT, false);
         maxBoundActiveSkills = 6;
-        maxBoundPassiveSkills=3;
+        maxBoundPassiveSkills = 3;
         for (PlayerResource resource : PlayerResource.values())
             resourceHandlers.put(resource, new ResourceRegeneration(resource));
     }
@@ -319,6 +323,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     public int getMaxBoundActiveSkills() {
         return maxBoundActiveSkills;
     }
+
     public int getMaxBoundPassiveSkills() {
         return maxBoundPassiveSkills;
     }
@@ -427,6 +432,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public boolean hasSkill(String id) {
         return skills.containsKey(id);
+    }
+
+    public List<SkillTree> getSkillTrees() {
+        return skillTrees;
     }
 
     public ClassSkill getSkill(RegisteredSkill skill) {
