@@ -318,6 +318,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skillTree.setupNodeState(this);
     }
 
+    public Map<SkillTreeNode, NodeState> getNodeStates() {
+        return nodeStates;
+    }
+
     public void addNodeLevel(SkillTreeNode node) {
         nodeLevels.put(node, nodeLevels.get(node) + 1);
     }

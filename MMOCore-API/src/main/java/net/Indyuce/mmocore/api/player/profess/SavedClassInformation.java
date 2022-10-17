@@ -6,12 +6,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import de.erethon.dungeonsxl.player.DPlayerData;
+import io.lumine.mythic.lib.skill.Skill;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.gson.JsonElement;
@@ -196,9 +198,15 @@ public class SavedClassInformation {
         /*
          * resets information which much be reset after everything is saved.
          */
+
+        for (SkillTree skillTree : player.getProfess().getSkillTrees())
+            for (SkillTreeNode node : skillTree.getNodes())
+                node.getExperienceTable().removeStatTriggers(player, node);
+        player.getNodeLevels().clear();
+        player.getNodeStates().clear();
         player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
         player.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
-        MMOCore.plugin.skillTreeManager.getAll().forEach(skillTree -> player.resetSkillTree(skillTree));
+
         while (player.hasSkillBound(0))
             player.unbindSkill(0);
 
@@ -219,6 +227,13 @@ public class SavedClassInformation {
         attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
         skillTreePoints.forEach((skillTree, point) -> player.setSkillTreePoints(skillTree, point));
         nodeLevels.forEach((node, level) -> player.setNodeLevel(node, level));
+
+        nodeLevels.keySet().forEach(node -> node.getExperienceTable().claimStatTriggers(player, node));
+        //We claim back the stats triggers
+        for(SkillTree skillTree:profess.getSkillTrees())
+            for(SkillTreeNode node:skillTree.getNodes())
+                node.getExperienceTable().claimStatTriggers(player,node);
+
         /*
          * unload current class information and set the new profess once
          * everything is changed
