@@ -26,6 +26,7 @@ public class SavedClassInformation {
     private final Map<String, Integer> skills;
     private final Map<String, Integer> skillTreePoints;
     private final Map<SkillTreeNode, Integer> nodeLevels;
+    private final Map<String,Integer> nodeTimesClaimed;
 
     public SavedClassInformation(ConfigurationSection config) {
         level = config.getInt("level");
@@ -47,6 +48,9 @@ public class SavedClassInformation {
         nodeLevels = new HashMap<>();
         if (config.contains("node-levels"))
             config.getConfigurationSection("node-levels").getKeys(false).forEach(key -> nodeLevels.put(MMOCore.plugin.skillTreeManager.getNode(key), config.getInt("node-levels." + key)));
+        nodeTimesClaimed = new HashMap<>();
+        if (config.contains("node-times-claimed"))
+            config.getConfigurationSection("node-times-claimed").getKeys(false).forEach(key -> nodeTimesClaimed.put(key, config.getInt("node-times-claimed." + key)));
 
     }
 
@@ -74,12 +78,18 @@ public class SavedClassInformation {
         if (json.has("node-levels"))
             for (Entry<String, JsonElement> entry : json.getAsJsonObject("node-levels").entrySet())
                 nodeLevels.put(MMOCore.plugin.skillTreeManager.getNode(entry.getKey()), entry.getValue().getAsInt());
+        nodeTimesClaimed=new HashMap<>();
+        if (json.has("node-times-claimed"))
+            for (Entry<String, JsonElement> entry : json.getAsJsonObject("node-times-claimed").entrySet())
+                nodeTimesClaimed.put(entry.getKey(), entry.getValue().getAsInt());
+
+
     }
 
     public SavedClassInformation(PlayerData player) {
         this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(), player.getAttributeReallocationPoints()
                 , player.getSkillTreeReallocationPoints(), player.getSkillReallocationPoints(),
-                player.getAttributes().mapPoints(), player.mapSkillLevels(), player.getSkillTreePoints(), player.getNodeLevels());
+                player.getAttributes().mapPoints(), player.mapSkillLevels(), player.getSkillTreePoints(), player.getNodeLevels(),player.getNodeTimesClaimed());
     }
 
     public SavedClassInformation(PlayerDataManager.DefaultPlayerData data) {
@@ -87,11 +97,11 @@ public class SavedClassInformation {
     }
 
     public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints) {
-        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(),new HashMap<>());
     }
 
     public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints,
-                                 Map<String, Integer> attributes, Map<String, Integer> skills, Map<String, Integer> skillTreePoints, Map<SkillTreeNode, Integer> nodeLevels) {
+                                 Map<String, Integer> attributes, Map<String, Integer> skills, Map<String, Integer> skillTreePoints, Map<SkillTreeNode, Integer> nodeLevels,Map<String, Integer> nodeTimesClaimed) {
         this.level = level;
         this.skillPoints = skillPoints;
         this.attributePoints = attributePoints;
@@ -103,6 +113,7 @@ public class SavedClassInformation {
         this.skills = skills;
         this.skillTreePoints = skillTreePoints;
         this.nodeLevels = nodeLevels;
+        this.nodeTimesClaimed=nodeTimesClaimed;
     }
 
     public int getLevel() {
@@ -201,9 +212,10 @@ public class SavedClassInformation {
 
         for (SkillTree skillTree : player.getProfess().getSkillTrees())
             for (SkillTreeNode node : skillTree.getNodes())
-                node.getExperienceTable().removeStatTriggers(player, node);
+                node.getExperienceTable().reset(player, node);
         player.getNodeLevels().clear();
         player.getNodeStates().clear();
+
         player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
         player.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
 
@@ -227,7 +239,8 @@ public class SavedClassInformation {
         attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
         skillTreePoints.forEach((skillTree, point) -> player.setSkillTreePoints(skillTree, point));
         nodeLevels.forEach((node, level) -> player.setNodeLevel(node, level));
-
+        //Add the values to the times claimed table and claims the corresponding stat triggers.
+        nodeTimesClaimed.forEach((str,val)->player.setClaims(str,val));
         nodeLevels.keySet().forEach(node -> node.getExperienceTable().claimStatTriggers(player, node));
         //We claim back the stats triggers
         for(SkillTree skillTree:profess.getSkillTrees())

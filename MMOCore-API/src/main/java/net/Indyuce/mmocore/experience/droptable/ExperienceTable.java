@@ -67,15 +67,6 @@ public class ExperienceTable {
     }
 
 
-    public void removeStatTriggers(PlayerData playerData,ExperienceObject object) {
-        for (ExperienceItem item : items) {
-            int timesClaimed = playerData.getClaims(object, this, item);
-            for (int i = 0; i < timesClaimed; i++)
-                item.removeStatTriggers(playerData);
-        }
-    }
-
-
     /**
      * Called when a player joins and all the statTriggers are all triggered back
      *

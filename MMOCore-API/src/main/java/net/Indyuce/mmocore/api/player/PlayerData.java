@@ -322,6 +322,26 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeStates;
     }
 
+    public Map<String, Integer> getNodeTimesClaimed() {
+        Map<String, Integer> result = new HashMap<>();
+        tableItemClaims.forEach((str, val) -> {
+            if (str.startsWith(SkillTreeNode.getPrefix()))
+                result.put(str, val);
+        });
+        return result;
+    }
+
+    public void resetNodeTimesClaimed() {
+        Map<String, Integer> newTableItemClaims = new HashMap<>();
+        tableItemClaims.forEach((str, val) -> {
+            if (!str.startsWith(SkillTreeNode.getPrefix()))
+                newTableItemClaims.put(str, val);
+        });
+        tableItemClaims.clear();
+        tableItemClaims.putAll(newTableItemClaims);
+    }
+
+
     public void addNodeLevel(SkillTreeNode node) {
         nodeLevels.put(node, nodeLevels.get(node) + 1);
     }
@@ -447,15 +467,24 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {
-        String key = object.getKey() + "." + table.getId() + "." + item.getId();
+        return getClaims(object.getKey() + "." + table.getId() + "." + item.getId());
+    }
+
+    public int getClaims(String key) {
         return tableItemClaims.getOrDefault(key, 0);
+
     }
 
     @Override
     public void setClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item, int times) {
-        String key = object.getKey() + "." + table.getId() + "." + item.getId();
-        tableItemClaims.put(key, times);
+        setClaims(object.getKey() + "." + table.getId() + "." + item.getId(), times);
     }
+
+    public void setClaims(String key, int times) {
+        tableItemClaims.put(key, times);
+
+    }
+
 
     public Map<String, Integer> getItemClaims() {
         return tableItemClaims;
