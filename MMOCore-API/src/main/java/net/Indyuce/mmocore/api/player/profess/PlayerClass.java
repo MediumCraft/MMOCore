@@ -136,7 +136,12 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             }
         this.expTable = expTable;
         if (config.contains("skill-trees"))
-            config.getStringList("skill-trees").forEach(str-> skillTrees.add(MMOCore.plugin.skillTreeManager.get(str)));
+            for (String str : config.getStringList("skill-trees"))
+                try {
+                    skillTrees.add(MMOCore.plugin.skillTreeManager.get(str));
+                } catch (Exception e) {
+                    MMOCore.log(Level.WARNING, "Could not find skill tree with ID: " + str);
+                }
 
         if (config.contains("scripts"))
             for (String key : config.getConfigurationSection("scripts").getKeys(false))
