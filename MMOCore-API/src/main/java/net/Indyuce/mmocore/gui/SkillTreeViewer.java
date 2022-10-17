@@ -102,10 +102,10 @@ public class SkillTreeViewer extends EditableInventory {
         @Override
         public ItemStack display(SkillTreeInventory inv, int n) {
             int index = inv.getEditable().getByFunction("skill-tree").getSlots().size() * inv.treeListPage + n;
-            if (!MMOCore.plugin.skillTreeManager.has(index)) {
+            if (inv.skillTrees.size()>=index) {
                 return new ItemStack(Material.AIR);
             }
-            SkillTree skillTree = MMOCore.plugin.skillTreeManager.get(index);
+            SkillTree skillTree = inv.skillTrees.get(index);
             //We display with the material corresponding to the skillTree
             ItemStack item = super.display(inv, n, skillTree.getItem());
 
@@ -130,7 +130,7 @@ public class SkillTreeViewer extends EditableInventory {
         @Override
         public Placeholders getPlaceholders(SkillTreeInventory inv, int n) {
             int index = inv.getEditable().getByFunction("skill-tree").getSlots().size() * inv.treeListPage + n;
-            SkillTree skillTree = MMOCore.plugin.skillTreeManager.get(index);
+            SkillTree skillTree = inv.skillTrees.get(index);
             Placeholders holders = new Placeholders();
             holders.register("name", skillTree.getName());
             holders.register("id", skillTree.getId());
@@ -267,6 +267,7 @@ public class SkillTreeViewer extends EditableInventory {
         private final int width, height;
         private int treeListPage;
         private final int maxTreeListPage;
+        private final List<SkillTree> skillTrees;
         private final SkillTree skillTree;
         private final List<Integer> slots;
 
@@ -274,7 +275,8 @@ public class SkillTreeViewer extends EditableInventory {
             super(playerData, editable);
 
             skillTree = playerData.getOpenedSkillTree();
-            maxTreeListPage = (MMOCore.plugin.skillTreeManager.getAll().size() - 1) / editable.getByFunction("skill-tree").getSlots().size();
+            skillTrees=playerData.getProfess().getSkillTrees();
+            maxTreeListPage = (skillTrees.size() - 1) / editable.getByFunction("skill-tree").getSlots().size();
             //We get the width and height of the GUI(corresponding to the slots given)
             slots = editable.getByFunction("skill-tree-node").getSlots();
             minSlot = 64;
