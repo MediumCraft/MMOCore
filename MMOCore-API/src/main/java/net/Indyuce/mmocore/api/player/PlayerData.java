@@ -4,8 +4,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -32,6 +30,7 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
@@ -59,6 +58,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
@@ -299,7 +299,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void resetSkillTree(SkillTree skillTree) {
         for (SkillTreeNode node : skillTree.getNodes()) {
-            node.getExperienceTable().reset(this,node);
+            node.getExperienceTable().reset(this, node);
             setNodeLevel(node, 0);
         }
         skillTree.setupNodeState(this);
@@ -337,7 +337,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void close() {
 
         // Remove from party if it is MMO Party Module
-        if(MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
+        if (MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
             AbstractParty party = getParty();
             if (party != null && party instanceof Party)
                 ((Party) party).removeMember(this);
@@ -751,19 +751,25 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (value <= 0)
             return;
 
-        if (hasReachedMaxLevel()) {
-            setExperience(0);
-            return;
-        }
-
         // Splitting exp through party members
         AbstractParty party;
         if (splitExp && (party = getParty()) != null) {
-            List<PlayerData> onlineMembers = party.getOnlineMembers();
-            value /= onlineMembers.size();
-            for (PlayerData member : onlineMembers)
-                if (!equals(member))
-                    member.giveExperience(value, source, null, false);
+            final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream()
+                    .filter(pd -> {
+                        if (equals(pd))
+                            return false;
+                        final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
+                        return maxDis <= 0 || pd.getPlayer().getLocation().distanceSquared(getPlayer().getLocation()) < maxDis * maxDis;
+                    }).collect(Collectors.toList());
+            value /= nearbyMembers.size();
+            for (PlayerData member : nearbyMembers)
+                member.giveExperience(value, source, null, false);
+        }
+
+        // Must be placed after exp spliting
+        if (hasReachedMaxLevel()) {
+            setExperience(0);
+            return;
         }
 
         // Apply buffs AFTER splitting exp

@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
@@ -26,8 +26,8 @@ public class ConfigManager {
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public double lootChestsChanceWeight, fishingDropsChanceWeight;
-    public int maxPartyLevelDifference,maxBoundActiveSkills,maxBoundPassiveSkills,waypointWarpTime;
+    public double lootChestsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange;
+    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills, waypointWarpTime;
 
     private final FileConfiguration messages;
 
@@ -109,6 +109,7 @@ public class ConfigManager {
         lootChestsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.loot-chests");
         fishingDropsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.fishing-drops");
         maxPartyLevelDifference = MMOCore.plugin.getConfig().getInt("party.max-level-difference");
+        partyMaxExpSplitRange = MMOCore.plugin.getConfig().getDouble("party.max-exp-split-range");
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
 
