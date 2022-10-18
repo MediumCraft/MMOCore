@@ -365,10 +365,10 @@ public class MMOCore extends JavaPlugin {
         dropTableManager.initialize(clearBefore);
         statManager.initialize(clearBefore);
         professionManager.initialize(clearBefore);
-        classManager.initialize(clearBefore);
 
         InventoryManager.load();
         skillTreeManager.initialize(clearBefore);
+        classManager.initialize(clearBefore);
         questManager.initialize(clearBefore);
         lootChests.initialize(clearBefore);
         restrictionManager.initialize(clearBefore);

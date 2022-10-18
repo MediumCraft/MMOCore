@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.command;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.manager.InventoryManager;
@@ -21,18 +22,22 @@ public class SkillTreeCommand extends BukkitCommand {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, String s, String[] args) {
-        if (!(sender instanceof Player))
+        if (!(sender instanceof Player player))
             return false;
-        PlayerData data = PlayerData.get((Player) sender);
+        PlayerData data = PlayerData.get(player);
         MMOCommandEvent event = new MMOCommandEvent(data, "skilltree");
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled())
             return true;
-        if (MMOCore.plugin.skillTreeManager.getAll().size() != 0) {
+        if (data.getProfess().getSkillTrees().size() != 0) {
             InventoryManager.TREE_VIEW.newInventory(data).open();
             return false;
         }
-        return true;
+        else {
+            MMOCore.plugin.configManager.getSimpleMessage("no-skill-tree").send(player);
+            return true;
+        }
+
     }
 
 

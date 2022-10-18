@@ -9,7 +9,6 @@ import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.tree.skilltree.AutomaticSkillTree;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -29,7 +28,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
     /**
      * The lore corresponding to each level
      */
-    private final Map<Integer,List<String>> lores = new HashMap<>();
+    private final Map<Integer, List<String>> lores = new HashMap<>();
 
     private final ExperienceTable experienceTable;
 
@@ -53,11 +52,11 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
-        if(config.contains("lores")) {
-            for(String key: config.getConfigurationSection("lores").getKeys(false)) {
+        if (config.contains("lores")) {
+            for (String key : config.getConfigurationSection("lores").getKeys(false)) {
                 try {
-                    lores.put(Integer.parseInt(key),config.getStringList("lores."+key));
-                }catch (NumberFormatException e) {
+                    lores.put(Integer.parseInt(key), config.getStringList("lores." + key));
+                } catch (NumberFormatException e) {
                     throw new RuntimeException("You must only specifiy integers in lores.");
                 }
             }
@@ -69,11 +68,19 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
         maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
         maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
-        //If coordinates are precised adn we are not with an automaticTree we set them up
-        if ((!(tree instanceof AutomaticSkillTree))) {
-            Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"), "No coordinates specified");
-            coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
-        }
+        //If coordinates are precised and we are not with an automaticTree we set them up
+        Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"), "No coordinates specified");
+        coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
+
+    }
+
+    /**
+     * Prefix used in the key
+     *
+     * @return
+     */
+    public static String getPrefix() {
+        return "node";
     }
 
 
@@ -158,7 +165,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
     @Override
     public String getKey() {
-        return "node_" + getFullId().replace("-", "_");
+        return getPrefix() + ":" + getFullId().replace("-", "_");
     }
 
     @Nullable
@@ -210,9 +217,9 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
     public List<String> getLore(PlayerData playerData) {
         Placeholders holders = getPlaceholders(playerData);
         List<String> parsedLore = new ArrayList<>();
-        if(!lores.containsKey(playerData.getNodeLevel(this)))
+        if (!lores.containsKey(playerData.getNodeLevel(this)))
             return parsedLore;
-        List<String> lore= lores.get(playerData.getNodeLevel(this));
+        List<String> lore = lores.get(playerData.getNodeLevel(this));
         lore.forEach(string -> parsedLore.add(
                 MythicLib.plugin.parseColors(holders.apply(playerData.getPlayer(), string))));
         return parsedLore;

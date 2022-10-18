@@ -4,6 +4,8 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -79,7 +81,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private double mana, stamina, stellium;
     private Guild guild;
     private SkillCastingHandler skillCasting;
-    private SkillTree cachedSkillTree;
     private final PlayerQuests questData;
     private final PlayerStats playerStats;
     private final List<UUID> friends = new ArrayList<>();
@@ -209,6 +210,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeLevelsString.entrySet();
     }
 
+    public Map<SkillTreeNode, Integer> getNodeLevels() {
+        return nodeLevels;
+    }
+
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
         NodeState nodeState = nodeStates.get(node);
         //Check the State of the node
@@ -292,6 +297,38 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         nodeLevels.put(node, nodeLevel);
     }
 
+    public void resetSkillTree(SkillTree skillTree) {
+        for (SkillTreeNode node : skillTree.getNodes()) {
+            node.getExperienceTable().reset(this,node);
+            setNodeLevel(node, 0);
+        }
+        skillTree.setupNodeState(this);
+    }
+
+    public Map<SkillTreeNode, NodeState> getNodeStates() {
+        return nodeStates;
+    }
+
+    public Map<String, Integer> getNodeTimesClaimed() {
+        Map<String, Integer> result = new HashMap<>();
+        tableItemClaims.forEach((str, val) -> {
+            if (str.startsWith(SkillTreeNode.getPrefix()))
+                result.put(str, val);
+        });
+        return result;
+    }
+
+    public void resetNodeTimesClaimed() {
+        Map<String, Integer> newTableItemClaims = new HashMap<>();
+        tableItemClaims.forEach((str, val) -> {
+            if (!str.startsWith(SkillTreeNode.getPrefix()))
+                newTableItemClaims.put(str, val);
+        });
+        tableItemClaims.clear();
+        tableItemClaims.putAll(newTableItemClaims);
+    }
+
+
     public void addNodeLevel(SkillTreeNode node) {
         nodeLevels.put(node, nodeLevels.get(node) + 1);
     }
@@ -299,10 +336,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Override
     public void close() {
 
-        // Remove from party
-        AbstractParty party = getParty();
-        if (party != null && party instanceof Party)
-            ((Party) party).removeMember(this);
+        // Remove from party if it is MMO Party Module
+        if(MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
+            AbstractParty party = getParty();
+            if (party != null && party instanceof Party)
+                ((Party) party).removeMember(this);
+        }
 
         // Close quest data
         questData.close();
@@ -354,19 +393,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return Math.max(1, level);
     }
 
-    public void setCachedSkillTree(SkillTree cachedSkillTree) {
-        this.cachedSkillTree = cachedSkillTree;
-    }
-
-    @NotNull
-    public SkillTree getOpenedSkillTree() {
-        if (cachedSkillTree == null) {
-            Optional<SkillTree> optionnal = MMOCore.plugin.skillTreeManager.getAll().stream().findFirst();
-            return optionnal.isPresent() ? optionnal.get() : null;
-        }
-        return cachedSkillTree;
-    }
-
     @Nullable
     public AbstractParty getParty() {
         return MMOCore.plugin.partyModule.getParty(this);
@@ -415,13 +441,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public int getClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item) {
-        String key = object.getKey() + "." + table.getId() + "." + item.getId();
+        return getClaims(object.getKey() + "." + table.getId() + "." + item.getId());
+    }
+
+    public int getClaims(String key) {
         return tableItemClaims.getOrDefault(key, 0);
     }
 
     @Override
     public void setClaims(ExperienceObject object, ExperienceTable table, ExperienceItem item, int times) {
-        String key = object.getKey() + "." + table.getId() + "." + item.getId();
+        setClaims(object.getKey() + "." + table.getId() + "." + item.getId(), times);
+    }
+
+    public void setClaims(String key, int times) {
         tableItemClaims.put(key, times);
     }
 

@@ -231,6 +231,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             classinfo.addProperty("skill-points", info.getSkillPoints());
             classinfo.addProperty("attribute-points", info.getAttributePoints());
             classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
+            classinfo.addProperty("skill-reallocation-points",info.getSkillReallocationPoints());
+            classinfo.addProperty("skill-tree-reallocation-points",info.getSkillTreeReallocationPoints());
+
             JsonObject skillinfo = new JsonObject();
             for (String skill : info.getSkillKeys())
                 skillinfo.addProperty(skill, info.getSkillLevel(skill));
@@ -239,6 +242,16 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             for (String attribute : info.getAttributeKeys())
                 attributeinfo.addProperty(attribute, info.getAttributeLevel(attribute));
             classinfo.add("attribute", attributeinfo);
+
+            JsonObject nodeLevelsInfo = new JsonObject();
+            for (SkillTreeNode node : info.getNodeKeys())
+                attributeinfo.addProperty(node.getFullId(), info.getNodeLevel(node));
+            classinfo.add("node-levels", nodeLevelsInfo);
+
+            JsonObject skillTreePointsInfo = new JsonObject();
+            for (String skillTreeId : info.getSkillTreePointsKeys())
+                attributeinfo.addProperty(skillTreeId, info.getSkillTreePoints(skillTreeId));
+            classinfo.add("skill-tree-points", skillTreePointsInfo);
 
             json.add(c, classinfo);
         }
