@@ -31,6 +31,10 @@ display:
 exp-curve: levels
 
 
+skill-trees:
+    - 'general'
+    - 'warrior-paladin'
+    - 'combat'
 
 # The maximum level players can reach
 max-level: 100

@@ -32,6 +32,10 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
+skill-trees:
+    - 'general'
+    - 'mage-arcane-mage'
+
 exp-table: class_exp_table
 
 # This is the default mana display options, however it is not mandatory

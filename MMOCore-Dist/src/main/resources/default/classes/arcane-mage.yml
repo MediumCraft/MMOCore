@@ -34,6 +34,10 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
+skill-trees:
+    - 'general'
+    - 'mage-arcane-mage'
+
 # This class must not display in /class
 # because it is a subclass of mage
 options:
