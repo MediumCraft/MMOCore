@@ -4,6 +4,8 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -30,8 +32,6 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
@@ -58,7 +58,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
@@ -132,6 +131,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.mmoData = mmoData;
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
+
+
     }
 
     /**
@@ -181,6 +182,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return pointSpent.getOrDefault(skillTree, 0);
     }
 
+    public HashMap<SkillTree, Integer> getPointsSpent() {
+        return new HashMap<>(pointSpent);
+    }
+
+    public void clearPointsSpent() {
+        pointSpent.clear();
+
+    }
 
     public void setSkillTreePoints(String treeId, int points) {
         skillTreePoints.put(treeId, points);
@@ -194,9 +203,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(nodeLevels::get).sum();
     }
 
+    /**
+     * We make a copy to assure that the object created is independent of the state of playerData.
+     */
     public Map<String, Integer> getSkillTreePoints() {
-        return skillTreePoints;
+        return new HashMap(skillTreePoints);
     }
+
+    public void clearSkillTreePoints() {
+        skillTreePoints.clear();
+    }
+
 
     public boolean containsSkillPointTreeId(String treeId) {
         return skillTreePoints.containsKey(treeId);
@@ -211,7 +228,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
-        return nodeLevels;
+        return new HashMap<>(nodeLevels);
+    }
+
+    public void clearNodeLevels() {
+        nodeLevels.clear();
     }
 
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
@@ -219,7 +240,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         //Check the State of the node
         if (nodeState != NodeState.UNLOCKED && nodeState != NodeState.UNLOCKABLE)
             return false;
-        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.get(node.getTree().getId()) > 0 || skillTreePoints.get("global") > 0);
+        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) > 0 || skillTreePoints.getOrDefault("global", 0) > 0);
     }
 
     /**
@@ -268,7 +289,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public int getSkillTreePoint(String treeId) {
-        return skillTreePoints.get(treeId);
+        return skillTreePoints.getOrDefault(treeId, 0);
     }
 
     public void withdrawSkillTreePoints(String treeId, int withdraw) {
@@ -301,12 +322,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         for (SkillTreeNode node : skillTree.getNodes()) {
             node.getExperienceTable().reset(this, node);
             setNodeLevel(node, 0);
+            nodeStates.remove(node);
         }
         skillTree.setupNodeState(this);
     }
 
     public Map<SkillTreeNode, NodeState> getNodeStates() {
-        return nodeStates;
+        return new HashMap<>(nodeStates);
+    }
+
+    public void clearNodeStates() {
+        nodeStates.clear();
     }
 
     public Map<String, Integer> getNodeTimesClaimed() {
@@ -393,6 +419,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return Math.max(1, level);
     }
 
+
     @Nullable
     public AbstractParty getParty() {
         return MMOCore.plugin.partyModule.getParty(this);
@@ -446,6 +473,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public int getClaims(String key) {
         return tableItemClaims.getOrDefault(key, 0);
+
     }
 
     @Override
@@ -455,7 +483,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setClaims(String key, int times) {
         tableItemClaims.put(key, times);
+
     }
+
 
     public Map<String, Integer> getItemClaims() {
         return tableItemClaims;
@@ -716,9 +746,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                            Math.cos((double) 5 * t / warpTime + j) * r,
-                            (double) 2 * t / warpTime,
-                            Math.sin((double) 5 * t / warpTime + j) * r),
+                                    Math.cos((double) 5 * t / warpTime + j) * r,
+                                    (double) 2 * t / warpTime,
+                                    Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -751,25 +781,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (value <= 0)
             return;
 
-        // Splitting exp through party members
-        AbstractParty party;
-        if (splitExp && (party = getParty()) != null) {
-            final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream()
-                    .filter(pd -> {
-                        if (equals(pd))
-                            return false;
-                        final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
-                        return maxDis <= 0 || pd.getPlayer().getLocation().distanceSquared(getPlayer().getLocation()) < maxDis * maxDis;
-                    }).collect(Collectors.toList());
-            value /= (nearbyMembers.size() + 1);
-            for (PlayerData member : nearbyMembers)
-                member.giveExperience(value, source, null, false);
-        }
-
-        // Must be placed after exp spliting
         if (hasReachedMaxLevel()) {
             setExperience(0);
             return;
+        }
+
+        // Splitting exp through party members
+        AbstractParty party;
+        if (splitExp && (party = getParty()) != null) {
+            List<PlayerData> onlineMembers = party.getOnlineMembers();
+            value /= onlineMembers.size();
+            for (PlayerData member : onlineMembers)
+                if (!equals(member))
+                    member.giveExperience(value, source, null, false);
         }
 
         // Apply buffs AFTER splitting exp
@@ -1131,7 +1155,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {
