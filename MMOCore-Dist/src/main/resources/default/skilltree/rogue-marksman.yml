@@ -1,0 +1,422 @@
+id: 'rogue-marksman'
+name: '&4Rogue & Marksman'
+type: 'custom'
+item: 'DIAMOND_AXE'
+lore: 
+- '&6This skill tree is used for Rogue & Marksman class only!'
+max-point-spent: 21
+
+nodes:
+
+#### A
+  a1:
+    name: 'Additional Experience'
+    coordinates:
+      x: -3
+      y: 0
+
+    max-level: 1
+    is-root: true
+    size: 1
+    experience-table: skilltree_additional_experience2
+    lores:
+      0:
+        - "&eAdditional MMOCore main class experience +%2"
+      1:
+        - "&eAdditional MMOCore main class experience +%2"
+  a2:
+    name: 'Additional Experience'
+    coordinates:
+      x: -2
+      y: 0
+
+    parents: 
+      strong: 
+        a1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_additional_experience3
+    lores:
+      0:
+        - "&eAdditional MMOCore main class experience +%3"
+      1:
+        - "&eAdditional MMOCore main class experience +%3"
+  a3:
+    name: 'Additional Experience'
+    coordinates:
+      x: -1
+      y: 0
+      
+    parents: 
+      strong: 
+        a2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_additional_experience5
+    lores:
+      0:
+        - "&eAdditional MMOCore main class experience +%5"
+      1:
+        - "&eAdditional MMOCore main class experience +%5"
+
+## B
+
+  b1:
+    name: 'Arrow Velocity'
+    coordinates:
+      x: -1
+      y: -1
+
+    parents: 
+      strong: 
+        a3: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_arrow_velocity10
+    lores:
+      0:
+        - "&eDetermines how far your weapon can shoot +%10"
+      1:
+        - "&eDetermines how far your weapon can shoot +%10"
+  b2:
+    name: 'Arrow Velocity'
+    coordinates:
+      x: -1
+      y: -2
+
+    parents: 
+      strong: 
+        b1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_arrow_velocity15
+    lores:
+      0:
+        - "&eDetermines how far your weapon can shoot +%15"
+      1:
+        - "&eDetermines how far your weapon can shoot +%15"
+  b3:
+    name: 'Arrow Velocity'
+    coordinates:
+      x: 0
+      y: -2
+      
+    parents: 
+      strong: 
+        b2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_arrow_velocity25
+    lores:
+      0:
+        - "&eDetermines how far your weapon can shoot +%25"
+      1:
+        - "&eDetermines how far your weapon can shoot +%25"
+
+## C
+
+  c1:
+    name: 'Life Steal'
+    coordinates:
+      x: 1
+      y: -2
+      
+    parents: 
+      strong: 
+        b3: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_lifesteal1
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%1"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%1"
+  c2:
+    name: 'Life Steal'
+    coordinates:
+      x: 2
+      y: -2
+      
+    parents: 
+      strong: 
+        c1: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_lifesteal2
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
+  c3:
+    name: 'Life Steal'
+    coordinates:
+      x: 3
+      y: -2
+      
+    parents: 
+      strong: 
+        c2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_lifesteal2
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
+
+## D
+
+  d1:
+    name: 'Knockback Resistance'
+    coordinates:
+      x: 3
+      y: -1
+      
+    parents: 
+      strong: 
+        c3: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_knockback_resistance5
+    lores:
+      0:
+        - "&eThe chance of you to block the knockback +%5"
+      1:
+        - "&eThe chance of you to block the knockback +%5"
+  d2:
+    name: 'Knockback Resistance'
+    coordinates:
+      x: 4
+      y: -1
+      
+    parents: 
+      strong: 
+        d1: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_knockback_resistance5
+    lores:
+      0:
+        - "&eThe chance of you to block the knockback +%5"
+      1:
+        - "&eThe chance of you to block the knockback +%5"
+  d3:
+    name: 'Knockback Resistance'
+    coordinates:
+      x: 4
+      y: 0
+      
+    parents: 
+      strong: 
+        d2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_knockback_resistance10
+    lores:
+      0:
+        - "&eThe chance of you to block the knockback +%5"
+      1:
+        - "&eThe chance of you to block the knockback +%5"
+
+## E
+
+  e1:
+    name: 'Critical Strike Chance'
+    coordinates:
+      x: 4
+      y: 1
+      
+    parents: 
+      strong: 
+        d3: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_critical_strike_chance2
+    lores:
+      0:
+        - "&eCritical Strikes deal more damage in +%2 chance"
+      1:
+        - "&eCritical Strikes deal more damage in +%2 chance"
+  e2:
+    name: 'Critical Strike Chance'
+    coordinates:
+      x: 4
+      y: 2
+      
+    parents: 
+      strong: 
+        e1: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_critical_strike_chance3
+    lores:
+      0:
+        - "&eCritical Strikes deal more damage in +%3 chance"
+      1:
+        - "&eCritical Strikes deal more damage in +%3 chance"
+  e3:
+    name: 'Critical Strike Chance'
+    coordinates:
+      x: 3
+      y: 2
+      
+    parents: 
+      strong: 
+        e2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_critical_strike_chance5
+    lores:
+      0:
+        - "&eCritical Strikes deal more damage in +%5 chance"
+      1:
+        - "&eCritical Strikes deal more damage in +%5 chance"
+
+## F
+
+  f1:
+    name: 'Movement Speed'
+    coordinates:
+      x: 2
+      y: 2
+      
+    parents: 
+      strong: 
+        e3: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_movement_speed2
+    lores:
+      0:
+        - "&eMovement Speed increase walk speed. +%2"
+      1:
+        - "&eMovement Speed increase walk speed. +%2"
+  f2:
+    name: 'Movement Speed'
+    coordinates:
+      x: 2
+      y: 1
+      
+    parents: 
+      strong: 
+        f1: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_movement_speed2
+    lores:
+      0:
+        - "&eMovement Speed increase walk speed. +%2"
+      1:
+        - "&eMovement Speed increase walk speed. +%2"
+  f3:
+    name: 'Movement Speed'
+    coordinates:
+      x: 1
+      y: 1
+      
+    parents: 
+      strong: 
+        f2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_movement_speed6
+    lores:
+      0:
+        - "&eMovement Speed increase walk speed. +%6"
+      1:
+        - "&eMovement Speed increase walk speed. +%6"
+
+## G
+
+  g1:
+    name: 'Projectile Damage'
+    coordinates:
+      x: 0
+      y: 1
+      
+    parents: 
+      strong: 
+        f3: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_projectile_damage2
+    lores:
+      0:
+        - "&eAdditional skill/weapon projectile damage +%2"
+      1:
+        - "&eAdditional skill/weapon projectile damage +%2"
+  g2:
+    name: 'Projectile Damage'
+    coordinates:
+      x: 0
+      y: 2
+      
+    parents: 
+      strong: 
+        g1: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_projectile_damage2
+    lores:
+      0:
+        - "&eAdditional skill/weapon projectile damage +%2"
+      1:
+        - "&eAdditional skill/weapon projectile damage +%2"
+  g3:
+    name: 'Projectile Damage'
+    coordinates:
+      x: -1
+      y: 2
+      
+    parents: 
+      strong: 
+        g2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_projectile_damage6
+    lores:
+      0:
+        - "&eAdditional skill/weapon projectile damage +%6"
+      1:
+        - "&eAdditional skill/weapon projectile damage +%6"
+
+
+
+icons: 
+  unlocked:
+    1: 
+      item: 'GREEN_DYE'
+  locked: 
+    1: 
+      item: "BROWN_DYE"
+  unlockable:
+    1:
+      item: "BLUE_DYE"
+  fully-locked:
+    1:
+      item: "BLACK_DYE"
+  path: 
+    item: "WHITE_DYE"

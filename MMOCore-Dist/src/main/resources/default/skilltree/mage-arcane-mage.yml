@@ -1,0 +1,426 @@
+id: 'mage'
+name: '&4Mage & Arcane Mage'
+type: 'custom'
+item: 'DIAMOND_AXE'
+lore: 
+- '&6This skill tree is used for Mage & Arcane Mage class only!'
+max-point-spent: 21
+
+nodes:
+
+#### A
+  a1:
+    name: 'Mana Regeneration'
+    coordinates:
+      x: 1
+      y: -2
+
+    max-level: 1
+    is-root: true
+    size: 1
+    experience-table: skilltree_mana_regeneration1
+    lores:
+      0:
+        - "&eMana regen in pts/sec +1"
+      1:
+        - "&eMana regen in pts/sec +1"
+  a2:
+    name: 'Mana Regeneration'
+    coordinates:
+      x: 0
+      y: -2
+
+    parents: 
+      strong: 
+        a1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_mana_regeneration2
+    lores:
+      0:
+        - "&eMana regen in pts/sec +2"
+      1:
+        - "&eMana regen in pts/sec +2"
+  a3:
+    name: 'Mana Regeneration'
+    coordinates:
+      x: -1
+      y: -2
+      
+    parents: 
+      strong: 
+        a2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_mana_regeneration2
+    lores:
+      0:
+        - "&eMana regen in pts/sec +2"
+      1:
+        - "&eMana regen in pts/sec +2"
+
+## B
+
+  b1:
+    name: 'Skill Damage'
+    coordinates:
+      x: -2
+      y: -1
+
+    parents: 
+      strong: 
+        a3: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_skill_damage5
+    lores:
+      0:
+        - "&eAdditional ability damage in +%5"
+      1:
+        - "&eAdditional ability damage in +%5"
+  b2:
+    name: 'Skill Damage'
+    coordinates:
+      x: -3
+      y: 0
+
+    parents: 
+      strong: 
+        b1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_skill_damage5
+    lores:
+      0:
+        - "&eAdditional ability damage in +%5"
+      1:
+        - "&eAdditional ability damage in +%5"
+  b3:
+    name: 'Skill Damage'
+    coordinates:
+      x: -2
+      y: 1
+      
+    parents: 
+      strong: 
+        b2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_skill_damage10
+    lores:
+      0:
+        - "&eAdditional ability damage in +%10"
+      1:
+        - "&eAdditional ability damage in +%10"
+
+## C
+
+  c1:
+    name: 'Spell Vampirism'
+    coordinates:
+      x: -2
+      y: 2
+
+    parents: 
+      strong: 
+        b3: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_spell_vampirism2
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting skill damage +%2"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting skill damage +%2"
+  c2:
+    name: 'Spell Vampirism'
+    coordinates:
+      x: -1
+      y: 2
+
+    parents: 
+      strong: 
+        c1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_spell_vampirism2
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting skill damage +%2"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting skill damage +%2"
+  c3:
+    name: 'Spell Vampirism'
+    coordinates:
+      x: 0
+      y: 2
+      
+    parents: 
+      strong: 
+        c2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_spell_vampirism6
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting skill damage +%6"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting skill damage +%6"
+
+## D
+
+  d1:
+    name: 'Additional Experience'
+    coordinates:
+      x: 0
+      y: 1
+
+    parents: 
+      strong: 
+        c3: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_additional_experience2
+    lores:
+      0:
+        - "&eAdditional MMOCore main class experience +%2"
+      1:
+        - "&eAdditional MMOCore main class experience +%2"
+  d2:
+    name: 'Additional Experience'
+    coordinates:
+      x: 0
+      y: 0
+
+    parents: 
+      strong: 
+        d1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_additional_experience3
+    lores:
+      0:
+        - "&eAdditional MMOCore main class experience +%3"
+      1:
+        - "&eAdditional MMOCore main class experience +%3"
+  d3:
+    name: 'Additional Experience'
+    coordinates:
+      x: 1
+      y: 0
+      
+    parents: 
+      strong: 
+        d2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_additional_experience5
+    lores:
+      0:
+        - "&eAdditional MMOCore main class experience +%5"
+      1:
+        - "&eAdditional MMOCore main class experience +%5"
+
+## E
+
+  e1:
+    name: 'Magic Damage Reduction'
+    coordinates:
+      x: 2
+      y: 0
+
+    parents: 
+      strong: 
+        d3: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_magic_damage_reduction5
+    lores:
+      0:
+        - "&eReduce magic damage dealt by potions %5"
+      1:
+        - "&eReduce magic damage dealt by potions %5"
+  e2:
+    name: 'Magic Damage Reduction'
+    coordinates:
+      x: 2
+      y: 1
+
+    parents: 
+      strong: 
+        e1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_magic_damage_reduction5
+    lores:
+      0:
+        - "&eReduce magic damage dealt by potions %5"
+      1:
+        - "&eReduce magic damage dealt by potions %5"
+  e3:
+    name: 'Magic Damage Reduction'
+    coordinates:
+      x: 2
+      y: 2
+      
+    parents: 
+      strong: 
+        e2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_magic_damage_reduction10
+    lores:
+      0:
+        - "&eReduce magic damage dealt by potions %10"
+      1:
+        - "&eReduce magic damage dealt by potions %10"
+
+## F
+
+  f1:
+    name: 'Skill Critical Strike Chance'
+    coordinates:
+      x: 3
+      y: 2
+
+    parents: 
+      strong: 
+        e3: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_skill_critical_strike_chance5
+    lores:
+      0:
+        - "&eIncreases the chance of dealing skill crits +%5"
+      1:
+        - "&eIncreases the chance of dealing skill crits +%5"
+  f2:
+    name: 'Skill Critical Strike Chance'
+    coordinates:
+      x: 4
+      y: 2
+
+    parents: 
+      strong: 
+        f1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_skill_critical_strike_chance10
+    lores:
+      0:
+        - "&eIncreases the chance of dealing skill crits +%10"
+      1:
+        - "&eIncreases the chance of dealing skill crits +%10"
+  f3:
+    name: 'Skill Critical Strike Chance'
+    coordinates:
+      x: 4
+      y: 1
+      
+    parents: 
+      strong: 
+        f2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_skill_critical_strike_chance15
+    lores:
+      0:
+        - "&eIncreases the chance of dealing skill crits +%15"
+      1:
+        - "&eIncreases the chance of dealing skill crits +%15"
+
+## G
+
+  g1:
+    name: 'Magic Damage'
+    coordinates:
+      x: 4
+      y: 0
+
+    parents: 
+      strong: 
+        f3: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_magic_damage1
+    lores:
+      0:
+        - "&eAdditional magic skill damage in +%1"
+      1:
+        - "&eAdditional magic skill damage in +%1"
+  g2:
+    name: 'Magic Damage'
+    coordinates:
+      x: 4
+      y: -1
+
+    parents: 
+      strong: 
+        g1: 1
+
+    max-level: 1
+    size: 1
+    experience-table: skilltree_magic_damage2
+    lores:
+      0:
+        - "&eAdditional magic skill damage in +%2"
+      1:
+        - "&eAdditional magic skill damage in +%2"
+  g3:
+    name: 'Magic Damage'
+    coordinates:
+      x: 4
+      y: -2
+      
+    parents: 
+      strong: 
+        g2: 1
+        
+    max-level: 1
+    size: 1
+    experience-table: skilltree_magic_damage2
+    lores:
+      0:
+        - "&eAdditional magic skill damage in +%2"
+      1:
+        - "&eAdditional magic skill damage in +%2"
+
+
+
+
+
+
+
+icons: 
+  unlocked:
+    1: 
+      item: 'GREEN_DYE'
+  locked: 
+    1: 
+      item: "BROWN_DYE"
+  unlockable:
+    1:
+      item: "BLUE_DYE"
+  fully-locked:
+    1:
+      item: "BLACK_DYE"
+  path: 
+    item: "WHITE_DYE"
