@@ -152,7 +152,7 @@ party:
   # Exp won't be split if players are too far apart.
   #
   # Set to 0 to disable
-  max-exp-split-range: 50
+  max-exp-split-range: 48
 
   # When enabled, being in a party also splits profession exp
   profession-exp-split: false
