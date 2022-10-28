@@ -73,6 +73,9 @@ public class SkillBar implements Listener {
              */
             if (event.getPreviousSlot() == event.getNewSlot()) return;
 
+            //If the player is sneaking, we don't trigger the casting mode (used to avoid conflicts with other plugins using shift+F to open GUI.
+            if(player.isSneaking()) return;
+
             event.setCancelled(true);
             int slot = event.getNewSlot() + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
 
