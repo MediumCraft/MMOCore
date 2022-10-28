@@ -8,3 +8,8 @@ target/
 MMOCore.eml
 MMOCore.iml
 dependency-reduced-pom.xml
+/MMOCore-API/MMOCore-API.iml
+/MMOCore-API/.flattened-pom.xml
+/MMOCore-Dist/.flattened-pom.xml
+/MMOCore-Dist/MMOCore-Dist.iml
+/MMOCore-Dist/MMOCore-Bukkit.iml
