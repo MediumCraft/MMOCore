@@ -225,6 +225,9 @@ public class SavedClassInformation {
                 node.getExperienceTable().reset(player, node);
         }
 
+        while (player.hasPassiveSkillBound(0))
+            player.unbindPassiveSkill(0);
+
         while (player.hasSkillBound(0))
             player.unbindSkill(0);
 
