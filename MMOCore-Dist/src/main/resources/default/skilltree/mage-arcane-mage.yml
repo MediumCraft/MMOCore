@@ -1,5 +1,5 @@
-id: 'mage'
-name: '&4Mage & Arcane Mage'
+id: 'mage-arcane-mage'
+name: '&4Mage'
 type: 'custom'
 item: 'DIAMOND_AXE'
 lore: 

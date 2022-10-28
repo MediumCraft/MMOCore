@@ -1,5 +1,5 @@
-id: 'warrior'
-name: '&4Warrior & Paladin'
+id: 'warrior-paladin'
+name: '&4Warrior&Paladin'
 type: 'custom'
 item: 'DIAMOND_AXE'
 lore: 
