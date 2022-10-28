@@ -36,6 +36,12 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
+skill-trees:
+    - 'general'
+    - 'warrior-paladin'
+    - 'combat'
+
+
 # Warrior has rage which he gains while casting spells
 # Rage increase its skill damage. Use <mmocore.rage>
 # to get the player's rage (MythicMobs formulas)

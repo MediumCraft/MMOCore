@@ -33,7 +33,9 @@ max-level: 100
 
 exp-table: class_exp_table
 
-
+skill-trees:
+    - 'general'
+    - 'rogue-marksman'
 
 # Particles displayed around the player
 # when he enters the casting mode.

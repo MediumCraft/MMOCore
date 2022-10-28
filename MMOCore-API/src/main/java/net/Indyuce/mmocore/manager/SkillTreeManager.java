@@ -57,7 +57,7 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
     public void initialize(boolean clearBefore) {
         if (clearBefore)
             registered.clear();
-        File file = new File(MMOCore.plugin.getDataFolder() + "/skillTree");
+        File file = new File(MMOCore.plugin.getDataFolder() + "/skilltree");
         if (!file.exists())
             file.mkdirs();
         load(file);

@@ -337,6 +337,9 @@ public class SkillTreeViewer extends EditableInventory {
 
         @Override
         public void whenClicked(InventoryClickContext event, InventoryItem item) {
+            if(event.getClickedItem()==null)
+                return;
+
             if (item.getFunction().equals("next-tree-list-page")) {
                 treeListPage++;
                 open();

@@ -39,7 +39,7 @@ public class PlayerListener implements Listener {
      */
     @EventHandler
     public void b(InventoryClickEvent event) {
-        if (event.getInventory().getHolder() instanceof PluginInventory)
+        if (event.getInventory().getHolder() instanceof PluginInventory&&event.getCurrentItem()!=null)
             ((PluginInventory) event.getInventory().getHolder())
                     .whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory()));
     }

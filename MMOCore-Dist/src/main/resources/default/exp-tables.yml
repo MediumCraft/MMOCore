@@ -52,3 +52,285 @@ second_exp_table:
       period: 3
       triggers:
         - 'exp{amount=100}'
+
+
+
+### Skill Tree
+
+## MANA_REGENERATION
+skilltree_mana_regeneration1:
+  mana_regeneration:
+    triggers:
+      - 'stat{stat="MANA_REGENERATION";amount=1;type="FLAT"}'
+skilltree_mana_regeneration2:
+  mana_regeneration:
+    triggers:
+      - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
+
+## HEALTH_REGENERATION
+skilltree_health_regeneration1:
+  health_regeneration:
+    triggers:
+      - 'stat{stat="HEALTH_REGENERATION";amount=1;type="FLAT"}'
+skilltree_health_regeneration2:
+  health_regeneration:
+    triggers:
+      - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
+
+
+## COOLDOWN_REDUCTION
+skilltree_cooldown_reduction5:
+  cooldown_reduction:
+    triggers:
+      - 'stat{stat="COOLDOWN_REDUCTION";amount=5;type="FLAT"}'
+skilltree_cooldown_reduction10:
+  cooldown_reduction:
+    triggers:
+      - 'stat{stat="COOLDOWN_REDUCTION";amount=10;type="FLAT"}'
+skilltree_cooldown_reduction15:
+  cooldown_reduction:
+    triggers:
+      - 'stat{stat="COOLDOWN_REDUCTION";amount=15;type="FLAT"}'
+
+## CRITICAL_STRIKE_CHANCE
+skilltree_critical_strike_chance1:
+  critical_strike_chance:
+    triggers:
+      - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=1;type="FLAT"}'
+skilltree_critical_strike_chance2:
+  critical_strike_chance:
+    triggers:
+      - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=2;type="FLAT"}'
+skilltree_critical_strike_chance3:
+  critical_strike_chance:
+    triggers:
+      - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=3;type="FLAT"}'
+skilltree_critical_strike_chance5:
+  critical_strike_chance:
+    triggers:
+      - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=5;type="FLAT"}'
+
+
+## WEAPON_DAMAGE
+skilltree_weapon_damage1:
+  weapon_damage:
+    triggers:
+      - 'stat{stat="WEAPON_DAMAGE";amount=1;type="FLAT"}'
+skilltree_weapon_damage2:
+  weapon_damage:
+    triggers:
+      - 'stat{stat="WEAPON_DAMAGE";amount=2;type="FLAT"}'
+skilltree_weapon_damage4:
+  weapon_damage:
+    triggers:
+      - 'stat{stat="WEAPON_DAMAGE";amount=4;type="FLAT"}'
+
+## DAMAGE_REDUCTION
+skilltree_damage_reduction1:
+  weapon_damage:
+    triggers:
+      - 'stat{stat="DAMAGE_REDUCTION";amount=1;type="FLAT"}'
+skilltree_damage_reduction2:
+  weapon_damage:
+    triggers:
+      - 'stat{stat="DAMAGE_REDUCTION";amount=2;type="FLAT"}'
+
+## LIFESTEAL
+skilltree_lifesteal1:
+  lifesteal:
+    triggers:
+      - 'stat{stat="LIFESTEAL";amount=1;type="FLAT"}'
+skilltree_lifesteal2:
+  lifesteal:
+    triggers:
+      - 'stat{stat="LIFESTEAL";amount=2;type="FLAT"}'
+skilltree_lifesteal3:
+  lifesteal:
+    triggers:
+      - 'stat{stat="LIFESTEAL";amount=3;type="FLAT"}'
+
+## MAX_HEALTH
+skilltree_max_health1:
+  max_health:
+    triggers:
+      - 'stat{stat="MAX_HEALTH";amount=1;type="FLAT"}'
+skilltree_max_health2:
+  max_health:
+    triggers:
+      - 'stat{stat="MAX_HEALTH";amount=2;type="FLAT"}'
+skilltree_max_health4:
+  max_health:
+    triggers:
+      - 'stat{stat="MAX_HEALTH";amount=4;type="FLAT"}'
+skilltree_max_health5:
+  max_health:
+    triggers:
+      - 'stat{stat="MAX_HEALTH";amount=5;type="FLAT"}'
+
+## MAGIC_DAMAGE
+skilltree_magic_damage1:
+  magic_damage:
+    triggers:
+      - 'stat{stat="MAGIC_DAMAGE";amount=1;type="FLAT"}'
+skilltree_magic_damage2:
+  magic_damage:
+    triggers:
+      - 'stat{stat="MAGIC_DAMAGE";amount=2;type="FLAT"}'
+skilltree_magic_damage3:
+  magic_damage:
+    triggers:
+      - 'stat{stat="MAGIC_DAMAGE";amount=3;type="FLAT"}'
+
+## ATTACK_SPEED
+skilltree_attack_speed5:
+  attack_speed:
+    triggers:
+      - 'stat{stat="ATTACK_SPEED";amount=5;type="RELATIVE"}'
+skilltree_attack_speed10:
+  attack_speed:
+    triggers:
+      - 'stat{stat="ATTACK_SPEED";amount=10;type="RELATIVE"}'
+skilltree_attack_speed15:
+  attack_speed:
+    triggers:
+      - 'stat{stat="ATTACK_SPEED";amount=15;type="RELATIVE"}'
+
+## PHYSICAL_DAMAGE_REDUCTION
+skilltree_physical_damage_reduction5:
+  physical_damage_reduction:
+    triggers:
+      - 'stat{stat="PHYSICAL_DAMAGE_REDUCTION";amount=5;type="FLAT"}'
+skilltree_physical_damage_reduction10:
+  physical_damage_reduction:
+    triggers:
+      - 'stat{stat="PHYSICAL_DAMAGE_REDUCTION";amount=10;type="FLAT"}'
+skilltree_physical_damage_reduction15:
+  physical_damage_reduction:
+    triggers:
+      - 'stat{stat="PHYSICAL_DAMAGE_REDUCTION";amount=15;type="FLAT"}'
+
+## PARRY_RATING
+skilltree_parry_rating5:
+  parry_rating:
+    triggers:
+      - 'stat{stat="PARRY_RATING";amount=5;type="FLAT"}'
+skilltree_parry_rating10:
+  parry_ratingn:
+    triggers:
+      - 'stat{stat="PARRY_RATING";amount=10;type="FLAT"}'
+
+## KNOCKBACK_RESISTANCE
+skilltree_knockback_resistance5:
+  knockback_resistance:
+    triggers:
+      - 'stat{stat="KNOCKBACK_RESISTANCE";amount=0.05;type="FLAT"}'
+skilltree_knockback_resistance10:
+  knockback_resistance:
+    triggers:
+      - 'stat{stat="KNOCKBACK_RESISTANCE";amount=0.1;type="FLAT"}'
+
+## DODGE_RATING
+skilltree_dodge_rating2:
+  dodge_rating:
+    triggers:
+      - 'stat{stat="DODGE_RATING";amount=2;type="FLAT"}'
+skilltree_dodge_rating3:
+  dodge_rating:
+    triggers:
+      - 'stat{stat="DODGE_RATING";amount=3;type="FLAT"}'
+skilltree_dodge_rating5:
+  dodge_rating:
+    triggers:
+      - 'stat{stat="DODGE_RATING";amount=100;type="FLAT"}'
+
+## SKILL_DAMAGE
+skilltree_skill_damage5:
+  skill_damage:
+    triggers:
+      - 'stat{stat="SKILL_DAMAGE";amount=5;type="FLAT"}'
+skilltree_skill_damage10:
+  skill_damage:
+    triggers:
+      - 'stat{stat="SKILL_DAMAGE";amount=10;type="FLAT"}'
+
+## SPELL_VAMPIRISM
+skilltree_spell_vampirism2:
+  spell_vampirism:
+    triggers:
+      - 'stat{stat="SPELL_VAMPIRISM";amount=2;type="FLAT"}'
+skilltree_spell_vampirism6:
+  spell_vampirism:
+    triggers:
+      - 'stat{stat="SPELL_VAMPIRISM";amount=6;type="FLAT"}'
+
+## ADDITIONAL_EXPERIENCE
+skilltree_additional_experience2:
+  additional_experience:
+    triggers:
+      - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=2;type="FLAT"}'
+skilltree_additional_experience3:
+  additional_experience:
+    triggers:
+      - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=3;type="FLAT"}'
+skilltree_additional_experience5:
+  additional_experience:
+    triggers:
+      - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=5;type="FLAT"}'
+
+## MAGIC_DAMAGE_REDUCTION
+skilltree_magic_damage_reduction5:
+  magic_damage_reduction:
+    triggers:
+      - 'stat{stat="MAGIC_DAMAGE_REDUCTION";amount=5;type="FLAT"}'
+skilltree_magic_damage_reduction10:
+  magic_damage_reduction:
+    triggers:
+      - 'stat{stat="MAGIC_DAMAGE_REDUCTION";amount=10;type="FLAT"}'
+
+## SKILL_CRITICAL_STRIKE_CHANCE
+skilltree_skill_critical_strike_chance5:
+  skill_critical_strike_chance:
+    triggers:
+      - 'stat{stat="SKILL_CRITICAL_STRIKE_CHANCE";amount=5;type="FLAT"}'
+skilltree_skill_critical_strike_chance10:
+  skill_critical_strike_chance:
+    triggers:
+      - 'stat{stat="SKILL_CRITICAL_STRIKE_CHANCE";amount=10;type="FLAT"}'
+skilltree_skill_critical_strike_chance15:
+  skill_critical_strike_chance:
+    triggers:
+      - 'stat{stat="SKILL_CRITICAL_STRIKE_CHANCE";amount=15;type="FLAT"}'
+
+## ARROW_VELOCITY
+skilltree_arrow_velocity10:
+  arrow_velocity:
+    triggers:
+      - 'stat{stat="ARROW_VELOCITY";amount=10;type="RELATIVE"}'
+skilltree_arrow_velocity15:
+  arrow_velocity:
+    triggers:
+      - 'stat{stat="ARROW_VELOCITY";amount=15;type="RELATIVE"}'
+skilltree_arrow_velocity25:
+  arrow_velocity:
+    triggers:
+      - 'stat{stat="ARROW_VELOCITY";amount=25;type="RELATIVE"}'
+
+## MOVEMENT_SPEED
+skilltree_movement_speed2:
+  movement_speed:
+    triggers:
+      - 'stat{stat="MOVEMENT_SPEED";amount=10;type="RELATIVE"}'
+skilltree_movement_speed6:
+  movement_speed:
+    triggers:
+      - 'stat{stat="MOVEMENT_SPEED";amount=10;type="RELATIVE"}'
+
+## PROJECTILE_DAMAGE
+skilltree_projectile_damage2:
+  projectile_damage:
+    triggers:
+      - 'stat{stat="PROJECTILE_DAMAGE";amount=10;type="FLAT"}'
+skilltree_projectile_damage6:
+  projectile_damage:
+    triggers:
+      - 'stat{stat="PROJECTILE_DAMAGE";amount=6;type="FLAT"}'
