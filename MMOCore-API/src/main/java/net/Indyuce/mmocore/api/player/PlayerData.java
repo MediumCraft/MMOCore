@@ -2,6 +2,8 @@ package net.Indyuce.mmocore.api.player;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
+import io.lumine.mythic.lib.api.stat.StatInstance;
+import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
@@ -33,6 +35,7 @@ import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.player.Unlockable;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -117,6 +120,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     // NON-FINAL player data stuff made public to facilitate field change
     public boolean noCooldown;
+    private boolean statLoaded;
     public CombatRunnable combat;
 
     /**
@@ -132,6 +136,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
 
+        //Used to see if the triggers need to be applied
+        boolean statLoaded = false;
+        for (StatInstance instance : mmoData.getStatMap().getInstances())
+            for (StatModifier modifier : instance.getModifiers())
+                if (modifier.getKey().startsWith("trigger"))
+                    statLoaded = true;
+        this.statLoaded = statLoaded;
 
     }
 
@@ -168,12 +179,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
             skillTree.setupNodeState(this);
 
-        //Stat triggers setup
-        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
-            for (SkillTreeNode node : skillTree.getNodes()) {
-                node.getExperienceTable().claimStatTriggers(this, node);
+
+        if (!statLoaded)
+            //Stat triggers setup
+            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
+                for (SkillTreeNode node : skillTree.getNodes()) {
+                    node.getExperienceTable().claimStatTriggers(this, node);
+                }
             }
-        }
 
     }
 
@@ -225,6 +238,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             nodeLevelsString.put(node.getFullId(), nodeLevels.get(node));
         }
         return nodeLevelsString.entrySet();
+    }
+
+    public boolean isStatLoaded() {
+        return statLoaded;
     }
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
