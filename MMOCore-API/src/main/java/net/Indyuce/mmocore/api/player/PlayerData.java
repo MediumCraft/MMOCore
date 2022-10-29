@@ -187,6 +187,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     node.getExperienceTable().claimStatTriggers(this, node);
                 }
             }
+            statLoaded=true;
 
     }
 
@@ -342,6 +343,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             nodeStates.remove(node);
         }
         skillTree.setupNodeState(this);
+    }
+
+
+    public void updateSkillTree() {
+        nodeStates.clear();
+        for (SkillTree tree : profess.getSkillTrees()) {
+            for (SkillTreeNode node : tree.getNodes()) {
+                if (!nodeLevels.containsKey(node))
+                    nodeLevels.put(node, 0);
+            }
+        }
+        setupSkillTree();
     }
 
     public Map<SkillTreeNode, NodeState> getNodeStates() {
