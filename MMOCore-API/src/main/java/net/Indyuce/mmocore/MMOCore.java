@@ -382,11 +382,6 @@ public class MMOCore extends JavaPlugin {
 
         if (clearBefore)
             PlayerData.getAll().forEach(PlayerData::update);
-        else
-            //We update the skill tree data if some new skill tree has been
-            // created and updated with the /mmocore reload command.
-            PlayerData.getAll().forEach(PlayerData::updateSkillTree);
-
     }
 
     public static void log(String message) {

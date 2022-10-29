@@ -172,11 +172,20 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             } finally {
                 j++;
             }
+
+        for(SkillTree skillTree:profess.getSkillTrees()) {
+            for(SkillTreeNode node: skillTree.getNodes()) {
+                if(!nodeLevels.containsKey(node))
+                    nodeLevels.put(node,0);
+            }
+        }
+
+        setupSkillTree();
     }
 
     public void setupSkillTree() {
         //Node states setup
-        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+        for (SkillTree skillTree : profess.getSkillTrees())
             skillTree.setupNodeState(this);
 
 
@@ -343,18 +352,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             nodeStates.remove(node);
         }
         skillTree.setupNodeState(this);
-    }
-
-
-    public void updateSkillTree() {
-        nodeStates.clear();
-        for (SkillTree tree : profess.getSkillTrees()) {
-            for (SkillTreeNode node : tree.getNodes()) {
-                if (!nodeLevels.containsKey(node))
-                    nodeLevels.put(node, 0);
-            }
-        }
-        setupSkillTree();
     }
 
     public Map<SkillTreeNode, NodeState> getNodeStates() {
