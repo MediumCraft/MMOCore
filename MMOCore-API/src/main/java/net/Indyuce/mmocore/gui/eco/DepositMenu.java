@@ -42,8 +42,6 @@ public class DepositMenu extends PluginInventory {
 
     @Override
     public void whenClicked(InventoryClickContext event) {
-        if (event.getClickedItem() == null || event.getClickedItem().getType() == Material.AIR)
-            return;
 
         if (event.getClickedItem().isSimilar(depositItem)) {
             event.setCancelled(true);
