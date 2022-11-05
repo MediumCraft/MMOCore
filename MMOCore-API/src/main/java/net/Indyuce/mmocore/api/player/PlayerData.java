@@ -173,10 +173,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 j++;
             }
 
-        for(SkillTree skillTree:profess.getSkillTrees()) {
-            for(SkillTreeNode node: skillTree.getNodes()) {
-                if(!nodeLevels.containsKey(node))
-                    nodeLevels.put(node,0);
+        for (SkillTree skillTree : profess.getSkillTrees()) {
+            for (SkillTreeNode node : skillTree.getNodes()) {
+                if (!nodeLevels.containsKey(node))
+                    nodeLevels.put(node, 0);
             }
         }
 
@@ -196,7 +196,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                     node.getExperienceTable().claimStatTriggers(this, node);
                 }
             }
-            statLoaded=true;
+        statLoaded = true;
 
     }
 
@@ -232,6 +232,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public Map<String, Integer> getSkillTreePoints() {
         return new HashMap(skillTreePoints);
     }
+
+
 
     public void clearSkillTreePoints() {
         skillTreePoints.clear();
@@ -371,20 +373,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return result;
     }
 
-    public void resetNodeTimesClaimed() {
-        Map<String, Integer> newTableItemClaims = new HashMap<>();
-        tableItemClaims.forEach((str, val) -> {
-            if (!str.startsWith(SkillTreeNode.getPrefix()))
-                newTableItemClaims.put(str, val);
-        });
+    public void resetTimesClaimed() {
         tableItemClaims.clear();
-        tableItemClaims.putAll(newTableItemClaims);
     }
 
-
-    public void addNodeLevel(SkillTreeNode node) {
-        nodeLevels.put(node, nodeLevels.get(node) + 1);
-    }
 
     @Override
     public void close() {
@@ -804,7 +796,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *                         If it's null, no hologram will be displayed
      * @param splitExp         Should the exp be split among party members
      */
-    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation,
+                               boolean splitExp) {
         if (value <= 0)
             return;
 

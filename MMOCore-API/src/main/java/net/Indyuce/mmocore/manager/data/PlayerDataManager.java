@@ -184,6 +184,8 @@ public abstract class PlayerDataManager {
             player.setSkillPoints(skillPoints);
             player.setAttributePoints(attributePoints);
             player.setAttributeReallocationPoints(attrReallocPoints);
+            player.setSkillTreeReallocationPoints(skillTreeReallocPoints);
+            player.setSkillReallocationPoints(skillReallocPoints);
         }
     }
 }
