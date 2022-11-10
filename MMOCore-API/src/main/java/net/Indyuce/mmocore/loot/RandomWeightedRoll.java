@@ -17,6 +17,7 @@ public class RandomWeightedRoll<T extends Weighted> {
     private final T rolled;
 
     private static final Random RANDOM = new Random();
+    private static final double CHANCE_COEFFICIENT = 7. / 100;
 
     public RandomWeightedRoll(PlayerData player, Collection<T> collection, double chanceWeight) {
         this.collection = collection;
@@ -26,13 +27,13 @@ public class RandomWeightedRoll<T extends Weighted> {
 
         for (T item : collection) {
             partialSum += computeRealWeight(item, chance);
-            if (partialSum > randomCoefficient * sum) {
+            if (partialSum >= randomCoefficient * sum) {
                 rolled = item;
                 return;
             }
         }
 
-        throw new RuntimeException("Could not roll item");
+        throw new RuntimeException("Could not roll item, the chance is :"+chance);
     }
 
     /**
@@ -53,7 +54,6 @@ public class RandomWeightedRoll<T extends Weighted> {
         return sum;
     }
 
-    private static final double CHANCE_COEFFICIENT = 7. / 100;
 
     /**
      * chance = 0    | tier chances are unchanged

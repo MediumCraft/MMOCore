@@ -6,6 +6,8 @@ import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -32,9 +34,8 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
+import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -170,23 +171,30 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             } finally {
                 j++;
             }
+
+        for (SkillTree skillTree : profess.getSkillTrees()) {
+            for (SkillTreeNode node : skillTree.getNodes()) {
+                if (!nodeLevels.containsKey(node))
+                    nodeLevels.put(node, 0);
+            }
+        }
+
+        setupSkillTree();
     }
 
     public void setupSkillTree() {
-        // Node states setup
-        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+        //Node states setup
+        for (SkillTree skillTree : profess.getSkillTrees())
             skillTree.setupNodeState(this);
 
         // Stat triggers setup
-        if (!statLoaded)
-            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
-                for (SkillTreeNode node : skillTree.getNodes()) {
+        if (!statLoaded) {
+            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+                for (SkillTreeNode node : skillTree.getNodes())
                     node.getExperienceTable().claimStatTriggers(this, node);
-                }
-            }
-
+            statLoaded = true;
+        }
     }
-
 
     public int getPointSpent(SkillTree skillTree) {
         return pointSpent.getOrDefault(skillTree, 0);
@@ -219,6 +227,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public Map<String, Integer> getSkillTreePoints() {
         return new HashMap(skillTreePoints);
     }
+
+
 
     public void clearSkillTreePoints() {
         skillTreePoints.clear();
@@ -358,19 +368,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return result;
     }
 
-    public void resetNodeTimesClaimed() {
-        Map<String, Integer> newTableItemClaims = new HashMap<>();
-        tableItemClaims.forEach((str, val) -> {
-            if (!str.startsWith(SkillTreeNode.getPrefix()))
-                newTableItemClaims.put(str, val);
-        });
+    public void resetTimesClaimed() {
         tableItemClaims.clear();
-        tableItemClaims.putAll(newTableItemClaims);
-    }
-
-
-    public void addNodeLevel(SkillTreeNode node) {
-        nodeLevels.put(node, nodeLevels.get(node) + 1);
     }
 
     @Override

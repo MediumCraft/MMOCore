@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.loot.droptable.dropitem;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.Indyuce.mmocore.loot.LootBuilder;
@@ -46,7 +47,7 @@ public abstract class DropItem {
      */
     public boolean rollChance(PlayerData player) {
         double value = random.nextDouble();
-        return value < Math.pow(chance, 1 / Math.pow(1 + CHANCE_COEFFICIENT * player.getStats().getStat("CHANCE"), 1.0 / 3.0));
+        return value < Math.pow(chance, 1 / Math.pow(1 + CHANCE_COEFFICIENT * MMOCore.plugin.configManager.dropItemsChanceWeight* player.getStats().getStat("CHANCE"), 1.0 / 3.0));
     }
 
     public abstract void collect(LootBuilder builder);

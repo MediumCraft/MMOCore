@@ -125,7 +125,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                                 data.getBoundSkills().add(skill);
                                         }
                                 if (!isEmpty(result.getString("class_info"))) {
-                                    JsonObject object = MythicLib.plugin.getJson().parse(result.getString("class_info"), JsonObject.class);
+                                    JsonObject object = new Gson().fromJson(result.getString("class_info"), JsonObject.class);
                                     for (Entry<String, JsonElement> entry : object.entrySet()) {
                                         try {
                                             PlayerClass profess = MMOCore.plugin.classManager.get(entry.getKey());

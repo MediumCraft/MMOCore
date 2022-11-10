@@ -337,8 +337,7 @@ public class SkillTreeViewer extends EditableInventory {
 
         @Override
         public void whenClicked(InventoryClickContext event, InventoryItem item) {
-            if(event.getClickedItem()==null)
-                return;
+
 
             if (item.getFunction().equals("next-tree-list-page")) {
                 treeListPage++;
@@ -401,7 +400,7 @@ public class SkillTreeViewer extends EditableInventory {
                 String id = event.getClickedItem().getItemMeta().getPersistentDataContainer().get(
                         new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING);
                 MMOCore.plugin.soundManager.getSound(SoundEvent.CHANGE_SKILL_TREE).playTo(player);
-                skillTree=MMOCore.plugin.skillTreeManager.get(id);
+                skillTree = MMOCore.plugin.skillTreeManager.get(id);
                 open();
                 event.setCancelled(true);
                 return;
