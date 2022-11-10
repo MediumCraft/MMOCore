@@ -54,7 +54,7 @@ public class SkillScroller implements Listener {
                 if (event.getPressed().shouldCancelEvent())
                     event.setCancelled(true);
 
-                playerData.leaveCastingMode();
+                playerData.leaveSkillCasting();
                 if (leaveSound != null)
                     leaveSound.playTo(player);
                 return;
@@ -94,7 +94,7 @@ public class SkillScroller implements Listener {
             return;
 
         if (playerData.getBoundSkills().isEmpty()) {
-            playerData.leaveCastingMode();
+            playerData.leaveSkillCasting();
             return;
         }
 

@@ -996,7 +996,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return Objects.requireNonNull(skillCasting, "Player not in casting mode");
     }
 
-    public void leaveCastingMode() {
+    public void leaveSkillCasting() {
         Validate.isTrue(isCasting(), "Player not in casting mode");
         skillCasting.close();
         this.skillCasting = null;

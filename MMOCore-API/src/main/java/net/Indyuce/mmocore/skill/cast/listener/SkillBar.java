@@ -5,12 +5,10 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.loot.chest.particle.CastingParticle;
+import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
-import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import org.bukkit.GameMode;
@@ -25,9 +23,11 @@ import java.util.Objects;
 
 public class SkillBar implements Listener {
     private final PlayerKey mainKey;
+    private final boolean disableSneak;
 
     public SkillBar(ConfigurationSection config) {
         mainKey = PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("open"), "Could not find open key")));
+        disableSneak = config.getBoolean("disable-sneak");
     }
 
     @EventHandler
@@ -62,9 +62,12 @@ public class SkillBar implements Listener {
 
         @EventHandler
         public void onSkillCast(PlayerItemHeldEvent event) {
-            Player player = event.getPlayer();
-            if (!getCaster().isOnline()) return;
             if (!event.getPlayer().equals(getCaster().getPlayer())) return;
+
+            if (!getCaster().isOnline()) {
+                getCaster().leaveSkillCasting();
+                return;
+            }
 
             /*
              * When the event is cancelled, another playerItemHeldEvent is
@@ -73,8 +76,9 @@ public class SkillBar implements Listener {
              */
             if (event.getPreviousSlot() == event.getNewSlot()) return;
 
-            //If the player is sneaking, we don't trigger the casting mode (used to avoid conflicts with other plugins using shift+F to open GUI.
-            if(player.isSneaking()) return;
+            // Extra option to improve support with other plugins
+            final Player player = event.getPlayer();
+            if (disableSneak && player.isSneaking()) return;
 
             event.setCancelled(true);
             int slot = event.getNewSlot() + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
@@ -86,8 +90,8 @@ public class SkillBar implements Listener {
              */
             if (slot >= 0 && getCaster().hasSkillBound(slot)) {
                 PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                int delay= getCaster().getBoundSkill(slot).getDelay(getCaster());
-                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null),delay);
+                int delay = getCaster().getBoundSkill(slot).getDelay(getCaster());
+                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null), delay);
             }
         }
 
@@ -103,7 +107,7 @@ public class SkillBar implements Listener {
                         MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(getCaster().getPlayer());
                     }
                 }.runTask(MMOCore.plugin);
-                PlayerData.get(player).leaveCastingMode();
+                getCaster().leaveSkillCasting();
             }
         }
 
@@ -115,7 +119,7 @@ public class SkillBar implements Listener {
                 str.append((str.length() == 0) ? "" : split).append((onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
                         String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000)) : noMana(data, skill) ? noMana : (noStamina(
                         data, skill) ? noStamina : ready)).replace("{index}",
-                                "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0)))
+                        "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0)))
                         .replace("{skill}", data.getBoundSkill(j).getSkill().getName()));
             }
             return MMOCore.plugin.placeholderParser.parse(data.getPlayer(), str.toString());
