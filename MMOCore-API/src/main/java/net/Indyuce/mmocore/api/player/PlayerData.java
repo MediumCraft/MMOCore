@@ -1109,36 +1109,56 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return slot >= boundSkills.size() ? null : boundSkills.get(slot);
     }
 
-    public void setBoundPassiveSkill(int slot, PassiveSkill skill) {
+    /**
+     * Registers a passive skill in the list. This method guarantees interface
+     * between ML passive skills and the MMOCore list.
+     *
+     * @param slot  Slot to which you're binding the skill.
+     *              Use -1 to force-register the skill
+     * @param skill Skill being bound
+     */
+    public void bindPassiveSkill(int slot, @NotNull PassiveSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (boundPassiveSkills.size() < getProfess().getMaxBoundActiveSkills())
-            boundPassiveSkills.add(skill);
-        else
-            boundPassiveSkills.set(slot, skill);
-        boundPassiveSkills.get(slot).register(getMMOPlayerData());
+        final int maxBound = getProfess().getMaxBoundActiveSkills();
+        if (slot > 0 && boundPassiveSkills.size() >= maxBound) {
+            final @NotNull PassiveSkill current = boundPassiveSkills.set(slot, skill);
+            if (current != null)
+                current.unregister(mmoData);
+            skill.register(mmoData);
+            return;
+        }
+
+        boundPassiveSkills.add(skill);
+        skill.register(mmoData);
     }
 
     public boolean hasPassiveSkillBound(int slot) {
         return slot < boundPassiveSkills.size();
     }
 
+    @Nullable
     public PassiveSkill getBoundPassiveSkill(int slot) {
         return slot >= boundPassiveSkills.size() ? null : boundPassiveSkills.get(slot);
     }
 
-    public void addPassiveBoundSkill(PassiveSkill skill) {
-        boundPassiveSkills.add(skill);
-        skill.register(getMMOPlayerData());
+    @Deprecated
+    public void setBoundSkill(int slot, ClassSkill skill) {
+        bindActiveSkill(slot, skill);
     }
 
-    public void setBoundSkill(int slot, ClassSkill skill) {
-
+    /**
+     * Binds a skill to the player.
+     *
+     * @param slot  Slot to which you're binding the skill.
+     *              Use -1 to force-register the skill
+     * @param skill Skill being bound
+     */
+    public void bindActiveSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (boundSkills.size() < getProfess().getMaxBoundActiveSkills())
-            boundSkills.add(skill);
-        else
+        if (slot > 0 && boundSkills.size() >= getProfess().getMaxBoundActiveSkills())
             boundSkills.set(slot, skill);
-
+        else
+            boundSkills.add(skill);
     }
 
     public void unbindSkill(int slot) {
@@ -1149,7 +1169,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         PassiveSkill skill = boundPassiveSkills.get(slot);
         skill.unregister(getMMOPlayerData());
         boundPassiveSkills.remove(slot);
-
     }
 
     public List<ClassSkill> getBoundSkills() {

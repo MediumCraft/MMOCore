@@ -5,14 +5,12 @@ import io.lumine.mythic.lib.player.cooldown.CooldownObject;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import io.lumine.mythic.lib.script.condition.Condition;
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -121,10 +119,9 @@ public class ClassSkill implements CooldownObject {
 
 
     /**
-     * Be careful, this method creates a new UUID each time it is called. Need to be remembered when trying to unregister passive skill
-     * from PassiveSkillMap.
-     *
-     * @return
+     * Be careful, this method creates a new UUID each time it
+     * is called. It needs to be saved somewhere when trying to
+     * unregister the passive skill from the skill map later on.
      */
     public PassiveSkill toPassive(PlayerData caster) {
         Validate.isTrue(skill.getTrigger().isPassive(), "Skill is active");
