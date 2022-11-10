@@ -4,26 +4,31 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class InventoryClickContext {
     private final int slot;
-    private final ItemStack itemStack;
+
+    @Nullable
+    private final ItemStack currentItem;
+
+    @NotNull
     private final ClickType clickType;
 
+    @NotNull
     private final Cancellable event;
-    private Inventory inv;
 
-    public InventoryClickContext(int slot, ItemStack itemStack, ClickType clickType, Cancellable event) {
-        this.slot = slot;
-        this.itemStack = itemStack;
-        this.clickType = clickType;
-        this.event = event;
+    @Nullable
+    private final Inventory inv;
+
+    public InventoryClickContext(int slot, ItemStack currentItem, ClickType clickType, Cancellable event) {
+        this(slot, currentItem, clickType, event, null);
     }
 
-    public InventoryClickContext(int slot, ItemStack itemStack, ClickType clickType, Cancellable event, Inventory inv) {
+    public InventoryClickContext(int slot, ItemStack currentItem, ClickType clickType, Cancellable event, Inventory inv) {
         this.slot = slot;
-        this.itemStack = itemStack;
+        this.currentItem = currentItem;
         this.clickType = clickType;
         this.event = event;
         this.inv = inv;
@@ -48,13 +53,15 @@ public class InventoryClickContext {
      */
     @Nullable
     public ItemStack getClickedItem() {
-        return itemStack;
+        return currentItem;
     }
 
+    @NotNull
     public Cancellable getEvent() {
         return event;
     }
 
+    @Nullable
     public Inventory getInventory() {
         return inv;
     }
@@ -63,6 +70,7 @@ public class InventoryClickContext {
         return inv != null;
     }
 
+    @NotNull
     public ClickType getClickType() {
         return clickType;
     }
