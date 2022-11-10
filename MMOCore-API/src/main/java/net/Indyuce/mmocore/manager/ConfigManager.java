@@ -76,12 +76,12 @@ public class ConfigManager {
             loadDefaultFile("expcurves", "mining.txt");
         }
 
-        if(!new File(MMOCore.plugin.getDataFolder()+"/skilltree").exists()) {
-            loadDefaultFile("skilltree","combat.yml");
-            loadDefaultFile("skilltree","mage-arcane-mage.yml");
-            loadDefaultFile("skilltree","rogue-marksman.yml");
-            loadDefaultFile("skilltree","warrior-paladin.yml");
-            loadDefaultFile("skilltree","general.yml");
+        if(!new File(MMOCore.plugin.getDataFolder()+"/skill-trees").exists()) {
+            loadDefaultFile("skill-trees","combat.yml");
+            loadDefaultFile("skill-trees","mage-arcane-mage.yml");
+            loadDefaultFile("skill-trees","rogue-marksman.yml");
+            loadDefaultFile("skill-trees","warrior-paladin.yml");
+            loadDefaultFile("skill-trees","general.yml");
 
 
         }

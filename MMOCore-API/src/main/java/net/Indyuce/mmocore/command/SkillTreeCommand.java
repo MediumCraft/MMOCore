@@ -25,7 +25,7 @@ public class SkillTreeCommand extends BukkitCommand {
         if (!(sender instanceof Player player))
             return false;
         PlayerData data = PlayerData.get(player);
-        MMOCommandEvent event = new MMOCommandEvent(data, "skilltree");
+        MMOCommandEvent event = new MMOCommandEvent(data, "skilltrees");
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled())
             return true;

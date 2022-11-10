@@ -28,8 +28,8 @@ guild:
 withdraw:
   main: "withdraw"
   aliases: ["w"]
-skill-tree:
-  main: "skilltree"
+skill-trees:
+  main: "skilltrees"
   aliase: ["st"]
 deposit:
   main: "deposit"
