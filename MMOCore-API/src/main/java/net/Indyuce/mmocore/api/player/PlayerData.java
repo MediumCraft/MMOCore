@@ -6,8 +6,6 @@ import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -34,8 +32,9 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -120,7 +119,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     // NON-FINAL player data stuff made public to facilitate field change
     public boolean noCooldown;
-    private boolean statLoaded;
+    private final boolean statLoaded;
     public CombatRunnable combat;
 
     /**
@@ -136,14 +135,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
 
-        //Used to see if the triggers need to be applied
+        // Used to see if the triggers need to be applied
         boolean statLoaded = false;
         for (StatInstance instance : mmoData.getStatMap().getInstances())
             for (StatModifier modifier : instance.getModifiers())
                 if (modifier.getKey().startsWith("trigger"))
                     statLoaded = true;
         this.statLoaded = statLoaded;
-
     }
 
     /**
@@ -175,13 +173,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setupSkillTree() {
-        //Node states setup
+        // Node states setup
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
             skillTree.setupNodeState(this);
 
-
+        // Stat triggers setup
         if (!statLoaded)
-            //Stat triggers setup
             for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
                 for (SkillTreeNode node : skillTree.getNodes()) {
                     node.getExperienceTable().claimStatTriggers(this, node);
