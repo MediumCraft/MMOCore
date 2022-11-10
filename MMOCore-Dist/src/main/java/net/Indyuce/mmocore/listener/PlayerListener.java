@@ -1,6 +1,7 @@
 
 package net.Indyuce.mmocore.listener;
 
+import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -8,12 +9,9 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,8 +38,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void b(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof PluginInventory)
-            ((PluginInventory) event.getInventory().getHolder())
-                    .whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory()));
+            ((PluginInventory) event.getInventory().getHolder()).whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory()));
     }
 
     /**
@@ -57,17 +54,9 @@ public class PlayerListener implements Listener {
      * Updates the player's combat log data every time he hits an entity, or
      * gets hit by an entity or a projectile sent by another entity
      */
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void d(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Player && !event.getEntity().hasMetadata("NPC"))
-            PlayerData.get((Player) event.getEntity()).updateCombat();
-
-        if (event.getDamager() instanceof Player && !event.getDamager().hasMetadata("NPC"))
-            PlayerData.get((Player) event.getDamager()).updateCombat();
-
-        if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player)
-            if (!((Player) ((Projectile) event.getDamager()).getShooter()).hasMetadata("NPC"))
-                PlayerData.get((Player) ((Projectile) event.getDamager()).getShooter()).updateCombat();
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void d(PlayerAttackEvent event) {
+        PlayerData.get(event.getAttacker().getPlayer()).updateCombat();
     }
 
     @EventHandler
