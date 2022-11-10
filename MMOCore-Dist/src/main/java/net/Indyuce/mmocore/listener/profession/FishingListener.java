@@ -9,10 +9,7 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.LootBuilder;
 import net.Indyuce.mmocore.loot.fishing.FishingDropItem;
 import net.Indyuce.mmocore.manager.profession.FishingManager.FishingDropTable;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -182,6 +179,9 @@ public class FishingListener implements Listener {
             Bukkit.getPluginManager().callEvent(called);
             if (called.isCancelled())
                 return;
+
+            // Increase player statistic
+            player.incrementStatistic(Statistic.FISH_CAUGHT);
 
             // Calculate yeet velocity
             Item item = hook.getWorld().dropItemNaturally(hook.getLocation(), collect);
