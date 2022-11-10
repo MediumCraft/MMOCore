@@ -22,7 +22,8 @@ exp-sources: {}
 on-fish:
     overriding-drop-table:
         conditions:
-        - 'biome{name=swamp}'
+        - 'region{name=swamp,second-region}'
+        - 'biome{name=beach}'
         
         # When drop table is read, one of these
         # items will be selected randomly.
@@ -30,15 +31,16 @@ on-fish:
         
         # Tugs needed: 4 to 5
         # Fishing EXP earned: 1 to 6
-        - 'mmoitem{type=CONSUMABLE;id=SUSHI_ROLL;tugs=30-40;experience=1-6}'
+        - 'mmoitem{type=CONSUMABLE;id=SUSHI_ROLL;tugs=4-5;experience=1-6} 1 1-1 9'
         
         # Tugs needed: 10 to 20
         # Fishing EXP earned: 20 to 30
-        - 'mmoitem{type=GEM_STONE;id=SPITEFUL_OPAQUE_DIAMOND;tugs=10-15;experience=20-30}'
+        - 'mmoitem{type=GEM_STONE;id=SPITEFUL_OPAQUE_DIAMOND;tugs=10-15;experience=20-30} 1 1-1 1'
 
     # Default drop table which always apply.
     # When removing every drop table, the vanilla
     # fishing mecanism is back.
     default:
         items:
-        - 'vanilla{type=SALMON;tugs=4-5;experience=1-6}'
+        - 'vanilla{type=SALMON;tugs=4-5;experience=1-6} 1 2-5 1'
+
