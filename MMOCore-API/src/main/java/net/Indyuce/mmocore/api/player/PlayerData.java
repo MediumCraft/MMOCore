@@ -71,6 +71,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     private final MMOPlayerData mmoData;
 
+
     /**
      * Can be null, the {@link #getProfess()} method will return the
      * player class, or the default one if this field is null.
