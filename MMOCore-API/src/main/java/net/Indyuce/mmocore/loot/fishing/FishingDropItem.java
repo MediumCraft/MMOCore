@@ -30,7 +30,7 @@ public class FishingDropItem implements Weighted {
 	 */
 	@Override
 	public double getWeight() {
-		return dropItem.getWeight() <= 0 ? 1 : 0;
+		return dropItem.getWeight() <= 0 ? 1 : dropItem.getWeight();
 	}
 
 	public DropItem getItem() {
