@@ -5,12 +5,12 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.tree.NodeState;
-import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
 import net.Indyuce.mmocore.manager.registry.RegisteredObject;
-import net.Indyuce.mmocore.tree.skilltree.display.Icon;
 import net.Indyuce.mmocore.tree.IntegerCoordinates;
+import net.Indyuce.mmocore.tree.NodeState;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
+import net.Indyuce.mmocore.tree.skilltree.display.Icon;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,7 +32,6 @@ import java.util.logging.Level;
  * - extra attribute pts
  * - particle or potion effects
  *
- * @author jules
  * @author Ka0rX
  * @see {@link SkillTreeNode}
  */
@@ -61,7 +60,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         Objects.requireNonNull(config.getStringList("lore"), "Could not find skill tree lore").forEach(str -> lore.add(MythicLib.plugin.parseColors(str)));
         this.item = Material.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("item"))));
         Validate.isTrue(config.isConfigurationSection("nodes"), "Could not find any nodes in the tree");
-        this.maxPointSpent =config.getInt("max-point-spent",Integer.MAX_VALUE);
+        this.maxPointSpent = config.getInt("max-point-spent", Integer.MAX_VALUE);
         for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
             try {
 
@@ -69,7 +68,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 nodes.put(node.getId(), node);
 
             } catch (Exception e) {
-                MMOCore.log( "Couldn't load skill tree node " + id + "." + key + ": " + e.getMessage());
+                MMOCore.log("Couldn't load skill tree node " + id + "." + key + ": " + e.getMessage());
             }
         }
         try {
@@ -86,7 +85,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
             MMOCore.log(Level.WARNING, "Couldn't load paths for skill tree: " + id);
         }
 
-
         try {
             //Load the icons of the skill tree.
             for (String key : config.getConfigurationSection("icons").getKeys(false)) {
@@ -102,7 +100,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 }
             }
         } catch (Exception e) {
-            MMOCore.log( "Couldn't load icons for the skill tree " + id);
+            MMOCore.log("Couldn't load icons for the skill tree " + id);
             e.printStackTrace();
         }
     }
@@ -117,7 +115,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 roots.add(node);
         }
     }
-
 
     @Override
     protected abstract void whenPostLoaded(@NotNull ConfigurationSection configurationSection);
@@ -178,7 +175,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         roots.add(node);
     }
 
-
     /**
      * Recursively go through the skill trees to update the the node states
      */
@@ -186,7 +182,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         for (SkillTreeNode root : roots)
             setupNodeStateFrom(root, playerData);
     }
-
 
     public List<SkillTreeNode> getRoots() {
         return roots;
@@ -292,6 +287,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     public SkillTreeNode getNode(String name) {
         return Objects.requireNonNull(nodes.get(name), "Could not find node in tree '" + id + "' with name '" + name + "'");
     }
+
     public boolean isNode(String name) {
         return nodes.containsKey(name);
     }

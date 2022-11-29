@@ -40,7 +40,7 @@ public abstract class SkillCastingHandler extends BukkitRunnable implements List
     @Override
     public void run() {
         if (!caster.isOnline() || caster.getPlayer().isDead())
-            caster.leaveCastingMode();
+            caster.leaveSkillCasting();
         else {
 
             // Apply casting particles

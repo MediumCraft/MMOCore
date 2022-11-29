@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -80,7 +81,7 @@ public class KeyCombos implements Listener {
             return;
         }
 
-        CustomSkillCastingHandler casting = null;
+        @Nullable CustomSkillCastingHandler casting = null;
 
         // Player is already casting
         if (event.getData().isCasting())
@@ -88,7 +89,7 @@ public class KeyCombos implements Listener {
 
             // Start combo when there is NO initializer key
         else {
-            final ComboMap comboMap = Objects.requireNonNullElse(playerData.getProfess().getComboMap(), this.comboMap);
+            final @NotNull ComboMap comboMap = Objects.requireNonNullElse(playerData.getProfess().getComboMap(), this.comboMap);
             if (comboMap.isComboStart(event.getPressed())) {
                 casting = new CustomSkillCastingHandler(playerData);
                 playerData.setSkillCasting(casting);
@@ -113,7 +114,7 @@ public class KeyCombos implements Listener {
         // Hash current combo and check
         if (casting.combos.getCombos().containsKey(casting.current)) {
             final int spellSlot = casting.combos.getCombos().get(casting.current) - 1;
-            playerData.leaveCastingMode();
+            playerData.leaveSkillCasting();
 
             // Cast spell
             if (playerData.hasSkillBound(spellSlot)) {
@@ -125,7 +126,7 @@ public class KeyCombos implements Listener {
 
         // Check if current combo is too large
         if (casting.current.countKeys() >= casting.combos.getLongest()) {
-            playerData.leaveCastingMode();
+            playerData.leaveSkillCasting();
             if (failComboSound != null)
                 failComboSound.playTo(player);
         }

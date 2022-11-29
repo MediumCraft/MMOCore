@@ -11,8 +11,8 @@ import io.lumine.mythic.lib.skill.result.def.SimpleSkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.util.EntityLocationType;
 import io.lumine.mythic.lib.util.ParabolicProjectile;
-import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -45,7 +45,7 @@ public class Ambers extends SkillHandler<SimpleSkillResult> implements Listener 
 
     @EventHandler
     public void spawnAmber(PlayerAttackEvent event) {
-        MMOPlayerData data = event.getData();
+        MMOPlayerData data = event.getAttacker().getData();
         if (!event.getAttack().getDamage().hasType(DamageType.SKILL))
             return;
 
@@ -53,7 +53,7 @@ public class Ambers extends SkillHandler<SimpleSkillResult> implements Listener 
         if (passive == null)
             return;
 
-        passive.getTriggeredSkill().cast(new TriggerMetadata(event.getAttack(), event.getEntity()));
+        passive.getTriggeredSkill().cast(new TriggerMetadata(event.getAttacker(), event.getAttack(), event.getEntity()));
     }
 
     public static class Amber extends BukkitRunnable {

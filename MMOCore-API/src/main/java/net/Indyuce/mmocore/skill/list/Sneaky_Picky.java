@@ -37,7 +37,7 @@ public class Sneaky_Picky extends SkillHandler<SimpleSkillResult> implements Lis
 
     @EventHandler
     public void a(PlayerAttackEvent event) {
-        MMOPlayerData data = event.getData();
+        MMOPlayerData data = event.getAttacker().getData();
         if (!event.getAttack().getDamage().hasType(DamageType.WEAPON) || PlayerData.get(data.getUniqueId()).isInCombat())
             return;
 
@@ -45,6 +45,6 @@ public class Sneaky_Picky extends SkillHandler<SimpleSkillResult> implements Lis
         if (skill == null)
             return;
 
-        skill.getTriggeredSkill().cast(new TriggerMetadata(event.getAttack(), event.getEntity()));
+        skill.getTriggeredSkill().cast(new TriggerMetadata(event.getAttacker(), event.getAttack(), event.getEntity()));
     }
 }

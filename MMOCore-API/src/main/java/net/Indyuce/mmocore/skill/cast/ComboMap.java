@@ -33,7 +33,7 @@ public class ComboMap {
                 Validate.isTrue(spellSlot >= 0, "Spell slot must be at least 0");
                 Validate.isTrue(!combos.values().contains(spellSlot), "There is already a key combo with the same skill slot");
                 KeyCombo combo = new KeyCombo();
-                for (String str : config.getStringList("combos." + key))
+                for (String str : config.getStringList(key))
                     combo.registerKey(PlayerKey.valueOf(UtilityMethods.enumName(str)));
 
                 combos.put(combo, spellSlot);

@@ -277,8 +277,8 @@ public class MMOCore extends JavaPlugin {
                 commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
             if (config.contains("guild"))
                 commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
-            if (config.contains("skill-tree"))
-                commandMap.register("mmocore", new SkillTreeCommand(config.getConfigurationSection("skill-tree")));
+            if (config.contains("skill-trees"))
+                commandMap.register("mmocore", new SkillTreeCommand(config.getConfigurationSection("skill-trees")));
             if (hasEconomy() && economy.isValid()) {
                 if (config.contains("withdraw"))
                     commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));

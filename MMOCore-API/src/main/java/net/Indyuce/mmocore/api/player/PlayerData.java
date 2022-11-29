@@ -6,8 +6,6 @@ import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -34,8 +32,9 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -71,6 +70,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * as well as other things like the last time the player logged in/out
      */
     private final MMOPlayerData mmoData;
+
 
     /**
      * Can be null, the {@link #getProfess()} method will return the
@@ -119,8 +119,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
-    public boolean noCooldown;
-    private boolean statLoaded;
+    public boolean noCooldown, statsLoaded;
     public CombatRunnable combat;
 
     /**
@@ -136,14 +135,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
 
-        //Used to see if the triggers need to be applied
-        boolean statLoaded = false;
+        // Used to see if the triggers need to be applied
         for (StatInstance instance : mmoData.getStatMap().getInstances())
             for (StatModifier modifier : instance.getModifiers())
-                if (modifier.getKey().startsWith("trigger"))
-                    statLoaded = true;
-        this.statLoaded = statLoaded;
-
+                if (modifier.getKey().startsWith("trigger")) {
+                    statsLoaded = true;
+                    break;
+                }
     }
 
     /**
@@ -173,33 +171,27 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 j++;
             }
 
-        for (SkillTree skillTree : profess.getSkillTrees()) {
-            for (SkillTreeNode node : skillTree.getNodes()) {
+        for (SkillTree skillTree : getProfess().getSkillTrees())
+            for (SkillTreeNode node : skillTree.getNodes())
                 if (!nodeLevels.containsKey(node))
                     nodeLevels.put(node, 0);
-            }
-        }
 
         setupSkillTree();
     }
 
     public void setupSkillTree() {
-        //Node states setup
-        for (SkillTree skillTree : profess.getSkillTrees())
+        // Node states setup
+        for (SkillTree skillTree : getProfess().getSkillTrees())
             skillTree.setupNodeState(this);
 
-
-        if (!statLoaded)
-            //Stat triggers setup
-            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll()) {
-                for (SkillTreeNode node : skillTree.getNodes()) {
+        // Stat triggers setup
+        if (!statsLoaded) {
+            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+                for (SkillTreeNode node : skillTree.getNodes())
                     node.getExperienceTable().claimStatTriggers(this, node);
-                }
-            }
-        statLoaded = true;
-
+            statsLoaded = true;
+        }
     }
-
 
     public int getPointSpent(SkillTree skillTree) {
         return pointSpent.getOrDefault(skillTree, 0);
@@ -211,7 +203,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void clearPointsSpent() {
         pointSpent.clear();
-
     }
 
     public void setSkillTreePoints(String treeId, int points) {
@@ -233,12 +224,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return new HashMap(skillTreePoints);
     }
 
-
-
     public void clearSkillTreePoints() {
         skillTreePoints.clear();
     }
-
 
     public boolean containsSkillPointTreeId(String treeId) {
         return skillTreePoints.containsKey(treeId);
@@ -246,14 +234,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
         HashMap<String, Integer> nodeLevelsString = new HashMap<>();
-        for (SkillTreeNode node : nodeLevels.keySet()) {
+        for (SkillTreeNode node : nodeLevels.keySet())
             nodeLevelsString.put(node.getFullId(), nodeLevels.get(node));
-        }
         return nodeLevelsString.entrySet();
     }
 
-    public boolean isStatLoaded() {
-        return statLoaded;
+    public boolean areStatsLoaded() {
+        return statsLoaded;
     }
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
@@ -376,7 +363,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void resetTimesClaimed() {
         tableItemClaims.clear();
     }
-
 
     @Override
     public void close() {
@@ -796,8 +782,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *                         If it's null, no hologram will be displayed
      * @param splitExp         Should the exp be split among party members
      */
-    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation,
-                               boolean splitExp) {
+    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         if (value <= 0)
             return;
 
@@ -999,7 +984,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return Objects.requireNonNull(skillCasting, "Player not in casting mode");
     }
 
-    public void leaveCastingMode() {
+    public void leaveSkillCasting() {
         Validate.isTrue(isCasting(), "Player not in casting mode");
         skillCasting.close();
         this.skillCasting = null;
@@ -1115,36 +1100,56 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return slot >= boundSkills.size() ? null : boundSkills.get(slot);
     }
 
-    public void setBoundPassiveSkill(int slot, PassiveSkill skill) {
+    /**
+     * Registers a passive skill in the list. This method guarantees interface
+     * between ML passive skills and the MMOCore list.
+     *
+     * @param slot  Slot to which you're binding the skill.
+     *              Use -1 to force-register the skill
+     * @param skill Skill being bound
+     */
+    public void bindPassiveSkill(int slot, @NotNull PassiveSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (boundPassiveSkills.size() < getProfess().getMaxBoundActiveSkills())
-            boundPassiveSkills.add(skill);
-        else
-            boundPassiveSkills.set(slot, skill);
-        boundPassiveSkills.get(slot).register(getMMOPlayerData());
+        final int maxBound = getProfess().getMaxBoundActiveSkills();
+        if (slot > 0 && boundPassiveSkills.size() >= maxBound) {
+            final @NotNull PassiveSkill current = boundPassiveSkills.set(slot, skill);
+            if (current != null)
+                current.unregister(mmoData);
+            skill.register(mmoData);
+            return;
+        }
+
+        boundPassiveSkills.add(skill);
+        skill.register(mmoData);
     }
 
     public boolean hasPassiveSkillBound(int slot) {
         return slot < boundPassiveSkills.size();
     }
 
+    @Nullable
     public PassiveSkill getBoundPassiveSkill(int slot) {
         return slot >= boundPassiveSkills.size() ? null : boundPassiveSkills.get(slot);
     }
 
-    public void addPassiveBoundSkill(PassiveSkill skill) {
-        boundPassiveSkills.add(skill);
-        skill.register(getMMOPlayerData());
+    @Deprecated
+    public void setBoundSkill(int slot, ClassSkill skill) {
+        bindActiveSkill(slot, skill);
     }
 
-    public void setBoundSkill(int slot, ClassSkill skill) {
-
+    /**
+     * Binds a skill to the player.
+     *
+     * @param slot  Slot to which you're binding the skill.
+     *              Use -1 to force-register the skill
+     * @param skill Skill being bound
+     */
+    public void bindActiveSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (boundSkills.size() < getProfess().getMaxBoundActiveSkills())
-            boundSkills.add(skill);
-        else
+        if (slot > 0 && boundSkills.size() >= getProfess().getMaxBoundActiveSkills())
             boundSkills.set(slot, skill);
-
+        else
+            boundSkills.add(skill);
     }
 
     public void unbindSkill(int slot) {
@@ -1155,7 +1160,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         PassiveSkill skill = boundPassiveSkills.get(slot);
         skill.unregister(getMMOPlayerData());
         boundPassiveSkills.remove(slot);
-
     }
 
     public List<ClassSkill> getBoundSkills() {

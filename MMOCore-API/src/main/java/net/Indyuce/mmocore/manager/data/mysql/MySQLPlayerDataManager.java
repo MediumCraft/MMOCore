@@ -121,7 +121,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                         if (data.getProfess().hasSkill(id)) {
                                             ClassSkill skill = data.getProfess().getSkill(id);
                                             if (skill.getSkill().getTrigger().isPassive())
-                                                data.addPassiveBoundSkill(skill.toPassive(data));
+                                                data.bindPassiveSkill(-1, skill.toPassive(data));
                                             else
                                                 data.getBoundSkills().add(skill);
                                         }

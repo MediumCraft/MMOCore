@@ -358,16 +358,6 @@ public class SkillList extends EditableInventory {
         @Override
         public void whenClicked(InventoryClickContext context, InventoryItem item) {
 
-            /*
-            if (skillSlots.contains(event.getRawSlot())
-                    && event.getRawSlot() != ((SkillItem) getEditable().getByFunction("skill")).selectedSkillSlot) {
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 2);
-                playerData.skillGuiDisplayOffset = (playerData.skillGuiDisplayOffset + (event.getRawSlot() - 13)) % skills.size();
-                open();
-                return;
-            }
-            */
-
             if (item.getFunction().equals("skill")) {
                 int index = skillSlots.size() * page + skillSlots.indexOf(context.getSlot());
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 2);
@@ -377,8 +367,6 @@ public class SkillList extends EditableInventory {
             }
 
             if (item.getFunction().equals("reallocation")) {
-
-
                 int spent = getPlayerData().countSkillPointsWhenReallocate();
 
                 if (spent < 1) {
@@ -455,7 +443,7 @@ public class SkillList extends EditableInventory {
                 }
 
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-                playerData.setBoundPassiveSkill(index, selected.toPassive(playerData));
+                playerData.bindPassiveSkill(index, selected.toPassive(playerData));
                 open();
                 return;
             }
@@ -497,7 +485,7 @@ public class SkillList extends EditableInventory {
                 }
 
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-                playerData.setBoundSkill(index, selected);
+                playerData.bindActiveSkill(index, selected);
                 open();
                 return;
             }
