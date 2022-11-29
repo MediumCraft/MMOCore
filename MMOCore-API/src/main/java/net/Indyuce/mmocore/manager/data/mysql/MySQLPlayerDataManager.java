@@ -17,6 +17,7 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             @Override
             public void run() {
                 //To prevent infinite loops
-                if (System.currentTimeMillis() - startTime > 4000) {
+                if (System.currentTimeMillis() - startTime > 6000) {
                     cancel();
                     return;
                 }
@@ -53,7 +54,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
                             //If the data couldn't be loaded for more than 2 seconds its probably due to a server crash and we load the old data
                             //If it the status is is_saved we load the data
-                            if (System.currentTimeMillis() - startTime > 2000 || result.getInt("is_saved") == 1) {
+                            if (System.currentTimeMillis() - startTime > 4000 || result.getInt("is_saved") == 1) {
                                 MMOCore.sqlDebug("Time waited: " + (System.currentTimeMillis() - startTime));
                                 MMOCore.sqlDebug("Loading data for: '" + data.getUniqueId() + "'...");
 
@@ -146,6 +147,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 data.setFullyLoaded();
                                 MMOCore.sqlDebug("Loaded saved data for: '" + data.getUniqueId() + "'!");
                                 MMOCore.sqlDebug(String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
+                                return;
                             } else {
                                 MMOCore.sqlDebug("Failed to load data because is_saved is false.");
                             }
@@ -173,7 +175,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             }
         };
 
-        runnable.runTaskTimerAsynchronously(MMOCore.plugin, 0L, 10L);
+        runnable.runTaskTimerAsynchronously(MMOCore.plugin, 0L, 40L);
     }
 
     @Override
@@ -215,7 +217,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         sql.updateData("quests", data.getQuestData().toJsonString());
 
         sql.updateData("class_info", createClassInfoData(data).toString());
-        sql.updateData("is_saved", 1);
+        Bukkit.getScheduler().runTaskLater(MMOCore.plugin,()->sql.updateData("is_saved", 1),10L);
 
         MMOCore.sqlDebug("Saved data for: " + data.getUniqueId());
         MMOCore.sqlDebug(String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
