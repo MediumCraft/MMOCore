@@ -377,6 +377,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         // Close quest data
         questData.close();
+
+        // Stop skill casting
+        if (isCasting())
+            leaveSkillCasting();
     }
 
     public MMOPlayerData getMMOPlayerData() {
