@@ -26,10 +26,18 @@ public class MMOCoreAttributeStatHandler implements StatHandler {
         return statName;
     }
 
+    /**
+     * This method is called on login but the MMOCore playerData
+     * is not loaded yet, hence the try/catch clause
+     */
     @Override
     public void runUpdate(StatMap statMap) {
-        final PlayerData playerData = MMOCore.plugin.dataProvider.getDataManager().get(statMap.getPlayerData().getUniqueId());
-        playerData.getAttributes().getInstance(attr).updateStats();
+        try {
+            final PlayerData playerData = MMOCore.plugin.dataProvider.getDataManager().get(statMap.getPlayerData().getUniqueId());
+            playerData.getAttributes().getInstance(attr).updateStats();
+        } catch (NullPointerException exception) {
+            // Player data is not loaded yet so there's nothing to update.
+        }
     }
 
     @Override
