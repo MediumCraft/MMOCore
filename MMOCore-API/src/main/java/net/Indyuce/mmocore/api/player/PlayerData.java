@@ -60,6 +60,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
@@ -786,19 +787,26 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (value <= 0)
             return;
 
-        if (hasReachedMaxLevel()) {
-            setExperience(0);
-            return;
-        }
-
         // Splitting exp through party members
         AbstractParty party;
         if (splitExp && (party = getParty()) != null) {
-            List<PlayerData> onlineMembers = party.getOnlineMembers();
-            value /= onlineMembers.size();
-            for (PlayerData member : onlineMembers)
-                if (!equals(member))
-                    member.giveExperience(value, source, null, false);
+            final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream()
+                    .filter(pd -> {
+                        if (equals(pd) || pd.hasReachedMaxLevel())
+                            return false;
+
+                        final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
+                        return maxDis <= 0 || pd.getPlayer().getLocation().distanceSquared(getPlayer().getLocation()) < maxDis * maxDis;
+                    }).collect(Collectors.toList());
+            value /= (nearbyMembers.size() + 1);
+            for (PlayerData member : nearbyMembers)
+                member.giveExperience(value, source, null, false);
+        }
+
+        // Must be placed after exp splitting
+        if (hasReachedMaxLevel()) {
+            setExperience(0);
+            return;
         }
 
         // Apply buffs AFTER splitting exp
