@@ -31,15 +31,18 @@ public class SkillBar implements Listener {
     }
 
     @EventHandler
-    public void a(PlayerKeyPressEvent event) {
+    public void enterSkillCasting(PlayerKeyPressEvent event) {
         if (event.getPressed() != mainKey) return;
+
+        // Extra option to improve support with other plugins
+        final Player player = event.getPlayer();
+        if (disableSneak && player.isSneaking()) return;
 
         // Always cancel event
         if (event.getPressed().shouldCancelEvent()) event.setCancelled(true);
 
         // Enter spell casting
-        Player player = event.getData().getPlayer();
-        PlayerData playerData = event.getData();
+        final PlayerData playerData = event.getData();
         if (player.getGameMode() != GameMode.SPECTATOR && (MMOCore.plugin.configManager.canCreativeCast || player.getGameMode() != GameMode.CREATIVE) && !playerData.isCasting() && !playerData.getBoundSkills()
                 .isEmpty()) {
             playerData.setSkillCasting(new CustomSkillCastingHandler(playerData));
@@ -64,10 +67,9 @@ public class SkillBar implements Listener {
         public void onSkillCast(PlayerItemHeldEvent event) {
             if (!event.getPlayer().equals(getCaster().getPlayer())) return;
 
-            if (!getCaster().isOnline()) {
-                getCaster().leaveSkillCasting();
-                return;
-            }
+            // Extra option to improve support with other plugins
+            final Player player = event.getPlayer();
+            if (disableSneak && player.isSneaking()) return;
 
             /*
              * When the event is cancelled, another playerItemHeldEvent is
@@ -75,10 +77,6 @@ public class SkillBar implements Listener {
              * listen to that non-player called event.
              */
             if (event.getPreviousSlot() == event.getNewSlot()) return;
-
-            // Extra option to improve support with other plugins
-            final Player player = event.getPlayer();
-            if (disableSneak && player.isSneaking()) return;
 
             event.setCancelled(true);
             int slot = event.getNewSlot() + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
@@ -97,18 +95,23 @@ public class SkillBar implements Listener {
 
         @EventHandler
         public void stopCasting(PlayerKeyPressEvent event) {
-            Player player = event.getPlayer();
-            if (event.getPressed() == mainKey && event.getPlayer().equals(getCaster().getPlayer())) {
-                MMOCore.plugin.soundManager.getSound(SoundEvent.SPELL_CAST_END).playTo(player);
+            if (!event.getPlayer().equals(getCaster().getPlayer())) return;
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(getCaster().getPlayer());
-                    }
-                }.runTask(MMOCore.plugin);
-                getCaster().leaveSkillCasting();
-            }
+            if (event.getPressed() != mainKey) return;
+
+            // Extra option to improve support with other plugins
+            final Player player = event.getPlayer();
+            if (disableSneak && player.isSneaking()) return;
+
+            MMOCore.plugin.soundManager.getSound(SoundEvent.SPELL_CAST_END).playTo(player);
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    MMOCore.plugin.configManager.getSimpleMessage("casting.no-longer").send(getCaster().getPlayer());
+                }
+            }.runTask(MMOCore.plugin);
+            getCaster().leaveSkillCasting();
         }
 
         private String getFormat(PlayerData data) {
