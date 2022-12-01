@@ -2,10 +2,14 @@ package net.Indyuce.mmocore.api.player.profess;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import io.lumine.mythic.lib.skill.Skill;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
+import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.tree.SkillTreeNode;
 import net.Indyuce.mmocore.tree.skilltree.SkillTree;
@@ -16,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 public class SavedClassInformation {
     private final int level, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
@@ -28,6 +34,7 @@ public class SavedClassInformation {
      * Stores the tableItemsClaims values but only for skill tree node as it is class based.
      */
     private final Map<String, Integer> nodeTimesClaimed;
+    List<String> boundSkills = new ArrayList<>();
 
     public SavedClassInformation(ConfigurationSection config) {
         level = config.getInt("level");
@@ -52,7 +59,10 @@ public class SavedClassInformation {
         nodeTimesClaimed = new HashMap<>();
         if (config.contains("node-times-claimed"))
             config.getConfigurationSection("node-times-claimed").getKeys(false).forEach(key -> nodeTimesClaimed.put(key, config.getInt("node-times-claimed." + key)));
+        if (config.contains("bound-skills")) {
+            config.getStringList("bound-skills").forEach(id -> boundSkills.add(id));
 
+        }
     }
 
     public SavedClassInformation(JsonObject json) {
@@ -83,27 +93,34 @@ public class SavedClassInformation {
         if (json.has("node-times-claimed"))
             for (Entry<String, JsonElement> entry : json.getAsJsonObject("node-times-claimed").entrySet())
                 nodeTimesClaimed.put(entry.getKey(), entry.getValue().getAsInt());
-
+        if (json.has("bound-skills"))
+            json.getAsJsonArray("bound-skills").forEach(id -> boundSkills.add(id.getAsString()));
 
     }
 
     public SavedClassInformation(PlayerData player) {
+
         this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(), player.getAttributeReallocationPoints()
                 , player.getSkillTreeReallocationPoints(), player.getSkillReallocationPoints(),
-                player.getAttributes().mapPoints(), player.mapSkillLevels(), player.getSkillTreePoints(), player.getNodeLevels(), player.getNodeTimesClaimed());
+                player.getAttributes().mapPoints(), player.mapSkillLevels(), player.getSkillTreePoints(), player.getNodeLevels(), player.getNodeTimesClaimed(), player.getBoundSkills(),player.getBoundPassiveSkills());
     }
 
     public SavedClassInformation(PlayerDataManager.DefaultPlayerData data) {
         this(data.getLevel(), 0, data.getSkillPoints(), data.getAttributePoints(), data.getAttrReallocPoints(), data.getSkillTreeReallocPoints(), data.getSkillReallocPoints());
     }
 
-    public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints) {
-        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+    public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints,
+                                 int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints) {
+        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(),new ArrayList<>(),new ArrayList<>());
     }
 
-    public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints, int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints,
-                                 Map<String, Integer> attributes, Map<String, Integer> skills, Map<String, Integer> skillTreePoints, Map<SkillTreeNode, Integer> nodeLevels, Map<String, Integer> nodeTimesClaimed) {
-
+    public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints,
+                                 int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints,
+                                 Map<String, Integer> attributes, Map<
+            String, Integer> skills, Map<String, Integer> skillTreePoints, Map<SkillTreeNode, Integer> nodeLevels, Map<String, Integer> nodeTimesClaimed, List<ClassSkill> boundActiveSkills, List<PassiveSkill> boundPassiveSkills) {
+        List<String> boundSkills = new ArrayList<>();
+        boundActiveSkills.forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
+        boundPassiveSkills.forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
         this.level = level;
         this.skillPoints = skillPoints;
         this.attributePoints = attributePoints;
@@ -116,6 +133,7 @@ public class SavedClassInformation {
         this.skillTreePoints = skillTreePoints;
         this.nodeLevels = nodeLevels;
         this.nodeTimesClaimed = nodeTimesClaimed;
+        this.boundSkills=boundSkills;
     }
 
     public int getLevel() {
@@ -243,6 +261,13 @@ public class SavedClassInformation {
         player.setAttributeReallocationPoints(attributeReallocationPoints);
         player.setSkillTreeReallocationPoints(skillTreeReallocationPoints);
         player.setSkillReallocationPoints(skillReallocationPoints);
+        for (String id : boundSkills) {
+            ClassSkill skill = profess.getSkill(id);
+            if (skill.getSkill().getTrigger().isPassive())
+                player.bindPassiveSkill(-1, skill.toPassive(player));
+            else
+                player.getBoundSkills().add(skill);
+        }
 
         (skills).forEach(player::setSkillLevel);
         attributes.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
@@ -276,3 +301,4 @@ public class SavedClassInformation {
         player.refreshVanillaExp();
     }
 }
+
