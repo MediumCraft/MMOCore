@@ -90,6 +90,7 @@ should-cobblestone-generators-give-exp: false
 skill-casting:
   mode: SKILL_BAR
   open: SWAP_HANDS
+  disable-sneak: false
 
 loot-chests:
 

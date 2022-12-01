@@ -27,7 +27,7 @@ public class ConfigManager {
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight,dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange;
-    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills, waypointWarpTime;
+    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills;
 
     private final FileConfiguration messages;
 
@@ -82,8 +82,6 @@ public class ConfigManager {
             loadDefaultFile("skill-trees","rogue-marksman.yml");
             loadDefaultFile("skill-trees","warrior-paladin.yml");
             loadDefaultFile("skill-trees","general.yml");
-
-
         }
 
         loadDefaultFile("attributes.yml");
