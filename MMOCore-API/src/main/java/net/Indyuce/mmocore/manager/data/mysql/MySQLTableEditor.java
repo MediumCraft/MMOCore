@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.manager.data.mysql;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.denizen.dungeons.requests.RequestDataKey;
 
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -19,24 +20,16 @@ public class MySQLTableEditor {
         this.provider = provider;
     }
 
+
     public void updateData(String key, Object value) {
         provider.executeUpdate("INSERT INTO " + table + "(uuid, " + key
                 + ") VALUES('" + uuid + "', '" + value + "') ON DUPLICATE KEY UPDATE " + key + "='" + value + "';");
     }
 
-    public void updateJSONArray(String key, Collection<String> collection) {
-        JsonArray json = new JsonArray();
-        for (String s : collection)
-            json.add(s);
-        updateData(key, json.toString());
+    public void updateData(MySQLRequest request) {
+        provider.executeUpdate("INSERT INTO " + table + request.getRequestString());
     }
 
-    public void updateJSONObject(String key, Set<Entry<String, Integer>> collection) {
-        JsonObject json = new JsonObject();
-        for (Entry<String, Integer> entry : collection)
-            json.addProperty(entry.getKey(), entry.getValue());
-        updateData(key, json.toString());
-    }
 
     public enum Table {
         PLAYERDATA("mmocore_playerdata"), GUILDDATA("mmocore_guilddata");

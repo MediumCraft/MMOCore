@@ -112,7 +112,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 if (!isEmpty(result.getString("friends")))
                                     MMOCoreUtils.jsonArrayToList(result.getString("friends")).forEach(str -> data.getFriends().add(UUID.fromString(str)));
                                 if (!isEmpty(result.getString("skills"))) {
-                                    JsonObject  object=new Gson().fromJson(result.getString("skills"), JsonObject.class);
+                                    JsonObject object = new Gson().fromJson(result.getString("skills"), JsonObject.class);
                                     for (Entry<String, JsonElement> entry : object.entrySet())
                                         data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
                                 }
@@ -175,7 +175,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             }
         };
 
-        runnable.runTaskTimerAsynchronously(MMOCore.plugin, 0L, 40L);
+        runnable.runTaskTimerAsynchronously(MMOCore.plugin, 0L, 20L);
     }
 
     @Override
@@ -183,42 +183,38 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
         MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider);
         MMOCore.sqlDebug("Saving data for: '" + data.getUniqueId() + "'...");
-
-        sql.updateData("class_points", data.getClassPoints());
-        sql.updateData("skill_points", data.getSkillPoints());
-        sql.updateData("skill_reallocation_points", data.getSkillReallocationPoints());
-        sql.updateData("attribute_points", data.getAttributePoints());
-        sql.updateData("attribute_realloc_points", data.getAttributeReallocationPoints());
-        sql.updateData("skill_tree_reallocation_points", data.getSkillTreeReallocationPoints());
-        sql.updateData("mana", data.getMana());
-        sql.updateData("stellium", data.getStellium());
-        sql.updateData("stamina", data.getStamina());
-        sql.updateData("level", data.getLevel());
-        sql.updateData("experience", data.getExperience());
-        sql.updateData("class", data.getProfess().getId());
-        sql.updateData("last_login", data.getLastLogin());
-        sql.updateData("guild", data.hasGuild() ? data.getGuild().getId() : null);
-
-        sql.updateJSONArray("waypoints", data.getWaypoints());
-        sql.updateJSONArray("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
+        MySQLRequest request = new MySQLRequest(data.getUniqueId());
+        request.addData("class_points", data.getClassPoints());
+        request.addData("skill_points", data.getSkillPoints());
+        request.addData("skill_reallocation_points", data.getSkillReallocationPoints());
+        request.addData("attribute_points", data.getAttributePoints());
+        request.addData("attribute_realloc_points", data.getAttributeReallocationPoints());
+        request.addJSONArray("waypoints", data.getWaypoints());
+        request.addData("skill_tree_reallocation_points", data.getSkillTreeReallocationPoints());
+        request.addData("mana", data.getMana());
+        request.addData("stellium", data.getStellium());
+        request.addData("stamina", data.getStamina());
+        request.addData("level", data.getLevel());
+        request.addData("experience", data.getExperience());
+        request.addData("class", data.getProfess().getId());
+        request.addData("last_login", data.getLastLogin());
+        request.addData("guild", data.hasGuild() ? data.getGuild().getId() : null);
+        request.addJSONArray("waypoints", data.getWaypoints());
+        request.addJSONArray("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
         List<String> boundSkills = new ArrayList<>();
         data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
         data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
-        sql.updateJSONArray("bound_skills", boundSkills);
-
-        sql.updateJSONObject("skills", data.mapSkillLevels().entrySet());
-        sql.updateJSONObject("times_claimed", data.getItemClaims().entrySet());
-        sql.updateJSONObject("skill_tree_points", data.getSkillTreePoints().entrySet());
-        sql.updateJSONObject("skill_tree_levels", data.getNodeLevelsEntrySet());
-
-
-        sql.updateData("attributes", data.getAttributes().toJsonString());
-        sql.updateData("professions", data.getCollectionSkills().toJsonString());
-        sql.updateData("quests", data.getQuestData().toJsonString());
-
-        sql.updateData("class_info", createClassInfoData(data).toString());
-        Bukkit.getScheduler().runTaskLater(MMOCore.plugin,()->sql.updateData("is_saved", 1),10L);
-
+        request.addJSONArray("bound_skills", boundSkills);
+        request.addJSONObject("skills", data.mapSkillLevels().entrySet());
+        request.addJSONObject("times_claimed", data.getItemClaims().entrySet());
+        request.addJSONObject("skill_tree_points", data.getSkillTreePoints().entrySet());
+        request.addJSONObject("skill_tree_levels", data.getNodeLevelsEntrySet());
+        request.addData("attributes", data.getAttributes().toJsonString());
+        request.addData("professions", data.getCollectionSkills().toJsonString());
+        request.addData("quests", data.getQuestData().toJsonString());
+        request.addData("class_info", createClassInfoData(data).toString());
+        request.addData("is_saved", 1);
+        sql.updateData(request);
         MMOCore.sqlDebug("Saved data for: " + data.getUniqueId());
         MMOCore.sqlDebug(String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
     }
@@ -233,8 +229,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             classinfo.addProperty("skill-points", info.getSkillPoints());
             classinfo.addProperty("attribute-points", info.getAttributePoints());
             classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
-            classinfo.addProperty("skill-reallocation-points",info.getSkillReallocationPoints());
-            classinfo.addProperty("skill-tree-reallocation-points",info.getSkillTreeReallocationPoints());
+            classinfo.addProperty("skill-reallocation-points", info.getSkillReallocationPoints());
+            classinfo.addProperty("skill-tree-reallocation-points", info.getSkillTreeReallocationPoints());
 
             JsonObject skillinfo = new JsonObject();
             for (String skill : info.getSkillKeys())
