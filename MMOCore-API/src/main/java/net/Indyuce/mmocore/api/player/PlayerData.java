@@ -800,7 +800,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                             return false;
 
                         final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
-                        return maxDis <= 0 || pd.getPlayer().getLocation().distanceSquared(getPlayer().getLocation()) < maxDis * maxDis;
+                        return maxDis <= 0 || (pd.getPlayer().getWorld().equals(getPlayer().getWorld()) && pd.getPlayer().getLocation().distanceSquared(getPlayer().getLocation()) < maxDis * maxDis);
                     }).collect(Collectors.toList());
             value /= (nearbyMembers.size() + 1);
             for (PlayerData member : nearbyMembers)
