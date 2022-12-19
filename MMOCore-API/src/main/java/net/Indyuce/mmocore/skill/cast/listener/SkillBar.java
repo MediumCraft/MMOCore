@@ -88,8 +88,7 @@ public class SkillBar implements Listener {
              */
             if (slot >= 0 && getCaster().hasSkillBound(slot)) {
                 PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                int delay = getCaster().getBoundSkill(slot).getDelay(getCaster());
-                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null), delay);
+                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null));
             }
         }
 

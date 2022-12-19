@@ -4,10 +4,10 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
+import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
-import net.Indyuce.mmocore.api.SoundObject;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -82,8 +82,7 @@ public class SkillScroller implements Listener {
 
             CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
             PlayerMetadata caster = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-            playerData.getBoundSkill(casting.index).toCastable(playerData).cast(new TriggerMetadata(caster, null, null)
-                    , playerData.getBoundSkill(casting.index).getDelay(playerData));
+            playerData.getBoundSkill(casting.index).toCastable(playerData).cast(new TriggerMetadata(caster, null, null));
         }
     }
 
