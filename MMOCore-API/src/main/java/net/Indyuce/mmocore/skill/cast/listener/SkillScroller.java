@@ -82,8 +82,7 @@ public class SkillScroller implements Listener {
 
             CustomSkillCastingHandler casting = (CustomSkillCastingHandler) playerData.getSkillCasting();
             PlayerMetadata caster = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-            playerData.getBoundSkill(casting.index).toCastable(playerData).cast(new TriggerMetadata(caster, null, null)
-                    , playerData.getBoundSkill(casting.index).getDelay(playerData));
+            playerData.getBoundSkill(casting.index).toCastable(playerData).cast(new TriggerMetadata(caster, null, null));
         }
     }
 
