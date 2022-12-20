@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
@@ -102,7 +103,7 @@ public class SavedClassInformation {
 
         this(player.getLevel(), player.getExperience(), player.getSkillPoints(), player.getAttributePoints(), player.getAttributeReallocationPoints()
                 , player.getSkillTreeReallocationPoints(), player.getSkillReallocationPoints(),
-                player.getAttributes().mapPoints(), player.mapSkillLevels(), player.getSkillTreePoints(), player.getNodeLevels(), player.getNodeTimesClaimed(), player.getBoundSkills(),player.getBoundPassiveSkills());
+                player.getAttributes().mapPoints(), player.mapSkillLevels(), player.getSkillTreePoints(), player.getNodeLevels(), player.getNodeTimesClaimed(), player.getBoundSkills(), player.getBoundPassiveSkills());
     }
 
     public SavedClassInformation(PlayerDataManager.DefaultPlayerData data) {
@@ -111,7 +112,7 @@ public class SavedClassInformation {
 
     public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints,
                                  int attributeReallocationPoints, int skillTreeReallocationPoints, int skillReallocationPoints) {
-        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(),new ArrayList<>(),new ArrayList<>());
+        this(level, experience, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public SavedClassInformation(int level, double experience, int skillPoints, int attributePoints,
@@ -133,7 +134,7 @@ public class SavedClassInformation {
         this.skillTreePoints = skillTreePoints;
         this.nodeLevels = nodeLevels;
         this.nodeTimesClaimed = nodeTimesClaimed;
-        this.boundSkills=boundSkills;
+        this.boundSkills = boundSkills;
     }
 
     public int getLevel() {
@@ -237,11 +238,12 @@ public class SavedClassInformation {
         player.clearNodeLevels();
         player.clearNodeStates();
         player.clearPointsSpent();
-        // We reset the experience table for each skill tree node to remove the perm stat.
+        // We remove perm stats for nodes and class.
         for (SkillTree skillTree : player.getProfess().getSkillTrees()) {
             for (SkillTreeNode node : skillTree.getNodes())
-                node.getExperienceTable().reset(player, node);
+                node.getExperienceTable().removePermStats(player, node);
         }
+        player.getProfess().getExperienceTable().removePermStats(player, player.getProfess());
 
         while (player.hasPassiveSkillBound(0))
             player.unbindPassiveSkill(0);
@@ -289,7 +291,7 @@ public class SavedClassInformation {
         for (SkillTree skillTree : profess.getSkillTrees())
             for (SkillTreeNode node : skillTree.getNodes())
                 node.getExperienceTable().claimStatTriggers(player, node);
-
+        profess.getExperienceTable().claimStatTriggers(player,profess);
         /*
          * unload current class information and set the new profess once
          * everything is changed
