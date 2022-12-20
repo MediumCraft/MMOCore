@@ -190,7 +190,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
                 for (SkillTreeNode node : skillTree.getNodes())
                     node.getExperienceTable().claimStatTriggers(this, node);
-            statsLoaded = true;
         }
     }
 
