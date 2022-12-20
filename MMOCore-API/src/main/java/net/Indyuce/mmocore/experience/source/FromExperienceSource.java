@@ -22,8 +22,9 @@ public class FromExperienceSource extends ExperienceSource {
     public FromExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser);
 
+        config.validateKeys("source");
         List<String> list = new ConfigFile("exp-sources").getConfig().getStringList(config.getString("source"));
-        Validate.isTrue(list.size() != 0, "There is no source matching " + config.getString("key"));
+        Validate.isTrue(list != null && !list.isEmpty(), "There is no source matching " + config.getString("source"));
         list.stream()
                 .map(MMOLineConfig::new)
                 .forEach(mmoLineConfig ->

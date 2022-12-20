@@ -14,15 +14,24 @@ import org.bukkit.event.HandlerList;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 public class ExperienceManager implements MMOCoreManager {
     private final Map<String, ExpCurve> expCurves = new HashMap<>();
     private final Map<String, ExperienceTable> expTables = new HashMap<>();
+
+    /**
+     * Experience sources from the exp-sources.yml config file where you can
+     * input any exp source which can later be used along with the 'from'
+     * exp source anywhere in the plugin.
+     * <p>
+     * TODO First needs to edit the exp-source current structure. This is going to break a lot of things
+     *
+     * @deprecated See TODO
+     */
+    @Deprecated
+    private final Map<String, List<ExperienceSource<?>>> publicExpSources = new HashMap<>();
 
     /**
      * Saves different experience sources based on experience source type.
@@ -49,6 +58,12 @@ public class ExperienceManager implements MMOCoreManager {
     public ExpCurve getCurveOrThrow(String id) {
         Validate.isTrue(hasCurve(id), "Could not find exp curve with ID '" + id + "'");
         return expCurves.get(id);
+    }
+
+    @Deprecated
+    @Nullable
+    public List<ExperienceSource<?>> getExperienceSourceList(String key) {
+        return publicExpSources.get(key);
     }
 
     public boolean hasTable(String id) {
@@ -88,7 +103,7 @@ public class ExperienceManager implements MMOCoreManager {
             managers.clear();
         }
 
-        expCurves.clear();
+        // Exp curves
         for (File file : new File(MMOCore.plugin.getDataFolder() + "/expcurves").listFiles())
             try {
                 ExpCurve curve = new ExpCurve(file);
@@ -97,7 +112,7 @@ public class ExperienceManager implements MMOCoreManager {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp curve '" + file.getName() + "': " + exception.getMessage());
             }
 
-        expTables.clear();
+        // Exp tables
         FileConfiguration expTablesConfig = new ConfigFile("exp-tables").getConfig();
         for (String key : expTablesConfig.getKeys(false))
             try {
