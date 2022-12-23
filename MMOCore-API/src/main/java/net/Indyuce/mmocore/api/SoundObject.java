@@ -9,6 +9,10 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
+/**
+ * Moved to MythicLib
+ */
+@Deprecated
 public class SoundObject {
 
     @Nullable

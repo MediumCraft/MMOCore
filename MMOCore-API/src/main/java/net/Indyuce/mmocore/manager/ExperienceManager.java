@@ -1,22 +1,20 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
-import net.Indyuce.mmocore.api.ConfigFile;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 public class ExperienceManager implements MMOCoreManager {
@@ -24,21 +22,32 @@ public class ExperienceManager implements MMOCoreManager {
     private final Map<String, ExperienceTable> expTables = new HashMap<>();
 
     /**
+     * Experience sources from the exp-sources.yml config file where you can
+     * input any exp source which can later be used along with the 'from'
+     * exp source anywhere in the plugin.
+     * <p>
+     * TODO First needs to edit the exp-source current structure. This is going to break a lot of things
+     *
+     * @deprecated See TODO
+     */
+    @Deprecated
+    private final Map<String, List<ExperienceSource<?>>> publicExpSources = new HashMap<>();
+
+    /**
      * Saves different experience sources based on experience source type.
      */
     private final Map<Class<?>, ExperienceSourceManager<?>> managers = new HashMap<>();
 
     @SuppressWarnings("unchecked")
+    @Nullable
     public <T extends ExperienceSource> ExperienceSourceManager<T> getManager(Class<T> t) {
         return (ExperienceSourceManager<T>) managers.get(t);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends ExperienceSource> void registerSource(T source) {
-        Class<T> path = (Class<T>) source.getClass();
-
-        if (!managers.containsKey(path))
-            managers.put(path, source.newManager());
+        final Class<T> path = (Class<T>) source.getClass();
+        managers.computeIfAbsent(path, unused -> source.newManager());
         getManager(path).registerSource(source);
     }
 
@@ -49,6 +58,12 @@ public class ExperienceManager implements MMOCoreManager {
     public ExpCurve getCurveOrThrow(String id) {
         Validate.isTrue(hasCurve(id), "Could not find exp curve with ID '" + id + "'");
         return expCurves.get(id);
+    }
+
+    @Deprecated
+    @Nullable
+    public List<ExperienceSource<?>> getExperienceSourceList(String key) {
+        return publicExpSources.get(key);
     }
 
     public boolean hasTable(String id) {
@@ -88,7 +103,7 @@ public class ExperienceManager implements MMOCoreManager {
             managers.clear();
         }
 
-        expCurves.clear();
+        // Exp curves
         for (File file : new File(MMOCore.plugin.getDataFolder() + "/expcurves").listFiles())
             try {
                 ExpCurve curve = new ExpCurve(file);
@@ -97,7 +112,7 @@ public class ExperienceManager implements MMOCoreManager {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp curve '" + file.getName() + "': " + exception.getMessage());
             }
 
-        expTables.clear();
+        // Exp tables
         FileConfiguration expTablesConfig = new ConfigFile("exp-tables").getConfig();
         for (String key : expTablesConfig.getKeys(false))
             try {

@@ -15,6 +15,13 @@ public abstract class ExperienceSource<T> {
         return dispenser;
     }
 
+    /**
+     * This method is called ONCE per type of experience source.
+     * This instanciates the manager for all of the exp sources
+     * under that specific type.
+     *
+     * @return Instanciated experience source list
+     */
     public abstract ExperienceSourceManager<?> newManager();
 
     public boolean matches(PlayerData player, T obj) {
