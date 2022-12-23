@@ -152,7 +152,7 @@ public class EditableGuildAdmin extends EditableInventory {
 					return;
 				}
 
-				new ChatInput(player, PlayerInput.InputType.GUILD_INVITE, (input) -> {
+				new ChatInput(player, PlayerInput.InputType.GUILD_INVITE, context.getInventoryHolder(), input -> {
 					Player target = Bukkit.getPlayer(input);
 					if (target == null) {
 						MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);

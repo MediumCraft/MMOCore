@@ -192,7 +192,7 @@ public class EditableFriendList extends EditableInventory {
                     return;
                 }
 
-                new ChatInput(player, InputType.FRIEND_REQUEST, (input) -> {
+                new ChatInput(player, InputType.FRIEND_REQUEST, context.getInventoryHolder(), input -> {
                     Player target = Bukkit.getPlayer(input);
                     if (target == null) {
                         MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);

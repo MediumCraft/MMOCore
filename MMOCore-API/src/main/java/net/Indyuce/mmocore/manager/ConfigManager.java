@@ -139,7 +139,7 @@ public class ConfigManager {
 
     @Deprecated
     public PlayerInput newPlayerInput(Player player, InputType type, Consumer<String> output) {
-        return new ChatInput(player, type, output);
+        return new ChatInput(player, type, null, output);
     }
 
     public void loadDefaultFile(String name) {

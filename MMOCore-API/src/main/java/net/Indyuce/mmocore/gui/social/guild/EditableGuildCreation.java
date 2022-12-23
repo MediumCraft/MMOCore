@@ -38,14 +38,14 @@ public class EditableGuildCreation extends EditableInventory {
 		public void whenClicked(InventoryClickContext context, InventoryItem item) {
 			
 			if (item.getFunction().equals("create")) {
-				new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_TAG, (input) -> {
+				new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_TAG, context.getInventoryHolder(), input -> {
 					if(MMOCore.plugin.dataProvider.getGuildManager().getConfig().shouldUppercaseTags())
 						input = input.toUpperCase();
 						
 					if(check(player, input, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getTagRules())) {
 						String tag = input;
 
-						new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_NAME, (name) -> {
+						new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_NAME, context.getInventoryHolder(), name -> {
 							if(check(player, name, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getNameRules())) {
 								MMOCore.plugin.dataProvider.getGuildManager().newRegisteredGuild(playerData.getUniqueId(), name, tag);
 								MMOCore.plugin.dataProvider.getGuildManager().getGuild(tag.toLowerCase()).addMember(playerData.getUniqueId());

@@ -149,7 +149,7 @@ public class EditablePartyView extends EditableInventory {
                     return;
                 }
 
-                new ChatInput(player, PlayerInput.InputType.PARTY_INVITE, input -> {
+                new ChatInput(player, PlayerInput.InputType.PARTY_INVITE, context.getInventoryHolder(), input -> {
                     Player target = Bukkit.getPlayer(input);
                     if (target == null) {
                         MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);

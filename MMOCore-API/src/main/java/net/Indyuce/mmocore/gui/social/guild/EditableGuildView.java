@@ -201,7 +201,7 @@ public class EditableGuildView extends EditableInventory {
 				 * Sound.ENTITY_VILLAGER_NO, 1, 1); return; }
 				 */
 
-				new ChatInput(player, PlayerInput.InputType.GUILD_INVITE, (input) -> {
+				new ChatInput(player, PlayerInput.InputType.GUILD_INVITE, context.getInventoryHolder(), input -> {
 					Player target = Bukkit.getPlayer(input);
 					if (target == null) {
 						MMOCore.plugin.configManager.getSimpleMessage("not-online-player", "player", input).send(player);

@@ -9,29 +9,27 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryClickContext {
     private final int slot;
+    private final ClickType clickType;
+    private final Cancellable event;
 
     @Nullable
     private final ItemStack currentItem;
 
-    @NotNull
-    private final ClickType clickType;
-
-    @NotNull
-    private final Cancellable event;
-
     @Nullable
     private final Inventory inv;
+    private final PluginInventory invHolder;
 
     public InventoryClickContext(int slot, ItemStack currentItem, ClickType clickType, Cancellable event) {
-        this(slot, currentItem, clickType, event, null);
+        this(slot, currentItem, clickType, event, null, null);
     }
 
-    public InventoryClickContext(int slot, ItemStack currentItem, ClickType clickType, Cancellable event, Inventory inv) {
+    public InventoryClickContext(int slot, @Nullable ItemStack currentItem, ClickType clickType, Cancellable event, @Nullable Inventory inv, @Nullable PluginInventory invHolder) {
         this.slot = slot;
         this.currentItem = currentItem;
         this.clickType = clickType;
         this.event = event;
         this.inv = inv;
+        this.invHolder = invHolder;
     }
 
     public void setCancelled(boolean val) {
@@ -64,6 +62,11 @@ public class InventoryClickContext {
     @Nullable
     public Inventory getInventory() {
         return inv;
+    }
+
+    @Nullable
+    public PluginInventory getInventoryHolder() {
+        return invHolder;
     }
 
     public boolean isClassic() {
