@@ -190,7 +190,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
                 for (SkillTreeNode node : skillTree.getNodes())
                     node.getExperienceTable().claimStatTriggers(this, node);
-            statsLoaded = true;
         }
     }
 
@@ -788,8 +787,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @param splitExp         Should the exp be split among party members
      */
     public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
-        if (value <= 0)
+        if (value <= 0) {
+            experience = Math.max(0, experience + value);
             return;
+        }
 
         // Splitting exp through party members
         AbstractParty party;

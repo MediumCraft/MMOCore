@@ -100,11 +100,15 @@ public class PlayerProfessions {
             for (Entry<String, JsonElement> entry : obj.getAsJsonObject("timesClaimed").entrySet())
                 playerData.getItemClaims().put("profession." + entry.getKey(), entry.getValue().getAsInt());
 
-        if (!playerData.areStatsLoaded())
+        if (!playerData.areStatsLoaded()) {
             for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
                 if (profession.hasExperienceTable())
                     profession.getExperienceTable().claimStatTriggers(playerData, profession);
             }
+            if (playerData.getProfess().hasExperienceTable())
+                playerData.getProfess().getExperienceTable().claimStatTriggers(playerData, playerData.getProfess());
+
+        }
 
     }
 
@@ -166,8 +170,10 @@ public class PlayerProfessions {
 
     public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         Validate.isTrue(playerData.isOnline(), "Cannot give experience to offline player");
-        if (value <= 0)
+        if (value <= 0) {
+            exp.put(profession.getId(), Math.max(0, exp.get(profession.getId() + value)));
             return;
+        }
 
         if (hasReachedMaxLevel(profession)) {
             setExperience(profession, 0);

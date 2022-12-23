@@ -55,6 +55,18 @@ public class ExperienceTable {
     }
 
     /**
+     * Called when a player changes its class.
+     * Removes the perm stat but keeps the item claims in memory.
+     */
+    public void removePermStats(PlayerData playerData, ExperienceObject object) {
+        for (ExperienceItem item : items) {
+            int timesClaimed = playerData.getClaims(object, this, item);
+            for (int i = 0; i < timesClaimed; i++)
+                item.removeStatTriggers(playerData);
+        }
+    }
+
+    /**
      * Called when the progression is reset(e.g skill tree reallocation)
      */
     public void reset(PlayerData playerData, ExperienceObject object) {
