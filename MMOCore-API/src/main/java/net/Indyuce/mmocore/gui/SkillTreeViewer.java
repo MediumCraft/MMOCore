@@ -2,9 +2,9 @@ package net.Indyuce.mmocore.gui;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.tree.NodeState;
-import net.Indyuce.mmocore.tree.skilltree.SkillTree;
-import net.Indyuce.mmocore.tree.skilltree.display.Icon;
+import net.Indyuce.mmocore.skilltree.NodeStatus;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import net.Indyuce.mmocore.skilltree.tree.display.Icon;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
@@ -12,8 +12,8 @@ import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
-import net.Indyuce.mmocore.tree.IntegerCoordinates;
-import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
+import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -386,7 +386,7 @@ public class SkillTreeViewer extends EditableInventory {
                     playerData.giveSkillTreePoints(skillTree.getId(), reallocated);
                     playerData.giveSkillTreeReallocationPoints(-1);
                     playerData.resetSkillTree(skillTree);
-                    skillTree.setupNodeState(playerData);
+                    skillTree.setupNodeStates(playerData);
                     MMOCore.plugin.configManager.getSimpleMessage("reallocated-points", "points", "" + playerData.getSkillTreePoint(skillTree.getId()), "skill-tree", skillTree.getName()).send(player);
                     MMOCore.plugin.soundManager.getSound(SoundEvent.RESET_SKILL_TREE).playTo(player);
                     event.setCancelled(true);
@@ -431,7 +431,7 @@ public class SkillTreeViewer extends EditableInventory {
                         open();
                         event.setCancelled(true);
                         return;
-                    } else if (playerData.getNodeState(node) == NodeState.LOCKED || playerData.getNodeState(node) == NodeState.FULLY_LOCKED) {
+                    } else if (playerData.getNodeState(node) == NodeStatus.LOCKED || playerData.getNodeState(node) == NodeStatus.FULLY_LOCKED) {
                         MMOCore.plugin.configManager.getSimpleMessage("locked-node").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
                         event.setCancelled(true);
