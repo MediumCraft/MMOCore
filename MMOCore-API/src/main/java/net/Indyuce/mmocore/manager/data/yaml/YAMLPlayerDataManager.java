@@ -10,7 +10,7 @@ import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
-import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -35,10 +35,10 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
         data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
         data.setSkillPoints(config.getInt("skill-points", getDefaultData().getSkillPoints()));
-        data.setSkillReallocationPoints(config.getInt("skill-reallocation-points", getDefaultData().getSkillReallocPoints()));
-        data.setSkillTreeReallocationPoints(config.getInt("skill-tree-reallocation-points", getDefaultData().getSkillTreeReallocPoints()));
+        data.setSkillReallocationPoints(config.getInt("skill-reallocation-points", getDefaultData().getSkillReallocationPoints()));
+        data.setSkillTreeReallocationPoints(config.getInt("skill-tree-reallocation-points", getDefaultData().getSkillTreeReallocationPoints()));
         data.setAttributePoints(config.getInt("attribute-points", getDefaultData().getAttributePoints()));
-        data.setAttributeReallocationPoints(config.getInt("attribute-realloc-points", getDefaultData().getAttrReallocPoints()));
+        data.setAttributeReallocationPoints(config.getInt("attribute-realloc-points", getDefaultData().getAttributeReallocationPoints()));
         data.setLevel(config.getInt("level", getDefaultData().getLevel()));
         data.setExperience(config.getInt("experience"));
         if (config.contains("class"))
@@ -138,7 +138,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         config.set("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
         config.set("last-login", data.getLastLogin());
         config.set("guild", data.hasGuild() ? data.getGuild().getId() : null);
-        data.getSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
+        data.mapSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
         config.set("mana", data.getMana());
@@ -178,10 +178,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             config.set("class-info." + key + ".skill-reallocation-points", info.getSkillReallocationPoints());
             info.getSkillKeys().forEach(skill -> config.set("class-info." + key + ".skill." + skill, info.getSkillLevel(skill)));
             info.getAttributeKeys().forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
-            info.getNodeKeys().forEach(node -> config.set("class-info." + key + ".node-levels." + node.getFullId(), info.getNodeLevel(node)));
+            info.getNodeKeys().forEach(node -> config.set("class-info." + key + ".node-levels." + node, info.getNodeLevel(node)));
             info.getSkillTreePointsKeys().forEach(skillTreeId -> config.set("class-info." + key + ".skill-tree-points." + skillTreeId, info.getAttributeLevel(skillTreeId)));
         }
-
 
         file.save();
     }

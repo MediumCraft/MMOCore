@@ -29,7 +29,7 @@ public class StatModifiersCommandTreeNode extends CommandTreeNode {
 		}
 		PlayerData data = PlayerData.get((Player) sender);
 
-		StatInstance instance = data.getStats().getInstance(UtilityMethods.enumName(args[2]));
+		StatInstance instance = data.getMMOPlayerData().getStatMap().getInstance(UtilityMethods.enumName(args[2]));
 		sender.sendMessage("Stat Modifiers (" + instance.getKeys().size() + "):");
 		for (String key : instance.getKeys()) {
 			StatModifier mod = instance.getModifier(key);

@@ -13,8 +13,8 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import net.Indyuce.mmocore.skill.ClassSkill;
-import net.Indyuce.mmocore.tree.SkillTreeNode;
-import net.Indyuce.mmocore.tree.skilltree.SkillTree;
+import net.Indyuce.mmocore.skilltree.SkillTreeNode;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -154,9 +154,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                             data.setLevel(getDefaultData().getLevel());
                             data.setClassPoints(getDefaultData().getClassPoints());
                             data.setSkillPoints(getDefaultData().getSkillPoints());
-                            data.setSkillReallocationPoints(getDefaultData().getSkillReallocPoints());
+                            data.setSkillReallocationPoints(getDefaultData().getSkillReallocationPoints());
                             data.setAttributePoints(getDefaultData().getAttributePoints());
-                            data.setAttributeReallocationPoints(getDefaultData().getAttrReallocPoints());
+                            data.setAttributeReallocationPoints(getDefaultData().getAttributeReallocationPoints());
                             data.setExperience(0);
                             data.getQuestData().updateBossBar();
 
@@ -205,7 +205,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         request.addJSONArray("bound_skills", boundSkills);
         request.addJSONObject("skills", data.mapSkillLevels().entrySet());
         request.addJSONObject("times_claimed", data.getItemClaims().entrySet());
-        request.addJSONObject("skill_tree_points", data.getSkillTreePoints().entrySet());
+        request.addJSONObject("skill_tree_points", data.mapSkillTreePoints().entrySet());
         request.addJSONObject("skill_tree_levels", data.getNodeLevelsEntrySet());
         request.addData("attributes", data.getAttributes().toJsonString());
         request.addData("professions", data.getCollectionSkills().toJsonString());
@@ -234,19 +234,19 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             for (String skill : info.getSkillKeys())
                 skillinfo.addProperty(skill, info.getSkillLevel(skill));
             classinfo.add("skill", skillinfo);
-            JsonObject attributeinfo = new JsonObject();
+            JsonObject attributeInfo = new JsonObject();
             for (String attribute : info.getAttributeKeys())
-                attributeinfo.addProperty(attribute, info.getAttributeLevel(attribute));
-            classinfo.add("attribute", attributeinfo);
+                attributeInfo.addProperty(attribute, info.getAttributeLevel(attribute));
+            classinfo.add("attribute", attributeInfo);
 
             JsonObject nodeLevelsInfo = new JsonObject();
-            for (SkillTreeNode node : info.getNodeKeys())
-                attributeinfo.addProperty(node.getFullId(), info.getNodeLevel(node));
+            for (String node : info.getNodeKeys())
+                nodeLevelsInfo.addProperty(node, info.getNodeLevel(node));
             classinfo.add("node-levels", nodeLevelsInfo);
 
             JsonObject skillTreePointsInfo = new JsonObject();
             for (String skillTreeId : info.getSkillTreePointsKeys())
-                attributeinfo.addProperty(skillTreeId, info.getSkillTreePoints(skillTreeId));
+                skillTreePointsInfo.addProperty(skillTreeId, info.getSkillTreePoints(skillTreeId));
             classinfo.add("skill-tree-points", skillTreePointsInfo);
 
             json.add(c, classinfo);

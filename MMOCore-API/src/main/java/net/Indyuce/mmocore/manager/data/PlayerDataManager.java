@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.api.event.AsyncPlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.event.PlayerDataLoadEvent;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.player.DefaultPlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,7 +17,7 @@ import java.util.*;
 public abstract class PlayerDataManager {
     private final static Map<UUID, PlayerData> data = Collections.synchronizedMap(new HashMap<>());
 
-    private DefaultPlayerData defaultData = new DefaultPlayerData(1, 0, 0, 0, 0, 0, 0);
+    private DefaultPlayerData defaultData = DefaultPlayerData.DEFAULT;
 
     public PlayerData get(OfflinePlayer player) {
         return get(player.getUniqueId());
@@ -125,67 +126,5 @@ public abstract class PlayerDataManager {
      */
     public abstract void saveData(PlayerData data);
 
-    public class DefaultPlayerData {
-        private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints, skillReallocPoints, skillTreeReallocPoints;
 
-        public DefaultPlayerData(ConfigurationSection config) {
-            level = config.getInt("level", 1);
-            classPoints = config.getInt("class-points");
-            skillPoints = config.getInt("skill-points");
-            attributePoints = config.getInt("attribute-points");
-            attrReallocPoints = config.getInt("attribute-realloc-points");
-            skillReallocPoints = config.getInt("skill-realloc-points", 0);
-            skillTreeReallocPoints = config.getInt("skill-tree-realloc-points", 0);
-
-        }
-
-        public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints, int skillReallocPoints, int skillTreeReallocPoints) {
-            this.level = level;
-            this.classPoints = classPoints;
-            this.skillPoints = skillPoints;
-            this.attributePoints = attributePoints;
-            this.attrReallocPoints = attrReallocPoints;
-            this.skillReallocPoints = skillReallocPoints;
-            this.skillTreeReallocPoints = skillTreeReallocPoints;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public int getSkillPoints() {
-            return skillPoints;
-        }
-
-        public int getSkillTreeReallocPoints() {
-            return skillTreeReallocPoints;
-        }
-
-
-        public int getClassPoints() {
-            return classPoints;
-        }
-
-        public int getAttrReallocPoints() {
-            return attrReallocPoints;
-        }
-
-        public int getAttributePoints() {
-            return attributePoints;
-        }
-
-        public int getSkillReallocPoints() {
-            return skillReallocPoints;
-        }
-
-        public void apply(PlayerData player) {
-            player.setLevel(level);
-            player.setClassPoints(classPoints);
-            player.setSkillPoints(skillPoints);
-            player.setAttributePoints(attributePoints);
-            player.setAttributeReallocationPoints(attrReallocPoints);
-            player.setSkillTreeReallocationPoints(skillTreeReallocPoints);
-            player.setSkillReallocationPoints(skillReallocPoints);
-        }
-    }
 }

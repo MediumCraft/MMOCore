@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.tree.skilltree;
+package net.Indyuce.mmocore.skilltree.tree;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
@@ -6,11 +6,11 @@ import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.registry.RegisteredObject;
-import net.Indyuce.mmocore.tree.IntegerCoordinates;
-import net.Indyuce.mmocore.tree.NodeState;
-import net.Indyuce.mmocore.tree.SkillTreeNode;
-import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
-import net.Indyuce.mmocore.tree.skilltree.display.Icon;
+import net.Indyuce.mmocore.skilltree.tree.display.DisplayInfo;
+import net.Indyuce.mmocore.skilltree.tree.display.Icon;
+import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
+import net.Indyuce.mmocore.skilltree.NodeStatus;
+import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -93,7 +93,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                     continue;
                 }
                 for (String size : config.getConfigurationSection("icons." + key).getKeys(false)) {
-                    DisplayInfo displayInfo = new DisplayInfo(NodeState.valueOf(UtilityMethods.enumName(key)), Integer.parseInt(size));
+                    DisplayInfo displayInfo = new DisplayInfo(NodeStatus.valueOf(UtilityMethods.enumName(key)), Integer.parseInt(size));
                     Icon icon = new Icon(config.getConfigurationSection("icons." + key + "." + size));
                     icons.put(displayInfo, icon);
 
@@ -178,7 +178,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     /**
      * Recursively go through the skill trees to update the the node states
      */
-    public void setupNodeState(PlayerData playerData) {
+    public void setupNodeStates(PlayerData playerData) {
         for (SkillTreeNode root : roots)
             setupNodeStateFrom(root, playerData);
     }
@@ -188,13 +188,14 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     }
 
     /**
-     * Update recursively the state of all the nodes that are children of this node (Used when we change the state of a node)
+     * Update recursively the state of all the nodes that are
+     * children of this node (Used when we change the state of a node)
      */
-    public void setupNodeStateFrom(SkillTreeNode node, PlayerData playerData) {
+    private void setupNodeStateFrom(SkillTreeNode node, PlayerData playerData) {
         if (playerData.getNodeLevel(node) > 0) {
-            playerData.setNodeState(node, NodeState.UNLOCKED);
+            playerData.setNodeState(node, NodeStatus.UNLOCKED);
         } else if (playerData.getNodeLevel(node) == 0 && node.isRoot()) {
-            playerData.setNodeState(node, NodeState.UNLOCKABLE);
+            playerData.setNodeState(node, NodeStatus.UNLOCKABLE);
         } else {
             boolean isUnlockableFromStrongParent = node.getStrongParents().size() == 0 ? true : true;
             boolean isUnlockableFromSoftParent = node.getSoftParents().size() == 0 ? true : false;
@@ -212,7 +213,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                         numberChildren++;
 
                 //We must check if the parent is Fully Locked or not and if it can unlock a new node(with its max children constraint)
-                if (numberChildren >= strongParent.getMaxChildren() || playerData.getNodeState(strongParent) == NodeState.FULLY_LOCKED)
+                if (numberChildren >= strongParent.getMaxChildren() || playerData.getNodeState(strongParent) == NodeStatus.FULLY_LOCKED)
                     isFullyLockedFromStrongParent = true;
             }
 
@@ -226,18 +227,18 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 for (SkillTreeNode child : softParent.getChildren())
                     if (playerData.getNodeLevel(child) > 0)
                         numberChildren++;
-                if (numberChildren < softParent.getMaxChildren() && playerData.getNodeState(softParent) != NodeState.FULLY_LOCKED)
+                if (numberChildren < softParent.getMaxChildren() && playerData.getNodeState(softParent) != NodeStatus.FULLY_LOCKED)
                     isFullyLockedFromSoftParent = false;
             }
 
             boolean isFullyLocked = isFullyLockedFromSoftParent || isFullyLockedFromStrongParent;
             boolean isUnlockable = isUnlockableFromSoftParent && isUnlockableFromStrongParent;
             if (isFullyLocked)
-                playerData.setNodeState(node, NodeState.FULLY_LOCKED);
+                playerData.setNodeState(node, NodeStatus.FULLY_LOCKED);
             else if (isUnlockable)
-                playerData.setNodeState(node, NodeState.UNLOCKABLE);
+                playerData.setNodeState(node, NodeStatus.UNLOCKABLE);
             else
-                playerData.setNodeState(node, NodeState.LOCKED);
+                playerData.setNodeState(node, NodeStatus.LOCKED);
         }
         //We recursively call the algorithm for all the children of the current node
         for (SkillTreeNode child : node.getChildren())

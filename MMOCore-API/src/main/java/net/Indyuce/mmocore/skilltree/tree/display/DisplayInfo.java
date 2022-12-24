@@ -1,6 +1,6 @@
-package net.Indyuce.mmocore.tree.skilltree.display;
+package net.Indyuce.mmocore.skilltree.tree.display;
 
-import net.Indyuce.mmocore.tree.NodeState;
+import net.Indyuce.mmocore.skilltree.NodeStatus;
 
 import java.util.Objects;
 
@@ -8,7 +8,7 @@ import java.util.Objects;
  * The information needed to determine the display type of a node
  */
 public class DisplayInfo {
-    private NodeState nodeState;
+    private NodeStatus nodeStatus;
     private  int size;
 
     //this NodeDisplayInfo represent a path
@@ -18,13 +18,13 @@ public class DisplayInfo {
     public DisplayInfo() {
     }
 
-    public DisplayInfo(NodeState nodeState, int size) {
-        this.nodeState = nodeState;
+    public DisplayInfo(NodeStatus nodeStatus, int size) {
+        this.nodeStatus = nodeStatus;
         this.size = size;
     }
 
-    public NodeState getNodeState() {
-        return nodeState;
+    public NodeStatus getNodeState() {
+        return nodeStatus;
     }
 
     public int getSize() {
@@ -34,7 +34,7 @@ public class DisplayInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeState, size);
+        return Objects.hash(nodeStatus, size);
     }
 
     @Override
@@ -42,15 +42,15 @@ public class DisplayInfo {
         if(!(obj instanceof DisplayInfo))
             return false;
         DisplayInfo displayInfo= (DisplayInfo) obj;
-        if(nodeState==null)
+        if(nodeStatus ==null)
             return displayInfo.getNodeState()==null;
-        return nodeState==displayInfo.getNodeState()&&size==displayInfo.getSize();
+        return nodeStatus ==displayInfo.getNodeState()&&size==displayInfo.getSize();
     }
 
     @Override
     public String toString() {
         return "DisplayInfo{" +
-                "nodeState=" + nodeState +
+                "nodeState=" + nodeStatus +
                 ", size=" + size +
                 '}';
     }

@@ -1,16 +1,11 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
-import io.lumine.mythic.lib.player.modifier.PlayerModifier;
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 
-import java.util.Collection;
 import java.util.UUID;
 
 public class StatTrigger extends Trigger {
@@ -39,7 +34,6 @@ public class StatTrigger extends Trigger {
         totalAmount+=amount;
         new StatModifier("trigger."+uuid.toString(),stat,totalAmount,type).register(player.getMMOPlayerData());
     }
-
 
     /**
      * Removes the effect of the trigger to the player by registering the

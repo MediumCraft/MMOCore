@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.tree.skilltree.SkillTree;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.Indyuce.mmocore.manager.registry.MMOCoreRegister;
-import net.Indyuce.mmocore.tree.SkillTreeNode;
+import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;

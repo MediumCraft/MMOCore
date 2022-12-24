@@ -34,16 +34,17 @@ import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.party.provided.Party;
+import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
-import net.Indyuce.mmocore.tree.IntegerCoordinates;
-import net.Indyuce.mmocore.tree.NodeState;
-import net.Indyuce.mmocore.tree.SkillTreeNode;
-import net.Indyuce.mmocore.tree.skilltree.SkillTree;
-import net.Indyuce.mmocore.tree.skilltree.display.DisplayInfo;
-import net.Indyuce.mmocore.tree.skilltree.display.Icon;
+import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
+import net.Indyuce.mmocore.skilltree.NodeStatus;
+import net.Indyuce.mmocore.skilltree.SkillTreeNode;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import net.Indyuce.mmocore.skilltree.tree.display.DisplayInfo;
+import net.Indyuce.mmocore.skilltree.tree.display.Icon;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.md_5.bungee.api.ChatMessageType;
@@ -63,7 +64,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 
-public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer {
+public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer, ClassDataContainer {
 
     /**
      * Corresponds to the MythicLib player data. It is used to keep
@@ -71,7 +72,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * as well as other things like the last time the player logged in/out
      */
     private final MMOPlayerData mmoData;
-
 
     /**
      * Can be null, the {@link #getProfess()} method will return the
@@ -95,12 +95,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
     private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
+
     /**
-     * Maps each skill tree to the number of points spent in it. Just in cache memory.
+     * Cached for easier access. Amount of points spent in each skill tree.
      */
-    private final HashMap<SkillTree, Integer> pointSpent = new HashMap<>();
+    private final Map<SkillTree, Integer> pointSpent = new HashMap<>();
+
+    /**
+     * Cached for easier access. Current status of each skill tree node.
+     */
+    private final Map<SkillTreeNode, NodeStatus> nodeStates = new HashMap<>();
     private final Map<SkillTreeNode, Integer> nodeLevels = new HashMap<>();
-    private final Map<SkillTreeNode, NodeState> nodeStates = new HashMap<>();
     private final Map<String, Integer> skillTreePoints = new HashMap<>();
 
     /**
@@ -183,7 +188,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void setupSkillTree() {
         // Node states setup
         for (SkillTree skillTree : getProfess().getSkillTrees())
-            skillTree.setupNodeState(this);
+            skillTree.setupNodeStates(this);
 
         // Stat triggers setup
         if (!statsLoaded) {
@@ -195,14 +200,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public int getPointSpent(SkillTree skillTree) {
         return pointSpent.getOrDefault(skillTree, 0);
-    }
-
-    public HashMap<SkillTree, Integer> getPointsSpent() {
-        return new HashMap<>(pointSpent);
-    }
-
-    public void clearPointsSpent() {
-        pointSpent.clear();
     }
 
     public void setSkillTreePoints(String treeId, int points) {
@@ -218,18 +215,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     /**
-     * We make a copy to assure that the object created is independent of the state of playerData.
+     * Make a copy to make sure that the object
+     * created is independent of the state of playerData.
      */
-    public Map<String, Integer> getSkillTreePoints() {
+    public Map<String, Integer> mapSkillTreePoints() {
         return new HashMap(skillTreePoints);
     }
 
     public void clearSkillTreePoints() {
         skillTreePoints.clear();
-    }
-
-    public boolean containsSkillPointTreeId(String treeId) {
-        return skillTreePoints.containsKey(treeId);
     }
 
     public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
@@ -249,36 +243,37 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void clearNodeLevels() {
         nodeLevels.clear();
+        pointSpent.clear();
     }
 
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
-        NodeState nodeState = nodeStates.get(node);
+        NodeStatus nodeStatus = nodeStates.get(node);
         //Check the State of the node
-        if (nodeState != NodeState.UNLOCKED && nodeState != NodeState.UNLOCKABLE)
+        if (nodeStatus != NodeStatus.UNLOCKED && nodeStatus != NodeStatus.UNLOCKABLE)
             return false;
         return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) > 0 || skillTreePoints.getOrDefault("global", 0) > 0);
     }
 
     /**
      * Increments the node level by one, change the states of branches of the tree.
-     * Consumes skill tree points from the tree first and then consumes the global skill-tree points ('all')
+     * Consumes skill tree points from the tree first and then consumes the
+     * global skill-tree points ('all')
      */
-    public <T extends SkillTree> void incrementNodeLevel(SkillTreeNode node) {
+    public void incrementNodeLevel(SkillTreeNode node) {
         setNodeLevel(node, getNodeLevel(node) + 1);
         //Claims the nodes experience table.
         node.getExperienceTable().claim(this, getNodeLevel(node), node);
 
-        if (nodeStates.get(node) == NodeState.UNLOCKABLE)
-            setNodeState(node, NodeState.UNLOCKED);
+        if (nodeStates.get(node) == NodeStatus.UNLOCKABLE)
+            setNodeState(node, NodeStatus.UNLOCKED);
         if (skillTreePoints.get(node.getTree().getId()) > 0)
             withdrawSkillTreePoints(node.getTree().getId(), 1);
         else
             withdrawSkillTreePoints("global", 1);
         //We unload the nodeStates map (for the skill tree) and reload it completely
-        for (SkillTreeNode node1 : node.getTree().getNodes()) {
+        for (SkillTreeNode node1 : node.getTree().getNodes())
             nodeStates.remove(node1);
-        }
-        node.getTree().setupNodeState(this);
+        node.getTree().setupNodeStates(this);
     }
 
     /**
@@ -312,11 +307,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skillTreePoints.put(treeId, skillTreePoints.get(treeId) - withdraw);
     }
 
-    public void setNodeState(SkillTreeNode node, NodeState nodeState) {
-        nodeStates.put(node, nodeState);
+    public void setNodeState(SkillTreeNode node, NodeStatus nodeStatus) {
+        nodeStates.put(node, nodeStatus);
     }
 
-    public NodeState getNodeState(SkillTreeNode node) {
+    public NodeStatus getNodeState(SkillTreeNode node) {
         return nodeStates.get(node);
     }
 
@@ -340,10 +335,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             setNodeLevel(node, 0);
             nodeStates.remove(node);
         }
-        skillTree.setupNodeState(this);
+        skillTree.setupNodeStates(this);
     }
 
-    public Map<SkillTreeNode, NodeState> getNodeStates() {
+    public Map<SkillTreeNode, NodeStatus> getNodeStates() {
         return new HashMap<>(nodeStates);
     }
 
@@ -351,10 +346,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         nodeStates.clear();
     }
 
+    @Override
     public Map<String, Integer> getNodeTimesClaimed() {
         Map<String, Integer> result = new HashMap<>();
         tableItemClaims.forEach((str, val) -> {
-            if (str.startsWith(SkillTreeNode.getPrefix()))
+            if (str.startsWith(SkillTreeNode.KEY_PREFIX))
                 result.put(str, val);
         });
         return result;
@@ -428,7 +424,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return Math.max(1, level);
     }
 
-
     @Nullable
     public AbstractParty getParty() {
         return MMOCore.plugin.partyModule.getParty(this);
@@ -446,6 +441,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return classPoints;
     }
 
+    @Override
     public int getSkillPoints() {
         return skillPoints;
     }
@@ -463,14 +459,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return sum;
     }
 
+    @Override
     public int getAttributePoints() {
         return attributePoints;
     }
 
+    @Override
     public int getAttributeReallocationPoints() {
         return attributeReallocationPoints;
     }
 
+    @Override
     public int getSkillTreeReallocationPoints() {
         return skillTreeReallocationPoints;
     }
@@ -482,7 +481,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public int getClaims(String key) {
         return tableItemClaims.getOrDefault(key, 0);
-
     }
 
     @Override
@@ -492,9 +490,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setClaims(String key, int times) {
         tableItemClaims.put(key, times);
-
     }
-
 
     public Map<String, Integer> getItemClaims() {
         return tableItemClaims;
@@ -507,10 +503,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return getProfess().getExpCurve().getExperience(getLevel() + 1);
     }
 
-    // public int getSkillReallocationPoints() {
-    // return skillReallocationPoints;
-    // }
-
     public boolean isOnline() {
         return mmoData.isOnline();
     }
@@ -521,7 +513,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     /**
      * @return If the item is unlocked by the player
+     * @deprecated Not used yet
      */
+    @Deprecated
     public boolean hasUnlocked(Unlockable unlockable) {
         return unlockedItems.contains(unlockable.getUnlockNamespacedKey());
     }
@@ -530,7 +524,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * Unlocks an item for the player
      *
      * @return If the item was already unlocked when calling this method
+     * @deprecated Not used yet
      */
+    @Deprecated
     public boolean unlock(Unlockable unlockable) {
         return unlockedItems.add(unlockable.getUnlockNamespacedKey());
     }
@@ -575,10 +571,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         getPlayer().setExp(Math.max(0, Math.min(1, (float) experience / (float) getLevelUpExperience())));
     }
 
-    // public void setSkillReallocationPoints(int value) {
-    // skillReallocationPoints = Math.max(0, value);
-    // }
-
     public void setAttributePoints(int value) {
         attributePoints = Math.max(0, value);
     }
@@ -615,10 +607,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return classSlots.keySet();
     }
 
+    @Nullable
     public SavedClassInformation getClassInfo(PlayerClass profess) {
         return getClassInfo(profess.getId());
     }
 
+    @Nullable
     public SavedClassInformation getClassInfo(String profess) {
         return classSlots.get(profess);
     }
@@ -646,7 +640,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void lockWaypoint(Waypoint waypoint) {
         waypoints.remove(waypoint.getId());
     }
-
 
     /**
      * @deprecated Provide a heal reason with {@link #heal(double, PlayerResourceUpdateEvent.UpdateReason)}
@@ -1009,7 +1002,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     }
 
-
     @Deprecated
     public void setAttribute(PlayerAttribute attribute, int value) {
         setAttribute(attribute.getId(), value);
@@ -1020,8 +1012,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         attributes.setBaseAttribute(id, value);
     }
 
-    @Deprecated
-    public Map<String, Integer> mapAttributePoints() {
+    @Override
+    public Map<String, Integer> mapAttributeLevels() {
         return getAttributes().mapPoints();
     }
 

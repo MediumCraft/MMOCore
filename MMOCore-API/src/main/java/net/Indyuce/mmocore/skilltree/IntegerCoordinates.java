@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.tree;
+package net.Indyuce.mmocore.skilltree;
 
 import org.apache.commons.lang.Validate;
 

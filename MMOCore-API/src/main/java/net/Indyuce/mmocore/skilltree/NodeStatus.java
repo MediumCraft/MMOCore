@@ -1,6 +1,7 @@
-package net.Indyuce.mmocore.tree;
+package net.Indyuce.mmocore.skilltree;
 
-public enum NodeState {
+public enum NodeStatus {
+
     /**
      * The player does not have access to this skill tree node just yet.
      */

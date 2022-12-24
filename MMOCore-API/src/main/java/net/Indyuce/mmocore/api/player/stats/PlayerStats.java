@@ -18,9 +18,9 @@ public class PlayerStats {
     private final PlayerData data;
 
     /**
-     * Util class to easily manipulate the MMOLib stat map
+     * Util class to easily manipulate the MythicLib stat map
      *
-     * @param data Playerdata
+     * @param data Player
      */
     public PlayerStats(PlayerData data) {
         this.data = data;
@@ -39,12 +39,13 @@ public class PlayerStats {
         return getMap().getInstance(stat.name());
     }
 
+    @Deprecated
     public StatInstance getInstance(String stat) {
         return getMap().getInstance(stat);
     }
 
     public double getStat(String stat) {
-        return getInstance(stat).getTotal();
+        return getMap().getInstance(stat).getTotal();
     }
 
     /**
@@ -67,7 +68,7 @@ public class PlayerStats {
 
     /**
      * Used to update MMOCore stat modifiers due to class and send them over to
-     * MMOLib. Must be ran everytime the player levels up or changes class.
+     * MythicLib. Must be ran everytime the player levels up or changes class.
      * <p>
      * This is also called when reloading the plugin to make class setup easier,
      * see {@link PlayerData#update()} for more info
@@ -96,11 +97,9 @@ public class PlayerStats {
          *
          * This updates the player's PASSIVE skills
          */
-
-
         final PassiveSkillMap skillMap = data.getMMOPlayerData().getPassiveSkillMap();
 
-        if(!MMOCore.plugin.configManager.passiveSkillNeedBound) {
+        if (!MMOCore.plugin.configManager.passiveSkillNeedBound) {
             skillMap.removeModifiers("MMOCorePassiveSkill");
             for (ClassSkill skill : data.getProfess().getSkills())
                 if (skill.getSkill().getTrigger().isPassive())

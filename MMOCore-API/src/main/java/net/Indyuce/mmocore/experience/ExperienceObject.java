@@ -27,6 +27,9 @@ public interface ExperienceObject extends ExperienceDispenser {
     ExpCurve getExpCurve();
 
     /**
+     * Should throw an error if called when
+     * {@link #hasExperienceTable()} returns false
+     *
      * @return Table read when leveling up
      */
     @NotNull

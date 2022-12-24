@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.tree;
+package net.Indyuce.mmocore.skilltree;
 
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
@@ -8,8 +8,7 @@ import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.player.Unlockable;
-import net.Indyuce.mmocore.tree.skilltree.SkillTree;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-//We must use generics to get the type of the corresponding tree
-public class SkillTreeNode implements Unlockable, ExperienceObject {
+// We must use generics to get the type of the corresponding tree
+public class SkillTreeNode implements ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
     private IntegerCoordinates coordinates;
@@ -32,9 +31,9 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
     private final ExperienceTable experienceTable;
 
-    //The max level the skill tree node can have and the max amount of children it can have.
+    // The max level the skill tree node can have and the max amount of children it can have.
     private final int maxLevel, maxChildren, size;
-    private final ArrayList<SkillTreeNode> children = new ArrayList<>();
+    private final List<SkillTreeNode> children = new ArrayList<>();
 
     /**
      * Associates the required level to each parent.
@@ -42,8 +41,13 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
      * You only need to have the requirement for one of your softParents
      * but you need to fulfill the requirements of all of your strong parents.
      **/
-    private final HashMap<SkillTreeNode, Integer> softParents = new HashMap<>();
-    private final HashMap<SkillTreeNode, Integer> strongParents = new HashMap<>();
+    private final Map<SkillTreeNode, Integer> softParents = new HashMap<>();
+    private final Map<SkillTreeNode, Integer> strongParents = new HashMap<>();
+
+    /**
+     * Prefix used in node key
+     */
+    public static final String KEY_PREFIX = "node";
 
     public SkillTreeNode(SkillTree tree, ConfigurationSection config) {
         Validate.notNull(config, "Config cannot be null");
@@ -52,42 +56,29 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
-        if (config.contains("lores")) {
-            for (String key : config.getConfigurationSection("lores").getKeys(false)) {
+
+        if (config.contains("lores"))
+            for (String key : config.getConfigurationSection("lores").getKeys(false))
                 try {
                     lores.put(Integer.parseInt(key), config.getStringList("lores." + key));
                 } catch (NumberFormatException e) {
                     throw new RuntimeException("You must only specifiy integers in lores.");
                 }
-            }
-        }
+
         String expTableId = config.getString("experience-table");
         Validate.notNull(expTableId, "You must specify an exp table for " + getFullId() + ".");
         this.experienceTable = MMOCore.plugin.experience.getTableOrThrow(expTableId);
 
-
         maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
         maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
-        //If coordinates are precised and we are not with an automaticTree we set them up
+        // If coordinates are precised and we are not with an automaticTree we set them up
         Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"), "No coordinates specified");
         coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
-
     }
-
-    /**
-     * Prefix used in the key
-     *
-     * @return
-     */
-    public static String getPrefix() {
-        return "node";
-    }
-
 
     public SkillTree getTree() {
         return tree;
     }
-
 
     public void setIsRoot() {
         isRoot = true;
@@ -97,7 +88,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
         return isRoot;
     }
 
-    //Used when postLoaded
+    // Used when postLoaded
     public void addParent(SkillTreeNode parent, int requiredLevel, ParentType parentType) {
         if (parentType == ParentType.SOFT)
             softParents.put(parent, requiredLevel);
@@ -125,7 +116,6 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
         return maxLevel;
     }
 
-
     public int getMaxChildren() {
         return maxChildren;
     }
@@ -138,7 +128,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
         return strongParents.keySet();
     }
 
-    public ArrayList<SkillTreeNode> getChildren() {
+    public List<SkillTreeNode> getChildren() {
         return children;
     }
 
@@ -146,11 +136,17 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
         return size;
     }
 
+    /**
+     * @return The node identifier relative to its skill tree, like "extra_strength"
+     */
     public String getId() {
         return id;
     }
 
-
+    /**
+     * @return Full node identifier, containing both the node identifier AND
+     *         the skill tree identifier, like "combat_extra_strength"
+     */
     public String getFullId() {
         return tree.getId() + "_" + id;
     }
@@ -165,7 +161,7 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
     @Override
     public String getKey() {
-        return getPrefix() + ":" + getFullId().replace("-", "_");
+        return KEY_PREFIX + ":" + getFullId().replace("-", "_");
     }
 
     @Nullable
@@ -183,11 +179,6 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
     @Override
     public boolean hasExperienceTable() {
         return experienceTable != null;
-    }
-
-    @Override
-    public String getUnlockNamespacedKey() {
-        return "skill_tree:" + tree.getId() + "_" + coordinates.getX() + "_" + coordinates.getY();
     }
 
     @Override
@@ -226,28 +217,6 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
 
     }
 
-    /**
-     * @param namespacedKey Something like "skill_tree:tree_name_1_5"
-     * @return The corresponding skill tree node
-     * @throws RuntimeException If the string cannot be parsed, if the specified
-     *                          skill tree does not exist or if the skill tree has no such node
-     */
-    @NotNull
-    public static SkillTreeNode getFromNamespacedKey(String namespacedKey) {
-        String[] split = namespacedKey.substring(11).split("_");
-        int n = split.length;
-
-        IntegerCoordinates coords = new IntegerCoordinates(Integer.valueOf(split[n - 2]), Integer.valueOf(split[n - 1]));
-        StringBuilder treeIdBuilder = new StringBuilder();
-        for (int i = 0; i < n - 2; i++) {
-            if (i > 0)
-                treeIdBuilder.append("_");
-            treeIdBuilder.append(split[i]);
-        }
-        String treeId = treeIdBuilder.toString();
-        return MMOCore.plugin.skillTreeManager.get(treeId).getNode(coords);
-    }
-
     @Override
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, @NotNull EXPSource source) {
         throw new RuntimeException("Attributes don't have experience");
@@ -256,44 +225,5 @@ public class SkillTreeNode implements Unlockable, ExperienceObject {
     @Override
     public boolean shouldHandle(PlayerData playerData) {
         throw new RuntimeException("Attributes don't have experience");
-    }
-
-    public class NodeContext {
-        private final NodeState nodeState;
-        private final int nodeLevel;
-
-        public NodeContext(NodeState nodeState, int nodeLevel) {
-            this.nodeState = nodeState;
-            this.nodeLevel = nodeLevel;
-        }
-
-        public NodeState getNodeState() {
-            return nodeState;
-        }
-
-        public int getNodeLevel() {
-            return nodeLevel;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            NodeContext that = (NodeContext) o;
-            return nodeLevel == that.nodeLevel && nodeState == that.nodeState;
-        }
-
-        @Override
-        public String toString() {
-            return "NodeContext{" +
-                    "nodeState=" + nodeState +
-                    ", nodeLevel=" + nodeLevel +
-                    '}';
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(nodeState, nodeLevel);
-        }
     }
 }
