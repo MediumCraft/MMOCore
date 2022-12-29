@@ -4,7 +4,7 @@ import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.CommandVerbose;
+import net.Indyuce.mmocore.command.api.CommandVerbose;
 import net.Indyuce.mmocore.util.TriConsumer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

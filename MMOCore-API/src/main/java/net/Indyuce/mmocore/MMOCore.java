@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.version.SpigotPlugin;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.command.api.ToggleableCommand;
 import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.manager.ActionBarManager;
@@ -250,45 +251,10 @@ public class MMOCore extends JavaPlugin {
         // load guild data after loading player data
         dataProvider.getGuildManager().load();
 
-        // Command
-        try {
-            final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+        // Toggleable Commands
+        ToggleableCommand.register();
 
-            bukkitCommandMap.setAccessible(true);
-            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-
-            FileConfiguration config = new ConfigFile("commands").getConfig();
-
-            if (config.contains("player"))
-                commandMap.register("mmocore", new PlayerStatsCommand(config.getConfigurationSection("player")));
-            if (config.contains("attributes"))
-                commandMap.register("mmocore", new AttributesCommand(config.getConfigurationSection("attributes")));
-            if (config.contains("class"))
-                commandMap.register("mmocore", new ClassCommand(config.getConfigurationSection("class")));
-            if (config.contains("waypoints"))
-                commandMap.register("mmocore", new WaypointsCommand(config.getConfigurationSection("waypoints")));
-            if (config.contains("quests"))
-                commandMap.register("mmocore", new QuestsCommand(config.getConfigurationSection("quests")));
-            if (config.contains("skills"))
-                commandMap.register("mmocore", new SkillsCommand(config.getConfigurationSection("skills")));
-            if (config.contains("friends"))
-                commandMap.register("mmocore", new FriendsCommand(config.getConfigurationSection("friends")));
-            if (config.contains("party"))
-                commandMap.register("mmocore", new PartyCommand(config.getConfigurationSection("party")));
-            if (config.contains("guild"))
-                commandMap.register("mmocore", new GuildCommand(config.getConfigurationSection("guild")));
-            if (config.contains("skill-trees"))
-                commandMap.register("mmocore", new SkillTreeCommand(config.getConfigurationSection("skill-trees")));
-            if (hasEconomy() && economy.isValid()) {
-                if (config.contains("withdraw"))
-                    commandMap.register("mmocore", new WithdrawCommand(config.getConfigurationSection("withdraw")));
-                if (config.contains("deposit"))
-                    commandMap.register("mmocore", new DepositCommand(config.getConfigurationSection("deposit")));
-            }
-        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
-            ex.printStackTrace();
-        }
-
+        // Register MMOCore command what soever
         MMOCoreCommandTreeRoot mmoCoreCommand = new MMOCoreCommandTreeRoot();
         getCommand("mmocore").setExecutor(mmoCoreCommand);
         getCommand("mmocore").setTabCompleter(mmoCoreCommand);

@@ -1,23 +1,20 @@
 package net.Indyuce.mmocore.command;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
+import net.Indyuce.mmocore.command.api.RegisteredCommand;
+import net.Indyuce.mmocore.command.api.ToggleableCommand;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class SkillTreeCommand extends BukkitCommand {
-    public SkillTreeCommand(ConfigurationSection config) {
-        super(config.getString("main"));
-
-        setAliases(config.getStringList("aliases"));
-        setDescription("Opens the skills menu.");
+public class SkillTreesCommand extends RegisteredCommand {
+    public SkillTreesCommand(ConfigurationSection config) {
+        super(config, ToggleableCommand.SKILL_TREES);
     }
 
     @Override
@@ -37,8 +34,5 @@ public class SkillTreeCommand extends BukkitCommand {
             MMOCore.plugin.configManager.getSimpleMessage("no-skill-tree").send(player);
             return true;
         }
-
     }
-
-
 }

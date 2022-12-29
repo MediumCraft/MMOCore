@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
-import net.Indyuce.mmocore.command.CommandVerbose;
+import net.Indyuce.mmocore.command.api.CommandVerbose;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -92,7 +92,6 @@ public class ConfigManager {
         loadDefaultFile("restrictions.yml");
         loadDefaultFile("sounds.yml");
         loadDefaultFile("loot-chests.yml");
-        loadDefaultFile("commands.yml");
         loadDefaultFile("exp-tables.yml");
         loadDefaultFile("exp-sources.yml");
         loadDefaultFile("triggers.yml");

@@ -3,6 +3,8 @@ package net.Indyuce.mmocore.command;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
+import net.Indyuce.mmocore.command.api.RegisteredCommand;
+import net.Indyuce.mmocore.command.api.ToggleableCommand;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.social.Request;
@@ -10,19 +12,15 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class FriendsCommand extends BukkitCommand {
+public class FriendsCommand extends RegisteredCommand {
     public FriendsCommand(ConfigurationSection config) {
-        super(config.getString("main"));
-
-        setAliases(config.getStringList("aliases"));
-        setDescription("Opens the friends menu.");
+        super(config, ToggleableCommand.FRIENDS);
     }
 
     @Override

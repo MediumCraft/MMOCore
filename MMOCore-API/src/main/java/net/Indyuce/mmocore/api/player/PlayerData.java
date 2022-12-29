@@ -125,7 +125,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
-    public boolean noCooldown, statsLoaded;
+    public boolean noCooldown, statsLoaded, pvpMode;
     public CombatRunnable combat;
 
     /**

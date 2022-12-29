@@ -8,7 +8,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
-import net.Indyuce.mmocore.command.CommandVerbose;
+import net.Indyuce.mmocore.command.api.CommandVerbose;
 import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
 import net.Indyuce.mmocore.util.TriConsumer;
 import org.apache.commons.lang.Validate;

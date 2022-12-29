@@ -15,6 +15,7 @@ import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.api.SoundEvent;
+import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class SkillList extends EditableInventory {
+public class  SkillList extends EditableInventory {
     public SkillList() {
         super("skill-list");
     }
@@ -340,6 +341,7 @@ public class SkillList extends EditableInventory {
 
             skills = new ArrayList<>(playerData.getProfess().getSkills());
             skillSlots = getEditable().getByFunction("skill").getSlots();
+            Validate.notNull(getEditable().getByFunction("active-slot"), "Your skill GUI config file is out-of-date, please regenerate it.");
             activeSlotSlots = getEditable().getByFunction("active-slot").getSlots();
             passiveSlotSlots = getEditable().getByFunction("passive-slot").getSlots();
             selected = skills.get(page * skillSlots.size());

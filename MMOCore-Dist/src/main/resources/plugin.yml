@@ -3,24 +3,24 @@ version: ${project.version}
 main: net.Indyuce.mmocore.MMOCore
 author: Indyuce
 description: ${project.description}
-loadbefore: [MMOItems]
-depend: [MythicLib]
-softdepend: [Vault,MythicMobs,PlaceholderAPI,Residence,Citizens,ProtocolLib]
+loadbefore: [ MMOItems ]
+depend: [ MythicLib ]
+softdepend: [ Vault,MythicMobs,PlaceholderAPI,Residence,Citizens,ProtocolLib ]
 api-version: 1.13
 commands:
-    mmocore:
-        description: Main command.
-        aliases: [rpg]
+  mmocore:
+    description: Main command.
+    aliases: [ rpg ]
 permissions:
-    mmocore.admin:
-        description: Access to /mmocore
-        default: op
-    mmocore.waypoints:
-        description: Access to /waypoints
-        default: op
-    mmocore.currency:
-        description: Access to /deposit and /withdraw
-        default: op
-    mmocore.class-select:
-        description: Access to /class
-        default: op
+  mmocore.admin:
+    description: Access to /mmocore
+    default: op
+  mmocore.waypoints:
+    description: Access to /waypoints
+    default: op
+  mmocore.currency:
+    description: Access to /deposit and /withdraw
+    default: op
+  mmocore.class-select:
+    description: Access to /class
+    default: op

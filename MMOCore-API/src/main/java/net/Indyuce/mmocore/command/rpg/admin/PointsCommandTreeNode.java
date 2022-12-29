@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.CommandVerbose;
+import net.Indyuce.mmocore.command.api.CommandVerbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

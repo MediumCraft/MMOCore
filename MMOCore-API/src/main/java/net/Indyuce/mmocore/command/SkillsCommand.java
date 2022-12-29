@@ -2,20 +2,18 @@ package net.Indyuce.mmocore.command;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.command.api.RegisteredCommand;
+import net.Indyuce.mmocore.command.api.ToggleableCommand;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class SkillsCommand extends BukkitCommand {
+public class SkillsCommand extends RegisteredCommand {
 	public SkillsCommand(ConfigurationSection config) {
-		super(config.getString("main"));
-		
-		setAliases(config.getStringList("aliases"));
-		setDescription("Opens the skills menu.");
+		super(config, ToggleableCommand.SKILLS);
 	}
 
 	@Override

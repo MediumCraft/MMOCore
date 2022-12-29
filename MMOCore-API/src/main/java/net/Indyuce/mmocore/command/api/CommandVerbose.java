@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.command;
+package net.Indyuce.mmocore.command.api;
 
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;

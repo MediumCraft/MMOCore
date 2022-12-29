@@ -1,23 +1,21 @@
 package net.Indyuce.mmocore.command;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.command.api.RegisteredCommand;
+import net.Indyuce.mmocore.command.api.ToggleableCommand;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmocore.api.eco.Withdraw;
 
-public class WithdrawCommand extends BukkitCommand {
+public class WithdrawCommand extends RegisteredCommand {
 	public WithdrawCommand(ConfigurationSection config) {
-		super(config.getString("main"));
-		
-		setAliases(config.getStringList("aliases"));
-		setDescription("Creates a withdraw request.");
+		super(config, ToggleableCommand.WITHDRAW);
 	}
 
 	@Override

@@ -1,13 +1,13 @@
 package net.Indyuce.mmocore.command;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.event.MMOCommandEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.social.Request;
 import net.Indyuce.mmocore.command.api.RegisteredCommand;
 import net.Indyuce.mmocore.command.api.ToggleableCommand;
-import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.api.event.MMOCommandEvent;
-import net.Indyuce.mmocore.api.player.social.Request;
 import net.Indyuce.mmocore.guild.provided.GuildInvite;
+import net.Indyuce.mmocore.manager.InventoryManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,9 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class GuildCommand extends RegisteredCommand {
-    public GuildCommand(ConfigurationSection config) {
-        super(config, ToggleableCommand.GUILD);
+public class PvpModeCommand extends RegisteredCommand {
+    public PvpModeCommand(ConfigurationSection config) {
+        super(config, ToggleableCommand.PVP_MODE);
     }
 
     @Override
