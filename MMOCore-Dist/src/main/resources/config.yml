@@ -233,9 +233,25 @@ ability-targeting-options:
 # Prevents mobs spawned from spawners from giving  MMO XP points.
 prevent-spawner-xp: true
 
-# Timer for combat log to expire (in seconds)
 combat-log:
+
+  # Timer for combat log to expire (in seconds)
   timer: 10
+
+  # Damage causes that trigger combat when a player is hit
+  # List: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
+  causes:
+    - CRAMMING
+    - DRAGON_BREATH
+    - ENTITY_ATTACK
+    - ENTITY_EXPLOSION
+    - ENTITY_SWEEP_ATTACK
+    - MAGIC
+    - POISON
+    - PROJECTILE
+    - SONIC_BOOM
+    - THORNS
+    - WITHER
 
 # Whether or not the default class should save information (level,
 # skills, etc.) when selecting a new class

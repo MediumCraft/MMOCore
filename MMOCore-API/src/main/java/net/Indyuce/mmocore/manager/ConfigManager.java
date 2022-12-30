@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -11,11 +12,14 @@ import net.Indyuce.mmocore.command.api.CommandVerbose;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -26,8 +30,9 @@ public class ConfigManager {
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public double lootChestsChanceWeight,dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange;
+    public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange;
     public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills;
+    public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
     private final FileConfiguration messages;
 
@@ -76,12 +81,12 @@ public class ConfigManager {
             loadDefaultFile("expcurves", "mining.txt");
         }
 
-        if(!new File(MMOCore.plugin.getDataFolder()+"/skill-trees").exists()) {
-            loadDefaultFile("skill-trees","combat.yml");
-            loadDefaultFile("skill-trees","mage-arcane-mage.yml");
-            loadDefaultFile("skill-trees","rogue-marksman.yml");
-            loadDefaultFile("skill-trees","warrior-paladin.yml");
-            loadDefaultFile("skill-trees","general.yml");
+        if (!new File(MMOCore.plugin.getDataFolder() + "/skill-trees").exists()) {
+            loadDefaultFile("skill-trees", "combat.yml");
+            loadDefaultFile("skill-trees", "mage-arcane-mage.yml");
+            loadDefaultFile("skill-trees", "rogue-marksman.yml");
+            loadDefaultFile("skill-trees", "warrior-paladin.yml");
+            loadDefaultFile("skill-trees", "general.yml");
         }
 
         loadDefaultFile("attributes.yml");
@@ -102,7 +107,17 @@ public class ConfigManager {
 
         messages = new ConfigFile("messages").getConfig();
         partyChatPrefix = MMOCore.plugin.getConfig().getString("party.chat-prefix");
+
+        // Combat log
         combatLogTimer = MMOCore.plugin.getConfig().getInt("combat-log.timer") * 1000L;
+        combatLogDamageCauses.clear();
+        for (String key : MMOCore.plugin.getConfig().getStringList("combat-log.causes"))
+            try {
+                combatLogDamageCauses.add(EntityDamageEvent.DamageCause.valueOf(UtilityMethods.enumName(key)));
+            } catch (Exception exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not find damage cause called '" + key + "'");
+            }
+
         lootChestExpireTime = Math.max(MMOCore.plugin.getConfig().getInt("loot-chests.chest-expire-time"), 1) * 20;
         lootChestPlayerCooldown = (long) MMOCore.plugin.getConfig().getDouble("player-cooldown") * 1000L;
         globalSkillCooldown = MMOCore.plugin.getConfig().getLong("global-skill-cooldown") * 50;
@@ -115,9 +130,11 @@ public class ConfigManager {
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
 
+        // Resources
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GREEN);
         staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
+
         passiveSkillNeedBound = MMOCore.plugin.getConfig().getBoolean("passive-skill-need-bound");
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
@@ -127,6 +144,7 @@ public class ConfigManager {
         overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp");
     }
 
+    @NotNull
     private ChatColor getColorOrDefault(String key, ChatColor defaultColor) {
         try {
             return ChatColor.valueOf(MMOCore.plugin.getConfig().getString("resource-bar-colors." + key).toUpperCase());

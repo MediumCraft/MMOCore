@@ -9,9 +9,11 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -28,7 +30,7 @@ public class PlayerListener implements Listener {
      * might rely on its data on startup.
      */
     @EventHandler(priority = EventPriority.LOW)
-    public void playerLoadingEvent(PlayerJoinEvent event) {
+    public void loadPlayerData(PlayerJoinEvent event) {
         MMOCore.plugin.dataProvider.getDataManager().setup(event.getPlayer().getUniqueId());
     }
 
@@ -36,7 +38,7 @@ public class PlayerListener implements Listener {
      * Register custom inventory clicks
      */
     @EventHandler
-    public void b(InventoryClickEvent event) {
+    public void registerInventoryClicks(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof PluginInventory)
             ((PluginInventory) event.getInventory().getHolder()).whenClicked(new InventoryClickContext(event.getRawSlot(), event.getCurrentItem(), event.getClick(), event, event.getInventory(), (PluginInventory) event.getInventory().getHolder()));
     }
@@ -45,7 +47,7 @@ public class PlayerListener implements Listener {
      * Register custom inventory close effect
      */
     @EventHandler
-    public void c(InventoryCloseEvent event) {
+    public void registerInventoryCloses(InventoryCloseEvent event) {
         if (event.getInventory().getHolder() instanceof PluginInventory)
             ((PluginInventory) event.getInventory().getHolder()).whenClosed(event);
     }
@@ -54,13 +56,22 @@ public class PlayerListener implements Listener {
      * Updates the player's combat log data every time he hits an entity, or
      * gets hit by an entity or a projectile sent by another entity
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void d(PlayerAttackEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void updateCombat(PlayerAttackEvent event) {
         PlayerData.get(event.getAttacker().getPlayer()).updateCombat();
     }
 
+    /**
+     * Updates the player's combat log everytime he gets hit.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void updateCombat(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player && MMOCore.plugin.configManager.combatLogDamageCauses.contains(event.getCause()))
+            PlayerData.get(event.getEntity().getUniqueId()).updateCombat();
+    }
+
     @EventHandler
-    public void e(PlayerQuitEvent event) {
+    public void saveDataOnQuit(PlayerQuitEvent event) {
         PlayerData playerData = PlayerData.get(event.getPlayer());
         MMOCore.plugin.dataProvider.getDataManager().unregisterSafe(playerData);
     }
@@ -68,20 +79,20 @@ public class PlayerListener implements Listener {
     /**
      * Using the Bukkit health update event is not a good way of
      * interacting with MMOCore health regeneration. The
-     * PlayerResourceUpdateEvent should be heavily prioritized if possible.
+     * PlayerResourceUpdateEvent should be heavily prioritized.
      * <p>
      * This method makes sure that all the plugins which
      * utilize this event can also communicate with MMOCore
      */
     @EventHandler(priority = EventPriority.HIGH)
-    public void g(PlayerResourceUpdateEvent event) {
+    public void resourceBukkitInterface(PlayerResourceUpdateEvent event) {
         if (event.getResource() == PlayerResource.HEALTH) {
-            EntityRegainHealthEvent bukkitEvent = new EntityRegainHealthEvent(event.getPlayer(), event.getAmount(), RegainReason.CUSTOM);
+            final EntityRegainHealthEvent bukkitEvent = new EntityRegainHealthEvent(event.getPlayer(), event.getAmount(), RegainReason.CUSTOM);
             Bukkit.getPluginManager().callEvent(bukkitEvent);
 
             // Update event values
-            event.setCancelled(bukkitEvent.isCancelled());
             event.setAmount(bukkitEvent.getAmount());
+            event.setCancelled(bukkitEvent.isCancelled());
         }
     }
 }
