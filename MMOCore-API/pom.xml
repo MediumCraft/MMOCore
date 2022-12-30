@@ -5,16 +5,11 @@
     <parent>
         <artifactId>MMOCore</artifactId>
         <groupId>net.Indyuce</groupId>
-        <version>${revision}</version>
+        <version>1.12</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>MMOCore-API</artifactId>
-
-    <properties>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
-    </properties>
 
     <build>
         <finalName>${project.name}-${project.version}</finalName>
@@ -22,18 +17,6 @@
         <defaultGoal>clean package install</defaultGoal>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>16</source>
-                    <target>16</target>
-                    <encoding>UTF-8</encoding>
-                    <compilerArgument>-proc:none</compilerArgument>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
