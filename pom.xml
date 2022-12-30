@@ -63,11 +63,6 @@
             <url>https://nexus.phoenixdevt.fr/repository/maven-public/</url>
         </repository>
 
-        <repository>
-            <id>lumine</id>
-            <url>https://mvn.lumine.io/repository/maven/</url>
-        </repository>
-
     </repositories>
 
     <dependencies>
