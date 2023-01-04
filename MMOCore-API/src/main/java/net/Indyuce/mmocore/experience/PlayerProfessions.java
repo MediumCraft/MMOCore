@@ -171,7 +171,7 @@ public class PlayerProfessions {
     public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         Validate.isTrue(playerData.isOnline(), "Cannot give experience to offline player");
         if (value <= 0) {
-            exp.put(profession.getId(), Math.max(0, exp.get(profession.getId() + value)));
+            exp.put(profession.getId(), Math.max(0, exp.get(profession.getId()) + value));
             return;
         }
 
