@@ -173,9 +173,6 @@ public class PlayerQuests implements Closable {
             bossbar.removeAll();
             Bukkit.removeBossBar(bossbarNamespacedKey);
         }
-
-        // Close current objective progress
-        closeCurrentQuest();
     }
 
     public boolean checkCooldownAvailability(Quest quest) {
