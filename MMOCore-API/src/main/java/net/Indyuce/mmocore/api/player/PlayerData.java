@@ -1115,8 +1115,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public void bindPassiveSkill(int slot, @NotNull PassiveSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        final int maxBound = getProfess().getMaxBoundActiveSkills();
-        if (slot > 0 && boundPassiveSkills.size() >= maxBound) {
+        final int maxBound = getProfess().getMaxBoundPassiveSkills();
+        if (slot >= 0 && boundPassiveSkills.size() >= maxBound) {
             final @NotNull PassiveSkill current = boundPassiveSkills.set(slot, skill);
             if (current != null)
                 current.unregister(mmoData);
@@ -1151,7 +1151,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public void bindActiveSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (slot > 0 && boundSkills.size() >= getProfess().getMaxBoundActiveSkills())
+        if (slot >= 0 && boundSkills.size() >= getProfess().getMaxBoundActiveSkills())
             boundSkills.set(slot, skill);
         else
             boundSkills.add(skill);
