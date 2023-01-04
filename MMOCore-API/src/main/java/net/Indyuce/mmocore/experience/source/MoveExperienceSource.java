@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -68,7 +69,7 @@ public class MoveExperienceSource extends SpecificExperienceSource {
         FLY((p) -> p.isFlying() || p.isGliding()),
         SWIM((p) -> p.getLocation().getBlock().isLiquid()),
         SPRINT(Player::isSprinting),
-        WALK((p) -> !p.isSneaking() && !p.isSprinting() && !p.isFlying() && !p.getLocation().getBlock().isLiquid());
+        WALK((p) -> !p.isSneaking() && !p.isSprinting() &&((Entity)p).isOnGround()&& !p.isFlying() && !p.getLocation().getBlock().isLiquid());
 
         private final Function<Player, Boolean> matching;
 
