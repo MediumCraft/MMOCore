@@ -36,7 +36,7 @@ public class GuildCommand extends RegisteredCommand {
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return true;
 
-        if (args.length > 1) {
+        if (args.length >= 1) {
 
             final @Nullable GuildInvite invite;
             if (args.length > 1)
