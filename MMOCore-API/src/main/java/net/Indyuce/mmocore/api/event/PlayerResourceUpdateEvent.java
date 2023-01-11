@@ -56,6 +56,10 @@ public class PlayerResourceUpdateEvent extends PlayerDataEvent implements Cancel
 		return amount;
 	}
 
+	public UpdateReason getReason() {
+		return reason;
+	}
+
 	/**
 	 * Changes the amount of resource given/taken away
 	 *
