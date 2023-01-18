@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.listener.option;
 
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.comp.target.InteractionType;
+import io.lumine.mythic.lib.comp.interaction.InteractionType;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import org.bukkit.entity.EntityType;

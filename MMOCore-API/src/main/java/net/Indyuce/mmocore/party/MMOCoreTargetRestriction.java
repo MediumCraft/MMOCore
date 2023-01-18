@@ -1,7 +1,9 @@
 package net.Indyuce.mmocore.party;
 
-import io.lumine.mythic.lib.comp.target.InteractionType;
-import io.lumine.mythic.lib.comp.target.TargetRestriction;
+import io.lumine.mythic.lib.comp.interaction.InteractionType;
+import io.lumine.mythic.lib.comp.interaction.TargetRestriction;
+import io.lumine.mythic.lib.comp.interaction.InteractionType;
+import io.lumine.mythic.lib.comp.interaction.TargetRestriction;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.guild.AbstractGuild;
