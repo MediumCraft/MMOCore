@@ -2,20 +2,36 @@ package net.Indyuce.mmocore.manager.data.mysql;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.Indyuce.mmocore.MMOCore;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class MySQLRequest {
-    private final Map<String, String> requestMap = new HashMap<>();
+public class PlayerDataTableUpdater {
     private final UUID uuid;
+    private final MySQLDataProvider provider;
+    private final Map<String, String> requestMap = new HashMap<>();
 
-    public MySQLRequest(UUID uuid) {
+    public PlayerDataTableUpdater(MySQLDataProvider provider, UUID uuid) {
         this.uuid = uuid;
+        this.provider = provider;
     }
 
-    public void addData(String key, Object value) {
-        requestMap.put(key, "" + value);
+    public void updateData(String key, Object value) {
+        addData(key, value);
+        executeRequest();
+        requestMap.clear();
+    }
+
+    public void executeRequest() {
+        final String request = "INSERT INTO mmocore_playerdata(uuid, " + formatCollection(requestMap.keySet(), false)
+                + ") VALUES('" + uuid + "'," + formatCollection(requestMap.values(), true) + ")" +
+                " ON DUPLICATE KEY UPDATE " + formatMap() + ";";
+        provider.executeUpdate(request);
+    }
+
+    public void addData(@NotNull String key, @Nullable Object value) {
+        requestMap.put(key, String.valueOf(value));
     }
 
     public String formatCollection(Collection<String> strings, boolean withComma) {
@@ -34,30 +50,14 @@ public class MySQLRequest {
     }
 
     public String formatMap() {
-        StringBuilder values = new StringBuilder();
-        for (String key : requestMap.keySet()) {
-            //values.append("'");
-            values.append(key);
-            //values.append("'");
-            values.append("=");
-            values.append("'");
-            values.append(requestMap.get(key));
-            values.append("'");
-            values.append(",");
-        }
-        //Remove the last coma
+        final StringBuilder values = new StringBuilder();
+        for (String key : requestMap.keySet())
+            values.append(key).append("='").append(requestMap.get(key)).append("',");
+
+        // Remove the last comma
         values.deleteCharAt(values.length() - 1);
         return values.toString();
     }
-
-
-    public String getRequestString() {
-        String result = "(uuid, " + formatCollection(requestMap.keySet(),false)
-                + ") VALUES('" + uuid + "'," + formatCollection(requestMap.values(),true) + ")" +
-                " ON DUPLICATE KEY UPDATE " + formatMap() + ";";
-        return result;
-    }
-
 
     public void addJSONArray(String key, Collection<String> collection) {
         JsonArray json = new JsonArray();
@@ -72,5 +72,4 @@ public class MySQLRequest {
             json.addProperty(entry.getKey(), entry.getValue());
         addData(key, json.toString());
     }
-
 }

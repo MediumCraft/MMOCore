@@ -27,7 +27,7 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar, pvpModeEnabled, sqlDebug;
+    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar, pvpModeEnabled;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
@@ -37,9 +37,8 @@ public class ConfigManager {
 
     private final FileConfiguration messages;
 
-
     /*
-     * the instance must be created after the other managers since all it does
+     * The instance must be created after the other managers since all it does
      * is to update them based on the config except for the classes which are
      * already loaded based on the config
      */
@@ -131,7 +130,6 @@ public class ConfigManager {
         partyMaxExpSplitRange = MMOCore.plugin.getConfig().getDouble("party.max-exp-split-range");
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
-        sqlDebug = MMOCore.plugin.getConfig().getBoolean("mysql.debug");
 
         // Combat
         pvpModeEnabled = config.getBoolean("pvp_mode.enabled");

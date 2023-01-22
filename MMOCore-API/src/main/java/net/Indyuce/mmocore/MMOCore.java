@@ -278,12 +278,13 @@ public class MMOCore extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        //Executes all the pending asynchronous task (like saving the playerData)
+        // Executes all the pending asynchronous task (like saving the playerData)
         Bukkit.getScheduler().getPendingTasks().forEach(worker -> {
             if (worker.getOwner().equals(this)) {
                 ((Runnable) worker).run();
             }
         });
+
         // Save player data
         for (PlayerData data : PlayerData.getAll())
             if (data.isFullyLoaded()) {
@@ -368,10 +369,5 @@ public class MMOCore extends JavaPlugin {
 
     public boolean hasEconomy() {
         return economy != null && economy.isValid();
-    }
-
-    public static void sqlDebug(String s) {
-        if (!MMOCore.plugin.configManager.sqlDebug) return;
-        MMOCore.plugin.getLogger().warning("- [SQL Debug] " + s);
     }
 }
