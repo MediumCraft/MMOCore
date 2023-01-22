@@ -64,14 +64,10 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			String id = identifier.substring(12);
 			RegisteredSkill skill = Objects.requireNonNull(MMOCore.plugin.skillManager.getSkill(id), "Could not find skill with ID '" + id + "'");
 			return String.valueOf(playerData.getSkillLevel(skill));
-		}
-
-		else if (identifier.equals("level_percent")) {
+		} else if (identifier.equals("level_percent")) {
 			double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
 			return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
-		}
-
-		else if (identifier.equals("health"))
+		} else if (identifier.equals("health"))
 			return StatManager.format("MAX_HEALTH", player.getPlayer().getHealth());
 
 		else if (identifier.equals("max_health"))
@@ -83,9 +79,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			for (double j = 1; j < 20; j++)
 				format.append(ratio >= j ? ChatColor.RED : ratio >= j - .5 ? ChatColor.DARK_RED : ChatColor.DARK_GRAY).append(AltChar.listSquare);
 			return format.toString();
-		}
-
-		else if (identifier.equals("class"))
+		} else if (identifier.equals("class"))
 			return playerData.getProfess().getName();
 
 		else if (identifier.startsWith("profession_percent_")) {
@@ -94,21 +88,25 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			Profession profession = MMOCore.plugin.professionManager.get(name);
 			double current = professions.getExperience(profession), next = professions.getLevelUpExperience(profession);
 			return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
-		}
 
-		else if (identifier.startsWith("is_casting")) {
+		} else if (identifier.equals("is_casting"))
 			return String.valueOf(playerData.isCasting());
-		} else if (identifier.startsWith("in_combat")) {
-			return String.valueOf(playerData.isInCombat());
-		}
 
-		else if (identifier.startsWith("bound_")) {
+		else if (identifier.equals("in_combat"))
+			return String.valueOf(playerData.isInCombat());
+
+		else if (identifier.startsWith("since_enter_combat"))
+			return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getFirstHit()) / 1000) : "-1";
+
+		else if (identifier.startsWith("since_last_hit"))
+			return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getLastHit()) / 1000) : "-1";
+
+		 else if (identifier.startsWith("bound_")) {
 			int slot = Math.max(0, Integer.parseInt(identifier.substring(6)) - 1);
 			return playerData.hasSkillBound(slot) ? playerData.getBoundSkill(slot).getSkill().getName()
 					: MMOCore.plugin.configManager.noSkillBoundPlaceholder;
-		}
 
-		else if (identifier.startsWith("profession_experience_"))
+		} else if (identifier.startsWith("profession_experience_"))
 			return MythicLib.plugin.getMMOConfig().decimal.format(
 					playerData.getCollectionSkills().getExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase()));
 
@@ -150,9 +148,8 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("mana"))
 			return MythicLib.plugin.getMMOConfig().decimal.format(playerData.getMana());
 
-		else if (identifier.equals("mana_bar")) {
+		else if (identifier.equals("mana_bar"))
 			return playerData.getProfess().getManaDisplay().generateBar(playerData.getMana(), playerData.getStats().getStat("MAX_MANA"));
-		}
 
 		else if (identifier.startsWith("exp_multiplier_")) {
 			String format = identifier.substring(15).toLowerCase().replace("_", "-").replace(" ", "-");

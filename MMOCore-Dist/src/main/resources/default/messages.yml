@@ -17,6 +17,9 @@ death-exp-loss:
 - ''
 
 # General
+not-enough-perms: '&cYou do not have enough permissions.'
+
+# Experience boosters
 booster-main:
 - '&e'
 - '&eA &6{multiplier}x&e EXP multiplier is now active!'
@@ -26,6 +29,14 @@ booster-skill:
 - '&eA &6{multiplier}x&e &6{profession} &eEXP multiplier is now active!'
 - '&e'
 booster-expired: '&cExpired!'
+
+# PvP Mode
+pvp-mode:
+    cooldown: '&cPlease wait {remaining} seconds to use this command again.'
+    toggle-on: '&aPvP Mode on.'
+    toggle-off: '&cPvP Mode off.'
+    leave: '&cYou left a PVP zone but are still vulnerable for {remaining} seconds!'
+    enter: '&aYou entered a PVP zone and gained invulnerability for {time} seconds!'
 
 # Fishing Profession
 caught-fish: '&cYou caught a fish!'
@@ -150,10 +161,6 @@ cant-redo-quest: '&cYou can''t start this quest twice.'
 quest-cooldown: '&cYou need to wait {delay}.'
 start-quest: '&eYou successfully started &6{quest}&e.'
 
-cant-choose-new-class:
-- '&cYou need one class point to perform this action.'
-no-permission-for-class:
-- "&cYou don't have the permission to choose this class."
 # Attributes
 no-attribute-points-spent: '&cYou have not spent any attribute points.'
 not-attribute-reallocation-point: '&cYou do not have 1 reallocation point.'
@@ -162,6 +169,12 @@ not-attribute-point-shift: '&cYou must have &4{shift_points} &cattribute points.
 attribute-points-reallocated: '&eYou successfully reset your attributes. You now have &6{points} &eattribute points.'
 attribute-max-points-hit: '&cYou cannot level up this attribute anymore.'
 attribute-level-up: '&eYou successfully leveled up your &6{attribute}&e.' # {level}
+
+# Class selection
+cant-choose-new-class:
+    - '&cYou need one class point to perform this action.'
+no-permission-for-class:
+    - "&cYou don't have the permission to choose this class."
 
 # Skills
 no-class-skill: '&cYour class has no skill.'
@@ -178,6 +191,7 @@ not-skill-reallocation-point: '&cYou do not have 1 skill reallocation point.'
 no-skill-points-spent: '&cYou have not spent any skill points.'
 skill-points-reallocated: '&eYou successfully reset your attributes. You now have &6{points} &eskill points.'
 max-points-reached: '&cYou reached the maximum points you can spend. You need to reallocate your points to rollback.'
+
 # Skill Trees
 no-skill-tree-points-spent: '&cYou have not spent any skill tree points.'
 locked-node: '&cThis skill is locked!'

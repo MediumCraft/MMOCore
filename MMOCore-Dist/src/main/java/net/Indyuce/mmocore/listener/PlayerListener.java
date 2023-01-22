@@ -1,6 +1,7 @@
 
 package net.Indyuce.mmocore.listener;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
@@ -9,7 +10,6 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -58,7 +58,7 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void updateCombat(PlayerAttackEvent event) {
-        PlayerData.get(event.getAttacker().getPlayer()).updateCombat();
+        PlayerData.get(event.getAttacker().getPlayer()).getCombat().update();
     }
 
     /**
@@ -66,8 +66,8 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void updateCombat(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player && MMOCore.plugin.configManager.combatLogDamageCauses.contains(event.getCause()))
-            PlayerData.get(event.getEntity().getUniqueId()).updateCombat();
+        if (UtilityMethods.isRealPlayer(event.getEntity()) && MMOCore.plugin.configManager.combatLogDamageCauses.contains(event.getCause()))
+            PlayerData.get(event.getEntity().getUniqueId()).getCombat().update();
     }
 
     @EventHandler

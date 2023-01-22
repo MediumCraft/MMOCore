@@ -2,15 +2,13 @@ package net.Indyuce.mmocore;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.metrics.bukkit.Metrics;
 import io.lumine.mythic.lib.version.SpigotPlugin;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.api.ToggleableCommand;
-import net.Indyuce.mmocore.manager.social.PartyManager;
-import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.manager.ActionBarManager;
 import net.Indyuce.mmocore.api.player.attribute.AttributeModifier;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.command.*;
+import net.Indyuce.mmocore.command.MMOCoreCommandTreeRoot;
+import net.Indyuce.mmocore.command.api.ToggleableCommand;
 import net.Indyuce.mmocore.comp.citizens.CitizenInteractEventListener;
 import net.Indyuce.mmocore.comp.citizens.CitizensMMOLoader;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
@@ -22,10 +20,12 @@ import net.Indyuce.mmocore.comp.region.DefaultRegionHandler;
 import net.Indyuce.mmocore.comp.region.RegionHandler;
 import net.Indyuce.mmocore.comp.region.WorldGuardMMOLoader;
 import net.Indyuce.mmocore.comp.region.WorldGuardRegionHandler;
+import net.Indyuce.mmocore.comp.region.pvpmode.PvPModeListener;
 import net.Indyuce.mmocore.comp.vault.VaultEconomy;
 import net.Indyuce.mmocore.comp.vault.VaultMMOLoader;
 import net.Indyuce.mmocore.guild.GuildModule;
 import net.Indyuce.mmocore.guild.GuildModuleType;
+import net.Indyuce.mmocore.guild.GuildRelationHandler;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.guild.provided.MMOCoreGuildModule;
 import net.Indyuce.mmocore.manager.*;
@@ -34,28 +34,25 @@ import net.Indyuce.mmocore.manager.data.mysql.MySQLDataProvider;
 import net.Indyuce.mmocore.manager.data.yaml.YAMLDataProvider;
 import net.Indyuce.mmocore.manager.profession.*;
 import net.Indyuce.mmocore.manager.social.BoosterManager;
+import net.Indyuce.mmocore.manager.social.PartyManager;
 import net.Indyuce.mmocore.manager.social.RequestManager;
-import net.Indyuce.mmocore.party.MMOCoreTargetRestriction;
 import net.Indyuce.mmocore.party.PartyModule;
 import net.Indyuce.mmocore.party.PartyModuleType;
+import net.Indyuce.mmocore.party.PartyRelationHandler;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
 import net.Indyuce.mmocore.script.mechanic.ExperienceMechanic;
-import net.Indyuce.mmocore.script.mechanic.StaminaMechanic;
 import net.Indyuce.mmocore.script.mechanic.ManaMechanic;
+import net.Indyuce.mmocore.script.mechanic.StaminaMechanic;
 import net.Indyuce.mmocore.script.mechanic.StelliumMechanic;
+import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import io.lumine.mythic.lib.metrics.bukkit.Metrics;
-import org.bukkit.command.CommandMap;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 public class MMOCore extends JavaPlugin {
@@ -99,7 +96,6 @@ public class MMOCore extends JavaPlugin {
     @NotNull
     public PartyModule partyModule;
     public GuildModule guildModule;
-    public boolean shouldDebugSQL = false;
 
     public MMOCore() {
         plugin = this;
@@ -109,7 +105,8 @@ public class MMOCore extends JavaPlugin {
     public void onLoad() {
 
         // Register MMOCore-specific objects
-        MythicLib.plugin.getEntities().registerRestriction(new MMOCoreTargetRestriction());
+        MythicLib.plugin.getEntities().registerRelationHandler(new PartyRelationHandler());
+        MythicLib.plugin.getEntities().registerRelationHandler(new GuildRelationHandler());
         MythicLib.plugin.getModifiers().registerModifierType("attribute", configObject -> new AttributeModifier(configObject));
 
         // Custom scripts
@@ -146,7 +143,6 @@ public class MMOCore extends JavaPlugin {
 
         if (getConfig().isConfigurationSection("mysql") && getConfig().getBoolean("mysql.enabled"))
             dataProvider = new MySQLDataProvider(getConfig());
-        shouldDebugSQL = getConfig().getBoolean("mysql.debug");
 
         if (getConfig().isConfigurationSection("default-playerdata"))
             dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
@@ -165,6 +161,8 @@ public class MMOCore extends JavaPlugin {
 
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             regionHandler = new WorldGuardRegionHandler();
+            if (MythicLib.plugin.getConfig().getBoolean("pvp_mode.enabled"))
+                Bukkit.getPluginManager().registerEvents(new PvPModeListener(), this);
             getLogger().log(Level.INFO, "Hooked onto WorldGuard");
         }
 
@@ -267,7 +265,7 @@ public class MMOCore extends JavaPlugin {
                     // Save player data
                     for (PlayerData data : PlayerData.getAll())
                         if (data.isFullyLoaded())
-                            dataProvider.getDataManager().saveData(data);
+                            dataProvider.getDataManager().saveData(data, false);
 
                     // Save guild info
                     for (Guild guild : dataProvider.getGuildManager().getAll())
@@ -290,7 +288,7 @@ public class MMOCore extends JavaPlugin {
         for (PlayerData data : PlayerData.getAll())
             if (data.isFullyLoaded()) {
                 data.close();
-                dataProvider.getDataManager().saveData(data);
+                dataProvider.getDataManager().saveData(data, true);
             }
 
         // Save guild info
@@ -373,7 +371,7 @@ public class MMOCore extends JavaPlugin {
     }
 
     public static void sqlDebug(String s) {
-        if (!MMOCore.plugin.shouldDebugSQL) return;
+        if (!MMOCore.plugin.configManager.sqlDebug) return;
         MMOCore.plugin.getLogger().warning("- [SQL Debug] " + s);
     }
 }

@@ -18,6 +18,9 @@ permissions:
   mmocore.waypoints:
     description: Access to /waypoints
     default: op
+  mmocore.pvpmode:
+    description: Access to /pvpmode
+    default: op
   mmocore.currency:
     description: Access to /deposit and /withdraw
     default: op

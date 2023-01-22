@@ -6,11 +6,11 @@ import javax.inject.Provider;
 import java.util.Objects;
 
 /**
- * Used by MMOCore when it has to store the last time
- * a player did some action.
- * <p>
- * This also features a time out function which can
- * be used for cooldowns
+ * Used by MMOCore when it has to store the last time a player
+ * did some action. This also features a time out function which
+ * can be used for cooldowns.
+ *
+ * @deprecated Merge with {@link io.lumine.mythic.lib.player.cooldown.CooldownMap}
  */
 public enum PlayerActivity {
     USE_WAYPOINT(() -> 5 * 1000L),
@@ -21,7 +21,9 @@ public enum PlayerActivity {
 
     LOOT_CHEST_SPAWN(() -> MMOCore.plugin.configManager.lootChestPlayerCooldown),
 
-    CAST_SKILL(() -> MMOCore.plugin.configManager.globalSkillCooldown);
+    CAST_SKILL(() -> MMOCore.plugin.configManager.globalSkillCooldown),
+
+    ;
 
     private final Provider<Long> timeout;
 

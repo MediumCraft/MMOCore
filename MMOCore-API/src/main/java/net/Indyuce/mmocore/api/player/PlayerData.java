@@ -35,6 +35,7 @@ import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.ClassDataContainer;
+import net.Indyuce.mmocore.player.CombatHandler;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
@@ -95,6 +96,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
     private final Map<PlayerActivity, Long> lastActivity = new HashMap<>();
+    private final CombatHandler combat = new CombatHandler(this);
 
     /**
      * Cached for easier access. Amount of points spent in each skill tree.
@@ -125,8 +127,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
-    public boolean noCooldown, statsLoaded, pvpMode;
-    public CombatRunnable combat;
+    public boolean noCooldown, statsLoaded;
 
     /**
      * Player data is stored in the data map before it's actually fully loaded
@@ -369,6 +370,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             if (party != null && party instanceof Party)
                 ((Party) party).removeMember(this);
         }
+
+        // Close combat handler
+        combat.close();
 
         // Close quest data
         questData.close();
@@ -748,9 +752,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                                    Math.cos((double) 5 * t / warpTime + j) * r,
-                                    (double) 2 * t / warpTime,
-                                    Math.sin((double) 5 * t / warpTime + j) * r),
+                            Math.cos((double) 5 * t / warpTime + j) * r,
+                            (double) 2 * t / warpTime,
+                            Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -1175,8 +1179,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return boundPassiveSkills;
     }
 
+    @NotNull
+    public CombatHandler getCombat() {
+        return combat;
+    }
+
     public boolean isInCombat() {
-        return combat != null;
+        return getCombat().isInCombat();
     }
 
     /**
@@ -1184,7 +1193,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {
@@ -1198,11 +1207,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * Everytime a player does a combat action, like taking
      * or dealing damage to an entity, this method is called.
      */
+    @Deprecated
     public void updateCombat() {
-        if (isInCombat())
-            combat.update();
-        else
-            combat = new CombatRunnable(this);
+        getCombat().update();
     }
 
     @Override

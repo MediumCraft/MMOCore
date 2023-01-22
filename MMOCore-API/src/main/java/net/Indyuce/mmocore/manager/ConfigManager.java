@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.command.api.CommandVerbose;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -26,11 +27,11 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar;
+    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar, pvpModeEnabled, sqlDebug;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange;
+    public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown, pvpModeCombatTimeout, pvpModeInvulnerability;
     public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
@@ -103,6 +104,7 @@ public class ConfigManager {
         loadDefaultFile("conditions.yml");
         loadDefaultFile("guilds.yml");
 
+        final ConfigurationSection config = MMOCore.plugin.getConfig();
         commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));
 
         messages = new ConfigFile("messages").getConfig();
@@ -129,6 +131,15 @@ public class ConfigManager {
         partyMaxExpSplitRange = MMOCore.plugin.getConfig().getDouble("party.max-exp-split-range");
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
+        sqlDebug = MMOCore.plugin.getConfig().getBoolean("mysql.debug");
+
+        // Combat
+        pvpModeEnabled = config.getBoolean("pvp_mode.enabled");
+        pvpModeToggleOnCooldown = config.getDouble("pvp_mode.cooldown.toggle_on");
+        pvpModeToggleOffCooldown = config.getDouble("pvp_mode.cooldown.toggle_off");
+        pvpModeCombatCooldown = config.getDouble("pvp_mode.cooldown.combat");
+        pvpModeCombatTimeout = config.getDouble("pvp_mode.combat_timeout");
+        pvpModeInvulnerability = config.getDouble("pvp_mode.invulnerability");
 
         // Resources
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);
@@ -180,6 +191,10 @@ public class ConfigManager {
         return messages.getStringList(key);
     }
 
+    /**
+     * Merge with {@link net.Indyuce.mmocore.api.ConfigMessage}
+     */
+    @Deprecated
     public SimpleMessage getSimpleMessage(String key, String... placeholders) {
         String format = messages.getString(key, "{MessageNotFound:\"" + key + "\"}");
         for (int j = 0; j < placeholders.length - 1; j += 2)
@@ -187,6 +202,10 @@ public class ConfigManager {
         return new SimpleMessage(MythicLib.plugin.parseColors(format));
     }
 
+    /**
+     * Merge with {@link net.Indyuce.mmocore.api.ConfigMessage}
+     */
+    @Deprecated
     public static class SimpleMessage {
         private final String message;
         private final boolean actionbar;

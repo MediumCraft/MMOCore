@@ -287,3 +287,28 @@ command-verbose:
   reset: true
   resource: true
   waypoint: true
+
+# Requires WorldGuard to work. Do NOT enable unless
+# you have WG to avoid weird interact rule issues!
+#
+# More info available on the wiki
+# https://gitlab.com/phoenix-dvpmt/mmocore/-/wikis/Combat#pvp-mode
+pvp_mode:
+
+  # Requires /reload when changed
+  enabled: true
+
+  # Delay after any attack during which the player will stay in PvP Mode (seconds)
+  combat_timeout: 30
+
+  # Invulnerability when entering a pvp-mode region when your PvP mode is toggled on.
+  invulnerability: 60
+
+  cooldown:
+    # Delay before being able to use /pvpmode after being in combat (seconds)
+    # Has to be greater than the combat timeout for it to make sense
+    combat: 45
+    # Cooldown when toggling on PvP mode, before being able to toggle it off (seconds)
+    toggle_on: 5
+    # Cooldown when toggling off PvP mode (seconds)
+    toggle_off: 3
