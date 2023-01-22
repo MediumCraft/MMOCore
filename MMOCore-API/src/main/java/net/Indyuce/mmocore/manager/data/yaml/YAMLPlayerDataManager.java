@@ -121,7 +121,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
     }
 
     @Override
-    public void saveData(PlayerData data) {
+    public void saveData(PlayerData data, boolean logout) {
         ConfigFile file = new ConfigFile(data.getUniqueId());
         FileConfiguration config = file.getConfig();
 

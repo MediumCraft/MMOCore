@@ -46,7 +46,7 @@ public abstract class PlayerDataManager {
 
         // Save data async if required
         if (playerData.isFullyLoaded())
-            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> saveData(playerData));
+            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> saveData(playerData, true));
 
         // Close and unregister data instantly if no error occured
         playerData.close();
@@ -122,9 +122,10 @@ public abstract class PlayerDataManager {
      * This method should always be called sync because it DOES register
      * an async task in case MySQL storage is used.
      *
-     * @param data Player data to save
+     * @param data   Player data to save
+     * @param logout When logging out, is_saved is switched back to 1. This parameter
+     *               must be turned off when auto-saving because the player doesn't
+     *               actually leave the server.
      */
-    public abstract void saveData(PlayerData data);
-
-
+    public abstract void saveData(PlayerData data, boolean logout);
 }

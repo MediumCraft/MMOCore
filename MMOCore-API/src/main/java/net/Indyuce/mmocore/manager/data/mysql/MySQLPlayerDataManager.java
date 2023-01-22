@@ -137,12 +137,10 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                                 }
 
                                 //We now change the saved status to false because the data on SQL won't be the same as in the RAM
-                                MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider);
+                                new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider).updateData("is_saved", 0);
 
-                                //We set the saved status to false
-                                sql.updateData("is_saved", 0);
-                                this.cancel();
                                 data.setFullyLoaded();
+                                this.cancel();
                                 MMOCore.sqlDebug("Loaded saved data for: '" + data.getUniqueId() + "'!");
                                 MMOCore.sqlDebug(String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
                                 return;
@@ -159,6 +157,9 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                             data.setAttributeReallocationPoints(getDefaultData().getAttributeReallocationPoints());
                             data.setExperience(0);
                             data.getQuestData().updateBossBar();
+
+                            //We now change the saved status to false because the data on SQL won't be the same as in the RAM
+                            new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider).updateData("is_saved", 0);
 
                             data.setFullyLoaded();
                             this.cancel();
@@ -177,7 +178,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
     }
 
     @Override
-    public void saveData(PlayerData data) {
+    public void saveData(PlayerData data, boolean logout) {
 
         MySQLTableEditor sql = new MySQLTableEditor(MySQLTableEditor.Table.PLAYERDATA, data.getUniqueId(), provider);
         MMOCore.sqlDebug("Saving data for: '" + data.getUniqueId() + "'...");
@@ -211,7 +212,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         request.addData("professions", data.getCollectionSkills().toJsonString());
         request.addData("quests", data.getQuestData().toJsonString());
         request.addData("class_info", createClassInfoData(data).toString());
-        request.addData("is_saved", 1);
+        if (logout)
+            request.addData("is_saved", 1);
         sql.updateData(request);
         MMOCore.sqlDebug("Saved data for: " + data.getUniqueId());
         MMOCore.sqlDebug(String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));

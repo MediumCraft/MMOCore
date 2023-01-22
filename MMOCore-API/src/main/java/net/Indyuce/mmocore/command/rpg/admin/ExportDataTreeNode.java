@@ -91,7 +91,7 @@ public class ExportDataTreeNode extends CommandTreeNode {
                         MMOCore.plugin.dataProvider.getDataManager().loadData(offlinePlayerData);
 
                         // Player data is loaded, now it gets saved through SQL
-                        sqlProvider.getDataManager().saveData(offlinePlayerData);
+                        sqlProvider.getDataManager().saveData(offlinePlayerData, true);
                     } catch (RuntimeException exception) {
                         errorCount++;
                         exception.printStackTrace();
