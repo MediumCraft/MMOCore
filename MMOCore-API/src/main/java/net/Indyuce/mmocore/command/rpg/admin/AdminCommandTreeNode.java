@@ -21,6 +21,7 @@ public class AdminCommandTreeNode extends CommandTreeNode {
         addChild(new LevelCommandTreeNode(this));
         addChild(new AttributeCommandTreeNode(this));
         addChild(new SkillCommandTreeNode(this));
+        addChild(new SaveDataTreeNode(this));
 
         addChild(new PointsCommandTreeNode("skill", this, PlayerData::setSkillPoints, PlayerData::giveSkillPoints, PlayerData::getSkillPoints));
         addChild(new PointsCommandTreeNode("class", this, PlayerData::setClassPoints, PlayerData::giveClassPoints, PlayerData::getClassPoints));
