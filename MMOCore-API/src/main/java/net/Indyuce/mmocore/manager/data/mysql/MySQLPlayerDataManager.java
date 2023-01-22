@@ -38,7 +38,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
     public void saveData(PlayerData data, boolean logout) {
         MythicLib.debug("MMOCoreSQL", "Saving data for: '" + data.getUniqueId() + "'...");
 
-        final PlayerDataTableUpdater updater = new PlayerDataTableUpdater(provider, data.getUniqueId());
+        final PlayerDataTableUpdater updater = new PlayerDataTableUpdater(provider, data);
         updater.addData("class_points", data.getClassPoints());
         updater.addData("skill_points", data.getSkillPoints());
         updater.addData("skill_reallocation_points", data.getSkillReallocationPoints());
@@ -70,7 +70,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         updater.addData("class_info", createClassInfoData(data).toString());
         if (logout)
             updater.addData("is_saved", 1);
-        updater.executeRequest();
+
+        updater.executeRequest(logout);
 
         MythicLib.debug("MMOCoreSQL", "Saved data for: " + data.getUniqueId());
         MythicLib.debug("MMOCoreSQL", String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
@@ -132,7 +133,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
         public MySQLOfflinePlayerData(UUID uuid) {
             super(uuid);
-
+/*
             provider.getResult("SELECT * FROM mmocore_playerdata WHERE uuid = '" + uuid + "';", (result) -> {
                 try {
                     MythicLib.debug("MMOCoreSQL", "Loading OFFLINE data for '" + uuid + "'.");
@@ -154,13 +155,14 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-            });
+            }); */
         }
 
         @Override
         public void removeFriend(UUID uuid) {
-            friends.remove(uuid);
-            new PlayerDataTableUpdater(provider, uuid).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
+            // TODO recode
+          //  friends.remove(uuid);
+          //  new PlayerDataTableUpdater(provider, uuid).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
         }
 
         @Override

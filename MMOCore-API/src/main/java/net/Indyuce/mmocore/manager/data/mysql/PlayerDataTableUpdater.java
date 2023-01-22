@@ -2,32 +2,61 @@ package net.Indyuce.mmocore.manager.data.mysql;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.manager.data.yaml.YAMLPlayerDataManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 
 public class PlayerDataTableUpdater {
-    private final UUID uuid;
+    private final PlayerData playerData;
     private final MySQLDataProvider provider;
     private final Map<String, String> requestMap = new HashMap<>();
 
-    public PlayerDataTableUpdater(MySQLDataProvider provider, UUID uuid) {
-        this.uuid = uuid;
+    public PlayerDataTableUpdater(MySQLDataProvider provider, PlayerData playerData) {
+        this.playerData = playerData;
         this.provider = provider;
     }
 
-    public void updateData(String key, Object value) {
-        addData(key, value);
-        executeRequest();
-        requestMap.clear();
-    }
-
-    public void executeRequest() {
+    public void executeRequest(boolean logout) {
         final String request = "INSERT INTO mmocore_playerdata(uuid, " + formatCollection(requestMap.keySet(), false)
-                + ") VALUES('" + uuid + "'," + formatCollection(requestMap.values(), true) + ")" +
+                + ") VALUES('" + playerData.getUniqueId() + "'," + formatCollection(requestMap.values(), true) + ")" +
                 " ON DUPLICATE KEY UPDATE " + formatMap() + ";";
-        provider.executeUpdate(request);
+
+        try {
+            final Connection connection = provider.getConnection();
+            try {
+                final PreparedStatement statement = connection.prepareStatement(request);
+                try {
+                    statement.executeUpdate();
+                } catch (SQLException exception) {
+                    MMOCore.log(Level.WARNING, "Could not save player data of " + playerData.getUniqueId() + ", saving through YAML instead");
+                    new YAMLPlayerDataManager(provider).saveData(playerData, logout);
+                    exception.printStackTrace();
+                } finally {
+                    statement.close();
+                }
+            } catch (SQLException exception) {
+                MMOCore.log(Level.WARNING, "Could not save player data of " + playerData.getUniqueId() + ", saving through YAML instead");
+                new YAMLPlayerDataManager(provider).saveData(playerData, logout);
+                exception.printStackTrace();
+            } finally {
+                connection.close();
+            }
+        } catch (SQLException exception) {
+            MMOCore.log(Level.WARNING, "Could not save player data of " + playerData.getUniqueId() + ", saving through YAML instead");
+            new YAMLPlayerDataManager(provider).saveData(playerData, logout);
+            exception.printStackTrace();
+        }
     }
 
     public void addData(@NotNull String key, @Nullable Object value) {
