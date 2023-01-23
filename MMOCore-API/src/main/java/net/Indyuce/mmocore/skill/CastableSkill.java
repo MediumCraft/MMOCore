@@ -43,13 +43,14 @@ public class CastableSkill extends Skill {
 
         // Cooldown check
         if (skillMeta.getCaster().getData().getCooldownMap().isOnCooldown(this)) {
-            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown").send(playerData.getPlayer());
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.on-cooldown",
+                    "cooldown",MythicLib.plugin.getMMOConfig().decimal.format(skillMeta.getCaster().getData().getCooldownMap().getCooldown(this))).send(playerData.getPlayer());
             return false;
         }
 
         // Mana cost
         if (playerData.getMana() < getModifier("mana")) {
-            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana", playerData.getProfess().getManaDisplay().getName()).send(playerData.getPlayer());
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana-required",MythicLib.plugin.getMMOConfig().decimal.format((getModifier("mana")-playerData.getMana())),"mana", playerData.getProfess().getManaDisplay().getName()).send(playerData.getPlayer());
             return false;
         }
 

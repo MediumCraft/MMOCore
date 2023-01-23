@@ -57,9 +57,9 @@ casting:
         no-stamina: '&6[{index}] &9&l{skill}'
     split: '&7 &7 - &7 '
     no-longer: '%&cYou cancelled skill casting.'
-    no-mana: '&cYou do not have enough {mana}!'
+    no-mana: '&cYou do not have enough {mana}, {mana-required} more required!'
     no-stamina: '&cYou do not have enough stamina!'
-    on-cooldown: '&cThis skill is on cooldown.'
+    on-cooldown: '&cThis skill is on a {cooldown} cooldown.'
 
 # Combat Log
 now-in-combat: '%&cYou are now in combat!'
