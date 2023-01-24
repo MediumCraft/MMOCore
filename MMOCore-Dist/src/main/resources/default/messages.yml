@@ -1,4 +1,3 @@
-
 # Level & Experience
 level-up:
 - ''
@@ -176,7 +175,7 @@ skill-max-level-hit: '&cYou already hit the max level for that skill.'
 no-skill-placeholder: 'No Skill Bound'
 not-skill-reallocation-point: '&cYou do not have 1 skill reallocation point.'
 no-skill-points-spent: '&cYou have not spent any skill points.'
-skill-points-reallocated: '&eYou successfully reset your attributes. You now have &6{points} &eskill points.'
+skill-points-reallocated: '&eYou successfully reset your skill points. You now have &6{points} &eskill points.'
 max-points-reached: '&cYou reached the maximum points you can spend. You need to reallocate your points to rollback.'
 # Skill Trees
 no-skill-tree-points-spent: '&cYou have not spent any skill tree points.'
