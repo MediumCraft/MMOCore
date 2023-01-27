@@ -1,4 +1,3 @@
-
 # Level & Experience
 level-up:
 - ''
@@ -68,9 +67,9 @@ casting:
         no-stamina: '&6[{index}] &9&l{skill}'
     split: '&7 &7 - &7 '
     no-longer: '%&cYou cancelled skill casting.'
-    no-mana: '&cYou do not have enough {mana}!'
+    no-mana: '&cYou do not have enough {mana}, {mana-required} more required!'
     no-stamina: '&cYou do not have enough stamina!'
-    on-cooldown: '&cThis skill is on cooldown.'
+    on-cooldown: '&cThis skill is on a {cooldown} cooldown.'
 
 # Combat Log
 now-in-combat: '%&cYou are now in combat!'
@@ -189,7 +188,7 @@ skill-max-level-hit: '&cYou already hit the max level for that skill.'
 no-skill-placeholder: 'No Skill Bound'
 not-skill-reallocation-point: '&cYou do not have 1 skill reallocation point.'
 no-skill-points-spent: '&cYou have not spent any skill points.'
-skill-points-reallocated: '&eYou successfully reset your attributes. You now have &6{points} &eskill points.'
+skill-points-reallocated: '&eYou successfully reset your skill points. You now have &6{points} &eskill points.'
 max-points-reached: '&cYou reached the maximum points you can spend. You need to reallocate your points to rollback.'
 
 # Skill Trees

@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.gui.api.adaptor.ClassicAdaptor;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.TriggerItem;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -87,7 +88,8 @@ public abstract class GeneratedInventory extends PluginInventory {
     public void whenClicked(InventoryClickContext context) {
         context.setCancelled(true);
         InventoryItem item = getBySlot(context.getSlot());
-        if (item == null)
+        //Checks that the click corresponds to a GUI Item.
+        if (item == null || context.getClickedItem() == null || context.getClickedItem().getType() == Material.AIR)
             return;
 
         if (item instanceof TriggerItem)
