@@ -13,7 +13,7 @@ And then add MMOCore-API as dependency
 <dependency>
     <groupId>net.Indyuce</groupId>
     <artifactId>MMOCore-API</artifactId>
-    <version>1.9.5-SNAPSHOT</version>
+    <version>1.11.2-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
