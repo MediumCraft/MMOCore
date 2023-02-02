@@ -19,7 +19,7 @@ public class ActionBarManager extends BukkitRunnable {
 
     public void reload(ConfigurationSection config) {
         enabled = config.getBoolean("enabled", false);
-        timeOut = config.getInt("", 60);
+        timeOut = config.getInt("time-out", 60);
         updateTicks = config.getInt("ticks-to-update", 5);
         barFormat = config.getString("format", "<No Action Bar Format Found>");
 
@@ -43,7 +43,6 @@ public class ActionBarManager extends BukkitRunnable {
                 Placeholders holders = getActionBarPlaceholders(data);
                 data.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
                         holders.apply(data.getPlayer(), data.getProfess().hasActionBar() ? data.getProfess().getActionBar() : barFormat)));
-
             }
     }
 

@@ -36,7 +36,7 @@ public class HideActionBarCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		long lastUsed = System.currentTimeMillis() - PlayerActivity.ACTION_BAR_MESSAGE.getTimeOut() + amount * 50;
+		final long lastUsed = System.currentTimeMillis() - PlayerActivity.ACTION_BAR_MESSAGE.getTimeOut() + amount * 50;
 		PlayerData.get(player).setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE, lastUsed);
 		return CommandResult.SUCCESS;
 	}

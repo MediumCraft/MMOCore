@@ -111,7 +111,7 @@ action-bar:
   # (This doesn't change any other action bars provided by MMOCore.)
   enabled: true
 
-  # The amount of milliseconds the bar will be
+  # The amount of ticks the bar will be
   # faded out when displaying other action bars.
   time-out: 60
 
