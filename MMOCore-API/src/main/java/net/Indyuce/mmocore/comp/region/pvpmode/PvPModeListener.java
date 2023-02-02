@@ -4,6 +4,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.protection.events.DisallowedPVPEvent;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.comp.flags.CustomFlag;
+import io.lumine.mythic.lib.comp.interaction.InteractionType;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.event.EventHandler;
@@ -16,18 +17,13 @@ public class PvPModeListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void unblockPvp(DisallowedPVPEvent event) {
-        final PlayerData defender;
-
-        // Make sure both have PVP mode on
+        PlayerData defender;
         if (!PlayerData.get(event.getAttacker()).getCombat().isInPvpMode() || !(defender = PlayerData.get(event.getDefender())).getCombat().isInPvpMode())
             return;
 
-        // If there are in a PVP zone
-        if (MythicLib.plugin.getFlags().isFlagAllowed(event.getDefender().getLocation(), CustomFlag.PVP_MODE) && !defender.getCombat().isInvulnerable())
-            event.setCancelled(true);
-
-            // If target cannot quit pvp zone yet
-        else if (!defender.getCombat().canQuitPvpMode())
-            event.setCancelled(true);
+        if (!defender.getCombat().canQuitPvpMode() ||
+                (!defender.getCombat().isInvulnerable() && MythicLib.plugin.getFlags().isFlagAllowed(event.getDefender().getLocation(), CustomFlag.PVP_MODE)))
+            if (MythicLib.plugin.getEntities().canInteract(event.getAttacker(), event.getDefender(), InteractionType.OFFENSE_ACTION, true))
+                event.setCancelled(true);
     }
 }

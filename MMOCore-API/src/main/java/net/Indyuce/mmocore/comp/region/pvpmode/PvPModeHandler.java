@@ -58,45 +58,46 @@ public class PvPModeHandler extends FlagValueChangeHandler<State> {
      * In that case, put PvP mode to its default setting that is OFF.
      */
     @Override
-    protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, State lastValue, MoveType moveType) {
-        return true;
+    protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, StateFlag.State lastValue, MoveType moveType) {
+        return onSetValue(player, from, to, toSet, DEFAULT_STATE, lastValue, moveType);
     }
+
+    public static final StateFlag.State DEFAULT_STATE = StateFlag.State.DENY;
 
     /**
      * Triggered when a player changes region and finds a new value for that flag.
      * In that case, apply the new setting and display messages if needed.
      */
     @Override
-    protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, State currentValue, State lastValue, MoveType moveType) {
-
-        // Do nothing if pvpmode is disabled.
-        if (isInvalid() || !playerData.getCombat().isInPvpMode())
+    protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, StateFlag.State currentValue, StateFlag.State lastValue, MoveType moveType) {
+        boolean newPvpMode = toBoolean(currentValue);
+        boolean lastPvpMode = toBoolean(lastValue);
+        if (isInvalid())
             return true;
 
-        final boolean newPvpMode = toBoolean(currentValue);
-        final boolean lastPvpMode = toBoolean(lastValue);
+        if (!newPvpMode && lastPvpMode) {
 
-        if (!playerData.getCombat().canQuitPvpMode()) {
-
-            // Leaving a custom Pvp zone
-            if (!newPvpMode && lastPvpMode && canSendMessage()) {
+            // Send message
+            if (canSendMessage()) {
+                final String msgPath = (playerData.getCombat().isInPvpMode() && !playerData.getCombat().canQuitPvpMode()) ? "allowed" : "denied";
                 lastMessage = System.currentTimeMillis();
-                final double remaining = (playerData.getCombat().getLastHit() + MMOCore.plugin.configManager.pvpModeCombatTimeout * 1000 - System.currentTimeMillis()) / 1000;
-                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.leave", "remaining", MythicLib.plugin.getMMOConfig().decimal.format(remaining)).send(playerData.getPlayer());
+                double remaining = (playerData.getCombat().getLastHit() + MMOCore.plugin.configManager.pvpModeCombatTimeout * 1000.0D - System.currentTimeMillis()) / 1000.0D;
+                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.leave.pvp-" + msgPath, new String[]{"remaining",
+                        (MythicLib.plugin.getMMOConfig()).decimal.format(remaining)}).send(playerData.getPlayer());
             }
-
         } else if (newPvpMode && !lastPvpMode) {
 
             // Apply invulnerability
-            playerData.getCombat().applyInvulnerability();
+            if (playerData.getCombat().isInPvpMode())
+                playerData.getCombat().applyInvulnerability();
 
-            // Entering Pvp zone
+            // Send message
             if (canSendMessage()) {
                 lastMessage = System.currentTimeMillis();
-                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.enter", "time", MythicLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.configManager.pvpModeInvulnerability)).send(playerData.getPlayer());
+                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.enter.pvp-mode-" + (playerData.getCombat().isInPvpMode() ? "on" : "off"), new String[]{"time",
+                        (MythicLib.plugin.getMMOConfig()).decimal.format(MMOCore.plugin.configManager.pvpModeInvulnerability)}).send(playerData.getPlayer());
             }
         }
-
         return true;
     }
 

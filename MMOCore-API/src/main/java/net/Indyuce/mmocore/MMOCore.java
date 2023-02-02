@@ -161,7 +161,7 @@ public class MMOCore extends JavaPlugin {
 
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             regionHandler = new WorldGuardRegionHandler();
-            if (MythicLib.plugin.getConfig().getBoolean("pvp_mode.enabled"))
+            if (getConfig().getBoolean("pvp_mode.enabled"))
                 Bukkit.getPluginManager().registerEvents(new PvPModeListener(), this);
             getLogger().log(Level.INFO, "Hooked onto WorldGuard");
         }

@@ -34,8 +34,12 @@ pvp-mode:
     cooldown: '&cPlease wait {remaining} seconds to use this command again.'
     toggle-on: '&aPvP Mode on.'
     toggle-off: '&cPvP Mode off.'
-    leave: '&cYou left a PVP zone but are still vulnerable for {remaining} seconds!'
-    enter: '&aYou entered a PVP zone and gained invulnerability for {time} seconds!'
+    leave:
+        pvp-allowed: '&cYou left a PVP zone but are still vulnerable for {remaining} seconds!'
+        pvp-denied: '&cYou left the PVP zone.'
+    enter:
+        pvp-mode-on: '&aYou entered a PVP zone and gained invulnerability for {time} seconds!'
+        pvp-mode-off: '&aYou entered a PVP zone. You may use /pvpmode to fight other players.'
 
 # Fishing Profession
 caught-fish: '&cYou caught a fish!'
@@ -69,7 +73,7 @@ casting:
     no-longer: '%&cYou cancelled skill casting.'
     no-mana: '&cYou do not have enough {mana}, {mana-required} more required!'
     no-stamina: '&cYou do not have enough stamina!'
-    on-cooldown: '&cThis skill is on a {cooldown} cooldown.'
+    on-cooldown: '&cThis skill is on a {cooldown}s cooldown.'
 
 # Combat Log
 now-in-combat: '%&cYou are now in combat!'
