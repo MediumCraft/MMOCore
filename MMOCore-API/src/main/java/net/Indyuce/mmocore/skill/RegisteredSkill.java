@@ -23,6 +23,8 @@ public class RegisteredSkill implements Unlockable {
     private final Map<String, LinearValue> defaultModifiers = new HashMap<>();
     private final ItemStack icon;
     private final List<String> lore;
+
+    @NotNull
     private final TriggerType triggerType;
 
     public RegisteredSkill(SkillHandler<?> handler, ConfigurationSection config) {
@@ -94,6 +96,11 @@ public class RegisteredSkill implements Unlockable {
             addModifier(mod, defaultValue);
     }
 
+    /**
+     * @return Modifier formula.
+     *         Not null as long as the modifier is well defined
+     */
+    @NotNull
     public LinearValue getModifierInfo(String modifier) {
         return defaultModifiers.get(modifier);
     }
