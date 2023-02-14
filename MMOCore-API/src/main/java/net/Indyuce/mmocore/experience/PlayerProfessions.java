@@ -6,20 +6,21 @@ import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
+import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
+import net.Indyuce.mmocore.party.AbstractParty;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -124,8 +125,9 @@ public class PlayerProfessions {
         return getLevel(profession.getId());
     }
 
+    @NotNull
     public double getExperience(String id) {
-        return exp.getOrDefault(id, 0.);
+        return exp.getOrDefault(id, 0d);
     }
 
     public double getExperience(Profession profession) {
@@ -171,7 +173,7 @@ public class PlayerProfessions {
     public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         Validate.isTrue(playerData.isOnline(), "Cannot give experience to offline player");
         if (value <= 0) {
-            exp.put(profession.getId(), Math.max(0, exp.get(profession.getId()) + value));
+            exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0d) + value));
             return;
         }
 
@@ -202,7 +204,7 @@ public class PlayerProfessions {
         if (hologramLocation != null)
             MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), MMOCore.plugin.configManager.getSimpleMessage("exp-hologram", "exp", MythicLib.plugin.getMMOConfig().decimal.format(event.getExperience())).message());
 
-        exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0.) + event.getExperience()));
+        exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0d) + event.getExperience()));
         int level, oldLevel = getLevel(profession);
         double needed, exp;
 
