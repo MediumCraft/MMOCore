@@ -36,6 +36,6 @@ public class ExperienceTrigger extends Trigger {
 
 	@Override
 	public void apply(PlayerData player) {
-		dispenser.giveExperience(player, amount.calculateInt(), null, source);
+		dispenser.giveExperience(player, amount.calculate(), null, source);
 	}
 }
