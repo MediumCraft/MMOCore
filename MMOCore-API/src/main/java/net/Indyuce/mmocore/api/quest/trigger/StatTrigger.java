@@ -12,8 +12,7 @@ public class StatTrigger extends Trigger {
     private final String stat;
     private final double amount;
     private final ModifierType type;
-    private double totalAmount;
-    private final UUID uuid =UUID.randomUUID();
+    private final String modifierKey = "mmocore_trigger." + UUID.randomUUID();
 
     public StatTrigger(MMOLineConfig config) {
         super(config);
@@ -26,13 +25,11 @@ public class StatTrigger extends Trigger {
         stat = config.getString("stat");
         amount = config.getDouble("amount");
         this.type = ModifierType.valueOf(type);
-        this.totalAmount = 0;
     }
 
     @Override
     public void apply(PlayerData player) {
-        totalAmount+=amount;
-        new StatModifier("trigger."+uuid.toString(),stat,totalAmount,type).register(player.getMMOPlayerData());
+        new StatModifier(modifierKey, stat, amount, type).register(player.getMMOPlayerData());
     }
 
     /**
@@ -41,7 +38,6 @@ public class StatTrigger extends Trigger {
      * Not a problem to store twice the stat modifiers are there only remain in the RAM.
      */
     public void remove(PlayerData playerData) {
-        totalAmount-=amount;
-        new StatModifier("trigger."+uuid.toString(), stat, totalAmount, type).register(playerData.getMMOPlayerData());
+        playerData.getMMOPlayerData().getStatMap().getInstance(stat).remove(modifierKey);
     }
 }
