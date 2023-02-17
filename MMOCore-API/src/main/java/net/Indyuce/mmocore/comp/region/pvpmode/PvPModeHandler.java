@@ -81,20 +81,21 @@ public class PvPModeHandler extends FlagValueChangeHandler<State> {
             if (canSendMessage()) {
                 final String msgPath = (playerData.getCombat().isInPvpMode() && !playerData.getCombat().canQuitPvpMode()) ? "allowed" : "denied";
                 lastMessage = System.currentTimeMillis();
-                double remaining = (playerData.getCombat().getLastHit() + MMOCore.plugin.configManager.pvpModeCombatTimeout * 1000.0D - System.currentTimeMillis()) / 1000.0D;
+                final double remaining = (playerData.getCombat().getLastHit() + MMOCore.plugin.configManager.pvpModeCombatTimeout * 1000.0D - System.currentTimeMillis()) / 1000.0D;
                 MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.leave.pvp-" + msgPath, new String[]{"remaining",
                         (MythicLib.plugin.getMMOConfig()).decimal.format(remaining)}).send(playerData.getPlayer());
             }
         } else if (newPvpMode && !lastPvpMode) {
 
             // Apply invulnerability
-            if (playerData.getCombat().isInPvpMode())
+            final boolean applyInvulnerability = playerData.getCombat().isInPvpMode() && playerData.getCombat().canQuitPvpMode();
+            if (applyInvulnerability)
                 playerData.getCombat().applyInvulnerability();
 
             // Send message
             if (canSendMessage()) {
                 lastMessage = System.currentTimeMillis();
-                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.enter.pvp-mode-" + (playerData.getCombat().isInPvpMode() ? "on" : "off"), new String[]{"time",
+                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.enter.pvp-mode-" + (applyInvulnerability ? "on" : "off"), new String[]{"time",
                         (MythicLib.plugin.getMMOConfig()).decimal.format(MMOCore.plugin.configManager.pvpModeInvulnerability)}).send(playerData.getPlayer());
             }
         }
