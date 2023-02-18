@@ -783,7 +783,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *                         If it's null, no hologram will be displayed
      * @param splitExp         Should the exp be split among party members
      */
-    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+    public void giveExperience(double value, @NotNull EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         if (value <= 0) {
             experience = Math.max(0, experience + value);
             return;
@@ -791,10 +791,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         // Splitting exp through party members
         AbstractParty party;
-        if (splitExp && (party = getParty()) != null) {
+        if (splitExp && (party = getParty()) != null && MMOCore.plugin.configManager.splitMainExp) {
             final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream()
                     .filter(pd -> {
-                        if (equals(pd) || pd.hasReachedMaxLevel())
+                        if (equals(pd) || pd.hasReachedMaxLevel() || Math.abs(pd.getLevel() - getLevel()) > MMOCore.plugin.configManager.maxPartyLevelDifference)
                             return false;
 
                         final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
