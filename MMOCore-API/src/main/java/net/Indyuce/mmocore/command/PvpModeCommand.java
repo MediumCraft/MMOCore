@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.command;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.comp.flags.CustomFlag;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.command.api.RegisteredCommand;
@@ -39,7 +40,17 @@ public class PvpModeCommand extends RegisteredCommand {
 
         playerData.getCombat().setPvpMode(!playerData.getCombat().isInPvpMode());
         playerData.getCooldownMap().applyCooldown(COOLDOWN_KEY, playerData.getCombat().isInPvpMode() ? MMOCore.plugin.configManager.pvpModeToggleOnCooldown : MMOCore.plugin.configManager.pvpModeToggleOffCooldown);
-        MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.toggle-" + (playerData.getCombat().isInPvpMode() ? "on" : "off")).send((Player) sender);
+
+        // Toggling on when in PVP region
+        if (playerData.getCombat().isInPvpMode() &&
+                MythicLib.plugin.getFlags().isFlagAllowed(playerData.getPlayer(), CustomFlag.PVP_MODE)) {
+            playerData.getCombat().applyInvulnerability();
+            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.toggle.on-invulnerable", "time",
+                    MythicLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.configManager.pvpModeInvulnerability)).send(playerData.getPlayer());
+
+            // Just send message otherwise
+        } else
+            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.toggle." + (playerData.getCombat().isInPvpMode() ? "on" : "off")).send((Player) sender);
         return true;
     }
 }

@@ -32,8 +32,14 @@ booster-expired: '&cExpired!'
 # PvP Mode
 pvp-mode:
     cooldown: '&cPlease wait {remaining} seconds to use this command again.'
-    toggle-on: '&aPvP Mode on.'
-    toggle-off: '&cPvP Mode off.'
+
+    # When using /pvpmode
+    toggle:
+        on: '&aPvP Mode on.'
+        on-invulnerable: '&aPvP Mode on. You are now invulnerable for {time} seconds.'
+        off: '&cPvP Mode off.'
+
+    # Entering/leaving regions with specific flag value
     leave:
         pvp-allowed: '&cYou left a PVP zone but are still vulnerable for {remaining} seconds!'
         pvp-denied: '&cYou left the PVP zone.'
