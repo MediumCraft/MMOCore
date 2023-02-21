@@ -18,7 +18,7 @@ public class PvPModeListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void unblockPvp(DisallowedPVPEvent event) {
         PlayerData defender;
-        if (PlayerData.get(event.getAttacker()).getCombat().isInPvpMode() || !(defender = PlayerData.get(event.getDefender())).getCombat().isInPvpMode())
+        if (!PlayerData.get(event.getAttacker()).getCombat().isInPvpMode() || !(defender = PlayerData.get(event.getDefender())).getCombat().isInPvpMode())
             return;
 
         if (!defender.getCombat().canQuitPvpMode() ||
