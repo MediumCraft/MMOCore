@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -145,7 +146,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Used to see if the triggers need to be applied
         for (StatInstance instance : mmoData.getStatMap().getInstances())
             for (StatModifier modifier : instance.getModifiers())
-                if (modifier.getKey().startsWith("trigger")) {
+                if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX)) {
                     statsLoaded = true;
                     break;
                 }

@@ -9,9 +9,10 @@ import org.apache.commons.lang.Validate;
 import java.util.UUID;
 
 public class StatTrigger extends Trigger {
+    public static String TRIGGER_PREFIX = "mmocore_trigger";
     private final StatModifier statModifier;
     private final String stat;
-    private final String modifierKey = "mmocore_trigger." + UUID.randomUUID();
+    private final String modifierKey = TRIGGER_PREFIX + "." + UUID.randomUUID();
     private final double amount;
 
     public StatTrigger(MMOLineConfig config) {
