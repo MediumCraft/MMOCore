@@ -9,10 +9,10 @@ import org.apache.commons.lang.Validate;
 import java.util.UUID;
 
 public class StatTrigger extends Trigger {
+    private final StatModifier statModifier;
     private final String stat;
-    private final double amount;
-    private final ModifierType type;
     private final String modifierKey = "mmocore_trigger." + UUID.randomUUID();
+    private final double amount;
 
     public StatTrigger(MMOLineConfig config) {
         super(config);
@@ -24,12 +24,16 @@ public class StatTrigger extends Trigger {
         Validate.isTrue(type.equals("FLAT") || type.equals("RELATIVE"));
         stat = config.getString("stat");
         amount = config.getDouble("amount");
-        this.type = ModifierType.valueOf(type);
+        statModifier = new StatModifier(modifierKey, stat, amount, ModifierType.valueOf(type));
     }
 
     @Override
     public void apply(PlayerData player) {
-        new StatModifier(modifierKey, stat, amount, type).register(player.getMMOPlayerData());
+        StatModifier prevModifier = player.getMMOPlayerData().getStatMap().getInstance(stat).getModifier(modifierKey);
+        if (prevModifier == null)
+            statModifier.register(player.getMMOPlayerData());
+        else
+            prevModifier.add(amount).register(player.getMMOPlayerData());
     }
 
     /**
