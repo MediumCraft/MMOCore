@@ -12,7 +12,7 @@ public enum GuildModuleType {
     // Useless since MythicLib already supports FactionBridge
     // FACTIONS("Factions", FactionsGuildModule::new),
     GUILDS("Guilds", GuildsGuildModule::new),
-    KINGDOMSX("KingdomsX", KingdomsXGuildModule::new),
+    KINGDOMSX("Kingdoms", KingdomsXGuildModule::new),
     MMOCORE("MMOCore", MMOCoreGuildModule::new),
     ULTIMATE_CLANS("UltimateClans", UltimateClansGuildModule::new),
     ;
