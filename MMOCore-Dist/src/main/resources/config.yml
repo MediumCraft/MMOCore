@@ -293,7 +293,7 @@ command-verbose:
 pvp_mode:
 
   # Requires /reload when changed
-  enabled: true
+  enabled: false
 
   # Delay after any attack during which the player will stay in PvP Mode (seconds)
   # Has to be lower than 'cooldown.combat'
@@ -305,8 +305,8 @@ pvp_mode:
   invulnerability:
     time: 60
 
-    # When enabled, players can hit other players to
-    # end their invulnerability state.
+    # When enabled, players can damage other players
+    # to end this invulnerable time period.
     can_damage: false
 
   cooldown:
