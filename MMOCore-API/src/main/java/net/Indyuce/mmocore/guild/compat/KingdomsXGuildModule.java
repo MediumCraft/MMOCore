@@ -30,7 +30,7 @@ public class KingdomsXGuildModule implements GuildModule {
 
         final KingdomPlayer player1 = Kingdoms.get().getDataHandlers().getKingdomPlayerManager().getData(player.getUniqueId());
         if (player1 == null)
-            return null;
+            return Relationship.GUILD_NEUTRAL;
 
         final Kingdom kingdom1 = player1.getKingdom();
         if (kingdom1 == null)
@@ -38,7 +38,7 @@ public class KingdomsXGuildModule implements GuildModule {
 
         final KingdomPlayer player2 = Kingdoms.get().getDataHandlers().getKingdomPlayerManager().getData(target.getUniqueId());
         if (player2 == null)
-            return null;
+            return Relationship.GUILD_NEUTRAL;
 
         final Kingdom kingdom2 = player2.getKingdom();
         if (kingdom2 == null)
