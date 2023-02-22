@@ -25,6 +25,10 @@ public enum GuildModuleType {
         this.provider = provider;
     }
 
+    public String getPluginName() {
+        return pluginName;
+    }
+
     public boolean isValid() {
         return Bukkit.getPluginManager().getPlugin(pluginName) != null;
     }
