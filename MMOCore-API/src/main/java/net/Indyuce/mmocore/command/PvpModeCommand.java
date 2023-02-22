@@ -44,13 +44,13 @@ public class PvpModeCommand extends RegisteredCommand {
         // Toggling on when in PVP region
         if (playerData.getCombat().isInPvpMode() &&
                 MythicLib.plugin.getFlags().isFlagAllowed(playerData.getPlayer(), CustomFlag.PVP_MODE)) {
-            playerData.getCombat().preventPvp();
+            playerData.getCombat().setInvulnerable(MMOCore.plugin.configManager.pvpModeInvulnerabilityTimeCommand);
             MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.toggle.on-invulnerable", "time",
-                    MythicLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.configManager.pvpModeInvulnerability)).send(playerData.getPlayer());
+                    MythicLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.configManager.pvpModeInvulnerabilityTimeCommand)).send(playerData.getPlayer());
 
             // Just send message otherwise
         } else
-            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.toggle." + (playerData.getCombat().isInPvpMode() ? "on" : "off")).send((Player) sender);
+            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.toggle." + (playerData.getCombat().isInPvpMode() ? "on" : "off") + "-safe").send((Player) sender);
         return true;
     }
 }

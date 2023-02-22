@@ -14,7 +14,7 @@ public class CombatHandler implements Closable {
     private final PlayerData player;
     private final long firstHit = System.currentTimeMillis();
 
-    private long lastHit = System.currentTimeMillis(), lastToggle;
+    private long lastHit = System.currentTimeMillis(), invulnerableTill;
 
     private boolean pvpMode;
 
@@ -27,7 +27,7 @@ public class CombatHandler implements Closable {
 
     public void update() {
         lastHit = System.currentTimeMillis();
-        lastToggle = 0;
+        invulnerableTill = 0;
         player.getMMOPlayerData().getCooldownMap().applyCooldown(PvpModeCommand.COOLDOWN_KEY, MMOCore.plugin.configManager.pvpModeCombatCooldown);
 
         // Simply refreshing
@@ -58,6 +58,10 @@ public class CombatHandler implements Closable {
         return firstHit;
     }
 
+    public long getInvulnerableTill() {
+        return invulnerableTill;
+    }
+
     /**
      * Simply checks if there is a scheduled task.
      *
@@ -74,12 +78,12 @@ public class CombatHandler implements Closable {
      *
      * @return If the player is inert i.e if he CAN hit/take damage
      */
-    public boolean canPvp() {
-        return System.currentTimeMillis() > lastToggle + MMOCore.plugin.configManager.pvpModeInvulnerability * 1000;
+    public boolean isInvulnerable() {
+        return System.currentTimeMillis() < invulnerableTill;
     }
 
-    public void preventPvp() {
-        lastToggle = System.currentTimeMillis();
+    public void setInvulnerable(double time) {
+        invulnerableTill = System.currentTimeMillis() + (long) (time * 1000);
     }
 
     public boolean canQuitPvpMode() {
@@ -108,5 +112,10 @@ public class CombatHandler implements Closable {
     public void close() {
         if (isInCombat())
             quit(true);
+
+        // Necessary steps when entering a town.
+        lastHit = 0;
+        invulnerableTill = 0;
+        player.getMMOPlayerData().getCooldownMap().resetCooldown(PvpModeCommand.COOLDOWN_KEY);
     }
 }

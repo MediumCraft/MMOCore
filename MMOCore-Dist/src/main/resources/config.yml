@@ -303,11 +303,18 @@ pvp_mode:
   # - entering a PvP region with PvP mode turned on.
   # - using the /pvpmode command inside of a PvP region.
   invulnerability:
-    time: 60
+    time:
+      region_change: 60
+      command: 30
 
     # When enabled, players can damage other players
     # to end this invulnerable time period.
     can_damage: false
+
+    # When enabled, leaving a no-PVP zone and entering a PVP zone
+    # will apply the SAME invulnerability time.
+    # Requires /reload when changed
+    apply_to_pvp_flag: false
 
   cooldown:
 
