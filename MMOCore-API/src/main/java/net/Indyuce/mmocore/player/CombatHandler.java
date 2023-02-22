@@ -14,8 +14,7 @@ public class CombatHandler implements Closable {
     private final PlayerData player;
     private final long firstHit = System.currentTimeMillis();
 
-    private long lastHit = System.currentTimeMillis();
-    private long lastInvulnerabilityApplication;
+    private long lastHit = System.currentTimeMillis(), lastToggle;
 
     private boolean pvpMode;
 
@@ -28,6 +27,7 @@ public class CombatHandler implements Closable {
 
     public void update() {
         lastHit = System.currentTimeMillis();
+        lastToggle = 0;
         player.getMMOPlayerData().getCooldownMap().applyCooldown(PvpModeCommand.COOLDOWN_KEY, MMOCore.plugin.configManager.pvpModeCombatCooldown);
 
         // Simply refreshing
@@ -68,17 +68,18 @@ public class CombatHandler implements Closable {
     }
 
     /**
-     * This is used for PvP mode invulnerability when a player
-     * joins a region while he still has PvP mode toggled on.
+     * This is used for PvP mode inactivity when a player
+     * joins a region with PvP mode toggled on, OR toggles on
+     * PvP mode using the command when standing in a PvP region.
      *
-     * @return If the player is invulnerable
+     * @return If the player is inert i.e if he CAN hit/take damage
      */
-    public boolean isInvulnerable() {
-        return System.currentTimeMillis() < lastInvulnerabilityApplication + MMOCore.plugin.configManager.pvpModeInvulnerability * 1000;
+    public boolean canPvp() {
+        return System.currentTimeMillis() > lastToggle + MMOCore.plugin.configManager.pvpModeInvulnerability * 1000;
     }
 
-    public void applyInvulnerability() {
-        lastInvulnerabilityApplication = System.currentTimeMillis();
+    public void preventPvp() {
+        lastToggle = System.currentTimeMillis();
     }
 
     public boolean canQuitPvpMode() {

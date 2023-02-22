@@ -296,16 +296,35 @@ pvp_mode:
   enabled: true
 
   # Delay after any attack during which the player will stay in PvP Mode (seconds)
+  # Has to be lower than 'cooldown.combat'
   combat_timeout: 30
 
-  # Invulnerability when entering a pvp-mode region when your PvP mode is toggled on.
-  invulnerability: 60
+  # Invulnerability triggered when:
+  # - entering a PvP region with PvP mode turned on.
+  # - using the /pvpmode command inside of a PvP region.
+  invulnerability:
+    time: 60
+
+    # When enabled, players can hit other players to
+    # end their invulnerability state.
+    can_damage: false
 
   cooldown:
-    # Delay before being able to use /pvpmode after being in combat (seconds)
-    # Has to be greater than the combat timeout for it to make sense
+
+    # Cooldown before being able to use the /pvpmode
+    # command when entering a PvP mode region.
+    region_enter: 20
+
+    # Cooldown before being able to use the /pvpmode
+    # command when entering a PvP mode region.
+    region_leave: 20
+
+    # Delay before being able to use /pvpmode after being in combat (seconds).
+    # Has to be greater than the 'combat_timeout'
     combat: 45
+
     # Cooldown when toggling on PvP mode, before being able to toggle it off (seconds)
     toggle_on: 5
+
     # Cooldown when toggling off PvP mode (seconds)
     toggle_off: 3

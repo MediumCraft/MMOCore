@@ -27,11 +27,12 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar, pvpModeEnabled;
+    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar, pvpModeEnabled, pvpModeInvulnerabilityCanDamage;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown, pvpModeCombatTimeout, pvpModeInvulnerability;
+    public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown, pvpModeCombatTimeout, pvpModeInvulnerability,
+            pvpModeRegionEnterCooldown, pvpModeRegionLeaveCooldown;
     public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
@@ -136,8 +137,11 @@ public class ConfigManager {
         pvpModeToggleOnCooldown = config.getDouble("pvp_mode.cooldown.toggle_on");
         pvpModeToggleOffCooldown = config.getDouble("pvp_mode.cooldown.toggle_off");
         pvpModeCombatCooldown = config.getDouble("pvp_mode.cooldown.combat");
+        pvpModeRegionEnterCooldown = config.getDouble("pvp_mode.cooldown.region_enter");
+        pvpModeRegionLeaveCooldown = config.getDouble("pvp_mode.cooldown.region_leave");
         pvpModeCombatTimeout = config.getDouble("pvp_mode.combat_timeout");
-        pvpModeInvulnerability = config.getDouble("pvp_mode.invulnerability");
+        pvpModeInvulnerability = config.getDouble("pvp_mode.invulnerability.time");
+        pvpModeInvulnerabilityCanDamage = config.getBoolean("pvp_mode.invulnerability.can_damage");
 
         // Resources
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);

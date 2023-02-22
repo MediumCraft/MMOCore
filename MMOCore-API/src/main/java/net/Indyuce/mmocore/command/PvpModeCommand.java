@@ -44,7 +44,7 @@ public class PvpModeCommand extends RegisteredCommand {
         // Toggling on when in PVP region
         if (playerData.getCombat().isInPvpMode() &&
                 MythicLib.plugin.getFlags().isFlagAllowed(playerData.getPlayer(), CustomFlag.PVP_MODE)) {
-            playerData.getCombat().applyInvulnerability();
+            playerData.getCombat().preventPvp();
             MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.toggle.on-invulnerable", "time",
                     MythicLib.plugin.getMMOConfig().decimal.format(MMOCore.plugin.configManager.pvpModeInvulnerability)).send(playerData.getPlayer());
 

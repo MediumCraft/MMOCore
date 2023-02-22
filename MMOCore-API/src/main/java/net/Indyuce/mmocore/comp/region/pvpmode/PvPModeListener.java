@@ -5,6 +5,7 @@ import com.sk89q.worldguard.bukkit.protection.events.DisallowedPVPEvent;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.comp.flags.CustomFlag;
 import io.lumine.mythic.lib.comp.interaction.InteractionType;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.event.EventHandler;
@@ -17,13 +18,25 @@ public class PvPModeListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void unblockPvp(DisallowedPVPEvent event) {
-        PlayerData defender;
-        if (!PlayerData.get(event.getAttacker()).getCombat().isInPvpMode() || !(defender = PlayerData.get(event.getDefender())).getCombat().isInPvpMode())
+        PlayerData defender, attacker;
+        if (!(attacker = PlayerData.get(event.getAttacker())).getCombat().isInPvpMode() || !(defender = PlayerData.get(event.getDefender())).getCombat().isInPvpMode())
             return;
 
-        if (!defender.getCombat().canQuitPvpMode() ||
-                (!defender.getCombat().isInvulnerable() && MythicLib.plugin.getFlags().isFlagAllowed(event.getDefender().getLocation(), CustomFlag.PVP_MODE)))
-            if (MythicLib.plugin.getEntities().checkPvpInteractionRules(event.getAttacker(), event.getDefender(), InteractionType.OFFENSE_ACTION, true))
-                event.setCancelled(true);
+        // If defender is out of combat
+        if (!defender.getCombat().canPvp())
+            return;
+
+        // If attacker cannot deal damage yet
+        if (!MMOCore.plugin.configManager.pvpModeInvulnerabilityCanDamage && !attacker.getCombat().canPvp())
+            return;
+
+        // Defender is still fighting and cannot leave PvP mode
+        if (!defender.getCombat().canQuitPvpMode())
+            event.setCancelled(true);
+
+            // Enable PvP if accepted
+        else if (MythicLib.plugin.getFlags().isFlagAllowed(event.getDefender().getLocation(), CustomFlag.PVP_MODE) &&
+                MythicLib.plugin.getEntities().checkPvpInteractionRules(event.getAttacker(), event.getDefender(), InteractionType.OFFENSE_ACTION, true))
+            event.setCancelled(true);
     }
 }
