@@ -29,6 +29,9 @@ public class PvPModeListener implements Listener {
     /**
      * Runs after MythicLib interaction checks. This listener
      * takes care of PVP inside of PvP-mode regions.
+     * <p>
+     * Only send messages when damage is greater than 0 to support
+     * Bukkit events-based checks just like in recent ML builds.
      */
     @EventHandler(ignoreCancelled = true)
     public void a(EntityDamageByEntityEvent event) {
@@ -44,9 +47,11 @@ public class PvPModeListener implements Listener {
         final Player target = (Player) event.getEntity();
         final PlayerData targetData = PlayerData.get(target);
         if (targetData.getCombat().isInvulnerable()) {
-            final long left = targetData.getCombat().getInvulnerableTill() - System.currentTimeMillis();
-            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.invulnerable-target",
-                    "left", MythicLib.plugin.getMMOConfig().decimal.format(left / 1000d)).send(source);
+            if (event.getDamage() > 0) {
+                final long left = targetData.getCombat().getInvulnerableTill() - System.currentTimeMillis();
+                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.invulnerable-target",
+                        "left", MythicLib.plugin.getMMOConfig().decimal.format(left / 1000d)).send(source);
+            }
             event.setCancelled(true);
             return;
         }
@@ -54,9 +59,11 @@ public class PvPModeListener implements Listener {
         // If attacker is still invulnerable and cannot deal damage
         final PlayerData sourceData = PlayerData.get(source);
         if (!MMOCore.plugin.configManager.pvpModeInvulnerabilityCanDamage && sourceData.getCombat().isInvulnerable()) {
-            final long left = sourceData.getCombat().getInvulnerableTill() - System.currentTimeMillis();
-            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.invulnerable-self",
-                    "left", MythicLib.plugin.getMMOConfig().decimal.format(left / 1000d)).send(source);
+            if (event.getDamage() > 0) {
+                final long left = sourceData.getCombat().getInvulnerableTill() - System.currentTimeMillis();
+                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.invulnerable-self",
+                        "left", MythicLib.plugin.getMMOConfig().decimal.format(left / 1000d)).send(source);
+            }
             event.setCancelled(true);
             return;
         }
@@ -68,13 +75,15 @@ public class PvPModeListener implements Listener {
         // Defender has not enabled PvP mode
         if (!targetData.getCombat().isInPvpMode()) {
             event.setCancelled(true);
-            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.pvp-mode-disabled-target").send(source);
+            if (event.getDamage() > 0)
+                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.pvp-mode-disabled-target").send(source);
         }
 
         // Attacker has not enabled PvP mode
         else if (!sourceData.getCombat().isInPvpMode()) {
             event.setCancelled(true);
-            MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.pvp-mode-disabled-self").send(source);
+            if (event.getDamage() > 0)
+                MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.pvp-mode-disabled-self").send(source);
         }
     }
 }
