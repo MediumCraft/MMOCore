@@ -6,8 +6,8 @@ import net.Indyuce.mmocore.guild.AbstractGuild;
 import net.Indyuce.mmocore.guild.GuildModule;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.kingdoms.constants.kingdom.Kingdom;
-import org.kingdoms.constants.kingdom.model.KingdomRelation;
+import org.kingdoms.constants.group.Kingdom;
+import org.kingdoms.constants.group.model.relationships.KingdomRelation;
 import org.kingdoms.constants.player.KingdomPlayer;
 import org.kingdoms.main.Kingdoms;
 
