@@ -33,6 +33,9 @@ public abstract class MMOCoreFlagHandler extends FlagValueChangeHandler<StateFla
     protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, StateFlag.State value) {
         try {
             playerData = PlayerData.get(player.getUniqueId());
+
+            // Things get done here
+            onSetValue(player, player.getLocation(), player.getLocation(), set, value, StateFlag.State.DENY, MoveType.TELEPORT);
         } catch (Exception exception) {
             // Citizens.
         }
