@@ -269,7 +269,7 @@
         <dependency>
             <groupId>me.ulrich</groupId>
             <artifactId>UltimateClans</artifactId>
-            <version>4.2.0</version>
+            <version>6.0.2</version>
             <scope>provided</scope>
         </dependency>
 
