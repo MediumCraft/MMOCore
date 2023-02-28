@@ -213,7 +213,14 @@
         <dependency>
             <groupId>de.erethon</groupId>
             <artifactId>DungeonsXL</artifactId>
-            <version>0.18-PRE-02</version>
+            <version>0.18-SNAPSHOT-1149</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.erethon</groupId>
+            <artifactId>Bedrock</artifactId>
+            <version>1.2.5</version>
             <scope>provided</scope>
         </dependency>
 
