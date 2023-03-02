@@ -128,7 +128,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
-    public boolean noCooldown, statsLoaded;
+    public boolean noCooldown;
 
     /**
      * Player data is stored in the data map before it's actually fully loaded
@@ -143,14 +143,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
 
-        // Used to see if the triggers need to be applied
-        for (StatInstance instance : mmoData.getStatMap().getInstances())
-            for (StatModifier modifier : instance.getModifiers())
-                if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX)) {
-                    statsLoaded = true;
-                    break;
-                }
+
     }
+
 
     /**
      * Update all references after /mmocore reload so there can be garbage
@@ -193,7 +188,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             skillTree.setupNodeStates(this);
 
         // Stat triggers setup
-        if (!statsLoaded) {
+        if (!areStatsLoaded()) {
             for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
                 for (SkillTreeNode node : skillTree.getNodes())
                     node.getExperienceTable().claimStatTriggers(this, node);
@@ -236,7 +231,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public boolean areStatsLoaded() {
-        return statsLoaded;
+        // Used to see if the triggers need to be applied
+        for (StatInstance instance : mmoData.getStatMap().getInstances())
+            for (StatModifier modifier : instance.getModifiers())
+                if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX))
+                    return true;
+        return false;
     }
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
@@ -753,9 +753,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                            Math.cos((double) 5 * t / warpTime + j) * r,
-                            (double) 2 * t / warpTime,
-                            Math.sin((double) 5 * t / warpTime + j) * r),
+                                    Math.cos((double) 5 * t / warpTime + j) * r,
+                                    (double) 2 * t / warpTime,
+                                    Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -1032,6 +1032,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setSkillLevel(String skill, int level) {
         skills.put(skill, level);
+        //If it is a passive skill we rebind it to make sure to update the damages done by it.
+        for (int i = 0; i < boundPassiveSkills.size(); i++) {
+
+            PassiveSkill passiveSkill = boundPassiveSkills.get(i);
+            if (passiveSkill.getTriggeredSkill().getHandler().getId().equals(skill)) {
+                passiveSkill.unregister(mmoData);
+                passiveSkill.register(mmoData);
+            }
+
+        }
     }
 
     public void resetSkillLevel(String skill) {
@@ -1194,7 +1204,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {
