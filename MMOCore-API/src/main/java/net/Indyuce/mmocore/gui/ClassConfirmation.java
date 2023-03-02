@@ -34,6 +34,10 @@ public class ClassConfirmation extends EditableInventory {
         return new ClassConfirmationInventory(data, this, profess, last);
     }
 
+    public GeneratedInventory newInventory(PlayerData data, String GUIName, PlayerClass profess, PluginInventory last) {
+        return new ClassConfirmationInventory(data, GUIName, this, profess, last);
+    }
+
     public class UnlockedItem extends InventoryItem<ClassConfirmationInventory> {
 
         public UnlockedItem(ConfigurationSection config) {
@@ -54,10 +58,10 @@ public class ClassConfirmation extends EditableInventory {
             for (int j = 0; j < 20; j++)
                 bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 
-			holders.register("percent", decimal.format(ratio * 100));
-			holders.register("progress", bar.toString());
-			holders.register("class", profess.getName());
-			holders.register("unlocked_skills", info.getSkillKeys().size());
+            holders.register("percent", decimal.format(ratio * 100));
+            holders.register("progress", bar.toString());
+            holders.register("class", profess.getName());
+            holders.register("unlocked_skills", info.getSkillKeys().size());
             holders.register("class_skills", profess.getSkills().size());
             holders.register("next_level", "" + nextLevelExp);
             holders.register("level", info.getLevel());
@@ -93,43 +97,52 @@ public class ClassConfirmation extends EditableInventory {
         public ItemStack display(ClassConfirmationInventory inv, int n) {
             return inv.getPlayerData().hasSavedClass(inv.profess) ? unlocked.display(inv, n) : locked.display(inv, n);
         }
-	}
+    }
 
-	public class ClassConfirmationInventory extends GeneratedInventory {
-		private final PlayerClass profess;
-		private final PluginInventory last;
+    public class ClassConfirmationInventory extends GeneratedInventory {
+        private final PlayerClass profess;
+        private final PluginInventory last;
+        private String GUIName;
 
-		public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
-			super(playerData, editable);
+        public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
+            super(playerData, editable);
+            this.profess = profess;
+            this.last = last;
+        }
 
-			this.profess = profess;
-			this.last = last;
-		}
+        public ClassConfirmationInventory(PlayerData playerData, String GUIName, EditableInventory editable, PlayerClass profess, PluginInventory last) {
+            super(playerData, editable);
+            this.GUIName = GUIName;
+            this.profess = profess;
+            this.last = last;
+        }
 
-		@Override
-		public void whenClicked(InventoryClickContext context, InventoryItem item) {
-			if (item.getFunction().equals("back"))
-				last.open();
+        @Override
+        public void whenClicked(InventoryClickContext context, InventoryItem item) {
+            if (item.getFunction().equals("back"))
+                last.open();
 
-			else if (item.getFunction().equals("yes")) {
+            else if (item.getFunction().equals("yes")) {
 
-				PlayerChangeClassEvent called = new PlayerChangeClassEvent(playerData, profess);
-				Bukkit.getPluginManager().callEvent(called);
-				if (called.isCancelled())
-					return;
+                PlayerChangeClassEvent called = new PlayerChangeClassEvent(playerData, profess);
+                Bukkit.getPluginManager().callEvent(called);
+                if (called.isCancelled())
+                    return;
 
-				playerData.giveClassPoints(-1);
-				(playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
-						: new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
-				MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
-				MMOCore.plugin.soundManager.getSound(SoundEvent.SELECT_CLASS).playTo(player);
-				player.closeInventory();
-			}
-		}
+                playerData.giveClassPoints(-1);
+                (playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
+                        : new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
+                MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
+                MMOCore.plugin.soundManager.getSound(SoundEvent.SELECT_CLASS).playTo(player);
+                player.closeInventory();
+            }
+        }
 
-		@Override
-		public String calculateName() {
-			return getName();
-		}
-	}
+        @Override
+        public String calculateName() {
+            if (GUIName != null)
+                return GUIName;
+            return getName();
+        }
+    }
 }

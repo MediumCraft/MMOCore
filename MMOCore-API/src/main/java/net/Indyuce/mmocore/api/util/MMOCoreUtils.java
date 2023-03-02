@@ -53,6 +53,10 @@ public class MMOCoreUtils {
         return builder.toString();
     }
 
+    public static String ymlName(String str) {
+        return str.toLowerCase().replace("_", "-").replace(" ", "-");
+    }
+
     /**
      *
      * @param value an integer you want to convert
