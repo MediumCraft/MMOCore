@@ -22,7 +22,7 @@ exp-sources: {}
 on-fish:
     overriding-drop-table:
         conditions:
-        - 'region{name=swamp,second-region}'
+        - 'region{name="swamp,second-region"}'
         - 'biome{name=beach}'
         
         # When drop table is read, one of these
