@@ -3,7 +3,7 @@ package net.Indyuce.mmocore.guild.compat;
 import io.lumine.mythic.lib.comp.interaction.relation.Relationship;
 import me.ulrich.clans.data.ClanData;
 import me.ulrich.clans.data.ClanRivalAlly;
-import me.ulrich.clans.packets.interfaces.UClans;
+import me.ulrich.clans.interfaces.UClans;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.guild.AbstractGuild;
 import net.Indyuce.mmocore.guild.GuildModule;

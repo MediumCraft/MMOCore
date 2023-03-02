@@ -6,8 +6,8 @@ import net.Indyuce.mmocore.guild.AbstractGuild;
 import net.Indyuce.mmocore.guild.GuildModule;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.kingdoms.constants.kingdom.Kingdom;
-import org.kingdoms.constants.kingdom.model.KingdomRelation;
+import org.kingdoms.constants.group.Kingdom;
+import org.kingdoms.constants.group.model.relationships.KingdomRelation;
 import org.kingdoms.constants.player.KingdomPlayer;
 import org.kingdoms.main.Kingdoms;
 
@@ -30,7 +30,7 @@ public class KingdomsXGuildModule implements GuildModule {
 
         final KingdomPlayer player1 = Kingdoms.get().getDataHandlers().getKingdomPlayerManager().getData(player.getUniqueId());
         if (player1 == null)
-            return null;
+            return Relationship.GUILD_NEUTRAL;
 
         final Kingdom kingdom1 = player1.getKingdom();
         if (kingdom1 == null)
@@ -38,7 +38,7 @@ public class KingdomsXGuildModule implements GuildModule {
 
         final KingdomPlayer player2 = Kingdoms.get().getDataHandlers().getKingdomPlayerManager().getData(target.getUniqueId());
         if (player2 == null)
-            return null;
+            return Relationship.GUILD_NEUTRAL;
 
         final Kingdom kingdom2 = player2.getKingdom();
         if (kingdom2 == null)

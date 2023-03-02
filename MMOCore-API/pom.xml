@@ -213,7 +213,14 @@
         <dependency>
             <groupId>de.erethon</groupId>
             <artifactId>DungeonsXL</artifactId>
-            <version>0.18-PRE-02</version>
+            <version>0.18-SNAPSHOT-1149</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.erethon</groupId>
+            <artifactId>Bedrock</artifactId>
+            <version>1.2.5</version>
             <scope>provided</scope>
         </dependency>
 
@@ -262,7 +269,7 @@
         <dependency>
             <groupId>me.ulrich</groupId>
             <artifactId>UltimateClans</artifactId>
-            <version>4.2.0</version>
+            <version>6.0.2</version>
             <scope>provided</scope>
         </dependency>
 
@@ -276,7 +283,7 @@
         <dependency>
             <groupId>org.kingdoms.main</groupId>
             <artifactId>Kingdoms</artifactId>
-            <version>1.11.15.0.0.0.1.1</version>
+            <version>1.15.5</version>
             <scope>provided</scope>
         </dependency>
 

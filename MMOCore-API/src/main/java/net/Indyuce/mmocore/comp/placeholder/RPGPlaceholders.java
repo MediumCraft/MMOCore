@@ -95,6 +95,9 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.equals("in_combat"))
 			return String.valueOf(playerData.isInCombat());
 
+		else if (identifier.equals("pvp_mode"))
+			return String.valueOf(playerData.getCombat().isInPvpMode());
+
 		else if (identifier.startsWith("since_enter_combat"))
 			return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getFirstHit()) / 1000) : "-1";
 
