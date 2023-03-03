@@ -10,8 +10,7 @@ public class SimpleExperienceObject implements ExperienceDispenser {
 
     @Override
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
-        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null
-                : hologramLocation == null ? getPlayerLocation(playerData) : hologramLocation;
+        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null : hologramLocation;
         playerData.giveExperience(experience, source, hologramLocation, true);
     }
 
