@@ -23,7 +23,6 @@ public abstract class EditableInventory {
     private String name;
     private int slots;
 
-
     /*
      * This set is linked so it keeps the order/priority in
      * which the items are loaded from the config.
@@ -82,7 +81,6 @@ public abstract class EditableInventory {
     public AdaptorType getAdaptorType() {
         return adaptorType;
     }
-
 
     public FileConfiguration getConfig() {
         return config;

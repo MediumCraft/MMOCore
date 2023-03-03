@@ -222,12 +222,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void clearSkillTreePoints() {
         skillTreePoints.clear();
     }
+
     public void clearNodeTimesClaimed() {
-        Map<String, Integer> copy= new HashMap<>(tableItemClaims);
-        copy.forEach((str, val) -> {
-            if (str.startsWith(SkillTreeNode.KEY_PREFIX))
-                tableItemClaims.remove(str);
-        });
+        final Iterator<String> ite = tableItemClaims.keySet().iterator();
+        while (ite.hasNext())
+            if (ite.next().startsWith(SkillTreeNode.KEY_PREFIX))
+                ite.remove();
     }
 
     public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
