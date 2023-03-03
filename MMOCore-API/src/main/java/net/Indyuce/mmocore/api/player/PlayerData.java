@@ -33,8 +33,6 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.player.CombatHandler;
 import net.Indyuce.mmocore.player.Unlockable;
@@ -142,10 +140,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.mmoData = mmoData;
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
-
-
     }
-
 
     /**
      * Update all references after /mmocore reload so there can be garbage
@@ -371,13 +366,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public void close() {
-
-        // Remove from party if it is MMO Party Module
-        if (MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
-            AbstractParty party = getParty();
-            if (party != null && party instanceof Party)
-                ((Party) party).removeMember(this);
-        }
 
         // Close combat handler
         combat.close();
@@ -760,9 +748,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                                    Math.cos((double) 5 * t / warpTime + j) * r,
-                                    (double) 2 * t / warpTime,
-                                    Math.sin((double) 5 * t / warpTime + j) * r),
+                            Math.cos((double) 5 * t / warpTime + j) * r,
+                            (double) 2 * t / warpTime,
+                            Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -1211,7 +1199,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {
