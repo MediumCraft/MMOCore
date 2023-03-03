@@ -2,18 +2,17 @@ package net.Indyuce.mmocore.gui;
 
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.api.player.profess.ClassOption;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.api.ConfigMessage;
-import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.api.player.profess.ClassOption;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,7 +21,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassSelect extends EditableInventory {
@@ -42,21 +43,12 @@ public class ClassSelect extends EditableInventory {
     public class ClassItem extends SimplePlaceholderItem<ProfessSelectionInventory> {
         private final String name;
         private final List<String> lore;
-        /**
-         * This enables to configure the name of the class confirmation GUI (for custom GUI textures).
-         */
-        private final Map<String, String> classGUINames = new HashMap<>();
 
         public ClassItem(ConfigurationSection config) {
             super(Material.BARRIER, config);
 
             this.name = config.getString("name");
             this.lore = config.getStringList("lore");
-            if (config.contains("class-confirmation-GUI-name")) {
-                ConfigurationSection section = config.getConfigurationSection("class-confirmation-GUI-name");
-                for (String key : section.getKeys(false))
-                    classGUINames.put(key, section.getString(key));
-            }
         }
 
         public boolean hasDifferentDisplay() {
@@ -113,7 +105,6 @@ public class ClassSelect extends EditableInventory {
         @Override
         public void whenClicked(InventoryClickContext context, InventoryItem item) {
             if (item.getFunction().equals("class")) {
-                ClassItem classItem = (ClassItem) item;
                 String classId = context.getClickedItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(MMOCore.plugin, "class_id"), PersistentDataType.STRING);
                 if (classId.equals(""))
                     return;
@@ -124,7 +115,7 @@ public class ClassSelect extends EditableInventory {
                     return;
                 }
 
-                PlayerClass profess = MMOCore.plugin.classManager.get(classId);
+                final PlayerClass profess = MMOCore.plugin.classManager.get(classId);
                 if (profess.hasOption(ClassOption.NEEDS_PERMISSION) && !player.hasPermission("mmocore.class." + profess.getId().toLowerCase())) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
                     new ConfigMessage("no-permission-for-class").send(player);
@@ -136,13 +127,9 @@ public class ClassSelect extends EditableInventory {
                     MMOCore.plugin.configManager.getSimpleMessage("already-on-class", "class", profess.getName()).send(player);
                     return;
                 }
-                PlayerClass playerClass = findDeepestSubclass(playerData, profess);
-                String classKey = MMOCoreUtils.ymlName(playerClass.getName());
-                if (classItem.classGUINames.containsKey(classKey)) {
-                    InventoryManager.CLASS_CONFIRM.newInventory(playerData,classItem.classGUINames.get(classKey),playerClass, this).open();
 
-                } else
-                    InventoryManager.CLASS_CONFIRM.newInventory(playerData,playerClass, this).open();
+                final PlayerClass playerClass = findDeepestSubclass(playerData, profess);
+                InventoryManager.CLASS_CONFIRM.newInventory(playerData, playerClass, this).open();
             }
         }
     }

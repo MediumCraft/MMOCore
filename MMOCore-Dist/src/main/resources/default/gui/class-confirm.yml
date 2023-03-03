@@ -1,6 +1,15 @@
 
-# GUI display name
-name: Class Confirmation
+# GUI display name, used by default
+name: 'Confirmation: {class}'
+
+# GUI display name which overrides the default one.
+# This can be used to apply custom textures to the GUI
+class-specific-name:
+    mage: "Select Mage"
+    rogue: "Select Rogue"
+    marksman: "Select Marksman"
+    warrior: "Select Warrior"
+    paladin: "Select Paladin"
 
 # Number of slots in your inventory. Must be
 # between 9 and 54 and must be a multiple of 9.
@@ -10,7 +19,7 @@ items:
     yes:
         slots: [12]
         function: 'yes'
-        
+
         # Displayed when the player had already selected this class
         # before (only if class slots are enabled in the config).
         unlocked:
@@ -24,13 +33,13 @@ items:
             - ''
             - '&7Skill Points: &6{skill_points}'
             - '&7Skills You Unlocked: &6{unlocked_skills}&7/&6{class_skills}'
-        
+
         # Displayed when the class is being chosen for the first time.
         locked:
             item: GREEN_TERRACOTTA
             name: '&aSelect {class}'
             lore: {}
-        
+
     back:
         slots: [14]
         item: RED_TERRACOTTA
