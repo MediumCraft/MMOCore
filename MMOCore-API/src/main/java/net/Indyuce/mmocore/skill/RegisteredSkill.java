@@ -11,11 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class RegisteredSkill implements Unlockable {
     private final SkillHandler<?> handler;
@@ -23,7 +19,7 @@ public class RegisteredSkill implements Unlockable {
     private final Map<String, LinearValue> defaultModifiers = new HashMap<>();
     private final ItemStack icon;
     private final List<String> lore;
-
+    private final List<String> categories;
     @NotNull
     private final TriggerType triggerType;
 
@@ -33,7 +29,7 @@ public class RegisteredSkill implements Unlockable {
         name = Objects.requireNonNull(config.getString("name"), "Could not find skill name");
         icon = MMOCoreUtils.readIcon(Objects.requireNonNull(config.getString("material"), "Could not find skill icon"));
         lore = Objects.requireNonNull(config.getStringList("lore"), "Could not find skill lore");
-
+        categories = config.getStringList("categories");
         // Trigger type
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
 
@@ -54,6 +50,7 @@ public class RegisteredSkill implements Unlockable {
         this.icon = icon;
         this.lore = lore;
         this.triggerType = triggerType;
+        this.categories = new ArrayList<>();
     }
 
     @Override
@@ -71,6 +68,10 @@ public class RegisteredSkill implements Unlockable {
 
     public List<String> getLore() {
         return lore;
+    }
+
+    public List<String> getCategories() {
+        return categories;
     }
 
     public ItemStack getIcon() {
@@ -98,7 +99,7 @@ public class RegisteredSkill implements Unlockable {
 
     /**
      * @return Modifier formula.
-     *         Not null as long as the modifier is well defined
+     * Not null as long as the modifier is well defined
      */
     @NotNull
     public LinearValue getModifierInfo(String modifier) {
