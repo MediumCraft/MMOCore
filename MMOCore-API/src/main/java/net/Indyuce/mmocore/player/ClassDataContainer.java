@@ -14,7 +14,7 @@ import java.util.Map;
  * class.
  */
 public interface ClassDataContainer {
-//Test
+
     int getLevel();
 
     double getExperience();
