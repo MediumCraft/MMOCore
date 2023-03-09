@@ -107,7 +107,6 @@ public class SavedClassInformation {
         data.getNodeLevels().forEach((node, level) -> nodeLevels.put(node.getFullId(), level));
         data.getNodeTimesClaimed().forEach((key, val) -> nodeTimesClaimed.put(key, val));
 
-        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
         data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
     }
 
@@ -235,9 +234,6 @@ public class SavedClassInformation {
                 node.getExperienceTable().removePermStats(player, node);
         if (player.getProfess().hasExperienceTable())
             player.getProfess().getExperienceTable().removePermStats(player, player.getProfess());
-
-        while (player.hasPassiveSkillBound(0))
-            player.unbindPassiveSkill(0);
 
         while (player.hasSkillBound(0))
             player.unbindSkill(0);
