@@ -5,7 +5,6 @@ import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
-import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -82,7 +81,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Nullable
     private PlayerClass profess;
     private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints;
-    private int numberSlots, skillTreeReallocationPoints, skillReallocationPoints;
+    private int skillSlotLimit, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
@@ -459,12 +458,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return skillPoints;
     }
 
-    public int getNumberSlots() {
-        return numberSlots;
+    public int getSkillSlotLimit() {
+        return skillSlotLimit;
     }
 
-    public void setNumberSlots(int numberSlots) {
-        this.numberSlots = numberSlots;
+    public void setSkillSlotLimit(int skillSlotLimit) {
+        this.skillSlotLimit = skillSlotLimit;
     }
 
     public void giveSkillReallocationPoints(int value) {

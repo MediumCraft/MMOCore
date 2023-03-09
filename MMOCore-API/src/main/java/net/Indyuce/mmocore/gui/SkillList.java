@@ -61,11 +61,11 @@ public class  SkillList extends EditableInventory {
             };
         }
 
-        if (function.equals("active-slot"))
+        if (function.equals("slot"))
             return new SlotItem(config) {
                 @Override
                 public ItemStack display(SkillViewerInventory inv, int n) {
-                    if (n >= inv.getPlayerData().getProfess().getMaxBoundActiveSkills()) {
+                    if (n >= inv.getPlayerData().getSkillSlotLimit()) {
                         return new ItemStack(Material.AIR);
                     }
                     ItemStack item = super.display(inv, n);
@@ -90,38 +90,6 @@ public class  SkillList extends EditableInventory {
                     return holders;
                 }
 
-            };
-        if (function.equals("passive-slot"))
-            return new SlotItem(config) {
-                @Override
-                public ItemStack display(SkillViewerInventory inv, int n) {
-                    if (n >= inv.getPlayerData().getProfess().getMaxBoundPassiveSkills()) {
-                        return new ItemStack(Material.AIR);
-                    }
-                    ItemStack item = super.display(inv, n);
-                    if (!inv.getPlayerData().hasPassiveSkillBound(n)) {
-                        item.setType(super.emptyMaterial);
-
-                        if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
-                            ItemMeta meta = item.getItemMeta();
-                            meta.setCustomModelData(super.emptyCMD);
-                            item.setItemMeta(meta);
-                        }
-                    }
-                    return item;
-                }
-
-
-                @Override
-                public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-                    Placeholders holders= super.getPlaceholders(inv, n);
-                    String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
-                    RegisteredSkill skill = inv.getPlayerData().hasPassiveSkillBound(n) ?
-                            MMOCore.plugin.skillManager.getSkill(inv.getPlayerData().getBoundPassiveSkill(n).getTriggeredSkill().getHandler().getId())
-                            : null;
-                    holders.register("skill", skill == null ? none : skill.getName());
-                    return holders;
-                }
             };
 
         if (function.equals("previous"))
@@ -409,49 +377,6 @@ public class  SkillList extends EditableInventory {
             }
 
             /*
-             * binding or unbinding  passive skills.
-             */
-
-            if (item.getFunction().equals("passive-slot")) {
-                int index = passiveSlotSlots.indexOf(context.getSlot());
-
-                // unbind if there is a current spell.
-                if (context.getClickType() == ClickType.RIGHT) {
-                    if (!playerData.hasPassiveSkillBound(index)) {
-                        MMOCore.plugin.configManager.getSimpleMessage("no-skill-bound").send(player);
-                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
-                        return;
-                    }
-                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-                    playerData.unbindPassiveSkill(index);
-                    open();
-                    return;
-                }
-
-                if (selected == null)
-                    return;
-
-                if (!selected.getSkill().getTrigger().isPassive()) {
-                    MMOCore.plugin.configManager.getSimpleMessage("not-passive-skill").send(player);
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
-                    return;
-                }
-
-
-                if (!playerData.hasSkillUnlocked(selected)) {
-                    MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
-                    return;
-                }
-
-                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-                playerData.bindPassiveSkill(index, selected.toPassive(playerData));
-                open();
-                return;
-            }
-
-
-            /*
              * binding or unbinding skills.
              */
             if (item.getFunction().equals("active-slot")) {
@@ -487,7 +412,7 @@ public class  SkillList extends EditableInventory {
                 }
 
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
-                playerData.bindActiveSkill(index, selected);
+                playerData.bindSkill(index, selected);
                 open();
                 return;
             }
