@@ -948,14 +948,22 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         stellium = Math.max(0, Math.min(stellium + event.getAmount(), max));
     }
 
+    @Override
+    public double getHealth() {
+        return getPlayer().getHealth();
+    }
+
+    @Override
     public double getMana() {
         return mana;
     }
 
+    @Override
     public double getStamina() {
         return stamina;
     }
 
+    @Override
     public double getStellium() {
         return stellium;
     }

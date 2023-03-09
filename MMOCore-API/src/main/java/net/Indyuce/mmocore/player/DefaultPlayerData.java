@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ import java.util.Map;
 
 public class DefaultPlayerData implements ClassDataContainer {
     private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints, skillReallocPoints, skillTreeReallocPoints;
-
-    public static final DefaultPlayerData DEFAULT = new DefaultPlayerData(1, 0, 0, 0, 0, 0, 0);
+    private final double health, mana, stamina, stellium;
+    public static final DefaultPlayerData DEFAULT = new DefaultPlayerData(1, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0);
 
     public DefaultPlayerData(ConfigurationSection config) {
         level = config.getInt("level", 1);
@@ -24,9 +25,13 @@ public class DefaultPlayerData implements ClassDataContainer {
         attrReallocPoints = config.getInt("attribute-realloc-points");
         skillReallocPoints = config.getInt("skill-realloc-points", 0);
         skillTreeReallocPoints = config.getInt("skill-tree-realloc-points", 0);
+        health = config.getDouble("health");
+        mana = config.getDouble("mana");
+        stellium = config.getDouble("stellium");
+        stamina = config.getDouble("stamina");
     }
 
-    public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints, int skillReallocPoints, int skillTreeReallocPoints) {
+    public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints, int skillReallocPoints, int skillTreeReallocPoints, double health, double mana, double stamina, double stellium) {
         this.level = level;
         this.classPoints = classPoints;
         this.skillPoints = skillPoints;
@@ -34,6 +39,10 @@ public class DefaultPlayerData implements ClassDataContainer {
         this.attrReallocPoints = attrReallocPoints;
         this.skillReallocPoints = skillReallocPoints;
         this.skillTreeReallocPoints = skillTreeReallocPoints;
+        this.health = health;
+        this.mana = mana;
+        this.stamina = stamina;
+        this.stellium = stellium;
     }
 
     public int getLevel() {
@@ -72,6 +81,26 @@ public class DefaultPlayerData implements ClassDataContainer {
     @Override
     public int getSkillTreeReallocationPoints() {
         return skillTreeReallocPoints;
+    }
+
+    @Override
+    public double getHealth() {
+        return health;
+    }
+
+    @Override
+    public double getMana() {
+        return mana;
+    }
+
+    @Override
+    public double getStamina() {
+        return stamina;
+    }
+
+    @Override
+    public double getStellium() {
+        return stellium;
     }
 
     @Override
@@ -117,5 +146,9 @@ public class DefaultPlayerData implements ClassDataContainer {
         player.setAttributeReallocationPoints(attrReallocPoints);
         player.setSkillTreeReallocationPoints(skillTreeReallocPoints);
         player.setSkillReallocationPoints(skillReallocPoints);
+        player.getPlayer().setHealth(Math.min(health,player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        player.setMana(mana);
+        player.setStamina(stamina);
+        player.setStellium(stellium);
     }
 }

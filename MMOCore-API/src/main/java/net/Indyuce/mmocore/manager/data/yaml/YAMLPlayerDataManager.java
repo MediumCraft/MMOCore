@@ -177,6 +177,10 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             config.set("class-info." + key + ".attribute-realloc-points", info.getAttributeReallocationPoints());
             config.set("class-info." + key + ".skill-tree-reallocation-points", info.getSkillTreeReallocationPoints());
             config.set("class-info." + key + ".skill-reallocation-points", info.getSkillReallocationPoints());
+            config.set("class-info." + key + ".health", info.getHealth());
+            config.set("class-info." + key + ".mana", info.getMana());
+            config.set("class-info." + key + ".stamina", info.getStamina());
+            config.set("class-info." + key + ".stellium", info.getStellium());
             info.getSkillKeys().forEach(skill -> config.set("class-info." + key + ".skill." + skill, info.getSkillLevel(skill)));
             info.getAttributeKeys().forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
             info.getNodeKeys().forEach(node -> config.set("class-info." + key + ".node-levels." + node, info.getNodeLevel(node)));

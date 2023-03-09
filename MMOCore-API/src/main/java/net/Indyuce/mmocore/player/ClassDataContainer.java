@@ -29,6 +29,14 @@ public interface ClassDataContainer {
 
     int getSkillTreeReallocationPoints();
 
+    double getHealth();
+
+    double getMana();
+
+    double getStamina();
+
+    double getStellium();
+
     Map<String, Integer> mapAttributeLevels();
 
     Map<String, Integer> mapSkillLevels();

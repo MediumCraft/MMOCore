@@ -89,6 +89,10 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
             classinfo.addProperty("skill-reallocation-points", info.getSkillReallocationPoints());
             classinfo.addProperty("skill-tree-reallocation-points", info.getSkillTreeReallocationPoints());
+            classinfo.addProperty("health", info.getHealth());
+            classinfo.addProperty("mana", info.getMana());
+            classinfo.addProperty("stamina", info.getStamina());
+            classinfo.addProperty("stellium", info.getStellium());
 
             JsonObject skillinfo = new JsonObject();
             for (String skill : info.getSkillKeys())
