@@ -1201,10 +1201,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return boundSkills;
     }
 
-    public List<PassiveSkill> getBoundPassiveSkills() {
-        return boundPassiveSkills;
-    }
-
     @NotNull
     public CombatHandler getCombat() {
         return combat;

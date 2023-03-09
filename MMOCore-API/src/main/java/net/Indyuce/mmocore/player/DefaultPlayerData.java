@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.player;
 
-import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
@@ -130,11 +129,6 @@ public class DefaultPlayerData implements ClassDataContainer {
 
     @Override
     public List<ClassSkill> getBoundSkills() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<PassiveSkill> getBoundPassiveSkills() {
         return new ArrayList<>();
     }
 

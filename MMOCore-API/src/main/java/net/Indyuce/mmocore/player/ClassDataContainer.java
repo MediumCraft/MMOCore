@@ -45,8 +45,6 @@ public interface ClassDataContainer {
 
     List<ClassSkill> getBoundSkills();
 
-    List<PassiveSkill> getBoundPassiveSkills();
-
     Map<SkillTreeNode, Integer> getNodeLevels();
 
     Map<String, Integer> getNodeTimesClaimed();
