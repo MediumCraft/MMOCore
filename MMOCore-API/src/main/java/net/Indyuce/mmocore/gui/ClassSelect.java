@@ -2,17 +2,17 @@ package net.Indyuce.mmocore.gui;
 
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.ClassOption;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.api.ConfigMessage;
-import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.api.player.profess.ClassOption;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -115,7 +115,7 @@ public class ClassSelect extends EditableInventory {
                     return;
                 }
 
-                PlayerClass profess = MMOCore.plugin.classManager.get(classId);
+                final PlayerClass profess = MMOCore.plugin.classManager.get(classId);
                 if (profess.hasOption(ClassOption.NEEDS_PERMISSION) && !player.hasPermission("mmocore.class." + profess.getId().toLowerCase())) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
                     new ConfigMessage("no-permission-for-class").send(player);
@@ -128,7 +128,8 @@ public class ClassSelect extends EditableInventory {
                     return;
                 }
 
-                InventoryManager.CLASS_CONFIRM.newInventory(playerData, findDeepestSubclass(playerData, profess), this).open();
+                final PlayerClass playerClass = findDeepestSubclass(playerData, profess);
+                InventoryManager.CLASS_CONFIRM.newInventory(playerData, playerClass, this).open();
             }
         }
     }

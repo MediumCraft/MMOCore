@@ -64,7 +64,6 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
     }
 
     private boolean hasSilkTouch(ItemStack item) {
-
         return item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH);
     }
 

@@ -1,7 +1,12 @@
 package net.Indyuce.mmocore.gui;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
+import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
+import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
@@ -9,21 +14,29 @@ import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
-import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
-import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClassConfirmation extends EditableInventory {
-	public ClassConfirmation() {
-		super("class-confirm");
-	}
+
+    /**
+     * This enables to configure the name of the
+     * class confirmation GUI (for custom GUI textures).
+     */
+    private final Map<String, String> specificNames = new HashMap<>();
+
+    public ClassConfirmation() {
+        super("class-confirm");
+    }
 
     @Override
     public InventoryItem load(String function, ConfigurationSection config) {
@@ -34,8 +47,20 @@ public class ClassConfirmation extends EditableInventory {
         return new ClassConfirmationInventory(data, this, profess, last);
     }
 
-    public class UnlockedItem extends InventoryItem<ClassConfirmationInventory> {
+    @Override
+    public void reload(FileConfiguration config) {
+        super.reload(config);
 
+        specificNames.clear();
+
+        if (config.contains("class-specific-name")) {
+            final ConfigurationSection section = config.getConfigurationSection("class-specific-name");
+            for (String key : section.getKeys(false))
+                specificNames.put(key, section.getString(key));
+        }
+    }
+
+    public class UnlockedItem extends InventoryItem<ClassConfirmationInventory> {
         public UnlockedItem(ConfigurationSection config) {
             super(config);
         }
@@ -46,18 +71,18 @@ public class ClassConfirmation extends EditableInventory {
             SavedClassInformation info = inv.getPlayerData().getClassInfo(profess);
             Placeholders holders = new Placeholders();
 
-            int nextLevelExp = inv.getPlayerData().getLevelUpExperience();
-            double ratio = (double) info.getExperience() / (double) nextLevelExp;
+            final double nextLevelExp = inv.getPlayerData().getLevelUpExperience();
+            final double ratio = info.getExperience() / nextLevelExp;
 
             StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
             int chars = (int) (ratio * 20);
             for (int j = 0; j < 20; j++)
                 bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
 
-			holders.register("percent", decimal.format(ratio * 100));
-			holders.register("progress", bar.toString());
-			holders.register("class", profess.getName());
-			holders.register("unlocked_skills", info.getSkillKeys().size());
+            holders.register("percent", decimal.format(ratio * 100));
+            holders.register("progress", bar.toString());
+            holders.register("class", profess.getName());
+            holders.register("unlocked_skills", info.getSkillKeys().size());
             holders.register("class_skills", profess.getSkills().size());
             holders.register("next_level", "" + nextLevelExp);
             holders.register("level", info.getLevel());
@@ -93,43 +118,45 @@ public class ClassConfirmation extends EditableInventory {
         public ItemStack display(ClassConfirmationInventory inv, int n) {
             return inv.getPlayerData().hasSavedClass(inv.profess) ? unlocked.display(inv, n) : locked.display(inv, n);
         }
-	}
+    }
 
-	public class ClassConfirmationInventory extends GeneratedInventory {
-		private final PlayerClass profess;
-		private final PluginInventory last;
+    public class ClassConfirmationInventory extends GeneratedInventory {
+        private final PlayerClass profess;
+        private final PluginInventory last;
 
-		public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
-			super(playerData, editable);
+        public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
+            super(playerData, editable);
 
-			this.profess = profess;
-			this.last = last;
-		}
+            this.profess = profess;
+            this.last = last;
+        }
 
-		@Override
-		public void whenClicked(InventoryClickContext context, InventoryItem item) {
-			if (item.getFunction().equals("back"))
-				last.open();
+        @Override
+        public void whenClicked(InventoryClickContext context, InventoryItem item) {
+            if (item.getFunction().equals("back"))
+                last.open();
 
-			else if (item.getFunction().equals("yes")) {
+            else if (item.getFunction().equals("yes")) {
 
-				PlayerChangeClassEvent called = new PlayerChangeClassEvent(playerData, profess);
-				Bukkit.getPluginManager().callEvent(called);
-				if (called.isCancelled())
-					return;
+                PlayerChangeClassEvent called = new PlayerChangeClassEvent(playerData, profess);
+                Bukkit.getPluginManager().callEvent(called);
+                if (called.isCancelled())
+                    return;
 
-				playerData.giveClassPoints(-1);
-				(playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
-						: new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
-				MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
-				MMOCore.plugin.soundManager.getSound(SoundEvent.SELECT_CLASS).playTo(player);
-				player.closeInventory();
-			}
-		}
+                playerData.giveClassPoints(-1);
+                (playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
+                        : new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
+                MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
+                MMOCore.plugin.soundManager.getSound(SoundEvent.SELECT_CLASS).playTo(player);
+                player.closeInventory();
+            }
+        }
 
-		@Override
-		public String calculateName() {
-			return getName();
-		}
-	}
+        @Override
+        public String calculateName() {
+            final String professKey = MMOCoreUtils.ymlName(profess.getId());
+            final @Nullable String found = specificNames.get(professKey);
+            return found == null ? getName().replace("{class}", profess.getName()) : found;
+        }
+    }
 }

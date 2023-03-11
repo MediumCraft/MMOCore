@@ -44,10 +44,6 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         if (config.contains("class"))
             data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));
 
-        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
-        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
-        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
-
         if (config.contains("guild")) {
             Guild guild = provider.getGuildManager().getGuild(config.getString("guild"));
             data.setGuild(guild.hasMember(data.getUniqueId()) ? guild : null);
@@ -116,6 +112,11 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                     MMOCore.log(Level.WARNING, "Could not load class info '" + key + "': " + exception.getMessage());
                 }
 
+
+        //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
+        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
+        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
+        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
 
         data.setFullyLoaded();
     }

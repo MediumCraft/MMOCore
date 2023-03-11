@@ -368,10 +368,8 @@ public class ThreeDimAdaptor extends Adaptor {
                     .getEntityFromID(event.getPlayer().getWorld(), packet.getIntegers().read(0));
             if (entity instanceof ArmorStand armorStand) {
                 if (true) {
-                    Bukkit.broadcastMessage("IN");
 
                     if (armorStands.values().contains(armorStand)) {
-                        Bukkit.broadcastMessage("CANCEL" + armorStand.getName());
                         event.setCancelled(true);
                     }
                 }

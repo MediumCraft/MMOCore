@@ -213,6 +213,8 @@ public class SavedClassInformation {
 
         while (player.hasSkillBound(0))
             player.unbindSkill(0);
+        player.clearNodeTimesClaimed();
+
 
         /*
          * Reads this class info, applies it to the player. set class after

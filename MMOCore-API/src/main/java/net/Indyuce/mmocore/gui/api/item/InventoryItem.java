@@ -146,7 +146,6 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         Placeholders placeholders = getPlaceholders(inv, n);
         ItemStack item = new ItemStack(specificMaterial == null ? material : specificMaterial);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(modelData);
         if (texture != null && meta instanceof SkullMeta)
             applyTexture(texture, (SkullMeta) meta);
 
@@ -163,7 +162,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         }
 
         if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
-            meta.setCustomModelData(getModelData());
+            meta.setCustomModelData(modelData);
 
         item.setItemMeta(meta);
         return item;

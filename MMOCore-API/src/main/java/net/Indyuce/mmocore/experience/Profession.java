@@ -4,8 +4,8 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -125,8 +125,7 @@ public class Profession extends PostLoadObject implements ExperienceObject {
 
     @Override
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
-        hologramLocation = !getOption(Profession.ProfessionOption.EXP_HOLOGRAMS) ? null
-                : hologramLocation;
+        hologramLocation = !getOption(Profession.ProfessionOption.EXP_HOLOGRAMS) ? null : hologramLocation;
         playerData.getCollectionSkills().giveExperience(this, experience, EXPSource.SOURCE, hologramLocation, true);
     }
 

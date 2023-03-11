@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -32,8 +33,6 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.player.CombatHandler;
 import net.Indyuce.mmocore.player.Unlockable;
@@ -127,7 +126,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
     // NON-FINAL player data stuff made public to facilitate field change
-    public boolean noCooldown, statsLoaded;
+    public boolean noCooldown;
 
     /**
      * Player data is stored in the data map before it's actually fully loaded
@@ -141,14 +140,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.mmoData = mmoData;
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
-
-        // Used to see if the triggers need to be applied
-        for (StatInstance instance : mmoData.getStatMap().getInstances())
-            for (StatModifier modifier : instance.getModifiers())
-                if (modifier.getKey().startsWith("trigger")) {
-                    statsLoaded = true;
-                    break;
-                }
     }
 
     /**
@@ -192,7 +183,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             skillTree.setupNodeStates(this);
 
         // Stat triggers setup
-        if (!statsLoaded) {
+        if (!areStatsLoaded()) {
             for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
                 for (SkillTreeNode node : skillTree.getNodes())
                     node.getExperienceTable().claimStatTriggers(this, node);
@@ -227,6 +218,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skillTreePoints.clear();
     }
 
+    public void clearNodeTimesClaimed() {
+        final Iterator<String> ite = tableItemClaims.keySet().iterator();
+        while (ite.hasNext())
+            if (ite.next().startsWith(SkillTreeNode.KEY_PREFIX))
+                ite.remove();
+    }
+
     public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
         HashMap<String, Integer> nodeLevelsString = new HashMap<>();
         for (SkillTreeNode node : nodeLevels.keySet())
@@ -235,7 +233,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public boolean areStatsLoaded() {
-        return statsLoaded;
+        // Used to see if the triggers need to be applied
+        for (StatInstance instance : mmoData.getStatMap().getInstances())
+            for (StatModifier modifier : instance.getModifiers())
+                if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX))
+                    return true;
+        return false;
     }
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
@@ -363,13 +366,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public void close() {
-
-        // Remove from party if it is MMO Party Module
-        if (MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
-            AbstractParty party = getParty();
-            if (party != null && party instanceof Party)
-                ((Party) party).removeMember(this);
-        }
 
         // Close combat handler
         combat.close();
@@ -1031,6 +1027,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setSkillLevel(String skill, int level) {
         skills.put(skill, level);
+        //If it is a passive skill we rebind it to make sure to update the damages done by it.
+        for (int i = 0; i < boundPassiveSkills.size(); i++) {
+
+            PassiveSkill passiveSkill = boundPassiveSkills.get(i);
+            if (passiveSkill.getTriggeredSkill().getHandler().getId().equals(skill)) {
+                passiveSkill.unregister(mmoData);
+                passiveSkill.register(mmoData);
+            }
+
+        }
     }
 
     public void resetSkillLevel(String skill) {

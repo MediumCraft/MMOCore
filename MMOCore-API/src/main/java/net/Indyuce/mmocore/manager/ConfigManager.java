@@ -27,11 +27,13 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, splitMainExp, disableQuestBossBar, pvpModeEnabled;
+    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar,
+            pvpModeEnabled, pvpModeInvulnerabilityCanDamage;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
-    public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown, pvpModeCombatTimeout, pvpModeInvulnerability;
+    public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown,
+            pvpModeCombatTimeout, pvpModeInvulnerabilityTimeRegionChange, pvpModeInvulnerabilityTimeCommand, pvpModeRegionEnterCooldown, pvpModeRegionLeaveCooldown;
     public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
@@ -129,7 +131,6 @@ public class ConfigManager {
         maxPartyLevelDifference = MMOCore.plugin.getConfig().getInt("party.max-level-difference");
         partyMaxExpSplitRange = MMOCore.plugin.getConfig().getDouble("party.max-exp-split-range");
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
-        splitMainExp = MMOCore.plugin.getConfig().getBoolean("party.main-exp-split");
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
 
         // Combat
@@ -137,8 +138,12 @@ public class ConfigManager {
         pvpModeToggleOnCooldown = config.getDouble("pvp_mode.cooldown.toggle_on");
         pvpModeToggleOffCooldown = config.getDouble("pvp_mode.cooldown.toggle_off");
         pvpModeCombatCooldown = config.getDouble("pvp_mode.cooldown.combat");
+        pvpModeRegionEnterCooldown = config.getDouble("pvp_mode.cooldown.region_enter");
+        pvpModeRegionLeaveCooldown = config.getDouble("pvp_mode.cooldown.region_leave");
         pvpModeCombatTimeout = config.getDouble("pvp_mode.combat_timeout");
-        pvpModeInvulnerability = config.getDouble("pvp_mode.invulnerability");
+        pvpModeInvulnerabilityTimeCommand = config.getDouble("pvp_mode.invulnerability.time.command");
+        pvpModeInvulnerabilityTimeRegionChange = config.getDouble("pvp_mode.invulnerability.time.region_change");
+        pvpModeInvulnerabilityCanDamage = config.getBoolean("pvp_mode.invulnerability.can_damage");
 
         // Resources
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);

@@ -12,7 +12,7 @@ public enum GuildModuleType {
     // Useless since MythicLib already supports FactionBridge
     // FACTIONS("Factions", FactionsGuildModule::new),
     GUILDS("Guilds", GuildsGuildModule::new),
-    KINGDOMSX("KingdomsX", KingdomsXGuildModule::new),
+    KINGDOMSX("Kingdoms", KingdomsXGuildModule::new),
     MMOCORE("MMOCore", MMOCoreGuildModule::new),
     ULTIMATE_CLANS("UltimateClans", UltimateClansGuildModule::new),
     ;
@@ -23,6 +23,10 @@ public enum GuildModuleType {
     GuildModuleType(String pluginName, Provider<GuildModule> provider) {
         this.pluginName = pluginName;
         this.provider = provider;
+    }
+
+    public String getPluginName() {
+        return pluginName;
     }
 
     public boolean isValid() {
