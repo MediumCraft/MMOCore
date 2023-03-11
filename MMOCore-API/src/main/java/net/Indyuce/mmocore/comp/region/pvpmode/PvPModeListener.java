@@ -63,6 +63,14 @@ public class PvPModeListener implements Listener {
                     MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.low-level-self").send(source);
                 return;
             }
+
+            final int maxLevelDiff = MMOCore.plugin.configManager.maxCombatLevelDifference;
+            if (maxLevelDiff > 0 && Math.abs(targetData. getLevel() - sourceData.getLevel()) > maxLevelDiff) {
+                event.setCancelled(true);
+                if (event.getDamage() > 0)
+                    MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.high-level-difference").send(source);
+                return;
+            }
         }
 
         /*

@@ -34,7 +34,7 @@ public class ConfigManager {
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown,
             pvpModeCombatTimeout, pvpModeInvulnerabilityTimeRegionChange, pvpModeInvulnerabilityTimeCommand, pvpModeRegionEnterCooldown, pvpModeRegionLeaveCooldown;
-    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills, minCombatLevel;
+    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills, minCombatLevel, maxCombatLevelDifference;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
     private final FileConfiguration messages;
@@ -145,6 +145,7 @@ public class ConfigManager {
         pvpModeInvulnerabilityTimeRegionChange = config.getDouble("pvp_mode.invulnerability.time.region_change");
         pvpModeInvulnerabilityCanDamage = config.getBoolean("pvp_mode.invulnerability.can_damage");
         minCombatLevel = config.getInt("pvp_mode.min_level");
+        maxCombatLevelDifference = config.getInt("pvp_mode.max_level_difference");
 
         // Resources
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);

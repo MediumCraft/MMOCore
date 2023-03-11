@@ -293,6 +293,10 @@ pvp_mode:
   # Set to 0 to fully disable
   min_level: 0
 
+  # Maximum level difference in order to fight other players.
+  # Set to 0 to fully disable
+  max_level_difference: 10
+
   # Delay after any attack during which the player will stay in PvP Mode (seconds)
   # Has to be lower than 'cooldown.combat'
   combat_timeout: 30
