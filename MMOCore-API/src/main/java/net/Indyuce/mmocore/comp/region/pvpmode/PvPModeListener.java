@@ -48,9 +48,21 @@ public class PvPModeListener implements Listener {
         final Player target = (Player) event.getEntity();
         final PlayerData targetData = PlayerData.get(target), sourceData = PlayerData.get(source);
         final int minLevel = MMOCore.plugin.configManager.minCombatLevel;
-        if (minLevel > 0 && (targetData.getLevel() < minLevel || sourceData.getLevel() < minLevel)) {
-            event.setCancelled(true);
-            return;
+        if (minLevel > 0) {
+
+            if (targetData.getLevel() < minLevel) {
+                event.setCancelled(true);
+                if (event.getDamage() > 0)
+                    MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.low-level-target").send(source);
+                return;
+            }
+
+            if (sourceData.getLevel() < minLevel) {
+                event.setCancelled(true);
+                if (event.getDamage() > 0)
+                    MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.low-level-self").send(source);
+                return;
+            }
         }
 
         /*

@@ -312,7 +312,7 @@ pvp_mode:
     # When enabled, leaving a no-PVP zone and entering a
     # PVP zone will apply the SAME invulnerability time.
     # Requires /reload when changed
-    apply_to_pvp_flag: false
+    apply_to_pvp_flag: true
 
   cooldown:
 

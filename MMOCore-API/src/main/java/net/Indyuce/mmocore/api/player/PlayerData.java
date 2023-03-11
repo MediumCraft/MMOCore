@@ -786,7 +786,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         }
 
         // Splitting exp through party members
-        AbstractParty party;
+        final AbstractParty party;
         if (splitExp && (party = getParty()) != null && MMOCore.plugin.configManager.splitMainExp) {
             final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream()
                     .filter(pd -> {
@@ -841,7 +841,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (level > oldLevel) {
             Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
             if (isOnline()) {
-                new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
+                new ConfigMessage("level-up").addPlaceholders("level", String.valueOf(level)).send(getPlayer());
                 MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
                 new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
             }
