@@ -27,14 +27,14 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, attributesAsClassInfo, splitProfessionExp, disableQuestBossBar,
+    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, splitProfessionExp, disableQuestBossBar,
             pvpModeEnabled, pvpModeInvulnerabilityCanDamage;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown,
             pvpModeCombatTimeout, pvpModeInvulnerabilityTimeRegionChange, pvpModeInvulnerabilityTimeCommand, pvpModeRegionEnterCooldown, pvpModeRegionLeaveCooldown;
-    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills;
+    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills, minCombatLevel;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
     private final FileConfiguration messages;
@@ -144,6 +144,7 @@ public class ConfigManager {
         pvpModeInvulnerabilityTimeCommand = config.getDouble("pvp_mode.invulnerability.time.command");
         pvpModeInvulnerabilityTimeRegionChange = config.getDouble("pvp_mode.invulnerability.time.region_change");
         pvpModeInvulnerabilityCanDamage = config.getBoolean("pvp_mode.invulnerability.can_damage");
+        minCombatLevel = config.getInt("pvp_mode.min_level");
 
         // Resources
         staminaFull = getColorOrDefault("stamina-whole", ChatColor.GREEN);

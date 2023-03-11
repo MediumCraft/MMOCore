@@ -217,18 +217,9 @@ hotbar-swapping:
   # If the player has to sneak to swap hotbars
   crouching: true
 
-# Set this to true to allow players
-# in creative mode to enter casting mode
+# Set this to true to allow players in
+# creative mode to enter casting mode
 can-creative-cast: false
-
-# Not implemented yet
-ability-targeting-options:
-
-  # Prevent heals/buffs on players in a different guild
-  cant-heal-enemies: true
-
-  # Prevent heals/buffs UNLESS the player is in your party/guild
-  cant-heal-neutrals: false
 
 # Prevents mobs spawned from spawners from giving  MMO XP points.
 prevent-spawner-xp: true
@@ -298,6 +289,10 @@ pvp_mode:
   # Requires /reload when changed
   enabled: false
 
+  # Minimum level in order to fight other players.
+  # Set to 0 to fully disable
+  min_level: 0
+
   # Delay after any attack during which the player will stay in PvP Mode (seconds)
   # Has to be lower than 'cooldown.combat'
   combat_timeout: 30
@@ -314,8 +309,8 @@ pvp_mode:
     # to end this invulnerable time period.
     can_damage: false
 
-    # When enabled, leaving a no-PVP zone and entering a PVP zone
-    # will apply the SAME invulnerability time.
+    # When enabled, leaving a no-PVP zone and entering a
+    # PVP zone will apply the SAME invulnerability time.
     # Requires /reload when changed
     apply_to_pvp_flag: false
 
