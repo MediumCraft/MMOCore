@@ -101,6 +101,10 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		else if (identifier.startsWith("since_enter_combat"))
 			return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getFirstHit()) / 1000) : "-1";
 
+		else if (identifier.startsWith("invulnerability_left"))
+			return MythicLib.plugin.getMMOConfig().decimal.format(Math.max(0, (double) (playerData.getCombat().getInvulnerableTill() - System.currentTimeMillis()) / 1000));
+
+
 		else if (identifier.startsWith("since_last_hit"))
 			return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getLastHit()) / 1000) : "-1";
 
@@ -194,6 +198,13 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 				format.append(ratio >= j ? ChatColor.BLUE : ratio >= j - .5 ? ChatColor.AQUA : ChatColor.WHITE).append(AltChar.listSquare);
 			return format.toString();
 		}
+
+		/*
+		4) cooldown of region_change
+		5) cooldown of command
+		6) all cooldown you are showing in the in game message
+
+		 */
 
 		else if (identifier.equals("quest")) {
 			PlayerQuests data = playerData.getQuestData();
