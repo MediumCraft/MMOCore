@@ -81,7 +81,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Nullable
     private PlayerClass profess;
     private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints;
-    private int skillSlotLimit, skillTreeReallocationPoints, skillReallocationPoints;
+    private int skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
     private Guild guild;
@@ -456,14 +456,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Override
     public int getSkillPoints() {
         return skillPoints;
-    }
-
-    public int getSkillSlotLimit() {
-        return skillSlotLimit;
-    }
-
-    public void setSkillSlotLimit(int skillSlotLimit) {
-        this.skillSlotLimit = skillSlotLimit;
     }
 
     public void giveSkillReallocationPoints(int value) {
