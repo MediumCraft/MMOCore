@@ -68,7 +68,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     private final CastingParticle castParticle;
 
-    private final List<SkillSlot> skillSlots= new ArrayList<>();
+    private final Map<Integer,SkillSlot> skillSlots= new HashMap<>();
     private final List<SkillTree> skillTrees = new ArrayList<>();
     private final List<PassiveSkill> classScripts = new LinkedList();
     private final Map<String, LinearValue> stats = new HashMap<>();
@@ -104,7 +104,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
         for (String key : config.getConfigurationSection("skill-slots").getKeys(false)) {
-            skillSlots.add(new SkillSlot(config.getConfigurationSection("skill-slots." + key)));
+            SkillSlot skillSlot=new SkillSlot(config.getConfigurationSection("skill-slots." + key));
+            skillSlots.put(skillSlot.getSlot(),skillSlot);
         }
         for (String string : config.getStringList("display.lore"))
             description.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));
@@ -415,8 +416,16 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skills.containsKey(id);
     }
 
+    public boolean hasSlot(int slot){
+        return skillSlots.containsKey(slot);
+    }
+
     public List<SkillTree> getSkillTrees() {
         return skillTrees;
+    }
+
+    public SkillSlot getSkillSlot(int slot){
+        return skillSlots.get(slot);
     }
 
     public ClassSkill getSkill(RegisteredSkill skill) {
