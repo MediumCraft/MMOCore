@@ -33,13 +33,18 @@ public class CombatHandler implements Closable {
         // Simply refreshing
         if (isInCombat()) {
             Bukkit.getScheduler().cancelTask(task.getTaskId());
-            task = Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> quit(false), MMOCore.plugin.configManager.combatLogTimer / 50);
+            task = newTask();
 
             // Entering combat
         } else {
             MMOCore.plugin.configManager.getSimpleMessage("now-in-combat").send(player.getPlayer());
             Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, true));
+            task = newTask();
         }
+    }
+
+    private BukkitTask newTask() {
+        return Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> quit(false), MMOCore.plugin.configManager.combatLogTimer / 50);
     }
 
     public boolean isInPvpMode() {
