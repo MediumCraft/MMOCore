@@ -183,11 +183,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             skillTree.setupNodeStates(this);
 
         // Stat triggers setup
-        if (!areStatsLoaded()) {
-            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
-                for (SkillTreeNode node : skillTree.getNodes())
-                    node.getExperienceTable().claimStatTriggers(this, node);
-        }
+
+        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+            for (SkillTreeNode node : skillTree.getNodes())
+                node.getExperienceTable().claimStatTriggers(this, node);
+
     }
 
     public int getPointSpent(SkillTree skillTree) {
@@ -232,14 +232,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeLevelsString.entrySet();
     }
 
-    public boolean areStatsLoaded() {
-        // Used to see if the triggers need to be applied
-        for (StatInstance instance : mmoData.getStatMap().getInstances())
-            for (StatModifier modifier : instance.getModifiers())
+    public void resetTriggerStats() {
+        for (StatInstance instance : mmoData.getStatMap().getInstances()) {
+            Iterator<StatModifier> iter = instance.getModifiers().iterator();
+            while (iter.hasNext()) {
+                StatModifier modifier = iter.next();
                 if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX))
-                    return true;
-        return false;
+                    modifier.unregister(mmoData);
+            }
+        }
     }
+
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
         return new HashMap<>(nodeLevels);
@@ -748,9 +751,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                            Math.cos((double) 5 * t / warpTime + j) * r,
-                            (double) 2 * t / warpTime,
-                            Math.sin((double) 5 * t / warpTime + j) * r),
+                                    Math.cos((double) 5 * t / warpTime + j) * r,
+                                    (double) 2 * t / warpTime,
+                                    Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -1199,7 +1202,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {

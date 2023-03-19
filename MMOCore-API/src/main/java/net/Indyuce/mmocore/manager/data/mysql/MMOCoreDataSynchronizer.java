@@ -37,6 +37,9 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
 
     @Override
     public void loadData(ResultSet result) throws SQLException {
+        //Reset stats linked to triggers
+        data.resetTriggerStats();
+
 
         // Initialize custom resources
         data.setMana(result.getFloat("mana"));

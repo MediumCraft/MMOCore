@@ -33,6 +33,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
     public void loadData(PlayerData data) {
         FileConfiguration config = new ConfigFile(data.getUniqueId()).getConfig();
 
+        //Reset stats linked to triggers.
+        data.resetTriggerStats();
+
         data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
         data.setSkillPoints(config.getInt("skill-points", getDefaultData().getSkillPoints()));
         data.setSkillReallocationPoints(config.getInt("skill-reallocation-points", getDefaultData().getSkillReallocationPoints()));
