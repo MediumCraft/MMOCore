@@ -116,7 +116,7 @@ public class SavedClassInformation {
         data.getNodeLevels().forEach((node, level) -> nodeLevels.put(node.getFullId(), level));
         data.getNodeTimesClaimed().forEach((key, val) -> nodeTimesClaimed.put(key, val));
 
-        data.mapBoundSkills().forEach((slot, skill) -> boundSkills.put(slot, skill.getSkill().getHandler().getId()));
+        data.mapBoundSkills().forEach((slot, skill) -> boundSkills.put(slot, skill));
     }
 
     public int getLevel() {

@@ -158,7 +158,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
         Map<Integer,String> boundSkills = new HashMap<>();
-        data.mapBoundSkills().forEach((slot,classSkill)->config.set("bound-skills."+slot,classSkill.getSkill().getHandler().getId()));
+        data.mapBoundSkills().forEach((slot,skill)->config.set("bound-skills."+slot,skill));
         config.set("bound-skills", boundSkills);
 
         config.set("attribute", null);
