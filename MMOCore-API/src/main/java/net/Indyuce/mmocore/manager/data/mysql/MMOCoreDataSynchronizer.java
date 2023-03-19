@@ -97,7 +97,7 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
                 data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
         }
         if (!isEmpty(result.getString("bound_skills"))) {
-            JsonObject object = new Gson().fromJson(result.getString("skills"), JsonObject.class);
+            JsonObject object = new Gson().fromJson(result.getString("bound_skills"), JsonObject.class);
             for (Map.Entry<String, JsonElement> entry : object.entrySet())
                 data.bindSkill(Integer.parseInt(entry.getKey()), data.getProfess().getSkill(entry.getValue().getAsString()));
         }
