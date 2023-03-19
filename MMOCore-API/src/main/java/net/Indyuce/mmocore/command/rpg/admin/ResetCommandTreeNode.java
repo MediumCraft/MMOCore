@@ -66,10 +66,8 @@ public class ResetCommandTreeNode extends CommandTreeNode {
             }
 
             data.resetTimesClaimed();
-            while (data.hasSkillBound(0))
-                data.unbindSkill(0);
-            while (data.hasPassiveSkillBound(0))
-                data.unbindPassiveSkill(0);
+            for(int slot:data.mapBoundSkills().keySet())
+                data.unbindSkill(slot);
             data.getQuestData().resetFinishedQuests();
             data.getQuestData().start(null);
             CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
