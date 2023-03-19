@@ -128,7 +128,7 @@ public class DefaultPlayerData implements ClassDataContainer {
     }
 
     @Override
-    public Map<Integer,ClassSkill> mapBoundSkills() {
+    public Map<Integer,String> mapBoundSkills() {
         return new HashMap<>();
     }
 

@@ -221,10 +221,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     @Override
-    public Map<Integer, ClassSkill> mapBoundSkills() {
-        Map<Integer,ClassSkill> result= new HashMap<>();
+    public Map<Integer, String> mapBoundSkills() {
+        Map<Integer,String> result= new HashMap<>();
         for(int slot:boundSkills.keySet())
-            result.put(slot,boundSkills.get(slot).getClassSkill());
+            result.put(slot,boundSkills.get(slot).getClassSkill().getSkill().getHandler().getId());
         return result;
     }
 
