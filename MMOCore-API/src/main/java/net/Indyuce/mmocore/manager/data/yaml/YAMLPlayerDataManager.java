@@ -16,9 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -61,25 +59,27 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             config.getStringList("friends").forEach(str -> data.getFriends().add(UUID.fromString(str)));
         if (config.contains("skill"))
             config.getConfigurationSection("skill").getKeys(false).forEach(id -> data.setSkillLevel(id, config.getInt("skill." + id)));
-        if (config.contains("bound-skills"))
-            for (String id : config.getStringList("bound-skills"))
-                if (data.getProfess().hasSkill(id)) {
-                    ClassSkill skill = data.getProfess().getSkill(id);
-                    if (skill.getSkill().getTrigger().isPassive())
-                        data.bindPassiveSkill(-1, skill.toPassive(data));
-                    else
-                        data.getBoundSkills().add(skill);
+        if (config.isConfigurationSection("bound-skills"))
+            for (String key : config.getConfigurationSection("bound-skills").getKeys(false)) {
+                ClassSkill skill = data.getProfess().getSkill(config.getString("bound-skills." + key));
+                data.bindSkill(Integer.parseInt(key), skill);
+            }
 
-                }
-
-        for (String key : MMOCore.plugin.skillTreeManager.getAll().stream().map(skillTree -> skillTree.getId()).toList()) {
+        for (
+                String key : MMOCore.plugin.skillTreeManager.getAll().
+                stream().
+                map(skillTree -> skillTree.getId()).
+                toList()) {
             data.setSkillTreePoints(key, config.getInt("skill-tree-points." + key, 0));
         }
         data.setSkillTreePoints("global", config.getInt("skill-tree-points.global", 0));
 
 
         if (config.contains("times-claimed"))
-            for (String key : config.getConfigurationSection("times-claimed").getKeys(false)) {
+            for (
+                    String key : config.getConfigurationSection("times-claimed").
+
+                    getKeys(false)) {
                 ConfigurationSection section = config.getConfigurationSection("times-claimed." + key);
                 if (section != null)
                     for (String key1 : section.getKeys(false)) {
@@ -92,7 +92,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                     }
             }
 
-        for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
+        for (
+                SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
             data.setNodeLevel(node, config.getInt("skill-tree-level." + node.getFullId(), 0));
         }
         data.setupSkillTree();
@@ -114,9 +115,15 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 
         //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
-        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
-        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
-        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
+        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().
+
+                getStat("MAX_MANA"));
+        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().
+
+                getStat("MAX_STAMINA"));
+        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().
+
+                getStat("MAX_STELLIUM"));
 
         data.setFullyLoaded();
     }
@@ -150,9 +157,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
-        List<String> boundSkills = new ArrayList<>();
-        data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
-        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
+        Map<Integer,String> boundSkills = new HashMap<>();
+        data.mapBoundSkills().forEach((slot,classSkill)->config.set("bound-skills."+slot,classSkill.getSkill().getHandler().getId()));
         config.set("bound-skills", boundSkills);
 
         config.set("attribute", null);
