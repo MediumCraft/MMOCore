@@ -155,6 +155,10 @@ public class SavedClassInformation {
         registerSkillLevel(skill.getHandler().getId(), level);
     }
 
+    public Map<Integer, String> getBoundSkills() {
+        return boundSkills;
+    }
+
     public int getSkillTreeReallocationPoints() {
         return skillTreeReallocationPoints;
     }
