@@ -95,10 +95,10 @@ public class PlayerDataTableUpdater {
         addData(key, json.toString());
     }
 
-    public void addJSONObject(String key, Set<Map.Entry<String, Integer>> collection) {
+    public <T,V> void  addJSONObject(String key, Set<Map.Entry<T, V>> collection) {
         JsonObject json = new JsonObject();
-        for (Map.Entry<String, Integer> entry : collection)
-            json.addProperty(entry.getKey(), entry.getValue());
+        for (Map.Entry<T, V> entry : collection)
+            json.addProperty(entry.getKey().toString(), entry.getValue().toString());
         addData(key, json.toString());
     }
 }
