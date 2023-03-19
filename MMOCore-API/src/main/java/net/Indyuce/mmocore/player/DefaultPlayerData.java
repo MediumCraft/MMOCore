@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class DefaultPlayerData implements ClassDataContainer {
     private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints, skillReallocPoints, skillTreeReallocPoints;
-
-    public static final DefaultPlayerData DEFAULT = new DefaultPlayerData(1, 0, 0, 0, 0, 0, 0);
+    private final double health, mana, stamina, stellium;
+    public static final DefaultPlayerData DEFAULT = new DefaultPlayerData(1, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0);
 
     public DefaultPlayerData(ConfigurationSection config) {
         level = config.getInt("level", 1);
@@ -24,9 +24,13 @@ public class DefaultPlayerData implements ClassDataContainer {
         attrReallocPoints = config.getInt("attribute-realloc-points");
         skillReallocPoints = config.getInt("skill-realloc-points", 0);
         skillTreeReallocPoints = config.getInt("skill-tree-realloc-points", 0);
+        health=config.getDouble("health",20);
+        mana=config.getDouble("mana",20);
+        stamina=config.getDouble("stamina",20);
+        stellium=config.getDouble("stellium",20);
     }
 
-    public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints, int skillReallocPoints, int skillTreeReallocPoints) {
+    public DefaultPlayerData(int level, int classPoints, int skillPoints, int attributePoints, int attrReallocPoints, int skillReallocPoints, int skillTreeReallocPoints, double health, double mana, double stamina, double stellium) {
         this.level = level;
         this.classPoints = classPoints;
         this.skillPoints = skillPoints;
@@ -34,6 +38,10 @@ public class DefaultPlayerData implements ClassDataContainer {
         this.attrReallocPoints = attrReallocPoints;
         this.skillReallocPoints = skillReallocPoints;
         this.skillTreeReallocPoints = skillTreeReallocPoints;
+        this.health = health;
+        this.mana = mana;
+        this.stamina = stamina;
+        this.stellium = stellium;
     }
 
     public int getLevel() {
@@ -43,6 +51,26 @@ public class DefaultPlayerData implements ClassDataContainer {
     @Override
     public double getExperience() {
         return 0;
+    }
+
+    @Override
+    public double getHealth() {
+        return health;
+    }
+
+    @Override
+    public double getMana() {
+        return mana;
+    }
+
+    @Override
+    public double getStamina() {
+        return stamina;
+    }
+
+    @Override
+    public double getStellium() {
+        return stellium;
     }
 
     @Override

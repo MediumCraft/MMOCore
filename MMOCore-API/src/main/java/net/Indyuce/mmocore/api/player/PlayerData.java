@@ -233,7 +233,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void resetTriggerStats() {
-        for(StatInstance instance:mmoData.getStatMap().getInstances()) {
+        for (StatInstance instance : mmoData.getStatMap().getInstances()) {
             Iterator<StatModifier> iter = instance.getModifiers().iterator();
             while (iter.hasNext()) {
                 StatModifier modifier = iter.next();
@@ -939,17 +939,26 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         stellium = Math.max(0, Math.min(stellium + event.getAmount(), max));
     }
 
+    @Override
     public double getMana() {
         return mana;
     }
 
+    @Override
+    public double getHealth() {
+        return getPlayer().getHealth();
+    }
+
+    @Override
     public double getStamina() {
         return stamina;
     }
 
+    @Override
     public double getStellium() {
         return stellium;
     }
+
 
     public PlayerStats getStats() {
         return playerStats;

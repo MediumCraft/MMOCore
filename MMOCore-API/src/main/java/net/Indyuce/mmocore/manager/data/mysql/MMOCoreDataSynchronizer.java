@@ -16,6 +16,7 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.attribute.Attribute;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -120,6 +121,15 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
                 }
             }
         }
+
+        //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
+        data.setMana(result.getDouble("mana"));
+        data.setStamina(result.getDouble("stamina"));
+        data.setStellium(result.getDouble("stamina"));
+        double health = result.getDouble("health");
+        health = Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        data.getPlayer().setHealth(health);
+
 
         UtilityMethods.debug(MMOCore.plugin, "SQL", String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
         data.setFullyLoaded();
