@@ -1173,7 +1173,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void unbindSkill(int slot) {
-        boundSkills.remove(slot);
+        BoundSkillInfo boundSkillInfo=boundSkills.remove(slot);
+        boundSkillInfo.unbind();
     }
 
 
