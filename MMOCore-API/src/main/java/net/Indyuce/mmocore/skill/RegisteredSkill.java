@@ -32,6 +32,10 @@ public class RegisteredSkill implements Unlockable {
         categories = config.getStringList("categories");
         // Trigger type
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
+        if(triggerType.isPassive())
+            categories.add("passive");
+        else
+            categories.add("active");
 
         // Load default modifier formulas
         for (String mod : handler.getModifiers())
