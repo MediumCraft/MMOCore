@@ -54,10 +54,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         updater.addData("guild", data.hasGuild() ? data.getGuild().getId() : null);
         updater.addJSONArray("waypoints", data.getWaypoints());
         updater.addJSONArray("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
-        List<String> boundSkills = new ArrayList<>();
-        data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
-        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
-        updater.addJSONArray("bound_skills", boundSkills);
+        updater.addJSONObject("bound_skills",data.mapBoundSkills().entrySet());
         updater.addJSONObject("skills", data.mapSkillLevels().entrySet());
         updater.addJSONObject("times_claimed", data.getItemClaims().entrySet());
         updater.addJSONObject("skill_tree_points", data.mapSkillTreePoints().entrySet());
@@ -110,6 +107,11 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             for (String skillTreeId : info.getSkillTreePointsKeys())
                 skillTreePointsInfo.addProperty(skillTreeId, info.getSkillTreePoints(skillTreeId));
             classinfo.add("skill-tree-points", skillTreePointsInfo);
+
+            JsonObject boundSkillInfo = new JsonObject();
+            for(int slot:info.getBoundSkills().keySet())
+                boundSkillInfo.addProperty(slot+"",info.getBoundSkills().get(slot));
+            classinfo.add("bound-skills", boundSkillInfo);
 
             json.add(c, classinfo);
         }
