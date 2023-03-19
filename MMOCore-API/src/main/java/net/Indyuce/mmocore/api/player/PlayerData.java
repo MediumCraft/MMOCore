@@ -233,14 +233,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void resetTriggerStats() {
-        Iterator<StatInstance> stat_ite=mmoData.getStatMap().getInstances().iterator();
-        while(stat_ite.hasNext()) {
-            StatInstance instance=stat_ite.next();
+        for(StatInstance instance:mmoData.getStatMap().getInstances()) {
             Iterator<StatModifier> iter = instance.getModifiers().iterator();
             while (iter.hasNext()) {
                 StatModifier modifier = iter.next();
                 if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX))
-                    modifier.unregister(mmoData);
+                    iter.remove();
             }
         }
     }
