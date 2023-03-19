@@ -24,7 +24,7 @@ public class SavedClassInformation {
     private final Map<String, Integer> skillTreePoints = new HashMap<>();
     private final Map<String, Integer> nodeLevels = new HashMap<>();
     private final Map<String, Integer> nodeTimesClaimed = new HashMap<>();
-    private final List<String> boundSkills = new ArrayList<>();
+    private final Map<Integer, String> boundSkills = new HashMap<>();
 
     /**
      * Used by YAML storage
@@ -42,17 +42,24 @@ public class SavedClassInformation {
         stamina = config.getInt("stamina", 0);
         stellium = config.getInt("stellium", 0);
         if (config.contains("attribute"))
-            config.getConfigurationSection("attribute").getKeys(false).forEach(key -> attributeLevels.put(key, config.getInt("attribute." + key)));
+            config.getConfigurationSection("attribute").getKeys(false)
+                    .forEach(key -> attributeLevels.put(key, config.getInt("attribute." + key)));
         if (config.contains("skill"))
-            config.getConfigurationSection("skill").getKeys(false).forEach(key -> skillLevels.put(key, config.getInt("skill." + key)));
+            config.getConfigurationSection("skill").getKeys(false)
+                    .forEach(key -> skillLevels.put(key, config.getInt("skill." + key)));
         if (config.contains("skill-tree-points"))
-            config.getConfigurationSection("skill-tree-points").getKeys(false).forEach(key -> skillTreePoints.put(key, config.getInt("skill-tree-points." + key)));
+            config.getConfigurationSection("skill-tree-points").getKeys(false)
+                    .forEach(key -> skillTreePoints.put(key, config.getInt("skill-tree-points." + key)));
         if (config.contains("node-levels"))
-            config.getConfigurationSection("node-levels").getKeys(false).forEach(key -> nodeLevels.put(key, config.getInt("node-levels." + key)));
+            config.getConfigurationSection("node-levels").getKeys(false)
+                    .forEach(key -> nodeLevels.put(key, config.getInt("node-levels." + key)));
         if (config.contains("node-times-claimed"))
-            config.getConfigurationSection("node-times-claimed").getKeys(false).forEach(key -> nodeTimesClaimed.put(key, config.getInt("node-times-claimed." + key)));
-        if (config.contains("bound-skills"))
-            config.getStringList("bound-skills").forEach(id -> boundSkills.add(id));
+            config.getConfigurationSection("node-times-claimed").getKeys(false)
+                    .forEach(key -> nodeTimesClaimed.put(key, config.getInt("node-times-claimed." + key)));
+        //Old system was using a StringList. If it saved with the old system the if condition won't be respected.
+        if (config.isConfigurationSection("bound-skills"))
+            config.getConfigurationSection("bound-skills").getKeys(false)
+                    .forEach(key -> boundSkills.put(Integer.parseInt(key), config.getString("bound-skills." + key)));
     }
 
     /**
@@ -85,8 +92,10 @@ public class SavedClassInformation {
         if (json.has("node-times-claimed"))
             for (Entry<String, JsonElement> entry : json.getAsJsonObject("node-times-claimed").entrySet())
                 nodeTimesClaimed.put(entry.getKey(), entry.getValue().getAsInt());
-        if (json.has("bound-skills"))
-            json.getAsJsonArray("bound-skills").forEach(id -> boundSkills.add(id.getAsString()));
+        //Old system was using a JsonArray. If it saved with the old system the if condition won't be respected.
+        if (json.has("bound-skills") && json.get("bound-skills").isJsonObject())
+            for (Entry<String, JsonElement> entry : json.getAsJsonObject("bound-skills").entrySet())
+                boundSkills.put(Integer.parseInt(entry.getKey()), entry.getValue().getAsString());
     }
 
     public SavedClassInformation(ClassDataContainer data) {
@@ -107,7 +116,7 @@ public class SavedClassInformation {
         data.getNodeLevels().forEach((node, level) -> nodeLevels.put(node.getFullId(), level));
         data.getNodeTimesClaimed().forEach((key, val) -> nodeTimesClaimed.put(key, val));
 
-        data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
+        data.mapBoundSkills().forEach((slot, skill) -> boundSkills.put(slot, skill.getSkill().getHandler().getId()));
     }
 
     public int getLevel() {
@@ -252,13 +261,9 @@ public class SavedClassInformation {
         player.setAttributeReallocationPoints(attributeReallocationPoints);
         player.setSkillTreeReallocationPoints(skillTreeReallocationPoints);
         player.setSkillReallocationPoints(skillReallocationPoints);
-        for (String id : boundSkills) {
-            ClassSkill skill = profess.getSkill(id);
-            if (skill.getSkill().getTrigger().isPassive())
-                player.bindPassiveSkill(-1, skill.toPassive(player));
-            else
-                player.getBoundSkills().add(skill);
-        }
+        for (int slot : boundSkills.keySet())
+            player.bindSkill(slot, profess.getSkill(boundSkills.get(slot)));
+
 
         skillLevels.forEach(player::setSkillLevel);
         attributeLevels.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));
@@ -290,7 +295,7 @@ public class SavedClassInformation {
         player.unloadClassInfo(profess);
 
         //This needs to be done at the end to make sure the MAX_HEALTH,MAX_MANA,MAX_STELLIUM... stats are loaded.
-        player.getPlayer().setHealth(Math.min(health,player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        player.getPlayer().setHealth(Math.min(health, player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
         player.setMana(mana);
         player.setStellium(stellium);
         player.setStamina(stamina);
