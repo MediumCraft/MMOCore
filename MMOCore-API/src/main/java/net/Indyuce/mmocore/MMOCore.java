@@ -172,8 +172,8 @@ public class MMOCore extends JavaPlugin {
         }
 
         /*
-         * Resource regeneration. Must check if entity is dead otherwise regen will make
-         * the 'respawn' button glitched plus HURT entity effect bug
+         * Resource regeneration. Must check if entity is dead otherwise regen
+         * will make the 'respawn' button glitched plus HURT entity effect bug
          */
         new BukkitRunnable() {
             public void run() {

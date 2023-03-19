@@ -12,9 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CombatHandler implements Closable {
     private final PlayerData player;
-    private final long firstHit = System.currentTimeMillis();
-
-    private long lastHit = System.currentTimeMillis(), invulnerableTill;
+    private long lastEntry = System.currentTimeMillis(), lastHit = System.currentTimeMillis(), invulnerableTill;
 
     private boolean pvpMode;
 
@@ -33,13 +31,19 @@ public class CombatHandler implements Closable {
         // Simply refreshing
         if (isInCombat()) {
             Bukkit.getScheduler().cancelTask(task.getTaskId());
-            task = Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> quit(false), MMOCore.plugin.configManager.combatLogTimer / 50);
+            task = newTask();
 
             // Entering combat
         } else {
+            lastEntry = System.currentTimeMillis();
             MMOCore.plugin.configManager.getSimpleMessage("now-in-combat").send(player.getPlayer());
             Bukkit.getPluginManager().callEvent(new PlayerCombatEvent(player, true));
+            task = newTask();
         }
+    }
+
+    private BukkitTask newTask() {
+        return Bukkit.getScheduler().runTaskLater(MMOCore.plugin, () -> quit(false), MMOCore.plugin.configManager.combatLogTimer / 50);
     }
 
     public boolean isInPvpMode() {
@@ -54,8 +58,8 @@ public class CombatHandler implements Closable {
         return lastHit;
     }
 
-    public long getFirstHit() {
-        return firstHit;
+    public long getLastEntry() {
+        return lastEntry;
     }
 
     public long getInvulnerableTill() {

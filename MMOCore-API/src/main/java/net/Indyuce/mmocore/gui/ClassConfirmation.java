@@ -1,7 +1,12 @@
 package net.Indyuce.mmocore.gui;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
+import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
+import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
@@ -9,21 +14,29 @@ import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
-import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
-import net.Indyuce.mmocore.api.SoundEvent;
-import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClassConfirmation extends EditableInventory {
-	public ClassConfirmation() {
-		super("class-confirm");
-	}
+
+    /**
+     * This enables to configure the name of the
+     * class confirmation GUI (for custom GUI textures).
+     */
+    private final Map<String, String> specificNames = new HashMap<>();
+
+    public ClassConfirmation() {
+        super("class-confirm");
+    }
 
     @Override
     public InventoryItem load(String function, ConfigurationSection config) {
@@ -34,12 +47,20 @@ public class ClassConfirmation extends EditableInventory {
         return new ClassConfirmationInventory(data, this, profess, last);
     }
 
-    public GeneratedInventory newInventory(PlayerData data, String GUIName, PlayerClass profess, PluginInventory last) {
-        return new ClassConfirmationInventory(data, GUIName, this, profess, last);
+    @Override
+    public void reload(FileConfiguration config) {
+        super.reload(config);
+
+        specificNames.clear();
+
+        if (config.contains("class-specific-name")) {
+            final ConfigurationSection section = config.getConfigurationSection("class-specific-name");
+            for (String key : section.getKeys(false))
+                specificNames.put(key, section.getString(key));
+        }
     }
 
     public class UnlockedItem extends InventoryItem<ClassConfirmationInventory> {
-
         public UnlockedItem(ConfigurationSection config) {
             super(config);
         }
@@ -50,8 +71,8 @@ public class ClassConfirmation extends EditableInventory {
             SavedClassInformation info = inv.getPlayerData().getClassInfo(profess);
             Placeholders holders = new Placeholders();
 
-            int nextLevelExp = inv.getPlayerData().getLevelUpExperience();
-            double ratio = (double) info.getExperience() / (double) nextLevelExp;
+            final double nextLevelExp = inv.getPlayerData().getLevelUpExperience();
+            final double ratio = info.getExperience() / nextLevelExp;
 
             StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
             int chars = (int) (ratio * 20);
@@ -102,17 +123,10 @@ public class ClassConfirmation extends EditableInventory {
     public class ClassConfirmationInventory extends GeneratedInventory {
         private final PlayerClass profess;
         private final PluginInventory last;
-        private String GUIName;
 
         public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
             super(playerData, editable);
-            this.profess = profess;
-            this.last = last;
-        }
 
-        public ClassConfirmationInventory(PlayerData playerData, String GUIName, EditableInventory editable, PlayerClass profess, PluginInventory last) {
-            super(playerData, editable);
-            this.GUIName = GUIName;
             this.profess = profess;
             this.last = last;
         }
@@ -140,9 +154,9 @@ public class ClassConfirmation extends EditableInventory {
 
         @Override
         public String calculateName() {
-            if (GUIName != null)
-                return GUIName;
-            return getName();
+            final String professKey = MMOCoreUtils.ymlName(profess.getId());
+            final @Nullable String found = specificNames.get(professKey);
+            return found == null ? getName().replace("{class}", profess.getName()) : found;
         }
     }
 }

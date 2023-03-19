@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
 import io.lumine.mythic.lib.sql.MMODataSource;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.GuildDataManager;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
@@ -25,6 +26,8 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
             "stellium","FLOAT"};
 
     public MySQLDataProvider(FileConfiguration config) {
+        super(MMOCore.plugin);
+
         this.setup(config);
     }
 

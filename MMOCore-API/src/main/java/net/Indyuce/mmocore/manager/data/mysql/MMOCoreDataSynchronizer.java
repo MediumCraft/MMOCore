@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.sql.DataSynchronizer;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -118,7 +118,7 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
             }
         }
 
-        MythicLib.debug("MMOCoreSQL", String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
+        UtilityMethods.debug(MMOCore.plugin, "SQL", String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
         data.setFullyLoaded();
     }
 
@@ -138,6 +138,6 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
         data.getQuestData().updateBossBar();
 
         data.setFullyLoaded();
-        MythicLib.debug("MMOCoreSQL", "Loaded DEFAULT data for: '" + data.getUniqueId() + "' as no saved data was found.");
+        UtilityMethods.debug(MMOCore.plugin, "SQL", "Loaded DEFAULT data for: '" + data.getUniqueId() + "' as no saved data was found.");
     }
 }

@@ -35,6 +35,9 @@ pvp-mode:
 
   # When you cannot hit another player
   cannot-hit:
+    high-level-difference: '&cLevel difference is too high to fight this player.'
+    low-level-target: '&cYou cannot fight this player as their level is too low.'
+    low-level-self: '&cYour level is too low to fight other players.'
     pvp-mode-disabled-target: '&cThis player has not toggled on PvP.'
     pvp-mode-disabled-self: '&cYou have not toggled on PvP.'
     invulnerable-self: '&cYou are still out of combat for {left} seconds.'

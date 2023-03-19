@@ -93,7 +93,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final List<UUID> friends = new ArrayList<>();
     private final Set<String> waypoints = new HashSet<>();
     private final Map<String, Integer> skills = new HashMap<>();
-    private final Map<Integer,BoundSkillInfo> boundSkills = new HashMap<>();
+    private final Map<Integer, BoundSkillInfo> boundSkills = new HashMap<>();
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
@@ -233,11 +233,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void clearNodeTimesClaimed() {
-        Map<String, Integer> copy = new HashMap<>(tableItemClaims);
-        copy.forEach((str, val) -> {
-            if (str.startsWith(SkillTreeNode.KEY_PREFIX))
-                tableItemClaims.remove(str);
-        });
+        final Iterator<String> ite = tableItemClaims.keySet().iterator();
+        while (ite.hasNext())
+            if (ite.next().startsWith(SkillTreeNode.KEY_PREFIX))
+                ite.remove();
     }
 
     public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
@@ -770,9 +769,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                                    Math.cos((double) 5 * t / warpTime + j) * r,
-                                    (double) 2 * t / warpTime,
-                                    Math.sin((double) 5 * t / warpTime + j) * r),
+                            Math.cos((double) 5 * t / warpTime + j) * r,
+                            (double) 2 * t / warpTime,
+                            Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -801,18 +800,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *                         If it's null, no hologram will be displayed
      * @param splitExp         Should the exp be split among party members
      */
-    public void giveExperience(double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+    public void giveExperience(double value, @NotNull EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         if (value <= 0) {
             experience = Math.max(0, experience + value);
             return;
         }
 
         // Splitting exp through party members
-        AbstractParty party;
-        if (splitExp && (party = getParty()) != null) {
+        final AbstractParty party;
+        if (splitExp && (party = getParty()) != null && MMOCore.plugin.configManager.splitMainExp) {
             final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream()
                     .filter(pd -> {
-                        if (equals(pd) || pd.hasReachedMaxLevel())
+                        if (equals(pd) || pd.hasReachedMaxLevel() || Math.abs(pd.getLevel() - getLevel()) > MMOCore.plugin.configManager.maxPartyLevelDifference)
                             return false;
 
                         final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
@@ -863,7 +862,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (level > oldLevel) {
             Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(this, null, oldLevel, level));
             if (isOnline()) {
-                new ConfigMessage("level-up").addPlaceholders("level", "" + level).send(getPlayer());
+                new ConfigMessage("level-up").addPlaceholders("level", String.valueOf(level)).send(getPlayer());
                 MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
                 new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
             }

@@ -1,18 +1,16 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
 import com.google.gson.JsonObject;
-import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +34,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
     @Override
     public void saveData(PlayerData data, boolean logout) {
-        MythicLib.debug("MMOCoreSQL", "Saving data for: '" + data.getUniqueId() + "'...");
+        UtilityMethods.debug(MMOCore.plugin, "SQL", "Saving data for: '" + data.getUniqueId() + "'...");
 
         final PlayerDataTableUpdater updater = new PlayerDataTableUpdater(provider, data);
         updater.addData("class_points", data.getClassPoints());
@@ -73,8 +71,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
 
         updater.executeRequest(logout);
 
-        MythicLib.debug("MMOCoreSQL", "Saved data for: " + data.getUniqueId());
-        MythicLib.debug("MMOCoreSQL", String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
+        UtilityMethods.debug(MMOCore.plugin, "SQL", "Saved data for: " + data.getUniqueId());
+        UtilityMethods.debug(MMOCore.plugin, "SQL", String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
     }
 
     private JsonObject createClassInfoData(PlayerData playerData) {

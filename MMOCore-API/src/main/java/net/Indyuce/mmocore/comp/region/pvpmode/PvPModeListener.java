@@ -22,7 +22,7 @@ public class PvPModeListener implements Listener {
             Validate.isTrue(registerHandler(PvPFlagHandler.FACTORY), "Could not register WG handler for PvP");
     }
 
-    private boolean registerHandler(Handler.Factory factory) {
+    private boolean registerHandler(Handler.Factory<?> factory) {
         return WorldGuard.getInstance().getPlatform().getSessionManager().registerHandler(factory, null);
     }
 
@@ -42,10 +42,41 @@ public class PvPModeListener implements Listener {
         if (source == null)
             return;
 
-        // Check for target's invulnerability BEFORE pvp-mode flag because it can also
-        // happen when the option pvp_mode.invulnerability.apply_to_pvp_flag is on
+        // The first code portion applies to any region, not only PvpMode
+
+        // Check for minimum level
         final Player target = (Player) event.getEntity();
-        final PlayerData targetData = PlayerData.get(target);
+        final PlayerData targetData = PlayerData.get(target), sourceData = PlayerData.get(source);
+        final int minLevel = MMOCore.plugin.configManager.minCombatLevel;
+        if (minLevel > 0) {
+
+            if (targetData.getLevel() < minLevel) {
+                event.setCancelled(true);
+                if (event.getDamage() > 0)
+                    MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.low-level-target").send(source);
+                return;
+            }
+
+            if (sourceData.getLevel() < minLevel) {
+                event.setCancelled(true);
+                if (event.getDamage() > 0)
+                    MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.low-level-self").send(source);
+                return;
+            }
+
+            final int maxLevelDiff = MMOCore.plugin.configManager.maxCombatLevelDifference;
+            if (maxLevelDiff > 0 && Math.abs(targetData. getLevel() - sourceData.getLevel()) > maxLevelDiff) {
+                event.setCancelled(true);
+                if (event.getDamage() > 0)
+                    MMOCore.plugin.configManager.getSimpleMessage("pvp-mode.cannot-hit.high-level-difference").send(source);
+                return;
+            }
+        }
+
+        /*
+         * Check for target's invulnerability BEFORE pvp-mode flag because it can also
+         * happen when the option pvp_mode.invulnerability.apply_to_pvp_flag is on
+         */
         if (targetData.getCombat().isInvulnerable()) {
             if (event.getDamage() > 0) {
                 final long left = targetData.getCombat().getInvulnerableTill() - System.currentTimeMillis();
@@ -57,7 +88,6 @@ public class PvPModeListener implements Listener {
         }
 
         // If attacker is still invulnerable and cannot deal damage
-        final PlayerData sourceData = PlayerData.get(source);
         if (!MMOCore.plugin.configManager.pvpModeInvulnerabilityCanDamage && sourceData.getCombat().isInvulnerable()) {
             if (event.getDamage() > 0) {
                 final long left = sourceData.getCombat().getInvulnerableTill() - System.currentTimeMillis();
@@ -71,6 +101,8 @@ public class PvPModeListener implements Listener {
         // Checks for PvP mode on target location
         if (!MythicLib.plugin.getFlags().isFlagAllowed(target.getLocation(), CustomFlag.PVP_MODE))
             return;
+
+        // Starting from here, this only applies to PvpMode-regions.
 
         // Defender has not enabled PvP mode
         if (!targetData.getCombat().isInPvpMode()) {

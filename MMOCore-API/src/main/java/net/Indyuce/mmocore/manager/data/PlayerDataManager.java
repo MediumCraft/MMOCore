@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -79,24 +80,23 @@ public abstract class PlayerDataManager {
     public PlayerData setup(UUID uniqueId) {
 
         // Load player data if it does not exist
-        if (!data.containsKey(uniqueId)) {
-            PlayerData newData = new PlayerData(MMOPlayerData.get(uniqueId));
+        final @Nullable PlayerData current = data.get(uniqueId);
+        if (current != null)
+            return current;
 
-            // Schedule async data loading
-            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
-                loadData(newData);
-                newData.getStats().updateStats();
-                Bukkit.getPluginManager().callEvent(new AsyncPlayerDataLoadEvent(newData));
-                Bukkit.getScheduler().runTask(MMOCore.plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(newData)));
-            });
+        final PlayerData newData = new PlayerData(MMOPlayerData.get(uniqueId));
 
-            // Update data map
-            data.put(uniqueId, newData);
+        // Schedule async data loading
+        Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
+            loadData(newData);
+            newData.getStats().updateStats();
+            Bukkit.getPluginManager().callEvent(new AsyncPlayerDataLoadEvent(newData));
+            Bukkit.getScheduler().runTask(MMOCore.plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(newData)));
+        });
 
-            return newData;
-        }
-
-        return data.get(uniqueId);
+        // Update data map and return
+        data.put(uniqueId, newData);
+        return newData;
     }
 
     public DefaultPlayerData getDefaultData() {
