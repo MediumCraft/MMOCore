@@ -35,6 +35,7 @@ import net.Indyuce.mmocore.skill.cast.ComboMap;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -68,7 +69,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     private final CastingParticle castParticle;
 
-    private final Map<Integer,SkillSlot> skillSlots= new HashMap<>();
+    private final Map<Integer, SkillSlot> skillSlots = new HashMap<>();
     private final List<SkillTree> skillTrees = new ArrayList<>();
     private final List<PassiveSkill> classScripts = new LinkedList();
     private final Map<String, LinearValue> stats = new HashMap<>();
@@ -103,9 +104,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                      | SecurityException exception) {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
+        Validate.isTrue(config.isConfigurationSection("skill-slots"), "You must define the skills-slots for class " + id);
         for (String key : config.getConfigurationSection("skill-slots").getKeys(false)) {
-            SkillSlot skillSlot=new SkillSlot(config.getConfigurationSection("skill-slots." + key));
-            skillSlots.put(skillSlot.getSlot(),skillSlot);
+            SkillSlot skillSlot = new SkillSlot(config.getConfigurationSection("skill-slots." + key));
+            skillSlots.put(skillSlot.getSlot(), skillSlot);
         }
         for (String string : config.getStringList("display.lore"))
             description.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));
@@ -416,7 +418,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skills.containsKey(id);
     }
 
-    public boolean hasSlot(int slot){
+    public boolean hasSlot(int slot) {
         return skillSlots.containsKey(slot);
     }
 
@@ -424,7 +426,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skillTrees;
     }
 
-    public SkillSlot getSkillSlot(int slot){
+    public SkillSlot getSkillSlot(int slot) {
         return skillSlots.get(slot);
     }
 
