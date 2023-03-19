@@ -1069,11 +1069,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 .stream()
                 .filter(skillInfo->skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill))
                 .forEach(BoundSkillInfo::refresh);
-        //TODO Remove test:
-        Bukkit.broadcastMessage("match"+boundSkills.values()
-                .stream()
-                .filter(skillInfo->skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill)).toList().size());
-    }
+        }
 
     @Deprecated
     public boolean hasSkillUnlocked(RegisteredSkill skill) {
@@ -1140,7 +1136,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public boolean hasSkillBound(int slot) {
-        Bukkit.broadcastMessage("slot:"+slot+"  "+boundSkills.containsKey(slot));
         return boundSkills.containsKey(slot);
     }
 

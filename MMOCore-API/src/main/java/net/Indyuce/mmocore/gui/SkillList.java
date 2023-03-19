@@ -428,7 +428,6 @@ public class SkillList extends EditableInventory {
 
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
                 playerData.bindSkill(index, selected);
-                Bukkit.broadcastMessage("SKILL BOUND: "+index);
                 open();
                 return;
             }
