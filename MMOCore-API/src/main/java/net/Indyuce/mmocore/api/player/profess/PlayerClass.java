@@ -21,7 +21,7 @@ import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
-import net.Indyuce.mmocore.api.player.profess.skillslot.SkillSlot;
+import net.Indyuce.mmocore.api.player.profess.skillbinding.SkillSlot;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.EXPSource;

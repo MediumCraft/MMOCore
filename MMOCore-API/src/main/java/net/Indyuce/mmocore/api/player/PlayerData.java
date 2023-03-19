@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
+import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -17,6 +18,7 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.api.player.profess.skillbinding.BoundSkillInfo;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
@@ -91,7 +93,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final List<UUID> friends = new ArrayList<>();
     private final Set<String> waypoints = new HashSet<>();
     private final Map<String, Integer> skills = new HashMap<>();
-    private final List<ClassSkill> boundSkills = new ArrayList<>();
+    private final Map<Integer,BoundSkillInfo> boundSkills = new HashMap<>();
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
     private final Map<String, SavedClassInformation> classSlots = new HashMap<>();
@@ -164,13 +166,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
         }
 
-        int j = 0;
-        while (j < boundSkills.size())
+        Iterator<Integer> ite=boundSkills.keySet().iterator();
+        while (ite.hasNext())
             try {
-                boundSkills.set(j, Objects.requireNonNull(getProfess().getSkill(boundSkills.get(j).getSkill())));
+                int slot=ite.next();
+                BoundSkillInfo boundSkillInfo=new BoundSkillInfo(boundSkills.get(slot));
+                boundSkills.put(slot, boundSkillInfo);
             } catch (Exception ignored) {
-            } finally {
-                j++;
             }
 
         for (SkillTree skillTree : getProfess().getSkillTrees())
@@ -1047,10 +1049,23 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setSkillLevel(String skill, int level) {
         skills.put(skill, level);
+        refreshBoundedSkill(skill);
     }
 
     public void resetSkillLevel(String skill) {
         skills.remove(skill);
+        refreshBoundedSkill(skill);
+    }
+
+    public void refreshBoundedSkill(String skill) {
+        boundSkills.values()
+                .stream()
+                .filter(skillInfo->skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill))
+                .forEach(BoundSkillInfo::refresh);
+        //TODO Remove test:
+        Bukkit.broadcastMessage("match"+boundSkills.values()
+                .stream()
+                .filter(skillInfo->skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill)).toList().size());
     }
 
     @Deprecated
@@ -1108,8 +1123,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.profess = profess;
 
         // Clear old skills
-        for (Iterator<ClassSkill> iterator = boundSkills.iterator(); iterator.hasNext(); )
-            if (!getProfess().hasSkill(iterator.next().getSkill()))
+        for (Iterator<BoundSkillInfo> iterator = boundSkills.values().iterator(); iterator.hasNext(); )
+            if (!getProfess().hasSkill(iterator.next().getClassSkill().getSkill()))
                 iterator.remove();
 
         // Update stats
@@ -1122,7 +1137,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public ClassSkill getBoundSkill(int slot) {
-        return slot >= boundSkills.size() ? null : boundSkills.get(slot);
+        return slot >= boundSkills.size() ? null : boundSkills.get(slot).getClassSkill();
     }
 
 
@@ -1140,8 +1155,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public void bindSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (slot >= 0)
-            boundSkills.set(slot, skill);
+        //Unbinds the previous skill (Important for passive skills.
+        if (boundSkills.containsKey(slot))
+            boundSkills.get(slot).unbind();
+        if (slot >= 0) {
+            if (skill.getSkill().getTrigger().isPassive()) {
+                PassiveSkill passiveSkill = skill.toPassive(this);
+                passiveSkill.register(mmoData);
+                boundSkills.put(slot, new BoundSkillInfo(skill, this, passiveSkill.getUniqueId()));
+            } else {
+                boundSkills.put(slot, new BoundSkillInfo(skill, this));
+            }
+        }
     }
 
     public void unbindSkill(int slot) {
@@ -1150,7 +1175,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
 
     public List<ClassSkill> getBoundSkills() {
-        return boundSkills;
+        return boundSkills.values().stream().map(BoundSkillInfo::getClassSkill).collect(Collectors.toList());
     }
 
     @NotNull

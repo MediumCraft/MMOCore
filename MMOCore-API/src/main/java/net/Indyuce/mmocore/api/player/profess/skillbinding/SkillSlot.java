@@ -1,11 +1,12 @@
-package net.Indyuce.mmocore.api.player.profess.skillslot;
+package net.Indyuce.mmocore.api.player.profess.skillbinding;
 
-import io.lumine.mythic.lib.api.math.BooleanExpressionParser;
+import io.lumine.mythic.lib.MythicLib;
+import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 
+import javax.script.ScriptException;
 import java.util.List;
 
 public class SkillSlot {
@@ -49,8 +50,9 @@ public class SkillSlot {
     public Material getItem() {
         return item;
     }
-    public boolean hasItem(){
-        return item!=null;
+
+    public boolean hasItem() {
+        return item != null;
     }
 
     public int getModelData() {
@@ -58,6 +60,16 @@ public class SkillSlot {
     }
 
     public boolean canPlaceSkill(ClassSkill classSkill) {
-        return new BooleanExpressionParser(expression).parse(classSkill.getSkill().getCategories());
+
+        String parsedExpression = expression;
+        for (String category : classSkill.getSkill().getCategories())
+            parsedExpression = parsedExpression.replace("<" + category + ">", "true");
+        parsedExpression = parsedExpression.replaceAll("<.*>", "false");
+        try {
+            boolean res = (boolean) MythicLib.plugin.getScriptEngine().eval(parsedExpression);
+            return res;
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
