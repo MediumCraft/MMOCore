@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.player.profess.skillbinding;
 
+import bsh.EvalError;
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.comp.mythicmobs.MythicHook;
 import net.Indyuce.mmocore.skill.ClassSkill;
@@ -27,7 +28,7 @@ public class SkillSlot {
 
     public SkillSlot(ConfigurationSection section) {
         this.slot = Integer.parseInt(section.getName());
-        this.expression = section.getString("expression");
+        this.expression = section.contains("expression") ? section.getString("expression") : "true";
         this.name = section.getString("name");
         this.lore = section.getStringList("lore");
         if (section.contains("item"))
@@ -66,9 +67,9 @@ public class SkillSlot {
             parsedExpression = parsedExpression.replace("<" + category + ">", "true");
         parsedExpression = parsedExpression.replaceAll("<.*>", "false");
         try {
-            boolean res = (boolean) MythicLib.plugin.getScriptEngine().eval(parsedExpression);
+            boolean res = (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
             return res;
-        } catch (ScriptException e) {
+        } catch (EvalError e) {
             throw new RuntimeException(e);
         }
     }

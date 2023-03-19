@@ -1140,11 +1140,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public boolean hasSkillBound(int slot) {
-        return slot < boundSkills.size();
+        Bukkit.broadcastMessage("slot:"+slot+"  "+boundSkills.containsKey(slot));
+        return boundSkills.containsKey(slot);
     }
 
     public ClassSkill getBoundSkill(int slot) {
-        return slot >= boundSkills.size() ? null : boundSkills.get(slot).getClassSkill();
+        return boundSkills.containsKey(slot) ? boundSkills.get(slot).getClassSkill():null;
     }
 
 

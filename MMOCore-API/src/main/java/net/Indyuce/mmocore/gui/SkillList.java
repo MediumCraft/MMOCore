@@ -17,6 +17,7 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.api.SoundEvent;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -67,12 +68,12 @@ public class SkillList extends EditableInventory {
             return new SlotItem(config) {
                 @Override
                 public ItemStack display(SkillViewerInventory inv, int n) {
-                    if (!inv.getPlayerData().getProfess().hasSlot(n)) {
+                    if (!inv.getPlayerData().getProfess().hasSlot(n+1)) {
                         return new ItemStack(Material.AIR);
                     }
-                    SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n);
+                    SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n+1);
                     ItemStack item = super.display(inv, n);
-                    if (!inv.getPlayerData().hasSkillBound(n)) {
+                    if (!inv.getPlayerData().hasSkillBound(n+1)) {
                         //If there is an item filled in the slot config it shows it, else shows the default item.
                         Material material = skillSlot.hasItem() ? skillSlot.getItem() : super.emptyMaterial;
                         int customModelData = skillSlot.hasItem() ? skillSlot.getModelData() : super.emptyCMD;
@@ -101,7 +102,7 @@ public class SkillList extends EditableInventory {
                 public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
                     Placeholders holders = super.getPlaceholders(inv, n);
                     String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
-                    RegisteredSkill skill = inv.getPlayerData().hasSkillBound(n) ? inv.getPlayerData().getBoundSkill(n).getSkill() : null;
+                    RegisteredSkill skill = inv.getPlayerData().hasSkillBound(n+1) ? inv.getPlayerData().getBoundSkill(n+1).getSkill() : null;
                     holders.register("skill", skill == null ? none : skill.getName());
                     return holders;
                 }
@@ -394,7 +395,7 @@ public class SkillList extends EditableInventory {
              * binding or unbinding skills.
              */
             if (item.getFunction().equals("slot")) {
-                int index = slotSlots.indexOf(context.getSlot());
+                int index = slotSlots.indexOf(context.getSlot())+1;
                 SkillSlot skillSlot=playerData.getProfess().getSkillSlot(index);
                 // unbind if there is a current spell.
                 if (context.getClickType() == ClickType.RIGHT) {
@@ -427,6 +428,7 @@ public class SkillList extends EditableInventory {
 
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
                 playerData.bindSkill(index, selected);
+                Bukkit.broadcastMessage("SKILL BOUND: "+index);
                 open();
                 return;
             }
