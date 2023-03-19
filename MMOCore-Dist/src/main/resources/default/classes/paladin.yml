@@ -30,6 +30,15 @@ display:
 # Must match an existing exp curve filename from the 'expcurves' folder
 exp-curve: levels
 
+skill-slots:
+    1:
+        name: "Skill Slot I"
+    2:
+        name: "Skill Slot II"
+    3:
+        name: "Skill Slot III"
+    4:
+        name: "Skill Slot IV"
 
 skill-trees:
     - 'general'

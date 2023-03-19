@@ -38,6 +38,15 @@ skill-trees:
 
 exp-table: class_exp_table
 
+skill-slots:
+    1:
+        name: "Skill Slot I"
+    2:
+        name: "Skill Slot II"
+    3:
+        name: "Skill Slot III"
+    4:
+        name: "Skill Slot IV"
 # This is the default mana display options, however it is not mandatory
 # to have it in your class config file. Other classes do not have this
 # section and therefore have the default mana display options.
@@ -54,6 +63,8 @@ mana:
         half: BLUE
         empty: WHITE
     name: 'Mana'
+
+
 
 cast-particle:
     particle: SPELL_INSTANT
