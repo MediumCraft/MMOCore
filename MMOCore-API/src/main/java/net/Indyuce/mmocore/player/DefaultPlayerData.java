@@ -128,8 +128,8 @@ public class DefaultPlayerData implements ClassDataContainer {
     }
 
     @Override
-    public List<ClassSkill> getBoundSkills() {
-        return new ArrayList<>();
+    public Map<Integer,ClassSkill> mapBoundSkills() {
+        return new HashMap<>();
     }
 
     public void apply(PlayerData player) {

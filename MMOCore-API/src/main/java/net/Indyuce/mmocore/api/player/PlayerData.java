@@ -220,6 +220,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return new HashMap(skillTreePoints);
     }
 
+    @Override
+    public Map<Integer, ClassSkill> mapBoundSkills() {
+        Map<Integer,ClassSkill> result= new HashMap<>();
+        for(int slot:boundSkills.keySet())
+            result.put(slot,boundSkills.get(slot).getClassSkill());
+        return result;
+    }
+
     public void clearSkillTreePoints() {
         skillTreePoints.clear();
     }

@@ -43,7 +43,7 @@ public interface ClassDataContainer {
 
     Map<String, Integer> mapSkillTreePoints();
 
-    List<ClassSkill> getBoundSkills();
+    Map<Integer,ClassSkill> mapBoundSkills();
 
     Map<SkillTreeNode, Integer> getNodeLevels();
 
