@@ -96,15 +96,11 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
             for (Map.Entry<String, JsonElement> entry : object.entrySet())
                 data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
         }
-        if (!isEmpty(result.getString("bound_skills")))
-            for (String id : MMOCoreUtils.jsonArrayToList(result.getString("bound_skills")))
-                if (data.getProfess().hasSkill(id)) {
-                    ClassSkill skill = data.getProfess().getSkill(id);
-                    if (skill.getSkill().getTrigger().isPassive())
-                        data.bindPassiveSkill(-1, skill.toPassive(data));
-                    else
-                        data.getBoundSkills().add(skill);
-                }
+        if (!isEmpty(result.getString("bound_skills"))) {
+            JsonObject object = new Gson().fromJson(result.getString("skills"), JsonObject.class);
+            for (Map.Entry<String, JsonElement> entry : object.entrySet())
+                data.bindSkill(Integer.parseInt(entry.getKey()), data.getProfess().getSkill(entry.getValue().getAsString()));
+        }
         if (!isEmpty(result.getString("class_info"))) {
             JsonObject object = new Gson().fromJson(result.getString("class_info"), JsonObject.class);
             for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
