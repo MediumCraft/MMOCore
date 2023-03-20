@@ -82,6 +82,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
+    /**
+     * Health is stored in playerData because when saving the playerData we can't access the player health anymore as the payer is Offline.
+     */
+    private double health;
     private Guild guild;
     private SkillCastingHandler skillCasting;
     private final PlayerQuests questData;
@@ -946,7 +950,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public double getHealth() {
-        return getPlayer().getHealth();
+        return health;
     }
 
     @Override
@@ -970,6 +974,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setMana(double amount) {
         mana = Math.max(0, Math.min(amount, getStats().getStat("MAX_MANA")));
+    }
+
+    public void setHealth(double amount) {
+        this.health = amount;
     }
 
     public void setStamina(double amount) {

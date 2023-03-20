@@ -16,7 +16,9 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -40,12 +42,6 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
     public void loadData(ResultSet result) throws SQLException {
         //Reset stats linked to triggers
         data.resetTriggerStats();
-
-
-        // Initialize custom resources
-        data.setMana(result.getFloat("mana"));
-        data.setStellium(result.getFloat("stellium"));
-        data.setStamina(result.getFloat("stamina"));
 
         data.setClassPoints(result.getInt("class_points"));
         data.setSkillPoints(result.getInt("skill_points"));
@@ -127,6 +123,7 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
         data.setStamina(result.getDouble("stamina"));
         data.setStellium(result.getDouble("stamina"));
         double health = result.getDouble("health");
+        health = health == 0 ? 20 : health;
         health = Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         data.getPlayer().setHealth(health);
 
