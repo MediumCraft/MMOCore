@@ -374,6 +374,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return result;
     }
 
+    @Override
+    public Set<String> getUnlockedItems() {
+        return new HashSet<>(unlockedItems);
+    }
+
+    public void setUnlockedItems(Set<String> unlockedItems) {
+        this.unlockedItems.clear();
+        this.unlockedItems.addAll(unlockedItems);
+    }
+
     public void resetTimesClaimed() {
         tableItemClaims.clear();
     }

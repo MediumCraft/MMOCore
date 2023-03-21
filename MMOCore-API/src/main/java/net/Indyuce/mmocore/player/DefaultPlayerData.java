@@ -6,10 +6,7 @@ import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DefaultPlayerData implements ClassDataContainer {
     private final int level, classPoints, skillPoints, attributePoints, attrReallocPoints, skillReallocPoints, skillTreeReallocPoints;
@@ -120,6 +117,11 @@ public class DefaultPlayerData implements ClassDataContainer {
     @Override
     public Map<String, Integer> getNodeTimesClaimed() {
         return new HashMap<>();
+    }
+
+    @Override
+    public Set<String> getUnlockedItems() {
+        return new HashSet<>();
     }
 
     @Override
