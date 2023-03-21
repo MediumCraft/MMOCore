@@ -92,6 +92,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                     }
             }
 
+        data.setUnlockedItems(config.getStringList("unlocked-items").stream().collect(Collectors.toSet()));
         for (
                 SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
             data.setNodeLevel(node, config.getInt("skill-tree-level." + node.getFullId(), 0));
@@ -157,8 +158,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
-        data.mapBoundSkills().forEach((slot,skill)->config.set("bound-skills."+slot,skill));
-
+        data.mapBoundSkills().forEach((slot, skill) -> config.set("bound-skills." + slot, skill));
+        config.set("unlocked-items", data.getUnlockedItems().stream().collect(Collectors.toList()));
         config.set("attribute", null);
         config.createSection("attribute");
         data.getAttributes().save(config.getConfigurationSection("attribute"));
@@ -189,7 +190,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             info.getAttributeKeys().forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
             info.getNodeKeys().forEach(node -> config.set("class-info." + key + ".node-levels." + node, info.getNodeLevel(node)));
             info.getSkillTreePointsKeys().forEach(skillTreeId -> config.set("class-info." + key + ".skill-tree-points." + skillTreeId, info.getAttributeLevel(skillTreeId)));
-            info.getBoundSkills().forEach((slot,skill)->config.set("class-info." + key + ".bound-skills."+slot,skill));
+            info.getBoundSkills().forEach((slot, skill) -> config.set("class-info." + key + ".bound-skills." + slot, skill));
+            config.set("class-info." + key + ".unlocked-items", info.getUnlockedItems());
         }
 
         file.save();
