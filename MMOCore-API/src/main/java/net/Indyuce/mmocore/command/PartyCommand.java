@@ -31,6 +31,10 @@ public class PartyCommand extends RegisteredCommand {
             sender.sendMessage(ChatColor.RED + "This command is for players only.");
             return true;
         }
+        if(!(MMOCore.plugin.partyModule instanceof MMOCorePartyModule)){
+            sender.sendMessage(ChatColor.RED+"You can't use MMOCore party system as you delegated the party system to another plugin.");
+            return true;
+        }
 
         PlayerData data = PlayerData.get((OfflinePlayer) sender);
         MMOCommandEvent event = new MMOCommandEvent(data, "party");

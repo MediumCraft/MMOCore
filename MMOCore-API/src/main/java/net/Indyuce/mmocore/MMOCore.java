@@ -291,6 +291,8 @@ public class MMOCore extends JavaPlugin {
         for (PlayerData data : PlayerData.getAll())
             if (data.isFullyLoaded()) {
                 data.close();
+                //Saves player health before saveData as the player will be considered offline into it if it is async.
+                data.setHealth(data.getPlayer().getHealth());
                 dataProvider.getDataManager().saveData(data, true);
             }
 

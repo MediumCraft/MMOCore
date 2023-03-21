@@ -101,15 +101,12 @@ public class PlayerProfessions {
             for (Entry<String, JsonElement> entry : obj.getAsJsonObject("timesClaimed").entrySet())
                 playerData.getItemClaims().put("profession." + entry.getKey(), entry.getValue().getAsInt());
 
-        if (!playerData.areStatsLoaded()) {
-            for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
-                if (profession.hasExperienceTable())
-                    profession.getExperienceTable().claimStatTriggers(playerData, profession);
-            }
-            if (playerData.getProfess().hasExperienceTable())
-                playerData.getProfess().getExperienceTable().claimStatTriggers(playerData, playerData.getProfess());
-
+        for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
+            if (profession.hasExperienceTable())
+                profession.getExperienceTable().claimStatTriggers(playerData, profession);
         }
+        if (playerData.getProfess().hasExperienceTable())
+            playerData.getProfess().getExperienceTable().claimStatTriggers(playerData, playerData.getProfess());
 
     }
 

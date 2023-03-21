@@ -44,6 +44,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         updater.addData("attribute_realloc_points", data.getAttributeReallocationPoints());
         updater.addJSONArray("waypoints", data.getWaypoints());
         updater.addData("skill_tree_reallocation_points", data.getSkillTreeReallocationPoints());
+        updater.addData("health",data.getHealth());
         updater.addData("mana", data.getMana());
         updater.addData("stellium", data.getStellium());
         updater.addData("stamina", data.getStamina());

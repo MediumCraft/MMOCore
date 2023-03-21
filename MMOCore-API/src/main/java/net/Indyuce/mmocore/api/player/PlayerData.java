@@ -82,6 +82,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
+    /**
+     * Health is stored in playerData because when saving the playerData we can't access the player health anymore as the payer is Offline.
+     */
+    private double health;
     private Guild guild;
     private SkillCastingHandler skillCasting;
     private final PlayerQuests questData;
@@ -183,11 +187,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             skillTree.setupNodeStates(this);
 
         // Stat triggers setup
-        if (!areStatsLoaded()) {
-            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
-                for (SkillTreeNode node : skillTree.getNodes())
-                    node.getExperienceTable().claimStatTriggers(this, node);
-        }
+
+        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+            for (SkillTreeNode node : skillTree.getNodes())
+                node.getExperienceTable().claimStatTriggers(this, node);
+
     }
 
     public int getPointSpent(SkillTree skillTree) {
@@ -232,14 +236,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeLevelsString.entrySet();
     }
 
-    public boolean areStatsLoaded() {
-        // Used to see if the triggers need to be applied
-        for (StatInstance instance : mmoData.getStatMap().getInstances())
-            for (StatModifier modifier : instance.getModifiers())
+    public void resetTriggerStats() {
+        for (StatInstance instance : mmoData.getStatMap().getInstances()) {
+            Iterator<StatModifier> iter = instance.getModifiers().iterator();
+            while (iter.hasNext()) {
+                StatModifier modifier = iter.next();
                 if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX))
-                    return true;
-        return false;
+                    iter.remove();
+            }
+        }
     }
+
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
         return new HashMap<>(nodeLevels);
@@ -748,9 +755,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                            Math.cos((double) 5 * t / warpTime + j) * r,
-                            (double) 2 * t / warpTime,
-                            Math.sin((double) 5 * t / warpTime + j) * r),
+                                    Math.cos((double) 5 * t / warpTime + j) * r,
+                                    (double) 2 * t / warpTime,
+                                    Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -936,17 +943,26 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         stellium = Math.max(0, Math.min(stellium + event.getAmount(), max));
     }
 
+    @Override
     public double getMana() {
         return mana;
     }
 
+    @Override
+    public double getHealth() {
+        return health;
+    }
+
+    @Override
     public double getStamina() {
         return stamina;
     }
 
+    @Override
     public double getStellium() {
         return stellium;
     }
+
 
     public PlayerStats getStats() {
         return playerStats;
@@ -958,6 +974,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setMana(double amount) {
         mana = Math.max(0, Math.min(amount, getStats().getStat("MAX_MANA")));
+    }
+
+    public void setHealth(double amount) {
+        this.health = amount;
     }
 
     public void setStamina(double amount) {
@@ -1199,7 +1219,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {
