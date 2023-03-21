@@ -6,15 +6,17 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.player.ClassDataContainer;
-import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class SavedClassInformation {
     private final int level, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
@@ -25,7 +27,7 @@ public class SavedClassInformation {
     private final Map<String, Integer> nodeLevels = new HashMap<>();
     private final Map<String, Integer> nodeTimesClaimed = new HashMap<>();
     private final Map<Integer, String> boundSkills = new HashMap<>();
-
+    private final Set<String> unlockedItems= new HashSet<>();
     /**
      * Used by YAML storage
      */
@@ -60,6 +62,7 @@ public class SavedClassInformation {
         if (config.isConfigurationSection("bound-skills"))
             config.getConfigurationSection("bound-skills").getKeys(false)
                     .forEach(key -> boundSkills.put(Integer.parseInt(key), config.getString("bound-skills." + key)));
+        unlockedItems.addAll(config.getStringList("unlocked-items"));
     }
 
     /**
@@ -96,6 +99,11 @@ public class SavedClassInformation {
         if (json.has("bound-skills") && json.get("bound-skills").isJsonObject())
             for (Entry<String, JsonElement> entry : json.getAsJsonObject("bound-skills").entrySet())
                 boundSkills.put(Integer.parseInt(entry.getKey()), entry.getValue().getAsString());
+        if(json.has("unlocked-items")){
+            for(JsonElement unlockedItem: json.get("unlocked-items").getAsJsonArray()){
+                unlockedItems.add(unlockedItem.getAsString());
+            }
+        }
     }
 
     public SavedClassInformation(ClassDataContainer data) {
@@ -115,8 +123,8 @@ public class SavedClassInformation {
         data.mapSkillTreePoints().forEach((key, val) -> skillTreePoints.put(key, val));
         data.getNodeLevels().forEach((node, level) -> nodeLevels.put(node.getFullId(), level));
         data.getNodeTimesClaimed().forEach((key, val) -> nodeTimesClaimed.put(key, val));
-
         data.mapBoundSkills().forEach((slot, skill) -> boundSkills.put(slot, skill));
+        data.getUnlockedItems().forEach(item->unlockedItems.add(item));
     }
 
     public int getLevel() {
@@ -203,6 +211,10 @@ public class SavedClassInformation {
         return stamina;
     }
 
+    public Set<String> getUnlockedItems() {
+        return unlockedItems;
+    }
+
     public Set<String> getAttributeKeys() {
         return attributeLevels.keySet();
     }
@@ -265,6 +277,7 @@ public class SavedClassInformation {
         player.setAttributeReallocationPoints(attributeReallocationPoints);
         player.setSkillTreeReallocationPoints(skillTreeReallocationPoints);
         player.setSkillReallocationPoints(skillReallocationPoints);
+        player.setUnlockedItems(unlockedItems);
         for (int slot : boundSkills.keySet())
             player.bindSkill(slot, profess.getSkill(boundSkills.get(slot)));
 
