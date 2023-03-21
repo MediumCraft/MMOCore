@@ -323,7 +323,10 @@ public class SkillList extends EditableInventory {
         public SkillViewerInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
 
-            skills = new ArrayList<>(playerData.getProfess().getSkills());
+            skills = playerData.getProfess().getSkills()
+                    .stream()
+                    .filter((classSkill)->playerData.hasUnlocked(classSkill.getSkill()))
+                    .collect(Collectors.toList());
             skillSlots = getEditable().getByFunction("skill").getSlots();
             Validate.notNull(getEditable().getByFunction("slot"), "Your skill GUI config file is out-of-date, please regenerate it.");
             slotSlots = getEditable().getByFunction("slot").getSlots();

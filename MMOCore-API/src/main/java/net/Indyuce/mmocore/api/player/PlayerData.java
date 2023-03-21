@@ -166,11 +166,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
         }
 
-        Iterator<Integer> ite=boundSkills.keySet().iterator();
+        Iterator<Integer> ite = boundSkills.keySet().iterator();
         while (ite.hasNext())
             try {
-                int slot=ite.next();
-                BoundSkillInfo boundSkillInfo=new BoundSkillInfo(boundSkills.get(slot));
+                int slot = ite.next();
+                BoundSkillInfo boundSkillInfo = new BoundSkillInfo(boundSkills.get(slot));
                 boundSkills.put(slot, boundSkillInfo);
             } catch (Exception ignored) {
             }
@@ -222,9 +222,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public Map<Integer, String> mapBoundSkills() {
-        Map<Integer,String> result= new HashMap<>();
-        for(int slot:boundSkills.keySet())
-            result.put(slot,boundSkills.get(slot).getClassSkill().getSkill().getHandler().getId());
+        Map<Integer, String> result = new HashMap<>();
+        for (int slot : boundSkills.keySet())
+            result.put(slot, boundSkills.get(slot).getClassSkill().getSkill().getHandler().getId());
         return result;
     }
 
@@ -534,20 +534,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     /**
      * @return If the item is unlocked by the player
-     * @deprecated Not used yet
+     * This is used for skills that can be locked & unlocked.
      */
-    @Deprecated
     public boolean hasUnlocked(Unlockable unlockable) {
         return unlockedItems.contains(unlockable.getUnlockNamespacedKey());
     }
 
+
     /**
-     * Unlocks an item for the player
+     * Unlocks an item for the player. This is mainly used to unlock skills.
      *
      * @return If the item was already unlocked when calling this method
-     * @deprecated Not used yet
      */
-    @Deprecated
     public boolean unlock(Unlockable unlockable) {
         return unlockedItems.add(unlockable.getUnlockNamespacedKey());
     }
@@ -769,9 +767,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                            Math.cos((double) 5 * t / warpTime + j) * r,
-                            (double) 2 * t / warpTime,
-                            Math.sin((double) 5 * t / warpTime + j) * r),
+                                    Math.cos((double) 5 * t / warpTime + j) * r,
+                                    (double) 2 * t / warpTime,
+                                    Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -1067,9 +1065,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void refreshBoundedSkill(String skill) {
         boundSkills.values()
                 .stream()
-                .filter(skillInfo->skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill))
+                .filter(skillInfo -> skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill))
                 .forEach(BoundSkillInfo::refresh);
-        }
+    }
 
     @Deprecated
     public boolean hasSkillUnlocked(RegisteredSkill skill) {
@@ -1140,7 +1138,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public ClassSkill getBoundSkill(int slot) {
-        return boundSkills.containsKey(slot) ? boundSkills.get(slot).getClassSkill():null;
+        return boundSkills.containsKey(slot) ? boundSkills.get(slot).getClassSkill() : null;
     }
 
 
@@ -1173,7 +1171,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void unbindSkill(int slot) {
-        BoundSkillInfo boundSkillInfo=boundSkills.remove(slot);
+        BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
         boundSkillInfo.unbind();
     }
 
