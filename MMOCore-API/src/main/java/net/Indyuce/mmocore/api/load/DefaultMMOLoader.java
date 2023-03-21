@@ -21,6 +21,8 @@ public class DefaultMMOLoader extends MMOLoader {
             return new FromTrigger(config);
         if (config.getKey().equals("stat"))
             return new StatTrigger(config);
+        if (config.getKey().equals("unlock_skill"))
+            return new UnlockSkillTrigger(config);
         if (config.getKey().equals("message"))
             return new MessageTrigger(config);
         if (config.getKey().equals("sound") || config.getKey().equals("playsound"))

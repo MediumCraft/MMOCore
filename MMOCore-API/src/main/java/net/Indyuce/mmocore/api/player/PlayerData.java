@@ -550,6 +550,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return unlockedItems.add(unlockable.getUnlockNamespacedKey());
     }
 
+    /**
+     * Locks an item for the player by removing it from the unlocked items map if it is present.
+     * This is mainly used to remove unlocked items when changing class or reallocating a skill tree.
+     */
+    public void lock(Unlockable unlockable){
+        unlockedItems.remove(unlockable.getUnlockNamespacedKey());
+    }
+
     public void setLevel(int level) {
         this.level = Math.max(1, level);
 
