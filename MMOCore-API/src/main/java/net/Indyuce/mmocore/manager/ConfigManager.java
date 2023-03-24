@@ -130,6 +130,7 @@ public class ConfigManager {
         fishingDropsChanceWeight = MMOCore.plugin.getConfig().getDouble("chance-stat-weight.fishing-drops");
         maxPartyLevelDifference = MMOCore.plugin.getConfig().getInt("party.max-level-difference");
         partyMaxExpSplitRange = MMOCore.plugin.getConfig().getDouble("party.max-exp-split-range");
+        splitMainExp = MMOCore.plugin.getConfig().getBoolean("party.main-exp-split");
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
 

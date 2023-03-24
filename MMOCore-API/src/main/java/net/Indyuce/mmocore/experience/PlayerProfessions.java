@@ -237,11 +237,11 @@ public class PlayerProfessions {
         }
 
         StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
-        int chars = (int) ((double) exp / needed * 20);
+        int chars = (int) (exp / needed * 20);
         for (int j = 0; j < 20; j++)
             bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
         if (playerData.isOnline())
             MMOCore.plugin.configManager.getSimpleMessage("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
-                    MythicLib.plugin.getMMOConfig().decimal.format((double) exp / needed * 100)).send(playerData.getPlayer());
+                    MythicLib.plugin.getMMOConfig().decimal.format(exp / needed * 100)).send(playerData.getPlayer());
     }
 }
