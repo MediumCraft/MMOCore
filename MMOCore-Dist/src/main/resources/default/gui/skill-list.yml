@@ -46,7 +46,7 @@ items:
       - '&eCosts 1 skill reallocation point.'
       - '&e◆ Skill Reallocation Points: &6{points}'
 
-  skill-slot:
+  slot:
     slots: [ 8,17,26,35,44,53 ]
     function: slot
     item: BOOK

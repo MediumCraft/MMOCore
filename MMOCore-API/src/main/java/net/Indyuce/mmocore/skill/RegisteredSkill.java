@@ -1,12 +1,13 @@
 package net.Indyuce.mmocore.skill;
 
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.player.Unlockable;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
+import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.player.Unlockable;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +60,7 @@ public class RegisteredSkill implements Unlockable {
 
     @Override
     public String getUnlockNamespacedKey() {
-        return "registered_skill:" + handler.getId().toLowerCase();
+        return MMOCore.MMOCORE_ITEM_ID+"skill:" + handler.getId().toLowerCase();
     }
 
     public SkillHandler<?> getHandler() {

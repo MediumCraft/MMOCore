@@ -120,7 +120,7 @@ public class DefaultPlayerData implements ClassDataContainer {
     }
 
     @Override
-    public Set<String> getUnlockedItems() {
+    public Set<String> getMMOUnlockedItems() {
         return new HashSet<>();
     }
 

@@ -322,10 +322,11 @@ public class SkillList extends EditableInventory {
 
         public SkillViewerInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
-
+            Bukkit.broadcastMessage("UNLOCKED");
+            playerData.getMMOPlayerData().getUnlockedItems().forEach(str->Bukkit.broadcastMessage(str));
             skills = playerData.getProfess().getSkills()
                     .stream()
-                    .filter((classSkill)->playerData.hasUnlocked(classSkill.getSkill()))
+                    .filter((classSkill)->playerData.getMMOPlayerData().hasUnlocked(classSkill.getSkill()))
                     .collect(Collectors.toList());
             skillSlots = getEditable().getByFunction("skill").getSlots();
             Validate.notNull(getEditable().getByFunction("slot"), "Your skill GUI config file is out-of-date, please regenerate it.");

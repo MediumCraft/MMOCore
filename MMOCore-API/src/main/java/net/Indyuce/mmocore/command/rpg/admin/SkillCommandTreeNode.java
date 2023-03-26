@@ -103,16 +103,16 @@ public class SkillCommandTreeNode extends CommandTreeNode {
             }
             PlayerData playerData = PlayerData.get(player);
 
-            RegisteredSkill skill = MMOCore.plugin.skillManager.getSkill(args[4]);
+            ClassSkill skill = playerData.getProfess().getSkill(args[4]);
             if (skill == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the skill called " + args[4] + ".");
+                sender.sendMessage(ChatColor.RED + "The player's class doesn't have a skill called  " + args[4] + ".");
                 return CommandResult.FAILURE;
             }
             if (lock)
-                playerData.lock(skill);
+                playerData.getMMOPlayerData().lock(skill.getSkill());
             else
-                playerData.unlock(skill);
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, "The skill " + skill.getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
+                playerData.getMMOPlayerData().unlock(skill.getSkill());
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, "The skill " + skill.getSkill() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
             return CommandResult.SUCCESS;
         }
     }

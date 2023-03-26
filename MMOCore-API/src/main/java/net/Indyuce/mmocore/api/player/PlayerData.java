@@ -38,7 +38,6 @@ import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
 import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.player.CombatHandler;
-import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -65,6 +64,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.Indyuce.mmocore.MMOCore.MMOCORE_ITEM_ID;
 
 
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer, ClassDataContainer {
@@ -112,15 +113,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<SkillTreeNode, Integer> nodeLevels = new HashMap<>();
     private final Map<String, Integer> skillTreePoints = new HashMap<>();
 
-    /**
-     * Saves all the items that have been unlocked so far by
-     * the player. This is used for:
-     * - waypoints
-     * - skills
-     *
-     * @see {@link Unlockable}
-     */
-    private final Set<String> unlockedItems = new HashSet<>();
 
     /**
      * Saves the amount of times the player has claimed some
@@ -374,15 +366,28 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return result;
     }
 
+    /**
+     * @return All the unlocked items that are handled by MMOCore (the ones that MMOCore saves & load by itself.
+     */
     @Override
-    public Set<String> getUnlockedItems() {
-        return new HashSet<>(unlockedItems);
+    public Set<String> getMMOUnlockedItems() {
+        return mmoData.getUnlockedItems().stream().filter(key->key.startsWith(MMOCORE_ITEM_ID)).collect(Collectors.toSet());
     }
 
+
+    /**
+     * Used to change the value of the unlockedItems handled by mmocore.
+     * @param unlockedItems
+     */
     public void setUnlockedItems(Set<String> unlockedItems) {
-        this.unlockedItems.clear();
-        this.unlockedItems.addAll(unlockedItems);
+        Set<String> mythicUnlockedItems=mmoData.getUnlockedItems()
+                .stream()
+                .filter((key)->!key.startsWith(MMOCORE_ITEM_ID))
+                .collect(Collectors.toSet());
+        mythicUnlockedItems.addAll(unlockedItems);
+        mmoData.setUnlockedItems(mythicUnlockedItems);
     }
+
 
     public void resetTimesClaimed() {
         tableItemClaims.clear();
@@ -540,32 +545,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public boolean inGuild() {
         return guild != null;
-    }
-
-    /**
-     * @return If the item is unlocked by the player
-     * This is used for skills that can be locked & unlocked.
-     */
-    public boolean hasUnlocked(Unlockable unlockable) {
-        return unlockedItems.contains(unlockable.getUnlockNamespacedKey());
-    }
-
-
-    /**
-     * Unlocks an item for the player. This is mainly used to unlock skills.
-     *
-     * @return If the item was already unlocked when calling this method
-     */
-    public boolean unlock(Unlockable unlockable) {
-        return unlockedItems.add(unlockable.getUnlockNamespacedKey());
-    }
-
-    /**
-     * Locks an item for the player by removing it from the unlocked items map if it is present.
-     * This is mainly used to remove unlocked items when changing class or reallocating a skill tree.
-     */
-    public void lock(Unlockable unlockable){
-        unlockedItems.remove(unlockable.getUnlockNamespacedKey());
     }
 
     public void setLevel(int level) {
@@ -1149,6 +1128,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Update stats
         if (isOnline())
             getStats().updateStats();
+
+        Bukkit.broadcastMessage("IN");
+        //Loads the classUnlockedSkills
+        profess.getSkills()
+                .stream()
+                .filter(ClassSkill::isUnlockedByDefault)
+                .forEach(skill->mmoData.unlock(skill.getSkill()));
     }
 
     public boolean hasSkillBound(int slot) {
