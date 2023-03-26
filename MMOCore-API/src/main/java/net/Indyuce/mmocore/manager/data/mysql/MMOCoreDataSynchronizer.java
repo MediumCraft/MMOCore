@@ -121,7 +121,7 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
         //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
         data.setMana(result.getDouble("mana"));
         data.setStamina(result.getDouble("stamina"));
-        data.setStellium(result.getDouble("stamina"));
+        data.setStellium(result.getDouble("stellium"));
         double health = result.getDouble("health");
         health = health == 0 ? 20 : health;
         health = Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
