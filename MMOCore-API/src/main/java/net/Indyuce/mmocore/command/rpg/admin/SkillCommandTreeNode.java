@@ -112,7 +112,7 @@ public class SkillCommandTreeNode extends CommandTreeNode {
                 playerData.getMMOPlayerData().lock(skill.getSkill());
             else
                 playerData.getMMOPlayerData().unlock(skill.getSkill());
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, "The skill " + skill.getSkill() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD+"The skill " + skill.getSkill().getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
             return CommandResult.SUCCESS;
         }
     }

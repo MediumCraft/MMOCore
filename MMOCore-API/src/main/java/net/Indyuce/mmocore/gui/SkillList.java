@@ -322,8 +322,6 @@ public class SkillList extends EditableInventory {
 
         public SkillViewerInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
-            Bukkit.broadcastMessage("UNLOCKED");
-            playerData.getMMOPlayerData().getUnlockedItems().forEach(str->Bukkit.broadcastMessage(str));
             skills = playerData.getProfess().getSkills()
                     .stream()
                     .filter((classSkill)->playerData.getMMOPlayerData().hasUnlocked(classSkill.getSkill()))

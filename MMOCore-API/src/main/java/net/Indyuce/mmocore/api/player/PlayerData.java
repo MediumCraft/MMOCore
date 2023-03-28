@@ -1129,7 +1129,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (isOnline())
             getStats().updateStats();
 
-        Bukkit.broadcastMessage("IN");
         //Loads the classUnlockedSkills
         profess.getSkills()
                 .stream()
