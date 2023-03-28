@@ -371,18 +371,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Override
     public Set<String> getMMOUnlockedItems() {
-        return mmoData.getUnlockedItems().stream().filter(key->key.startsWith(MMOCORE_ITEM_ID)).collect(Collectors.toSet());
+        return mmoData.getUnlockedItems().stream().filter(key -> key.startsWith(MMOCORE_ITEM_ID)).collect(Collectors.toSet());
     }
 
 
     /**
      * Used to change the value of the unlockedItems handled by mmocore.
+     *
      * @param unlockedItems
      */
     public void setUnlockedItems(Set<String> unlockedItems) {
-        Set<String> mythicUnlockedItems=mmoData.getUnlockedItems()
+        Set<String> mythicUnlockedItems = mmoData.getUnlockedItems()
                 .stream()
-                .filter((key)->!key.startsWith(MMOCORE_ITEM_ID))
+                .filter((key) -> !key.startsWith(MMOCORE_ITEM_ID))
                 .collect(Collectors.toSet());
         mythicUnlockedItems.addAll(unlockedItems);
         mmoData.setUnlockedItems(mythicUnlockedItems);
@@ -1133,7 +1134,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         profess.getSkills()
                 .stream()
                 .filter(ClassSkill::isUnlockedByDefault)
-                .forEach(skill->mmoData.unlock(skill.getSkill()));
+                .forEach(skill -> mmoData.unlock(skill.getSkill()));
     }
 
     public boolean hasSkillBound(int slot) {
