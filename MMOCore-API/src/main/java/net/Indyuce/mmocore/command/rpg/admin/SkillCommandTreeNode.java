@@ -32,7 +32,7 @@ public class SkillCommandTreeNode extends CommandTreeNode {
             super(parent, type);
             this.change = change;
             addParameter(Parameter.PLAYER);
-            addParameter(new Parameter("<attribute>",
+            addParameter(new Parameter("<skill>",
                     (explorer, list) -> MMOCore.plugin.skillManager.getAll().forEach(skill -> list.add(skill.getHandler().getId().toUpperCase()))));
             addParameter(Parameter.AMOUNT);
         }
@@ -90,11 +90,13 @@ public class SkillCommandTreeNode extends CommandTreeNode {
             super(parent, id);
             this.lock = lock;
             addParameter(Parameter.PLAYER);
+            addParameter(new Parameter("<skill>",
+                    (explorer, list) -> MMOCore.plugin.skillManager.getAll().forEach(skill -> list.add(skill.getHandler().getId().toUpperCase()))));
         }
 
         @Override
         public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
+            if (args.length < 5)
                 return CommandResult.THROW_USAGE;
             Player player = Bukkit.getPlayer(args[3]);
             if (player == null) {
@@ -108,11 +110,21 @@ public class SkillCommandTreeNode extends CommandTreeNode {
                 sender.sendMessage(ChatColor.RED + "The player's class doesn't have a skill called  " + args[4] + ".");
                 return CommandResult.FAILURE;
             }
-            if (lock)
+            if (lock) {
+                if (!playerData.getMMOPlayerData().hasUnlocked(skill.getSkill())) {
+                    CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill " + skill.getSkill().getName() + " is already locked" + " for " + player.getName());
+                    return CommandResult.SUCCESS;
+                }
                 playerData.getMMOPlayerData().lock(skill.getSkill());
-            else
+
+            } else {
+                if (playerData.getMMOPlayerData().hasUnlocked(skill.getSkill())) {
+                    CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill " + skill.getSkill().getName() + " is already unlocked" + " for " + player.getName());
+                    return CommandResult.SUCCESS;
+                }
                 playerData.getMMOPlayerData().unlock(skill.getSkill());
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD+"The skill " + skill.getSkill().getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
+            }
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD + "The skill " + skill.getSkill().getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
             return CommandResult.SUCCESS;
         }
     }
