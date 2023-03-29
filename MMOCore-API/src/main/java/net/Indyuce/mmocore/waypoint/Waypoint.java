@@ -2,8 +2,9 @@ package net.Indyuce.mmocore.waypoint;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
-import io.lumine.mythic.lib.player.Unlockable;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.Unlockable;
 import net.Indyuce.mmocore.loot.chest.condition.Condition;
 import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
 import org.apache.commons.lang.Validate;
@@ -210,6 +211,16 @@ public class Waypoint extends PostLoadObject implements Unlockable {
     @Override
     public String getUnlockNamespacedKey() {
         return "waypoint:" + getId();
+    }
+
+    @Override
+    public void whenLocked(PlayerData playerData) {
+
+    }
+
+    @Override
+    public void whenUnlocked(PlayerData playerData) {
+
     }
 
     @Override

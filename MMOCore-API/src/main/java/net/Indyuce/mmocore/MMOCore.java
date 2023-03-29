@@ -57,8 +57,6 @@ import java.util.logging.Level;
 
 public class MMOCore extends JavaPlugin {
     public static MMOCore plugin;
-    public final static String MMOCORE_ITEM_ID = "mmocore:";
-
     public final WaypointManager waypointManager = new WaypointManager();
     public final SoundManager soundManager = new SoundManager();
     public final RequestManager requestManager = new RequestManager();

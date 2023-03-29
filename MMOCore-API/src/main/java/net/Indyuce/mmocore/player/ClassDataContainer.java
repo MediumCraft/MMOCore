@@ -47,5 +47,5 @@ public interface ClassDataContainer {
 
     Map<String, Integer> getNodeTimesClaimed();
 
-    Set<String> getMMOUnlockedItems();
+    Set<String> getUnlockedItems();
 }

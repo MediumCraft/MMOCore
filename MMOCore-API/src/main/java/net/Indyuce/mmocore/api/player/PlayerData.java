@@ -12,6 +12,8 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
+import net.Indyuce.mmocore.api.event.unlocking.ItemLockedEvent;
+import net.Indyuce.mmocore.api.event.unlocking.ItemUnlockedEvent;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
@@ -65,9 +67,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import static net.Indyuce.mmocore.MMOCore.MMOCORE_ITEM_ID;
-
-
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer, ClassDataContainer {
 
     /**
@@ -113,7 +112,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<SkillTreeNode, Integer> nodeLevels = new HashMap<>();
     private final Map<String, Integer> skillTreePoints = new HashMap<>();
 
-
+    /**
+     * Saves the namespacedkey of the items that have been unlocked in the form item-type:item-key.
+     * This is used for:
+     * -Waypoints
+     * -Skills
+     * -Skill Books
+     */
+    private final Set<String> unlockedItems= new HashSet<>();
     /**
      * Saves the amount of times the player has claimed some
      * exp item in exp tables, for both exp tables used
@@ -366,27 +372,59 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return result;
     }
 
+
+
     /**
-     * @return All the unlocked items that are handled by MMOCore (the ones that MMOCore saves & load by itself.
+     * @return If the item is unlocked by the player
+     * This is used for skills that can be locked & unlocked.
+     * <p>
+     * Looks at the real value and thus remove the plugin identifier
      */
-    @Override
-    public Set<String> getMMOUnlockedItems() {
-        return mmoData.getUnlockedItems().stream().filter(key -> key.startsWith(MMOCORE_ITEM_ID)).collect(Collectors.toSet());
+    public boolean hasUnlocked(Unlockable unlockable) {
+        String unlockableKey = unlockable.getUnlockNamespacedKey().substring(unlockable.getUnlockNamespacedKey().indexOf(":"));
+        return unlockedItems
+                .stream()
+                .filter(key -> key.substring(key.indexOf(":")).equals(unlockableKey))
+                .collect(Collectors.toList()).size() != 0;
     }
 
 
     /**
-     * Used to change the value of the unlockedItems handled by mmocore.
+     * Unlocks an item for the player. This is mainly used to unlock skills.
      *
-     * @param unlockedItems
+     * @return If the item was locked when calling this method.
      */
+    public boolean unlock(Unlockable unlockable) {
+        boolean wasLocked = unlockedItems.add(unlockable.getUnlockNamespacedKey());
+        if (wasLocked)
+            //Calls the event synchronously
+            Bukkit.getScheduler().runTask(MythicLib.plugin,
+                    () -> Bukkit.getPluginManager().callEvent(new ItemUnlockedEvent(this, unlockable.getUnlockNamespacedKey())));
+
+        return wasLocked;
+    }
+
+    /**
+     * Locks an item for the player by removing it from the unlocked items map if it is present.
+     * This is mainly used to remove unlocked items when changing class or reallocating a skill tree.
+     *
+     * @return If the item was unlocked when calling this method.
+     */
+    public boolean lock(Unlockable unlockable) {
+        boolean wasUnlocked = unlockedItems.remove(unlockable.getUnlockNamespacedKey());
+        if (wasUnlocked)
+            //Calls the event synchronously
+            Bukkit.getScheduler().runTask(MythicLib.plugin, () -> Bukkit.getPluginManager().callEvent(new ItemLockedEvent(this, unlockable.getUnlockNamespacedKey())));
+        return wasUnlocked;
+    }
+
+    public Set<String> getUnlockedItems() {
+        return new HashSet<>(unlockedItems);
+    }
+
     public void setUnlockedItems(Set<String> unlockedItems) {
-        Set<String> mythicUnlockedItems = mmoData.getUnlockedItems()
-                .stream()
-                .filter((key) -> !key.startsWith(MMOCORE_ITEM_ID))
-                .collect(Collectors.toSet());
-        mythicUnlockedItems.addAll(unlockedItems);
-        mmoData.setUnlockedItems(mythicUnlockedItems);
+        unlockedItems.clear();
+        unlockedItems.addAll(unlockedItems);
     }
 
 
@@ -1134,7 +1172,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         profess.getSkills()
                 .stream()
                 .filter(ClassSkill::isUnlockedByDefault)
-                .forEach(skill -> mmoData.unlock(skill.getSkill()));
+                .forEach(skill ->unlock(skill.getSkill()));
     }
 
     public boolean hasSkillBound(int slot) {

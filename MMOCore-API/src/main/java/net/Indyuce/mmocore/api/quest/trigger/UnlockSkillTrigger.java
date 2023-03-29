@@ -19,11 +19,11 @@ public class UnlockSkillTrigger extends Trigger implements Removable {
 
     @Override
     public void apply(PlayerData player) {
-        player.getMMOPlayerData().unlock(skill);
+        player.unlock(skill);
     }
 
     @Override
     public void remove(PlayerData playerData) {
-        playerData.getMMOPlayerData().lock(skill);
+        playerData.lock(skill);
     }
 }

@@ -63,7 +63,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         updater.addData("professions", data.getCollectionSkills().toJsonString());
         updater.addData("quests", data.getQuestData().toJsonString());
         updater.addData("class_info", createClassInfoData(data).toString());
-        updater.addJSONArray("unlocked_items", data.getMMOUnlockedItems());
+        updater.addJSONArray("unlocked_items", data.getUnlockedItems());
         if (logout)
             updater.addData("is_saved", 1);
 
@@ -90,7 +90,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             classinfo.addProperty("stamina", info.getStamina());
             classinfo.addProperty("stellium", info.getStellium());
             JsonArray array = new JsonArray();
-            for (String unlockedItem : playerData.getMMOUnlockedItems()) {
+            for (String unlockedItem : playerData.getUnlockedItems()) {
                 array.add(unlockedItem);
             }
             classinfo.add("unlocked-items", array);

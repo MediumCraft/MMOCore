@@ -1,10 +1,11 @@
 package net.Indyuce.mmocore.skill;
 
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.player.Unlockable;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.Unlockable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -12,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 public class RegisteredSkill implements Unlockable {
@@ -33,7 +35,7 @@ public class RegisteredSkill implements Unlockable {
         categories = config.getStringList("categories");
         // Trigger type
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
-        if(triggerType.isPassive())
+        if (triggerType.isPassive())
             categories.add("passive");
         else
             categories.add("active");
@@ -60,7 +62,22 @@ public class RegisteredSkill implements Unlockable {
 
     @Override
     public String getUnlockNamespacedKey() {
-        return MMOCore.MMOCORE_ITEM_ID+"skill:" + handler.getId().toLowerCase();
+        return "skill:" + handler.getId().toLowerCase();
+    }
+
+    @Override
+    public void whenLocked(PlayerData playerData) {
+        playerData.mapBoundSkills()
+                .forEach((slot, skill) ->
+                {
+                    if (skill.equals(getUnlockNamespacedKey().split(":")[1]))
+                        playerData.unbindSkill(slot);
+                });
+    }
+
+    @Override
+    public void whenUnlocked(PlayerData playerData) {
+
     }
 
     public SkillHandler<?> getHandler() {

@@ -159,7 +159,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
         data.mapBoundSkills().forEach((slot, skill) -> config.set("bound-skills." + slot, skill));
-        config.set("unlocked-items", data.getMMOUnlockedItems().stream().collect(Collectors.toList()));
+        config.set("unlocked-items", data.getUnlockedItems().stream().collect(Collectors.toList()));
         config.set("attribute", null);
         config.createSection("attribute");
         data.getAttributes().save(config.getConfigurationSection("attribute"));
