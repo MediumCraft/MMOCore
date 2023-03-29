@@ -9,15 +9,15 @@ lore:
 material: MAGENTA_DYE
 duration:
   base: 3.0
-  per-level: 0.1
+  per-level: 1.1
   max: 6.0
   min: 3.0
 mana:
   base: 20.0
   per-level: 2.0
 stamina:
-  base: 0.0
-  per-level: 0.0
+  base: 2.0
+  per-level: 1.0
   max: 0.0
   min: 0.0
 cooldown:
