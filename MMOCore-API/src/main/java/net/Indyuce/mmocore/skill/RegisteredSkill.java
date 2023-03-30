@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.skill;
 
+import bsh.EvalError;
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
@@ -35,6 +37,7 @@ public class RegisteredSkill implements Unlockable {
         categories = config.getStringList("categories");
         // Trigger type
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
+        categories.add(getHandler().getId());
         if (triggerType.isPassive())
             categories.add("passive");
         else
@@ -130,6 +133,19 @@ public class RegisteredSkill implements Unlockable {
 
     public double getModifier(String modifier, int level) {
         return defaultModifiers.get(modifier).calculate(level);
+    }
+
+    public boolean matchesFormula(String formula) {
+        String parsedExpression = formula;
+        for (String category : categories)
+            parsedExpression = parsedExpression.replace("<" + category + ">", "true");
+        parsedExpression = parsedExpression.replaceAll("<.*>", "false");
+        try {
+            boolean res = (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
+            return res;
+        } catch (EvalError e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
