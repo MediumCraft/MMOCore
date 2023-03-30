@@ -19,12 +19,12 @@ public class SkillBuffTrigger extends Trigger implements Removable {
 
     public SkillBuffTrigger(MMOLineConfig config) {
         super(config);
-        config.validateKeys("skill-modifier");
+        config.validateKeys("modifier");
         config.validateKeys("amount");
         config.validateKeys("formula");
         config.validateKeys("type");
         amount = config.getDouble("amount");
-        String skillModifier = config.getString("skill-modifier");
+        String skillModifier = config.getString("modifier");
         String formula = config.getString("formula");
         List<String> targetSkills = new ArrayList<>();
         for (RegisteredSkill skill : MMOCore.plugin.skillManager.getAll()) {
