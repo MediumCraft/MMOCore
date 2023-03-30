@@ -117,11 +117,6 @@ public class MMOCore extends JavaPlugin {
         MythicLib.plugin.getSkills().registerMechanic("stellium", config -> new StelliumMechanic(config));
         MythicLib.plugin.getSkills().registerMechanic("mmocore_experience", config -> new ExperienceMechanic(config));
 
-        //MMOCore Skills
-        MythicLib.plugin.getSkills().registerSkillHandler(new Ambers());
-        MythicLib.plugin.getSkills().registerSkillHandler(new Neptune_Gift());
-        MythicLib.plugin.getSkills().registerSkillHandler(new Sneaky_Picky());
-
         // Register extra objective, drop items...
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
             loadManager.registerLoader(new WorldGuardMMOLoader());
