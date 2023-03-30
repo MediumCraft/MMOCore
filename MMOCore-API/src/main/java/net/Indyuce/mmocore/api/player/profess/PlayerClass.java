@@ -180,15 +180,13 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                             + id + "': " + exception.getMessage());
                 }
 
-        if (config.contains("skills"))
-            for (String key : config.getConfigurationSection("skills").getKeys(false))
-                try {
-                    RegisteredSkill registered = MMOCore.plugin.skillManager.getSkillOrThrow(UtilityMethods.enumName(key));
-                    skills.put(registered.getHandler().getId(), new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
-                } catch (RuntimeException exception) {
-                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill info '" + key + "' from class '"
-                            + id + "': " + exception.getMessage());
-                }
+        for (RegisteredSkill registered : MMOCore.plugin.skillManager.getAll()) {
+            String key = registered.getHandler().getId();
+            if (config.contains("skills." + key))
+                skills.put(key, new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
+            else
+                skills.put(key, new ClassSkill(registered, 1, 1));
+        }
 
         castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
 
