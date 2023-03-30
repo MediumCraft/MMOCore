@@ -6,6 +6,8 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 
 public abstract class Trigger {
+
+	public static String TRIGGER_PREFIX = "mmocore_trigger";
 	private final long delay;
 
 	public Trigger(MMOLineConfig config) {

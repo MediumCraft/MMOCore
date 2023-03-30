@@ -10,7 +10,6 @@ import org.apache.commons.lang.Validate;
 import java.util.UUID;
 
 public class StatTrigger extends Trigger implements Removable {
-    public static String TRIGGER_PREFIX = "mmocore_trigger";
     private final StatModifier statModifier;
     private final String stat;
     private final String modifierKey = TRIGGER_PREFIX + "." + UUID.randomUUID();
