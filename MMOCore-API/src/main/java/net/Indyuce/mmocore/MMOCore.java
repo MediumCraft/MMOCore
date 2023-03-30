@@ -45,6 +45,9 @@ import net.Indyuce.mmocore.script.mechanic.ManaMechanic;
 import net.Indyuce.mmocore.script.mechanic.StaminaMechanic;
 import net.Indyuce.mmocore.script.mechanic.StelliumMechanic;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
+import net.Indyuce.mmocore.skill.list.Ambers;
+import net.Indyuce.mmocore.skill.list.Neptune_Gift;
+import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -113,6 +116,11 @@ public class MMOCore extends JavaPlugin {
         MythicLib.plugin.getSkills().registerMechanic("stamina", config -> new StaminaMechanic(config));
         MythicLib.plugin.getSkills().registerMechanic("stellium", config -> new StelliumMechanic(config));
         MythicLib.plugin.getSkills().registerMechanic("mmocore_experience", config -> new ExperienceMechanic(config));
+
+        //MMOCore Skills
+        MythicLib.plugin.getSkills().registerSkillHandler(new Ambers());
+        MythicLib.plugin.getSkills().registerSkillHandler(new Neptune_Gift());
+        MythicLib.plugin.getSkills().registerSkillHandler(new Sneaky_Picky());
 
         // Register extra objective, drop items...
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)

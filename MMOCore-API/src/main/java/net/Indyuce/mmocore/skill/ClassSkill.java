@@ -107,7 +107,9 @@ public class ClassSkill implements CooldownObject {
 
         // Calculate placeholders
         Placeholders placeholders = new Placeholders();
-        modifiers.keySet().forEach(modifier -> placeholders.register(modifier, modifiers.get(modifier).getDisplay(x)));
+        modifiers.keySet().forEach(modifier ->
+                placeholders.register(modifier, data.getMMOPlayerData().getSkillBuffMap()
+                        .getSkillInstance(skill.getHandler().getId()).getSkillModifier(modifier).getTotal(modifiers.get(modifier).calculate(x))));
         placeholders.register("mana_name", data.getProfess().getManaDisplay().getName());
         placeholders.register("mana_color", data.getProfess().getManaDisplay().getFull().toString());
 
