@@ -6,17 +6,14 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.player.ClassDataContainer;
+import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class SavedClassInformation {
     private final int level, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
@@ -39,10 +36,10 @@ public class SavedClassInformation {
         attributeReallocationPoints = config.getInt("attribute-realloc-points");
         skillReallocationPoints = config.getInt("skill-reallocation-points");
         skillTreeReallocationPoints = config.getInt("skill-tree-reallocation-points");
-        health = config.getInt("health", 20);
-        mana = config.getInt("mana", 0);
-        stamina = config.getInt("stamina", 0);
-        stellium = config.getInt("stellium", 0);
+        health = config.getDouble("health", 20);
+        mana = config.getDouble("mana", 0);
+        stamina = config.getDouble("stamina", 0);
+        stellium = config.getDouble("stellium", 0);
         if (config.contains("attribute"))
             config.getConfigurationSection("attribute").getKeys(false)
                     .forEach(key -> attributeLevels.put(key, config.getInt("attribute." + key)));
@@ -80,6 +77,7 @@ public class SavedClassInformation {
         mana = json.has("mana") ? json.get("mana").getAsDouble() : 0;
         stamina = json.has("stamina") ? json.get("stamina").getAsDouble() : 0;
         stellium = json.has("stellium") ? json.get("stellium").getAsDouble() : 0;
+
         if (json.has("attribute"))
             for (Entry<String, JsonElement> entry : json.getAsJsonObject("attribute").entrySet())
                 attributeLevels.put(entry.getKey(), entry.getValue().getAsInt());
@@ -118,6 +116,7 @@ public class SavedClassInformation {
         this.mana = data.getMana();
         this.stellium = data.getStellium();
         this.stamina = data.getStamina();
+
         data.mapAttributeLevels().forEach((key, val) -> this.attributeLevels.put(key, val));
         data.mapSkillLevels().forEach((key, val) -> skillLevels.put(key, val));
         data.mapSkillTreePoints().forEach((key, val) -> skillTreePoints.put(key, val));
@@ -145,6 +144,22 @@ public class SavedClassInformation {
 
     public int getAttributeReallocationPoints() {
         return attributeReallocationPoints;
+    }
+
+    public double getHealth() {
+        return health;
+    }
+
+    public double getMana() {
+        return mana;
+    }
+
+    public double getStellium() {
+        return stellium;
+    }
+
+    public double getStamina() {
+        return stamina;
     }
 
     public Set<String> getSkillKeys() {
@@ -193,26 +208,6 @@ public class SavedClassInformation {
 
     public int getSkillTreePoints(String skillTreeId) {
         return skillTreePoints.get(skillTreeId);
-    }
-
-    public double getHealth() {
-        return health;
-    }
-
-    public double getMana() {
-        return mana;
-    }
-
-    public double getStellium() {
-        return stellium;
-    }
-
-    public double getStamina() {
-        return stamina;
-    }
-
-    public Set<String> getUnlockedItems() {
-        return unlockedItems;
     }
 
     public Set<String> getAttributeKeys() {
@@ -311,11 +306,12 @@ public class SavedClassInformation {
         player.setClass(profess);
         player.unloadClassInfo(profess);
 
-        //This needs to be done at the end to make sure the MAX_HEALTH,MAX_MANA,MAX_STELLIUM... stats are loaded.
-        player.getPlayer().setHealth(Math.min(health, player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+
+        //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
         player.setMana(mana);
         player.setStellium(stellium);
         player.setStamina(stamina);
+        player.getPlayer().setHealth(Math.min(health,player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
         // Updates level on exp bar
         player.refreshVanillaExp();
     }

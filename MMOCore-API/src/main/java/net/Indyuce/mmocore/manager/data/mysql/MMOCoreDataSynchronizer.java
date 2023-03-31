@@ -13,6 +13,9 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -33,11 +36,8 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
 
     @Override
     public void loadData(ResultSet result) throws SQLException {
-
-        // Initialize custom resources
-        data.setMana(result.getFloat("mana"));
-        data.setStellium(result.getFloat("stellium"));
-        data.setStamina(result.getFloat("stamina"));
+        //Reset stats linked to triggers
+        data.resetTriggerStats();
 
         data.setClassPoints(result.getInt("class_points"));
         data.setSkillPoints(result.getInt("skill_points"));
@@ -112,6 +112,16 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
                 }
             }
         }
+
+        //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
+        data.setMana(result.getDouble("mana"));
+        data.setStamina(result.getDouble("stamina"));
+        data.setStellium(result.getDouble("stellium"));
+        double health = result.getDouble("health");
+        health = health == 0 ? 20 : health;
+        health = Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        data.getPlayer().setHealth(health);
+
 
         UtilityMethods.debug(MMOCore.plugin, "SQL", String.format("{ class: %s, level: %d }", data.getProfess().getId(), data.getLevel()));
         data.setFullyLoaded();

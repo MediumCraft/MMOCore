@@ -293,6 +293,8 @@ public class MMOCore extends JavaPlugin {
         for (PlayerData data : PlayerData.getAll())
             if (data.isFullyLoaded()) {
                 data.close();
+                //Saves player health before saveData as the player will be considered offline into it if it is async.
+                data.setHealth(data.getPlayer().getHealth());
                 dataProvider.getDataManager().saveData(data, true);
             }
 
@@ -341,7 +343,6 @@ public class MMOCore extends JavaPlugin {
         statManager.initialize(clearBefore);
         professionManager.initialize(clearBefore);
 
-        InventoryManager.load();
         skillTreeManager.initialize(clearBefore);
         classManager.initialize(clearBefore);
         questManager.initialize(clearBefore);
@@ -351,6 +352,8 @@ public class MMOCore extends JavaPlugin {
         requestManager.initialize(clearBefore);
         soundManager.initialize(clearBefore);
         configItems.initialize(clearBefore);
+        //Needs to be loaded after the class manager.
+        InventoryManager.load();
 
         if (getConfig().isConfigurationSection("action-bar"))
             actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));

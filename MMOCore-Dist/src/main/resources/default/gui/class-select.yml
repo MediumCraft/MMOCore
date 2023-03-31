@@ -7,10 +7,51 @@ name: Class Selection
 slots: 27
 
 items:
-    class:
-        slots: [13,12,14,11,15,10,16]
-        function: class
-        name: '&a&lThe {name}'
+
+    class-rogue:
+        slots: [11]
+        function: class-rogue
+        name: '&a&lThe Rogue'
+        hide-flags: true
+        lore:
+            - '{lore}'
+            - ''
+            - '{attribute-lore}'
+
+    class-mage:
+      slots: [12]
+      function: class-mage
+      name: '&a&lThe Mage'
+      hide-flags: true
+      lore:
+        - '{lore}'
+        - ''
+        - '{attribute-lore}'
+
+    class-marksman:
+      slots: [13]
+      function: class-marksman
+      name: '&a&lThe Marksman'
+      hide-flags: true
+      lore:
+        - '{lore}'
+        - ''
+        - '{attribute-lore}'
+
+    class-warrior:
+        slots: [14]
+        function: class-warrior
+        name: '&a&lThe Warrior'
+        hide-flags: true
+        lore:
+            - '{lore}'
+            - ''
+            - '{attribute-lore}'
+
+    class-paladin:
+        slots: [15]
+        function: class-paladin
+        name: '&a&lThe Paladin'
         hide-flags: true
         lore:
         - '{lore}'

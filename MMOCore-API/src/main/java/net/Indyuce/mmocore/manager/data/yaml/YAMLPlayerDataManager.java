@@ -16,7 +16,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
     @Override
     public void loadData(PlayerData data) {
         FileConfiguration config = new ConfigFile(data.getUniqueId()).getConfig();
+
+        //Reset stats linked to triggers.
+        data.resetTriggerStats();
 
         data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
         data.setSkillPoints(config.getInt("skill-points", getDefaultData().getSkillPoints()));
@@ -76,10 +81,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 
         if (config.contains("times-claimed"))
-            for (
-                    String key : config.getConfigurationSection("times-claimed").
-
-                    getKeys(false)) {
+            for (String key : config.getConfigurationSection("times-claimed").getKeys(false)) {
                 ConfigurationSection section = config.getConfigurationSection("times-claimed." + key);
                 if (section != null)
                     for (String key1 : section.getKeys(false)) {
@@ -93,8 +95,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             }
 
         data.setUnlockedItems(config.getStringList("unlocked-items").stream().collect(Collectors.toSet()));
-        for (
-                SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
+        for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
             data.setNodeLevel(node, config.getInt("skill-tree-level." + node.getFullId(), 0));
         }
         data.setupSkillTree();
@@ -116,16 +117,12 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 
         //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
-        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().
-
-                getStat("MAX_MANA"));
-        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().
-
-                getStat("MAX_STAMINA"));
-        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().
-
-                getStat("MAX_STELLIUM"));
-
+        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
+        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
+        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
+        double health=config.contains("health") ? config.getDouble("health") : data.getStats().getStat("MAX_HEALTH");
+        health=Math.min(health,data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        data.getPlayer().setHealth(health);
         data.setFullyLoaded();
     }
 
@@ -150,6 +147,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.mapSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
+        config.set("health",data.getHealth());
         config.set("mana", data.getMana());
         config.set("stellium", data.getStellium());
         config.set("stamina", data.getStamina());

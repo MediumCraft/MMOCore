@@ -22,9 +22,10 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
             "skill_tree_points", "LONGTEXT",
             "skill_tree_levels", "LONGTEXT",
             "unlocked_items","LONGTEXT",
-            "mana","FLOAT",
-            "stamina","FLOAT",
-            "stellium","FLOAT"};
+            "health", "FLOAT",
+            "mana", "FLOAT",
+            "stamina", "FLOAT",
+            "stellium", "FLOAT"};
 
     public MySQLDataProvider(FileConfiguration config) {
         super(MMOCore.plugin);
@@ -57,6 +58,10 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
                 "friends LONGTEXT," +
                 "skills LONGTEXT," +
                 "bound_skills LONGTEXT," +
+                "health FLOAT," +
+                "mana FLOAT," +
+                "stamina FLOAT," +
+                "stellium FLOAT," +
                 "unlocked_items LONGTEXT," +
                 "class_info LONGTEXT," +
                 "is_saved TINYINT," +

@@ -12,15 +12,12 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
-import net.Indyuce.mmocore.api.event.unlocking.ItemLockedEvent;
-import net.Indyuce.mmocore.api.event.unlocking.ItemUnlockedEvent;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.player.profess.skillbinding.BoundSkillInfo;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
@@ -36,10 +33,9 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.player.CombatHandler;
+import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -67,6 +63,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+
 public class PlayerData extends OfflinePlayerData implements Closable, ExperienceTableClaimer, ClassDataContainer {
 
     /**
@@ -86,6 +83,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private int skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
+    /**
+     * Health is stored in playerData because when saving the playerData we can't access the player health anymore as the payer is Offline.
+     */
+    private double health;
     private Guild guild;
     private SkillCastingHandler skillCasting;
     private final PlayerQuests questData;
@@ -141,10 +142,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.mmoData = mmoData;
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
-
-
     }
-
 
     /**
      * Update all references after /mmocore reload so there can be garbage
@@ -187,11 +185,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             skillTree.setupNodeStates(this);
 
         // Stat triggers setup
-        if (!areStatsLoaded()) {
-            for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
-                for (SkillTreeNode node : skillTree.getNodes())
-                    node.getExperienceTable().claimStatTriggers(this, node);
-        }
+
+        for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
+            for (SkillTreeNode node : skillTree.getNodes())
+                node.getExperienceTable().claimStatTriggers(this, node);
+
     }
 
     public int getPointSpent(SkillTree skillTree) {
@@ -244,14 +242,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return nodeLevelsString.entrySet();
     }
 
-    public boolean areStatsLoaded() {
-        // Used to see if the triggers need to be applied
-        for (StatInstance instance : mmoData.getStatMap().getInstances())
-            for (StatModifier modifier : instance.getModifiers())
+    public void resetTriggerStats() {
+        for (StatInstance instance : mmoData.getStatMap().getInstances()) {
+            Iterator<StatModifier> iter = instance.getModifiers().iterator();
+            while (iter.hasNext()) {
+                StatModifier modifier = iter.next();
                 if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX))
-                    return true;
-        return false;
+                    iter.remove();
+            }
+        }
     }
+
 
     public Map<SkillTreeNode, Integer> getNodeLevels() {
         return new HashMap<>(nodeLevels);
@@ -434,13 +435,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public void close() {
-
-        // Remove from party if it is MMO Party Module
-        if (MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
-            AbstractParty party = getParty();
-            if (party != null && party instanceof Party)
-                ((Party) party).removeMember(this);
-        }
 
         // Close combat handler
         combat.close();
@@ -803,9 +797,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                                    Math.cos((double) 5 * t / warpTime + j) * r,
-                                    (double) 2 * t / warpTime,
-                                    Math.sin((double) 5 * t / warpTime + j) * r),
+                            Math.cos((double) 5 * t / warpTime + j) * r,
+                            (double) 2 * t / warpTime,
+                            Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -992,13 +986,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     @Override
-    public double getHealth() {
-        return getPlayer().getHealth();
+    public double getMana() {
+        return mana;
     }
 
     @Override
-    public double getMana() {
-        return mana;
+    public double getHealth() {
+        return health;
     }
 
     @Override
@@ -1021,6 +1015,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setMana(double amount) {
         mana = Math.max(0, Math.min(amount, getStats().getStat("MAX_MANA")));
+    }
+
+    public void setHealth(double amount) {
+        this.health = amount;
     }
 
     public void setStamina(double amount) {

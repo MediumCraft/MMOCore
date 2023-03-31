@@ -73,6 +73,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void saveDataOnQuit(PlayerQuitEvent event) {
         PlayerData playerData = PlayerData.get(event.getPlayer());
+        /**
+         * We save player health as it won't be accessible anymore when saving the player data (player will be offline).
+         */
+        playerData.setHealth(event.getPlayer().getHealth());
         MMOCore.plugin.dataProvider.getDataManager().unregisterSafe(playerData);
     }
 

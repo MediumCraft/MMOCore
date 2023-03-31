@@ -1,15 +1,5 @@
-
 # GUI display name, used by default
 name: 'Confirmation: {class}'
-
-# GUI display name which overrides the default one.
-# This can be used to apply custom textures to the GUI
-class-specific-name:
-    mage: "Select Mage"
-    rogue: "Select Rogue"
-    marksman: "Select Marksman"
-    warrior: "Select Warrior"
-    paladin: "Select Paladin"
 
 # Number of slots in your inventory. Must be
 # between 9 and 54 and must be a multiple of 9.

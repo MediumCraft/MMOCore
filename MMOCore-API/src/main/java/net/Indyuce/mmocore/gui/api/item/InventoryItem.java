@@ -130,7 +130,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
     }
 
     public ItemStack display(T inv) {
-        return display(inv, 0);
+        return display(inv, modelData);
     }
 
     public ItemStack display(T inv, int n) {
@@ -138,7 +138,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
     }
 
     public ItemStack display(T inv, int n, Material specificMaterial) {
-        return display(inv, n, specificMaterial, 0);
+        return display(inv, n, specificMaterial, modelData);
     }
 
     public ItemStack display(T inv, int n, Material specificMaterial, int modelData) {
