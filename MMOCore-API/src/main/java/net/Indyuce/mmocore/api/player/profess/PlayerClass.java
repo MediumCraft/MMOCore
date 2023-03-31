@@ -185,7 +185,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             if (config.contains("skills." + key))
                 skills.put(key, new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
             else
-                skills.put(key, new ClassSkill(registered, 1, 1));
+                skills.put(key, new ClassSkill(registered, 1, 1,false));
         }
 
         castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
