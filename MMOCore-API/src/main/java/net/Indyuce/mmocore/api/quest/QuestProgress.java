@@ -47,8 +47,6 @@ public class QuestProgress {
 		objective++;
 		objectiveProgress.close();
 
-		// apply triggers
-		objectiveProgress.getObjective().getTriggers().forEach(trigger -> trigger.schedule(getPlayer()));
 
 		// end quest
 		if (objective >= quest.getObjectives().size())
@@ -57,6 +55,10 @@ public class QuestProgress {
 			objectiveProgress = nextObjective().newProgress(this);
 
 		player.getQuestData().updateBossBar();
+
+
+		// apply triggers at the end so the quest is ended when a trigger quest start is launched.
+		objectiveProgress.getObjective().getTriggers().forEach(trigger -> trigger.schedule(getPlayer()));
 	}
 
 	public String getFormattedLore() {
