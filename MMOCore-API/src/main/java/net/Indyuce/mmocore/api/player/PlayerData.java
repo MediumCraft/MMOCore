@@ -950,7 +950,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public double getHealth() {
-        return getPlayer() == null ? health : getPlayer().getHealth();
+        return isOnline() ? getPlayer().getHealth():health ;
     }
 
     @Override
