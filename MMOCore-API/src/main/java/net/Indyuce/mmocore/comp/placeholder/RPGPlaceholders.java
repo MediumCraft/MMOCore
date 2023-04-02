@@ -184,7 +184,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.startsWith("stat_")) {
-			final String stat = UtilityMethods.caseOnWords(identifier.substring(5));
+			final String stat = UtilityMethods.enumName(identifier.substring(5));
 			return StatManager.format(stat, playerData.getMMOPlayerData());
 		}
 
