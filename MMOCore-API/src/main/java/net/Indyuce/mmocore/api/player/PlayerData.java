@@ -1202,6 +1202,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (boundSkills.containsKey(slot))
             boundSkills.get(slot).unbind();
         if (slot >= 0) {
+            //We apply the skill buffs associated with the slot to the skill.
+            profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger ->
+                    skillBuffTrigger.apply(this,skill.getSkill().getHandler().getId()));
+
+
             if (skill.getSkill().getTrigger().isPassive()) {
                 PassiveSkill passiveSkill = skill.toPassive(this);
                 passiveSkill.register(mmoData);
@@ -1213,6 +1218,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void unbindSkill(int slot) {
+        //We remove the skill buffs associated with the slot from the skill that is .
+        profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger ->
+                skillBuffTrigger.remove(this,boundSkills.get(slot).getClassSkill().getSkill().getHandler().getId()));
+
         BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
         boundSkillInfo.unbind();
     }

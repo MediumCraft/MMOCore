@@ -21,11 +21,10 @@ public class SkillBuffTrigger extends Trigger implements Removable {
         super(config);
         config.validateKeys("modifier");
         config.validateKeys("amount");
-        config.validateKeys("formula");
         config.validateKeys("type");
         amount = config.getDouble("amount");
         String skillModifier = config.getString("modifier");
-        String formula = config.getString("formula");
+        String formula = config.getString("formula", "true");
         List<String> targetSkills = new ArrayList<>();
         for (RegisteredSkill skill : MMOCore.plugin.skillManager.getAll()) {
             if (skill.matchesFormula(formula))
@@ -46,5 +45,19 @@ public class SkillBuffTrigger extends Trigger implements Removable {
     @Override
     public void remove(PlayerData playerData) {
         skillBuff.unregister(playerData.getMMOPlayerData());
+    }
+
+
+    /**
+     * Used by skill slots to apply a skillBuff to a specific skill dynamically chosen .
+     */
+    public void apply(PlayerData playerData, String skill) {
+        skillBuff.register(playerData.getMMOPlayerData(), skill);
+    }
+    /**
+     * Used by skill slots to remove a skillBuff from a specific skill dynamically chosen.
+     */
+    public void remove(PlayerData playerData, String skill) {
+        skillBuff.unregister(playerData.getMMOPlayerData(), skill);
     }
 }
