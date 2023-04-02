@@ -39,9 +39,9 @@ public class RegisteredSkill implements Unlockable {
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
         categories.add(getHandler().getId());
         if (triggerType.isPassive())
-            categories.add("passive");
+            categories.add("PASSIVE");
         else
-            categories.add("active");
+            categories.add("ACTIVE");
 
         // Load default modifier formulas
         for (String mod : handler.getModifiers())
@@ -139,7 +139,7 @@ public class RegisteredSkill implements Unlockable {
         String parsedExpression = formula;
         for (String category : categories)
             parsedExpression = parsedExpression.replace("<" + category + ">", "true");
-        parsedExpression = parsedExpression.replaceAll("<.*>", "false");
+        parsedExpression = parsedExpression.replaceAll("<.*?>", "false");
         try {
             boolean res = (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
             return res;

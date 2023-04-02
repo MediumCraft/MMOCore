@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -201,7 +202,7 @@ public class SkillList extends EditableInventory {
 
         @Override
         public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-            RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
+            RegisteredSkill selected = inv.selected.getSkill();
 
             Placeholders holders = new Placeholders();
 
@@ -325,12 +326,12 @@ public class SkillList extends EditableInventory {
             skills = playerData.getProfess().getSkills()
                     .stream()
                     .filter((classSkill) -> playerData.hasUnlocked(classSkill.getSkill()))
+                    .sorted(Comparator.comparingInt(ClassSkill::getUnlockLevel))
                     .collect(Collectors.toList());
             skillSlots = getEditable().getByFunction("skill").getSlots();
             Validate.notNull(getEditable().getByFunction("slot"), "Your skill GUI config file is out-of-date, please regenerate it.");
             slotSlots = getEditable().getByFunction("slot").getSlots();
-            if (skills.size() > page * skillSlots.size())
-                selected = skills.get(page * skillSlots.size());
+            selected = skills.get(page * skillSlots.size());
         }
 
         @Override
@@ -412,9 +413,6 @@ public class SkillList extends EditableInventory {
                     open();
                     return;
                 }
-
-                if (selected == null)
-                    return;
 
                 if (!playerData.hasSkillUnlocked(selected)) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);

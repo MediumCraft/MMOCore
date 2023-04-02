@@ -31,7 +31,7 @@ public class SkillSlot {
 
     public SkillSlot(ConfigurationSection section) {
         this.slot = Integer.parseInt(section.getName());
-        this.formula = section.contains("expression") ? section.getString("expression") : "true";
+        this.formula = section.contains("formula") ? section.getString("formula") : "true";
         this.name = section.getString("name");
         this.lore = section.getStringList("lore");
         if (section.contains("item"))

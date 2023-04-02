@@ -29,7 +29,6 @@ public class SkillsCommand extends RegisteredCommand {
             if (data.getProfess().getSkills()
                     .stream()
                     .filter((classSkill) -> data.hasUnlocked(classSkill.getSkill()))
-                    .sorted((classSkill1,classSkill2)->classSkill1.getUnlockLevel()-classSkill1.getUnlockLevel())
                     .collect(Collectors.toList())
                     .size() < 1) {
                 MMOCore.plugin.configManager.getSimpleMessage("no-class-skill").send((Player) sender);
