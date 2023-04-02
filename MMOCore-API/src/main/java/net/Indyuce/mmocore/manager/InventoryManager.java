@@ -44,11 +44,11 @@ public class InventoryManager {
 
         list.forEach(inv -> {
             String folder="gui"+(inv instanceof ClassConfirmation?"/class-confirm":"");
-            MMOCore.plugin.configManager.loadDefaultFile(folder, inv.getId() + ".yml");
             try {
+                MMOCore.plugin.configManager.loadDefaultFile(folder, inv.getId() + ".yml");
                 inv.reload(new ConfigFile("/"+folder, inv.getId()).getConfig());
             } catch (Exception exception) {
-                MMOCore.log(Level.WARNING, "Could not load inventory '" + inv.getId() + "': " + exception.getMessage());
+                MMOCore.log(Level.WARNING, "Could not load inventory '" +(inv instanceof ClassConfirmation?"class-confirm/":""+ inv.getId() + "': " + exception.getMessage()));
             }
         });
     }
