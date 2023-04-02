@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
@@ -216,6 +217,10 @@ public class SavedClassInformation {
 
     public int getAttributeLevel(String id) {
         return attributeLevels.getOrDefault(id, 0);
+    }
+
+    public Set<String> getUnlockedItems() {
+        return unlockedItems;
     }
 
     public void registerAttributeLevel(PlayerAttribute attribute, int level) {
