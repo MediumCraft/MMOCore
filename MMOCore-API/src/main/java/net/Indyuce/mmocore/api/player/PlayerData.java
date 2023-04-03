@@ -851,6 +851,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 new ConfigMessage("level-up").addPlaceholders("level", String.valueOf(level)).send(getPlayer());
                 MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
                 new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
+                //TEST
             }
             getStats().updateStats();
         }
