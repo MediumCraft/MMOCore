@@ -15,6 +15,7 @@ import io.lumine.mythic.lib.skill.Skill;
 import io.lumine.mythic.lib.skill.handler.MythicLibSkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.version.VersionMaterial;
+import jdk.jshell.execution.Util;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
@@ -39,6 +40,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Utility;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -105,9 +107,11 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
         Validate.isTrue(config.isConfigurationSection("skill-slots"), "You must define the skills-slots for class " + id);
-        for (String key : config.getConfigurationSection("skill-slots").getKeys(false)) {
-            SkillSlot skillSlot = new SkillSlot(config.getConfigurationSection("skill-slots." + key));
-            skillSlots.put(skillSlot.getSlot(), skillSlot);
+        for (int i = 1; i < MMOCore.plugin.configManager.maxSlots + 1; i++) {
+            if (config.contains("skill-slots." + i))
+                skillSlots.put(i, new SkillSlot(config.getConfigurationSection("skill-slots." + i)));
+            else
+                skillSlots.put(i, new SkillSlot(i, 0, "true", "&eSkill Slot " + MMOCoreUtils.intToRoman(i), new ArrayList<>(), false, new ArrayList<>()));
         }
         for (String string : config.getStringList("display.lore"))
             description.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));
@@ -185,7 +189,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             if (config.contains("skills." + key))
                 skills.put(key, new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
             else
-                skills.put(key, new ClassSkill(registered, 1, 1,false));
+                skills.put(key, new ClassSkill(registered, 1, 1, false));
         }
 
         castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
@@ -426,6 +430,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public SkillSlot getSkillSlot(int slot) {
         return skillSlots.get(slot);
+    }
+
+    public Collection<SkillSlot> getSlots() {
+        return skillSlots.values();
     }
 
     public ClassSkill getSkill(RegisteredSkill skill) {

@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.skillbinding.BoundSkillInfo;
+import net.Indyuce.mmocore.api.player.profess.skillbinding.SkillSlot;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
@@ -122,7 +123,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * -Skills
      * -Skill Books
      */
-    private final Set<String> unlockedItems= new HashSet<>();
+    private final Set<String> unlockedItems = new HashSet<>();
     /**
      * Saves the amount of times the player has claimed some
      * exp item in exp tables, for both exp tables used
@@ -376,7 +377,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
 
-
     /**
      * @return If the item is unlocked by the player
      * This is used for skills that can be locked & unlocked.
@@ -384,13 +384,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * Looks at the real value and thus remove the plugin identifier
      */
     public boolean hasUnlocked(Unlockable unlockable) {
-        String unlockableKey = unlockable.getUnlockNamespacedKey().substring(unlockable.getUnlockNamespacedKey().indexOf(":"));
-        return unlockedItems
-                .stream()
-                .filter(key -> key.substring(key.indexOf(":")).equals(unlockableKey))
-                .collect(Collectors.toList()).size() != 0;
+        return hasUnlocked(unlockable.getUnlockNamespacedKey());
+
     }
 
+    public boolean hasUnlocked(String unlockNamespacedKey) {
+        return unlockedItems
+                .stream()
+                .filter(key -> key.equals(unlockNamespacedKey))
+                .collect(Collectors.toList()).size() != 0;
+    }
 
     /**
      * Unlocks an item for the player. This is mainly used to unlock skills.
@@ -799,9 +802,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
                     getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                            Math.cos((double) 5 * t / warpTime + j) * r,
-                            (double) 2 * t / warpTime,
-                            Math.sin((double) 5 * t / warpTime + j) * r),
+                                    Math.cos((double) 5 * t / warpTime + j) * r,
+                                    (double) 2 * t / warpTime,
+                                    Math.sin((double) 5 * t / warpTime + j) * r),
                             1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
@@ -830,7 +833,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *                         If it's null, no hologram will be displayed
      * @param splitExp         Should the exp be split among party members
      */
-    public void giveExperience(double value, @NotNull EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+    public void giveExperience(double value, @NotNull EXPSource source, @Nullable Location hologramLocation,
+                               boolean splitExp) {
         if (value <= 0) {
             experience = Math.max(0, experience + value);
             return;
@@ -1172,7 +1176,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         profess.getSkills()
                 .stream()
                 .filter(ClassSkill::isUnlockedByDefault)
-                .forEach(skill ->unlock(skill.getSkill()));
+                .forEach(skill -> unlock(skill.getSkill()));
+
+        //Loads the classUnlockedSlots
+        profess.getSlots()
+                .stream()
+                .filter(SkillSlot::isUnlockedByDefault)
+                .forEach(this::unlock);
+
     }
 
     public boolean hasSkillBound(int slot) {
@@ -1204,7 +1215,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (slot >= 0) {
             //We apply the skill buffs associated with the slot to the skill.
             profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger ->
-                    skillBuffTrigger.apply(this,skill.getSkill().getHandler().getId()));
+                    skillBuffTrigger.apply(this, skill.getSkill().getHandler().getId()));
 
 
             if (skill.getSkill().getTrigger().isPassive()) {
@@ -1220,7 +1231,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void unbindSkill(int slot) {
         //We remove the skill buffs associated with the slot from the skill that is .
         profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger ->
-                skillBuffTrigger.remove(this,boundSkills.get(slot).getClassSkill().getSkill().getHandler().getId()));
+                skillBuffTrigger.remove(this, boundSkills.get(slot).getClassSkill().getSkill().getHandler().getId()));
 
         BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
         boundSkillInfo.unbind();
