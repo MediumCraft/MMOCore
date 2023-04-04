@@ -64,6 +64,7 @@ items:
       - ''
       - '&e► Left click to bind {selected}.'
       - '&e► Right click to unbind.'
+      - '&e► Shift left click to select.'
   skill-level:
     slots: [ 6,15,24,33,42,51 ]
     function: level

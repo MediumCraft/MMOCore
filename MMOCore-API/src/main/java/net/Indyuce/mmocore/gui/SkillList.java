@@ -396,6 +396,12 @@ public class SkillList extends EditableInventory {
             if (item.getFunction().equals("slot")) {
                 int index = slotSlots.indexOf(context.getSlot()) + 1;
                 SkillSlot skillSlot = playerData.getProfess().getSkillSlot(index);
+                //Select if the player is doing Shift Left Click
+                if(context.getClickType() ==ClickType.SHIFT_LEFT){
+                    if(playerData.hasSkillBound(index))
+                        selected=playerData.getBoundSkill(index);
+                    return;
+                }
                 // unbind if there is a current spell.
                 if (context.getClickType() == ClickType.RIGHT) {
                     if (!playerData.hasSkillBound(index)) {
