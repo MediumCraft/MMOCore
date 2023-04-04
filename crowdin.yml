@@ -3,3 +3,5 @@ files:
     translation: /**/MMOCore-Dist/src/main/resources/default/translation/%language%/gui/%file_name%.%file_extension%
   - source: MMOCore-Dist/src/main/resources/default/messages.yml
     translation: /**/MMOCore-Dist/src/main/resources/default/translation/%language%/%file_name%.%file_extension%
+  - source: MMOCore-Dist/src/main/resources/default/gui/class-confirm/*.yml
+    translation: /**/MMOCore-Dist/src/main/resources/default/translation/%language%/gui/class-confirm/%file_name%.%file_extension%

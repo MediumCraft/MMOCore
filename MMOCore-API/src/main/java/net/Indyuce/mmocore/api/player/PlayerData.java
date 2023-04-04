@@ -208,7 +208,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public int countSkillTreePoints(SkillTree skillTree) {
-        return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(nodeLevels::get).sum();
+        return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(node -> nodeLevels.get(node) * node.getSkillTreePointsConsumed()).sum();
     }
 
     /**
@@ -271,7 +271,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         //Check the State of the node
         if (nodeStatus != NodeStatus.UNLOCKED && nodeStatus != NodeStatus.UNLOCKABLE)
             return false;
-        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) > 0 || skillTreePoints.getOrDefault("global", 0) > 0);
+        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) + skillTreePoints.getOrDefault("global", 0) >= node.getSkillTreePointsConsumed());
     }
 
     /**
@@ -286,10 +286,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         if (nodeStates.get(node) == NodeStatus.UNLOCKABLE)
             setNodeState(node, NodeStatus.UNLOCKED);
-        if (skillTreePoints.get(node.getTree().getId()) > 0)
-            withdrawSkillTreePoints(node.getTree().getId(), 1);
-        else
-            withdrawSkillTreePoints("global", 1);
+        int pointToWithdraw = node.getSkillTreePointsConsumed();
+        if (skillTreePoints.get(node.getTree().getId()) > 0) {
+            int pointWithdrawn = Math.min(pointToWithdraw, skillTreePoints.get(node.getTree().getId()));
+            withdrawSkillTreePoints(node.getTree().getId(), pointWithdrawn);
+            pointToWithdraw -= pointWithdrawn;
+        }
+        if (pointToWithdraw > 0)
+            withdrawSkillTreePoints("global", pointToWithdraw);
         //We unload the nodeStates map (for the skill tree) and reload it completely
         for (SkillTreeNode node1 : node.getTree().getNodes())
             nodeStates.remove(node1);
@@ -998,7 +1002,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public double getHealth() {
-        return getPlayer() == null ? health : getPlayer().getHealth();
+        return isOnline() ? getPlayer().getHealth() : health;
     }
 
     @Override

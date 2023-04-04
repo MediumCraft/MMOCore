@@ -25,6 +25,8 @@ public class FriendsCommand extends RegisteredCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
+        if (!sender.hasPermission("mmocore.friends"))
+            return false;
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "This command is for players only.");
             return true;

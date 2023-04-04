@@ -19,6 +19,8 @@ public class SkillTreesCommand extends RegisteredCommand {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, String s, String[] args) {
+        if (!sender.hasPermission("mmocore.skilltrees"))
+            return false;
         if (!(sender instanceof Player player))
             return false;
         PlayerData data = PlayerData.get(player);

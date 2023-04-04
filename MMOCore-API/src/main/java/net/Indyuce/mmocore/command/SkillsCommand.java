@@ -11,32 +11,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.stream.Collectors;
-
 public class SkillsCommand extends RegisteredCommand {
-    public SkillsCommand(ConfigurationSection config) {
-        super(config, ToggleableCommand.SKILLS);
-    }
+	public SkillsCommand(ConfigurationSection config) {
+		super(config, ToggleableCommand.SKILLS);
+	}
 
-    @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (sender instanceof Player) {
-            PlayerData data = PlayerData.get((Player) sender);
-            MMOCommandEvent event = new MMOCommandEvent(data, "skills");
-            Bukkit.getServer().getPluginManager().callEvent(event);
-            if (event.isCancelled()) return true;
+	@Override
+	public boolean execute(CommandSender sender, String label, String[] args) {
+		if (!sender.hasPermission("mmocore.skills"))
+			return false;
+		if (sender instanceof Player) {
+			PlayerData data = PlayerData.get((Player) sender);
+			MMOCommandEvent event = new MMOCommandEvent(data, "skills");
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			if(event.isCancelled()) return true;
+			
+			if (data.getProfess().getSkills().size() < 1) {
+				MMOCore.plugin.configManager.getSimpleMessage("no-class-skill").send((Player) sender);
+				return true;
+			}
 
-            if (data.getProfess().getSkills()
-                    .stream()
-                    .filter((classSkill) -> data.hasUnlocked(classSkill.getSkill()))
-                    .collect(Collectors.toList())
-                    .size() < 1) {
-                MMOCore.plugin.configManager.getSimpleMessage("no-class-skill").send((Player) sender);
-                return true;
-            }
-
-            InventoryManager.SKILL_LIST.newInventory(data).open();
-        }
-        return true;
-    }
+			InventoryManager.SKILL_LIST.newInventory(data).open();
+		}
+		return true;
+	}
 }
