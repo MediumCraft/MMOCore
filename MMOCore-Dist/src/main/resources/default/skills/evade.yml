@@ -8,17 +8,17 @@ lore:
 material: LEATHER_BOOTS
 duration:
   base: 2.0
-  per-level: 0.3
+  per-level: 1.3
   max: 10.0
   min: 2.0
 mana:
   base: 8.0
   per-level: 3.0
 stamina:
-  base: 0.0
-  per-level: 0.0
+  base: 2.0
+  per-level: 1.0
   max: 0.0
   min: 0.0
 cooldown:
   base: 20.0
-  per-level: 0.0
+  per-level: 1.0

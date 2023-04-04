@@ -16,13 +16,13 @@ damage:
   per-level: 3.0
 ignite:
   base: 2.0
-  per-level: 0.1
+  per-level: 1.1
 mana:
   base: 15.0
   per-level: 1.0
 stamina:
-  base: 0.0
-  per-level: 0.0
+  base: 2.0
+  per-level: 1.0
   max: 0.0
   min: 0.0
 cooldown:

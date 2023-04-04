@@ -12,13 +12,13 @@ lore:
 - '&e{cooldown}s Cooldown'
 material: EMERALD
 mana:
-  base: 0.0
-  per-level: 0.0
+  base: 2.0
+  per-level: 1.0
   max: 0.0
   min: 0.0
 stamina:
-  base: 0.0
-  per-level: 0.0
+  base: 2.0
+  per-level: 1.0
   max: 0.0
   min: 0.0
 cooldown:
@@ -28,6 +28,6 @@ cooldown:
   min: 1.0
 percent:
   base: 10.0
-  per-level: 0.1
+  per-level: 1.1
   max: 20.0
   min: 10.0

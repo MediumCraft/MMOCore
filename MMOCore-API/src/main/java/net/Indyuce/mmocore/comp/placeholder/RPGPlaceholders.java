@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.comp.placeholder;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.util.AltChar;
 import io.lumine.mythic.lib.manager.StatManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -183,8 +184,8 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		}
 
 		else if (identifier.startsWith("stat_")) {
-			final String stat = identifier.substring(5).toUpperCase();
-			return StatManager.format(identifier.substring(5), playerData.getStats().getStat(stat));
+			final String stat = UtilityMethods.enumName(identifier.substring(5));
+			return StatManager.format(stat, playerData.getMMOPlayerData());
 		}
 
 		else if (identifier.equals("stellium"))

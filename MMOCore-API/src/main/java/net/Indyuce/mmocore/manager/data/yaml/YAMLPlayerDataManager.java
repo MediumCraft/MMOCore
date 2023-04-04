@@ -124,8 +124,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
         data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
         double health = config.contains("health") ? config.getDouble("health") : data.getStats().getStat("MAX_HEALTH");
-        health = health == 0 ? data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() : health;
-        health = Math.max(Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0);
+        health = health == 0 ? 20 : health;
+        health = Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         data.getPlayer().setHealth(health);
 
         data.setFullyLoaded();
