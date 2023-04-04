@@ -20,16 +20,19 @@ public class SkillSlot implements Unlockable {
 
     private final boolean isUnlockedByDefault;
 
+    private final boolean canManuallyBind;
+
     private final List<SkillBuffTrigger> skillBuffTriggers;
 
     private Material item;
 
-    public SkillSlot(int slot, int modelData, String formula, String name, List<String> lore, boolean isUnlockedByDefault, List<SkillBuffTrigger> skillBuffTriggers) {
+    public SkillSlot(int slot, int modelData, String formula, String name, List<String> lore, boolean isUnlockedByDefault, boolean canManuallyBind, List<SkillBuffTrigger> skillBuffTriggers) {
         this.slot = slot;
         this.modelData = modelData;
         this.formula = formula;
         this.name = name;
         this.lore = lore;
+        this.canManuallyBind = canManuallyBind;
         this.isUnlockedByDefault = isUnlockedByDefault;
         this.skillBuffTriggers = skillBuffTriggers;
     }
@@ -43,6 +46,7 @@ public class SkillSlot implements Unlockable {
             this.item = Material.valueOf(section.getString("item"));
         this.modelData = section.getInt("model-data", 0);
         isUnlockedByDefault = section.getBoolean("unlocked-by-default", true);
+        canManuallyBind =section.getBoolean("can-manually-bind",true);
         skillBuffTriggers = new ArrayList<>();
         if (section.contains("skill-buffs"))
             for (String skillBuff : section.getStringList("skill-buffs"))
@@ -81,6 +85,10 @@ public class SkillSlot implements Unlockable {
 
     public List<SkillBuffTrigger> getSkillBuffTriggers() {
         return skillBuffTriggers;
+    }
+
+    public boolean canManuallyBind() {
+        return canManuallyBind;
     }
 
     public boolean canPlaceSkill(ClassSkill classSkill) {

@@ -111,7 +111,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             if (config.contains("skill-slots." + i))
                 skillSlots.put(i, new SkillSlot(config.getConfigurationSection("skill-slots." + i)));
             else
-                skillSlots.put(i, new SkillSlot(i, 0, "true", "&eSkill Slot " + MMOCoreUtils.intToRoman(i), new ArrayList<>(), false, new ArrayList<>()));
+                skillSlots.put(i, new SkillSlot(i, 0, "true", "&eSkill Slot " + MMOCoreUtils.intToRoman(i), new ArrayList<>(), false, true, new ArrayList<>()));
         }
         for (String string : config.getStringList("display.lore"))
             description.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));

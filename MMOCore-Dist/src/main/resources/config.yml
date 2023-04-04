@@ -198,7 +198,7 @@ death-exp-loss:
   percent: 30
 
 #Maximum number of slot. This means that you can't unlock a slot greater than max-slots. (The slot count starts at 1 & end at max-slots).
-max-slots: 10
+max-slots: 8
 
 #If you want players to bound their passive skills.
 #If false, all the passive skills unlocked will be active

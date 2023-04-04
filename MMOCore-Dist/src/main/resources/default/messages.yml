@@ -203,6 +203,7 @@ upgrade-skill: '&eYour &6{skill} &eis now Level &6{level}&e!'
 not-unlocked-skill: '&cYou have not unlocked that skill yet.'
 no-skill-bound: '&cYou don''t have any skill bound to this slot.'
 not-compatible-skill: '&cThe selected skill is not compatible with this slot.'
+cant-manually-bind: "&cYou can't manually bind/unbind a skill to this slot."
 skill-max-level-hit: '&cYou already hit the max level for that skill.'
 no-skill-placeholder: 'No Skill Bound'
 not-skill-reallocation-point: '&cYou do not have 1 skill reallocation point.'

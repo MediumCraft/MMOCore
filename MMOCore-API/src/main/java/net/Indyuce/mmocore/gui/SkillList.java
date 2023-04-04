@@ -160,7 +160,7 @@ public class SkillList extends EditableInventory {
 
         @Override
         public ItemStack display(SkillViewerInventory inv, int n) {
-            if (!inv.getPlayerData().hasUnlocked("slot:" + n)) {
+            if (!inv.getPlayerData().hasUnlocked("slot:" + (n+1))) {
                 return new ItemStack(Material.AIR);
             }
             SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
@@ -403,6 +403,11 @@ public class SkillList extends EditableInventory {
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                         return;
                     }
+                    if(!playerData.getProfess().getSkillSlot(index).canManuallyBind()){
+                        MMOCore.plugin.configManager.getSimpleMessage("cant-manually-bind").send(player);
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                        return;
+                    }
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
                     playerData.unbindSkill(index);
                     open();
@@ -411,6 +416,12 @@ public class SkillList extends EditableInventory {
 
                 if (!playerData.hasSkillUnlocked(selected)) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                    return;
+                }
+
+                if(!skillSlot.canManuallyBind()){
+                    MMOCore.plugin.configManager.getSimpleMessage("cant-manually-bind").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
