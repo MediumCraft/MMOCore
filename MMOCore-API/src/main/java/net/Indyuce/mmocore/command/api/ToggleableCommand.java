@@ -32,7 +32,7 @@ public enum ToggleableCommand {
     PARTY("party", "Invite players in a party to split exp", config -> new PartyCommand(config)),
     GUILD("guild", "Show players in current guild", config -> new GuildCommand(config)),
     WITHDRAW("withdraw", "Withdraw money into coins and notes", config -> new WithdrawCommand(config), v -> MMOCore.plugin.hasEconomy() && MMOCore.plugin.economy.isValid(), "w"),
-    SKILL_TREES("skiltrees", "Open up the skill tree menu", config -> new SkillTreesCommand(config), "st", "trees", "tree"),
+    SKILL_TREES("skilltrees", "Open up the skill tree menu", config -> new SkillTreesCommand(config), "st", "trees", "tree"),
     DEPOSIT("deposit", "Open the currency deposit menu", config -> new DepositCommand(config), "d"),
     PVP_MODE("pvpmode", "Toggle on/off PVP mode.", config -> new PvpModeCommand(config), "pvp");
 

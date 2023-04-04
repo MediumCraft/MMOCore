@@ -18,6 +18,8 @@ public class SkillsCommand extends RegisteredCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
+		if (!sender.hasPermission("mmocore.skills"))
+			return false;
 		if (sender instanceof Player) {
 			PlayerData data = PlayerData.get((Player) sender);
 			MMOCommandEvent event = new MMOCommandEvent(data, "skills");
