@@ -116,8 +116,10 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                     MMOCore.log(Level.WARNING, "Could not load class info '" + key + "': " + exception.getMessage());
                 }
 
-
-        //These should be loaded after to make sure that the MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
+        /*
+         * These should be loaded after to make sure that the
+         * MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
+         */
         data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
         data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
         data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
@@ -125,6 +127,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         health = health == 0 ? 20 : health;
         health = Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         data.getPlayer().setHealth(health);
+
         data.setFullyLoaded();
     }
 
@@ -149,7 +152,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.mapSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
-        config.set("health", data.getHealth());
+        config.set("health",data.getHealth());
         config.set("mana", data.getMana());
         config.set("stellium", data.getStellium());
         config.set("stamina", data.getStamina());
