@@ -71,9 +71,11 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
         }
         data.setupSkillTree();
         Set<String> unlockedItems = new HashSet<>();
-        JsonArray unlockedItemsArray = new JsonParser().parse(result.getString("unlocked_items")).getAsJsonArray();
-        for (JsonElement item : unlockedItemsArray)
-            unlockedItems.add(item.getAsString());
+        if (!isEmpty(result.getString("unlocked_items"))) {
+            JsonArray unlockedItemsArray = new JsonParser().parse(result.getString("unlocked_items")).getAsJsonArray();
+            for (JsonElement item : unlockedItemsArray)
+                unlockedItems.add(item.getAsString());
+        }
         data.setUnlockedItems(unlockedItems);
         if (!isEmpty(result.getString("guild"))) {
             Guild guild = MMOCore.plugin.dataProvider.getGuildManager().getGuild(result.getString("guild"));
