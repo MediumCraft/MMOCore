@@ -25,6 +25,7 @@ import net.Indyuce.mmocore.api.player.profess.skillbinding.SkillSlot;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.quest.trigger.SkillBuffTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -1214,13 +1215,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void bindSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
         //Unbinds the previous skill (Important for passive skills.
+        String skillId = skill.getSkill().getHandler().getId();
         if (boundSkills.containsKey(slot))
             boundSkills.get(slot).unbind();
         if (slot >= 0) {
             //We apply the skill buffs associated with the slot to the skill.
-            profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger ->
-                    skillBuffTrigger.apply(this, skill.getSkill().getHandler().getId()));
-
+            for (SkillBuffTrigger skillBuffTrigger : profess.getSkillSlot(slot).getSkillBuffTriggers())
+                if (skillBuffTrigger.getTargetSkills().contains(skillId))
+                    skillBuffTrigger.apply(this, skill.getSkill().getHandler().getId());
 
             if (skill.getSkill().getTrigger().isPassive()) {
                 PassiveSkill passiveSkill = skill.toPassive(this);

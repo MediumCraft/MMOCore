@@ -37,6 +37,11 @@ public class SkillBuffTrigger extends Trigger implements Removable {
         skillBuff = new SkillBuff(buffKey, skillModifier, targetSkills, amount, ModifierType.valueOf(type));
     }
 
+
+    public List<String> getTargetSkills() {
+        return skillBuff.getSkills();
+    }
+
     @Override
     public void apply(PlayerData player) {
         if (player.getMMOPlayerData().getSkillBuffMap().hasSkillBuff(buffKey)) {
@@ -58,6 +63,7 @@ public class SkillBuffTrigger extends Trigger implements Removable {
     public void apply(PlayerData playerData, String skill) {
         skillBuff.register(playerData.getMMOPlayerData(), skill);
     }
+
     /**
      * Used by skill slots to remove a skillBuff from a specific skill dynamically chosen.
      */
