@@ -15,6 +15,7 @@ nodes:
     max-level: 1
     is-root: true
     size: 1
+    point-consumed: 1
     experience-table: skilltree_cooldown_reduction5
     lores:
       0:
@@ -27,6 +28,7 @@ nodes:
   a2:
     name: 'Cooldown Reduction'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_cooldown_reduction10
     coordinates:
@@ -41,6 +43,7 @@ nodes:
   a3:
     name: 'Cooldown Reduction'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_cooldown_reduction15
     coordinates:
@@ -57,6 +60,7 @@ nodes:
   b1:
     name: 'Critical Strike Chance'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_critical_strike_chance1
     coordinates:
@@ -71,6 +75,7 @@ nodes:
   b2:
     name: 'Critical Strike Chance'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_critical_strike_chance2
     coordinates:
@@ -85,6 +90,7 @@ nodes:
   b3:
     name: 'Critical Strike Chance'
     size: 1
+    point-consumed: 1
     max-children: 2
     experience-table: skilltree_critical_strike_chance3
     coordinates:
@@ -101,6 +107,7 @@ nodes:
   c1:
     name: 'Life Steal'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_lifesteal1
     coordinates:
@@ -115,6 +122,7 @@ nodes:
   c2:
     name: 'Life Steal'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_lifesteal2
     coordinates:
@@ -129,6 +137,7 @@ nodes:
   c3:
     name: 'Life Steal'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_lifesteal2
     coordinates:
@@ -145,6 +154,7 @@ nodes:
   d1:
     name: 'Damage Reduction'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_damage_reduction1
     coordinates:
@@ -159,6 +169,7 @@ nodes:
   d2:
     name: 'Damage Reduction'
     size: 1
+    point-consumed: 1
     max-children: 2
     experience-table: skilltree_damage_reduction2
     coordinates:
@@ -173,6 +184,7 @@ nodes:
   d3:
     name: 'Damage Reduction'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_damage_reduction2
     coordinates:
@@ -189,6 +201,7 @@ nodes:
   e1:
     name: 'Health Regeneration'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_health_regeneration1
     coordinates:
@@ -203,6 +216,7 @@ nodes:
   e2:
     name: 'Health Regeneration'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_health_regeneration2
     coordinates:
@@ -217,6 +231,7 @@ nodes:
   e3:
     name: 'Health Regeneration'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_health_regeneration2
     coordinates:
@@ -233,6 +248,7 @@ nodes:
   f1:
     name: 'Mana Regeneration'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_mana_regeneration1
     coordinates:
@@ -247,6 +263,7 @@ nodes:
   f2:
     name: 'Mana Regeneration'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_mana_regeneration2
     coordinates:
@@ -261,6 +278,7 @@ nodes:
   f3:
     name: 'Mana Regeneration'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_mana_regeneration2
     coordinates:
@@ -277,6 +295,7 @@ nodes:
   g1:
     name: 'Magic Damage'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_magic_damage1
     coordinates:
@@ -291,6 +310,7 @@ nodes:
   g2:
     name: 'Magic Damage'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_magic_damage2
     coordinates:
@@ -305,6 +325,7 @@ nodes:
   g3:
     name: 'Magic Damage'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_magic_damage2
     coordinates:
@@ -321,6 +342,7 @@ nodes:
   h1:
     name: 'Max Health'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_max_health2
     coordinates:
@@ -335,6 +357,7 @@ nodes:
   h2:
     name: 'Max Health'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_max_health4
     coordinates:
@@ -349,6 +372,7 @@ nodes:
   h3:
     name: 'Max Health'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_max_health4
     coordinates:
@@ -365,6 +389,7 @@ nodes:
   j1:
     name: 'Weapon Damage'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_weapon_damage2
     coordinates:
@@ -379,6 +404,7 @@ nodes:
   j2:
     name: 'Weapon Damage'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_weapon_damage4
     coordinates:
@@ -393,6 +419,7 @@ nodes:
   j3:
     name: 'Weapon Damage'
     size: 1
+    point-consumed: 1
     max-children: 1
     experience-table: skilltree_weapon_damage4
     coordinates:
