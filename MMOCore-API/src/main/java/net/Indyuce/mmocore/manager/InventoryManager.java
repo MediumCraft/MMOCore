@@ -22,7 +22,6 @@ public class InventoryManager {
     public static final ClassSelect CLASS_SELECT = new ClassSelect();
     public static final SubclassSelect SUBCLASS_SELECT = new SubclassSelect();
     public static final Map<String, ClassConfirmation> CLASS_CONFIRM = new HashMap<>();
-    public static final SubclassConfirmation SUBCLASS_CONFIRM = new SubclassConfirmation();
     public static final WaypointViewer WAYPOINTS = new WaypointViewer();
     public static final EditableFriendList FRIEND_LIST = new EditableFriendList();
     public static final EditableFriendRemoval FRIEND_REMOVAL = new EditableFriendRemoval();
@@ -33,22 +32,39 @@ public class InventoryManager {
     public static final QuestViewer QUEST_LIST = new QuestViewer();
     public static final AttributeView ATTRIBUTE_VIEW = new AttributeView();
     public static final SkillTreeViewer TREE_VIEW = new SkillTreeViewer();
-    public static final List<EditableInventory> list = new ArrayList(Arrays.asList(PLAYER_STATS, ATTRIBUTE_VIEW, TREE_VIEW, SKILL_LIST, CLASS_SELECT, SUBCLASS_SELECT, SUBCLASS_CONFIRM, QUEST_LIST, WAYPOINTS, FRIEND_LIST, FRIEND_REMOVAL, PARTY_VIEW, PARTY_CREATION, GUILD_VIEW, GUILD_CREATION));
+
+    public static final List<EditableInventory> list = new ArrayList(Arrays.asList(PLAYER_STATS, ATTRIBUTE_VIEW, TREE_VIEW, SKILL_LIST, CLASS_SELECT, SUBCLASS_SELECT, QUEST_LIST, WAYPOINTS, FRIEND_LIST, FRIEND_REMOVAL, PARTY_VIEW, PARTY_CREATION, GUILD_VIEW, GUILD_CREATION));
+
+    private static List<String> defaultClass = Arrays.asList(new String[]{"human", "mage", "paladin", "warrior", "rogue", "arcane-mage"});
 
     public static void load() {
+        String classConfirmFolder = "gui/class-confirm";
+        try {
+            MMOCore.plugin.configManager.loadDefaultFile(classConfirmFolder, "class-confirm-default.yml");
+        } catch (Exception exception) {
+            MMOCore.log(Level.WARNING, "Could not load inventory 'class-confirm/class-confirm-default" + "': " + exception.getMessage());
+        }
         for (PlayerClass playerClass : MMOCore.plugin.classManager.getAll()) {
-            ClassConfirmation GUI = new ClassConfirmation(playerClass);
+            String classId = MMOCoreUtils.ymlName(playerClass.getId());
+            ConfigFile configFile = new ConfigFile(classConfirmFolder, "class-confirm-" + classId);
+            ClassConfirmation GUI;
+            if (configFile.exists())
+                GUI = new ClassConfirmation(playerClass, false);
+            else {
+                GUI = new ClassConfirmation(playerClass, true);
+            }
             CLASS_CONFIRM.put(MMOCoreUtils.ymlName(playerClass.getId()), GUI);
-            list.add(GUI);
+            GUI.reload(new ConfigFile("/" +classConfirmFolder, GUI.getId()).getConfig());
         }
 
-        list.forEach(inv -> {
-            String folder="gui"+(inv instanceof ClassConfirmation?"/class-confirm":"");
+        list.forEach(inv ->
+        {
+            String folder = "gui" + (inv instanceof ClassConfirmation ? "/class-confirm" : "");
             try {
                 MMOCore.plugin.configManager.loadDefaultFile(folder, inv.getId() + ".yml");
-                inv.reload(new ConfigFile("/"+folder, inv.getId()).getConfig());
+                inv.reload(new ConfigFile("/" + folder, inv.getId()).getConfig());
             } catch (Exception exception) {
-                MMOCore.log(Level.WARNING, "Could not load inventory '" +(inv instanceof ClassConfirmation?"class-confirm/":""+ inv.getId() + "': " + exception.getMessage()));
+                MMOCore.log(Level.WARNING, "Could not load inventory '" + (inv instanceof ClassConfirmation ? "class-confirm/" : "") + inv.getId() + "': " + exception.getMessage());
             }
         });
     }
