@@ -248,6 +248,7 @@ public class SkillTreeViewer extends EditableInventory {
                 holders.register("max-level", node.getMaxLevel());
                 holders.register("max-children", node.getMaxChildren());
                 holders.register("size", node.getSize());
+                holders.register("point-consumed", node.getSkillTreePointsConsumed());
             }
             int maxPointSpent = inv.getSkillTree().getMaxPointSpent();
             holders.register("max-point-spent", maxPointSpent == Integer.MAX_VALUE ? "∞" : maxPointSpent);
@@ -367,7 +368,7 @@ public class SkillTreeViewer extends EditableInventory {
                 open();
             }
             if (item.getFunction().equals("reallocation")) {
-                int spent = playerData.countSkillTreePoints(skillTree);
+                int spent = playerData.getPointSpent(skillTree);
                 if (spent < 1) {
                     MMOCore.plugin.configManager.getSimpleMessage("no-skill-tree-points-spent").send(player);
                     MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
@@ -381,7 +382,7 @@ public class SkillTreeViewer extends EditableInventory {
                     event.setCancelled(true);
                     return;
                 } else {
-                    int reallocated = playerData.countSkillTreePoints(skillTree);
+                    int reallocated = playerData.getPointSpent(skillTree);
                     //We remove all the nodeStates progress
                     playerData.giveSkillTreePoints(skillTree.getId(), reallocated);
                     playerData.giveSkillTreeReallocationPoints(-1);
@@ -446,7 +447,7 @@ public class SkillTreeViewer extends EditableInventory {
 
                     //Else the player doesn't doesn't have the skill tree points
                     else {
-                        MMOCore.plugin.configManager.getSimpleMessage("not-enough-skill-tree-points").send(player);
+                        MMOCore.plugin.configManager.getSimpleMessage("not-enough-skill-tree-points", "point", "" + node.getSkillTreePointsConsumed()).send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
                         event.setCancelled(true);
                         return;

@@ -60,7 +60,7 @@ public class SkillTreeNode implements ExperienceObject {
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
-        skillTreePointsConsumed=config.getInt("skill-tree-points",1);
+        skillTreePointsConsumed=config.getInt("point-consumed",1);
         Validate.isTrue(skillTreePointsConsumed>0,"The skill tree points consumed by a node must be greater than 0.");
         if (config.contains("lores"))
             for (String key : config.getConfigurationSection("lores").getKeys(false))

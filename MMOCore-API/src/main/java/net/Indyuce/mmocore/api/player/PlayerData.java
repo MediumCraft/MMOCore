@@ -206,9 +206,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skillTreePoints.put(id, skillTreePoints.getOrDefault(id, 0) + val);
     }
 
-    public int countSkillTreePoints(SkillTree skillTree) {
-        return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(node -> nodeLevels.get(node) * node.getSkillTreePointsConsumed()).sum();
-    }
 
     /**
      * Make a copy to make sure that the object
@@ -339,7 +336,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
-        int delta = nodeLevel - nodeLevels.getOrDefault(node, 0);
+        int delta = (nodeLevel - nodeLevels.getOrDefault(node, 0))*node.getSkillTreePointsConsumed();
         pointSpent.put(node.getTree(), pointSpent.getOrDefault(node.getTree(), 0) + delta);
         nodeLevels.put(node, nodeLevel);
     }
