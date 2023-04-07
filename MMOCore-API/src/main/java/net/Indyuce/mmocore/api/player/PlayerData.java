@@ -374,6 +374,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Override
     public void close() {
 
+        health = getPlayer().getHealth();
+
         // Close combat handler
         combat.close();
 
