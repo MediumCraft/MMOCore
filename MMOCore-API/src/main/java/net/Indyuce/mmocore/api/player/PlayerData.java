@@ -206,9 +206,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skillTreePoints.put(id, skillTreePoints.getOrDefault(id, 0) + val);
     }
 
-    public int countSkillTreePoints(SkillTree skillTree) {
-        return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(nodeLevels::get).sum();
-    }
 
     /**
      * Make a copy to make sure that the object
@@ -262,7 +259,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         //Check the State of the node
         if (nodeStatus != NodeStatus.UNLOCKED && nodeStatus != NodeStatus.UNLOCKABLE)
             return false;
-        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) > 0 || skillTreePoints.getOrDefault("global", 0) > 0);
+        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) + skillTreePoints.getOrDefault("global", 0) >= node.getSkillTreePointsConsumed());
     }
 
     /**
@@ -277,10 +274,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         if (nodeStates.get(node) == NodeStatus.UNLOCKABLE)
             setNodeState(node, NodeStatus.UNLOCKED);
-        if (skillTreePoints.get(node.getTree().getId()) > 0)
-            withdrawSkillTreePoints(node.getTree().getId(), 1);
-        else
-            withdrawSkillTreePoints("global", 1);
+        int pointToWithdraw = node.getSkillTreePointsConsumed();
+        if (skillTreePoints.get(node.getTree().getId()) > 0) {
+            int pointWithdrawn = Math.min(pointToWithdraw, skillTreePoints.get(node.getTree().getId()));
+            withdrawSkillTreePoints(node.getTree().getId(), pointWithdrawn);
+            pointToWithdraw -= pointWithdrawn;
+        }
+        if (pointToWithdraw > 0)
+            withdrawSkillTreePoints("global", pointToWithdraw);
         //We unload the nodeStates map (for the skill tree) and reload it completely
         for (SkillTreeNode node1 : node.getTree().getNodes())
             nodeStates.remove(node1);
@@ -335,7 +336,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
-        int delta = nodeLevel - nodeLevels.getOrDefault(node, 0);
+        int delta = (nodeLevel - nodeLevels.getOrDefault(node, 0))*node.getSkillTreePointsConsumed();
         pointSpent.put(node.getTree(), pointSpent.getOrDefault(node.getTree(), 0) + delta);
         nodeLevels.put(node, nodeLevel);
     }
@@ -853,7 +854,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 new ConfigMessage("level-up").addPlaceholders("level", String.valueOf(level)).send(getPlayer());
                 MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
                 new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
-                //TEST
             }
             getStats().updateStats();
         }
@@ -953,7 +953,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public double getHealth() {
-        return isOnline() ? getPlayer().getHealth():health ;
+        return isOnline() ? getPlayer().getHealth() : health;
     }
 
     @Override

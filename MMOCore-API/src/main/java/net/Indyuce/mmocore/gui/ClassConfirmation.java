@@ -26,9 +26,9 @@ public class ClassConfirmation extends EditableInventory {
 
     private final PlayerClass playerClass;
 
-    public ClassConfirmation(PlayerClass playerClass) {
-        super("class-confirm-"+ UtilityMethods.ymlName(playerClass.getId()));
-        this.playerClass=playerClass;
+    public ClassConfirmation(PlayerClass playerClass, boolean isDefault) {
+        super("class-confirm-" + (isDefault ? "default" : UtilityMethods.ymlName(playerClass.getId())));
+        this.playerClass = playerClass;
     }
 
     @Override
