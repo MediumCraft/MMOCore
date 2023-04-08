@@ -13,10 +13,10 @@ items:
         item: RED_STAINED_GLASS_PANE
         name: '&aBack to Class Selection'
         lore: []
-    class:
-        slots: [13,12,14,11,15,10,16]
-        function: class
-        name: '&a&lThe {name}'
+    arcane-mage:
+        slots: [13]
+        function: sub-class-arcane-mage
+        name: '&a&lThe Arcane Mage'
         lore:
         - '{lore}'
         - ''

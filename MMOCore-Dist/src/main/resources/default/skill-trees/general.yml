@@ -18,6 +18,7 @@ nodes:
     max-level: 1
     is-root: true
     size: 1
+    point-consumed: 1
     experience-table: skilltree_mana_regeneration1
     lores:
       0:
@@ -36,6 +37,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_mana_regeneration2
     lores:
       0:
@@ -54,6 +57,8 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_mana_regeneration2
     lores:
       0:
@@ -71,6 +76,8 @@ nodes:
     max-level: 1
     is-root: true
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_health_regeneration1
     lores:
       0:
@@ -90,6 +97,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_health_regeneration2
     lores:
       0:
@@ -109,6 +118,8 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_health_regeneration2
     lores:
       0:
@@ -126,6 +137,8 @@ nodes:
     max-level: 1
     is-root: true
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_cooldown_reduction5
     lores:
       0:
@@ -145,6 +158,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_cooldown_reduction10
     lores:
       0:
@@ -164,6 +179,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_cooldown_reduction15
     lores:
       0:
@@ -186,6 +203,8 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_critical_strike_chance1
     lores:
       0:
@@ -205,6 +224,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_critical_strike_chance2
     lores:
       0:
@@ -224,6 +245,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_critical_strike_chance5
     lores:
       0:
@@ -245,6 +268,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_damage_reduction1
     lores:
       0:
@@ -264,6 +289,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_damage_reduction2
     lores:
       0:
@@ -283,6 +310,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_damage_reduction2
     lores:
       0:
@@ -303,6 +332,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_weapon_damage1
     lores:
       0:
@@ -322,6 +353,8 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_weapon_damage2
     lores:
       0:
@@ -341,6 +374,8 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_weapon_damage2
     lores:
       0:
@@ -362,6 +397,8 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_lifesteal3
     lores:
       0:
@@ -382,6 +419,8 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_max_health5
     lores:
       0:
@@ -401,6 +440,8 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
+    point-consumed: 1
     experience-table: skilltree_magic_damage3
     lores:
       0:

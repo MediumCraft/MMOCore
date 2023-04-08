@@ -83,6 +83,7 @@ items:
       - '&7Current Level: &6{current-level}'
       - '&7Max Level: &6{max-level}'
       - '&7Max Children: &6{max-children}'
+      - '&7Points required: &6{point-consumed}'
       - '&7Size: &6{size}'
       - '--------------------'
       - '&7⧆ &6Requirements: '

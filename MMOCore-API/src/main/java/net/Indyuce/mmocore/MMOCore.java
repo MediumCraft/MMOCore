@@ -343,7 +343,6 @@ public class MMOCore extends JavaPlugin {
         statManager.initialize(clearBefore);
         professionManager.initialize(clearBefore);
 
-        InventoryManager.load();
         skillTreeManager.initialize(clearBefore);
         classManager.initialize(clearBefore);
         questManager.initialize(clearBefore);
@@ -353,6 +352,8 @@ public class MMOCore extends JavaPlugin {
         requestManager.initialize(clearBefore);
         soundManager.initialize(clearBefore);
         configItems.initialize(clearBefore);
+        //Needs to be loaded after the class manager.
+        InventoryManager.load();
 
         if (getConfig().isConfigurationSection("action-bar"))
             actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));

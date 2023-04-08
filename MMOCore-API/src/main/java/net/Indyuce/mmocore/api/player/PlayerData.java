@@ -12,15 +12,12 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
-import net.Indyuce.mmocore.api.event.unlocking.ItemLockedEvent;
-import net.Indyuce.mmocore.api.event.unlocking.ItemUnlockedEvent;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.player.profess.skillbinding.BoundSkillInfo;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
@@ -31,12 +28,14 @@ import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.ExperienceTableClaimer;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
+import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
-import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
-import net.Indyuce.mmocore.party.provided.Party;
+import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.player.CombatHandler;
+import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
@@ -46,6 +45,7 @@ import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.Indyuce.mmocore.skilltree.tree.display.DisplayInfo;
 import net.Indyuce.mmocore.skilltree.tree.display.Icon;
+import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -79,10 +79,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     @Nullable
     private PlayerClass profess;
-    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints;
-    private int skillTreeReallocationPoints, skillReallocationPoints;
+    private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
+    /**
+     * Health is stored in playerData because when saving the playerData we can't access the player health anymore as the payer is Offline.
+     */
+    private double health;
     private Guild guild;
     private SkillCastingHandler skillCasting;
     private final PlayerQuests questData;
@@ -263,7 +266,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         //Check the State of the node
         if (nodeStatus != NodeStatus.UNLOCKED && nodeStatus != NodeStatus.UNLOCKABLE)
             return false;
-        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) > 0 || skillTreePoints.getOrDefault("global", 0) > 0);
+        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) + skillTreePoints.getOrDefault("global", 0) >= node.getSkillTreePointsConsumed());
     }
 
     /**
@@ -278,10 +281,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         if (nodeStates.get(node) == NodeStatus.UNLOCKABLE)
             setNodeState(node, NodeStatus.UNLOCKED);
-        if (skillTreePoints.get(node.getTree().getId()) > 0)
-            withdrawSkillTreePoints(node.getTree().getId(), 1);
-        else
-            withdrawSkillTreePoints("global", 1);
+        int pointToWithdraw = node.getSkillTreePointsConsumed();
+        if (skillTreePoints.get(node.getTree().getId()) > 0) {
+            int pointWithdrawn = Math.min(pointToWithdraw, skillTreePoints.get(node.getTree().getId()));
+            withdrawSkillTreePoints(node.getTree().getId(), pointWithdrawn);
+            pointToWithdraw -= pointWithdrawn;
+        }
+        if (pointToWithdraw > 0)
+            withdrawSkillTreePoints("global", pointToWithdraw);
         //We unload the nodeStates map (for the skill tree) and reload it completely
         for (SkillTreeNode node1 : node.getTree().getNodes())
             nodeStates.remove(node1);
@@ -336,7 +343,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
-        int delta = nodeLevel - nodeLevels.getOrDefault(node, 0);
+        int delta = (nodeLevel - nodeLevels.getOrDefault(node, 0))*node.getSkillTreePointsConsumed();
         pointSpent.put(node.getTree(), pointSpent.getOrDefault(node.getTree(), 0) + delta);
         nodeLevels.put(node, nodeLevel);
     }
@@ -430,6 +437,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public void close() {
+
+        health = getPlayer().getHealth();
 
         // Remove from party if it is MMO Party Module
         if (MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
@@ -989,7 +998,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     @Override
     public double getHealth() {
-        return getPlayer().getHealth();
+        return isOnline() ? getPlayer().getHealth() : health;
     }
 
     @Override

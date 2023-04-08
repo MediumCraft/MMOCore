@@ -45,13 +45,13 @@ public abstract class PlayerDataManager {
      */
     public void unregisterSafe(PlayerData playerData) {
 
-        // Save data async if required
-        if (playerData.isFullyLoaded())
-            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> saveData(playerData, true));
-
         // Close and unregister data instantly if no error occured
         playerData.close();
         data.remove(playerData.getUniqueId());
+
+        // Save data async if required
+        if (playerData.isFullyLoaded())
+            Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> saveData(playerData, true));
     }
 
     /**

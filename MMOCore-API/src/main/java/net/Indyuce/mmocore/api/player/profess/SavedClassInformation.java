@@ -316,7 +316,9 @@ public class SavedClassInformation {
         player.setMana(mana);
         player.setStellium(stellium);
         player.setStamina(stamina);
-
+        double health=this.health;
+        health = health == 0 ? 20 : health;
+        player.getPlayer().setHealth(Math.min(health,player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
         // Updates level on exp bar
         player.refreshVanillaExp();
     }

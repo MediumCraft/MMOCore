@@ -18,6 +18,7 @@ nodes:
     max-level: 1
     is-root: true
     size: 1
+    point-consumed: 1
     experience-table: skilltree_attack_speed5
     lores:
       0:
@@ -36,6 +37,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_attack_speed10
     lores:
       0:
@@ -54,6 +56,7 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_attack_speed15
     lores:
       0:
@@ -75,6 +78,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_health_regeneration1
     lores:
       0:
@@ -93,6 +97,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_health_regeneration2
     lores:
       0:
@@ -111,6 +116,7 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_health_regeneration2
     lores:
       0:
@@ -132,6 +138,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_physical_damage_reduction5
     lores:
       0:
@@ -150,6 +157,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_physical_damage_reduction10
     lores:
       0:
@@ -168,6 +176,7 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_physical_damage_reduction15
     lores:
       0:
@@ -189,6 +198,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_parry_rating5
     lores:
       0:
@@ -207,6 +217,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_parry_rating5
     lores:
       0:
@@ -225,6 +236,7 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_parry_rating10
     lores:
       0:
@@ -246,6 +258,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_knockback_resistance5
     lores:
       0:
@@ -264,6 +277,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_knockback_resistance5
     lores:
       0:
@@ -282,6 +296,7 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_knockback_resistance10
     lores:
       0:
@@ -303,6 +318,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_dodge_rating2
     lores:
       0:
@@ -321,6 +337,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_dodge_rating3
     lores:
       0:
@@ -339,6 +356,7 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_dodge_rating5
     lores:
       0:
@@ -360,6 +378,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_weapon_damage1
     lores:
       0:
@@ -378,6 +397,7 @@ nodes:
 
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_weapon_damage2
     lores:
       0:
@@ -396,6 +416,7 @@ nodes:
         
     max-level: 1
     size: 1
+    point-consumed: 1
     experience-table: skilltree_weapon_damage2
     lores:
       0:

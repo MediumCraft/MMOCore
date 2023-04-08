@@ -22,6 +22,10 @@ public class SkillTreeNode implements ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
     private IntegerCoordinates coordinates;
+    /**
+     * The number of skill tree points this node requires.
+     */
+    private final int skillTreePointsConsumed;
     private boolean isRoot;
 
     /**
@@ -56,7 +60,8 @@ public class SkillTreeNode implements ExperienceObject {
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
-
+        skillTreePointsConsumed=config.getInt("point-consumed",1);
+        Validate.isTrue(skillTreePointsConsumed>0,"The skill tree points consumed by a node must be greater than 0.");
         if (config.contains("lores"))
             for (String key : config.getConfigurationSection("lores").getKeys(false))
                 try {
@@ -100,6 +105,10 @@ public class SkillTreeNode implements ExperienceObject {
         children.add(child);
     }
 
+    public int getSkillTreePointsConsumed() {
+        return skillTreePointsConsumed;
+    }
+
     public void setCoordinates(IntegerCoordinates coordinates) {
         this.coordinates = coordinates;
     }
@@ -111,6 +120,7 @@ public class SkillTreeNode implements ExperienceObject {
     public boolean hasParent(SkillTreeNode parent) {
         return softParents.containsKey(parent) || strongParents.containsKey(parent);
     }
+
 
     public int getMaxLevel() {
         return maxLevel;

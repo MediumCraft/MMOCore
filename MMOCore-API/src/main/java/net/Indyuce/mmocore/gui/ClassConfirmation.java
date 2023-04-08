@@ -1,12 +1,12 @@
 package net.Indyuce.mmocore.gui;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerChangeClassEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
@@ -21,21 +21,14 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ClassConfirmation extends EditableInventory {
 
-    /**
-     * This enables to configure the name of the
-     * class confirmation GUI (for custom GUI textures).
-     */
-    private final Map<String, String> specificNames = new HashMap<>();
+    private final PlayerClass playerClass;
 
-    public ClassConfirmation() {
-        super("class-confirm");
+    public ClassConfirmation(PlayerClass playerClass, boolean isDefault) {
+        super("class-confirm-" + (isDefault ? "default" : UtilityMethods.ymlName(playerClass.getId())));
+        this.playerClass = playerClass;
     }
 
     @Override
@@ -43,21 +36,13 @@ public class ClassConfirmation extends EditableInventory {
         return function.equalsIgnoreCase("yes") ? new YesItem(config) : new SimplePlaceholderItem(config);
     }
 
-    public GeneratedInventory newInventory(PlayerData data, PlayerClass profess, PluginInventory last) {
-        return new ClassConfirmationInventory(data, this, profess, last);
+    public GeneratedInventory newInventory(PlayerData data, PluginInventory last) {
+        return new ClassConfirmationInventory(data, this, playerClass, last);
     }
 
     @Override
     public void reload(FileConfiguration config) {
         super.reload(config);
-
-        specificNames.clear();
-
-        if (config.contains("class-specific-name")) {
-            final ConfigurationSection section = config.getConfigurationSection("class-specific-name");
-            for (String key : section.getKeys(false))
-                specificNames.put(key, section.getString(key));
-        }
     }
 
     public class UnlockedItem extends InventoryItem<ClassConfirmationInventory> {
@@ -154,9 +139,7 @@ public class ClassConfirmation extends EditableInventory {
 
         @Override
         public String calculateName() {
-            final String professKey = MMOCoreUtils.ymlName(profess.getId());
-            final @Nullable String found = specificNames.get(professKey);
-            return found == null ? getName().replace("{class}", profess.getName()) : found;
+            return getName().replace("{class}", profess.getName());
         }
     }
 }

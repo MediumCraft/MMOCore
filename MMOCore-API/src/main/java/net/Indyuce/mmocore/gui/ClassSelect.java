@@ -1,18 +1,21 @@
 package net.Indyuce.mmocore.gui;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +27,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ClassSelect extends EditableInventory {
@@ -33,7 +37,7 @@ public class ClassSelect extends EditableInventory {
 
     @Override
     public InventoryItem load(String function, ConfigurationSection config) {
-        return function.equals("class") ? new ClassItem(config) : new SimplePlaceholderItem(config);
+        return function.startsWith("class") ? new ClassItem(config) : new SimplePlaceholderItem(config);
     }
 
     public GeneratedInventory newInventory(PlayerData data) {
@@ -43,10 +47,13 @@ public class ClassSelect extends EditableInventory {
     public class ClassItem extends SimplePlaceholderItem<ProfessSelectionInventory> {
         private final String name;
         private final List<String> lore;
+        private final PlayerClass playerClass;
 
         public ClassItem(ConfigurationSection config) {
             super(Material.BARRIER, config);
-
+            Validate.isTrue(config.getString("function").length()>6,"Couldn't find the class associated to: "+config.getString("function"));
+            String classId = UtilityMethods.enumName(config.getString("function").substring(6));
+            this.playerClass = Objects.requireNonNull(MMOCore.plugin.classManager.get(classId),classId+" does not correspond to any classId.");
             this.name = config.getString("name");
             this.lore = config.getStringList("lore");
         }
@@ -57,36 +64,34 @@ public class ClassSelect extends EditableInventory {
 
         @Override
         public ItemStack display(ProfessSelectionInventory inv, int n) {
-            if (n >= inv.classes.size())
-                return null;
-
-            PlayerClass profess = inv.classes.get(n);
-            ItemStack item = profess.getIcon();
+            ItemStack item = playerClass.getIcon();
             ItemMeta meta = item.getItemMeta();
             if (hideFlags())
                 meta.addItemFlags(ItemFlag.values());
-            meta.setDisplayName(MythicLib.plugin.parseColors(name).replace("{name}", profess.getName()));
+            meta.setDisplayName(MythicLib.plugin.parseColors(name).replace("{name}", playerClass.getName()));
             List<String> lore = new ArrayList<>(this.lore);
 
             int index = lore.indexOf("{lore}");
             if (index >= 0) {
                 lore.remove(index);
-                for (int j = 0; j < profess.getDescription().size(); j++)
-                    lore.add(index + j, profess.getDescription().get(j));
+                for (int j = 0; j < playerClass.getDescription().size(); j++)
+                    lore.add(index + j, playerClass.getDescription().get(j));
             }
 
             index = lore.indexOf("{attribute-lore}");
             if (index >= 0) {
                 lore.remove(index);
-                for (int j = 0; j < profess.getAttributeDescription().size(); j++)
-                    lore.add(index + j, profess.getAttributeDescription().get(j));
+                for (int j = 0; j < playerClass.getAttributeDescription().size(); j++)
+                    lore.add(index + j, playerClass.getAttributeDescription().get(j));
             }
 
-            meta.getPersistentDataContainer().set(new NamespacedKey(MMOCore.plugin, "class_id"), PersistentDataType.STRING, profess.getId());
+            meta.getPersistentDataContainer().set(new NamespacedKey(MMOCore.plugin, "class_id"), PersistentDataType.STRING, playerClass.getId());
             meta.setLore(lore);
             item.setItemMeta(meta);
             return item;
         }
+
+
     }
 
     public class ProfessSelectionInventory extends GeneratedInventory {
@@ -104,10 +109,8 @@ public class ClassSelect extends EditableInventory {
 
         @Override
         public void whenClicked(InventoryClickContext context, InventoryItem item) {
-            if (item.getFunction().equals("class")) {
-                String classId = context.getClickedItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(MMOCore.plugin, "class_id"), PersistentDataType.STRING);
-                if (classId.equals(""))
-                    return;
+            if (item instanceof ClassItem) {
+                PlayerClass profess = ((ClassItem) item).playerClass;
 
                 if (playerData.getClassPoints() < 1) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
@@ -115,7 +118,6 @@ public class ClassSelect extends EditableInventory {
                     return;
                 }
 
-                final PlayerClass profess = MMOCore.plugin.classManager.get(classId);
                 if (profess.hasOption(ClassOption.NEEDS_PERMISSION) && !player.hasPermission("mmocore.class." + profess.getId().toLowerCase())) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
                     new ConfigMessage("no-permission-for-class").send(player);
@@ -129,7 +131,7 @@ public class ClassSelect extends EditableInventory {
                 }
 
                 final PlayerClass playerClass = findDeepestSubclass(playerData, profess);
-                InventoryManager.CLASS_CONFIRM.newInventory(playerData, playerClass, this).open();
+                InventoryManager.CLASS_CONFIRM.get(MMOCoreUtils.ymlName(playerClass.getId())).newInventory(playerData, this).open();
             }
         }
     }

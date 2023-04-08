@@ -182,12 +182,19 @@ public class ConfigManager {
     }
 
     public void loadDefaultFile(String path, String name) {
-        String newPath = path.isEmpty() ? "" : "/" + path;
-        File folder = new File(MMOCore.plugin.getDataFolder() + (newPath));
-        if (!folder.exists()) folder.mkdir();
+        String newPath ="";
+        if(!path.isEmpty()){
+            String[] subpaths = path.split("/");
+            for (String subpath : subpaths) {
+                newPath+="/"+subpath;
+                File folder = new File(MMOCore.plugin.getDataFolder() + (newPath));
+                if (!folder.exists()) folder.mkdir();
+            }
+        }
 
         File file = new File(MMOCore.plugin.getDataFolder() + (newPath), name);
         if (!file.exists()) try {
+            MMOCore.log("default/" + (path.isEmpty() ? "" : path + "/") + name);
             Files.copy(MMOCore.plugin.getResource("default/" + (path.isEmpty() ? "" : path + "/") + name), file.getAbsoluteFile().toPath());
         } catch (IOException e) {
             e.printStackTrace();
