@@ -1,12 +1,10 @@
 package net.Indyuce.mmocore.player;
 
-import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
-import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * All the class-specific information i.e information being saved
@@ -43,11 +41,11 @@ public interface ClassDataContainer {
 
     Map<String, Integer> mapSkillTreePoints();
 
-    List<ClassSkill> getBoundSkills();
-
-    List<PassiveSkill> getBoundPassiveSkills();
+    Map<Integer,String> mapBoundSkills();
 
     Map<SkillTreeNode, Integer> getNodeLevels();
 
     Map<String, Integer> getNodeTimesClaimed();
+
+    Set<String> getUnlockedItems();
 }

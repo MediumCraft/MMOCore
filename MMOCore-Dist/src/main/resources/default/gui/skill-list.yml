@@ -46,26 +46,9 @@ items:
       - '&eCosts 1 skill reallocation point.'
       - '&e◆ Skill Reallocation Points: &6{points}'
 
-
-  passive-skill-slot:
-    slots: [ 7,16,25,34,43,52 ]
-    function: passive-slot
-    item: BOOK
-
-    # Material used when the slot is empty
-    empty-item: BLUE_DYE
-
-    name: '&aPassive Skill Slot {slot}'
-    no-skill: '&cNone'
-    lore:
-      - '&7Current Passive Skill: &6{skill}'
-      - ''
-      - '&e► Left click to bind {selected}.'
-      - '&e► Right click to unbind.'
-
-  skill-slot:
+  slot:
     slots: [ 8,17,26,35,44,53 ]
-    function: active-slot
+    function: slot
     item: BOOK
 
     # Material used when the slot is empty

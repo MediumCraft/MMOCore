@@ -19,10 +19,19 @@ public class DefaultMMOLoader extends MMOLoader {
     public Trigger loadTrigger(MMOLineConfig config) {
         if (config.getKey().equals("from"))
             return new FromTrigger(config);
+
         if (config.getKey().equals("stat"))
             return new StatTrigger(config);
+
+        if (config.getKey().equals("unlock_skill"))
+            return new UnlockSkillTrigger(config);
+
+        if (config.getKey().equals("skill_buff"))
+            return new SkillBuffTrigger(config);
+
         if (config.getKey().equals("message"))
             return new MessageTrigger(config);
+
         if (config.getKey().equals("sound") || config.getKey().equals("playsound"))
             return new SoundTrigger(config);
 

@@ -5,6 +5,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -105,15 +106,16 @@ public class ExperienceItem {
      * Used when the player level is reset to 0 ( reallocate point in skill tree for instance)
      * Creates an opposite playerModifier to compensate all the effect that existed before.
      */
-    public void removeStatTriggers(PlayerData playerData) {
+    public void removeTriggers(PlayerData playerData) {
         for (Trigger trigger : triggers) {
-            if (trigger instanceof StatTrigger statTrigger)
-                statTrigger.remove(playerData);
+            if (trigger instanceof Removable)
+                ((Removable) trigger).remove(playerData);
         }
     }
 
     /**
      * Used when a player connects back to give back all the stats that he should have.
+     *
      * @param playerData
      */
     public void applyStatTriggers(PlayerData playerData) {

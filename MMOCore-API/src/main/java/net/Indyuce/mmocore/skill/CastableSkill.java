@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.skill;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.comp.flags.CustomFlag;
 import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
 import io.lumine.mythic.lib.skill.Skill;
@@ -49,13 +50,13 @@ public class CastableSkill extends Skill {
         }
 
         // Mana cost
-        if (playerData.getMana() < getModifier("mana")) {
-            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana-required",MythicLib.plugin.getMMOConfig().decimal.format((getModifier("mana")-playerData.getMana())),"mana", playerData.getProfess().getManaDisplay().getName()).send(playerData.getPlayer());
+        if (playerData.getMana() < getModifier("mana",playerData.getMMOPlayerData())) {
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.no-mana", "mana-required",MythicLib.plugin.getMMOConfig().decimal.format((getModifier("mana",playerData.getMMOPlayerData())-playerData.getMana())),"mana", playerData.getProfess().getManaDisplay().getName()).send(playerData.getPlayer());
             return false;
         }
 
         // Stamina cost
-        if (playerData.getStamina() < getModifier("stamina")) {
+        if (playerData.getStamina() < getModifier("stamina",skillMeta.getCaster().getData())) {
             if (loud) MMOCore.plugin.configManager.getSimpleMessage("casting.no-stamina").send(playerData.getPlayer());
             return false;
         }
@@ -76,11 +77,11 @@ public class CastableSkill extends Skill {
 
             // Cooldown
             double flatCooldownReduction = Math.max(0, Math.min(1, skillMeta.getCaster().getStat("COOLDOWN_REDUCTION") / 100));
-            CooldownInfo cooldownHandler = skillMeta.getCaster().getData().getCooldownMap().applyCooldown(this, getModifier("cooldown"));
+            CooldownInfo cooldownHandler = skillMeta.getCaster().getData().getCooldownMap().applyCooldown(this, getModifier("cooldown",casterData.getMMOPlayerData()));
             cooldownHandler.reduceInitialCooldown(flatCooldownReduction);
 
-            casterData.giveMana(-getModifier("mana"), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
-            casterData.giveStamina(-getModifier("stamina"), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
+            casterData.giveMana(-getModifier("mana",skillMeta.getCaster().getData()), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
+            casterData.giveStamina(-getModifier("stamina",casterData.getMMOPlayerData()), PlayerResourceUpdateEvent.UpdateReason.SKILL_COST);
         }
 
         if (!getTrigger().isPassive())
@@ -93,7 +94,8 @@ public class CastableSkill extends Skill {
     }
 
     @Override
-    public double getModifier(String mod) {
-        return skill.getModifier(mod, skillLevel);
+    public double getModifier(String mod, MMOPlayerData playerData) {
+        return playerData.getSkillBuffMap().getSkillInstance(getHandler().getId())
+                .getSkillModifier(mod).getTotal(skill.getModifier(mod, skillLevel));
     }
 }

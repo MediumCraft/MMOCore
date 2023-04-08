@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
@@ -11,7 +12,6 @@ import net.Indyuce.mmocore.manager.data.PlayerDataManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,10 +55,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         updater.addData("guild", data.hasGuild() ? data.getGuild().getId() : null);
         updater.addJSONArray("waypoints", data.getWaypoints());
         updater.addJSONArray("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
-        List<String> boundSkills = new ArrayList<>();
-        data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
-        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
-        updater.addJSONArray("bound_skills", boundSkills);
+        updater.addJSONObject("bound_skills", data.mapBoundSkills().entrySet());
         updater.addJSONObject("skills", data.mapSkillLevels().entrySet());
         updater.addJSONObject("times_claimed", data.getItemClaims().entrySet());
         updater.addJSONObject("skill_tree_points", data.mapSkillTreePoints().entrySet());
@@ -67,6 +64,7 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         updater.addData("professions", data.getCollectionSkills().toJsonString());
         updater.addData("quests", data.getQuestData().toJsonString());
         updater.addData("class_info", createClassInfoData(data).toString());
+        updater.addJSONArray("unlocked_items", data.getUnlockedItems());
         if (logout)
             updater.addData("is_saved", 1);
 
@@ -88,7 +86,15 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             classinfo.addProperty("attribute-realloc-points", info.getAttributeReallocationPoints());
             classinfo.addProperty("skill-reallocation-points", info.getSkillReallocationPoints());
             classinfo.addProperty("skill-tree-reallocation-points", info.getSkillTreeReallocationPoints());
-
+            classinfo.addProperty("health", info.getHealth());
+            classinfo.addProperty("mana", info.getMana());
+            classinfo.addProperty("stamina", info.getStamina());
+            classinfo.addProperty("stellium", info.getStellium());
+            JsonArray array = new JsonArray();
+            for (String unlockedItem : playerData.getUnlockedItems()) {
+                array.add(unlockedItem);
+            }
+            classinfo.add("unlocked-items", array);
             JsonObject skillinfo = new JsonObject();
             for (String skill : info.getSkillKeys())
                 skillinfo.addProperty(skill, info.getSkillLevel(skill));
@@ -107,6 +113,11 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             for (String skillTreeId : info.getSkillTreePointsKeys())
                 skillTreePointsInfo.addProperty(skillTreeId, info.getSkillTreePoints(skillTreeId));
             classinfo.add("skill-tree-points", skillTreePointsInfo);
+
+            JsonObject boundSkillInfo = new JsonObject();
+            for (int slot : info.getBoundSkills().keySet())
+                boundSkillInfo.addProperty(slot + "", info.getBoundSkills().get(slot));
+            classinfo.add("bound-skills", boundSkillInfo);
 
             json.add(c, classinfo);
         }
@@ -160,8 +171,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
         @Override
         public void removeFriend(UUID uuid) {
             // TODO recode
-          //  friends.remove(uuid);
-          //  new PlayerDataTableUpdater(provider, uuid).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
+            //  friends.remove(uuid);
+            //  new PlayerDataTableUpdater(provider, uuid).updateData("friends", friends.stream().map(UUID::toString).collect(Collectors.toList()));
         }
 
         @Override

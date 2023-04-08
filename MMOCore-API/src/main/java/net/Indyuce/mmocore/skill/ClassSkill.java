@@ -17,6 +17,7 @@ import java.util.*;
 public class ClassSkill implements CooldownObject {
     private final RegisteredSkill skill;
     private final int unlockLevel, maxSkillLevel;
+    private final boolean unlockedByDefault;
     private final Map<String, LinearValue> modifiers = new HashMap<>();
 
     @Deprecated
@@ -32,10 +33,14 @@ public class ClassSkill implements CooldownObject {
      * It is also used by the MMOCore API to force players to cast abilities.
      */
     public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel) {
+        this(skill, unlockLevel, maxSkillLevel, true);
+    }
+
+    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel, boolean unlockedByDefault) {
         this.skill = skill;
         this.unlockLevel = unlockLevel;
         this.maxSkillLevel = maxSkillLevel;
-
+        this.unlockedByDefault = unlockedByDefault;
         for (String mod : skill.getHandler().getModifiers())
             this.modifiers.put(mod, skill.getModifierInfo(mod));
     }
@@ -44,7 +49,7 @@ public class ClassSkill implements CooldownObject {
         this.skill = skill;
         unlockLevel = config.getInt("level");
         maxSkillLevel = config.getInt("max-level");
-
+        unlockedByDefault = config.getBoolean("unlocked-by-default", true);
         for (String mod : skill.getHandler().getModifiers()) {
             LinearValue defaultValue = skill.getModifierInfo(mod);
             this.modifiers.put(mod, config.isConfigurationSection(mod) ? readLinearValue(defaultValue, config.getConfigurationSection(mod)) : defaultValue);
@@ -66,6 +71,10 @@ public class ClassSkill implements CooldownObject {
 
     public int getMaxLevel() {
         return maxSkillLevel;
+    }
+
+    public boolean isUnlockedByDefault() {
+        return unlockedByDefault;
     }
 
     /**
@@ -98,7 +107,9 @@ public class ClassSkill implements CooldownObject {
 
         // Calculate placeholders
         Placeholders placeholders = new Placeholders();
-        modifiers.keySet().forEach(modifier -> placeholders.register(modifier, modifiers.get(modifier).getDisplay(x)));
+        modifiers.keySet().forEach(modifier ->
+                placeholders.register(modifier, data.getMMOPlayerData().getSkillBuffMap()
+                        .getSkillInstance(skill.getHandler().getId()).getSkillModifier(modifier).getTotal(modifiers.get(modifier).calculate(x))));
         placeholders.register("mana_name", data.getProfess().getManaDisplay().getName());
         placeholders.register("mana_color", data.getProfess().getManaDisplay().getFull().toString());
 

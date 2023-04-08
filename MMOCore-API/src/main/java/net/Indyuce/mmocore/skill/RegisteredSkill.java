@@ -1,21 +1,22 @@
 package net.Indyuce.mmocore.skill;
 
+import bsh.EvalError;
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.Unlockable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
-import net.Indyuce.mmocore.player.Unlockable;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class RegisteredSkill implements Unlockable {
     private final SkillHandler<?> handler;
@@ -23,7 +24,7 @@ public class RegisteredSkill implements Unlockable {
     private final Map<String, LinearValue> defaultModifiers = new HashMap<>();
     private final ItemStack icon;
     private final List<String> lore;
-
+    private final List<String> categories;
     @NotNull
     private final TriggerType triggerType;
 
@@ -33,9 +34,14 @@ public class RegisteredSkill implements Unlockable {
         name = Objects.requireNonNull(config.getString("name"), "Could not find skill name");
         icon = MMOCoreUtils.readIcon(Objects.requireNonNull(config.getString("material"), "Could not find skill icon"));
         lore = Objects.requireNonNull(config.getStringList("lore"), "Could not find skill lore");
-
+        categories = config.getStringList("categories");
         // Trigger type
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
+        categories.add(getHandler().getId());
+        if (triggerType.isPassive())
+            categories.add("passive");
+        else
+            categories.add("active");
 
         // Load default modifier formulas
         for (String mod : handler.getModifiers())
@@ -54,11 +60,27 @@ public class RegisteredSkill implements Unlockable {
         this.icon = icon;
         this.lore = lore;
         this.triggerType = triggerType;
+        this.categories = new ArrayList<>();
     }
 
     @Override
     public String getUnlockNamespacedKey() {
-        return "registered_skill:" + handler.getId().toLowerCase();
+        return "skill:" + handler.getId().toLowerCase();
+    }
+
+    @Override
+    public void whenLocked(PlayerData playerData) {
+        playerData.mapBoundSkills()
+                .forEach((slot, skill) ->
+                {
+                    if (skill.equals(getUnlockNamespacedKey().split(":")[1]))
+                        playerData.unbindSkill(slot);
+                });
+    }
+
+    @Override
+    public void whenUnlocked(PlayerData playerData) {
+
     }
 
     public SkillHandler<?> getHandler() {
@@ -71,6 +93,10 @@ public class RegisteredSkill implements Unlockable {
 
     public List<String> getLore() {
         return lore;
+    }
+
+    public List<String> getCategories() {
+        return categories;
     }
 
     public ItemStack getIcon() {
@@ -98,7 +124,7 @@ public class RegisteredSkill implements Unlockable {
 
     /**
      * @return Modifier formula.
-     *         Not null as long as the modifier is well defined
+     * Not null as long as the modifier is well defined
      */
     @NotNull
     public LinearValue getModifierInfo(String modifier) {
@@ -107,6 +133,19 @@ public class RegisteredSkill implements Unlockable {
 
     public double getModifier(String modifier, int level) {
         return defaultModifiers.get(modifier).calculate(level);
+    }
+
+    public boolean matchesFormula(String formula) {
+        String parsedExpression = formula;
+        for (String category : categories)
+            parsedExpression = parsedExpression.replace("<" + category + ">", "true");
+        parsedExpression = parsedExpression.replaceAll("<.*>", "false");
+        try {
+            boolean res = (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
+            return res;
+        } catch (EvalError e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

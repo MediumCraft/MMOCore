@@ -21,6 +21,7 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
             "skill_tree_reallocation_points", "INT(11)",
             "skill_tree_points", "LONGTEXT",
             "skill_tree_levels", "LONGTEXT",
+            "unlocked_items","LONGTEXT",
             "health", "FLOAT",
             "mana", "FLOAT",
             "stamina", "FLOAT",
@@ -61,6 +62,7 @@ public class MySQLDataProvider extends MMODataSource implements DataProvider {
                 "mana FLOAT," +
                 "stamina FLOAT," +
                 "stellium FLOAT," +
+                "unlocked_items LONGTEXT," +
                 "class_info LONGTEXT," +
                 "is_saved TINYINT," +
                 "PRIMARY KEY (uuid));");

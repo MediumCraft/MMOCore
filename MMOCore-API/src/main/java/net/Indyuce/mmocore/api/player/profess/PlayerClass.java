@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
+import net.Indyuce.mmocore.api.player.profess.skillbinding.SkillSlot;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -34,6 +35,7 @@ import net.Indyuce.mmocore.skill.cast.ComboMap;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -67,8 +69,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     private final CastingParticle castParticle;
 
-    private final int maxBoundActiveSkills, maxBoundPassiveSkills;
-
+    private final Map<Integer, SkillSlot> skillSlots = new HashMap<>();
     private final List<SkillTree> skillTrees = new ArrayList<>();
     private final List<PassiveSkill> classScripts = new LinkedList();
     private final Map<String, LinearValue> stats = new HashMap<>();
@@ -103,7 +104,11 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                      | SecurityException exception) {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
-
+        Validate.isTrue(config.isConfigurationSection("skill-slots"), "You must define the skills-slots for class " + id);
+        for (String key : config.getConfigurationSection("skill-slots").getKeys(false)) {
+            SkillSlot skillSlot = new SkillSlot(config.getConfigurationSection("skill-slots." + key));
+            skillSlots.put(skillSlot.getSlot(), skillSlot);
+        }
         for (String string : config.getStringList("display.lore"))
             description.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));
         for (String string : config.getStringList("display.attribute-lore"))
@@ -118,8 +123,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 ? MMOCore.plugin.experience.getCurveOrThrow(
                 config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
-        maxBoundActiveSkills = config.getInt("max-bound-active-skills", MMOCore.plugin.configManager.maxBoundActiveSkills);
-        maxBoundPassiveSkills = config.getInt("max-bound-passive-skills", MMOCore.plugin.configManager.maxBoundPassiveSkills);
         ExperienceTable expTable = null;
         if (config.contains("exp-table"))
             try {
@@ -177,15 +180,13 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                             + id + "': " + exception.getMessage());
                 }
 
-        if (config.contains("skills"))
-            for (String key : config.getConfigurationSection("skills").getKeys(false))
-                try {
-                    RegisteredSkill registered = MMOCore.plugin.skillManager.getSkillOrThrow(UtilityMethods.enumName(key));
-                    skills.put(registered.getHandler().getId(), new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
-                } catch (RuntimeException exception) {
-                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill info '" + key + "' from class '"
-                            + id + "': " + exception.getMessage());
-                }
+        for (RegisteredSkill registered : MMOCore.plugin.skillManager.getAll()) {
+            String key = registered.getHandler().getId();
+            if (config.contains("skills." + key))
+                skills.put(key, new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
+            else
+                skills.put(key, new ClassSkill(registered, 1, 1,false));
+        }
 
         castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
 
@@ -252,8 +253,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         this.icon = new ItemStack(material);
         setOption(ClassOption.DISPLAY, false);
         setOption(ClassOption.DEFAULT, false);
-        maxBoundActiveSkills = 6;
-        maxBoundPassiveSkills = 3;
         for (PlayerResource resource : PlayerResource.values())
             resourceHandlers.put(resource, new ResourceRegeneration(resource));
     }
@@ -309,13 +308,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return expCurve;
     }
 
-    public int getMaxBoundActiveSkills() {
-        return maxBoundActiveSkills;
-    }
-
-    public int getMaxBoundPassiveSkills() {
-        return maxBoundPassiveSkills;
-    }
 
     @NotNull
     public ExperienceTable getExperienceTable() {
@@ -424,8 +416,16 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skills.containsKey(id);
     }
 
+    public boolean hasSlot(int slot) {
+        return skillSlots.containsKey(slot);
+    }
+
     public List<SkillTree> getSkillTrees() {
         return skillTrees;
+    }
+
+    public SkillSlot getSkillSlot(int slot) {
+        return skillSlots.get(slot);
     }
 
     public ClassSkill getSkill(RegisteredSkill skill) {

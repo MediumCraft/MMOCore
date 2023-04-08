@@ -17,9 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -65,25 +63,27 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             config.getStringList("friends").forEach(str -> data.getFriends().add(UUID.fromString(str)));
         if (config.contains("skill"))
             config.getConfigurationSection("skill").getKeys(false).forEach(id -> data.setSkillLevel(id, config.getInt("skill." + id)));
-        if (config.contains("bound-skills"))
-            for (String id : config.getStringList("bound-skills"))
-                if (data.getProfess().hasSkill(id)) {
-                    ClassSkill skill = data.getProfess().getSkill(id);
-                    if (skill.getSkill().getTrigger().isPassive())
-                        data.bindPassiveSkill(-1, skill.toPassive(data));
-                    else
-                        data.getBoundSkills().add(skill);
+        if (config.isConfigurationSection("bound-skills"))
+            for (String key : config.getConfigurationSection("bound-skills").getKeys(false)) {
+                ClassSkill skill = data.getProfess().getSkill(config.getString("bound-skills." + key));
+                data.bindSkill(Integer.parseInt(key), skill);
+            }
 
-                }
-
-        for (String key : MMOCore.plugin.skillTreeManager.getAll().stream().map(skillTree -> skillTree.getId()).toList()) {
+        for (
+                String key : MMOCore.plugin.skillTreeManager.getAll().
+                stream().
+                map(skillTree -> skillTree.getId()).
+                toList()) {
             data.setSkillTreePoints(key, config.getInt("skill-tree-points." + key, 0));
         }
         data.setSkillTreePoints("global", config.getInt("skill-tree-points.global", 0));
 
 
         if (config.contains("times-claimed"))
-            for (String key : config.getConfigurationSection("times-claimed").getKeys(false)) {
+            for (
+                    String key : config.getConfigurationSection("times-claimed").
+
+                    getKeys(false)) {
                 ConfigurationSection section = config.getConfigurationSection("times-claimed." + key);
                 if (section != null)
                     for (String key1 : section.getKeys(false)) {
@@ -96,7 +96,9 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                     }
             }
 
-        for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
+        data.setUnlockedItems(config.getStringList("unlocked-items").stream().collect(Collectors.toSet()));
+        for (
+                SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
             data.setNodeLevel(node, config.getInt("skill-tree-level." + node.getFullId(), 0));
         }
         data.setupSkillTree();
@@ -157,11 +159,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
-        List<String> boundSkills = new ArrayList<>();
-        data.getBoundSkills().forEach(skill -> boundSkills.add(skill.getSkill().getHandler().getId()));
-        data.getBoundPassiveSkills().forEach(skill -> boundSkills.add(skill.getTriggeredSkill().getHandler().getId()));
-        config.set("bound-skills", boundSkills);
-
+        data.mapBoundSkills().forEach((slot, skill) -> config.set("bound-skills." + slot, skill));
+        config.set("unlocked-items", data.getUnlockedItems().stream().collect(Collectors.toList()));
         config.set("attribute", null);
         config.createSection("attribute");
         data.getAttributes().save(config.getConfigurationSection("attribute"));
@@ -184,10 +183,16 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             config.set("class-info." + key + ".attribute-realloc-points", info.getAttributeReallocationPoints());
             config.set("class-info." + key + ".skill-tree-reallocation-points", info.getSkillTreeReallocationPoints());
             config.set("class-info." + key + ".skill-reallocation-points", info.getSkillReallocationPoints());
+            config.set("class-info." + key + ".health", info.getHealth());
+            config.set("class-info." + key + ".mana", info.getMana());
+            config.set("class-info." + key + ".stamina", info.getStamina());
+            config.set("class-info." + key + ".stellium", info.getStellium());
             info.getSkillKeys().forEach(skill -> config.set("class-info." + key + ".skill." + skill, info.getSkillLevel(skill)));
             info.getAttributeKeys().forEach(attribute -> config.set("class-info." + key + ".attribute." + attribute, info.getAttributeLevel(attribute)));
             info.getNodeKeys().forEach(node -> config.set("class-info." + key + ".node-levels." + node, info.getNodeLevel(node)));
             info.getSkillTreePointsKeys().forEach(skillTreeId -> config.set("class-info." + key + ".skill-tree-points." + skillTreeId, info.getAttributeLevel(skillTreeId)));
+            info.getBoundSkills().forEach((slot, skill) -> config.set("class-info." + key + ".bound-skills." + slot, skill));
+            config.set("class-info." + key + ".unlocked-items", info.getUnlockedItems());
         }
 
         file.save();

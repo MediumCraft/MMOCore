@@ -30,6 +30,11 @@ default-playerdata:
   skill-realloc-points: 0
   attribute-points: 0
   attribute-realloc-points: 0
+  health: 20
+  mana: 0
+  stellium: 0
+  stamina: 0
+
 
 # The list of all conditions which must be met for the
 # BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to

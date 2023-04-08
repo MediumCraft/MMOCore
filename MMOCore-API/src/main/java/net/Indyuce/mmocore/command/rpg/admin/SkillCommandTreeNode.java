@@ -18,7 +18,8 @@ import java.util.function.BiFunction;
 public class SkillCommandTreeNode extends CommandTreeNode {
     public SkillCommandTreeNode(CommandTreeNode parent) {
         super(parent, "skill");
-
+        addChild(new LockSkillCommandTreeNode(this, "lock", true));
+        addChild(new LockSkillCommandTreeNode(this, "unlock", false));
         addChild(new ActionCommandTreeNode(this, "give", (old, amount) -> old + amount));
         addChild(new ActionCommandTreeNode(this, "set", (old, amount) -> amount));
     }
@@ -31,7 +32,7 @@ public class SkillCommandTreeNode extends CommandTreeNode {
             super(parent, type);
             this.change = change;
             addParameter(Parameter.PLAYER);
-            addParameter(new Parameter("<attribute>",
+            addParameter(new Parameter("<skill>",
                     (explorer, list) -> MMOCore.plugin.skillManager.getAll().forEach(skill -> list.add(skill.getHandler().getId().toUpperCase()))));
             addParameter(Parameter.AMOUNT);
         }
@@ -55,15 +56,14 @@ public class SkillCommandTreeNode extends CommandTreeNode {
             }
 
 
-
-            ClassSkill classSkill=null;
-            for(ClassSkill var:playerData.getProfess().getSkills()) {
-                if(var.getSkill().equals(skill))
-                    classSkill=var;
+            ClassSkill classSkill = null;
+            for (ClassSkill var : playerData.getProfess().getSkills()) {
+                if (var.getSkill().equals(skill))
+                    classSkill = var;
             }
 
-            if(classSkill==null||classSkill.getUnlockLevel() > playerData.getLevel()) {
-                sender.sendMessage(ChatColor.RED+ skill.getName()+" is not unlockable for "+player.getName()+".");
+            if (classSkill == null || classSkill.getUnlockLevel() > playerData.getLevel()) {
+                sender.sendMessage(ChatColor.RED + skill.getName() + " is not unlockable for " + player.getName() + ".");
                 return CommandResult.FAILURE;
             }
 
@@ -82,6 +82,53 @@ public class SkillCommandTreeNode extends CommandTreeNode {
             return CommandResult.SUCCESS;
         }
     }
+
+    public class LockSkillCommandTreeNode extends CommandTreeNode {
+        private final boolean lock;
+
+        public LockSkillCommandTreeNode(CommandTreeNode parent, String id, boolean lock) {
+            super(parent, id);
+            this.lock = lock;
+            addParameter(Parameter.PLAYER);
+            addParameter(new Parameter("<skill>",
+                    (explorer, list) -> MMOCore.plugin.skillManager.getAll().forEach(skill -> list.add(skill.getHandler().getId().toUpperCase()))));
+        }
+
+        @Override
+        public CommandResult execute(CommandSender sender, String[] args) {
+            if (args.length < 5)
+                return CommandResult.THROW_USAGE;
+            Player player = Bukkit.getPlayer(args[3]);
+            if (player == null) {
+                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+                return CommandResult.FAILURE;
+            }
+            PlayerData playerData = PlayerData.get(player);
+
+            ClassSkill skill = playerData.getProfess().getSkill(args[4]);
+            if (skill == null) {
+                sender.sendMessage(ChatColor.RED + "The player's class doesn't have a skill called  " + args[4] + ".");
+                return CommandResult.FAILURE;
+            }
+            if (lock) {
+                if (!playerData.hasUnlocked(skill.getSkill())) {
+                    CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill " + skill.getSkill().getName() + " is already locked" + " for " + player.getName());
+                    return CommandResult.SUCCESS;
+                }
+                playerData.lock(skill.getSkill());
+
+            } else {
+                if (playerData.hasUnlocked(skill.getSkill())) {
+                    CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill " + skill.getSkill().getName() + " is already unlocked" + " for " + player.getName());
+                    return CommandResult.SUCCESS;
+                }
+                playerData.unlock(skill.getSkill());
+            }
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD + "The skill " + skill.getSkill().getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
+            return CommandResult.SUCCESS;
+        }
+    }
+
 
     @Override
     public CommandResult execute(CommandSender sender, String[] args) {

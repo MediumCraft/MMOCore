@@ -4,7 +4,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class ExperienceTable {
         for (ExperienceItem item : items) {
             int timesClaimed = playerData.getClaims(object, this, item);
             for (int i = 0; i < timesClaimed; i++)
-                item.removeStatTriggers(playerData);
+                item.removeTriggers(playerData);
         }
     }
 
@@ -74,7 +73,7 @@ public class ExperienceTable {
             int timesClaimed = playerData.getClaims(object, this, item);
             playerData.setClaims(object, this, item, 0);
             for (int i = 0; i < timesClaimed; i++)
-                item.removeStatTriggers(playerData);
+                item.removeTriggers(playerData);
         }
     }
 

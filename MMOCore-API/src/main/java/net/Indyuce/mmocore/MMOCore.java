@@ -45,6 +45,9 @@ import net.Indyuce.mmocore.script.mechanic.ManaMechanic;
 import net.Indyuce.mmocore.script.mechanic.StaminaMechanic;
 import net.Indyuce.mmocore.script.mechanic.StelliumMechanic;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
+import net.Indyuce.mmocore.skill.list.Ambers;
+import net.Indyuce.mmocore.skill.list.Neptune_Gift;
+import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,7 +60,6 @@ import java.util.logging.Level;
 
 public class MMOCore extends JavaPlugin {
     public static MMOCore plugin;
-
     public final WaypointManager waypointManager = new WaypointManager();
     public final SoundManager soundManager = new SoundManager();
     public final RequestManager requestManager = new RequestManager();

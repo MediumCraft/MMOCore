@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -116,13 +117,13 @@ public class SkillBar implements Listener {
         private String getFormat(PlayerData data) {
             StringBuilder str = new StringBuilder();
             if (!data.isOnline()) return str.toString();
-            for (int j = 0; j < data.getBoundSkills().size(); j++) {
-                ClassSkill skill = data.getBoundSkill(j);
+            for (int slot : data.mapBoundSkills().keySet()) {
+                ClassSkill skill = data.getBoundSkill(slot);
                 str.append((str.length() == 0) ? "" : split).append((onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
                         String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000)) : noMana(data, skill) ? noMana : (noStamina(
                         data, skill) ? noStamina : ready)).replace("{index}",
-                        "" + (j + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= j ? 1 : 0)))
-                        .replace("{skill}", data.getBoundSkill(j).getSkill().getName()));
+                                "" + (slot + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= slot ? 1 : 0)))
+                        .replace("{skill}", data.getBoundSkill(slot).getSkill().getName()));
             }
             return MMOCore.plugin.placeholderParser.parse(data.getPlayer(), str.toString());
         }

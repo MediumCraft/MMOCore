@@ -5,7 +5,7 @@
     <groupId>net.Indyuce</groupId>
     <artifactId>MMOCore</artifactId>
     <packaging>pom</packaging>
-    <version>1.11.3-SNAPSHOT</version>
+    <version>1.12.0-SNAPSHOT</version>
 
     <modules>
         <module>MMOCore-API</module>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>io.lumine</groupId>
             <artifactId>MythicLib-dist</artifactId>
-            <version>1.5.1-SNAPSHOT</version>
+            <version>1.5.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

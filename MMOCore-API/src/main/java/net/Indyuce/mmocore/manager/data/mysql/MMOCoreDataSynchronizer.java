@@ -1,9 +1,6 @@
 package net.Indyuce.mmocore.manager.data.mysql;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.sql.DataSynchronizer;
 import net.Indyuce.mmocore.MMOCore;
@@ -23,8 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class MMOCoreDataSynchronizer extends DataSynchronizer {
@@ -74,8 +70,11 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
             }
         }
         data.setupSkillTree();
-
-
+        Set<String> unlockedItems = new HashSet<>();
+        JsonArray unlockedItemsArray = new JsonParser().parse(result.getString("unlocked_items")).getAsJsonArray();
+        for (JsonElement item : unlockedItemsArray)
+            unlockedItems.add(item.getAsString());
+        data.setUnlockedItems(unlockedItems);
         if (!isEmpty(result.getString("guild"))) {
             Guild guild = MMOCore.plugin.dataProvider.getGuildManager().getGuild(result.getString("guild"));
             data.setGuild(guild.hasMember(data.getUniqueId()) ? guild : null);
@@ -96,15 +95,11 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
             for (Map.Entry<String, JsonElement> entry : object.entrySet())
                 data.setSkillLevel(entry.getKey(), entry.getValue().getAsInt());
         }
-        if (!isEmpty(result.getString("bound_skills")))
-            for (String id : MMOCoreUtils.jsonArrayToList(result.getString("bound_skills")))
-                if (data.getProfess().hasSkill(id)) {
-                    ClassSkill skill = data.getProfess().getSkill(id);
-                    if (skill.getSkill().getTrigger().isPassive())
-                        data.bindPassiveSkill(-1, skill.toPassive(data));
-                    else
-                        data.getBoundSkills().add(skill);
-                }
+        if (!isEmpty(result.getString("bound_skills"))) {
+            JsonObject object = new Gson().fromJson(result.getString("bound_skills"), JsonObject.class);
+            for (Map.Entry<String, JsonElement> entry : object.entrySet())
+                data.bindSkill(Integer.parseInt(entry.getKey()), data.getProfess().getSkill(entry.getValue().getAsString()));
+        }
         if (!isEmpty(result.getString("class_info"))) {
             JsonObject object = new Gson().fromJson(result.getString("class_info"), JsonObject.class);
             for (Map.Entry<String, JsonElement> entry : object.entrySet()) {

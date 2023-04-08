@@ -4,12 +4,12 @@ import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
 import org.apache.commons.lang.Validate;
 
 import java.util.UUID;
 
-public class StatTrigger extends Trigger {
-    public static String TRIGGER_PREFIX = "mmocore_trigger";
+public class StatTrigger extends Trigger implements Removable {
     private final StatModifier statModifier;
     private final String stat;
     private final String modifierKey = TRIGGER_PREFIX + "." + UUID.randomUUID();
@@ -42,6 +42,7 @@ public class StatTrigger extends Trigger {
      * opposite amount. (Little corrective term for the relative to have the inverse.
      * Not a problem to store twice the stat modifiers are there only remain in the RAM.
      */
+    @Override
     public void remove(PlayerData playerData) {
         playerData.getMMOPlayerData().getStatMap().getInstance(stat).remove(modifierKey);
     }
