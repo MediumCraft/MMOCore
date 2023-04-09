@@ -34,7 +34,7 @@ public class Neptune_Gift extends SkillHandler<SimpleSkillResult> implements Lis
             if (skill == null)
                 return;
 
-            event.setAmount(event.getAmount() * (1 + skill.getTriggeredSkill().getModifier("extra", PlayerData.get(event.getPlayer()).getMMOPlayerData()) / 100));
+            event.setAmount(event.getAmount() * (1 + skill.getTriggeredSkill().getModifier("extra") / 100));
         }
     }
 }

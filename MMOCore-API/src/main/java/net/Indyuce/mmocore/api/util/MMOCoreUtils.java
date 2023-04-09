@@ -39,6 +39,10 @@ public class MMOCoreUtils {
                 : caseOnWords(item.getType().name().replace("_", " "));
     }
 
+    public static double fixResource(double current, double maxStat) {
+        return current == 0 ? maxStat : Math.min(current, maxStat);
+    }
+
     public static String caseOnWords(String s) {
         StringBuilder builder = new StringBuilder(s);
         boolean isLastSpace = true;

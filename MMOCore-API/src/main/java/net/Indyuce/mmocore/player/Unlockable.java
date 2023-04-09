@@ -1,4 +1,6 @@
-package net.Indyuce.mmocore.api.player;
+package net.Indyuce.mmocore.player;
+
+import net.Indyuce.mmocore.api.player.PlayerData;
 
 /**
  * Some item that can be unlocked. All unlockables are saved in the

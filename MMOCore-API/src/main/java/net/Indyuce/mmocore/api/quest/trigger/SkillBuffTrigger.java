@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.skill.SkillBuff;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
@@ -19,6 +18,7 @@ public class SkillBuffTrigger extends Trigger implements Removable {
 
     public SkillBuffTrigger(MMOLineConfig config) {
         super(config);
+
         config.validateKeys("modifier");
         config.validateKeys("amount");
         config.validateKeys("formula");
@@ -27,10 +27,10 @@ public class SkillBuffTrigger extends Trigger implements Removable {
         String skillModifier = config.getString("modifier");
         String formula = config.getString("formula");
         List<String> targetSkills = new ArrayList<>();
-        for (RegisteredSkill skill : MMOCore.plugin.skillManager.getAll()) {
+        for (RegisteredSkill skill : MMOCore.plugin.skillManager.getAll())
             if (skill.matchesFormula(formula))
                 targetSkills.add(skill.getHandler().getId());
-        }
+
         skillBuff = new SkillBuff(buffKey, skillModifier, targetSkills, amount);
     }
 

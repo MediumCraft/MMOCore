@@ -12,15 +12,19 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerExperienceGainEvent;
 import net.Indyuce.mmocore.api.event.PlayerLevelUpEvent;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
+import net.Indyuce.mmocore.api.event.unlocking.ItemLockedEvent;
+import net.Indyuce.mmocore.api.event.unlocking.ItemUnlockedEvent;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.api.player.profess.skillbinding.BoundSkillInfo;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -32,6 +36,8 @@ import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.provided.MMOCorePartyModule;
+import net.Indyuce.mmocore.party.provided.Party;
 import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.player.CombatHandler;
 import net.Indyuce.mmocore.player.Unlockable;
@@ -118,6 +124,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * -Skill Books
      */
     private final Set<String> unlockedItems= new HashSet<>();
+
     /**
      * Saves the amount of times the player has claimed some
      * exp item in exp tables, for both exp tables used
@@ -396,12 +403,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @return If the item was locked when calling this method.
      */
     public boolean unlock(Unlockable unlockable) {
-        boolean wasLocked = unlockedItems.add(unlockable.getUnlockNamespacedKey());
+        final boolean wasLocked = unlockedItems.add(unlockable.getUnlockNamespacedKey());
+        // Call the event synchronously
         if (wasLocked)
-            //Calls the event synchronously
-            Bukkit.getScheduler().runTask(MythicLib.plugin,
-                    () -> Bukkit.getPluginManager().callEvent(new ItemUnlockedEvent(this, unlockable.getUnlockNamespacedKey())));
-
+            Bukkit.getScheduler().runTask(MythicLib.plugin, () -> Bukkit.getPluginManager().callEvent(new ItemUnlockedEvent(this, unlockable.getUnlockNamespacedKey())));
         return wasLocked;
     }
 
@@ -1174,7 +1179,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (isOnline())
             getStats().updateStats();
 
-        //Loads the classUnlockedSkills
+        // Loads the classUnlockedSkills
         profess.getSkills()
                 .stream()
                 .filter(ClassSkill::isUnlockedByDefault)

@@ -5,9 +5,12 @@ import com.google.gson.JsonObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -311,14 +314,12 @@ public class SavedClassInformation {
         player.setClass(profess);
         player.unloadClassInfo(profess);
 
-        //This needs to be done at the end to make sure the MAX_HEALTH/MAX_MANA/... stats are loaded.
-        player.getPlayer().setHealth(Math.min(health, player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        // This needs to be done at the end to make sure the MAX_HEALTH/MAX_MANA/... stats are loaded.
+        player.getPlayer().setHealth(MMOCoreUtils.fixResource(health, player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
         player.setMana(mana);
         player.setStellium(stellium);
         player.setStamina(stamina);
-        double health=this.health;
-        health = health == 0 ? 20 : health;
-        player.getPlayer().setHealth(Math.min(health,player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+
         // Updates level on exp bar
         player.refreshVanillaExp();
     }
