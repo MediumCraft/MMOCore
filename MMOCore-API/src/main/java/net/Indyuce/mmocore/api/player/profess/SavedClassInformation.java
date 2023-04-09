@@ -105,11 +105,9 @@ public class SavedClassInformation {
         if (json.has("bound-skills") && json.get("bound-skills").isJsonObject())
             for (Entry<String, JsonElement> entry : json.getAsJsonObject("bound-skills").entrySet())
                 boundSkills.put(Integer.parseInt(entry.getKey()), entry.getValue().getAsString());
-        if(json.has("unlocked-items")){
-            for(JsonElement unlockedItem: json.get("unlocked-items").getAsJsonArray()){
+        if (json.has("unlocked-items"))
+            for (JsonElement unlockedItem : json.get("unlocked-items").getAsJsonArray())
                 unlockedItems.add(unlockedItem.getAsString());
-            }
-        }
     }
 
     public SavedClassInformation(ClassDataContainer data) {
@@ -234,6 +232,10 @@ public class SavedClassInformation {
         attributeLevels.put(attribute, level);
     }
 
+    public Set<String> getUnlockedItems() {
+        return unlockedItems;
+    }
+
     /**
      * @param profess Target player class
      * @param player  Player changing class
@@ -267,7 +269,6 @@ public class SavedClassInformation {
             player.unbindSkill(0);
         player.clearNodeTimesClaimed();
 
-
         /*
          * Reads this class info, applies it to the player. set class after
          * changing level so the player stats can be calculated based on new
@@ -283,7 +284,6 @@ public class SavedClassInformation {
         player.setUnlockedItems(unlockedItems);
         for (int slot : boundSkills.keySet())
             player.bindSkill(slot, profess.getSkill(boundSkills.get(slot)));
-
 
         skillLevels.forEach(player::setSkillLevel);
         attributeLevels.forEach((id, pts) -> player.getAttributes().setBaseAttribute(id, pts));

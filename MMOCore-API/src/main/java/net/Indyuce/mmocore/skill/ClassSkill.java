@@ -24,11 +24,11 @@ public class ClassSkill implements CooldownObject {
     private final Set<Condition> unlockConditions = new HashSet<>();
 
     /**
-     * Class used to save information about skills IN A CLASS CONTEXT i.e at
-     * which level the skill can be unlocked, etc.
+     * Class used to save information about skills IN A CLASS CONTEXT
+     * i.e at which level the skill can be unlocked, etc.
      * <p>
-     * This constructor can be used by other plugins to register class skills
-     * directly without the use of class config files.
+     * This constructor can be used by other plugins to register class
+     * skills directly without the use of class config files.
      * <p>
      * It is also used by the MMOCore API to force players to cast abilities.
      */
@@ -55,7 +55,6 @@ public class ClassSkill implements CooldownObject {
             this.modifiers.put(mod, config.isConfigurationSection(mod) ? readLinearValue(defaultValue, config.getConfigurationSection(mod)) : defaultValue);
         }
     }
-
 
     public RegisteredSkill getSkill() {
         return skill;
@@ -107,9 +106,7 @@ public class ClassSkill implements CooldownObject {
 
         // Calculate placeholders
         Placeholders placeholders = new Placeholders();
-        modifiers.keySet().forEach(modifier ->
-                placeholders.register(modifier, data.getMMOPlayerData().getSkillBuffMap()
-                        .getSkillInstance(skill.getHandler().getId()).getSkillModifier(modifier).getTotal(modifiers.get(modifier).calculate(x))));
+        modifiers.keySet().forEach(modifier -> placeholders.register(modifier, data.getMMOPlayerData().getSkillModifierMap().getInstance(skill.getHandler(), modifier).getTotal(modifiers.get(modifier).calculate(x))));
         placeholders.register("mana_name", data.getProfess().getManaDisplay().getName());
         placeholders.register("mana_color", data.getProfess().getManaDisplay().getFull().toString());
 

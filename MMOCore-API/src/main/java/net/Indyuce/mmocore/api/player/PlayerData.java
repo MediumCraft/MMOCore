@@ -117,13 +117,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final Map<String, Integer> skillTreePoints = new HashMap<>();
 
     /**
-     * Saves the namespacedkey of the items that have been unlocked in the form item-type:item-key.
+     * Saves the namespacedkeys of the items that have been unlocked in the form "namespace:key".
      * This is used for:
-     * -Waypoints
-     * -Skills
-     * -Skill Books
+     * - waypoints
+     * - skills
      */
-    private final Set<String> unlockedItems= new HashSet<>();
+    private final Set<String> unlockedItems = new HashSet<>();
 
     /**
      * Saves the amount of times the player has claimed some
@@ -429,10 +428,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setUnlockedItems(Set<String> unlockedItems) {
-        unlockedItems.clear();
-        unlockedItems.addAll(unlockedItems);
+        this.unlockedItems.clear();
+        this.unlockedItems.addAll(unlockedItems);
     }
-
 
     public void resetTimesClaimed() {
         tableItemClaims.clear();

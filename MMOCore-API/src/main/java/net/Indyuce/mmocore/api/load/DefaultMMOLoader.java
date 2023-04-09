@@ -27,7 +27,7 @@ public class DefaultMMOLoader extends MMOLoader {
             return new UnlockSkillTrigger(config);
 
         if (config.getKey().equals("skill_buff"))
-            return new SkillBuffTrigger(config);
+            return new SkillModifierTrigger(config);
 
         if (config.getKey().equals("message"))
             return new MessageTrigger(config);

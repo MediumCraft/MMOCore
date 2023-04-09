@@ -33,9 +33,12 @@ public class RegisteredSkill implements Unlockable {
         name = Objects.requireNonNull(config.getString("name"), "Could not find skill name");
         icon = MMOCoreUtils.readIcon(Objects.requireNonNull(config.getString("material"), "Could not find skill icon"));
         lore = Objects.requireNonNull(config.getStringList("lore"), "Could not find skill lore");
-        categories = config.getStringList("categories");
+
         // Trigger type
         triggerType = getHandler().isTriggerable() ? (config.contains("passive-type") ? TriggerType.valueOf(UtilityMethods.enumName(config.getString("passive-type"))) : TriggerType.CAST) : TriggerType.API;
+
+        // Categories
+        categories = config.getStringList("categories");
         categories.add(getHandler().getId());
         if (triggerType.isPassive())
             categories.add("passive");
@@ -123,7 +126,7 @@ public class RegisteredSkill implements Unlockable {
 
     /**
      * @return Modifier formula.
-     * Not null as long as the modifier is well defined
+     *         Not null as long as the modifier is well defined
      */
     @NotNull
     public LinearValue getModifierInfo(String modifier) {
@@ -142,8 +145,8 @@ public class RegisteredSkill implements Unlockable {
         try {
             boolean res = (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
             return res;
-        } catch (EvalError e) {
-            throw new RuntimeException(e);
+        } catch (EvalError error) {
+            throw new RuntimeException(error);
         }
     }
 
