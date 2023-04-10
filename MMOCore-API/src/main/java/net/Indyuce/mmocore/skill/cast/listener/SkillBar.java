@@ -80,15 +80,15 @@ public class SkillBar implements Listener {
             if (event.getPreviousSlot() == event.getNewSlot()) return;
 
             event.setCancelled(true);
-            int slot = event.getNewSlot() + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
+            int slot = event.getNewSlot() + 1 + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
 
             /*
              * The event is called again soon after the first since when
              * cancelling the first one, the player held item slot must go back
              * to the previous one.
              */
-            if (slot >= 0 && getCaster().hasSkillBound(slot)) {
-                PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
+            if (slot >= 1 && getCaster().hasSkillBound(slot)) {
+                final PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
                 getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null));
             }
         }
@@ -119,10 +119,10 @@ public class SkillBar implements Listener {
             if (!data.isOnline()) return str.toString();
             for (int slot : data.mapBoundSkills().keySet()) {
                 ClassSkill skill = data.getBoundSkill(slot);
-                str.append((str.length() == 0) ? "" : split).append((onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
+                str.append(str.isEmpty() ? "" : split).append((onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
                         String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000)) : noMana(data, skill) ? noMana : (noStamina(
                         data, skill) ? noStamina : ready)).replace("{index}",
-                                "" + (slot + 1 + (data.getPlayer().getInventory().getHeldItemSlot() <= slot ? 1 : 0)))
+                                String.valueOf(slot + (data.getPlayer().getInventory().getHeldItemSlot() <= slot ? 1 : 0)))
                         .replace("{skill}", data.getBoundSkill(slot).getSkill().getName()));
             }
             return MMOCore.plugin.placeholderParser.parse(data.getPlayer(), str.toString());
