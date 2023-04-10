@@ -15,19 +15,19 @@ public class UnlockSlotTrigger extends Trigger implements Removable {
         super(config);
         config.validateKeys("slot");
         slot = Integer.parseInt("slot");
-        Validate.isTrue(slot > 0 && slot <= MMOCore.plugin.configManager.maxSlots, "The slot should be between 1 and " + MMOCore.plugin.configManager.maxSlots);
+        Validate.isTrue(slot > 0 && slot <= MMOCore.plugin.configManager.maxSkillSlots, "The slot should be between 1 and " + MMOCore.plugin.configManager.maxSkillSlots);
     }
 
     @Override
     public void apply(PlayerData player) {
-        SkillSlot skillSlot = player.getProfess().getSkillSlot(slot);
+        final SkillSlot skillSlot = player.getProfess().getSkillSlot(slot);
         if (!player.hasUnlocked(skillSlot))
             player.unlock(skillSlot);
     }
 
     @Override
     public void remove(PlayerData player) {
-        SkillSlot skillSlot = player.getProfess().getSkillSlot(slot);
+        final SkillSlot skillSlot = player.getProfess().getSkillSlot(slot);
         if (player.hasUnlocked(skillSlot))
             player.lock(skillSlot);
     }

@@ -112,18 +112,18 @@ public class SkillCommandTreeNode extends CommandTreeNode {
                 return CommandResult.FAILURE;
             }
             if (lock) {
-                if (!playerData.hasUnlocked(skill.getSkill())) {
+                if (!playerData.hasUnlocked(skill)) {
                     CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill " + skill.getSkill().getName() + " is already locked" + " for " + player.getName());
                     return CommandResult.SUCCESS;
                 }
-                playerData.lock(skill.getSkill());
+                playerData.lock(skill);
 
             } else {
-                if (playerData.hasUnlocked(skill.getSkill())) {
+                if (playerData.hasUnlocked(skill)) {
                     CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill " + skill.getSkill().getName() + " is already unlocked" + " for " + player.getName());
                     return CommandResult.SUCCESS;
                 }
-                playerData.unlock(skill.getSkill());
+                playerData.unlock(skill);
             }
             CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD + "The skill " + skill.getSkill().getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
             return CommandResult.SUCCESS;

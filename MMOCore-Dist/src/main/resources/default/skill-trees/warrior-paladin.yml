@@ -19,7 +19,10 @@ nodes:
     is-root: true
     size: 1
     point-consumed: 1
-    experience-table: skilltree_attack_speed5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ATTACK_SPEED";amount=5;type="RELATIVE"}'
     lores:
       0:
         - "&eThe speed at which your weapon strikes. +%5"
@@ -38,7 +41,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_attack_speed10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ATTACK_SPEED";amount=10;type="RELATIVE"}'
     lores:
       0:
         - "&eThe speed at which your weapon strikes. +%10"
@@ -57,7 +63,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_attack_speed15
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ATTACK_SPEED";amount=15;type="RELATIVE"}'
     lores:
       0:
         - "&eThe speed at which your weapon strikes. +%15"
@@ -79,12 +88,15 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_health_regeneration1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=1;type="FLAT"}'
     lores:
       0:
-        - "&eCCC"
+        - "&eIncreases health regeneration by 1%"
       1:
-        - "&eCCC"
+        - "&eIncreases health regeneration by 1%"
   b2:
     name: 'Health Regeneration'
     coordinates:
@@ -98,12 +110,15 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_health_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=1;type="FLAT"}'
     lores:
       0:
-        - "&eCCC"
+        - "&eIncreases health regeneration by 1%"
       1:
-        - "&eCCC"
+        - "&eIncreases health regeneration by 1%"
   b3:
     name: 'Health Regeneration'
     coordinates:
@@ -117,12 +132,15 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_health_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
     lores:
       0:
-        - "&eCCC"
+        - "&eIncreases health regeneration by 2%"
       1:
-        - "&eCCC"
+        - "&eIncreases health regeneration by 2%"
 
 ## C
 
@@ -139,7 +157,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_physical_damage_reduction5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PHYSICAL_DAMAGE_REDUCTION";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eReduces physical damage In -%5"
@@ -158,7 +179,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_physical_damage_reduction10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PHYSICAL_DAMAGE_REDUCTION";amount=10;type="FLAT"}'
     lores:
       0:
         - "&eReduces physical damage In -%10"
@@ -177,7 +201,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_physical_damage_reduction15
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PHYSICAL_DAMAGE_REDUCTION";amount=15;type="FLAT"}'
     lores:
       0:
         - "&eReduces physical damage In -%15"
@@ -199,7 +226,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_parry_rating5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PARRY_RATING";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance to parry an attack. Parrying negates the damage and knocks the attacker back +%5"
@@ -218,7 +248,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_parry_rating5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PARRY_RATING";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance to parry an attack. Parrying negates the damage and knocks the attacker back +%5"
@@ -237,7 +270,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_parry_rating10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PARRY_RATING";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance to parry an attack. Parrying negates the damage and knocks the attacker back +%10"
@@ -259,7 +295,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_knockback_resistance5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="KNOCKBACK_RESISTANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance of you to block the knockback +%5"
@@ -278,7 +317,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_knockback_resistance5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="KNOCKBACK_RESISTANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance of you to block the knockback +%5"
@@ -297,7 +339,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_knockback_resistance10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="KNOCKBACK_RESISTANCE";amount=10;type="FLAT"}'
     lores:
       0:
         - "&eThe chance of you to block the knockback +%10"
@@ -319,7 +364,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_dodge_rating2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DODGE_RATING";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eThe change to dodge an attack. Dodging completely negates the attack damage. +%2"
@@ -338,7 +386,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_dodge_rating3
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DODGE_RATING";amount=3;type="FLAT"}'
     lores:
       0:
         - "&eThe change to dodge an attack. Dodging completely negates the attack damage. +%3"
@@ -357,7 +408,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_dodge_rating5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DODGE_RATING";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe change to dodge an attack. Dodging completely negates the attack damage. +%5"
@@ -379,7 +433,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_weapon_damage1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=1;type="FLAT"}'
     lores:
       0:
         - "&eAdditional on-hit weapon damage in +%1."
@@ -398,12 +455,15 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_weapon_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=2;type="FLAT"}'
     lores:
       0:
-        - "&eAdditional on-hit weapon damage in +%1."
+        - "&eAdditional on-hit weapon damage in +%2."
       1:
-        - "&eAdditional on-hit weapon damage in +%1."
+        - "&eAdditional on-hit weapon damage in +%2."
   g3:
     name: 'Weapon Damage'
     coordinates:
@@ -417,12 +477,15 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_weapon_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=2;type="FLAT"}'
     lores:
       0:
-        - "&eAdditional on-hit weapon damage in +%1."
+        - "&eAdditional on-hit weapon damage in +%2."
       1:
-        - "&eAdditional on-hit weapon damage in +%1."
+        - "&eAdditional on-hit weapon damage in +%2."
 
 
 

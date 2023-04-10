@@ -88,6 +88,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
     private double mana, stamina, stellium;
+
     /**
      * Health is stored in playerData because when saving the playerData we can't access the player health anymore as the payer is Offline.
      */
@@ -97,6 +98,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     private final PlayerQuests questData;
     private final PlayerStats playerStats;
     private final List<UUID> friends = new ArrayList<>();
+
+    /**
+     * @deprecated Use {@link #hasUnlocked(Unlockable)} instead
+     */
+    @Deprecated
     private final Set<String> waypoints = new HashSet<>();
     private final Map<String, Integer> skills = new HashMap<>();
     private final Map<Integer, BoundSkillInfo> boundSkills = new HashMap<>();
@@ -147,10 +153,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.mmoData = mmoData;
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
-
-
     }
-
 
     /**
      * Update all references after /mmocore reload so there can be garbage
@@ -171,18 +174,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         }
 
         Iterator<Integer> ite = boundSkills.keySet().iterator();
-        while (ite.hasNext())
-            try {
-                int slot = ite.next();
-                BoundSkillInfo boundSkillInfo = new BoundSkillInfo(boundSkills.get(slot));
-                boundSkills.put(slot, boundSkillInfo);
-            } catch (Exception ignored) {
-            }
+        while (ite.hasNext()) try {
+            int slot = ite.next();
+            BoundSkillInfo boundSkillInfo = new BoundSkillInfo(boundSkills.get(slot));
+            boundSkills.put(slot, boundSkillInfo);
+        } catch (Exception ignored) {
+        }
 
         for (SkillTree skillTree : getProfess().getSkillTrees())
             for (SkillTreeNode node : skillTree.getNodes())
-                if (!nodeLevels.containsKey(node))
-                    nodeLevels.put(node, 0);
+                if (!nodeLevels.containsKey(node)) nodeLevels.put(node, 0);
 
         setupSkillTree();
     }
@@ -237,9 +238,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void clearNodeTimesClaimed() {
         final Iterator<String> ite = tableItemClaims.keySet().iterator();
-        while (ite.hasNext())
-            if (ite.next().startsWith(SkillTreeNode.KEY_PREFIX))
-                ite.remove();
+        while (ite.hasNext()) if (ite.next().startsWith(SkillTreeNode.KEY_PREFIX)) ite.remove();
     }
 
     public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
@@ -254,8 +253,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             Iterator<StatModifier> iter = instance.getModifiers().iterator();
             while (iter.hasNext()) {
                 StatModifier modifier = iter.next();
-                if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX))
-                    iter.remove();
+                if (modifier.getKey().startsWith(StatTrigger.TRIGGER_PREFIX)) iter.remove();
             }
         }
     }
@@ -272,8 +270,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
         NodeStatus nodeStatus = nodeStates.get(node);
         //Check the State of the node
-        if (nodeStatus != NodeStatus.UNLOCKED && nodeStatus != NodeStatus.UNLOCKABLE)
-            return false;
+        if (nodeStatus != NodeStatus.UNLOCKED && nodeStatus != NodeStatus.UNLOCKABLE) return false;
         return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) + skillTreePoints.getOrDefault("global", 0) >= node.getSkillTreePointsConsumed());
     }
 
@@ -284,20 +281,18 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public void incrementNodeLevel(SkillTreeNode node) {
         setNodeLevel(node, getNodeLevel(node) + 1);
-        //Claims the nodes experience table.
+        // Claims the nodes experience table.
         node.getExperienceTable().claim(this, getNodeLevel(node), node);
 
-        if (nodeStates.get(node) == NodeStatus.UNLOCKABLE)
-            setNodeState(node, NodeStatus.UNLOCKED);
+        if (nodeStates.get(node) == NodeStatus.UNLOCKABLE) setNodeState(node, NodeStatus.UNLOCKED);
         int pointToWithdraw = node.getSkillTreePointsConsumed();
         if (skillTreePoints.get(node.getTree().getId()) > 0) {
             int pointWithdrawn = Math.min(pointToWithdraw, skillTreePoints.get(node.getTree().getId()));
             withdrawSkillTreePoints(node.getTree().getId(), pointWithdrawn);
             pointToWithdraw -= pointWithdrawn;
         }
-        if (pointToWithdraw > 0)
-            withdrawSkillTreePoints("global", pointToWithdraw);
-        //We unload the nodeStates map (for the skill tree) and reload it completely
+        if (pointToWithdraw > 0) withdrawSkillTreePoints("global", pointToWithdraw);
+        // We unload the nodeStates map (for the skill tree) and reload it completely
         for (SkillTreeNode node1 : node.getTree().getNodes())
             nodeStates.remove(node1);
         node.getTree().setupNodeStates(this);
@@ -321,8 +316,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
             return skillTree.getIcon(displayInfo);
         }
-        if (skillTree.isPath(coordinates))
-            return skillTree.getIcon(DisplayInfo.pathInfo);
+        if (skillTree.isPath(coordinates)) return skillTree.getIcon(DisplayInfo.pathInfo);
         return null;
     }
 
@@ -377,8 +371,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public Map<String, Integer> getNodeTimesClaimed() {
         Map<String, Integer> result = new HashMap<>();
         tableItemClaims.forEach((str, val) -> {
-            if (str.startsWith(SkillTreeNode.KEY_PREFIX))
-                result.put(str, val);
+            if (str.startsWith(SkillTreeNode.KEY_PREFIX)) result.put(str, val);
         });
         return result;
     }
@@ -386,19 +379,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     /**
      * @return If the item is unlocked by the player
      *         This is used for skills that can be locked & unlocked.
-     *         <p>
-     *         Looks at the real value and thus remove the plugin identifier
      */
     public boolean hasUnlocked(Unlockable unlockable) {
-        return hasUnlocked(unlockable.getUnlockNamespacedKey());
-
-    }
-
-    public boolean hasUnlocked(String unlockNamespacedKey) {
-        return unlockedItems
-                .stream()
-                .filter(key -> key.equals(unlockNamespacedKey))
-                .collect(Collectors.toList()).size() != 0;
+        return unlockable.isUnlockedByDefault() || unlockedItems.contains(unlockable.getUnlockNamespacedKey());
     }
 
     /**
@@ -407,6 +390,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @return If the item was locked when calling this method.
      */
     public boolean unlock(Unlockable unlockable) {
+        Validate.isTrue(!unlockable.isUnlockedByDefault(), "Cannot unlock an item unlocked by default");
         final boolean wasLocked = unlockedItems.add(unlockable.getUnlockNamespacedKey());
         // Call the event synchronously
         if (wasLocked)
@@ -421,6 +405,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * @return If the item was unlocked when calling this method.
      */
     public boolean lock(Unlockable unlockable) {
+        Validate.isTrue(!unlockable.isUnlockedByDefault(), "Cannot lock an item unlocked by default");
         boolean wasUnlocked = unlockedItems.remove(unlockable.getUnlockNamespacedKey());
         if (wasUnlocked)
             //Calls the event synchronously
@@ -449,8 +434,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Remove from party if it is MMO Party Module
         if (MMOCore.plugin.partyModule instanceof MMOCorePartyModule) {
             AbstractParty party = getParty();
-            if (party != null && party instanceof Party)
-                ((Party) party).removeMember(this);
+            if (party != null && party instanceof Party) ((Party) party).removeMember(this);
         }
 
         // Close combat handler
@@ -460,8 +444,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         questData.close();
 
         // Stop skill casting
-        if (isCasting())
-            leaveSkillCasting();
+        if (isCasting()) leaveSkillCasting();
     }
 
     public MMOPlayerData getMMOPlayerData() {
@@ -536,12 +519,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         skillReallocationPoints += value;
     }
 
-    public int countSkillPointsWhenReallocate() {
+    public int countSkillPointsSpent() {
         int sum = 0;
-        for (ClassSkill skill : getProfess().getSkills()) {
-            //0 if the skill is level 1(just unlocked) or 0 locked.
+        for (ClassSkill skill : getProfess().getSkills())
+            // 0 if the skill is level 1 (just unlocked) or 0 locked
             sum += Math.max(0, getSkillLevel(skill.getSkill()) - 1);
-        }
+
         return sum;
     }
 
@@ -612,16 +595,14 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void giveLevels(int value, EXPSource source) {
         int total = 0;
-        while (value-- > 0)
-            total += getProfess().getExpCurve().getExperience(getLevel() + value + 1);
+        while (value-- > 0) total += getProfess().getExpCurve().getExperience(getLevel() + value + 1);
         giveExperience(total, source);
     }
 
     public void setExperience(double value) {
         experience = Math.max(0, value);
 
-        if (isOnline())
-            refreshVanillaExp();
+        if (isOnline()) refreshVanillaExp();
     }
 
     /**
@@ -629,8 +610,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * This updates the exp bar to display the player class level and exp.
      */
     public void refreshVanillaExp() {
-        if (!MMOCore.plugin.configManager.overrideVanillaExp)
-            return;
+        if (!MMOCore.plugin.configManager.overrideVanillaExp) return;
 
         getPlayer().sendExperienceChange(0.01f);
         getPlayer().setLevel(getLevel());
@@ -716,19 +696,16 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void heal(double heal, PlayerResourceUpdateEvent.UpdateReason reason) {
-        if (!isOnline())
-            return;
+        if (!isOnline()) return;
 
         // Avoid calling an useless event
         double max = getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, max));
-        if (getPlayer().getHealth() == newest)
-            return;
+        if (getPlayer().getHealth() == newest) return;
 
         PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.HEALTH, heal, reason);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled())
-            return;
+        if (event.isCancelled()) return;
 
         // Use updated amount from event
         getPlayer().setHealth(Math.max(0, Math.min(getPlayer().getHealth() + event.getAmount(), max)));
@@ -757,13 +734,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void sendFriendRequest(PlayerData target) {
-        if (!isOnline() || !target.isOnline())
-            return;
+        if (!isOnline() || !target.isOnline()) return;
 
         setLastActivity(PlayerActivity.FRIEND_REQUEST);
         FriendRequest request = new FriendRequest(this, target);
-        new ConfigMessage("friend-request").addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString())
-                .sendAsJSon(target.getPlayer());
+        new ConfigMessage("friend-request").addPlaceholders("player", getPlayer().getName(), "uuid", request.getUniqueId().toString()).sendAsJSon(target.getPlayer());
         MMOCore.plugin.requestManager.registerRequest(request);
     }
 
@@ -791,9 +766,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             int t;
 
             public void run() {
-                if (!isOnline() || getPlayer().getLocation().getBlockX() != x
-                        || getPlayer().getLocation().getBlockY() != y
-                        || getPlayer().getLocation().getBlockZ() != z) {
+                if (!isOnline() || getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y || getPlayer().getLocation().getBlockZ() != z) {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CANCELLED).playTo(getPlayer());
                     MMOCore.plugin.configManager.getSimpleMessage("warping-canceled").send(getPlayer());
                     giveStellium(cost, PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
@@ -813,11 +786,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (.5 + t * 1.5 / warpTime));
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
-                    getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(
-                                    Math.cos((double) 5 * t / warpTime + j) * r,
-                                    (double) 2 * t / warpTime,
-                                    Math.sin((double) 5 * t / warpTime + j) * r),
-                            1, new Particle.DustOptions(Color.PURPLE, 1.25f));
+                    getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(Math.cos((double) 5 * t / warpTime + j) * r, (double) 2 * t / warpTime, Math.sin((double) 5 * t / warpTime + j) * r), 1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
     }
@@ -854,14 +823,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Splitting exp through party members
         final AbstractParty party;
         if (splitExp && (party = getParty()) != null && MMOCore.plugin.configManager.splitMainExp) {
-            final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream()
-                    .filter(pd -> {
-                        if (equals(pd) || pd.hasReachedMaxLevel() || Math.abs(pd.getLevel() - getLevel()) > MMOCore.plugin.configManager.maxPartyLevelDifference)
-                            return false;
+            final List<PlayerData> nearbyMembers = party.getOnlineMembers().stream().filter(pd -> {
+                if (equals(pd) || pd.hasReachedMaxLevel() || Math.abs(pd.getLevel() - getLevel()) > MMOCore.plugin.configManager.maxPartyLevelDifference)
+                    return false;
 
-                        final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
-                        return maxDis <= 0 || (pd.getPlayer().getWorld().equals(getPlayer().getWorld()) && pd.getPlayer().getLocation().distanceSquared(getPlayer().getLocation()) < maxDis * maxDis);
-                    }).collect(Collectors.toList());
+                final double maxDis = MMOCore.plugin.configManager.partyMaxExpSplitRange;
+                return maxDis <= 0 || (pd.getPlayer().getWorld().equals(getPlayer().getWorld()) && pd.getPlayer().getLocation().distanceSquared(getPlayer().getLocation()) < maxDis * maxDis);
+            }).collect(Collectors.toList());
             value /= (nearbyMembers.size() + 1);
             for (PlayerData member : nearbyMembers)
                 member.giveExperience(value, source, null, false);
@@ -878,8 +846,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, value, source);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled())
-            return;
+        if (event.isCancelled()) return;
 
         // Experience hologram
         if (hologramLocation != null && isOnline())
@@ -900,8 +867,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             level = getLevel() + 1;
 
             // Apply class experience table
-            if (getProfess().hasExperienceTable())
-                getProfess().getExperienceTable().claim(this, level, getProfess());
+            if (getProfess().hasExperienceTable()) getProfess().getExperienceTable().claim(this, level, getProfess());
         }
 
         if (level > oldLevel) {
@@ -940,13 +906,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Avoid calling useless event
         double max = getStats().getStat("MAX_MANA");
         double newest = Math.max(0, Math.min(mana + amount, max));
-        if (mana == newest)
-            return;
+        if (mana == newest) return;
 
         PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.MANA, amount, reason);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled())
-            return;
+        if (event.isCancelled()) return;
 
         // Use updated amount from Bukkit event
         mana = Math.max(0, Math.min(mana + event.getAmount(), max));
@@ -965,13 +929,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Avoid calling useless event
         double max = getStats().getStat("MAX_STAMINA");
         double newest = Math.max(0, Math.min(stamina + amount, max));
-        if (stamina == newest)
-            return;
+        if (stamina == newest) return;
 
         PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.STAMINA, amount, reason);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled())
-            return;
+        if (event.isCancelled()) return;
 
         // Use updated amount from Bukkit event
         stamina = Math.max(0, Math.min(stamina + event.getAmount(), max));
@@ -990,13 +952,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Avoid calling useless event
         double max = getStats().getStat("MAX_STELLIUM");
         double newest = Math.max(0, Math.min(stellium + amount, max));
-        if (stellium == newest)
-            return;
+        if (stellium == newest) return;
 
         PlayerResourceUpdateEvent event = new PlayerResourceUpdateEvent(this, PlayerResource.STELLIUM, amount, reason);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled())
-            return;
+        if (event.isCancelled()) return;
 
         // Use updated amount from Bukkit event
         stellium = Math.max(0, Math.min(stellium + event.getAmount(), max));
@@ -1113,10 +1073,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void refreshBoundedSkill(String skill) {
-        boundSkills.values()
-                .stream()
-                .filter(skillInfo -> skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill))
-                .forEach(BoundSkillInfo::refresh);
+        boundSkills.values().stream().filter(skillInfo -> skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill)).forEach(BoundSkillInfo::refresh);
     }
 
     @Deprecated
@@ -1175,34 +1132,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
         // Clear old skills
         for (Iterator<BoundSkillInfo> iterator = boundSkills.values().iterator(); iterator.hasNext(); )
-            if (!getProfess().hasSkill(iterator.next().getClassSkill().getSkill()))
-                iterator.remove();
+            if (!getProfess().hasSkill(iterator.next().getClassSkill().getSkill())) iterator.remove();
 
         // Update stats
-        if (isOnline())
-            getStats().updateStats();
-
-        if (profess != null) {
-
-            // Loads the classUnlockedSkills
-            profess.getSkills()
-                    .stream()
-                    .filter(ClassSkill::isUnlockedByDefault)
-                    .forEach(skill -> unlock(skill.getSkill()));
-
-            // Loads the classUnlockedSkills
-            profess.getSkills()
-                    .stream()
-                    .filter(ClassSkill::isUnlockedByDefault)
-                    .forEach(skill -> unlock(skill.getSkill()));
-
-            // Loads the classUnlockedSlots
-            profess.getSlots()
-                    .stream()
-                    .filter(SkillSlot::isUnlockedByDefault)
-                    .forEach(this::unlock);
-        }
-
+        if (isOnline()) getStats().updateStats();
     }
 
     public boolean hasSkillBound(int slot) {
@@ -1212,7 +1145,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public ClassSkill getBoundSkill(int slot) {
         return boundSkills.containsKey(slot) ? boundSkills.get(slot).getClassSkill() : null;
     }
-
 
     @Deprecated
     public void setBoundSkill(int slot, ClassSkill skill) {
@@ -1230,8 +1162,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         Validate.notNull(skill, "Skill cannot be null");
         //Unbinds the previous skill (Important for passive skills.
         String skillId = skill.getSkill().getHandler().getId();
-        if (boundSkills.containsKey(slot))
-            boundSkills.get(slot).unbind();
+        if (boundSkills.containsKey(slot)) boundSkills.get(slot).unbind();
         if (slot >= 0) {
             //We apply the skill buffs associated with the slot to the skill.
             for (SkillModifierTrigger skillBuffTrigger : profess.getSkillSlot(slot).getSkillBuffTriggers())
@@ -1251,8 +1182,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void unbindSkill(int slot) {
 
         // We remove the skill buffs associated with the slot from the skill that is .
-        profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger ->
-                skillBuffTrigger.remove(this, boundSkills.get(slot).getClassSkill().getSkill().getHandler()));
+        profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger -> skillBuffTrigger.remove(this, boundSkills.get(slot).getClassSkill().getSkill().getHandler()));
 
         BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
         boundSkillInfo.unbind();
@@ -1282,8 +1212,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Deprecated
     public boolean canChooseSubclass() {
         for (Subclass subclass : getProfess().getSubclasses())
-            if (getLevel() >= subclass.getLevel())
-                return true;
+            if (getLevel() >= subclass.getLevel()) return true;
         return false;
     }
 

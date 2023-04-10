@@ -5,8 +5,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -17,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class RegisteredSkill implements Unlockable {
+public class RegisteredSkill {
     private final SkillHandler<?> handler;
     private final String name;
     private final Map<String, LinearValue> defaultModifiers = new HashMap<>();
@@ -63,24 +61,6 @@ public class RegisteredSkill implements Unlockable {
         this.lore = lore;
         this.triggerType = triggerType;
         this.categories = new ArrayList<>();
-    }
-
-    @Override
-    public String getUnlockNamespacedKey() {
-        return "skill:" + handler.getId().toLowerCase();
-    }
-
-    @Override
-    public void whenLocked(PlayerData playerData) {
-        playerData.mapBoundSkills().forEach((slot, skill) -> {
-            if (skill.equals(getUnlockNamespacedKey().split(":")[1]))
-                playerData.unbindSkill(slot);
-        });
-    }
-
-    @Override
-    public void whenUnlocked(PlayerData playerData) {
-
     }
 
     public SkillHandler<?> getHandler() {

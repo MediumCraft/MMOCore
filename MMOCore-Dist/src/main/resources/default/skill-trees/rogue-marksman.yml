@@ -19,7 +19,10 @@ nodes:
     is-root: true
     size: 1
     point-consumed: 1
-    experience-table: skilltree_additional_experience2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eAdditional MMOCore main class experience +%2"
@@ -38,7 +41,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_additional_experience3
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=3;type="FLAT"}'
     lores:
       0:
         - "&eAdditional MMOCore main class experience +%3"
@@ -57,7 +63,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_additional_experience5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eAdditional MMOCore main class experience +%5"
@@ -79,7 +88,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_arrow_velocity10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ARROW_VELOCITY";amount=10;type="RELATIVE"}'
     lores:
       0:
         - "&eDetermines how far your weapon can shoot +%10"
@@ -98,7 +110,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_arrow_velocity15
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ARROW_VELOCITY";amount=15;type="RELATIVE"}'
     lores:
       0:
         - "&eDetermines how far your weapon can shoot +%15"
@@ -117,7 +132,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_arrow_velocity25
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ARROW_VELOCITY";amount=25;type="RELATIVE"}'
     lores:
       0:
         - "&eDetermines how far your weapon can shoot +%25"
@@ -139,7 +157,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_lifesteal1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=2;type="FLAT"}'
     lores:
       0:
         - "&ePercentage of damage you gain back as health when inflicting weapon damage +%1"
@@ -158,7 +179,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_lifesteal2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=2;type="FLAT"}'
     lores:
       0:
         - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
@@ -177,7 +201,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_lifesteal2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=2;type="FLAT"}'
     lores:
       0:
         - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
@@ -199,7 +226,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_knockback_resistance5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="KNOCKBACK_RESISTANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance of you to block the knockback +%5"
@@ -218,7 +248,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_knockback_resistance5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="KNOCKBACK_RESISTANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance of you to block the knockback +%5"
@@ -237,7 +270,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_knockback_resistance10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="KNOCKBACK_RESISTANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eThe chance of you to block the knockback +%5"
@@ -259,7 +295,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_critical_strike_chance2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eCritical Strikes deal more damage in +%2 chance"
@@ -278,7 +317,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_critical_strike_chance3
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=3;type="FLAT"}'
     lores:
       0:
         - "&eCritical Strikes deal more damage in +%3 chance"
@@ -297,7 +339,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_critical_strike_chance5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eCritical Strikes deal more damage in +%5 chance"
@@ -319,7 +364,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_movement_speed2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MOVEMENT_SPEED";amount=2;type="RELATIVE"}'
     lores:
       0:
         - "&eMovement Speed increase walk speed. +%2"
@@ -338,7 +386,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_movement_speed2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MOVEMENT_SPEED";amount=2;type="RELATIVE"}'
     lores:
       0:
         - "&eMovement Speed increase walk speed. +%2"
@@ -357,7 +408,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_movement_speed6
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MOVEMENT_SPEED";amount=6;type="RELATIVE"}'
     lores:
       0:
         - "&eMovement Speed increase walk speed. +%6"
@@ -379,7 +433,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_projectile_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PROJECTILE_DAMAGE";amount=2;type="RELATIVE"}'
     lores:
       0:
         - "&eAdditional skill/weapon projectile damage +%2"
@@ -398,7 +455,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_projectile_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PROJECTILE_DAMAGE";amount=2;type="RELATIVE"}'
     lores:
       0:
         - "&eAdditional skill/weapon projectile damage +%2"
@@ -417,7 +477,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_projectile_damage6
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="PROJECTILE_DAMAGE";amount=6;type="RELATIVE"}'
     lores:
       0:
         - "&eAdditional skill/weapon projectile damage +%6"

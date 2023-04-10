@@ -58,7 +58,7 @@ public class SkillList extends EditableInventory {
                     Placeholders holders = new Placeholders();
                     holders.register("skill_points", inv.getPlayerData().getSkillPoints());
                     holders.register("points", inv.getPlayerData().getSkillReallocationPoints());
-                    holders.register("total", inv.getPlayerData().countSkillPointsWhenReallocate());
+                    holders.register("total", inv.getPlayerData().countSkillPointsSpent());
                     return holders;
                 }
             };
@@ -75,6 +75,7 @@ public class SkillList extends EditableInventory {
                     return inv.page > 0;
                 }
             };
+
         if (function.equals("next")) {
             return new SimplePlaceholderItem<SkillViewerInventory>(config) {
 
@@ -159,10 +160,10 @@ public class SkillList extends EditableInventory {
 
         @Override
         public ItemStack display(SkillViewerInventory inv, int n) {
-            if (!inv.getPlayerData().hasUnlocked("slot:" + (n+1))) {
+            final SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
+            if (!inv.getPlayerData().hasUnlocked(skillSlot))
                 return new ItemStack(Material.AIR);
-            }
-            SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
+
             ItemStack item = super.display(inv, n);
             if (!inv.getPlayerData().hasSkillBound(n + 1)) {
                 //If there is an item filled in the slot config it shows it, else shows the default item.
@@ -180,7 +181,6 @@ public class SkillList extends EditableInventory {
                     meta.setCustomModelData(customModelData);
                 }
                 item.setItemMeta(meta);
-
             }
 
             return item;
@@ -208,8 +208,6 @@ public class SkillList extends EditableInventory {
             return true;
         }
     }
-
-    ;
 
     public class SkillItem extends InventoryItem<SkillViewerInventory> {
         public SkillItem(ConfigurationSection config) {
@@ -284,7 +282,6 @@ public class SkillList extends EditableInventory {
                     shiftCost = 1;
                 }
             }
-
         }
 
         @Override
@@ -315,7 +312,7 @@ public class SkillList extends EditableInventory {
             super(playerData, editable);
             skills = playerData.getProfess().getSkills()
                     .stream()
-                    .filter((classSkill) -> playerData.hasUnlocked(classSkill.getSkill()))
+                    .filter((classSkill) -> playerData.hasUnlocked(classSkill))
                     .sorted(Comparator.comparingInt(ClassSkill::getUnlockLevel))
                     .collect(Collectors.toList());
             skillSlots = getEditable().getByFunction("skill").getSlots();
@@ -347,7 +344,7 @@ public class SkillList extends EditableInventory {
             }
 
             if (item.getFunction().equals("reallocation")) {
-                int spent = getPlayerData().countSkillPointsWhenReallocate();
+                int spent = getPlayerData().countSkillPointsSpent();
 
                 if (spent < 1) {
                     MMOCore.plugin.configManager.getSimpleMessage("no-skill-points-spent").send(player);
@@ -361,10 +358,9 @@ public class SkillList extends EditableInventory {
                     return;
                 }
 
-
-                for (ClassSkill skill : playerData.getProfess().getSkills()) {
+                for (ClassSkill skill : playerData.getProfess().getSkills())
                     playerData.setSkillLevel(skill.getSkill(), 1);
-                }
+
                 playerData.giveSkillPoints(spent);
                 playerData.setSkillReallocationPoints(playerData.getSkillReallocationPoints() - 1);
                 MMOCore.plugin.configManager.getSimpleMessage("skill-points-reallocated", "points", "" + playerData.getSkillPoints()).send(player);
@@ -386,9 +382,7 @@ public class SkillList extends EditableInventory {
                 return;
             }
 
-            /*
-             * binding or unbinding skills.
-             */
+            // Binding or unbinding skills.
             if (item.getFunction().equals("slot")) {
                 int index = slotSlots.indexOf(context.getSlot()) + 1;
                 SkillSlot skillSlot = playerData.getProfess().getSkillSlot(index);
@@ -398,6 +392,7 @@ public class SkillList extends EditableInventory {
                         selected=playerData.getBoundSkill(index);
                     return;
                 }
+
                 // unbind if there is a current spell.
                 if (context.getClickType() == ClickType.RIGHT) {
                     if (!playerData.hasSkillBound(index)) {
@@ -405,7 +400,7 @@ public class SkillList extends EditableInventory {
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                         return;
                     }
-                    if(!playerData.getProfess().getSkillSlot(index).canManuallyBind()){
+                    if (!playerData.getProfess().getSkillSlot(index).canManuallyBind()) {
                         MMOCore.plugin.configManager.getSimpleMessage("cant-manually-bind").send(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                         return;
@@ -417,23 +412,22 @@ public class SkillList extends EditableInventory {
                 }
 
                 if (!playerData.hasSkillUnlocked(selected)) {
-                    MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
+                    MMOCore.plugin.configManager.getSimpleMessage("skill-level-not-met").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
 
-                if (!skillSlot.canManuallyBind()){
+                if (!skillSlot.canManuallyBind()) {
                     MMOCore.plugin.configManager.getSimpleMessage("cant-manually-bind").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
 
-                if (!skillSlot.acceptsSkill(selected)){
+                if (!skillSlot.acceptsSkill(selected)) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-compatible-skill").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
-
 
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
                 playerData.bindSkill(index, selected);
@@ -441,10 +435,7 @@ public class SkillList extends EditableInventory {
                 return;
             }
 
-
-            /*
-             * upgrading a player skill
-             */
+            // Upgrading a player skill
             if (item.getFunction().equals("upgrade")) {
                 int shiftCost = ((UpgradeItem) item).shiftCost;
 

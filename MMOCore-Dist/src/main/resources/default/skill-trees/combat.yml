@@ -16,12 +16,15 @@ nodes:
     is-root: true
     size: 1
     point-consumed: 1
-    experience-table: skilltree_cooldown_reduction5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=5;type="FLAT"}'
     lores:
       0:
-        - "&eReduces cooldowns of item and player skills (5%)"
+        - "&eReduces item/class skill cooldowns (5%)"
       1:
-        - "&eReduces cooldowns of item and player skills (5%)"
+        - "&eReduces item/class skill cooldowns (5%)"
     
 
 
@@ -30,30 +33,36 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_cooldown_reduction10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=10;type="FLAT"}'
     coordinates:
       x: -2
       y: -2
     lores:
       0:
-        - "&eReduces cooldowns of item and player skills (10%)"
+        - "&eReduces item/class skill cooldowns (10%)"
       1:
-        - "&eReduces cooldowns of item and player skills (10%)"
+        - "&eReduces item/class skill cooldowns (20%)"
 
   a3:
     name: 'Cooldown Reduction'
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_cooldown_reduction15
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=15;type="FLAT"}'
     coordinates:
       x: -1
       y: -2
     lores:
       0:
-        - "&eReduces cooldowns of item and player skills (15%)"
+        - "&eReduces item/class skill cooldowns (15%)"
       1:
-        - "&eReduces cooldowns of item and player skills (15%)"
+        - "&eReduces item/class skill cooldowns (30%)"
 
 ### B
 
@@ -62,7 +71,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_critical_strike_chance1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=1;type="FLAT"}'
     coordinates:
       x: 0
       y: -2
@@ -70,14 +82,17 @@ nodes:
       0:
         - "&eCritical Strikes deal more damage in % chance"
       1:
-        - "&eCritical Strikes deal more damage in +%2 chance"
+        - "&eCritical Strikes deal more damage in +%1 chance"
 
   b2:
     name: 'Critical Strike Chance'
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_critical_strike_chance2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=2;type="FLAT"}'
     coordinates:
       x: 0
       y: -1
@@ -92,7 +107,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 2
-    experience-table: skilltree_critical_strike_chance3
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=3;type="FLAT"}'
     coordinates:
       x: 0
       y: 0
@@ -109,7 +127,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_lifesteal1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=1;type="FLAT"}'
     coordinates:
       x: -1
       y: 0
@@ -124,7 +145,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_lifesteal2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=2;type="FLAT"}'
     coordinates:
       x: -2
       y: 0
@@ -139,7 +163,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_lifesteal2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=3;type="FLAT"}'
     coordinates:
       x: -3
       y: 0
@@ -156,7 +183,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_damage_reduction1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=1;type="FLAT"}'
     coordinates:
       x: 0
       y: 1
@@ -171,7 +201,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 2
-    experience-table: skilltree_damage_reduction2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=2;type="FLAT"}'
     coordinates:
       x: 0
       y: 2
@@ -186,7 +219,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_damage_reduction2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=2;type="FLAT"}'
     coordinates:
       x: -1
       y: 2
@@ -203,7 +239,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_health_regeneration1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=1;type="FLAT"}'
     coordinates:
       x: -2
       y: 2
@@ -218,7 +257,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_health_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
     coordinates:
       x: -3
       y: 2
@@ -233,7 +275,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_health_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
     coordinates:
       x: -3
       y: 1
@@ -250,7 +295,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_mana_regeneration1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=1;type="FLAT"}'
     coordinates:
       x: 1
       y: 2
@@ -265,7 +313,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_mana_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
     coordinates:
       x: 2
       y: 2
@@ -280,7 +331,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_mana_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
     coordinates:
       x: 3
       y: 2
@@ -297,7 +351,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_magic_damage1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=1;type="FLAT"}'
     coordinates:
       x: 3
       y: 1
@@ -312,7 +369,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_magic_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=2;type="FLAT"}'
     coordinates:
       x: 4
       y: 1
@@ -327,7 +387,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_magic_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=2;type="FLAT"}'
     coordinates:
       x: 4
       y: 0
@@ -344,7 +407,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_max_health2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAX_HEALTH";amount=2;type="RELATIVE"}'
     coordinates:
       x: 4
       y: -1
@@ -359,7 +425,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_max_health4
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAX_HEALTH";amount=4;type="RELATIVE"}'
     coordinates:
       x: 4
       y: -2
@@ -374,7 +443,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_max_health4
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAX_HEALTH";amount=4;type="RELATIVE"}'
     coordinates:
       x: 3
       y: -2
@@ -391,7 +463,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_weapon_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=2;type="FLAT"}'
     coordinates:
       x: 2
       y: -2
@@ -406,7 +481,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_weapon_damage4
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=4;type="FLAT"}'
     coordinates:
       x: 2
       y: -1
@@ -421,7 +499,10 @@ nodes:
     size: 1
     point-consumed: 1
     max-children: 1
-    experience-table: skilltree_weapon_damage4
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=4;type="FLAT"}'
     coordinates:
       x: 2
       y: 0
@@ -430,8 +511,6 @@ nodes:
         - "&eAdditional on-hit weapon damage in +%4"
       1:
         - "&eAdditional on-hit weapon damage in +%4"
-
-
 
 
 paths:

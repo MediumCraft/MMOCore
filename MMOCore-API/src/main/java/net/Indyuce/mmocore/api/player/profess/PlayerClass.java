@@ -35,7 +35,6 @@ import net.Indyuce.mmocore.skill.cast.ComboMap;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -185,8 +184,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         // Skill slots
-        Validate.isTrue(config.isConfigurationSection("skill-slots"), "You must define the skills-slots for class " + id);
-        for (int i = 1; i < MMOCore.plugin.configManager.maxSlots + 1; i++) {
+        for (int i = 1; i < MMOCore.plugin.configManager.maxSkillSlots + 1; i++) {
             if (config.contains("skill-slots." + i))
                 skillSlots.put(i, new SkillSlot(config.getConfigurationSection("skill-slots." + i)));
             else
@@ -448,6 +446,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skillSlots.values();
     }
 
+    @NotNull
     public ClassSkill getSkill(RegisteredSkill skill) {
         return getSkill(skill.getHandler().getId());
     }

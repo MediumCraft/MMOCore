@@ -19,7 +19,10 @@ nodes:
     is-root: true
     size: 1
     point-consumed: 1
-    experience-table: skilltree_mana_regeneration1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=1;type="FLAT"}'
     lores:
       0:
         - "&eMana regen in pts/sec +1"
@@ -38,8 +41,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_mana_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eMana regen in pts/sec +2"
@@ -58,8 +63,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_mana_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eMana regen in pts/sec +2"
@@ -77,8 +84,10 @@ nodes:
     is-root: true
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_health_regeneration1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=1;type="FLAT"}'
     lores:
       0:
         - "&eHealth regen in pts/sec +1"
@@ -98,8 +107,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_health_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eHealth regen in pts/sec +2"
@@ -119,8 +130,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_health_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eHealth regen in pts/sec +2"
@@ -138,8 +151,10 @@ nodes:
     is-root: true
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_cooldown_reduction5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eReduces cooldowns of item and player skills (5%)"
@@ -159,8 +174,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_cooldown_reduction10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=10;type="FLAT"}'
     lores:
       0:
         - "&eReduces cooldowns of item and player skills (10%)"
@@ -180,8 +197,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_cooldown_reduction15
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=15;type="FLAT"}'
     lores:
       0:
         - "&eReduces cooldowns of item and player skills (15%)"
@@ -204,8 +223,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_critical_strike_chance1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eCritical Strikes deal more damage in +%2 chance"
@@ -225,8 +246,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_critical_strike_chance2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=3;type="FLAT"}'
     lores:
       0:
         - "&eCritical Strikes deal more damage in % chance"
@@ -246,8 +269,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_critical_strike_chance5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eCritical Strikes deal more damage in % chance"
@@ -269,8 +294,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_damage_reduction1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=1;type="FLAT"}'
     lores:
       0:
         - "&eReduces damage from any source in %."
@@ -290,8 +317,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_damage_reduction2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eReduces damage from any source in %."
@@ -311,8 +340,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_damage_reduction2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eReduces damage from any source in %."
@@ -333,8 +364,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_weapon_damage1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=1;type="FLAT"}'
     lores:
       0:
         - "&eAdditional on-hit weapon damage in +%1."
@@ -354,8 +387,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_weapon_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eAdditional on-hit weapon damage in +%2."
@@ -375,8 +410,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_weapon_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eAdditional on-hit weapon damage in +%2."
@@ -398,8 +435,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_lifesteal3
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=3;type="FLAT"}'
     lores:
       0:
         - "&ePercentage of damage you gain back as health when inflicting weapon damage."
@@ -420,8 +459,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_max_health5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eAdditional amount of health in +%5"
@@ -441,8 +482,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    point-consumed: 1
-    experience-table: skilltree_magic_damage3
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=3;type="FLAT"}'
     lores:
       0:
         - "&eAdditional magic skill damage in +%3"

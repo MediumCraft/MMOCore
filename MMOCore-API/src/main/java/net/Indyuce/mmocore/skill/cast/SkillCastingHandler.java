@@ -39,21 +39,21 @@ public abstract class SkillCastingHandler extends BukkitRunnable implements List
 
     @Override
     public void run() {
-        if (!caster.isOnline() || caster.getPlayer().isDead())
+        if (!caster.isOnline() || caster.getPlayer().isDead()) {
             caster.leaveSkillCasting();
-        else {
-
-            // Apply casting particles
-            if (caster.getProfess().getCastParticle() != null)
-                for (int k = 0; k < 2; k++) {
-                    double a = (double) j++ / 5;
-                    caster.getProfess().getCastParticle()
-                            .display(caster.getPlayer().getLocation().add(Math.cos(a), 1 + Math.sin(a / 3) / 1.3, Math.sin(a)));
-                }
-
-            // Apply casting mode-specific effects
-            onTick();
+            return;
         }
+
+        // Apply casting particles
+        if (caster.getProfess().getCastParticle() != null)
+            for (int k = 0; k < 2; k++) {
+                double a = (double) j++ / 5;
+                caster.getProfess().getCastParticle()
+                        .display(caster.getPlayer().getLocation().add(Math.cos(a), 1 + Math.sin(a / 3) / 1.3, Math.sin(a)));
+            }
+
+        // Apply casting mode-specific effects
+        onTick();
     }
 
     public abstract void onTick();

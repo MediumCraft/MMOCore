@@ -9,12 +9,14 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.player.Unlockable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ClassSkill implements CooldownObject {
+public class ClassSkill implements CooldownObject, Unlockable {
     private final RegisteredSkill skill;
     private final int unlockLevel, maxSkillLevel;
     private final boolean unlockedByDefault;
@@ -56,6 +58,7 @@ public class ClassSkill implements CooldownObject {
         }
     }
 
+    @NotNull
     public RegisteredSkill getSkill() {
         return skill;
     }
@@ -72,8 +75,27 @@ public class ClassSkill implements CooldownObject {
         return maxSkillLevel;
     }
 
+    @Override
     public boolean isUnlockedByDefault() {
         return unlockedByDefault;
+    }
+
+    @Override
+    public String getUnlockNamespacedKey() {
+        return "skill:" + skill.getHandler().getId().toLowerCase();
+    }
+
+    @Override
+    public void whenLocked(PlayerData playerData) {
+        playerData.mapBoundSkills().forEach((slot, skill) -> {
+            if (skill.equals(getUnlockNamespacedKey().split(":")[1]))
+                playerData.unbindSkill(slot);
+        });
+    }
+
+    @Override
+    public void whenUnlocked(PlayerData playerData) {
+
     }
 
     /**

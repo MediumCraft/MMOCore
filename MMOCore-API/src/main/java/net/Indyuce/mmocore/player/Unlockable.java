@@ -20,6 +20,8 @@ public interface Unlockable {
      */
     String getUnlockNamespacedKey();
 
+    boolean isUnlockedByDefault();
+
     void whenLocked(PlayerData playerData);
 
     void whenUnlocked(PlayerData playerData);

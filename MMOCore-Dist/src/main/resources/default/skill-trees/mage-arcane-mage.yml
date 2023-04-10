@@ -19,7 +19,10 @@ nodes:
     is-root: true
     size: 1
     point-consumed: 1
-    experience-table: skilltree_mana_regeneration1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=1;type="FLAT"}'
     lores:
       0:
         - "&eMana regen in pts/sec +1"
@@ -38,7 +41,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_mana_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eMana regen in pts/sec +2"
@@ -57,7 +63,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_mana_regeneration2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eMana regen in pts/sec +2"
@@ -79,7 +88,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_skill_damage5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SKILL_DAMAGE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eAdditional ability damage in +%5"
@@ -98,7 +110,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_skill_damage5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SKILL_DAMAGE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eAdditional ability damage in +%5"
@@ -117,7 +132,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_skill_damage10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SKILL_DAMAGE";amount=10;type="FLAT"}'
     lores:
       0:
         - "&eAdditional ability damage in +%10"
@@ -139,7 +157,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_spell_vampirism2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SPELL_VAMPIRISM";amount=2;type="FLAT"}'
     lores:
       0:
         - "&ePercentage of damage you gain back as health when inflicting skill damage +%2"
@@ -158,7 +179,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_spell_vampirism2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SPELL_VAMPIRISM";amount=2;type="FLAT"}'
     lores:
       0:
         - "&ePercentage of damage you gain back as health when inflicting skill damage +%2"
@@ -177,7 +201,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_spell_vampirism6
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SPELL_VAMPIRISM";amount=6;type="FLAT"}'
     lores:
       0:
         - "&ePercentage of damage you gain back as health when inflicting skill damage +%6"
@@ -199,7 +226,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_additional_experience2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eAdditional MMOCore main class experience +%2"
@@ -218,7 +248,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_additional_experience3
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=3;type="FLAT"}'
     lores:
       0:
         - "&eAdditional MMOCore main class experience +%3"
@@ -237,7 +270,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_additional_experience5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="ADDITIONAL_EXPERIENCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eAdditional MMOCore main class experience +%5"
@@ -259,7 +295,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_magic_damage_reduction5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE_REDUCTION";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eReduce magic damage dealt by potions %5"
@@ -278,7 +317,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_magic_damage_reduction5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE_REDUCTION";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eReduce magic damage dealt by potions %5"
@@ -297,7 +339,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_magic_damage_reduction10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE_REDUCTION";amount=10;type="FLAT"}'
     lores:
       0:
         - "&eReduce magic damage dealt by potions %10"
@@ -319,7 +364,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_skill_critical_strike_chance5
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SKILL_CRITICAL_STRIKE_CHANCE";amount=5;type="FLAT"}'
     lores:
       0:
         - "&eIncreases the chance of dealing skill crits +%5"
@@ -338,7 +386,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_skill_critical_strike_chance10
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SKILL_CRITICAL_STRIKE_CHANCE";amount=10;type="FLAT"}'
     lores:
       0:
         - "&eIncreases the chance of dealing skill crits +%10"
@@ -357,7 +408,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_skill_critical_strike_chance15
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="SKILL_CRITICAL_STRIKE_CHANCE";amount=15;type="FLAT"}'
     lores:
       0:
         - "&eIncreases the chance of dealing skill crits +%15"
@@ -379,7 +433,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_magic_damage1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=1;type="FLAT"}'
     lores:
       0:
         - "&eAdditional magic skill damage in +%1"
@@ -398,7 +455,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_magic_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eAdditional magic skill damage in +%2"
@@ -417,7 +477,10 @@ nodes:
     max-level: 1
     size: 1
     point-consumed: 1
-    experience-table: skilltree_magic_damage2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=2;type="FLAT"}'
     lores:
       0:
         - "&eAdditional magic skill damage in +%2"

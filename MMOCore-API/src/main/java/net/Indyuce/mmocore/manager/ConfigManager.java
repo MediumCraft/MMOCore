@@ -34,7 +34,7 @@ public class ConfigManager {
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown,
             pvpModeCombatTimeout, pvpModeInvulnerabilityTimeRegionChange, pvpModeInvulnerabilityTimeCommand, pvpModeRegionEnterCooldown, pvpModeRegionLeaveCooldown;
-    public int maxPartyLevelDifference, maxSlots, minCombatLevel, maxCombatLevelDifference;
+    public int maxPartyLevelDifference, maxSkillSlots, minCombatLevel, maxCombatLevelDifference;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
     private final FileConfiguration messages;
@@ -157,7 +157,7 @@ public class ConfigManager {
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
-        maxSlots = MMOCore.plugin.getConfig().getInt("max-slots");
+        maxSkillSlots = MMOCore.plugin.getConfig().getInt("max-skill-slots");
         overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp");
     }
 
@@ -181,11 +181,11 @@ public class ConfigManager {
     }
 
     public void loadDefaultFile(String path, String name) {
-        String newPath ="";
-        if(!path.isEmpty()){
+        String newPath = "";
+        if (!path.isEmpty()) {
             String[] subpaths = path.split("/");
             for (String subpath : subpaths) {
-                newPath+="/"+subpath;
+                newPath += "/" + subpath;
                 File folder = new File(MMOCore.plugin.getDataFolder() + (newPath));
                 if (!folder.exists()) folder.mkdir();
             }
@@ -193,7 +193,6 @@ public class ConfigManager {
 
         File file = new File(MMOCore.plugin.getDataFolder() + (newPath), name);
         if (!file.exists()) try {
-            MMOCore.log("default/" + (path.isEmpty() ? "" : path + "/") + name);
             Files.copy(MMOCore.plugin.getResource("default/" + (path.isEmpty() ? "" : path + "/") + name), file.getAbsoluteFile().toPath());
         } catch (IOException e) {
             e.printStackTrace();

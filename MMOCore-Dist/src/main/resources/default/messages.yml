@@ -200,7 +200,7 @@ no-class-skill: '&cYour class has no skill.'
 not-enough-skill-points: '&cYou need one skill point.'
 not-enough-skill-points-shift: '&cYou need {shift_points} skill points.'
 upgrade-skill: '&eYour &6{skill} &eis now Level &6{level}&e!'
-not-unlocked-skill: '&cYou have not unlocked that skill yet.'
+skill-level-not-met: '&cYou cannot use this skill yet.'
 no-skill-bound: '&cYou don''t have any skill bound to this slot.'
 not-compatible-skill: '&cThe selected skill is not compatible with this slot.'
 cant-manually-bind: "&cYou can't manually bind/unbind a skill to this slot."

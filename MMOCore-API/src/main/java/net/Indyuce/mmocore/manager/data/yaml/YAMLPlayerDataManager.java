@@ -33,7 +33,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
     public void loadData(PlayerData data) {
         FileConfiguration config = new ConfigFile(data.getUniqueId()).getConfig();
 
-        //Reset stats linked to triggers.
+        // Reset stats linked to triggers.
         data.resetTriggerStats();
 
         data.setClassPoints(config.getInt("class-points", getDefaultData().getClassPoints()));
@@ -70,15 +70,13 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
                 data.bindSkill(Integer.parseInt(key), skill);
             }
 
-        for (
-                String key : MMOCore.plugin.skillTreeManager.getAll().
+        for (String key : MMOCore.plugin.skillTreeManager.getAll().
                 stream().
                 map(skillTree -> skillTree.getId()).
                 toList()) {
             data.setSkillTreePoints(key, config.getInt("skill-tree-points." + key, 0));
         }
         data.setSkillTreePoints("global", config.getInt("skill-tree-points.global", 0));
-
 
         if (config.contains("times-claimed"))
             for (String key : config.getConfigurationSection("times-claimed").getKeys(false)) {
@@ -193,7 +191,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             info.getNodeKeys().forEach(node -> config.set("class-info." + key + ".node-levels." + node, info.getNodeLevel(node)));
             info.getSkillTreePointsKeys().forEach(skillTreeId -> config.set("class-info." + key + ".skill-tree-points." + skillTreeId, info.getAttributeLevel(skillTreeId)));
             info.getBoundSkills().forEach((slot, skill) -> config.set("class-info." + key + ".bound-skills." + slot, skill));
-            config.set("class-info." + key + ".unlocked-items", info.getUnlockedItems());
+            config.set("class-info." + key + ".unlocked-items", new ArrayList<>(info.getUnlockedItems()));
         }
 
         file.save();

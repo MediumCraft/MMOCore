@@ -70,7 +70,6 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         }
     }
 
-
     @Override
     protected void whenPostLoaded(@NotNull ConfigurationSection config) {
 
@@ -211,6 +210,11 @@ public class Waypoint extends PostLoadObject implements Unlockable {
     @Override
     public String getUnlockNamespacedKey() {
         return "waypoint:" + getId();
+    }
+
+    @Override
+    public boolean isUnlockedByDefault() {
+        return hasOption(WaypointOption.DEFAULT);
     }
 
     @Override

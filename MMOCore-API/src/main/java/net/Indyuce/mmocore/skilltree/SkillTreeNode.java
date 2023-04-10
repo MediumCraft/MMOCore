@@ -70,9 +70,8 @@ public class SkillTreeNode implements ExperienceObject {
                     throw new RuntimeException("You must only specifiy integers in lores.");
                 }
 
-        String expTableId = config.getString("experience-table");
-        Validate.notNull(expTableId, "You must specify an exp table for " + getFullId() + ".");
-        this.experienceTable = MMOCore.plugin.experience.getTableOrThrow(expTableId);
+        Validate.isTrue(config.contains("experience-table"), "You must specify an exp table");
+        this.experienceTable = MMOCore.plugin.experience.loadExperienceTable(config.get("experience-table"));
 
         maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
         maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
@@ -120,7 +119,6 @@ public class SkillTreeNode implements ExperienceObject {
     public boolean hasParent(SkillTreeNode parent) {
         return softParents.containsKey(parent) || strongParents.containsKey(parent);
     }
-
 
     public int getMaxLevel() {
         return maxLevel;
