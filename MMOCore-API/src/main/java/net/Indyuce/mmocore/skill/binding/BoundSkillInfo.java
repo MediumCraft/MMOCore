@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.skill.binding;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -10,17 +11,18 @@ import java.util.UUID;
 public class BoundSkillInfo {
     private final PlayerData playerData;
     private final ClassSkill classSkill;
-    private UUID passiveSkillUUID;
+
+    private UUID passiveSkillId;
 
     public BoundSkillInfo(ClassSkill classSkill, PlayerData playerData) {
         this.classSkill = classSkill;
         this.playerData = playerData;
     }
 
-    public BoundSkillInfo(ClassSkill classSkill, PlayerData playerData, UUID passiveSkillUUID) {
+    public BoundSkillInfo(ClassSkill classSkill, PlayerData playerData, UUID passiveSkillId) {
         this.classSkill = classSkill;
         this.playerData = playerData;
-        this.passiveSkillUUID = passiveSkillUUID;
+        this.passiveSkillId = passiveSkillId;
     }
 
     /**
@@ -32,19 +34,22 @@ public class BoundSkillInfo {
         info.unbind();
         PassiveSkill passiveSkill = classSkill.toPassive(playerData);
         passiveSkill.register(playerData.getMMOPlayerData());
-        this.passiveSkillUUID = passiveSkill.getUniqueId();
+        this.passiveSkillId = passiveSkill.getUniqueId();
     }
 
+    @NotNull
     public ClassSkill getClassSkill() {
         return classSkill;
     }
 
+    @NotNull
     public PlayerData getPlayerData() {
         return playerData;
     }
 
-    public UUID getPassiveSkillUUID() {
-        return passiveSkillUUID;
+    @NotNull
+    public UUID getPassiveSkillId() {
+        return passiveSkillId;
     }
 
     /**
@@ -52,16 +57,15 @@ public class BoundSkillInfo {
      */
     public void refresh() {
         if (classSkill.getSkill().getTrigger().isPassive()) {
-            playerData.getMMOPlayerData().getPassiveSkillMap().removeModifier(passiveSkillUUID);
+            playerData.getMMOPlayerData().getPassiveSkillMap().removeModifier(passiveSkillId);
             PassiveSkill passiveSkill = classSkill.toPassive(playerData);
             passiveSkill.register(playerData.getMMOPlayerData());
-            this.passiveSkillUUID = passiveSkill.getUniqueId();
+            this.passiveSkillId = passiveSkill.getUniqueId();
         }
     }
 
     public void unbind() {
-        if (classSkill.getSkill().getTrigger().isPassive()) {
-            playerData.getMMOPlayerData().getPassiveSkillMap().removeModifier(passiveSkillUUID);
-        }
+        if (classSkill.getSkill().getTrigger().isPassive())
+            playerData.getMMOPlayerData().getPassiveSkillMap().removeModifier(passiveSkillId);
     }
 }

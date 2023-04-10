@@ -22,9 +22,6 @@ public class ClassSkill implements CooldownObject, Unlockable {
     private final boolean unlockedByDefault;
     private final Map<String, LinearValue> modifiers = new HashMap<>();
 
-    @Deprecated
-    private final Set<Condition> unlockConditions = new HashSet<>();
-
     /**
      * Class used to save information about skills IN A CLASS CONTEXT
      * i.e at which level the skill can be unlocked, etc.

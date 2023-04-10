@@ -44,7 +44,6 @@ import net.Indyuce.mmocore.player.CombatHandler;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
-import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
 import net.Indyuce.mmocore.skilltree.NodeStatus;
@@ -105,6 +104,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     @Deprecated
     private final Set<String> waypoints = new HashSet<>();
     private final Map<String, Integer> skills = new HashMap<>();
+    // TODO change it to an array....... Map<Integer, BoundSkillInfo> is just BoundSkillInfo[]
     private final Map<Integer, BoundSkillInfo> boundSkills = new HashMap<>();
     private final PlayerProfessions collectSkills = new PlayerProfessions(this);
     private final PlayerAttributes attributes = new PlayerAttributes(this);
@@ -1064,15 +1064,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setSkillLevel(String skill, int level) {
         skills.put(skill, level);
-        refreshBoundedSkill(skill);
+        refreshBoundSkill(skill);
     }
 
     public void resetSkillLevel(String skill) {
         skills.remove(skill);
-        refreshBoundedSkill(skill);
+        refreshBoundSkill(skill);
     }
 
-    public void refreshBoundedSkill(String skill) {
+    public void refreshBoundSkill(String skill) {
         boundSkills.values().stream().filter(skillInfo -> skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill)).forEach(BoundSkillInfo::refresh);
     }
 
@@ -1142,6 +1142,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return boundSkills.containsKey(slot);
     }
 
+    @Nullable
     public ClassSkill getBoundSkill(int slot) {
         return boundSkills.containsKey(slot) ? boundSkills.get(slot).getClassSkill() : null;
     }

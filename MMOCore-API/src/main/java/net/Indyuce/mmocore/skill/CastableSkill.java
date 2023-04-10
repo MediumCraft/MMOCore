@@ -32,7 +32,7 @@ public class CastableSkill extends Skill {
         PlayerData playerData = PlayerData.get(skillMeta.getCaster().getData().getUniqueId());
         boolean loud = !getTrigger().isSilent();
 
-        // If the caster has unlocked that skill
+        // Skill is not usable yet
         if (!playerData.hasSkillUnlocked(skill)) {
             if (loud) MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(playerData.getPlayer());
             return false;
