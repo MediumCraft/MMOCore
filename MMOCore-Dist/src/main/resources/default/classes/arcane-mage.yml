@@ -114,11 +114,6 @@ skills:
         level: 15
         max-level: 30
 
-
-#The number of skills a player can bound.
-max-bound-active-skills: 6
-max-bound-passive-skills: 4
-
 # Experience sources for main class experience.
 main-exp-sources:
 - 'killmob{type=ZOMBIE;amount=1-3}'

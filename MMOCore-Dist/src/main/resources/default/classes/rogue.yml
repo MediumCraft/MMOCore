@@ -47,7 +47,6 @@ skill-trees:
     - 'general'
     - 'rogue-marksman'
 
-
 options:
     # Mana and health regen only applies when out of combat
     off-combat-mana-regen: true
@@ -95,10 +94,6 @@ attributes:
         base: .105
         per-level: 0
 
-
-#The number of skills a player can bound.
-max-bound-active-skills: 5
-max-bound-passive-skills: 3
 # Experience sources for main class experience.
 main-exp-sources:
 - 'killmob{type=ZOMBIE;amount=1-3}'

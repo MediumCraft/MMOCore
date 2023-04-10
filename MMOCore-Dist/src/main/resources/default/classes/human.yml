@@ -20,6 +20,8 @@ options:
 # Must match an existing exp curve filename from the 'expcurves' folder
 exp-curve: levels
 
+exp-table: class_exp_table
+
 skill-slots:
     1:
         name: "Skill Slot I"
@@ -29,11 +31,6 @@ skill-slots:
         name: "Skill Slot III"
     4:
         name: "Skill Slot IV"
-
-#The number of skills a player can bound.
-max-bound-active-skills: 5
-
-max-bound-passive-skills: 3
 
 # Experience sources for main class experience.
 main-exp-sources:
