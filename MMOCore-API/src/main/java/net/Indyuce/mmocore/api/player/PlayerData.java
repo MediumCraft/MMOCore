@@ -5,7 +5,6 @@ import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
-import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -176,13 +175,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         while (ite.hasNext())
             try {
                 final int slot = ite.next();
-
-
-                Bukkit.broadcastMessage("OLD " + boundSkills.get(slot).getClassSkill().getSkill().getModifierInfo("cooldown"));
-
                 boundSkills.put(slot, new BoundSkillInfo(boundSkills.get(slot)));
-
-                Bukkit.broadcastMessage("NEW " + boundSkills.get(slot).getClassSkill().getSkill().getModifierInfo("cooldown"));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -1176,14 +1169,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         Validate.notNull(skill, "Skill cannot be null");
 
         // Unbinds the previous skill (Important for passive skills.
-        String skillId = skill.getSkill().getHandler().getId();
         if (boundSkills.containsKey(slot)) boundSkills.get(slot).unbind();
 
         if (slot >= 0) {
 
             // We apply the skill buffs associated with the slot to the skill.
             for (SkillModifierTrigger skillBuffTrigger : profess.getSkillSlot(slot).getSkillBuffTriggers())
-                if (skillBuffTrigger.getTargetSkills().contains(skillId))
+                if (skillBuffTrigger.getTargetSkills().contains(skill.getSkill().getHandler()))
                     skillBuffTrigger.apply(this, skill.getSkill().getHandler());
 
             boundSkills.put(slot, new BoundSkillInfo(skill, this));
