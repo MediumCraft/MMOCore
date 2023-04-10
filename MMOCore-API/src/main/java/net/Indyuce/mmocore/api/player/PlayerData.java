@@ -183,16 +183,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setupSkillTree() {
+
         // Node states setup
         for (SkillTree skillTree : getProfess().getSkillTrees())
             skillTree.setupNodeStates(this);
 
         // Stat triggers setup
-
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
             for (SkillTreeNode node : skillTree.getNodes())
                 node.getExperienceTable().claimStatTriggers(this, node);
-
     }
 
     public int getPointSpent(SkillTree skillTree) {
@@ -1165,7 +1164,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return mmoData.getCooldownMap();
     }
 
-    public void setClass(PlayerClass profess) {
+    public void setClass(@Nullable PlayerClass profess) {
         this.profess = profess;
 
         // Clear old skills
@@ -1177,11 +1176,12 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (isOnline())
             getStats().updateStats();
 
-        // Loads the classUnlockedSkills
-        profess.getSkills()
-                .stream()
-                .filter(ClassSkill::isUnlockedByDefault)
-                .forEach(skill ->unlock(skill.getSkill()));
+        if (profess != null)
+            // Loads the classUnlockedSkills
+            profess.getSkills()
+                    .stream()
+                    .filter(ClassSkill::isUnlockedByDefault)
+                    .forEach(skill -> unlock(skill.getSkill()));
     }
 
     public boolean hasSkillBound(int slot) {

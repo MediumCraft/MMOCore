@@ -104,11 +104,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                      | SecurityException exception) {
                 throw new IllegalArgumentException("Could not apply playerhead texture: " + exception.getMessage());
             }
-        Validate.isTrue(config.isConfigurationSection("skill-slots"), "You must define the skills-slots for class " + id);
-        for (String key : config.getConfigurationSection("skill-slots").getKeys(false)) {
-            SkillSlot skillSlot = new SkillSlot(config.getConfigurationSection("skill-slots." + key));
-            skillSlots.put(skillSlot.getSlot(), skillSlot);
-        }
+
         for (String string : config.getStringList("display.lore"))
             description.add(ChatColor.GRAY + MythicLib.plugin.parseColors(string));
         for (String string : config.getStringList("display.attribute-lore"))
@@ -119,10 +115,13 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         displayOrder = config.getInt("display.order");
         actionBarFormat = config.contains("action-bar", true) ? config.getString("action-bar") : null;
 
+        // Exp curve
         expCurve = config.contains("exp-curve")
                 ? MMOCore.plugin.experience.getCurveOrThrow(
                 config.get("exp-curve").toString().toLowerCase().replace("_", "-").replace(" ", "-"))
                 : ExpCurve.DEFAULT;
+
+        // Main exp table
         ExperienceTable expTable = null;
         if (config.contains("exp-table"))
             try {
@@ -131,6 +130,8 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from class '" + id + "': " + exception.getMessage());
             }
         this.expTable = expTable;
+
+        // Skill trees
         if (config.contains("skill-trees"))
             for (String str : config.getStringList("skill-trees"))
                 try {
@@ -139,6 +140,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                     MMOCore.log(Level.WARNING, "Could not find skill tree with ID: " + str);
                 }
 
+        // Class-specific scripts
         if (config.contains("scripts"))
             for (String key : config.getConfigurationSection("scripts").getKeys(false))
                 try {
@@ -161,6 +163,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             }
         this.comboMap = comboMap;
 
+        // Triggers (DEPRECATED)
         if (config.contains("triggers"))
             for (String key : config.getConfigurationSection("triggers").getKeys(false))
                 try {
@@ -170,6 +173,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                     MMOCore.log(Level.WARNING, "Could not load trigger '" + key + "' from class '" + id + "':" + exception.getMessage());
                 }
 
+        // Class STATS, not attributes (historic reasons)
         if (config.contains("attributes"))
             for (String key : config.getConfigurationSection("attributes").getKeys(false))
                 try {
@@ -180,16 +184,30 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                             + id + "': " + exception.getMessage());
                 }
 
+        // Skill slots
+        if (config.contains("skill-slots"))
+            for (String key : config.getConfigurationSection("skill-slots").getKeys(false))
+                try {
+                    SkillSlot skillSlot = new SkillSlot(config.getConfigurationSection("skill-slots." + key));
+                    skillSlots.put(skillSlot.getSlot(), skillSlot);
+                } catch (RuntimeException exception) {
+                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill slot '" + key + "' from class '"
+                            + id + "': " + exception.getMessage());
+                }
+
+        // Class skills
         for (RegisteredSkill registered : MMOCore.plugin.skillManager.getAll()) {
-            String key = registered.getHandler().getId();
+            final String key = registered.getHandler().getId();
             if (config.contains("skills." + key))
                 skills.put(key, new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
             else
                 skills.put(key, new ClassSkill(registered, 1, 1,false));
         }
 
+        // Casting particle
         castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
 
+        // Other class options
         if (config.contains("options"))
             for (String key : config.getConfigurationSection("options").getKeys(false))
                 try {
@@ -200,6 +218,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                             "Could not load option '" + key + "' from class '" + key + "': " + exception.getMessage());
                 }
 
+        // Experience sources
         if (config.contains("main-exp-sources")) {
             for (String key : config.getStringList("main-exp-sources"))
                 try {
@@ -346,8 +365,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     @Override
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation, EXPSource source) {
-        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null
-                : hologramLocation;
+        hologramLocation = !MMOCore.plugin.getConfig().getBoolean("display-main-class-exp-holograms") ? null : hologramLocation;
         playerData.giveExperience(experience, source, hologramLocation, true);
     }
 

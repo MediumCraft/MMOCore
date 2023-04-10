@@ -4,6 +4,7 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class SkillSlot {
@@ -11,7 +12,7 @@ public class SkillSlot {
     private final String formula;
     private final String name;
     private final List<String> lore;
-    private Material item;
+    private final Material item;
 
     public SkillSlot(int slot, int modelData, String formula, String name, List<String> lore, Material item) {
         this.slot = slot;
@@ -27,8 +28,7 @@ public class SkillSlot {
         this.formula = section.contains("expression") ? section.getString("expression") : "true";
         this.name = section.getString("name");
         this.lore = section.getStringList("lore");
-        if (section.contains("item"))
-            this.item = Material.valueOf(section.getString("item"));
+        this.item = section.contains("item") ? Material.valueOf(section.getString("item")) : null;
         this.modelData = section.getInt("model-data", 0);
     }
 
@@ -44,6 +44,7 @@ public class SkillSlot {
         return lore;
     }
 
+    @Nullable
     public Material getItem() {
         return item;
     }
@@ -56,7 +57,7 @@ public class SkillSlot {
         return modelData;
     }
 
-    public boolean canPlaceSkill(ClassSkill classSkill) {
+    public boolean acceptsSkill(ClassSkill classSkill) {
         return classSkill.getSkill().matchesFormula(formula);
     }
 }

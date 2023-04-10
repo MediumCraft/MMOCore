@@ -18,18 +18,19 @@ import java.util.function.BiFunction;
 public class SkillCommandTreeNode extends CommandTreeNode {
     public SkillCommandTreeNode(CommandTreeNode parent) {
         super(parent, "skill");
+
         addChild(new LockSkillCommandTreeNode(this, "lock", true));
         addChild(new LockSkillCommandTreeNode(this, "unlock", false));
-        addChild(new ActionCommandTreeNode(this, "give", (old, amount) -> old + amount));
-        addChild(new ActionCommandTreeNode(this, "set", (old, amount) -> amount));
+        addChild(new LevelCommandTreeNode(this, "give", (old, amount) -> old + amount));
+        addChild(new LevelCommandTreeNode(this, "set", (old, amount) -> amount));
     }
 
-
-    public class ActionCommandTreeNode extends CommandTreeNode {
+    public class LevelCommandTreeNode extends CommandTreeNode {
         private final BiFunction<Integer, Integer, Integer> change;
 
-        public ActionCommandTreeNode(CommandTreeNode parent, String type, BiFunction<Integer, Integer, Integer> change) {
+        public LevelCommandTreeNode(CommandTreeNode parent, String type, BiFunction<Integer, Integer, Integer> change) {
             super(parent, type);
+
             this.change = change;
             addParameter(Parameter.PLAYER);
             addParameter(new Parameter("<skill>",

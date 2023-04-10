@@ -51,6 +51,7 @@ public class StatManager implements MMOCoreManager {
      * - in stats.yml which defines default stat formulas
      *
      * @return A list of stats that must be taken into account in MMOCore
+     *         in the player stat calculation.
      */
     public Set<String> getRegistered() {
         return usedStats;

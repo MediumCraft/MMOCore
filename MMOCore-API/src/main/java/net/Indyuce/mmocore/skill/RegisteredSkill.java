@@ -72,12 +72,10 @@ public class RegisteredSkill implements Unlockable {
 
     @Override
     public void whenLocked(PlayerData playerData) {
-        playerData.mapBoundSkills()
-                .forEach((slot, skill) ->
-                {
-                    if (skill.equals(getUnlockNamespacedKey().split(":")[1]))
-                        playerData.unbindSkill(slot);
-                });
+        playerData.mapBoundSkills().forEach((slot, skill) -> {
+            if (skill.equals(getUnlockNamespacedKey().split(":")[1]))
+                playerData.unbindSkill(slot);
+        });
     }
 
     @Override
@@ -143,8 +141,7 @@ public class RegisteredSkill implements Unlockable {
             parsedExpression = parsedExpression.replace("<" + category + ">", "true");
         parsedExpression = parsedExpression.replaceAll("<.*>", "false");
         try {
-            boolean res = (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
-            return res;
+            return (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
         } catch (EvalError error) {
             throw new RuntimeException(error);
         }

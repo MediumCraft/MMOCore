@@ -17,7 +17,6 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.api.SoundEvent;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -421,7 +420,7 @@ public class SkillList extends EditableInventory {
                     return;
                 }
 
-                if(!skillSlot.canPlaceSkill(selected)){
+                if(!skillSlot.acceptsSkill(selected)){
                     MMOCore.plugin.configManager.getSimpleMessage("not-compatible-skill").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
