@@ -2,47 +2,41 @@ package net.Indyuce.mmocore.skill.binding;
 
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.SkillModifierTrigger;
+import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.skill.ClassSkill;
-import org.bukkit.Bukkit;
+import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.UUID;
-
-public class BoundSkillInfo {
+public class BoundSkillInfo implements Closable {
+    private final SkillSlot skillSlot;
     private final PlayerData playerData;
     private final ClassSkill classSkill;
 
     /**
-     * Private skills must be registered inside of MythicLib when bound.
-     * When set to null, the skill is NOT registered.
+     * PASSIVE skills must be registered inside of MythicLib when
+     * when bound. When set to null, the skill is not registered.
      */
     @Nullable
-    private PassiveSkill registered;
+    private final PassiveSkill registered;
 
-    public BoundSkillInfo(ClassSkill classSkill, PlayerData playerData) {
+    private boolean open = true;
+
+    public BoundSkillInfo(@NotNull SkillSlot skillSlot, @NotNull ClassSkill classSkill, @NotNull PlayerData playerData) {
+        this.skillSlot = skillSlot;
         this.classSkill = classSkill;
         this.playerData = playerData;
 
+        // Apply skill buffs associated to the slot
+        for (SkillModifierTrigger skillBuffTrigger : skillSlot.getSkillBuffTriggers())
+            if (skillBuffTrigger.getTargetSkills().contains(classSkill.getSkill().getHandler()))
+                skillBuffTrigger.apply(playerData, classSkill.getSkill().getHandler());
+
         if (classSkill.getSkill().getTrigger().isPassive()) {
             registered = classSkill.toPassive(playerData);
             registered.register(playerData.getMMOPlayerData());
-        }
-    }
-
-    /**
-     * Used on update to refresh the classSkill & all references to old data.
-     */
-    public BoundSkillInfo(BoundSkillInfo info) {
-        this.playerData = info.getPlayerData();
-        this.classSkill = Objects.requireNonNull(playerData.getProfess().getSkill(info.getClassSkill().getSkill()));
-
-        if (classSkill.getSkill().getTrigger().isPassive()) {
-            info.unbind();
-            registered = classSkill.toPassive(playerData);
-            registered.register(playerData.getMMOPlayerData());
-        }
+        } else registered = null;
     }
 
     @NotNull
@@ -55,23 +49,24 @@ public class BoundSkillInfo {
         return playerData;
     }
 
+    @NotNull
+    public SkillSlot getSkillSlot() {
+        return skillSlot;
+    }
+
     public boolean isPassive() {
         return registered != null;
     }
 
-    /**
-     * This is used to refresh the PassiveSkill playerModifier
-     * so it is always associated to the right skill level.
-     */
-    public void refresh() {
-        if (isPassive()) {
-            registered.unregister(playerData.getMMOPlayerData());
-            registered = classSkill.toPassive(playerData);
-            registered.register(playerData.getMMOPlayerData());
-        }
-    }
+    @Override
+    public void close() {
+        Validate.isTrue(open, "BoundSkillInfo has already been closed");
+        open = false;
 
-    public void unbind() {
+        // Unregister skill if passive
         if (isPassive()) registered.unregister(playerData.getMMOPlayerData());
+
+        // Remove skill buffs associated to the slot
+        skillSlot.getSkillBuffTriggers().forEach(skillBuffTrigger -> skillBuffTrigger.remove(playerData, classSkill.getSkill().getHandler()));
     }
 }

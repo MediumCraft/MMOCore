@@ -65,7 +65,7 @@ public class MMOCoreAPI {
     public SkillResult cast(PlayerData playerData, ClassSkill skill) {
         PlayerMetadata casterMeta = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
         TriggerMetadata triggerMeta = new TriggerMetadata(casterMeta, null, null);
-        return new CastableSkill(skill, playerData.getSkillLevel(skill.getSkill())).cast(triggerMeta);
+        return new CastableSkill(skill, playerData).cast(triggerMeta);
     }
 
     /**

@@ -23,7 +23,6 @@ import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
-import net.Indyuce.mmocore.api.quest.trigger.SkillModifierTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -43,6 +42,7 @@ import net.Indyuce.mmocore.player.CombatHandler;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
 import net.Indyuce.mmocore.skilltree.NodeStatus;
@@ -171,13 +171,20 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
         }
 
-        final Iterator<Integer> ite = boundSkills.keySet().iterator();
+        final Iterator<Map.Entry<Integer, BoundSkillInfo>> ite = boundSkills.entrySet().iterator();
         while (ite.hasNext())
             try {
-                final int slot = ite.next();
-                boundSkills.put(slot, new BoundSkillInfo(boundSkills.get(slot)));
+                final Map.Entry<Integer, BoundSkillInfo> entry = ite.next();
+                final @Nullable SkillSlot skillSlot = getProfess().getSkillSlot(entry.getKey());
+                final String skillId = entry.getValue().getClassSkill().getSkill().getHandler().getId();
+                final @Nullable ClassSkill classSkill = getProfess().getSkill(skillId);
+                Validate.notNull(skillSlot, "Could not find skill slot n" + entry.getKey());
+                Validate.notNull(skillSlot, "Could not find skill with ID '" + skillId + "'");
+
+                entry.getValue().close();
+                boundSkills.put(entry.getKey(), new BoundSkillInfo(skillSlot, classSkill, this));
             } catch (Exception exception) {
-                exception.printStackTrace();
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not reload data of '" + getPlayer().getName() + "': " + exception.getMessage());
             }
 
         for (SkillTree skillTree : getProfess().getSkillTrees())
@@ -1070,16 +1077,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     public void setSkillLevel(String skill, int level) {
         skills.put(skill, level);
-        refreshBoundSkill(skill);
     }
 
     public void resetSkillLevel(String skill) {
         skills.remove(skill);
-        refreshBoundSkill(skill);
-    }
-
-    public void refreshBoundSkill(String skill) {
-        boundSkills.values().stream().filter(skillInfo -> skillInfo.getClassSkill().getSkill().getHandler().getId().equals(skill)).forEach(BoundSkillInfo::refresh);
     }
 
     @Deprecated
@@ -1136,9 +1137,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void setClass(@Nullable PlayerClass profess) {
         this.profess = profess;
 
-        // Clear old skills
-        for (Iterator<BoundSkillInfo> iterator = boundSkills.values().iterator(); iterator.hasNext(); )
-            if (!getProfess().hasSkill(iterator.next().getClassSkill().getSkill())) iterator.remove();
+        // Clear bound skills
+        boundSkills.forEach((slot, info) -> info.close());
+        boundSkills.clear();
 
         // Update stats
         if (isOnline()) getStats().updateStats();
@@ -1168,29 +1169,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void bindSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
 
-        // Unbinds the previous skill (Important for passive skills.
-        if (boundSkills.containsKey(slot)) boundSkills.get(slot).unbind();
+        // Unbinds the previous skill (important for passive skills)
+        unbindSkill(slot);
 
         if (slot >= 0) {
-
-            // We apply the skill buffs associated with the slot to the skill.
-            for (SkillModifierTrigger skillBuffTrigger : profess.getSkillSlot(slot).getSkillBuffTriggers())
-                if (skillBuffTrigger.getTargetSkills().contains(skill.getSkill().getHandler()))
-                    skillBuffTrigger.apply(this, skill.getSkill().getHandler());
-
-            boundSkills.put(slot, new BoundSkillInfo(skill, this));
+            final SkillSlot skillSlot = getProfess().getSkillSlot(slot);
+            boundSkills.put(slot, new BoundSkillInfo(skillSlot, skill, this));
         }
     }
 
     public void unbindSkill(int slot) {
-
-        // We remove the skill buffs associated with the slot from the skill that is .
-        profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger -> skillBuffTrigger.remove(this, boundSkills.get(slot).getClassSkill().getSkill().getHandler()));
-
-        BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
-        boundSkillInfo.unbind();
+        final @Nullable BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
+        if (boundSkillInfo != null) boundSkillInfo.close();
     }
-
 
     public List<ClassSkill> getBoundSkills() {
         return boundSkills.values().stream().map(BoundSkillInfo::getClassSkill).collect(Collectors.toList());

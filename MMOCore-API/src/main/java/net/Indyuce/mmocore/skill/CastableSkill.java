@@ -12,15 +12,30 @@ import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 
+import javax.inject.Provider;
+
 public class CastableSkill extends Skill {
     private final ClassSkill skill;
-    private final int skillLevel;
 
-    public CastableSkill(ClassSkill skill, int skillLevel) {
+    /**
+     * Now uses a provider since 1.12 because the skill level can CHANGE
+     * with time, and such instance of CastableSkill is
+     */
+    private final Provider<Integer> skillLevel;
+
+    @Deprecated
+    public CastableSkill(ClassSkill skill, int fixedLevel) {
         super(skill.getSkill().getTrigger());
 
         this.skill = skill;
-        this.skillLevel = skillLevel;
+        this.skillLevel = () -> fixedLevel;
+    }
+
+    public CastableSkill(ClassSkill skill, PlayerData playerData) {
+        super(skill.getSkill().getTrigger());
+
+        this.skill = skill;
+        this.skillLevel = () -> playerData.getSkillLevel(skill.getSkill());
     }
 
     public ClassSkill getSkill() {
@@ -97,6 +112,6 @@ public class CastableSkill extends Skill {
 
     @Override
     public double getModifier(String mod) {
-        return skill.getModifier(mod, skillLevel);
+        return skill.getModifier(mod, skillLevel.get());
     }
 }

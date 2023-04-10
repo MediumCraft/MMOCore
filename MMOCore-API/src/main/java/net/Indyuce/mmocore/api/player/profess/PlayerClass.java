@@ -184,12 +184,15 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         // Skill slots
-        for (int i = 1; i < MMOCore.plugin.configManager.maxSkillSlots + 1; i++) {
-            if (config.contains("skill-slots." + i))
-                skillSlots.put(i, new SkillSlot(config.getConfigurationSection("skill-slots." + i)));
-            else
-                skillSlots.put(i, new SkillSlot(i, 0, "true", "&eSkill Slot " + MMOCoreUtils.intToRoman(i), new ArrayList<>(), false, true, new ArrayList<>()));
-        }
+        for (int i = 1; i < MMOCore.plugin.configManager.maxSkillSlots + 1; i++)
+            try {
+                if (config.contains("skill-slots." + i))
+                    skillSlots.put(i, new SkillSlot(config.getConfigurationSection("skill-slots." + i)));
+                else
+                    skillSlots.put(i, new SkillSlot(i, 0, "true", "&eSkill Slot " + MMOCoreUtils.intToRoman(i), new ArrayList<>(), false, true, new ArrayList<>()));
+            } catch (RuntimeException exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill slot '" + String.valueOf(i) + "' from class '" + getId() + "': " + exception.getMessage());
+            }
 
         // Class skills
         for (RegisteredSkill registered : MMOCore.plugin.skillManager.getAll()) {

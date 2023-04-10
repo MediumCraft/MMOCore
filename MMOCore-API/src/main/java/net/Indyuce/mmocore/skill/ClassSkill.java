@@ -132,9 +132,8 @@ public class ClassSkill implements CooldownObject, Unlockable {
     }
 
     public CastableSkill toCastable(PlayerData caster) {
-        return new CastableSkill(this, caster.getSkillLevel(getSkill()));
+        return new CastableSkill(this, caster);
     }
-
 
     /**
      * Be careful, this method creates a new UUID each time it
