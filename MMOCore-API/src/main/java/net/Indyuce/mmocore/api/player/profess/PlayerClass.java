@@ -422,10 +422,12 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return false;
     }
 
+    @Deprecated
     public boolean hasSkill(RegisteredSkill skill) {
         return hasSkill(skill.getHandler().getId());
     }
 
+    @Deprecated
     public boolean hasSkill(String id) {
         return skills.containsKey(id);
     }
@@ -456,6 +458,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         return skills.get(id);
     }
 
+    @Deprecated
     public Collection<ClassSkill> getSkills() {
         return skills.values();
     }

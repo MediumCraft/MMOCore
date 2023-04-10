@@ -71,7 +71,7 @@ public class PlayerStats {
      * MythicLib. Must be ran everytime the player levels up or changes class.
      * <p>
      * This is also called when reloading the plugin to make class setup easier,
-     * see {@link PlayerData#update()} for more info
+     * see {@link PlayerData#reload()} for more info
      */
     public synchronized void updateStats() {
         for (String stat : MMOCore.plugin.statManager.getRegistered()) {

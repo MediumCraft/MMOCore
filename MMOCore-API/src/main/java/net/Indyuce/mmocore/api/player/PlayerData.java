@@ -161,10 +161,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * <p>
      * It's OK if bound skills disappear because of a configuration issue
      * on the user's end. After all this method is only called when using
-     * /reload and /reload is considered a bad practice. If any error
-     * happens then just don't update the player's skill.
+     * /mmocore reload
      */
-    public void update() {
+    public void reload() {
 
         try {
             profess = profess == null ? null : MMOCore.plugin.classManager.get(profess.getId());
@@ -173,13 +172,20 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
         }
 
-        Iterator<Integer> ite = boundSkills.keySet().iterator();
-        while (ite.hasNext()) try {
-            int slot = ite.next();
-            BoundSkillInfo boundSkillInfo = new BoundSkillInfo(boundSkills.get(slot));
-            boundSkills.put(slot, boundSkillInfo);
-        } catch (Exception ignored) {
-        }
+        final Iterator<Integer> ite = boundSkills.keySet().iterator();
+        while (ite.hasNext())
+            try {
+                final int slot = ite.next();
+
+
+                Bukkit.broadcastMessage("OLD " + boundSkills.get(slot).getClassSkill().getSkill().getModifierInfo("cooldown"));
+
+                boundSkills.put(slot, new BoundSkillInfo(boundSkills.get(slot)));
+
+                Bukkit.broadcastMessage("NEW " + boundSkills.get(slot).getClassSkill().getSkill().getModifierInfo("cooldown"));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
 
         for (SkillTree skillTree : getProfess().getSkillTrees())
             for (SkillTreeNode node : skillTree.getNodes())
@@ -526,6 +532,13 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             sum += Math.max(0, getSkillLevel(skill.getSkill()) - 1);
 
         return sum;
+    }
+
+    @Deprecated
+    public List<ClassSkill> getUnlockedSkills() {
+        return getProfess().getSkills().stream()
+                .filter((classSkill) -> hasUnlocked(classSkill))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -1161,22 +1174,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public void bindSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        //Unbinds the previous skill (Important for passive skills.
+
+        // Unbinds the previous skill (Important for passive skills.
         String skillId = skill.getSkill().getHandler().getId();
         if (boundSkills.containsKey(slot)) boundSkills.get(slot).unbind();
+
         if (slot >= 0) {
-            //We apply the skill buffs associated with the slot to the skill.
+
+            // We apply the skill buffs associated with the slot to the skill.
             for (SkillModifierTrigger skillBuffTrigger : profess.getSkillSlot(slot).getSkillBuffTriggers())
                 if (skillBuffTrigger.getTargetSkills().contains(skillId))
                     skillBuffTrigger.apply(this, skill.getSkill().getHandler());
 
-            if (skill.getSkill().getTrigger().isPassive()) {
-                PassiveSkill passiveSkill = skill.toPassive(this);
-                passiveSkill.register(mmoData);
-                boundSkills.put(slot, new BoundSkillInfo(skill, this, passiveSkill.getUniqueId()));
-            } else {
-                boundSkills.put(slot, new BoundSkillInfo(skill, this));
-            }
+            boundSkills.put(slot, new BoundSkillInfo(skill, this));
         }
     }
 

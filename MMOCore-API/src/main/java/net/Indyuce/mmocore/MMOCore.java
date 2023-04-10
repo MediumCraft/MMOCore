@@ -45,9 +45,6 @@ import net.Indyuce.mmocore.script.mechanic.ManaMechanic;
 import net.Indyuce.mmocore.script.mechanic.StaminaMechanic;
 import net.Indyuce.mmocore.script.mechanic.StelliumMechanic;
 import net.Indyuce.mmocore.skill.cast.SkillCastingMode;
-import net.Indyuce.mmocore.skill.list.Ambers;
-import net.Indyuce.mmocore.skill.list.Neptune_Gift;
-import net.Indyuce.mmocore.skill.list.Sneaky_Picky;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -359,7 +356,7 @@ public class MMOCore extends JavaPlugin {
             actionBarManager.reload(getConfig().getConfigurationSection("action-bar"));
 
         if (clearBefore)
-            PlayerData.getAll().forEach(PlayerData::update);
+            PlayerData.getAll().forEach(PlayerData::reload);
     }
 
     public static void log(String message) {

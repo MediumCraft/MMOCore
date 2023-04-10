@@ -49,10 +49,7 @@ items:
   slot:
     slots: [ 8,17,26,35,44,53 ]
     function: slot
-    item: BOOK
-
-    # Material used when the slot is empty
-    empty-item: GRAY_DYE
+    item: GRAY_DYE
 
     name: '&aSkill Slot {slot}'
     no-skill: '&cNone'

@@ -108,15 +108,6 @@ public class ClassSkill implements CooldownObject, Unlockable {
         return Objects.requireNonNull(modifiers.get(modifier), "Could not find modifier '" + modifier + "'").calculate(level);
     }
 
-    /**
-     * Gives the delay to launch the skill
-     *
-     * @return
-     */
-    public int getDelay(PlayerData data) {
-        return modifiers.containsKey("delay") ? (int) modifiers.get("delay").calculate(data.getSkillLevel(getSkill())) : 0;
-    }
-
     public List<String> calculateLore(PlayerData data) {
         return calculateLore(data, data.getSkillLevel(skill));
     }
