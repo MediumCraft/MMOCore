@@ -48,6 +48,7 @@ public class ExperienceTable {
             int timesClaimed = levelingUp.getClaims(object, this, item);
             if (!item.roll(professionLevel, timesClaimed))
                 continue;
+
             levelingUp.setClaims(object, this, item, timesClaimed + 1);
             item.applyTriggers(levelingUp);
         }
