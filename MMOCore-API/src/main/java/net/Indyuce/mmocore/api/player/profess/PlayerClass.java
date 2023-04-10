@@ -21,7 +21,7 @@ import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
 import net.Indyuce.mmocore.api.player.profess.resource.ManaDisplayOptions;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
 import net.Indyuce.mmocore.api.player.profess.resource.ResourceRegeneration;
-import net.Indyuce.mmocore.api.player.profess.skillbinding.SkillSlot;
+import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -185,15 +185,13 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         // Skill slots
-        if (config.contains("skill-slots"))
-            for (String key : config.getConfigurationSection("skill-slots").getKeys(false))
-                try {
-                    SkillSlot skillSlot = new SkillSlot(config.getConfigurationSection("skill-slots." + key));
-                    skillSlots.put(skillSlot.getSlot(), skillSlot);
-                } catch (RuntimeException exception) {
-                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill slot '" + key + "' from class '"
-                            + id + "': " + exception.getMessage());
-                }
+        Validate.isTrue(config.isConfigurationSection("skill-slots"), "You must define the skills-slots for class " + id);
+        for (int i = 1; i < MMOCore.plugin.configManager.maxSlots + 1; i++) {
+            if (config.contains("skill-slots." + i))
+                skillSlots.put(i, new SkillSlot(config.getConfigurationSection("skill-slots." + i)));
+            else
+                skillSlots.put(i, new SkillSlot(i, 0, "true", "&eSkill Slot " + MMOCoreUtils.intToRoman(i), new ArrayList<>(), false, true, new ArrayList<>()));
+        }
 
         // Class skills
         for (RegisteredSkill registered : MMOCore.plugin.skillManager.getAll()) {
@@ -201,7 +199,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
             if (config.contains("skills." + key))
                 skills.put(key, new ClassSkill(registered, config.getConfigurationSection("skills." + key)));
             else
-                skills.put(key, new ClassSkill(registered, 1, 1,false));
+                skills.put(key, new ClassSkill(registered, 1, 1, false));
         }
 
         // Casting particle
@@ -444,6 +442,10 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public SkillSlot getSkillSlot(int slot) {
         return skillSlots.get(slot);
+    }
+
+    public Collection<SkillSlot> getSlots() {
+        return skillSlots.values();
     }
 
     public ClassSkill getSkill(RegisteredSkill skill) {

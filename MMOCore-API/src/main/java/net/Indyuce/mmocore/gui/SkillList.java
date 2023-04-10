@@ -4,8 +4,9 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.player.profess.skillbinding.SkillSlot;
+import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
@@ -15,7 +16,6 @@ import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
-import net.Indyuce.mmocore.api.SoundEvent;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -64,49 +65,7 @@ public class SkillList extends EditableInventory {
         }
 
         if (function.equals("slot"))
-            return new SlotItem(config) {
-                @Override
-                public ItemStack display(SkillViewerInventory inv, int n) {
-                    if (!inv.getPlayerData().getProfess().hasSlot(n+1)) {
-                        return new ItemStack(Material.AIR);
-                    }
-                    SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n+1);
-                    ItemStack item = super.display(inv, n);
-                    if (!inv.getPlayerData().hasSkillBound(n+1)) {
-                        //If there is an item filled in the slot config it shows it, else shows the default item.
-                        Material material = skillSlot.hasItem() ? skillSlot.getItem() : super.emptyMaterial;
-                        int customModelData = skillSlot.hasItem() ? skillSlot.getModelData() : super.emptyCMD;
-                        item.setType(material);
-                        ItemMeta meta = item.getItemMeta();
-                        meta.setDisplayName(MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(),skillSlot.getName()));
-                        List<String> lore=skillSlot.getLore()
-                                .stream()
-                                .map(str->MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(),str))
-                                .collect(Collectors.toList());
-                        meta.setLore(lore);
-                        if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
-                            meta.setCustomModelData(customModelData);
-                        }
-                        item.setItemMeta(meta);
-
-                    }
-
-                    return item;
-                }
-
-                /**
-                 * This should only be called when there is a skill bound.
-                 */
-                @Override
-                public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-                    Placeholders holders = super.getPlaceholders(inv, n);
-                    String none = MythicLib.plugin.parseColors(config.getString("no-skill"));
-                    RegisteredSkill skill = inv.getPlayerData().hasSkillBound(n+1) ? inv.getPlayerData().getBoundSkill(n+1).getSkill() : null;
-                    holders.register("skill", skill == null ? none : skill.getName());
-                    return holders;
-                }
-
-            };
+            return new SlotItem(config);
 
         if (function.equals("previous"))
             return new SimplePlaceholderItem<SkillViewerInventory>(config) {
@@ -199,15 +158,48 @@ public class SkillList extends EditableInventory {
         }
 
         @Override
+        public ItemStack display(SkillViewerInventory inv, int n) {
+            if (!inv.getPlayerData().hasUnlocked("slot:" + (n+1))) {
+                return new ItemStack(Material.AIR);
+            }
+            SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
+            ItemStack item = super.display(inv, n);
+            if (!inv.getPlayerData().hasSkillBound(n + 1)) {
+                //If there is an item filled in the slot config it shows it, else shows the default item.
+                Material material = skillSlot.hasItem() ? skillSlot.getItem() : emptyMaterial;
+                int customModelData = skillSlot.hasItem() ? skillSlot.getModelData() : emptyCMD;
+                item.setType(material);
+                ItemMeta meta = item.getItemMeta();
+                meta.setDisplayName(MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(), skillSlot.getName()));
+                List<String> lore = skillSlot.getLore()
+                        .stream()
+                        .map(str -> MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(), str))
+                        .collect(Collectors.toList());
+                meta.setLore(lore);
+                if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
+                    meta.setCustomModelData(customModelData);
+                }
+                item.setItemMeta(meta);
+
+            }
+
+            return item;
+        }
+
+        /**
+         * This should only be called when there is a skill bound.
+         */
+        @Override
         public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
-            RegisteredSkill selected = inv.selected == null ? null : inv.selected.getSkill();
+            RegisteredSkill selected = inv.selected.getSkill();
 
             Placeholders holders = new Placeholders();
 
             holders.register("index", "" + (n + 1));
             holders.register("slot", MMOCoreUtils.intToRoman(n + 1));
             holders.register("selected", selected == null ? none : selected.getName());
-
+            RegisteredSkill skill = inv.getPlayerData().hasSkillBound(n + 1) ? inv.getPlayerData().getBoundSkill(n + 1).getSkill() : null;
+            holders.register("skill", skill == null ? none : skill.getName());
             return holders;
         }
 
@@ -315,7 +307,7 @@ public class SkillList extends EditableInventory {
         private final List<Integer> skillSlots;
         private final List<Integer> slotSlots;
 
-        //The skill the player Selected
+        // Skill the player selected
         private ClassSkill selected;
         private int page = 0;
 
@@ -323,9 +315,11 @@ public class SkillList extends EditableInventory {
             super(playerData, editable);
             skills = playerData.getProfess().getSkills()
                     .stream()
-                    .filter((classSkill)->playerData.hasUnlocked(classSkill.getSkill()))
+                    .filter((classSkill) -> playerData.hasUnlocked(classSkill.getSkill()))
+                    .sorted(Comparator.comparingInt(ClassSkill::getUnlockLevel))
                     .collect(Collectors.toList());
             skillSlots = getEditable().getByFunction("skill").getSlots();
+
             Validate.notNull(getEditable().getByFunction("slot"), "Your skill GUI config file is out-of-date, please regenerate it.");
             slotSlots = getEditable().getByFunction("slot").getSlots();
             selected = skills.get(page * skillSlots.size());
@@ -396,12 +390,23 @@ public class SkillList extends EditableInventory {
              * binding or unbinding skills.
              */
             if (item.getFunction().equals("slot")) {
-                int index = slotSlots.indexOf(context.getSlot())+1;
-                SkillSlot skillSlot=playerData.getProfess().getSkillSlot(index);
+                int index = slotSlots.indexOf(context.getSlot()) + 1;
+                SkillSlot skillSlot = playerData.getProfess().getSkillSlot(index);
+                //Select if the player is doing Shift Left Click
+                if(context.getClickType() ==ClickType.SHIFT_LEFT){
+                    if(playerData.hasSkillBound(index))
+                        selected=playerData.getBoundSkill(index);
+                    return;
+                }
                 // unbind if there is a current spell.
                 if (context.getClickType() == ClickType.RIGHT) {
                     if (!playerData.hasSkillBound(index)) {
                         MMOCore.plugin.configManager.getSimpleMessage("no-skill-bound").send(player);
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                        return;
+                    }
+                    if(!playerData.getProfess().getSkillSlot(index).canManuallyBind()){
+                        MMOCore.plugin.configManager.getSimpleMessage("cant-manually-bind").send(player);
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                         return;
                     }
@@ -411,16 +416,19 @@ public class SkillList extends EditableInventory {
                     return;
                 }
 
-                if (selected == null)
-                    return;
-
                 if (!playerData.hasSkillUnlocked(selected)) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
 
-                if(!skillSlot.acceptsSkill(selected)){
+                if (!skillSlot.canManuallyBind()){
+                    MMOCore.plugin.configManager.getSimpleMessage("cant-manually-bind").send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                    return;
+                }
+
+                if (!skillSlot.acceptsSkill(selected)){
                     MMOCore.plugin.configManager.getSimpleMessage("not-compatible-skill").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;

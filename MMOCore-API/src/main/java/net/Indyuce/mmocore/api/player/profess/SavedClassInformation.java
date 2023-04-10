@@ -7,6 +7,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.player.ClassDataContainer;
+import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
@@ -86,6 +87,7 @@ public class SavedClassInformation {
         mana = json.has("mana") ? json.get("mana").getAsDouble() : 0;
         stamina = json.has("stamina") ? json.get("stamina").getAsDouble() : 0;
         stellium = json.has("stellium") ? json.get("stellium").getAsDouble() : 0;
+
         if (json.has("attribute"))
             for (Entry<String, JsonElement> entry : json.getAsJsonObject("attribute").entrySet())
                 attributeLevels.put(entry.getKey(), entry.getValue().getAsInt());

@@ -197,16 +197,14 @@ death-exp-loss:
   # Percentage of current EXP you lose when dying.
   percent: 30
 
-#Default max bound active and passive skills.
-#These value can be modified for each class in the class yml.
-max-bound-active-skills: 6
+#Maximum number of slot. This means that you can't unlock a slot greater than max-slots. (The slot count starts at 1 & end at max-slots).
+max-slots: 8
 
 #If you want players to bound their passive skills.
 #If false, all the passive skills unlocked will be active
 #Also set max-bound-passive-skills to 0 if seting passive-skill-need-bound to false.
 passive-skill-need-bound: true
 
-max-bound-passive-skills: 3
 
 # Fun extra RPG feature that switches the player's hotbar with
 # the 9 lower row items of his inventory. This allows the player

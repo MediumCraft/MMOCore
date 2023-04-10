@@ -20,10 +20,11 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
-import net.Indyuce.mmocore.api.player.profess.skillbinding.BoundSkillInfo;
+import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
 import net.Indyuce.mmocore.api.player.social.FriendRequest;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
+import net.Indyuce.mmocore.api.quest.trigger.SkillModifierTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
@@ -43,6 +44,7 @@ import net.Indyuce.mmocore.player.CombatHandler;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
 import net.Indyuce.mmocore.skilltree.NodeStatus;
@@ -145,7 +147,10 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         this.mmoData = mmoData;
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
+
+
     }
+
 
     /**
      * Update all references after /mmocore reload so there can be garbage
@@ -207,7 +212,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public int countSkillTreePoints(SkillTree skillTree) {
-        return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(nodeLevels::get).sum();
+        return nodeLevels.keySet().stream().filter(node -> node.getTree().equals(skillTree)).mapToInt(node -> nodeLevels.get(node) * node.getSkillTreePointsConsumed()).sum();
     }
 
     /**
@@ -346,7 +351,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void setNodeLevel(SkillTreeNode node, int nodeLevel) {
-        int delta = (nodeLevel - nodeLevels.getOrDefault(node, 0))*node.getSkillTreePointsConsumed();
+        int delta = (nodeLevel - nodeLevels.getOrDefault(node, 0)) * node.getSkillTreePointsConsumed();
         pointSpent.put(node.getTree(), pointSpent.getOrDefault(node.getTree(), 0) + delta);
         nodeLevels.put(node, nodeLevel);
     }
@@ -378,22 +383,23 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return result;
     }
 
-
-
     /**
      * @return If the item is unlocked by the player
-     * This is used for skills that can be locked & unlocked.
-     * <p>
-     * Looks at the real value and thus remove the plugin identifier
+     *         This is used for skills that can be locked & unlocked.
+     *         <p>
+     *         Looks at the real value and thus remove the plugin identifier
      */
     public boolean hasUnlocked(Unlockable unlockable) {
-        String unlockableKey = unlockable.getUnlockNamespacedKey().substring(unlockable.getUnlockNamespacedKey().indexOf(":"));
-        return unlockedItems
-                .stream()
-                .filter(key -> key.substring(key.indexOf(":")).equals(unlockableKey))
-                .collect(Collectors.toList()).size() != 0;
+        return hasUnlocked(unlockable.getUnlockNamespacedKey());
+
     }
 
+    public boolean hasUnlocked(String unlockNamespacedKey) {
+        return unlockedItems
+                .stream()
+                .filter(key -> key.equals(unlockNamespacedKey))
+                .collect(Collectors.toList()).size() != 0;
+    }
 
     /**
      * Unlocks an item for the player. This is mainly used to unlock skills.
@@ -1176,12 +1182,27 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         if (isOnline())
             getStats().updateStats();
 
-        if (profess != null)
+        if (profess != null) {
+
             // Loads the classUnlockedSkills
             profess.getSkills()
                     .stream()
                     .filter(ClassSkill::isUnlockedByDefault)
                     .forEach(skill -> unlock(skill.getSkill()));
+
+            // Loads the classUnlockedSkills
+            profess.getSkills()
+                    .stream()
+                    .filter(ClassSkill::isUnlockedByDefault)
+                    .forEach(skill -> unlock(skill.getSkill()));
+
+            // Loads the classUnlockedSlots
+            profess.getSlots()
+                    .stream()
+                    .filter(SkillSlot::isUnlockedByDefault)
+                    .forEach(this::unlock);
+        }
+
     }
 
     public boolean hasSkillBound(int slot) {
@@ -1208,9 +1229,15 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     public void bindSkill(int slot, ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
         //Unbinds the previous skill (Important for passive skills.
+        String skillId = skill.getSkill().getHandler().getId();
         if (boundSkills.containsKey(slot))
             boundSkills.get(slot).unbind();
         if (slot >= 0) {
+            //We apply the skill buffs associated with the slot to the skill.
+            for (SkillModifierTrigger skillBuffTrigger : profess.getSkillSlot(slot).getSkillBuffTriggers())
+                if (skillBuffTrigger.getTargetSkills().contains(skillId))
+                    skillBuffTrigger.apply(this, skill.getSkill().getHandler());
+
             if (skill.getSkill().getTrigger().isPassive()) {
                 PassiveSkill passiveSkill = skill.toPassive(this);
                 passiveSkill.register(mmoData);
@@ -1222,6 +1249,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     }
 
     public void unbindSkill(int slot) {
+
+        // We remove the skill buffs associated with the slot from the skill that is .
+        profess.getSkillSlot(slot).getSkillBuffTriggers().forEach(skillBuffTrigger ->
+                skillBuffTrigger.remove(this, boundSkills.get(slot).getClassSkill().getSkill().getHandler()));
+
         BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
         boundSkillInfo.unbind();
     }
@@ -1245,7 +1277,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     * a subclass
+     *         a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {

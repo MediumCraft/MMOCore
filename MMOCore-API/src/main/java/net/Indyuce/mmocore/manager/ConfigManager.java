@@ -34,7 +34,7 @@ public class ConfigManager {
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown,
             pvpModeCombatTimeout, pvpModeInvulnerabilityTimeRegionChange, pvpModeInvulnerabilityTimeCommand, pvpModeRegionEnterCooldown, pvpModeRegionLeaveCooldown;
-    public int maxPartyLevelDifference, maxBoundActiveSkills, maxBoundPassiveSkills, minCombatLevel, maxCombatLevelDifference;
+    public int maxPartyLevelDifference, maxSlots, minCombatLevel, maxCombatLevelDifference;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
     private final FileConfiguration messages;
@@ -157,8 +157,7 @@ public class ConfigManager {
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");
-        maxBoundActiveSkills = MMOCore.plugin.getConfig().getInt("max-bound-active-skills", 6);
-        maxBoundPassiveSkills = MMOCore.plugin.getConfig().getInt("max-bound-passive-skills", 3);
+        maxSlots = MMOCore.plugin.getConfig().getInt("max-slots");
         overrideVanillaExp = MMOCore.plugin.getConfig().getBoolean("override-vanilla-exp");
     }
 

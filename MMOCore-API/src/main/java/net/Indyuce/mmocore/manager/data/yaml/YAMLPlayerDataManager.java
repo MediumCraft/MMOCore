@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.api.player.OfflinePlayerData;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.DataProvider;
 import net.Indyuce.mmocore.manager.data.PlayerDataManager;
@@ -80,10 +81,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
 
 
         if (config.contains("times-claimed"))
-            for (
-                    String key : config.getConfigurationSection("times-claimed").
-
-                    getKeys(false)) {
+            for (String key : config.getConfigurationSection("times-claimed").getKeys(false)) {
                 ConfigurationSection section = config.getConfigurationSection("times-claimed." + key);
                 if (section != null)
                     for (String key1 : section.getKeys(false)) {
@@ -97,8 +95,7 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
             }
 
         data.setUnlockedItems(config.getStringList("unlocked-items").stream().collect(Collectors.toSet()));
-        for (
-                SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
+        for (SkillTreeNode node : MMOCore.plugin.skillTreeManager.getAllNodes()) {
             data.setNodeLevel(node, config.getInt("skill-tree-level." + node.getFullId(), 0));
         }
         data.setupSkillTree();
@@ -127,12 +124,8 @@ public class YAMLPlayerDataManager extends PlayerDataManager {
         data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
         data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
 
-        if (data.isOnline()) {
-            double health = config.contains("health") ? config.getDouble("health") : data.getStats().getStat("MAX_HEALTH");
-            health = health == 0 ? 20 : health;
-            health = Math.min(health, data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-            data.getPlayer().setHealth(health);
-        }
+        if (data.isOnline())
+            data.getPlayer().setHealth(MMOCoreUtils.fixResource(config.getDouble("health"), data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 
         data.setFullyLoaded();
     }

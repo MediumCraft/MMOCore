@@ -1,4 +1,4 @@
-package net.Indyuce.mmocore.api.player.profess.skillbinding;
+package net.Indyuce.mmocore.skill.binding;
 
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -27,12 +27,12 @@ public class BoundSkillInfo {
      * Used on update to refresh the classSkill & all references to old data.
      */
     public BoundSkillInfo(BoundSkillInfo info) {
-        this.playerData=info.getPlayerData();
-        this.classSkill= Objects.requireNonNull(playerData.getProfess().getSkill(info.getClassSkill().getSkill()));
+        this.playerData = info.getPlayerData();
+        this.classSkill = Objects.requireNonNull(playerData.getProfess().getSkill(info.getClassSkill().getSkill()));
         info.unbind();
         PassiveSkill passiveSkill = classSkill.toPassive(playerData);
         passiveSkill.register(playerData.getMMOPlayerData());
-        this.passiveSkillUUID=passiveSkill.getUniqueId();
+        this.passiveSkillUUID = passiveSkill.getUniqueId();
     }
 
     public ClassSkill getClassSkill() {
@@ -55,7 +55,7 @@ public class BoundSkillInfo {
             playerData.getMMOPlayerData().getPassiveSkillMap().removeModifier(passiveSkillUUID);
             PassiveSkill passiveSkill = classSkill.toPassive(playerData);
             passiveSkill.register(playerData.getMMOPlayerData());
-            this.passiveSkillUUID=passiveSkill.getUniqueId();
+            this.passiveSkillUUID = passiveSkill.getUniqueId();
         }
     }
 
