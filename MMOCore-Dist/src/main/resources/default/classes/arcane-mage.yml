@@ -33,13 +33,17 @@ exp-curve: levels
 
 skill-slots:
     1:
-        name: "Skill Slot I"
+        name: "&aSkill Slot I"
+        unlocked-by-default: true
     2:
-        name: "Skill Slot II"
+        name: "&aSkill Slot II"
+        unlocked-by-default: true
     3:
-        name: "Skill Slot III"
+        name: "&aSkill Slot III"
+        unlocked-by-default: true
     4:
-        name: "Skill Slot IV"
+        name: "&aSkill Slot IV"
+        unlocked-by-default: true
 
 # The maximum level players can reach
 max-level: 100

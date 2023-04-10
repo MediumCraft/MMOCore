@@ -36,11 +36,20 @@ exp-curve: levels
 # The maximum level players can reach
 max-level: 100
 
+skill-slots:
+    1:
+        name: "Skill Slot I"
+    2:
+        name: "Skill Slot II"
+    3:
+        name: "Skill Slot III"
+    4:
+        name: "Skill Slot IV"
+
 skill-trees:
     - 'general'
     - 'warrior-paladin'
     - 'combat'
-
 
 # Warrior has rage which he gains while casting spells
 # Rage increase its skill damage. Use <mmocore.rage>
@@ -60,16 +69,6 @@ mana:
     name: 'Rage'
 
 exp-table: class_exp_table
-
-skill-slots:
-    1:
-        name: "Skill Slot I"
-    2:
-        name: "Skill Slot II"
-    3:
-        name: "Skill Slot III"
-    4:
-        name: "Skill Slot IV"
 
 # Rage charges when dealing weapon and physical damage.
 triggers:

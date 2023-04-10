@@ -40,13 +40,18 @@ exp-table: class_exp_table
 
 skill-slots:
     1:
-        name: "Skill Slot I"
+        name: "&aSkill Slot I"
+        unlocked-by-default: true
     2:
-        name: "Skill Slot II"
+        name: "&aSkill Slot II"
+        unlocked-by-default: true
     3:
-        name: "Skill Slot III"
+        name: "&aSkill Slot III"
+        unlocked-by-default: true
     4:
-        name: "Skill Slot IV"
+        name: "&aSkill Slot IV"
+        unlocked-by-default: true
+
 # This is the default mana display options, however it is not mandatory
 # to have it in your class config file. Other classes do not have this
 # section and therefore have the default mana display options.
