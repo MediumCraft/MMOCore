@@ -25,7 +25,9 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -147,42 +149,35 @@ public class SkillList extends EditableInventory {
 
     public class SlotItem extends InventoryItem<SkillViewerInventory> {
         private final String none;
-        private final Material emptyMaterial;
         private final int emptyCMD;
 
         public SlotItem(ConfigurationSection config) {
             super(config);
             none = MythicLib.plugin.parseColors(config.getString("no-skill"));
-            emptyMaterial = Material
-                    .valueOf(config.getString("empty-item").toUpperCase().replace("-", "_").replace(" ", "_"));
             emptyCMD = config.getInt("empty-custom-model-data", getModelData());
         }
 
         @Override
         public ItemStack display(SkillViewerInventory inv, int n) {
-            final SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
+            final @NotNull SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
             if (!inv.getPlayerData().hasUnlocked(skillSlot))
                 return new ItemStack(Material.AIR);
 
-            ItemStack item = super.display(inv, n);
-            if (!inv.getPlayerData().hasSkillBound(n + 1)) {
-                //If there is an item filled in the slot config it shows it, else shows the default item.
-                Material material = skillSlot.hasItem() ? skillSlot.getItem() : emptyMaterial;
-                int customModelData = skillSlot.hasItem() ? skillSlot.getModelData() : emptyCMD;
-                item.setType(material);
-                ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(), skillSlot.getName()));
-                List<String> lore = skillSlot.getLore()
-                        .stream()
-                        .map(str -> MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(), str))
-                        .collect(Collectors.toList());
-                meta.setLore(lore);
-                if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
-                    meta.setCustomModelData(customModelData);
-                }
-                item.setItemMeta(meta);
-            }
+            final @Nullable ClassSkill boundSkill = inv.getPlayerData().getBoundSkill(n + 1);
+            final ItemStack item = super.display(inv, n);
 
+            // Same material as skill
+            if (boundSkill != null)
+                item.setType(boundSkill.getSkill().getIcon().getType());
+
+            final ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(), skillSlot.getName()));
+
+            // Same CMD as skill icon
+            if (boundSkill != null && boundSkill.getSkill().getIcon().hasItemMeta() && boundSkill.getSkill().getIcon().getItemMeta().hasCustomModelData())
+                meta.setCustomModelData(boundSkill.getSkill().getIcon().getItemMeta().getCustomModelData());
+
+            item.setItemMeta(meta);
             return item;
         }
 
@@ -387,9 +382,9 @@ public class SkillList extends EditableInventory {
                 int index = slotSlots.indexOf(context.getSlot()) + 1;
                 SkillSlot skillSlot = playerData.getProfess().getSkillSlot(index);
                 //Select if the player is doing Shift Left Click
-                if(context.getClickType() ==ClickType.SHIFT_LEFT){
-                    if(playerData.hasSkillBound(index))
-                        selected=playerData.getBoundSkill(index);
+                if (context.getClickType() == ClickType.SHIFT_LEFT) {
+                    if (playerData.hasSkillBound(index))
+                        selected = playerData.getBoundSkill(index);
                     return;
                 }
 
