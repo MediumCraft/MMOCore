@@ -26,7 +26,7 @@ public class SkillsCommand extends RegisteredCommand {
 			Bukkit.getServer().getPluginManager().callEvent(event);
 			if(event.isCancelled()) return true;
 			
-			if (data.getProfess().getSkills().size() < 1) {
+			if (data.getUnlockedSkills().isEmpty()) {
 				MMOCore.plugin.configManager.getSimpleMessage("no-class-skill").send((Player) sender);
 				return true;
 			}
