@@ -172,8 +172,8 @@ items:
         - '&7&ogreatly encourages you!'
         - ''
         - '&7Party Bonuses ({count}):'
-        - '&8- +{buff_additional_experience}% Experience Earned!'
-        - '&8- +{buff_health_regeneration}% Health Regeneration'
+        - '&8+{buff_additional_experience} Experience Earned!'
+        - '&8+{buff_health_regeneration} Health Regeneration'
     stats:
         slots: [15]
         function: profile

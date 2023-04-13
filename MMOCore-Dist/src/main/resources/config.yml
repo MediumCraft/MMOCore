@@ -131,8 +131,15 @@ party:
   # Edit party buffs here. You may
   # add as many stats as you want.
   buff:
+
+    # '3' -> increases health regen by a flat +3pts/s
+    # '3%' -> increases current health regen by 3%
     health-regeneration: 3%
-    additional-experience: 5%
+
+    # '5' -> increases exp by 5% (this is how "additional-experience is defined")
+    # '5%' -> increases your current "% additional experience" stat by 5% (not the same behaviour !!!)
+    # !! Beware of this potential confusion !!
+    additional-experience: 5
 
   # Prefix you need to put in the chat
   # to talk in the party chat.
