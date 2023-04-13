@@ -1,13 +1,9 @@
-name: Ambers
+name: Mana Ambers
 lore:
 - Dealing magic damage has &630% &7chance
 - of dropping an amber on the ground.
 - ''
-- When picked up, ambers stack and
-- refund &9{percent}% &7of your missing mana.
-- ''
-- '&oAmbers can be used in other damaging skills.'
-- '&oThe more you collect, the more powerful the skills.'
+- When picked up, ambers refund &9{percent}% &7of your missing mana.
 - ''
 - '&e{cooldown}s Cooldown'
 material: EMERALD

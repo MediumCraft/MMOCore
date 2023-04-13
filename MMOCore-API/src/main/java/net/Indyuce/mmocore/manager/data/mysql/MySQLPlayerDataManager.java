@@ -115,8 +115,8 @@ public class MySQLPlayerDataManager extends PlayerDataManager {
             classinfo.add("skill-tree-points", skillTreePointsInfo);
 
             JsonObject boundSkillInfo = new JsonObject();
-            for (int slot : info.getBoundSkills().keySet())
-                boundSkillInfo.addProperty(slot + "", info.getBoundSkills().get(slot));
+            for (int slot : info.mapBoundSkills().keySet())
+                boundSkillInfo.addProperty(String.valueOf(slot), info.mapBoundSkills().get(slot));
             classinfo.add("bound-skills", boundSkillInfo);
 
             json.add(c, classinfo);

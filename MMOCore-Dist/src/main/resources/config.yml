@@ -200,11 +200,10 @@ death-exp-loss:
 # Maximum number of skill slots. This means that you cannot unlock more than X skill slots.
 max-skill-slots: 8
 
-#If you want players to bound their passive skills.
-#If false, all the passive skills unlocked will be active
-#Also set max-bound-passive-skills to 0 if seting passive-skill-need-bound to false.
-passive-skill-need-bound: true
-
+# When set to true, passive skills must be bound in order to take effect.
+# When set to false, unlocked skills will take effect right away.
+# Temporarily disabled.
+# passive-skill-need-bound: true
 
 # Fun extra RPG feature that switches the player's hotbar with
 # the 9 lower row items of his inventory. This allows the player

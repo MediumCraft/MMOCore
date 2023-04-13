@@ -264,8 +264,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         }
     }
 
-    public Map<SkillTreeNode, Integer> getNodeLevels() {
-        return new HashMap<>(nodeLevels);
+    @Override
+    public Map<String, Integer> getNodeLevels() {
+        final Map<String, Integer> mapped = new HashMap<>();
+        this.nodeLevels.forEach((node, level) -> mapped.put(node.getFullId(), level));
+        return mapped;
     }
 
     public void clearNodeLevels() {

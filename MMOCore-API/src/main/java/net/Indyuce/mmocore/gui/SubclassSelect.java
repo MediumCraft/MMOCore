@@ -96,13 +96,8 @@ public class SubclassSelect extends EditableInventory {
     }
 
     public class SubclassSelectionInventory extends GeneratedInventory {
-        private final List<Subclass> subclasses;
-
         public SubclassSelectionInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
-
-            subclasses = playerData.getProfess().getSubclasses().stream().filter(sub -> playerData.getLevel() >= sub.getLevel())
-                    .collect(Collectors.toList());
         }
 
         @Override
@@ -116,7 +111,7 @@ public class SubclassSelect extends EditableInventory {
                 InventoryManager.CLASS_SELECT.newInventory(playerData).open();
 
             if (item.getFunction().startsWith("sub-class")) {
-                String classId= item.getFunction().substring(10);
+                String classId = item.getFunction().substring(10);
 
                 if (playerData.getClassPoints() < 1) {
                     player.closeInventory();
@@ -124,7 +119,8 @@ public class SubclassSelect extends EditableInventory {
                     new ConfigMessage("cant-choose-new-class").send(player);
                     return;
                 }
-                InventoryManager.CLASS_CONFIRM.get(classId).newInventory(playerData, this).open();
+
+                InventoryManager.CLASS_CONFIRM.get(classId).newInventory(playerData, this, true).open();
             }
         }
     }

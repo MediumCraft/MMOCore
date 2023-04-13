@@ -35,26 +35,20 @@ public class InventoryManager {
 
     public static final List<EditableInventory> list = new ArrayList(Arrays.asList(PLAYER_STATS, ATTRIBUTE_VIEW, TREE_VIEW, SKILL_LIST, CLASS_SELECT, SUBCLASS_SELECT, QUEST_LIST, WAYPOINTS, FRIEND_LIST, FRIEND_REMOVAL, PARTY_VIEW, PARTY_CREATION, GUILD_VIEW, GUILD_CREATION));
 
-    private static List<String> defaultClass = Arrays.asList(new String[]{"human", "mage", "paladin", "warrior", "rogue", "arcane-mage"});
-
     public static void load() {
-        String classConfirmFolder = "gui/class-confirm";
+        final String classConfirmFolder = "gui/class-confirm";
         try {
             MMOCore.plugin.configManager.loadDefaultFile(classConfirmFolder, "class-confirm-default.yml");
         } catch (Exception exception) {
             MMOCore.log(Level.WARNING, "Could not load inventory 'class-confirm/class-confirm-default" + "': " + exception.getMessage());
         }
+
         for (PlayerClass playerClass : MMOCore.plugin.classManager.getAll()) {
-            String classId = MMOCoreUtils.ymlName(playerClass.getId());
-            ConfigFile configFile = new ConfigFile(classConfirmFolder, "class-confirm-" + classId);
-            ClassConfirmation GUI;
-            if (configFile.exists())
-                GUI = new ClassConfirmation(playerClass, false);
-            else {
-                GUI = new ClassConfirmation(playerClass, true);
-            }
+            final String classId = MMOCoreUtils.ymlName(playerClass.getId());
+            final ConfigFile configFile = new ConfigFile(classConfirmFolder, "class-confirm-" + classId);
+            final ClassConfirmation GUI = configFile.exists() ? new ClassConfirmation(playerClass, false) : new ClassConfirmation(playerClass, true);
             CLASS_CONFIRM.put(MMOCoreUtils.ymlName(playerClass.getId()), GUI);
-            GUI.reload(new ConfigFile("/" +classConfirmFolder, GUI.getId()).getConfig());
+            GUI.reload(new ConfigFile("/" + classConfirmFolder, GUI.getId()).getConfig());
         }
 
         list.forEach(inv ->

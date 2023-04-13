@@ -14,20 +14,20 @@ import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
+import net.Indyuce.mmocore.player.ClassDataContainer;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 public class ClassConfirmation extends EditableInventory {
-
     private final PlayerClass playerClass;
 
     public ClassConfirmation(PlayerClass playerClass, boolean isDefault) {
         super("class-confirm-" + (isDefault ? "default" : UtilityMethods.ymlName(playerClass.getId())));
+
         this.playerClass = playerClass;
     }
 
@@ -36,13 +36,8 @@ public class ClassConfirmation extends EditableInventory {
         return function.equalsIgnoreCase("yes") ? new YesItem(config) : new SimplePlaceholderItem(config);
     }
 
-    public GeneratedInventory newInventory(PlayerData data, PluginInventory last) {
-        return new ClassConfirmationInventory(data, this, playerClass, last);
-    }
-
-    @Override
-    public void reload(FileConfiguration config) {
-        super.reload(config);
+    public GeneratedInventory newInventory(PlayerData data, PluginInventory last, boolean subclass) {
+        return new ClassConfirmationInventory(data, this, playerClass, last, subclass);
     }
 
     public class UnlockedItem extends InventoryItem<ClassConfirmationInventory> {
@@ -53,7 +48,7 @@ public class ClassConfirmation extends EditableInventory {
         @Override
         public Placeholders getPlaceholders(ClassConfirmationInventory inv, int n) {
             PlayerClass profess = inv.profess;
-            SavedClassInformation info = inv.getPlayerData().getClassInfo(profess);
+            ClassDataContainer info = inv.subclass ? inv.getPlayerData() : inv.getPlayerData().getClassInfo(profess);
             Placeholders holders = new Placeholders();
 
             final double nextLevelExp = inv.getPlayerData().getLevelUpExperience();
@@ -67,7 +62,7 @@ public class ClassConfirmation extends EditableInventory {
             holders.register("percent", decimal.format(ratio * 100));
             holders.register("progress", bar.toString());
             holders.register("class", profess.getName());
-            holders.register("unlocked_skills", info.getSkillKeys().size());
+            holders.register("unlocked_skills", info.mapSkillLevels().size());
             holders.register("class_skills", profess.getSkills().size());
             holders.register("next_level", "" + nextLevelExp);
             holders.register("level", info.getLevel());
@@ -108,12 +103,14 @@ public class ClassConfirmation extends EditableInventory {
     public class ClassConfirmationInventory extends GeneratedInventory {
         private final PlayerClass profess;
         private final PluginInventory last;
+        private final boolean subclass;
 
-        public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last) {
+        public ClassConfirmationInventory(PlayerData playerData, EditableInventory editable, PlayerClass profess, PluginInventory last, boolean subclass) {
             super(playerData, editable);
 
             this.profess = profess;
             this.last = last;
+            this.subclass = subclass;
         }
 
         @Override
@@ -129,8 +126,11 @@ public class ClassConfirmation extends EditableInventory {
                     return;
 
                 playerData.giveClassPoints(-1);
-                (playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
-                        : new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
+                if (subclass)
+                    playerData.setClass(profess);
+                else
+                    (playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
+                            : new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
                 MMOCore.plugin.configManager.getSimpleMessage("class-select", "class", profess.getName()).send(player);
                 MMOCore.plugin.soundManager.getSound(SoundEvent.SELECT_CLASS).playTo(player);
                 player.closeInventory();

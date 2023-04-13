@@ -110,7 +110,7 @@ public class DefaultPlayerData implements ClassDataContainer {
     }
 
     @Override
-    public Map<SkillTreeNode, Integer> getNodeLevels() {
+    public Map<String, Integer> getNodeLevels() {
         return new HashMap<>();
     }
 

@@ -90,14 +90,9 @@ public class ClassSelect extends EditableInventory {
             item.setItemMeta(meta);
             return item;
         }
-
-
     }
 
     public class ProfessSelectionInventory extends GeneratedInventory {
-        private final List<PlayerClass> classes = MMOCore.plugin.classManager.getAll().stream().filter(c -> c.hasOption(ClassOption.DISPLAY))
-                .sorted(Comparator.comparingInt(PlayerClass::getDisplayOrder)).collect(Collectors.toList());
-
         public ProfessSelectionInventory(PlayerData playerData, EditableInventory editable) {
             super(playerData, editable);
         }
@@ -131,7 +126,7 @@ public class ClassSelect extends EditableInventory {
                 }
 
                 final PlayerClass playerClass = findDeepestSubclass(playerData, profess);
-                InventoryManager.CLASS_CONFIRM.get(MMOCoreUtils.ymlName(playerClass.getId())).newInventory(playerData, this).open();
+                InventoryManager.CLASS_CONFIRM.get(MMOCoreUtils.ymlName(playerClass.getId())).newInventory(playerData, this, false).open();
             }
         }
     }

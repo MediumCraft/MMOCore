@@ -1,15 +1,15 @@
 package net.Indyuce.mmocore.player;
 
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
-import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 
 import java.util.Map;
 import java.util.Set;
 
 /**
  * All the class-specific information i.e information being saved
- * in {@link SavedClassInformation} when a player changes its current
- * class.
+ * in {@link SavedClassInformation} when a player changes its current class.
+ *
+ * TODO move {@link SavedClassInformation} method to ClassDataContainer
  */
 public interface ClassDataContainer {
 
@@ -43,7 +43,7 @@ public interface ClassDataContainer {
 
     Map<Integer,String> mapBoundSkills();
 
-    Map<SkillTreeNode, Integer> getNodeLevels();
+    Map<String, Integer> getNodeLevels();
 
     Map<String, Integer> getNodeTimesClaimed();
 

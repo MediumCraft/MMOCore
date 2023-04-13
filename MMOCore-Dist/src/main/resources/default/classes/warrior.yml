@@ -39,12 +39,16 @@ max-level: 100
 skill-slots:
     1:
         name: "Skill Slot I"
+        unlocked-by-default: true
     2:
         name: "Skill Slot II"
+        unlocked-by-default: true
     3:
         name: "Skill Slot III"
+        unlocked-by-default: true
     4:
         name: "Skill Slot IV"
+        unlocked-by-default: true
 
 skill-trees:
     - 'general'

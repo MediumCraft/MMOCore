@@ -7,7 +7,6 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.player.ClassDataContainer;
-import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
@@ -20,7 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class SavedClassInformation {
+public class SavedClassInformation implements ClassDataContainer {
     private final int level, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private final double experience, health, mana, stellium, stamina;
     private final Map<String, Integer> attributeLevels = new HashMap<>();
@@ -128,44 +127,53 @@ public class SavedClassInformation {
         data.mapAttributeLevels().forEach((key, val) -> this.attributeLevels.put(key, val));
         data.mapSkillLevels().forEach((key, val) -> skillLevels.put(key, val));
         data.mapSkillTreePoints().forEach((key, val) -> skillTreePoints.put(key, val));
-        data.getNodeLevels().forEach((node, level) -> nodeLevels.put(node.getFullId(), level));
+        data.getNodeLevels().forEach((node, level) -> nodeLevels.put(node, level));
         data.getNodeTimesClaimed().forEach((key, val) -> nodeTimesClaimed.put(key, val));
         data.mapBoundSkills().forEach((slot, skill) -> boundSkills.put(slot, skill));
-        data.getUnlockedItems().forEach(item->unlockedItems.add(item));
+        data.getUnlockedItems().forEach(item -> unlockedItems.add(item));
     }
 
+    @Override
     public int getLevel() {
         return level;
     }
 
+    @Override
     public double getExperience() {
         return experience;
     }
 
+    @Override
     public int getSkillPoints() {
         return skillPoints;
     }
 
+    @Override
     public int getAttributePoints() {
         return attributePoints;
     }
 
+    @Override
     public int getAttributeReallocationPoints() {
         return attributeReallocationPoints;
     }
 
+    @Override
     public double getHealth() {
         return health;
     }
 
+    @Override
     public double getMana() {
         return mana;
     }
 
+    @Override
     public double getStellium() {
         return stellium;
     }
 
+    @Override
     public double getStamina() {
         return stamina;
     }
@@ -186,14 +194,27 @@ public class SavedClassInformation {
         registerSkillLevel(skill.getHandler().getId(), level);
     }
 
-    public Map<Integer, String> getBoundSkills() {
-        return boundSkills;
+    @Override
+    public Map<String, Integer> mapSkillLevels() {
+        return skillLevels;
     }
 
+    @Override
+    public Map<String, Integer> mapSkillTreePoints() {
+        return skillTreePoints;
+    }
+
+    @Deprecated
+    public Map<Integer, String> getBoundSkills() {
+        return mapBoundSkills();
+    }
+
+    @Override
     public int getSkillTreeReallocationPoints() {
         return skillTreeReallocationPoints;
     }
 
+    @Override
     public int getSkillReallocationPoints() {
         return skillReallocationPoints;
     }
@@ -208,6 +229,26 @@ public class SavedClassInformation {
 
     public int getNodeLevel(String node) {
         return nodeLevels.get(node);
+    }
+
+    @Override
+    public Map<String, Integer> mapAttributeLevels() {
+        return attributeLevels;
+    }
+
+    @Override
+    public Map<Integer, String> mapBoundSkills() {
+        return boundSkills;
+    }
+
+    @Override
+    public Map<String, Integer> getNodeLevels() {
+        return nodeLevels;
+    }
+
+    @Override
+    public Map<String, Integer> getNodeTimesClaimed() {
+        return nodeTimesClaimed;
     }
 
     public Set<String> getSkillTreePointsKeys() {
@@ -234,6 +275,7 @@ public class SavedClassInformation {
         attributeLevels.put(attribute, level);
     }
 
+    @Override
     public Set<String> getUnlockedItems() {
         return unlockedItems;
     }
