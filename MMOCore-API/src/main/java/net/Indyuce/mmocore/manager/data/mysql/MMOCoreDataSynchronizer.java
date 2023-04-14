@@ -78,8 +78,9 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
         }
         data.setUnlockedItems(unlockedItems);
         if (!isEmpty(result.getString("guild"))) {
-            Guild guild = MMOCore.plugin.dataProvider.getGuildManager().getGuild(result.getString("guild"));
-            data.setGuild(guild.hasMember(data.getUniqueId()) ? guild : null);
+            final Guild guild = MMOCore.plugin.dataProvider.getGuildManager().getGuild(result.getString("guild"));
+            if (guild != null)
+                data.setGuild(guild.hasMember(data.getUniqueId()) ? guild : null);
         }
         if (!isEmpty(result.getString("attributes")))
             data.getAttributes().load(result.getString("attributes"));

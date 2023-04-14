@@ -11,6 +11,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.guild.provided.Guild;
 
+import javax.annotation.Nullable;
+
 public abstract class GuildDataManager {
 	protected final Map<String, Guild> guilds = new HashMap<>();
 
@@ -39,6 +41,7 @@ public abstract class GuildDataManager {
 		delete(guild);
 	}
 
+	@Nullable
 	public Guild getGuild(String guild) {
 		return guilds.get(guild);
 	}
