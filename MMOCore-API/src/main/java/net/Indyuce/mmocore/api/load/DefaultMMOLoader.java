@@ -29,6 +29,12 @@ public class DefaultMMOLoader extends MMOLoader {
         if (config.getKey().equals("unlock_skill"))
             return new UnlockSkillTrigger(config);
 
+        if (config.getKey().equals("bind_skill"))
+            return new BindSkillTrigger(config);
+
+        if (config.getKey().equals("levelup_skill"))
+            return new LevelUpSkillTrigger(config);
+
         if (config.getKey().equals("skill_buff"))
             return new SkillModifierTrigger(config);
 
