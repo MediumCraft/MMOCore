@@ -452,6 +452,9 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         // Close quest data
         questData.close();
 
+        // Close bound skills
+        boundSkills.forEach((slot, info) -> info.close());
+
         // Stop skill casting
         if (isCasting()) leaveSkillCasting();
     }
@@ -1165,17 +1168,17 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
     /**
      * Binds a skill to the player.
      *
-     * @param slot  Slot to which you're binding the skill.
-     *              Use -1 to force-register the skill
+     * @param slot  Slot to which you're binding the skill
      * @param skill Skill being bound
      */
-    public void bindSkill(int slot, ClassSkill skill) {
+    public void bindSkill(int slot, @NotNull ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
 
-        // Unbinds the previous skill (important for passive skills)
-        unbindSkill(slot);
-
         if (slot >= 0) {
+
+            // Unbinds the previous skill (important for passive skills)
+            unbindSkill(slot);
+
             final SkillSlot skillSlot = getProfess().getSkillSlot(slot);
             boundSkills.put(slot, new BoundSkillInfo(skillSlot, skill, this));
         }

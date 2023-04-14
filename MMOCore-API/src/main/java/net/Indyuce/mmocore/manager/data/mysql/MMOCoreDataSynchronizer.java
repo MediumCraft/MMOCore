@@ -9,13 +9,10 @@ import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.guild.provided.Guild;
-import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -61,8 +58,8 @@ public class MMOCoreDataSynchronizer extends DataSynchronizer {
                 data.setSkillTreePoints(skillTree.getId(), json.has(skillTree.getId()) ? json.get(skillTree.getId()).getAsInt() : 0);
             }
             data.setSkillTreePoints("global", json.has("global") ? json.get("global").getAsInt() : 0);
-
         }
+
         if (!isEmpty(result.getString("skill_tree_levels"))) {
             JsonObject json = new JsonParser().parse(result.getString("skill_tree_levels")).getAsJsonObject();
             for (SkillTreeNode skillTreeNode : MMOCore.plugin.skillTreeManager.getAllNodes()) {

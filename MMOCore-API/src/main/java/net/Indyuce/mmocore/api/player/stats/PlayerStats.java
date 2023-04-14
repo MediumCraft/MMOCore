@@ -99,12 +99,12 @@ public class PlayerStats {
          */
         final PassiveSkillMap skillMap = data.getMMOPlayerData().getPassiveSkillMap();
 
-        if (!MMOCore.plugin.configManager.passiveSkillNeedBound) {
-            skillMap.removeModifiers("MMOCorePassiveSkill");
-            for (ClassSkill skill : data.getProfess().getSkills())
-                if (skill.getSkill().getTrigger().isPassive())
-                    skillMap.addModifier(skill.toPassive(data));
-        }
+        //if (!MMOCore.plugin.configManager.passiveSkillNeedBound) {
+        //    skillMap.removeModifiers("MMOCorePassiveSkill");
+        //    for (ClassSkill skill : data.getProfess().getSkills())
+        //        if (skill.getSkill().getTrigger().isPassive())
+        //            skillMap.addModifier(skill.toPassive(data));
+        //}
 
         // This updates the player's class SCRIPTS
         skillMap.removeModifiers("MMOCoreClassScript");

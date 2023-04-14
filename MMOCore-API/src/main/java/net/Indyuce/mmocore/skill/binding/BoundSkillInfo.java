@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.api.quest.trigger.SkillModifierTrigger;
 import net.Indyuce.mmocore.api.util.Closable;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +37,7 @@ public class BoundSkillInfo implements Closable {
         if (classSkill.getSkill().getTrigger().isPassive()) {
             registered = classSkill.toPassive(playerData);
             registered.register(playerData.getMMOPlayerData());
+            Bukkit.broadcastMessage("Registering passive skill "  + classSkill.getSkill().getHandler().getId());
         } else registered = null;
     }
 
@@ -64,7 +66,10 @@ public class BoundSkillInfo implements Closable {
         open = false;
 
         // Unregister skill if passive
-        if (isPassive()) registered.unregister(playerData.getMMOPlayerData());
+        if (isPassive()) {
+            Bukkit.broadcastMessage("Unregistered passive skill " + classSkill.getSkill().getHandler().getId());
+            registered.unregister(playerData.getMMOPlayerData());
+        }
 
         // Remove skill buffs associated to the slot
         skillSlot.getSkillBuffTriggers().forEach(skillBuffTrigger -> skillBuffTrigger.remove(playerData, classSkill.getSkill().getHandler()));

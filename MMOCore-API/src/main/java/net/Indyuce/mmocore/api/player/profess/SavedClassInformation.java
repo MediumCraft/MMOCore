@@ -301,22 +301,18 @@ public class SavedClassInformation implements ClassDataContainer {
         player.clearSkillTreePoints();
         player.clearNodeLevels();
         player.clearNodeStates();
+        player.clearNodeTimesClaimed();
 
-        // We remove perm stats for nodes and class.
+        // Remove perm stats for nodes and class
         for (SkillTree skillTree : player.getProfess().getSkillTrees())
             for (SkillTreeNode node : skillTree.getNodes())
                 node.getExperienceTable().removePermStats(player, node);
         if (player.getProfess().hasExperienceTable())
             player.getProfess().getExperienceTable().removePermStats(player, player.getProfess());
 
-        while (player.hasSkillBound(0))
-            player.unbindSkill(0);
-        player.clearNodeTimesClaimed();
-
         /*
          * Reads this class info, applies it to the player. set class after
-         * changing level so the player stats can be calculated based on new
-         * level.
+         * changing level so the player stats can be calculated based on new level
          */
         player.setLevel(level);
         player.setExperience(experience);
@@ -326,6 +322,7 @@ public class SavedClassInformation implements ClassDataContainer {
         player.setSkillTreeReallocationPoints(skillTreeReallocationPoints);
         player.setSkillReallocationPoints(skillReallocationPoints);
         player.setUnlockedItems(unlockedItems);
+        player.setClass(profess);
         for (int slot : boundSkills.keySet())
             player.bindSkill(slot, profess.getSkill(boundSkills.get(slot)));
 
@@ -351,11 +348,7 @@ public class SavedClassInformation implements ClassDataContainer {
                 node.getExperienceTable().claimStatTriggers(player, node);
         profess.getExperienceTable().claimStatTriggers(player, profess);
 
-        /*
-         * Unload current class information and set
-         * the new profess once everything is changed
-         */
-        player.setClass(profess);
+        // Unload current class information
         player.unloadClassInfo(profess);
 
         // This needs to be done at the end to make sure the MAX_HEALTH/MAX_MANA/... stats are loaded.
