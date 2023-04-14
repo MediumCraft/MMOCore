@@ -2,12 +2,13 @@ package net.Indyuce.mmocore.gui.api.item;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -115,9 +116,8 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
             ItemStack display = display(generated);
             for (int slot : getSlots())
                 inv.setItem(slot, display);
-        } else
-            for (int j = 0; j < slots.size(); j++)
-                inv.setItem(slots.get(j), display(generated, j));
+        } else for (int j = 0; j < slots.size(); j++)
+            inv.setItem(slots.get(j), display(generated, j));
 
     }
 
@@ -129,45 +129,58 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         return true;
     }
 
+    @NotNull
     public ItemStack display(T inv) {
         return display(inv, modelData);
     }
 
+    @NotNull
     public ItemStack display(T inv, int n) {
-        return display(inv, n, null);
+        return display(inv, n, material);
     }
 
+    @NotNull
     public ItemStack display(T inv, int n, Material specificMaterial) {
         return display(inv, n, specificMaterial, modelData);
     }
 
-    public ItemStack display(T inv, int n, Material specificMaterial, int modelData) {
+    @NotNull
+    public ItemStack display(T inv, int n, Material material, int modelData) {
 
-        Placeholders placeholders = getPlaceholders(inv, n);
-        ItemStack item = new ItemStack(specificMaterial == null ? material : specificMaterial);
-        ItemMeta meta = item.getItemMeta();
-        if (texture != null && meta instanceof SkullMeta)
-            applyTexture(texture, (SkullMeta) meta);
+        final Placeholders placeholders = getPlaceholders(inv, n);
+        final OfflinePlayer effectivePlayer = getEffectivePlayer(inv, n);
 
-        if (hasName())
-            meta.setDisplayName(placeholders.apply(inv.getPlayer(), getName()));
+        final ItemStack item = new ItemStack(material);
+        final ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(modelData);
+        if (texture != null && meta instanceof SkullMeta) applyTexture(texture, (SkullMeta) meta);
 
-        if (hideFlags())
-            meta.addItemFlags(ItemFlag.values());
+        if (hasName()) meta.setDisplayName(placeholders.apply(effectivePlayer, getName()));
+
+        if (hideFlags()) meta.addItemFlags(ItemFlag.values());
 
         if (hasLore()) {
             List<String> lore = new ArrayList<>();
-            getLore().forEach(line -> lore.add(ChatColor.GRAY + placeholders.apply(inv.getPlayer(), line)));
+            getLore().forEach(line -> lore.add(ChatColor.GRAY + placeholders.apply(effectivePlayer, line)));
             meta.setLore(lore);
         }
-
-        if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
-            meta.setCustomModelData(modelData);
 
         item.setItemMeta(meta);
         return item;
     }
 
+    /**
+     * @param inv Inventory being generated
+     * @param n   Index of item being generated
+     * @return Player relative to which placeholders are computed when the item is
+     *         being displayed in the inventory. Most of the time, it's just
+     *         the player opening the inventory, but for friends or party members,
+     *         being able to parse placeholders based on other players is great too.
+     */
+    @NotNull
+    public OfflinePlayer getEffectivePlayer(T inv, int n) {
+        return inv.getPlayer();
+    }
 
     private void applyTexture(String value, SkullMeta meta) {
         try {

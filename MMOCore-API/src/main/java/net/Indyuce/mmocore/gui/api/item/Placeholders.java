@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.gui.api.item;
 
 import net.Indyuce.mmocore.MMOCore;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class Placeholders {
         placeholders.put(path, obj.toString());
     }
 
-    public String apply(Player player, String str) {
+    public String apply(OfflinePlayer player, String str) {
 
         // Remove conditions first
         str = removeCondition(str);

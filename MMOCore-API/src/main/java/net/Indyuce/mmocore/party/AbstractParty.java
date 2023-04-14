@@ -17,6 +17,10 @@ public interface AbstractParty {
      */
     List<PlayerData> getOnlineMembers();
 
+    default PlayerData getMember(int n) {
+        return getOnlineMembers().get(n);
+    }
+
     /**
      * @return Number of online/offline players in the party
      */

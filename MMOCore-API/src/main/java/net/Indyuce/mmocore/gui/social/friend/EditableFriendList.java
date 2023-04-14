@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -76,9 +77,15 @@ public class EditableFriendList extends EditableInventory {
             return true;
         }
 
+        @NotNull
+        @Override
+        public OfflinePlayer getEffectivePlayer(GeneratedInventory inv, int n) {
+            return Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n));
+        }
+
         @Override
         public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
-            OfflinePlayer friend = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n));
+            OfflinePlayer friend = getEffectivePlayer(inv, n);
 
             Placeholders holders = new Placeholders();
             holders.register("name", friend.getName());
@@ -97,17 +104,23 @@ public class EditableFriendList extends EditableInventory {
             return true;
         }
 
+        @NotNull
+        @Override
+        public OfflinePlayer getEffectivePlayer(GeneratedInventory inv, int n) {
+            return Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n));
+        }
+
+        @Deprecated
         @Override
         public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
-            Player friend = Bukkit.getPlayer(inv.getPlayerData().getFriends().get(n));
-            PlayerData data = PlayerData.get(friend);
+            final PlayerData friendData = PlayerData.get(getEffectivePlayer(inv, n));
 
             Placeholders holders = new Placeholders();
-            if (data.isOnline())
-                holders.register("name", data.getPlayer().getName());
-            holders.register("class", data.getProfess().getName());
-            holders.register("level", data.getLevel());
-            holders.register("online_since", new DelayFormat(2).format(System.currentTimeMillis() - data.getLastLogin()));
+            if (friendData.isOnline())
+                holders.register("name", friendData.getPlayer().getName());
+            holders.register("class", friendData.getProfess().getName());
+            holders.register("level", friendData.getLevel());
+            holders.register("online_since", new DelayFormat(2).format(System.currentTimeMillis() - friendData.getLastLogin()));
             return holders;
         }
     }
@@ -131,7 +144,7 @@ public class EditableFriendList extends EditableInventory {
             if (inv.getPlayerData().getFriends().size() <= n)
                 return super.display(inv, n);
 
-            final OfflinePlayer friend = Bukkit.getOfflinePlayer(inv.getPlayerData().getFriends().get(n));
+            final OfflinePlayer friend = getEffectivePlayer(inv, n);
             ItemStack disp = (friend.isOnline() ? online : offline).display(inv, n);
             ItemMeta meta = disp.getItemMeta();
             meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, friend.getUniqueId().toString());

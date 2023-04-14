@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -60,10 +61,15 @@ public class EditablePartyView extends EditableInventory {
             return holders;
         }
 
+        @NotNull
+        @Override
+        public Player getEffectivePlayer(GeneratedInventory inv, int n) {
+            return ((Party) inv.getPlayerData().getParty()).getMembers().get(n).getPlayer();
+        }
+
         @Override
         public ItemStack display(GeneratedInventory inv, int n) {
-            Party party = (Party) inv.getPlayerData().getParty();
-            PlayerData member = party.getMembers().get(n);
+            final Player member = getEffectivePlayer(inv, n);
 
             ItemStack disp = super.display(inv, n);
             ItemMeta meta = disp.getItemMeta();
@@ -71,7 +77,7 @@ public class EditablePartyView extends EditableInventory {
 
             if (meta instanceof SkullMeta)
                 inv.dynamicallyUpdateItem(this, n, disp, current -> {
-                    ((SkullMeta) meta).setOwningPlayer(member.getPlayer());
+                    ((SkullMeta) meta).setOwningPlayer(member);
                     current.setItemMeta(meta);
                 });
 

@@ -16,8 +16,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 
 public class RPGPlaceholders extends PlaceholderExpansion {
@@ -46,6 +50,8 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 		return MMOCore.plugin.getDescription().getVersion();
 	}
 
+    private static final String ERROR_PLACEHOLDER = " ";
+
 	@SuppressWarnings("DuplicateExpressions")
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
@@ -59,7 +65,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return playerData.getProfess().getManaDisplay().getName();
 
 		if (identifier.equals("level"))
-			return "" + playerData.getLevel();
+			return String.valueOf(playerData.getLevel());
 
 		else if (identifier.startsWith("skill_level_")) {
 			String id = identifier.substring(12);
@@ -118,13 +124,38 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 					playerData.getCollectionSkills().getExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase()));
 
 		else if (identifier.startsWith("profession_next_level_"))
-			return "" + PlayerData.get(player).getCollectionSkills()
-					.getLevelUpExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase());
+			return String.valueOf(PlayerData.get(player).getCollectionSkills()
+					.getLevelUpExperience(identifier.substring(22).replace(" ", "-").replace("_", "-").toLowerCase()));
 
 		else if (identifier.startsWith("party_count")) {
-			AbstractParty party = playerData.getParty();
+			final @Nullable AbstractParty party = playerData.getParty();
 			return party == null ? "0" : String.valueOf(party.countMembers());
 		}
+
+		else if (identifier.startsWith("party_member_")) {
+            final int n = Integer.parseInt(identifier.substring(13)) - 1;
+            final @Nullable AbstractParty party = playerData.getParty();
+            if (party == null) return ERROR_PLACEHOLDER;
+            if (n >= party.countMembers()) return ERROR_PLACEHOLDER;
+            final @Nullable PlayerData member = party.getMember(n);
+            if (member == null) return ERROR_PLACEHOLDER;
+            return member.getPlayer().getName();
+		}
+
+        else if (identifier.equals("online_friends")) {
+            int count = 0;
+            for (UUID friendId : playerData.getFriends())
+                if (Bukkit.getPlayer(friendId) != null) count++;
+            return String.valueOf(count);
+        }
+
+        else if (identifier.startsWith("online_friend_")) {
+            final int n = Integer.parseInt(identifier.substring(14)) - 1;
+            if (n >= playerData.getFriends().size()) return ERROR_PLACEHOLDER;
+            final @Nullable Player friend = Bukkit.getPlayer(playerData.getFriends().get(n));
+            if (friend == null) return ERROR_PLACEHOLDER;
+            return friend.getName();
+        }
 
 		else if (identifier.startsWith("profession_"))
 			return String
@@ -199,13 +230,6 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return format.toString();
 		}
 
-		/*
-		4) cooldown of region_change
-		5) cooldown of command
-		6) all cooldown you are showing in the in game message
-
-		 */
-
 		else if (identifier.equals("quest")) {
 			PlayerQuests data = playerData.getQuestData();
 			return data.hasCurrent() ? data.getCurrent().getQuest().getName() : "None";
@@ -213,7 +237,6 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
 		else if (identifier.equals("quest_progress")) {
 			PlayerQuests data = playerData.getQuestData();
-
 			return data.hasCurrent() ? MythicLib.plugin.getMMOConfig().decimal
 					.format( (double) data.getCurrent().getObjectiveNumber() / data.getCurrent().getQuest().getObjectives().size() * 100L) : "0";
 		}
