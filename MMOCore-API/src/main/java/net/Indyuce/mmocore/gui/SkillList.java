@@ -101,7 +101,8 @@ public class SkillList extends EditableInventory {
 
     public class SelectedItem extends InventoryItem<SkillViewerInventory> {
         public SelectedItem(ConfigurationSection config) {
-            super(config);
+            //We must use this constructor to show that there are not specified material
+            super(Material.BARRIER,config);
         }
 
         @Override
