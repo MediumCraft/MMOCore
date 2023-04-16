@@ -7,6 +7,7 @@ import io.lumine.mythic.lib.manager.StatManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.experience.PlayerProfessions;
 import net.Indyuce.mmocore.experience.Profession;
@@ -16,10 +17,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -71,7 +72,15 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			String id = identifier.substring(12);
 			RegisteredSkill skill = Objects.requireNonNull(MMOCore.plugin.skillManager.getSkill(id), "Could not find skill with ID '" + id + "'");
 			return String.valueOf(playerData.getSkillLevel(skill));
-		} else if (identifier.equals("level_percent")) {
+		}
+		else if(identifier.startsWith("mmocore_attribute_points_spent_")){
+			String attributeId=identifier.substring(31);
+			PlayerAttributes.AttributeInstance attributeInstance=Objects.requireNonNull(playerData.getAttributes().getInstance(attributeId),"Could not find attribute with ID '"+attributeId+"'");
+			return String.valueOf(attributeInstance.getSpent());
+		}
+
+
+		else if (identifier.equals("level_percent")) {
 			double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
 			return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
 		} else if (identifier.equals("health"))

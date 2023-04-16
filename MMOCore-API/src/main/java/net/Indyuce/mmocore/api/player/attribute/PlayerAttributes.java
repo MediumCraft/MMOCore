@@ -165,6 +165,10 @@ public class PlayerAttributes {
             return (int) d;
         }
 
+        public int getSpent() {
+            return spent;
+        }
+
         public AttributeModifier getModifier(String key) {
             return map.get(key);
         }
