@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skilltree.NodeStatus;
@@ -120,6 +121,8 @@ public class SkillTreeViewer extends EditableInventory {
                     lore.add(holders.apply(inv.getPlayer(), string));
             });
             meta.setLore(lore);
+            if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
+                meta.setCustomModelData(skillTree.getCustomModelData());
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING, skillTree.getId());
             item.setItemMeta(meta);

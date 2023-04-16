@@ -39,6 +39,8 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     private final String id, name;
     private final List<String> lore = new ArrayList<>();
     private final Material item;
+    private final int customModelData;
+
     //2 different maps to get the nodes
 
     //Represents all the coordinates that will be displayed as a path (between 2 nodes of the tree)
@@ -59,6 +61,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         this.name = MythicLib.plugin.parseColors(Objects.requireNonNull(config.getString("name"), "Could not find skill tree name"));
         Objects.requireNonNull(config.getStringList("lore"), "Could not find skill tree lore").forEach(str -> lore.add(MythicLib.plugin.parseColors(str)));
         this.item = Material.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("item"))));
+        this.customModelData = config.getInt("custom-model-data", 0);
         Validate.isTrue(config.isConfigurationSection("nodes"), "Could not find any nodes in the tree");
         this.maxPointSpent = config.getInt("max-point-spent", Integer.MAX_VALUE);
         for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
@@ -146,6 +149,10 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
 
     public int getMaxPointSpent() {
         return maxPointSpent;
+    }
+
+    public int getCustomModelData() {
+        return customModelData;
     }
 
     public static SkillTree loadSkillTree(ConfigurationSection config) {
