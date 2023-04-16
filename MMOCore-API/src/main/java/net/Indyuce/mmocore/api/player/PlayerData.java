@@ -179,7 +179,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
                 final String skillId = entry.getValue().getClassSkill().getSkill().getHandler().getId();
                 final @Nullable ClassSkill classSkill = getProfess().getSkill(skillId);
                 Validate.notNull(skillSlot, "Could not find skill slot n" + entry.getKey());
-                Validate.notNull(skillSlot, "Could not find skill with ID '" + skillId + "'");
+                Validate.notNull(classSkill, "Could not find skill with ID '" + skillId + "'");
 
                 entry.getValue().close();
                 boundSkills.put(entry.getKey(), new BoundSkillInfo(skillSlot, classSkill, this));
