@@ -37,11 +37,6 @@ public class StatTrigger extends Trigger implements Removable {
             prevModifier.add(amount).register(player.getMMOPlayerData());
     }
 
-    /**
-     * Removes the effect of the trigger to the player by registering the
-     * opposite amount. (Little corrective term for the relative to have the inverse.
-     * Not a problem to store twice the stat modifiers are there only remain in the RAM.
-     */
     @Override
     public void remove(PlayerData playerData) {
         playerData.getMMOPlayerData().getStatMap().getInstance(stat).remove(modifierKey);
