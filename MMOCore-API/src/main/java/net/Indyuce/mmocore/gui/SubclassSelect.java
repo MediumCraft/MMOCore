@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
@@ -112,11 +113,16 @@ public class SubclassSelect extends EditableInventory {
 
             if (item.getFunction().startsWith("sub-class")) {
                 String classId = item.getFunction().substring(10);
-
+                PlayerClass profess = MMOCore.plugin.classManager.get(classId);
                 if (playerData.getClassPoints() < 1) {
                     player.closeInventory();
                     MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(getPlayer());
                     new ConfigMessage("cant-choose-new-class").send(player);
+                    return;
+                }
+                if (profess.hasOption(ClassOption.NEEDS_PERMISSION) && !player.hasPermission("mmocore.class." + profess.getId().toLowerCase())) {
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(player);
+                    new ConfigMessage("no-permission-for-class").send(player);
                     return;
                 }
 
