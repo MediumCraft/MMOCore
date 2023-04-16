@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.gui;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
+import me.ulrich.clans.manager.I;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -88,12 +89,38 @@ public class SkillList extends EditableInventory {
                 }
             };
         }
+        if(function.equals("selected"))
+            return new SelectedItem(config);
 
         return new SimplePlaceholderItem(config);
     }
 
     public GeneratedInventory newInventory(PlayerData data) {
         return new SkillViewerInventory(data, this);
+    }
+
+    public class SelectedItem extends InventoryItem<SkillViewerInventory> {
+        public SelectedItem(ConfigurationSection config) {
+            super(config);
+        }
+
+        @Override
+        public ItemStack display(SkillViewerInventory inv, int n) {
+            ItemStack item =super.display(inv, n);
+            if(inv.selected== null)
+                return new ItemStack(Material.AIR);
+            if (inv.selected != null) {
+                item.setType(inv.selected.getSkill().getIcon().getType());
+            }
+            return item;
+        }
+
+        @Override
+        public Placeholders getPlaceholders(SkillViewerInventory inv, int n) {
+            Placeholders holders= new Placeholders();
+            holders.register("selected", inv.selected.getSkill().getName());
+            return holders;
+        }
     }
 
     public class LevelItem extends InventoryItem<SkillViewerInventory> {
