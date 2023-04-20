@@ -209,8 +209,7 @@ max-skill-slots: 8
 
 # When set to true, passive skills must be bound in order to take effect.
 # When set to false, unlocked skills will take effect right away.
-# Temporarily disabled.
-# passive-skill-need-bound: true
+passive-skill-need-bound: true
 
 # Fun extra RPG feature that switches the player's hotbar with
 # the 9 lower row items of his inventory. This allows the player
