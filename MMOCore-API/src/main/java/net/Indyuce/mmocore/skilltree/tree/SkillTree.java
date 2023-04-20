@@ -5,12 +5,15 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.gui.skilltree.display.DisplayInfo;
+import net.Indyuce.mmocore.gui.skilltree.display.Icon;
+import net.Indyuce.mmocore.gui.skilltree.display.NodeDisplayInfo;
+import net.Indyuce.mmocore.gui.skilltree.display.NodeType;
 import net.Indyuce.mmocore.manager.registry.RegisteredObject;
-import net.Indyuce.mmocore.skilltree.tree.display.DisplayInfo;
-import net.Indyuce.mmocore.skilltree.tree.display.Icon;
 import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
 import net.Indyuce.mmocore.skilltree.NodeStatus;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
+import net.Indyuce.mmocore.skilltree.SkillTreePath;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -42,16 +45,21 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     private final int customModelData;
 
     //2 different maps to get the nodes
-
-    //Represents all the coordinates that will be displayed as a path (between 2 nodes of the tree)
-    protected final ArrayList<IntegerCoordinates> paths = new ArrayList<>();
-    //Represents all the nodes
+    /**
+     * Represents all the nodes
+     * Key: the coordinates of the node
+     * Value: the node
+     */
     protected final Map<IntegerCoordinates, SkillTreeNode> coordinatesNodes = new HashMap<>();
+    /**
+     * Represents all the paths between nodes.
+     */
+    protected final Map<IntegerCoordinates, SkillTreePath> coordinatesPaths = new HashMap<>();
+
     protected final Map<String, SkillTreeNode> nodes = new HashMap<>();
     protected final int maxPointSpent;
     //Caches the height of the skill tree
     protected int minX, minY, maxX, maxY;
-    protected final HashMap<DisplayInfo, Icon> icons = new HashMap<>();
     protected final List<SkillTreeNode> roots = new ArrayList<>();
 
     public SkillTree(ConfigurationSection config) {
@@ -66,45 +74,30 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         this.maxPointSpent = config.getInt("max-point-spent", Integer.MAX_VALUE);
         for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
             try {
-
-                SkillTreeNode node = new SkillTreeNode(this, config.getConfigurationSection("nodes." + key));
+                ConfigurationSection section = config.getConfigurationSection("nodes." + key);
+                SkillTreeNode node = new SkillTreeNode(this, section);
                 nodes.put(node.getId(), node);
-
             } catch (Exception e) {
                 MMOCore.log("Couldn't load skill tree node " + id + "." + key + ": " + e.getMessage());
             }
         }
-        try {
-            if (config.contains("paths")) {
-                ConfigurationSection section = config.getConfigurationSection("paths");
-                for (String key : section.getKeys(false)) {
-                    if (section.contains(key + ".x") && section.contains(key + ".y")) {
-                        paths.add(new IntegerCoordinates(section.getInt(key + ".x"), section.getInt(key + ".y")));
+        for (String from : config.getConfigurationSection("nodes").getKeys(false)) {
+            ConfigurationSection section = config.getConfigurationSection("nodes." + from);
+            MMOCore.log("skilltree:" + id + "  " + (section.contains("paths")));
+            if (section.contains("paths")) {
+                for (String to : section.getConfigurationSection("paths").getKeys(false)) {
+                    SkillTreeNode node1 = nodes.get(to);
+                    if (node1 == null) {
+                        MMOCore.log("Couldn't find node " + to + " for path in node " + from + ".");
+                        continue;
                     }
-
+                    for (String pathKey : section.getConfigurationSection("paths." + to).getKeys(false)) {
+                        IntegerCoordinates coordinates = new IntegerCoordinates(section.getInt("paths." + to + "." + pathKey + ".x"), section.getInt("paths." + to + "." + pathKey + ".y"));
+                        coordinatesPaths.put(coordinates, new SkillTreePath(this, coordinates, nodes.get(from), node1));
+                    }
                 }
             }
-        } catch (Exception e) {
-            MMOCore.log(Level.WARNING, "Couldn't load paths for skill tree: " + id);
-        }
 
-        try {
-            //Load the icons of the skill tree.
-            for (String key : config.getConfigurationSection("icons").getKeys(false)) {
-                if (key.equalsIgnoreCase("path")) {
-                    icons.put(DisplayInfo.pathInfo, new Icon(config.getConfigurationSection("icons." + key)));
-                    continue;
-                }
-                for (String size : config.getConfigurationSection("icons." + key).getKeys(false)) {
-                    DisplayInfo displayInfo = new DisplayInfo(NodeStatus.valueOf(UtilityMethods.enumName(key)), Integer.parseInt(size));
-                    Icon icon = new Icon(config.getConfigurationSection("icons." + key + "." + size));
-                    icons.put(displayInfo, icon);
-
-                }
-            }
-        } catch (Exception e) {
-            MMOCore.log("Couldn't load icons for the skill tree " + id);
-            e.printStackTrace();
         }
     }
 
@@ -121,11 +114,27 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
 
     @Override
     protected abstract void whenPostLoaded(@NotNull ConfigurationSection configurationSection);
+/*
 
-    public Icon getIcon(DisplayInfo info) {
-        Validate.isTrue(icons.containsKey(info), "The icon corresponding to " + info + " doesn't exist for the skill tree " + id + ".");
-        return icons.get(info);
+    public Icon getIcon(SkillTreeNode node) {
+        SkillTree skillTree = node.getTree();
+
+        DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
+
+        return skillTree.getIcon(displayInfo);
     }
+
+    public Icon getIcon(SkillTree skillTree, IntegerCoordinates coordinates) {
+
+        if (skillTree.isNode(coordinates)) {
+            SkillTreeNode node = skillTree.getNode(coordinates);
+            DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
+            return skillTree.getIcon(displayInfo);
+        }
+        if (skillTree.isPath(coordinates)) return skillTree.getIcon(DisplayInfo.pathInfo);
+        return null;
+    }
+    */
 
     public int getMaxX() {
         return maxX;
@@ -266,7 +275,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     }
 
     public boolean isPath(IntegerCoordinates coordinates) {
-        return paths.contains(coordinates);
+        return coordinatesPaths.keySet().contains(coordinates);
     }
 
     public Material getItem() {
@@ -292,9 +301,15 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     }
 
     @NotNull
+    public SkillTreePath getPath(IntegerCoordinates coords) {
+        return Objects.requireNonNull(coordinatesPaths.get(coords), "Could not find path in tree '" + id + "' with coordinates '" + coords.toString() + "'");
+    }
+
+    @NotNull
     public SkillTreeNode getNode(String name) {
         return Objects.requireNonNull(nodes.get(name), "Could not find node in tree '" + id + "' with name '" + name + "'");
     }
+
 
     public boolean isNode(String name) {
         return nodes.containsKey(name);

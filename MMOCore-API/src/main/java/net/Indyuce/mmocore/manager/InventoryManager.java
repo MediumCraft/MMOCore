@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.gui.skilltree.SkillTreeViewer;
 import net.Indyuce.mmocore.gui.social.friend.EditableFriendList;
 import net.Indyuce.mmocore.gui.*;
 import net.Indyuce.mmocore.gui.social.friend.EditableFriendRemoval;

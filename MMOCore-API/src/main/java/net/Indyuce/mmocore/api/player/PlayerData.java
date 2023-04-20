@@ -49,8 +49,8 @@ import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
 import net.Indyuce.mmocore.skilltree.NodeStatus;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
-import net.Indyuce.mmocore.skilltree.tree.display.DisplayInfo;
-import net.Indyuce.mmocore.skilltree.tree.display.Icon;
+import net.Indyuce.mmocore.gui.skilltree.display.DisplayInfo;
+import net.Indyuce.mmocore.gui.skilltree.display.Icon;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
 import net.md_5.bungee.api.ChatMessageType;
@@ -308,27 +308,6 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         node.getTree().setupNodeStates(this);
     }
 
-    /**
-     * Returns the icon the node should have.
-     */
-    public Icon getIcon(SkillTreeNode node) {
-        SkillTree skillTree = node.getTree();
-
-        DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
-
-        return skillTree.getIcon(displayInfo);
-    }
-
-    public Icon getIcon(SkillTree skillTree, IntegerCoordinates coordinates) {
-
-        if (skillTree.isNode(coordinates)) {
-            SkillTreeNode node = skillTree.getNode(coordinates);
-            DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
-            return skillTree.getIcon(displayInfo);
-        }
-        if (skillTree.isPath(coordinates)) return skillTree.getIcon(DisplayInfo.pathInfo);
-        return null;
-    }
 
     public int getSkillTreePoint(String treeId) {
         return skillTreePoints.getOrDefault(treeId, 0);

@@ -99,4 +99,221 @@ items:
       - '&e◆Points spent for {skill-tree}&e:&6 {point-spent}'
       - '&e◆Current {skill-tree} &epoints: &6{skill-tree-points}'
       - '&e◆Current &6global&e points: &6{global-points}'
+display:
+  paths:
+    unlocked:
+      north:
+        item: "WHITE_DYE"
+        custom-model-data: 0
+      north-east:
+        item: "WHITE_DYE"
+        custom-model-data: 0
+      north-west:
+        item: "WHITE_DYE"
+        custom-model-data: 0
+      south-east:
+        item: "WHITE_DYE"
+        custom-model-data: 0
+      south-west:
+        item: "WHITE_DYE"
+        custom-model-data: 0
+      east:
+        item: "WHITE_DYE"
+        custom-model-data: 0
+      default:
+        item: "WHITE_DYE"
+        custom-model-data: 0
+    locked:
+      north:
+        item: "GRAY_DYE"
+        custom-model-data: 0
+      north-east:
+        item: "GRAY_DYE"
+        custom-model-data: 0
+      north-west:
+        item: "GRAY_DYE"
+        custom-model-data: 0
+      south-east:
+        item: "GRAY_DYE"
+        custom-model-data: 0
+      south-west:
+        item: "GRAY_DYE"
+        custom-model-data: 0
+      east:
+        item: "GRAY_DYE"
+        custom-model-data: 0
+      default:
+        item: "GRAY_DYE"
+        custom-model-data: 0
+    fully-locked:
+      north:
+        item: "BLACK_DYE"
+        custom-model-data: 0
+      north-east:
+        item: "BLACK_DYE"
+        custom-model-data: 0
+      north-west:
+        item: "BLACK_DYE"
+        custom-model-data: 0
+      south-east:
+        item: "BLACK_DYE"
+        custom-model-data: 0
+      south-west:
+        item: "BLACK_DYE"
+        custom-model-data: 0
+      east:
+        item: "BLACK_DYE"
+        custom-model-data: 0
+      default:
+        item: "BLACK_DYE"
+        custom-model-data: 0
+  nodes:
+    unlocked:
+      north-east-south-west:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      north-east-south:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      north-east-west:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      north-south-west:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      south-east-west:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      north-east:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      north-south:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      north-west:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      south-east:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      south-west:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      east-west:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+      no-path:
+        item: "WHITE_CONCRETE"
+        custom-model-data: 0
+    locked:
+      north-east-south-west:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      north-east-south:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      north-east-west:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      north-south-west:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      south-east-west:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      north-east:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      north-south:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      north-west:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      south-east:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      south-west:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      east-west:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+      no-path:
+        item: "GRAY_CONCRETE"
+        custom-model-data: 0
+    unlockable:
+      north-east-south-west:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      north-east-south:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      north-east-west:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      north-south-west:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      south-east-west:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      north-east:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      north-south:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      north-west:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      south-east:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      south-west:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      east-west:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+      no-path:
+        item: "BLUE_CONCRETE"
+        custom-model-data: 0
+    fully-locked:
+      north-east-south-west:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      north-east-south:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      north-east-west:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      north-south-west:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      south-east-west:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      north-east:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      north-south:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      north-west:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      south-east:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      south-west:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      east-west:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
+      no-path:
+        item: "BLACK_CONCRETE"
+        custom-model-data: 0
 
