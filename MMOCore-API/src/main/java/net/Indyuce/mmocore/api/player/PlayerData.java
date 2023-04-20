@@ -168,19 +168,19 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             MMOCore.log(Level.SEVERE, "[Userdata] Could not find class " + getProfess().getId() + " while refreshing player data.");
         }
         //We remove all the stats and buffs associated to triggers.
-        mmoData.getStatMap().getInstances().forEach(statInstance -> statInstance.removeIf(key ->key.startsWith(Trigger.TRIGGER_PREFIX)));
-        mmoData.getSkillModifierMap().getInstances().forEach(skillModifierInstance -> skillModifierInstance.removeIf(key ->key.startsWith(Trigger.TRIGGER_PREFIX)));
-        final Iterator<Map.Entry<Integer, BoundSkillInfo>> ite = boundSkills.entrySet().iterator();
-        while (ite.hasNext())
+        mmoData.getStatMap().getInstances().forEach(statInstance -> statInstance.removeIf(key -> key.startsWith(Trigger.TRIGGER_PREFIX)));
+        mmoData.getSkillModifierMap().getInstances().forEach(skillModifierInstance -> skillModifierInstance.removeIf(key -> key.startsWith(Trigger.TRIGGER_PREFIX)));
+        Map<Integer, BoundSkillInfo> boundSkillsToRemove = new HashMap<>(boundSkills);
+        for (int slot : boundSkillsToRemove.keySet())
             try {
-                final Map.Entry<Integer, BoundSkillInfo> entry = ite.next();
-                final @Nullable SkillSlot skillSlot = getProfess().getSkillSlot(entry.getKey());
-                final String skillId = entry.getValue().getClassSkill().getSkill().getHandler().getId();
+                final BoundSkillInfo info = boundSkills.get(slot);
+                final @Nullable SkillSlot skillSlot = getProfess().getSkillSlot(slot);
+                final String skillId = info.getClassSkill().getSkill().getHandler().getId();
                 final @Nullable ClassSkill classSkill = getProfess().getSkill(skillId);
-                Validate.notNull(skillSlot, "Could not find skill slot n" + entry.getKey());
+                Validate.notNull(skillSlot, "Could not find skill slot n" + slot);
                 Validate.notNull(classSkill, "Could not find skill with ID '" + skillId + "'");
-                unbindSkill(entry.getKey());
-                bindSkill(entry.getKey(), classSkill);
+                unbindSkill(slot);
+                bindSkill(slot, classSkill);
             } catch (Exception exception) {
                 MMOCore.plugin.getLogger().log(Level.WARNING, "Could not reload data of '" + getPlayer().getName() + "': " + exception.getMessage());
             }
@@ -364,7 +364,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
 
     /**
      * @return If the item is unlocked by the player
-     *         This is used for skills that can be locked & unlocked.
+     * This is used for skills that can be locked & unlocked.
      */
     public boolean hasUnlocked(Unlockable unlockable) {
         return unlockable.isUnlockedByDefault() || unlockedItems.contains(unlockable.getUnlockNamespacedKey());
@@ -810,7 +810,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *                         If it's null, no hologram will be displayed
      * @param splitExp         Should the exp be split among party members
      */
-    public void giveExperience(double value, @NotNull EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+    public void giveExperience(double value, @NotNull EXPSource source, @Nullable Location hologramLocation,
+                               boolean splitExp) {
         if (value <= 0) {
             experience = Math.max(0, experience + value);
             return;
@@ -863,7 +864,8 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
             level = getLevel() + 1;
 
             // Apply class experience table
-            if (getProfess().hasExperienceTable()) getProfess().getExperienceTable().claim(this, level, getProfess());
+            if (getProfess().hasExperienceTable())
+                getProfess().getExperienceTable().claim(this, level, getProfess());
         }
 
         if (level > oldLevel) {
@@ -1184,7 +1186,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      * checks if they could potentially upgrade to one of these
      *
      * @return If the player can change its current class to
-     *         a subclass
+     * a subclass
      */
     @Deprecated
     public boolean canChooseSubclass() {
