@@ -45,7 +45,6 @@ public class SkillTreeViewer extends EditableInventory {
         for (PathStatus status : PathStatus.values())
             for (PathType pathType :PathType.values()){
                 if(!config.contains("display.paths." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(pathType.name()))){
-                    MMOCore.log("display.paths." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(pathType.name()));
                     MMOCore.log("Missing path type: " + MMOCoreUtils.ymlName(pathType.name()) + " for status: " + MMOCoreUtils.ymlName(status.name()));
                     continue;
                 }

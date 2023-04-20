@@ -66,7 +66,6 @@ public class BoundSkillInfo implements Closable {
 
         // Unregister skill if passive
         if (isPassive()) {
-            Bukkit.broadcastMessage("Unregistered passive skill " + classSkill.getSkill().getHandler().getId());
             registered.unregister(playerData.getMMOPlayerData());
         }
 

@@ -83,7 +83,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         }
         for (String from : config.getConfigurationSection("nodes").getKeys(false)) {
             ConfigurationSection section = config.getConfigurationSection("nodes." + from);
-            MMOCore.log("skilltree:" + id + "  " + (section.contains("paths")));
             if (section.contains("paths")) {
                 for (String to : section.getConfigurationSection("paths").getKeys(false)) {
                     SkillTreeNode node1 = nodes.get(to);
