@@ -37,7 +37,6 @@ public class BoundSkillInfo implements Closable {
         if (classSkill.getSkill().getTrigger().isPassive()) {
             registered = classSkill.toPassive(playerData);
             registered.register(playerData.getMMOPlayerData());
-            Bukkit.broadcastMessage("Registering passive skill "  + classSkill.getSkill().getHandler().getId());
         } else registered = null;
     }
 
