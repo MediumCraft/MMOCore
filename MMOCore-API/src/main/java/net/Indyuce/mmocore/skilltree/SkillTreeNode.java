@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.gui.skilltree.display.Icon;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -23,8 +24,8 @@ public class SkillTreeNode implements ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
 
-    private Material item;
-    private int customModelData;
+    private final Map<NodeStatus, Icon> icons = new HashMap<>();
+
     private IntegerCoordinates coordinates;
     /**
      * The number of skill tree points this node requires.
@@ -61,14 +62,20 @@ public class SkillTreeNode implements ExperienceObject {
         Validate.notNull(config, "Config cannot be null");
         this.id = config.getName();
         this.tree = tree;
-        if(config.contains("item"))
-            item = Material.valueOf(config.getString("item"));
-        customModelData= config.getInt("custom-model-data",0);
+        if (config.isConfigurationSection("display")) {
+            for (NodeStatus status : NodeStatus.values()) {
+                if (!config.isConfigurationSection("display." + status.name().toLowerCase())) {
+                    MMOCore.log("Could not find node display for status " + status.name().toLowerCase() + " for node " + id + " in tree " + tree.getId() + ". Using default display.");
+                    continue;
+                }
+                icons.put(status, new Icon(config.getConfigurationSection("display." + status.name().toLowerCase())));
+            }
+        }
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
-        skillTreePointsConsumed=config.getInt("point-consumed",1);
-        Validate.isTrue(skillTreePointsConsumed>0,"The skill tree points consumed by a node must be greater than 0.");
+        skillTreePointsConsumed = config.getInt("point-consumed", 1);
+        Validate.isTrue(skillTreePointsConsumed > 0, "The skill tree points consumed by a node must be greater than 0.");
         if (config.contains("lores"))
             for (String key : config.getConfigurationSection("lores").getKeys(false))
                 try {
@@ -91,12 +98,12 @@ public class SkillTreeNode implements ExperienceObject {
         return tree;
     }
 
-    public Material getItem() {
-        return item;
+    public boolean hasIcon(NodeStatus status) {
+        return icons.containsKey(status);
     }
 
-    public int getCustomModelData() {
-        return customModelData;
+    public Icon getIcon(NodeStatus status) {
+        return icons.get(status);
     }
 
     public void setIsRoot() {
@@ -168,7 +175,7 @@ public class SkillTreeNode implements ExperienceObject {
 
     /**
      * @return Full node identifier, containing both the node identifier AND
-     *         the skill tree identifier, like "combat_extra_strength"
+     * the skill tree identifier, like "combat_extra_strength"
      */
     public String getFullId() {
         return tree.getId() + "_" + id;
