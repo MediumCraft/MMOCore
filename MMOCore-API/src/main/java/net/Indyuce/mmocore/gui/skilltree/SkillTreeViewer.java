@@ -345,6 +345,10 @@ public class SkillTreeViewer extends EditableInventory {
 
             if (skillTree.isNode(coordinates)) {
                 SkillTreeNode node = skillTree.getNode(coordinates);
+                //If the node has its own display, it will be shown.
+                if(node.getItem()!=null)
+                    return new Icon(node.getItem(),node.getCustomModelData());
+
                 NodeType nodeType = NodeType.getNodeType(hasNorthPath, hasEastPath, hasSouthPath, hasWestPath);
                 return icons.get(new NodeDisplayInfo(nodeType, playerData.getNodeState(node)));
             } else {

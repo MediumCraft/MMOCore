@@ -11,6 +11,7 @@ import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +22,9 @@ import java.util.*;
 public class SkillTreeNode implements ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
+
+    private Material item;
+    private int customModelData;
     private IntegerCoordinates coordinates;
     /**
      * The number of skill tree points this node requires.
@@ -57,6 +61,9 @@ public class SkillTreeNode implements ExperienceObject {
         Validate.notNull(config, "Config cannot be null");
         this.id = config.getName();
         this.tree = tree;
+        if(config.contains("item"))
+            item = Material.valueOf(config.getString("item"));
+        customModelData= config.getInt("custom-model-data",0);
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
@@ -82,6 +89,14 @@ public class SkillTreeNode implements ExperienceObject {
 
     public SkillTree getTree() {
         return tree;
+    }
+
+    public Material getItem() {
+        return item;
+    }
+
+    public int getCustomModelData() {
+        return customModelData;
     }
 
     public void setIsRoot() {
