@@ -5,34 +5,34 @@ package net.Indyuce.mmocore.gui.skilltree.display;
  */
 public enum PathType {
 
-    NORTH,
+    UP,
     /**
-     * Goes to north then east/ goes to west then south.
+     * Goes to up then east/ goes to left then down.
      */
-    NORTH_EAST,
-    NORTH_WEST,
-    SOUTH_EAST,
-    SOUTH_WEST,
-    EAST,
+    UP_RIGHT,
+    UP_LEFT,
+    DOWN_RIGHT,
+    DOWN_LEFT,
+    RIGHT,
 
     DEFAULT;
 
-    public static PathType getPathType(boolean hasNorth,boolean hasEast,boolean hasSouth,boolean hasWest) {
-        if ((hasNorth || hasSouth) && !hasWest && hasEast) {
-            return NORTH;
-        } else if ((hasEast || hasWest)&& !hasNorth && !hasSouth) {
-            return EAST;
-        } else if (hasNorth && hasEast) {
-            return NORTH_EAST;
+    public static PathType getPathType(boolean hasUp,boolean hasRight,boolean hasDown,boolean hasLeft) {
+        if ((hasUp || hasDown) && !hasLeft && hasRight) {
+            return UP;
+        } else if ((hasRight || hasLeft)&& !hasUp && !hasDown) {
+            return RIGHT;
+        } else if (hasUp && hasRight) {
+            return UP_RIGHT;
         }
-        else if (hasNorth && hasWest) {
-            return NORTH_WEST;
+        else if (hasUp && hasLeft) {
+            return UP_LEFT;
         }
-        else if (hasSouth && hasEast) {
-            return SOUTH_EAST;
+        else if (hasDown && hasRight) {
+            return DOWN_RIGHT;
         }
-        else if (hasSouth && hasWest) {
-            return SOUTH_WEST;
+        else if (hasDown && hasLeft) {
+            return DOWN_LEFT;
         }
         return DEFAULT;
     }

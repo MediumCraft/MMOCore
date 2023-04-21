@@ -338,10 +338,10 @@ public class SkillTreeViewer extends EditableInventory {
         }
 
         public Icon getIcon(IntegerCoordinates coordinates) {
-            boolean hasNorthPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX(), coordinates.getY() - 1));
-            boolean hasSouthPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX(), coordinates.getY() + 1));
-            boolean hasEastPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX() + 1, coordinates.getY()));
-            boolean hasWestPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX() - 1, coordinates.getY()));
+            boolean hasUpPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX(), coordinates.getY() - 1));
+            boolean hasDownPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX(), coordinates.getY() + 1));
+            boolean hasRightPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX() + 1, coordinates.getY()));
+            boolean hasLeftPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX() - 1, coordinates.getY()));
 
             if (skillTree.isNode(coordinates)) {
                 SkillTreeNode node = skillTree.getNode(coordinates);
@@ -349,10 +349,10 @@ public class SkillTreeViewer extends EditableInventory {
                 if(node.getItem()!=null)
                     return new Icon(node.getItem(),node.getCustomModelData());
 
-                NodeType nodeType = NodeType.getNodeType(hasNorthPath, hasEastPath, hasSouthPath, hasWestPath);
+                NodeType nodeType = NodeType.getNodeType(hasUpPath, hasRightPath, hasDownPath, hasLeftPath);
                 return icons.get(new NodeDisplayInfo(nodeType, playerData.getNodeState(node)));
             } else {
-                PathType pathType = PathType.getPathType(hasNorthPath, hasEastPath, hasSouthPath, hasWestPath);
+                PathType pathType = PathType.getPathType(hasUpPath, hasRightPath, hasDownPath, hasLeftPath);
                 SkillTreePath path = skillTree.getPath(coordinates);
                 return icons.get(new PathDisplayInfo(pathType, path.getStatus(playerData)));
             }
