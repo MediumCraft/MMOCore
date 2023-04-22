@@ -318,7 +318,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         nodeStates.put(node, nodeStatus);
     }
 
-    public NodeStatus getNodeState(SkillTreeNode node) {
+    public NodeStatus getNodeStatus(SkillTreeNode node) {
         return nodeStates.get(node);
     }
 

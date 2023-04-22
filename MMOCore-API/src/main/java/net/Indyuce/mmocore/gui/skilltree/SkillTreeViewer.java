@@ -271,7 +271,7 @@ public class SkillTreeViewer extends EditableInventory {
             if (inv.getSkillTree().isNode(inv.getCoordinates(n))) {
                 SkillTreeNode node = inv.getNode(n);
                 holders.register("current-level", inv.getPlayerData().getNodeLevel(node));
-                holders.register("current-state", inv.getPlayerData().getNodeState(node));
+                holders.register("current-state", inv.getPlayerData().getNodeStatus(node));
                 holders.register("max-level", node.getMaxLevel());
                 holders.register("max-children", node.getMaxChildren());
                 holders.register("size", node.getSize());
@@ -345,12 +345,13 @@ public class SkillTreeViewer extends EditableInventory {
 
             if (skillTree.isNode(coordinates)) {
                 SkillTreeNode node = skillTree.getNode(coordinates);
+                NodeStatus nodeStatus =playerData.getNodeStatus(node);
                 //If the node has its own display, it will be shown.
-                if(node.getItem()!=null)
-                    return new Icon(node.getItem(),node.getCustomModelData());
+                if(node.hasIcon(nodeStatus))
+                    return node.getIcon(nodeStatus);
 
                 NodeType nodeType = NodeType.getNodeType(hasUpPath, hasRightPath, hasDownPath, hasLeftPath);
-                return icons.get(new NodeDisplayInfo(nodeType, playerData.getNodeState(node)));
+                return icons.get(new NodeDisplayInfo(nodeType, nodeStatus));
             } else {
                 PathType pathType = PathType.getPathType(hasUpPath, hasRightPath, hasDownPath, hasLeftPath);
                 SkillTreePath path = skillTree.getPath(coordinates);
@@ -479,7 +480,7 @@ public class SkillTreeViewer extends EditableInventory {
                         MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
                         open();
                         event.setCancelled(true);
-                    } else if (playerData.getNodeState(node) == NodeStatus.LOCKED || playerData.getNodeState(node) == NodeStatus.FULLY_LOCKED) {
+                    } else if (playerData.getNodeStatus(node) == NodeStatus.LOCKED || playerData.getNodeStatus(node) == NodeStatus.FULLY_LOCKED) {
                         MMOCore.plugin.configManager.getSimpleMessage("locked-node").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
                         event.setCancelled(true);

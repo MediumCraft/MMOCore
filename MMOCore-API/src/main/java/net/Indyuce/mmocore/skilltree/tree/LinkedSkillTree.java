@@ -84,7 +84,7 @@ public class LinkedSkillTree extends SkillTree {
      * We recursively label all the locked nodes who are connected to an unlockable node.
      **/
     private void labelLockedNodes(PlayerData playerData) {
-        List<SkillTreeNode> unlockableNodes = nodes.values().stream().filter(node -> playerData.getNodeState(node) == NodeStatus.UNLOCKABLE).toList();
+        List<SkillTreeNode> unlockableNodes = nodes.values().stream().filter(node -> playerData.getNodeStatus(node) == NodeStatus.UNLOCKABLE).toList();
         for (SkillTreeNode node : unlockableNodes) {
             labelLockedNodesFrom(playerData, node);
         }
@@ -109,7 +109,7 @@ public class LinkedSkillTree extends SkillTree {
         boolean isUnlockable = false;
         for (IntegerCoordinates coordinates : getCheckCoordinates(node.getCoordinates())) {
             if (isNode(coordinates))
-                if (isNode(coordinates) && playerData.getNodeState(getNode(coordinates)) == NodeStatus.UNLOCKED && countUnlockedNeighbours(coordinates, playerData) <= getNode(coordinates).getMaxChildren())
+                if (isNode(coordinates) && playerData.getNodeStatus(getNode(coordinates)) == NodeStatus.UNLOCKED && countUnlockedNeighbours(coordinates, playerData) <= getNode(coordinates).getMaxChildren())
                     isUnlockable = true;
         }
         return isUnlockable;

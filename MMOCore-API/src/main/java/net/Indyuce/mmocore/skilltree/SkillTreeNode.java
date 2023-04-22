@@ -12,7 +12,6 @@ import net.Indyuce.mmocore.gui.skilltree.display.Icon;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -227,7 +226,7 @@ public class SkillTreeNode implements ExperienceObject {
     public Placeholders getPlaceholders(PlayerData playerData) {
         Placeholders holders = new Placeholders();
         holders.register("name", getName());
-        holders.register("node-state", playerData.getNodeState(this));
+        holders.register("node-state", playerData.getNodeStatus(this));
         holders.register("size", getSize());
         holders.register("level", playerData.getNodeLevel(this));
         holders.register("max-level", getMaxLevel());

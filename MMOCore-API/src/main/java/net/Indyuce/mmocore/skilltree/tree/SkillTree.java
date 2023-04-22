@@ -5,10 +5,6 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.gui.skilltree.display.DisplayInfo;
-import net.Indyuce.mmocore.gui.skilltree.display.Icon;
-import net.Indyuce.mmocore.gui.skilltree.display.NodeDisplayInfo;
-import net.Indyuce.mmocore.gui.skilltree.display.NodeType;
 import net.Indyuce.mmocore.manager.registry.RegisteredObject;
 import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
 import net.Indyuce.mmocore.skilltree.NodeStatus;
@@ -21,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * A passive skill tree that features nodes, or passive skills.
@@ -228,7 +223,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                         numberChildren++;
 
                 //We must check if the parent is Fully Locked or not and if it can unlock a new node(with its max children constraint)
-                if (numberChildren >= strongParent.getMaxChildren() || playerData.getNodeState(strongParent) == NodeStatus.FULLY_LOCKED)
+                if (numberChildren >= strongParent.getMaxChildren() || playerData.getNodeStatus(strongParent) == NodeStatus.FULLY_LOCKED)
                     isFullyLockedFromStrongParent = true;
             }
 
@@ -242,7 +237,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 for (SkillTreeNode child : softParent.getChildren())
                     if (playerData.getNodeLevel(child) > 0)
                         numberChildren++;
-                if (numberChildren < softParent.getMaxChildren() && playerData.getNodeState(softParent) != NodeStatus.FULLY_LOCKED)
+                if (numberChildren < softParent.getMaxChildren() && playerData.getNodeStatus(softParent) != NodeStatus.FULLY_LOCKED)
                     isFullyLockedFromSoftParent = false;
             }
 

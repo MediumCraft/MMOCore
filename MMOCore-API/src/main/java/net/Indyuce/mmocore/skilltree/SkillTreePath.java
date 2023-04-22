@@ -7,7 +7,7 @@ import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 public record SkillTreePath(SkillTree tree, IntegerCoordinates coordinates, SkillTreeNode from, SkillTreeNode to) {
 
     public PathStatus getStatus(PlayerData playerData) {
-        if (playerData.getNodeState(from) == NodeStatus.UNLOCKED && playerData.getNodeState(to) == NodeStatus.UNLOCKED) {
+        if (playerData.getNodeStatus(from) == NodeStatus.UNLOCKED && playerData.getNodeStatus(to) == NodeStatus.UNLOCKED) {
             return PathStatus.UNLOCKED;
         }
         return PathStatus.LOCKED;
