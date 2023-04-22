@@ -12,6 +12,7 @@ public enum PartyModuleType {
     MCMMO("mcMMO", McMMOPartyModule::new),
     MMOCORE("MMOCore", MMOCorePartyModule::new),
     PARTIES("Parties", PartiesPartyModule::new),
+    MYTHICDUNGEONS("MythicDungeons", DungeonPartiesPartyModule::new),
     OBTEAM("OBTeam", OBTeamPartyModule::new),
     PARTY_AND_FRIENDS("PartyAndFriends", PAFPartyModule::new),
     PARTY_AND_FRIENDS_BUNGEECORD_VELOCITY("Spigot-Party-API-PAF", PAFProxyPartyModule::new),
