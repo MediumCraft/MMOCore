@@ -68,7 +68,7 @@ public class DungeonsXLPartyModule implements PartyModule, Listener {
         MMOCore.plugin.partyManager.getBonuses().forEach(buff -> buff.unregister(player.getMMOPlayerData()));
     }
 
-    class CustomParty implements AbstractParty, Listener {
+    class CustomParty implements AbstractParty {
         private final PlayerGroup group;
 
         public CustomParty(PlayerGroup group) {

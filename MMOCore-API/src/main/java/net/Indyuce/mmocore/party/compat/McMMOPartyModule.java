@@ -74,12 +74,11 @@ public class McMMOPartyModule implements PartyModule, Listener {
         MMOCore.plugin.partyManager.getBonuses().forEach(buff -> buff.unregister(player.getMMOPlayerData()));
     }
 
-    class CustomParty implements AbstractParty, Listener {
+    class CustomParty implements AbstractParty {
         private final Party party;
 
         public CustomParty(Party party) {
             this.party = party;
-            Bukkit.getPluginManager().registerEvents(this, MMOCore.plugin);
         }
 
         @Override

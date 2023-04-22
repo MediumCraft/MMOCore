@@ -60,6 +60,7 @@ protect-custom-mine: false
 # - party_and_friends (Use this one if you are using Party and Friends Extended for Spigot)
 # - party_and_friends_bungeecord_velocity (Use this one if you are using Party and Friends For Bungeecord, Party and Friends For Velocity or Party and Friends Extended Edition for Bungeecord/Velocity. This one requires https://www.spigotmc.org/resources/spigot-party-api-for-party-and-friends.39751/ to be installed)
 # - mcmmo
+# - obteam (addon for DungeonMMO)
 party-plugin: mmocore
 
 # Edit the plugin handling guilds here.
