@@ -197,6 +197,20 @@
         </dependency>
 
         <dependency>
+            <groupId>com.civious</groupId>
+            <artifactId>OBTeam</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.playavalon</groupId>
+            <artifactId>DungeonParties</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.alessiodp</groupId>
             <artifactId>Parties</artifactId>
             <version>3.1.14</version>
