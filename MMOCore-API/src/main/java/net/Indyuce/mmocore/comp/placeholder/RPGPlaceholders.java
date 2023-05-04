@@ -124,7 +124,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 			return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getLastHit()) / 1000.) : "-1";
 
 		 else if (identifier.startsWith("bound_")) {
-			int slot = Math.max(0, Integer.parseInt(identifier.substring(6)) - 1);
+			int slot = Math.max(0, Integer.parseInt(identifier.substring(6)));
 			return playerData.hasSkillBound(slot) ? playerData.getBoundSkill(slot).getSkill().getName()
 					: MMOCore.plugin.configManager.noSkillBoundPlaceholder;
 
