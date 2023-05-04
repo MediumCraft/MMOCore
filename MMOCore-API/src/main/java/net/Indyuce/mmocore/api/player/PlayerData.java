@@ -1073,6 +1073,11 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         return getProfess().hasSkill(skill.getHandler().getId()) && hasSkillUnlocked(getProfess().getSkill(skill.getHandler().getId()));
     }
 
+
+    @Deprecated
+    public boolean hasSkillUnlocked(ClassSkill skill) {
+        return hasUnlockedLevel(skill);
+    }
     /**
      * Checks for the player's level and compares it to the skill unlock level.
      * <p>
@@ -1083,7 +1088,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      *
      * @return If the player unlocked the skill
      */
-    public boolean hasSkillUnlocked(ClassSkill skill) {
+    public boolean hasUnlockedLevel(ClassSkill skill){
         return getLevel() >= skill.getUnlockLevel();
     }
 

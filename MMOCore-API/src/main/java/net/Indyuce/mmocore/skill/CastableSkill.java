@@ -1,7 +1,6 @@
 package net.Indyuce.mmocore.skill;
 
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.comp.flags.CustomFlag;
 import io.lumine.mythic.lib.player.cooldown.CooldownInfo;
 import io.lumine.mythic.lib.skill.Skill;
@@ -48,8 +47,8 @@ public class CastableSkill extends Skill {
         boolean loud = !getTrigger().isSilent();
 
         // Skill is not usable yet
-        if (!playerData.hasSkillUnlocked(skill)) {
-            if (loud) MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(playerData.getPlayer());
+        if (!playerData.hasUnlockedLevel(skill)) {
+            if (loud) MMOCore.plugin.configManager.getSimpleMessage("skill-level-not-met").send(playerData.getPlayer());
             return false;
         }
 

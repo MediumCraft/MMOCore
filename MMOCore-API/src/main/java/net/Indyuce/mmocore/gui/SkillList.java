@@ -1,10 +1,8 @@
 package net.Indyuce.mmocore.gui;
 
-import io.lumine.mythic.core.utils.MythicUtil;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
-import me.ulrich.clans.manager.I;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -442,7 +440,7 @@ public class SkillList extends EditableInventory {
                     return;
                 }
 
-                if (!playerData.hasSkillUnlocked(selected)) {
+                if (!playerData.hasUnlockedLevel(selected)) {
                     MMOCore.plugin.configManager.getSimpleMessage("skill-level-not-met").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
@@ -470,8 +468,8 @@ public class SkillList extends EditableInventory {
             if (item.getFunction().equals("upgrade")) {
                 int shiftCost = ((UpgradeItem) item).shiftCost;
 
-                if (!playerData.hasSkillUnlocked(selected)) {
-                    MMOCore.plugin.configManager.getSimpleMessage("not-unlocked-skill").send(player);
+                if (!playerData.hasUnlockedLevel(selected)) {
+                    MMOCore.plugin.configManager.getSimpleMessage("skill-level-not-met").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
                     return;
                 }
