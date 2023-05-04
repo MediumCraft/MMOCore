@@ -21,6 +21,7 @@ import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -122,9 +123,13 @@ public class PlayerStats extends EditableInventory {
                     return new Placeholders() {
                         final net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.target.getStats();
 
-                        public String apply(Player player, String str) {
-                            while (str.contains("{") && str.substring(str.indexOf("{")).contains("}")) {
-                                final String holder = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
+                        @Override
+                        public String apply(OfflinePlayer player, String str) {
+                            String explored = str;
+                            // Internal placeholders
+                            while (explored.contains("{") && explored.substring(explored.indexOf("{")).contains("}")) {
+                                final int begin = explored.indexOf("{"), end = explored.indexOf("}");
+                                final String holder = explored.substring(begin + 1, end);
                                 String replaced;
                                 if (holder.endsWith("_base")) {
                                     final String stat = UtilityMethods.enumName(holder.substring(0, holder.length() - 5));
@@ -141,6 +146,9 @@ public class PlayerStats extends EditableInventory {
                                 }
 
                                 str = str.replace("{" + holder + "}", replaced);
+
+                                // Increase counter
+                                explored = explored.substring(end + 1);
                             }
 
                             // External placeholders
