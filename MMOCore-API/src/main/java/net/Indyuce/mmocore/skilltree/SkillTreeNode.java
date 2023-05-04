@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.skilltree;
 import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
@@ -63,8 +64,9 @@ public class SkillTreeNode implements ExperienceObject {
         this.tree = tree;
         if (config.isConfigurationSection("display")) {
             for (NodeStatus status : NodeStatus.values()) {
-                if (!config.isConfigurationSection("display." + status.name().toLowerCase())) {
-                    MMOCore.log("Could not find node display for status " + status.name().toLowerCase() + " for node " + id + " in tree " + tree.getId() + ". Using default display.");
+                String ymlStatus=MMOCoreUtils.ymlName(status.name());
+                if (!config.isConfigurationSection("display." + ymlStatus)) {
+                    MMOCore.log("Could not find node display for status " + ymlStatus + " for node " + id + " in tree " + tree.getId() + ". Using default display.");
                     continue;
                 }
                 icons.put(status, new Icon(config.getConfigurationSection("display." + status.name().toLowerCase())));
