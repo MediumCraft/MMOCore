@@ -421,14 +421,12 @@ public class SkillTreeViewer extends EditableInventory {
                 if (spent < 1) {
                     MMOCore.plugin.configManager.getSimpleMessage("no-skill-tree-points-spent").send(player);
                     MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                    event.setCancelled(true);
                     return;
                 }
 
                 if (getPlayerData().getSkillTreeReallocationPoints() <= 0) {
                     MMOCore.plugin.configManager.getSimpleMessage("not-skill-tree-reallocation-point").send(player);
                     MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                    event.setCancelled(true);
                     return;
                 } else {
                     int reallocated = playerData.getPointSpent(skillTree);
@@ -439,7 +437,6 @@ public class SkillTreeViewer extends EditableInventory {
                     skillTree.setupNodeStates(playerData);
                     MMOCore.plugin.configManager.getSimpleMessage("reallocated-points", "points", "" + playerData.getSkillTreePoint(skillTree.getId()), "skill-tree", skillTree.getName()).send(player);
                     MMOCore.plugin.soundManager.getSound(SoundEvent.RESET_SKILL_TREE).playTo(player);
-                    event.setCancelled(true);
                     open();
                     return;
 
@@ -452,7 +449,6 @@ public class SkillTreeViewer extends EditableInventory {
                 MMOCore.plugin.soundManager.getSound(SoundEvent.CHANGE_SKILL_TREE).playTo(player);
                 skillTree = MMOCore.plugin.skillTreeManager.get(id);
                 open();
-                event.setCancelled(true);
                 return;
             }
 
@@ -462,16 +458,13 @@ public class SkillTreeViewer extends EditableInventory {
                     int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
                     int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
                     if (!skillTree.isNode(new IntegerCoordinates(x, y))) {
-                        event.setCancelled(true);
                         return;
                     }
                     SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));
                     if (playerData.getPointSpent(skillTree) >= skillTree.getMaxPointSpent()) {
                         MMOCore.plugin.configManager.getSimpleMessage("max-points-reached").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                        event.setCancelled(true);
                         return;
-
                     }
 
                     if (playerData.canIncrementNodeLevel(node)) {
@@ -479,23 +472,22 @@ public class SkillTreeViewer extends EditableInventory {
                         MMOCore.plugin.configManager.getSimpleMessage("upgrade-skill-node", "skill-node", node.getName(), "level", "" + playerData.getNodeLevel(node)).send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
                         open();
-                        event.setCancelled(true);
                     } else if (playerData.getNodeStatus(node) == NodeStatus.LOCKED || playerData.getNodeStatus(node) == NodeStatus.FULLY_LOCKED) {
                         MMOCore.plugin.configManager.getSimpleMessage("locked-node").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                        event.setCancelled(true);
 
                     } else if (playerData.getNodeLevel(node) >= node.getMaxLevel()) {
                         MMOCore.plugin.configManager.getSimpleMessage("skill-node-max-level-hit").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                        event.setCancelled(true);
+                    }else if(!node.hasPermissionRequirement(playerData)){
+                        MMOCore.plugin.configManager.getSimpleMessage("missing-skill-node-permission").send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
                     }
 
                     //Else the player doesn't doesn't have the skill tree points
                     else {
                         MMOCore.plugin.configManager.getSimpleMessage("not-enough-skill-tree-points", "point", "" + node.getSkillTreePointsConsumed()).send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                        event.setCancelled(true);
                     }
 
                 }

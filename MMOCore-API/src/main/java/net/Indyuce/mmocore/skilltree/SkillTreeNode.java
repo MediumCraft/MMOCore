@@ -24,6 +24,8 @@ public class SkillTreeNode implements ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
 
+    private String permissionRequired;
+
     private final Map<NodeStatus, Icon> icons = new HashMap<>();
 
     private IntegerCoordinates coordinates;
@@ -76,6 +78,7 @@ public class SkillTreeNode implements ExperienceObject {
         size = Objects.requireNonNull(config.getInt("size"));
         isRoot = config.getBoolean("is-root", false);
         skillTreePointsConsumed = config.getInt("point-consumed", 1);
+        permissionRequired = config.getString("permission-required");
         Validate.isTrue(skillTreePointsConsumed > 0, "The skill tree points consumed by a node must be greater than 0.");
         if (config.contains("lores"))
             for (String key : config.getConfigurationSection("lores").getKeys(false))
@@ -149,6 +152,10 @@ public class SkillTreeNode implements ExperienceObject {
 
     public int getMaxChildren() {
         return maxChildren;
+    }
+
+    public boolean hasPermissionRequirement(PlayerData playerData){
+        return permissionRequired == null || playerData.getPlayer().hasPermission(permissionRequired);
     }
 
     public Set<SkillTreeNode> getSoftParents() {

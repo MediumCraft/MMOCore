@@ -278,7 +278,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
         NodeStatus nodeStatus = nodeStates.get(node);
         //Check the State of the node
         if (nodeStatus != NodeStatus.UNLOCKED && nodeStatus != NodeStatus.UNLOCKABLE) return false;
-        return getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) + skillTreePoints.getOrDefault("global", 0) >= node.getSkillTreePointsConsumed());
+        return node.hasPermissionRequirement(this)&&getNodeLevel(node) < node.getMaxLevel() && (skillTreePoints.getOrDefault(node.getTree().getId(), 0) + skillTreePoints.getOrDefault("global", 0) >= node.getSkillTreePointsConsumed());
     }
 
     /**
