@@ -14,7 +14,11 @@ public class UnlockSlotTrigger extends Trigger implements Removable {
     public UnlockSlotTrigger(MMOLineConfig config) {
         super(config);
         config.validateKeys("slot");
-        slot = Integer.parseInt("slot");
+        try {
+            slot = Integer.parseInt(config.getString("slot"));
+        }catch(NumberFormatException e){
+            throw new IllegalArgumentException("The slot should be a number");
+        }
         Validate.isTrue(slot > 0 && slot <= MMOCore.plugin.configManager.maxSkillSlots, "The slot should be between 1 and " + MMOCore.plugin.configManager.maxSkillSlots);
     }
 
