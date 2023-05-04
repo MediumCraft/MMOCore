@@ -19,13 +19,6 @@ public class MMOCoreBukkit {
         if (plugin.configManager.overrideVanillaExp)
             Bukkit.getPluginManager().registerEvents(new VanillaExperienceOverride(), plugin);
 
-        if (plugin.getConfig().getBoolean("hotbar-swapping.enabled"))
-            try {
-                Bukkit.getPluginManager().registerEvents(new HotbarSwap(plugin.getConfig().getConfigurationSection("hotbar-swapping")), plugin);
-            } catch (RuntimeException exception) {
-                plugin.getLogger().log(Level.WARNING, "Could not load hotbar swapping: " + exception.getMessage());
-            }
-
         if (plugin.getConfig().getBoolean("prevent-spawner-xp"))
             Bukkit.getPluginManager().registerEvents(new NoSpawnerEXP(), plugin);
 

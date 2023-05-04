@@ -15,7 +15,7 @@ mysql:
   port: 3306
   database: minecraft
   user: mmolover
-  pass: ILoveAria
+  pass: ILovePhoenixDev
   properties:
     cachePrepStmts: true
     prepStmtCacheSize: 250
@@ -212,20 +212,6 @@ max-skill-slots: 8
 # When set to true, passive skills must be bound in order to take effect.
 # When set to false, unlocked skills will take effect right away.
 passive-skill-need-bound: true
-
-# Fun extra RPG feature that switches the player's hotbar with
-# the 9 lower row items of his inventory. This allows the player
-# to have two different item sets or quickly have access to pots
-# Requires a SERVER reload when changed.
-hotbar-swapping:
-  enabled: true
-
-  # Keybind which triggers
-  # Available keybinds
-  keybind: SWAP_HANDS
-
-  # If the player has to sneak to swap hotbars
-  crouching: true
 
 # Set this to true to allow players in
 # creative mode to enter casting mode
