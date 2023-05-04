@@ -119,11 +119,12 @@ public class SkillBar implements Listener {
             if (!data.isOnline()) return str.toString();
             for (int slot : data.mapBoundSkills().keySet()) {
                 ClassSkill skill = data.getBoundSkill(slot);
-                str.append(str.isEmpty() ? "" : split).append((onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
-                        String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000)) : noMana(data, skill) ? noMana : (noStamina(
-                        data, skill) ? noStamina : ready)).replace("{index}",
-                                String.valueOf(slot + (data.getPlayer().getInventory().getHeldItemSlot() < slot ? 1 : 0)))
-                        .replace("{skill}", data.getBoundSkill(slot).getSkill().getName()));
+                if (!skill.getSkill().getTrigger().isPassive())
+                    str.append(str.isEmpty() ? "" : split).append((onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
+                            String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000)) : noMana(data, skill) ? noMana : (noStamina(
+                            data, skill) ? noStamina : ready)).replace("{index}",
+                                    String.valueOf(slot + (data.getPlayer().getInventory().getHeldItemSlot() < slot ? 1 : 0)))
+                            .replace("{skill}", data.getBoundSkill(slot).getSkill().getName()));
             }
             return MMOCore.plugin.placeholderParser.parse(data.getPlayer(), str.toString());
         }
