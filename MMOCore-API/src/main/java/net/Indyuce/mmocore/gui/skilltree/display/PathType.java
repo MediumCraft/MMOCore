@@ -18,7 +18,7 @@ public enum PathType {
     DEFAULT;
 
     public static PathType getPathType(boolean hasUp,boolean hasRight,boolean hasDown,boolean hasLeft) {
-        if ((hasUp || hasDown) && !hasLeft && hasRight) {
+        if ((hasUp || hasDown) && !hasLeft && !hasRight) {
             return UP;
         } else if ((hasRight || hasLeft)&& !hasUp && !hasDown) {
             return RIGHT;
