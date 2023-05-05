@@ -121,7 +121,7 @@ public class RegisteredSkill {
             parsedExpression = parsedExpression.replace("<" + category + ">", "true");
         parsedExpression = parsedExpression.replaceAll("<.*?>", "false");
         try {
-            return (boolean) MythicLib.plugin.getInterpreter().eval(parsedExpression);
+            return (boolean) MythicLib.plugin.getFormulaParser().eval(parsedExpression);
         } catch (EvalError error) {
             throw new RuntimeException(error);
         }
