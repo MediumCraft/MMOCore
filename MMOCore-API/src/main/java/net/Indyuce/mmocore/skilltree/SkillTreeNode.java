@@ -71,7 +71,7 @@ public class SkillTreeNode implements ExperienceObject {
                     MMOCore.log("Could not find node display for status " + ymlStatus + " for node " + id + " in tree " + tree.getId() + ". Using default display.");
                     continue;
                 }
-                icons.put(status, new Icon(config.getConfigurationSection("display." + status.name().toLowerCase())));
+                icons.put(status, new Icon(config.getConfigurationSection("display." +MMOCoreUtils.ymlName(status.name()))));
             }
         }
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
