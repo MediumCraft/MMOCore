@@ -12,10 +12,7 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.gui.skilltree.display.*;
-import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
-import net.Indyuce.mmocore.skilltree.NodeStatus;
-import net.Indyuce.mmocore.skilltree.SkillTreeNode;
-import net.Indyuce.mmocore.skilltree.SkillTreePath;
+import net.Indyuce.mmocore.skilltree.*;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -43,8 +40,8 @@ public class SkillTreeViewer extends EditableInventory {
         super.reload(config);
         //Loads all the pathDisplayInfo
         for (PathStatus status : PathStatus.values())
-            for (PathType pathType :PathType.values()){
-                if(!config.contains("display.paths." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(pathType.name()))){
+            for (PathType pathType : PathType.values()) {
+                if (!config.contains("display.paths." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(pathType.name()))) {
                     MMOCore.log("Missing path type: " + MMOCoreUtils.ymlName(pathType.name()) + " for status: " + MMOCoreUtils.ymlName(status.name()));
                     continue;
                 }
@@ -52,8 +49,8 @@ public class SkillTreeViewer extends EditableInventory {
             }
         //Loads all the nodeDisplayInfo
         for (NodeStatus status : NodeStatus.values())
-            for (NodeType nodeType :NodeType.values()){
-                if(!config.contains("display.nodes." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(nodeType.name()))){
+            for (NodeType nodeType : NodeType.values()) {
+                if (!config.contains("display.nodes." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(nodeType.name()))) {
                     MMOCore.log("Missing node type: " + MMOCoreUtils.ymlName(nodeType.name()) + " for status: " + MMOCoreUtils.ymlName(status.name()));
                     continue;
                 }
@@ -225,9 +222,11 @@ public class SkillTreeViewer extends EditableInventory {
                         if (str.contains("{node-lore}")) {
                             lore.addAll(node.getLore(inv.getPlayerData()));
                         } else if (str.contains("{strong-parents}")) {
-                            lore.addAll(getParentsLore(inv, node, node.getStrongParents()));
+                            lore.addAll(getParentsLore(inv, node, node.getParents(ParentType.STRONG)));
                         } else if (str.contains("{soft-parents}")) {
-                            lore.addAll(getParentsLore(inv, node, node.getSoftParents()));
+                            lore.addAll(getParentsLore(inv, node, node.getParents(ParentType.SOFT)));
+                        } else if (str.contains("{incompatible-parents}")) {
+                            lore.addAll(getParentsLore(inv, node, node.getParents(ParentType.INCOMPATIBLE)));
                         } else
                             lore.add(getPlaceholders(inv, n).apply(inv.getPlayer(), str));
                     });
@@ -345,9 +344,9 @@ public class SkillTreeViewer extends EditableInventory {
 
             if (skillTree.isNode(coordinates)) {
                 SkillTreeNode node = skillTree.getNode(coordinates);
-                NodeStatus nodeStatus =playerData.getNodeStatus(node);
+                NodeStatus nodeStatus = playerData.getNodeStatus(node);
                 //If the node has its own display, it will be shown.
-                if(node.hasIcon(nodeStatus))
+                if (node.hasIcon(nodeStatus))
                     return node.getIcon(nodeStatus);
 
                 NodeType nodeType = NodeType.getNodeType(hasUpPath, hasRightPath, hasDownPath, hasLeftPath);
@@ -479,7 +478,7 @@ public class SkillTreeViewer extends EditableInventory {
                     } else if (playerData.getNodeLevel(node) >= node.getMaxLevel()) {
                         MMOCore.plugin.configManager.getSimpleMessage("skill-node-max-level-hit").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                    }else if(!node.hasPermissionRequirement(playerData)){
+                    } else if (!node.hasPermissionRequirement(playerData)) {
                         MMOCore.plugin.configManager.getSimpleMessage("missing-skill-node-permission").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
                     }

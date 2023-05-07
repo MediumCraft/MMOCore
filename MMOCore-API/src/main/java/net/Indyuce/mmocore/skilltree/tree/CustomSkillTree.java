@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.skilltree.tree;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.skilltree.ParentType;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,19 +19,13 @@ public class CustomSkillTree extends SkillTree {
 
         // Setup the children and parents for each node.
         for (SkillTreeNode node : nodes.values()) {
-
-            ConfigurationSection section = config.getConfigurationSection("nodes." + node.getId() + ".parents.soft");
-            if (section != null) {
-                for (String parent : section.getKeys(false)) {
-                    node.addParent(getNode(parent), section.getInt(parent), ParentType.SOFT);
-                    getNode(parent).addChild(node);
-                }
-            }
-            section = config.getConfigurationSection("nodes." + node.getId() + ".parents.strong");
-            if (section != null) {
-                for (String parent : section.getKeys(false)) {
-                    node.addParent(getNode(parent), section.getInt(parent), ParentType.STRONG);
-                    getNode(parent).addChild(node);
+            for (String key : config.getConfigurationSection("nodes." + node.getId() + "parents").getKeys(false)) {
+                ConfigurationSection section = config.getConfigurationSection("nodes." + node.getId() + ".parents." + key);
+                if (section != null) {
+                    for (String parent : section.getKeys(false)) {
+                        node.addParent(getNode(parent), section.getInt(parent), ParentType.valueOf(UtilityMethods.enumName(key)));
+                        getNode(parent).addChild(node);
+                    }
                 }
             }
         }
@@ -41,7 +36,7 @@ public class CustomSkillTree extends SkillTree {
 
         // Find the tree roots which don't have any parents
         for (SkillTreeNode node : nodes.values()) {
-            if (node.getSoftParents().size() + node.getStrongParents().size() == 0) {
+            if (node.getParents().size() == 0) {
                 // We mark the node as a root also
                 roots.add(node);
                 node.setIsRoot();

@@ -6,10 +6,7 @@ import io.lumine.mythic.lib.api.util.PostLoadObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.registry.RegisteredObject;
-import net.Indyuce.mmocore.skilltree.IntegerCoordinates;
-import net.Indyuce.mmocore.skilltree.NodeStatus;
-import net.Indyuce.mmocore.skilltree.SkillTreeNode;
-import net.Indyuce.mmocore.skilltree.SkillTreePath;
+import net.Indyuce.mmocore.skilltree.*;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -54,7 +51,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
     protected final Map<String, SkillTreeNode> nodes = new HashMap<>();
     protected final int maxPointSpent;
     //Caches the height of the skill tree
-    protected int minX, minY, maxX, maxY;
     protected final List<SkillTreeNode> roots = new ArrayList<>();
 
     public SkillTree(ConfigurationSection config) {
@@ -108,43 +104,6 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
 
     @Override
     protected abstract void whenPostLoaded(@NotNull ConfigurationSection configurationSection);
-/*
-
-    public Icon getIcon(SkillTreeNode node) {
-        SkillTree skillTree = node.getTree();
-
-        DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
-
-        return skillTree.getIcon(displayInfo);
-    }
-
-    public Icon getIcon(SkillTree skillTree, IntegerCoordinates coordinates) {
-
-        if (skillTree.isNode(coordinates)) {
-            SkillTreeNode node = skillTree.getNode(coordinates);
-            DisplayInfo displayInfo = new DisplayInfo(nodeStates.get(node), node.getSize());
-            return skillTree.getIcon(displayInfo);
-        }
-        if (skillTree.isPath(coordinates)) return skillTree.getIcon(DisplayInfo.pathInfo);
-        return null;
-    }
-    */
-
-    public int getMaxX() {
-        return maxX;
-    }
-
-    public int getMinX() {
-        return minX;
-    }
-
-    public int getMinY() {
-        return minY;
-    }
-
-    public int getMaxY() {
-        return maxY;
-    }
 
     public List<String> getLore() {
         return lore;
@@ -207,13 +166,18 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         } else if (playerData.getNodeLevel(node) == 0 && node.isRoot()) {
             playerData.setNodeState(node, NodeStatus.UNLOCKABLE);
         } else {
-            boolean isUnlockableFromStrongParent = node.getStrongParents().size() == 0 ? true : true;
-            boolean isUnlockableFromSoftParent = node.getSoftParents().size() == 0 ? true : false;
-            boolean isFullyLockedFromStrongParent = node.getStrongParents().size() == 0 ? false : false;
-            boolean isFullyLockedFromSoftParent = node.getSoftParents().size() == 0 ? false : true;
+            Set<SkillTreeNode> strongParents = node.getParents(ParentType.STRONG);
+            Set<SkillTreeNode> softParents = node.getParents(ParentType.SOFT);
+            Set<SkillTreeNode> incompatibleParents = node.getParents(ParentType.INCOMPATIBLE);
 
-            for (SkillTreeNode strongParent : node.getStrongParents()) {
-                if (playerData.getNodeLevel(strongParent) < node.getParentNeededLevel(strongParent)) {
+            boolean isUnlockableFromStrongParent = true;
+            boolean isUnlockableFromSoftParent = softParents.size() == 0;
+            boolean isFullyLockedFromStrongParent = false;
+            boolean isFullyLockedFromSoftParent = softParents.size() != 0;
+            boolean isFullyLockedFromIncompatibleParent = false;
+
+            for (SkillTreeNode strongParent : strongParents) {
+                if (playerData.getNodeLevel(strongParent) < node.getParentNeededLevel(strongParent, ParentType.STRONG)) {
                     isUnlockableFromStrongParent = false;
                 }
                 //We count the number of children the parent
@@ -228,11 +192,11 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
             }
 
 
-            for (SkillTreeNode softParent : node.getSoftParents()) {
-                if (playerData.getNodeLevel(softParent) >= node.getParentNeededLevel(softParent)) {
+            for (SkillTreeNode softParent : node.getParents(ParentType.SOFT)) {
+                if (playerData.getNodeLevel(softParent) >= node.getParentNeededLevel(softParent, ParentType.SOFT)) {
                     isUnlockableFromSoftParent = true;
                 }
-                //We count the number of children the parent
+                //We count the number of children the parent has
                 int numberChildren = 0;
                 for (SkillTreeNode child : softParent.getChildren())
                     if (playerData.getNodeLevel(child) > 0)
@@ -240,8 +204,14 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 if (numberChildren < softParent.getMaxChildren() && playerData.getNodeStatus(softParent) != NodeStatus.FULLY_LOCKED)
                     isFullyLockedFromSoftParent = false;
             }
+            for (SkillTreeNode incompatibleParent : node.getParents(ParentType.INCOMPATIBLE)) {
+                if (playerData.getNodeLevel(incompatibleParent) > 0) {
+                    isFullyLockedFromIncompatibleParent = true;
+                    break;
+                }
+            }
 
-            boolean isFullyLocked = isFullyLockedFromSoftParent || isFullyLockedFromStrongParent;
+            boolean isFullyLocked = isFullyLockedFromSoftParent || isFullyLockedFromStrongParent || isFullyLockedFromIncompatibleParent;
             boolean isUnlockable = isUnlockableFromSoftParent && isUnlockableFromStrongParent;
             if (isFullyLocked)
                 playerData.setNodeState(node, NodeStatus.FULLY_LOCKED);

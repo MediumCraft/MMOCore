@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.skilltree.ParentType;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.Indyuce.mmocore.manager.registry.MMOCoreRegister;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
@@ -35,7 +36,7 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
      * @return The list of all the roots (e.g the nodes without any parents
      */
     public List<SkillTreeNode> getRootNodes() {
-        return skillTreeNodes.values().stream().filter(treeNode -> treeNode.getSoftParents().size() == 0).collect(Collectors.toList());
+        return skillTreeNodes.values().stream().filter(treeNode -> treeNode.getParents(ParentType.SOFT).size() == 0).collect(Collectors.toList());
     }
 
     public Collection<SkillTreeNode> getAllNodes() {
