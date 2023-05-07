@@ -87,7 +87,7 @@ public class ClassSkill implements CooldownObject, Unlockable {
     @Override
     public void whenLocked(PlayerData playerData) {
         playerData.mapBoundSkills().forEach((slot, skill) -> {
-            if (skill.equals(getUnlockNamespacedKey().split(":")[1]))
+            if (skill.equalsIgnoreCase(getUnlockNamespacedKey().split(":")[1]))
                 playerData.unbindSkill(slot);
         });
     }

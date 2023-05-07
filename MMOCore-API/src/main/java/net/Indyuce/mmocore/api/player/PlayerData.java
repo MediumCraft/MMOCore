@@ -377,6 +377,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public boolean unlock(Unlockable unlockable) {
         Validate.isTrue(!unlockable.isUnlockedByDefault(), "Cannot unlock an item unlocked by default");
+        unlockable.whenUnlocked(this);
         final boolean wasLocked = unlockedItems.add(unlockable.getUnlockNamespacedKey());
         // Call the event synchronously
         if (wasLocked)
@@ -392,6 +393,7 @@ public class PlayerData extends OfflinePlayerData implements Closable, Experienc
      */
     public boolean lock(Unlockable unlockable) {
         Validate.isTrue(!unlockable.isUnlockedByDefault(), "Cannot lock an item unlocked by default");
+        unlockable.whenLocked(this);
         boolean wasUnlocked = unlockedItems.remove(unlockable.getUnlockNamespacedKey());
         if (wasUnlocked)
             //Calls the event synchronously
