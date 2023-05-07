@@ -19,8 +19,8 @@ public class CustomSkillTree extends SkillTree {
 
         // Setup the children and parents for each node.
         for (SkillTreeNode node : nodes.values()) {
-            if (config.isConfigurationSection("nodes." + node.getId() + ".children"))
-                for (String key : config.getConfigurationSection("nodes." + node.getId() + "parents").getKeys(false)) {
+            if (config.isConfigurationSection("nodes." + node.getId() + ".parents"))
+                for (String key : config.getConfigurationSection("nodes." + node.getId() + ".parents").getKeys(false)) {
                     ConfigurationSection section = config.getConfigurationSection("nodes." + node.getId() + ".parents." + key);
                     if (section != null) {
                         for (String parent : section.getKeys(false)) {

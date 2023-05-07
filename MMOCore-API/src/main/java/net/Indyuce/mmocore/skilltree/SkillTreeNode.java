@@ -14,6 +14,7 @@ import net.Indyuce.mmocore.gui.skilltree.display.Icon;
 import net.Indyuce.mmocore.skilltree.tree.ParentInformation;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -175,7 +176,6 @@ public class SkillTreeNode implements ExperienceObject {
     public Set<SkillTreeNode> getParents(ParentType parentType) {
         return parents.entrySet().stream().filter(entry -> entry.getKey().type() == parentType).map((entry) -> entry.getKey().node()).collect(Collectors.toSet());
     }
-
 
     public List<SkillTreeNode> getChildren() {
         return children;

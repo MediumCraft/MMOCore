@@ -14,6 +14,8 @@ import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.gui.skilltree.display.*;
 import net.Indyuce.mmocore.skilltree.*;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -336,6 +338,7 @@ public class SkillTreeViewer extends EditableInventory {
             return maxTreeListPage;
         }
 
+
         public Icon getIcon(IntegerCoordinates coordinates) {
             boolean hasUpPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX(), coordinates.getY() - 1));
             boolean hasDownPath = skillTree.isPath(new IntegerCoordinates(coordinates.getX(), coordinates.getY() + 1));
@@ -350,11 +353,15 @@ public class SkillTreeViewer extends EditableInventory {
                     return node.getIcon(nodeStatus);
 
                 NodeType nodeType = NodeType.getNodeType(hasUpPath, hasRightPath, hasDownPath, hasLeftPath);
-                return icons.get(new NodeDisplayInfo(nodeType, nodeStatus));
+                Icon icon = icons.get(new NodeDisplayInfo(nodeType, nodeStatus));
+                Validate.notNull(icon, "The node " + node.getFullId() + " has no icon for the type " + nodeType + " and the status " + nodeStatus);
+                return icon;
             } else {
                 PathType pathType = PathType.getPathType(hasUpPath, hasRightPath, hasDownPath, hasLeftPath);
                 SkillTreePath path = skillTree.getPath(coordinates);
-                return icons.get(new PathDisplayInfo(pathType, path.getStatus(playerData)));
+                Icon icon = icons.get(new PathDisplayInfo(pathType, path.getStatus(playerData)));
+                Validate.notNull(icon, "There is no icon for the path type " + pathType + " and the status " + path.getStatus(playerData));
+                return icon;
             }
         }
 

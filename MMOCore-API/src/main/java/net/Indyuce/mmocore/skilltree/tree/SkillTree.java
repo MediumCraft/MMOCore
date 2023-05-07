@@ -121,19 +121,8 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
         SkillTree skillTree = null;
 
         try {
-            String string = config.getString("type");
-            Validate.notNull(string, "You must precise a type for the skill tree.");
-            Validate.isTrue(string.equals("linked") || string.equals("custom"), "You must precise the type of the skill tree in the yml!" +
-                    "\nAllowed values: 'linked','custom'");
-
-            if (string.equals("linked")) {
-                skillTree = new LinkedSkillTree(config);
-                skillTree.postLoad();
-            }
-            if (string.equals("custom")) {
-                skillTree = new CustomSkillTree(config);
-                skillTree.postLoad();
-            }
+            skillTree = new CustomSkillTree(config);
+            skillTree.postLoad();
         } catch (Exception e) {
             MMOCore.log("Couldn't load skill tree " + config.getString("id") + ": " + e.getMessage());
         }
@@ -170,6 +159,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
             Set<SkillTreeNode> softParents = node.getParents(ParentType.SOFT);
             Set<SkillTreeNode> incompatibleParents = node.getParents(ParentType.INCOMPATIBLE);
 
+
             boolean isUnlockableFromStrongParent = true;
             boolean isUnlockableFromSoftParent = softParents.size() == 0;
             boolean isFullyLockedFromStrongParent = false;
@@ -192,7 +182,7 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
             }
 
 
-            for (SkillTreeNode softParent : node.getParents(ParentType.SOFT)) {
+            for (SkillTreeNode softParent : softParents) {
                 if (playerData.getNodeLevel(softParent) >= node.getParentNeededLevel(softParent, ParentType.SOFT)) {
                     isUnlockableFromSoftParent = true;
                 }
@@ -204,8 +194,8 @@ public abstract class SkillTree extends PostLoadObject implements RegisteredObje
                 if (numberChildren < softParent.getMaxChildren() && playerData.getNodeStatus(softParent) != NodeStatus.FULLY_LOCKED)
                     isFullyLockedFromSoftParent = false;
             }
-            for (SkillTreeNode incompatibleParent : node.getParents(ParentType.INCOMPATIBLE)) {
-                if (playerData.getNodeLevel(incompatibleParent) > 0) {
+            for (SkillTreeNode incompatibleParent : incompatibleParents) {
+                if (playerData.getNodeLevel(incompatibleParent) >= node.getParentNeededLevel(incompatibleParent, ParentType.INCOMPATIBLE)) {
                     isFullyLockedFromIncompatibleParent = true;
                     break;
                 }
