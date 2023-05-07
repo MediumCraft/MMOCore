@@ -19,15 +19,16 @@ public class CustomSkillTree extends SkillTree {
 
         // Setup the children and parents for each node.
         for (SkillTreeNode node : nodes.values()) {
-            for (String key : config.getConfigurationSection("nodes." + node.getId() + "parents").getKeys(false)) {
-                ConfigurationSection section = config.getConfigurationSection("nodes." + node.getId() + ".parents." + key);
-                if (section != null) {
-                    for (String parent : section.getKeys(false)) {
-                        node.addParent(getNode(parent), section.getInt(parent), ParentType.valueOf(UtilityMethods.enumName(key)));
-                        getNode(parent).addChild(node);
+            if (config.isConfigurationSection("nodes." + node.getId() + ".children"))
+                for (String key : config.getConfigurationSection("nodes." + node.getId() + "parents").getKeys(false)) {
+                    ConfigurationSection section = config.getConfigurationSection("nodes." + node.getId() + ".parents." + key);
+                    if (section != null) {
+                        for (String parent : section.getKeys(false)) {
+                            node.addParent(getNode(parent), section.getInt(parent), ParentType.valueOf(UtilityMethods.enumName(key)));
+                            getNode(parent).addChild(node);
+                        }
                     }
                 }
-            }
         }
         setupRoots();
     }
