@@ -16,6 +16,7 @@ import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.profess.Subclass;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -112,8 +113,8 @@ public class SubclassSelect extends EditableInventory {
                 InventoryManager.CLASS_SELECT.newInventory(playerData).open();
 
             if (item.getFunction().startsWith("sub-class")) {
-                String classId = item.getFunction().substring(10);
-                PlayerClass profess = MMOCore.plugin.classManager.get(classId);
+                String classId = UtilityMethods.ymlName(item.getFunction().substring(10));
+                PlayerClass profess = MMOCore.plugin.classManager.get(UtilityMethods.enumName(classId));
                 if (playerData.getClassPoints() < 1) {
                     player.closeInventory();
                     MMOCore.plugin.soundManager.getSound(SoundEvent.CANT_SELECT_CLASS).playTo(getPlayer());
