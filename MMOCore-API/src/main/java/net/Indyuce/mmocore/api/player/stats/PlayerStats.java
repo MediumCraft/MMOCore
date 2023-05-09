@@ -14,6 +14,10 @@ import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import net.Indyuce.mmocore.skill.ClassSkill;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class PlayerStats {
     private final PlayerData data;
 
@@ -101,9 +105,11 @@ public class PlayerStats {
 
         if (!MMOCore.plugin.configManager.passiveSkillNeedBound) {
             skillMap.removeModifiers("MMOCorePassiveSkill");
-            for (ClassSkill skill : data.getProfess().getSkills())
-                if (skill.getSkill().getTrigger().isPassive())
-                    skillMap.addModifier(skill.toPassive(data));
+            data.getProfess().getSkills()
+                    .stream()
+                    .filter((classSkill) -> classSkill.getSkill().getTrigger().isPassive() && data.hasUnlocked(classSkill) && data.hasUnlockedLevel(classSkill))
+                    .forEach(classSkill -> skillMap.addModifier(classSkill.toPassive(data)));
+
         }
 
         // This updates the player's class SCRIPTS

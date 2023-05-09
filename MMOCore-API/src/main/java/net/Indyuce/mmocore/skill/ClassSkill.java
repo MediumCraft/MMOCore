@@ -90,11 +90,15 @@ public class ClassSkill implements CooldownObject, Unlockable {
             if (skill.equalsIgnoreCase(getUnlockNamespacedKey().split(":")[1]))
                 playerData.unbindSkill(slot);
         });
+        //Update the stats to remove the passive skill if it is locked
+        if (!MMOCore.plugin.configManager.passiveSkillNeedBound && getSkill().getTrigger().isPassive())
+            playerData.getStats().updateStats();
     }
 
     @Override
     public void whenUnlocked(PlayerData playerData) {
-
+        if (!MMOCore.plugin.configManager.passiveSkillNeedBound && getSkill().getTrigger().isPassive())
+            playerData.getStats().updateStats();
     }
 
     /**
