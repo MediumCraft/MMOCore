@@ -1,0 +1,77 @@
+# Waypoint identifier, used as reference for admin commands.
+# Make sure all the waypoints have different identifiers.
+spawn:
+
+  # Name of waypoint displayed in the waypoint GUI.
+  name: Spawn
+
+  # Location of waypoint: <world> <x y z> <yaw> <pitch>
+  # Yaw and pitch are where the player will be looking at when teleported.
+  location: 'world 69 71 136 136 0'
+
+  # Radius of waypoint around the specified location.
+  radius: 2.0
+
+  lore: {}
+
+  # Cost for several specific actions
+  cost:
+
+    # Cost when not standing on any waypoint.
+    dynamic-use: 5
+
+  option:
+
+    # When enabled, players can unlock the waypoint
+    # by sneaking on it (true by default)
+    unlockable: true
+
+    # When enabled, opens up the teleportation menu
+    # when sneaking (true by default)
+    enable-menu: true
+
+    # When set to true (false by default) players don't
+    # have to be standing on any waypoint to teleport
+    # to that waypoint. This could be a nice option for
+    # spawn waypoints alongside with the 'default' option.
+    dynamic: false
+
+    # Should be waypoint be unlocked by default?
+    default: true
+
+  # All the waypoints you can teleport to when standing
+  # on that waypoint. And the cost needed to travel to his pointIf that list is empty you are able
+  # to teleport to any waypoint
+  linked:
+    spawn1: 4
+    spawn2: 5
+
+spawn1:
+  name: Spawn1
+  location: 'world 69 71 136 136 0'
+  radius: 2.0
+  lore: {}
+  option:
+    default: false
+
+    # Can be teleported to even when not standing
+    # on any waypoint (waypoint must be unlocked).
+    dynamic: true
+
+  # Not necessary if the waypoint doesn't allow dynamic use
+  # The conditions for the dynamic-use of the waypoint
+  dynamic-conditions:
+    - 'distance{world=world;x=69;y=71;z=163;distance=500}'
+
+  linked:
+    spawn: 4
+
+spawn2:
+  name: Spawn2
+  lore: {}
+  location: 'world 69 71 136 136 0'
+  radius: 3.0
+  option:
+    enable-menu: false
+  linked:
+    spawn: 3

@@ -1,0 +1,87 @@
+# GUI display name
+name: Waypoints
+name-on-waypoint: 'Waypoint: {waypoint}'
+
+# Number of slots in your inventory. Must be
+# between 9 and 54 and must be a multiple of 9.
+slots: 45
+
+items:
+  waypoint:
+    slots: [ 10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34 ]
+    function: waypoint
+
+    # Displayed when there is no waypoint
+    no-waypoint:
+      item: GRAY_STAINED_GLASS_PANE
+      name: '&a'
+      lore: { }
+
+    # Displayed when the waypoint has not been unlocked yet.
+    locked:
+      name: '&c- Locked -'
+      item: GRAY_DYE
+      lore: { }
+
+    # When the two waypoints are not linked together
+    not-a-destination:
+      name: '&a{name}'
+      item: ENDER_PEARL
+
+      # Material displayed when the waypoint is not
+      # ready (not dynamic, or not enough stellium)
+      not-ready: ENDER_PEARL
+
+      lore:
+        - '&7You cannot teleport as the two waypoints are not linked.'
+
+
+    # When you cannot teleport to a non dynamic waypoint
+    not-dynamic:
+      name: '&a{name}'
+      item: ENDER_PEARL
+
+      lore:
+        - '&7You cannot teleport as you are not standing on a waypoint.'
+
+
+    current-waypoint:
+      name: '&a{name}'
+      item: ENDER_PEARL
+
+      lore:
+        - '&7The waypoint you are standing at.'
+
+    # When you don't have enough stellium
+    not-enough-stellium:
+      name: '&a{name}'
+      item: ENDER_PEARL
+
+      lore:
+        - '&7You cannot teleport as you do not have enough Stellium.'
+        - '&7Teleporting costs &b{normal_cost}&7/&b{dynamic_cost} &7Stellium.'
+
+    # Displayed when the waypoint is unlocked and usable
+    display:
+      name: '&a{name}'
+      item: ENDER_EYE
+
+      lore:
+        - '&7You can teleport to this waypoint.'
+        - '&7Intermediary waypoints: {intermediary_waypoints}'
+        - '&7Click to teleport for &b{current_cost} &7Stellium.'
+
+  next:
+    slots: [ 26 ]
+    function: next
+    item: PLAYER_HEAD
+    texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19
+    name: '&aNext Page'
+    lore: [ ]
+  previous:
+    slots: [ 18 ]
+    function: previous
+    item: PLAYER_HEAD
+    texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2OWUwNmU1ZGFkZmQ4NGU1ZjNkMWMyMTA2M2YyNTUzYjJmYTk0NWVlMWQ0ZDcxNTJmZGM1NDI1YmMxMmE5In19fQ==
+    name: '&aPrevious Page'
+    lore: [ ]

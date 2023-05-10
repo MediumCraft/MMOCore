@@ -1,0 +1,12 @@
+bin/
+target/
+.settings/
+.idea/
+.classpath
+.project
+dependency-reduced-pom.xml
+.flattened-pom.xml
+MMOCore.eml
+MMOCore.iml
+/MMOCore-API/MMOCore-API.iml
+/MMOCore-Dist/MMOCore-Dist.iml

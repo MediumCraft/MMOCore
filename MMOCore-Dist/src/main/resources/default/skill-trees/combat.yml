@@ -1,0 +1,538 @@
+id: 'combat'
+name: '&4Combat'
+lore: 
+  - '&6This skill tree is used for combat abilities!'
+type: 'linked'
+item: 'DIAMOND_AXE'
+max-point-spent: 20
+nodes:
+  a1:
+    name: 'Cooldown Reduction'
+    coordinates:
+      x: -3
+      y: -2
+    
+    max-level: 1
+    is-root: true
+    size: 1
+    point-consumed: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=5;type="FLAT"}'
+    lores:
+      0:
+        - "&eReduces item/class skill cooldowns (5%)"
+      1:
+        - "&eReduces item/class skill cooldowns (5%)"
+    
+
+
+  a2:
+    name: 'Cooldown Reduction'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=10;type="FLAT"}'
+    coordinates:
+      x: -2
+      y: -2
+    lores:
+      0:
+        - "&eReduces item/class skill cooldowns (10%)"
+      1:
+        - "&eReduces item/class skill cooldowns (20%)"
+
+  a3:
+    name: 'Cooldown Reduction'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="COOLDOWN_REDUCTION";amount=15;type="FLAT"}'
+    coordinates:
+      x: -1
+      y: -2
+    lores:
+      0:
+        - "&eReduces item/class skill cooldowns (15%)"
+      1:
+        - "&eReduces item/class skill cooldowns (30%)"
+
+### B
+
+  b1:
+    name: 'Critical Strike Chance'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=1;type="FLAT"}'
+    coordinates:
+      x: 0
+      y: -2
+    lores:
+      0:
+        - "&eCritical Strikes deal more damage in % chance"
+      1:
+        - "&eCritical Strikes deal more damage in +%1 chance"
+
+  b2:
+    name: 'Critical Strike Chance'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=2;type="FLAT"}'
+    coordinates:
+      x: 0
+      y: -1
+    lores:
+      0:
+        - "&eCritical Strikes deal more damage in % chance"
+      1:
+        - "&eCritical Strikes deal more damage in +%3 chance"
+
+  b3:
+    name: 'Critical Strike Chance'
+    size: 1
+    point-consumed: 1
+    max-children: 2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="CRITICAL_STRIKE_CHANCE";amount=3;type="FLAT"}'
+    coordinates:
+      x: 0
+      y: 0
+    lores:
+      0:
+        - "&eCritical Strikes deal more damage in % chance"
+      1:
+        - "&eCritical Strikes deal more damage in +%5 chance"
+
+## C
+
+  c1:
+    name: 'Life Steal'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=1;type="FLAT"}'
+    coordinates:
+      x: -1
+      y: 0
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%1"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%1"
+
+  c2:
+    name: 'Life Steal'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=2;type="FLAT"}'
+    coordinates:
+      x: -2
+      y: 0
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
+
+  c3:
+    name: 'Life Steal'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="LIFESTEAL";amount=3;type="FLAT"}'
+    coordinates:
+      x: -3
+      y: 0
+    lores:
+      0:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%3"
+      1:
+        - "&ePercentage of damage you gain back as health when inflicting weapon damage +%3"
+
+## D
+
+  d1:
+    name: 'Damage Reduction'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=1;type="FLAT"}'
+    coordinates:
+      x: 0
+      y: 1
+    lores:
+      0:
+        - "&eReduces damage from any source in +%1"
+      1:
+        - "&eReduces damage from any source in +%1"
+
+  d2:
+    name: 'Damage Reduction'
+    size: 1
+    point-consumed: 1
+    max-children: 2
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=2;type="FLAT"}'
+    coordinates:
+      x: 0
+      y: 2
+    lores:
+      0:
+        - "&eReduces damage from any source in +%2"
+      1:
+        - "&eReduces damage from any source in +%2"
+
+  d3:
+    name: 'Damage Reduction'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="DAMAGE_REDUCTION";amount=2;type="FLAT"}'
+    coordinates:
+      x: -1
+      y: 2
+    lores:
+      0:
+        - "&eReduces damage from any source in +%2"
+      1:
+        - "&eReduces damage from any source in +%2"
+
+## E
+
+  e1:
+    name: 'Health Regeneration'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=1;type="FLAT"}'
+    coordinates:
+      x: -2
+      y: 2
+    lores:
+      0:
+        - "&eHealth regen in pts/sec +1"
+      1:
+        - "&eHealth regen in pts/sec +1"
+
+  e2:
+    name: 'Health Regeneration'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
+    coordinates:
+      x: -3
+      y: 2
+    lores:
+      0:
+        - "&eHealth regen in pts/sec +2"
+      1:
+        - "&eHealth regen in pts/sec +2"
+
+  e3:
+    name: 'Health Regeneration'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="HEALTH_REGENERATION";amount=2;type="FLAT"}'
+    coordinates:
+      x: -3
+      y: 1
+    lores:
+      0:
+        - "&eHealth regen in pts/sec +2"
+      1:
+        - "&eHealth regen in pts/sec +2"
+
+## F
+
+  f1:
+    name: 'Mana Regeneration'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=1;type="FLAT"}'
+    coordinates:
+      x: 1
+      y: 2
+    lores:
+      0:
+        - "&eMana regen in pts/sec +1"
+      1:
+        - "&eMana regen in pts/sec +1"
+
+  f2:
+    name: 'Mana Regeneration'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
+    coordinates:
+      x: 2
+      y: 2
+    lores:
+      0:
+        - "&eMana regen in pts/sec +2"
+      1:
+        - "&eMana regen in pts/sec +2"
+
+  f3:
+    name: 'Mana Regeneration'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MANA_REGENERATION";amount=2;type="FLAT"}'
+    coordinates:
+      x: 3
+      y: 2
+    lores:
+      0:
+        - "&eMana regen in pts/sec +2"
+      1:
+        - "&eMana regen in pts/sec +2"
+
+## G
+
+  g1:
+    name: 'Magic Damage'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=1;type="FLAT"}'
+    coordinates:
+      x: 3
+      y: 1
+    lores:
+      0:
+        - "&eAdditional magic skill damage in +%1"
+      1:
+        - "&eAdditional magic skill damage in +%1"
+
+  g2:
+    name: 'Magic Damage'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=2;type="FLAT"}'
+    coordinates:
+      x: 4
+      y: 1
+    lores:
+      0:
+        - "&eAdditional magic skill damage in +%2"
+      1:
+        - "&eAdditional magic skill damage in +%2"
+
+  g3:
+    name: 'Magic Damage'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAGIC_DAMAGE";amount=2;type="FLAT"}'
+    coordinates:
+      x: 4
+      y: 0
+    lores:
+      0:
+        - "&eAdditional magic skill damage in +%2"
+      1:
+        - "&eAdditional magic skill damage in +%2"
+
+## H
+
+  h1:
+    name: 'Max Health'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAX_HEALTH";amount=2;type="RELATIVE"}'
+    coordinates:
+      x: 4
+      y: -1
+    lores:
+      0:
+        - "&eAdditional amount of health in +%2"
+      1:
+        - "&eAdditional amount of health in +%2"
+
+  h2:
+    name: 'Max Health'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAX_HEALTH";amount=4;type="RELATIVE"}'
+    coordinates:
+      x: 4
+      y: -2
+    lores:
+      0:
+        - "&eAdditional amount of health in +%4"
+      1:
+        - "&eAdditional amount of health in +%4"
+
+  h3:
+    name: 'Max Health'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="MAX_HEALTH";amount=4;type="RELATIVE"}'
+    coordinates:
+      x: 3
+      y: -2
+    lores:
+      0:
+        - "&eAdditional amount of health in +%4"
+      1:
+        - "&eAdditional amount of health in +%4"
+
+## J
+
+  j1:
+    name: 'Weapon Damage'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=2;type="FLAT"}'
+    coordinates:
+      x: 2
+      y: -2
+    lores:
+      0:
+        - "&eAdditional on-hit weapon damage in +%2."
+      1:
+        - "&eAdditional on-hit weapon damage in +%2."
+
+  j2:
+    name: 'Weapon Damage'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=4;type="FLAT"}'
+    coordinates:
+      x: 2
+      y: -1
+    lores:
+      0:
+        - "&eAdditional on-hit weapon damage in +%4"
+      1:
+        - "&eAdditional on-hit weapon damage in +%4"
+
+  j3:
+    name: 'Weapon Damage'
+    size: 1
+    point-consumed: 1
+    max-children: 1
+    experience-table:
+      first_table_item:
+        triggers:
+          - 'stat{stat="WEAPON_DAMAGE";amount=4;type="FLAT"}'
+    coordinates:
+      x: 2
+      y: 0
+    lores:
+      0:
+        - "&eAdditional on-hit weapon damage in +%4"
+      1:
+        - "&eAdditional on-hit weapon damage in +%4"
+
+
+paths:
+  path1:
+    x: 2
+    y: 2
+  path2: 
+    x: 2
+    y: 3
+
+icons: 
+  unlocked:
+    1: 
+      item: 'GREEN_DYE'
+  locked: 
+    1: 
+      item: "BROWN_DYE"
+  unlockable:
+    1:
+      item: "BLUE_DYE"
+  fully-locked:
+    1:
+      item: "BLACK_DYE"
+  path: 
+    item: "WHITE_DYE"

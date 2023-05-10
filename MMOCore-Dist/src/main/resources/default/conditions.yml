@@ -1,0 +1,9 @@
+#Example
+test-condition:
+  - 'level{amount=10}'
+  #Will load the 2 conditions from test-condition-2.
+  - 'from{source=test-condition-2}'
+
+test-condition-2:
+  - 'world{name=world}'
+  - 'level{profession=MINING;amount=3}'

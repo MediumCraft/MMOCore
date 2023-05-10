@@ -1,0 +1,61 @@
+# The default item template, not used by MMOCore but it does
+# indicates all the item options you can use to configure your items.
+TEMPLATE:
+  item: BOOK
+  name: 'Your item name'
+  custom-model-data: 0
+  damage: 0
+  unbreakable: false
+  lore:
+    - 'This is your item lore'
+    - 'And that is the second line'
+    - 'This supports &acolors &7as well'
+  # For player heads only, that is the skull texture value
+  texture: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwYzUzN2EzZDAyMjlmNzMyZTlkMWY4NTRiMzc3YWQwNDA3NjE4ZmQwM2NkNGJiZTgwMzc2MjI0YTRmMWQxZSJ9fX0='
+
+GOLD_COIN:
+  item: GOLD_NUGGET
+  name: '&6Gold Coin'
+  lore:
+    - '&eWorth: 1g'
+
+NOTE:
+  item: PAPER
+  name: '&6Note'
+  lore:
+    - '&eWorth: {worth}g'
+
+SKILL_POINT_BOOK:
+  item: book
+  name: '&6Skill Book'
+  lore:
+    - '&7Click to redeem one skill point.'
+
+SKILL_BOOK:
+  item: book
+  name: '&6Skill Book: {skill}'
+  lore:
+    - '&7Click to unlock {skill}'
+
+WAYPOINT_BOOK:
+  item: BOOK
+  name: '&6Waypoint Book: {waypoint}'
+  lore:
+    - '&7Click to unlock {waypoint}'
+
+DEPOSIT_ITEM:
+  item: BOOK
+  name: '&eDeposit {worth}g'
+  lore: { }
+
+GOLD_POUCH:
+  item: LEATHER
+  name: '&fGold Pouch'
+  lore:
+    - '&7Right-Click to open.'
+
+MOB_GOLD_POUCH:
+  item: LEATHER
+  name: '&fGold Pouch'
+  lore:
+    - '&7Right-Click to open.'

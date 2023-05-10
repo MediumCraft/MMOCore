@@ -1,0 +1,53 @@
+name: MMOCore
+version: ${project.version}
+main: net.Indyuce.mmocore.MMOCore
+author: Indyuce
+description: ${project.description}
+loadbefore: [ MMOItems,MythicDungeons ]
+depend: [ MythicLib ]
+softdepend: [ Vault,MythicMobs,PlaceholderAPI,Residence,Citizens,ProtocolLib,OBTeam ]
+api-version: 1.13
+commands:
+  mmocore:
+    description: Main command.
+    aliases: [ rpg ]
+permissions:
+  mmocore.admin:
+    description: Access to /mmocore
+    default: op
+  mmocore.waypoints:
+    description: Access to /waypoints
+    default: op
+  mmocore.pvpmode:
+    description: Access to /pvpmode
+    default: op
+  mmocore.currency:
+    description: Access to /deposit and /withdraw
+    default: op
+  mmocore.class-select:
+    description: Access to /class
+    default: op
+  mmocore.attributes:
+    description: Access to /attributes
+    default: true
+  mmocore.skills:
+    description: Access to /skills
+    default: true
+  mmocore.profile:
+    description: Access to /profile
+    default: true
+  mmocore.friends:
+    description: Access to /friends
+    default: true
+  mmocore.guild:
+    description: Access to /guild
+    default: true
+  mmocore.party:
+    description: Access to /party
+    default: true
+  mmocore.skilltrees:
+    description: Access to /skilltrees
+    default: true
+  mmocore.quests:
+    description: Access to /quests
+    default: true
