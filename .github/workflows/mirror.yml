@@ -21,7 +21,6 @@ jobs:
       - name: Clone GitLab repository
         run: |
           git clone ${{ env.GITLAB_REPO_URL }}
-          cd mmocore
 
       - name: Configure Git
         run: |
@@ -30,6 +29,7 @@ jobs:
 
       - name: Check for updates
         run: |
+          cd mmocore
           git remote add github ${{ env.GITHUB_REPO_URL }}
           git fetch github
           git checkout -b github-branch github/master
