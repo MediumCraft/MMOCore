@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/automation-release.yml' # If workflow gets updated
+      - '.github/workflows/mirror.yml' # If workflow gets updated
 
 env:
   GITLAB_REPO_URL: 'https://gitlab.com/phoenix-dvpmt/mmocore.git'
