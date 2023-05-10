@@ -10,7 +10,7 @@ on:
       - '.github/workflows/mirror.yml' # If workflow gets updated
 
 env:
-  GITLAB_REPO_URL: 'phoenix-dvpmt/mmocore.git'
+  GITLAB_REPO: 'phoenix-dvpmt/mmocore.git'
   GITHUB_REPO: 'MediumCraft/MMOCore.git'
   PAT_SECRET: ${{ secrets.MIRROR_ACCESS }}
 
