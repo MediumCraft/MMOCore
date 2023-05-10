@@ -32,8 +32,8 @@ jobs:
           cd mmocore
           git remote add github https://LeeHansHinLun:${{ env.PAT_SECRET }}@github.com/${{ env.GITHUB_REPO }}
           git fetch github
-          git checkout -b master github/
-          git merge --no-edit --no-ff --allow-unrelated-histories origin/master
+          git checkout -b github/master
+          git merge --no-edit --no-ff master github/master -allow-unrelated-histories
           git push github master
 
       - name: Clean up
