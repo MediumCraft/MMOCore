@@ -1,0 +1,43 @@
+name: GitLab Mirror
+
+on:
+  schedule:
+    # Schedule to check for updates every day at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+env:
+  GITLAB_REPO_URL: 'https://gitlab.com/phoenix-dvpmt/mmoitems.git'
+  GITHUB_REPO_URL: 'https://github.com/MediumCraft/MMOCore.git'
+  PAT_SECRET: ${{ secrets.MIRROR_ACCESS }}
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone GitLab repository
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.GITLAB_REPO_URL }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'Actions'
+          git config --global user.email '<>'
+
+      - name: Check for updates
+        run: |
+          git remote add github ${{ env.GITHUB_REPO_URL }}
+          git fetch github
+          git checkout -b github-branch github/master
+          git merge --no-edit --no-ff origin/master
+          git push github github-branch
+
+      - name: Clean up
+        run: |
+          git checkout master
+          git branch -D github-branch
+
+      - name: Remove GitLab clone
+        run: |
+          rm -rf $GITHUB_WORKSPACE/*
