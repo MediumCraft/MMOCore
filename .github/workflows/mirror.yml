@@ -16,9 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone GitLab repository
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ env.GITLAB_REPO_URL }}
+        run: |
+          git clone ${{ env.GITLAB_REPO_URL }}
 
       - name: Configure Git
         run: |
