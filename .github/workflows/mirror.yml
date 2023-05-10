@@ -5,6 +5,9 @@ on:
     # Schedule to check for updates every day at midnight UTC
     - cron: '0 0 * * *'
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/automation-release.yml' # If workflow gets updated
 
 env:
   GITLAB_REPO_URL: 'https://gitlab.com/phoenix-dvpmt/mmoitems.git'
