@@ -10,7 +10,7 @@ on:
       - '.github/workflows/automation-release.yml' # If workflow gets updated
 
 env:
-  GITLAB_REPO_URL: 'https://gitlab.com/phoenix-dvpmt/mmoitems.git'
+  GITLAB_REPO_URL: 'https://gitlab.com/phoenix-dvpmt/mmocore.git'
   GITHUB_REPO_URL: 'https://github.com/MediumCraft/MMOCore.git'
   PAT_SECRET: ${{ secrets.MIRROR_ACCESS }}
 
@@ -21,6 +21,7 @@ jobs:
       - name: Clone GitLab repository
         run: |
           git clone ${{ env.GITLAB_REPO_URL }}
+          cd mmoitems
 
       - name: Configure Git
         run: |
