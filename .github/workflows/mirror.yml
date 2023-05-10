@@ -38,6 +38,7 @@ jobs:
 
       - name: Clean up
         run: |
+          cd mmocore
           git checkout master
           git branch -D github-branch
 
