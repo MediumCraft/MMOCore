@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Clone GitLab repository
         run: |
-          git clone https://gitlab.com/${{ env.GITLAB_REPO_URL }}
+          git clone https://gitlab.com/${{ env.GITLAB_REPO }}
 
       - name: Configure Git
         run: |
