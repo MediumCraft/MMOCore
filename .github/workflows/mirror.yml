@@ -35,8 +35,8 @@ jobs:
           git remote add github https://LeeHansHinLun:${{ env.PAT_SECRET }}@github.com/${{ env.GITHUB_REPO }}
           git fetch github
           git checkout -b github/master
-          git pull github master
-          git merge --no-edit --no-ff master github/master --allow-unrelated-histories
+          git pull github master --allow-unrelated-histories
+          git merge --no-edit --no-ff master github/master
           git push github master
 
       - name: Clean up
