@@ -24,6 +24,7 @@ jobs:
 
       - name: Configure Git
         run: |
+          cd mmocore
           git config --global user.name 'Actions'
           git config --global user.email '<>'
           git config pull.rebase false
