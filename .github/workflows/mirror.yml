@@ -37,6 +37,7 @@ jobs:
           git checkout -b github/master
           git pull github master --allow-unrelated-histories
           git merge --no-edit --no-ff master github/master
+          git pull github master --allow-unrelated-histories
           git push github master
 
       - name: Clean up
