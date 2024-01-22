@@ -18,17 +18,19 @@ env:
 jobs:
   mirror:
     runs-on: ubuntu-latest
-
     steps:
+     - name: Checkout GitHub repository
+       uses: actions/checkout@v4.1.1
+       with:
+         repository: MediumCraft/MMOCore
+    
     - name: Checkout GitLab repository
       run: |
-        git clone https://gitlab.com/${{ env.GITLAB_REPOSITORY_OWNER }}/${{ env.GITLAB_REPOSITORY }}.git
-        cd ${{ env.GITLAB_REPOSITORY }}
+        git clone --depth 1 https://gitlab.com/${{ env.GITLAB_REPOSITORY_OWNER }}/${{ env.GITLAB_REPOSITORY }} .
+        cd MMOCore
 
-    - name: Push to GitHub repository
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.MIRROR_ACCESS }}
-        repository: ${{ env.GITHUB_REPOSITORY }}
-        branch: ${{ env.GITHUB_BRANCH }}
-        force: true
+    - name: Push Files
+      run: |
+        git add .
+        git commit -m "Mirror Files"
+        git push origin
