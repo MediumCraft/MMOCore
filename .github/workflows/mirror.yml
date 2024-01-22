@@ -27,7 +27,6 @@ jobs:
           cd mmocore
           git config --global user.name 'Actions'
           git config --global user.email '<>'
-          git config pull.rebase false
 
       - name: Check for updates
         run: |
@@ -37,7 +36,6 @@ jobs:
           git checkout -b github/master
           git pull github master --allow-unrelated-histories
           git merge --no-edit --no-ff master github/master
-          git pull --rebase github master
           git push github master
 
       - name: Clean up
