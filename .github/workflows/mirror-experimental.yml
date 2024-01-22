@@ -8,12 +8,16 @@ on:
     branches:
       - master  # Adjust this branch name based on your default branch
 
+
+
 env:
   GITLAB_REPOSITORY_OWNER: 'phoenix-dvpmt'  # Replace with your GitLab repository information
   GITLAB_REPOSITORY: 'mmocore'
   GITLAB_BRANCH: 'master'  # Adjust this branch name based on your default branch
   GITHUB_REPOSITORY: ${{ github.repository }}
   GITHUB_BRANCH: 'master'  # Adjust this branch name based on your default branch
+
+  GITHUB_TOKEN: ${{ secrets.MIRROR_ACCESS }}
 
 jobs:
   mirror:
