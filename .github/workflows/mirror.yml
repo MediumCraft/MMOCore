@@ -32,7 +32,7 @@ jobs:
       - name: Check for updates
         run: |
           cd mmocore
-          git remote add github https://LeeHansHinLun:${{ secrets.PASSWORD }}@github.com/${{ env.GITHUB_REPO }}
+          git remote add github https://LeeHansHinLun:${{ env.PAT_SECRET }}@github.com/${{ env.GITHUB_REPO }}
           git fetch github
           git checkout -b github/master
           git pull github master --allow-unrelated-histories
