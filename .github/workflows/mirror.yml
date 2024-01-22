@@ -27,6 +27,7 @@ jobs:
           cd mmocore
           git config --global user.name 'Actions'
           git config --global user.email '<>'
+          git config pull.rebase false
 
       - name: Check for updates
         run: |
