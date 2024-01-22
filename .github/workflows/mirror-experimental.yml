@@ -36,7 +36,7 @@ jobs:
      - name: Push Files
        run: |
          git config --global user.name "LeeHansHinLun"
-         git config --global user.name "leehinlun.hans@gmail.com"
+         git config --global user.email "leehinlun.hans@gmail.com"
          
          git add .
          git commit -m "Mirror Files"
