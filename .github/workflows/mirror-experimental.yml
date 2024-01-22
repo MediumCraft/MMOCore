@@ -1,0 +1,34 @@
+name: Mirror Experimental
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+  workflow_dispatch:
+  push:
+    branches:
+      - master  # Adjust this branch name based on your default branch
+
+env:
+  GITLAB_REPOSITORY: 'phoenix-dvpmt/mmocore'  # Replace with your GitLab repository information
+  GITLAB_BRANCH: 'master'  # Adjust this branch name based on your default branch
+  GITHUB_REPOSITORY: ${{ github.repository }}
+  GITHUB_BRANCH: 'master'  # Adjust this branch name based on your default branch
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout GitLab repository
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ env.GITLAB_REPOSITORY }}
+        ref: ${{ env.GITLAB_BRANCH }}
+
+    - name: Push to GitHub repository
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.MIRROR_ACCESS }}
+        repository: ${{ env.GITHUB_REPOSITORY }}
+        branch: ${{ env.GITHUB_BRANCH }}
+        force: true
