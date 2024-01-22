@@ -24,13 +24,13 @@ jobs:
        with:
          repository: MediumCraft/MMOCore
     
-    - name: Checkout GitLab repository
-      run: |
-        git clone --depth 1 https://gitlab.com/${{ env.GITLAB_REPOSITORY_OWNER }}/${{ env.GITLAB_REPOSITORY }} .
-        cd MMOCore
+     - name: Checkout GitLab repository
+       run: |
+         git clone --depth 1 https://gitlab.com/${{ env.GITLAB_REPOSITORY_OWNER }}/${{ env.GITLAB_REPOSITORY }} .
+         cd MMOCore
 
-    - name: Push Files
-      run: |
-        git add .
-        git commit -m "Mirror Files"
-        git push origin
+     - name: Push Files
+       run: |
+         git add .
+         git commit -m "Mirror Files"
+         git push origin
