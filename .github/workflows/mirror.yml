@@ -34,9 +34,7 @@ jobs:
         run: |
           cd mmocore
           git remote add github https://LeeHansHinLun:${{ env.PAT_SECRET }}@github.com/${{ env.GITHUB_REPO }}
-          git add .
-          git commit -m "Mirror Files"
-          git push github/master master
+          git push github/master origin/master
 
       - name: Clean up
         run: |
