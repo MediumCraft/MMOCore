@@ -9,7 +9,8 @@ on:
       - master  # Adjust this branch name based on your default branch
 
 env:
-  GITLAB_REPOSITORY: 'phoenix-dvpmt/mmocore'  # Replace with your GitLab repository information
+  GITLAB_REPOSITORY_OWNER: 'phoenix-dvpmt'  # Replace with your GitLab repository information
+  GITLAB_REPOSITORY: 'mmocore'
   GITLAB_BRANCH: 'master'  # Adjust this branch name based on your default branch
   GITHUB_REPOSITORY: ${{ github.repository }}
   GITHUB_BRANCH: 'master'  # Adjust this branch name based on your default branch
@@ -20,10 +21,9 @@ jobs:
 
     steps:
     - name: Checkout GitLab repository
-      uses: actions/checkout@v2
-      with:
-        repository: https://gitlab.com/${{ env.GITLAB_REPOSITORY }}
-        ref: ${{ env.GITLAB_BRANCH }}
+      run: |
+        git clone https://gitlab.com/${{ env.GITLAB_REPOSITORY_OWNER }}/${{ env.GITLAB_REPOSITORY }}.git
+        cd ${{ env.GITLAB_REPOSITORY }}
 
     - name: Push to GitHub repository
       uses: ad-m/github-push-action@master
