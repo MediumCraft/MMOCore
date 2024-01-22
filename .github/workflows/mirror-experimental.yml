@@ -22,7 +22,7 @@ jobs:
     - name: Checkout GitLab repository
       uses: actions/checkout@v2
       with:
-        repository: ${{ env.GITLAB_REPOSITORY }}
+        repository: https://gitlab.com/${{ env.GITLAB_REPOSITORY }}
         ref: ${{ env.GITLAB_BRANCH }}
 
     - name: Push to GitHub repository
