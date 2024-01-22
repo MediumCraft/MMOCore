@@ -1,0 +1,39 @@
+name: Death Mark
+lore:
+- Mark your target with a death hex
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+duration:
+  base: 5
+  per-level: 0.5
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+damage:
+  base: 4
+  per-level: 0.1
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 10
+  per-level: 1.5
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 10
+  per-level: 0.5 
+amplifier:
+  base: 2
+  per-level: 1

@@ -1,0 +1,40 @@
+name: Corrupt
+lore:
+- Create a magical circle that 
+- inflicts ongoing damage to the target
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+duration:
+  base: 4
+  per-level: 1
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 2
+  per-level: 1
+  min: 0
+  max: 0
+damage:
+  base: 2
+  per-level: 1
+delay:
+  base: 2
+  per-level: 1
+  min: 0
+  max: 0
+mana:
+  base: 2
+  per-level: 1
+stamina:
+  base: 2
+  per-level: 1
+  min: 0
+  max: 0
+cooldown:
+  base: 2
+  per-level: 1
+amplifier:
+  base: 2
+  per-level: 1

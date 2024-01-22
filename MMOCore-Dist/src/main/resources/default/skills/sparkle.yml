@@ -1,0 +1,43 @@
+name: Sparkle
+lore:
+- Send a shimmering blast
+- of damage, leaving them
+- reeling from the attack
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+damage:
+  base: 4
+  per-level: 0.5
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 4
+  per-level: -0.5
+  min: 0
+  max: 0
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 4
+  per-level: 1.1
+limit:
+  base: 4
+  per-level: 0.5
+radius:
+  base: 3
+  per-level: 1.5

@@ -1,0 +1,41 @@
+name: Freeze
+lore:
+- Launch a rapid snowball
+- that inflicts a slowing effect
+- on any entity within its range
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: SNOWBALL
+duration:
+  base: 5
+  per-level: 2
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 5
+  per-level: 1.2
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 5
+  per-level: 1
+amplifier:
+  base: 6
+  per-level: 5
+radius:
+  base: 7
+  per-level: 6

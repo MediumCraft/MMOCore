@@ -1,0 +1,41 @@
+name: Blink
+lore:
+- Teleport yourself
+- around by looking
+- at your destination
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: ENDER_PEARL
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 4
+  per-level: 1
+  min: 0
+  max: 0
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 2
+  per-level: 1
+  min: 0
+  max: 0
+range:
+  base: 2
+  per-level: 1
+  min: 0
+  max: 0

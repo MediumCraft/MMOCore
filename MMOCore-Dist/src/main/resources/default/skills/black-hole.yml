@@ -1,0 +1,39 @@
+name: Black Hole
+lore:
+- Trap anyone in a black hole
+- they will be unable to move
+- for the duration of this
+- move
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BLACK_DYE
+duration:
+  base: 4
+  per-level: 0.5
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 4
+  per-level: 1
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 4
+  per-level: 0.5
+radius:
+  base: 4
+  per-level: 1

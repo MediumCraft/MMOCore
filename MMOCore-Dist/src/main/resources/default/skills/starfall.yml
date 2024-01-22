@@ -1,0 +1,35 @@
+name: Starfall
+lore:
+- Unleash a devasting attack
+- causing magic stars to fall
+- upon your target
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+damage:
+  base: 4.2
+  per-level: 1.1
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 8
+  per-level: 0.5
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 4
+  per-level: 0.2

@@ -1,0 +1,44 @@
+name: Arcane Hail
+lore:
+- Surprise your foes with this
+- quick firing hail of magic
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: END_ROD
+duration:
+  base: 4
+  per-level: 1
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+damage:
+  base: 3
+  per-level: 1
+delay:
+  base: 2
+  per-level: 1
+  min: 0
+  max: 0
+mana:
+  base: 2
+  per-level: 1.1
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 1
+  per-level: -0.2
+radius:
+  base: 4
+  per-level: 0.5
+  min: 0
+  max: 0

@@ -1,0 +1,40 @@
+name: Swiftness
+lore:
+- Grant yourself a burst
+- agility with a quick boost
+- of speed and jump boost
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+duration:
+  base: 10
+  per-level: 0.5
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 4
+  per-level: 1.2
+  min: 0
+  max: 0
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 5
+  per-level: 0.5
+amplifier:
+  base: 3
+  per-level: 0.5

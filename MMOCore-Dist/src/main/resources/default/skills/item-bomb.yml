@@ -1,0 +1,44 @@
+name: Item Bomb
+lore:
+- Channel your power and transmute the
+- object in your hand, into an volatile
+- explosive that can be thrown
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+damage:
+  base: 2
+  per-level: 1
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 2
+  per-level: 1
+slow-duration:
+  base: 5
+  per-level: 3
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+slow-amplifier:
+  base: 3
+  per-level: 1
+cooldown:
+  base: 5
+  per-level: 1
+radius:
+  base: 3
+  per-level: 1

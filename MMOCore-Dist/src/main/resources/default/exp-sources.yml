@@ -1,0 +1,8 @@
+#A list of experience source that can be loaded using 'from{source="test-exp-source"}'
+test-exp-source:
+  - 'damagedealt{type=physical;amount=250}'
+  - 'move{type=WALK;amount=300}'
+  - 'from{source=test2}'
+
+test2:
+  - 'eat{type=CARROT;amount="50"}'

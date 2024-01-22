@@ -1,0 +1,35 @@
+name: Leap
+lore:
+- Blast yourself away with
+- explosive force. Hurling
+- through the air
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 2.2
+  per-level: 0.1
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 4
+  per-level: 0.3
+force:
+  base: 3
+  per-level: 0.5

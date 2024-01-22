@@ -1,0 +1,38 @@
+name: Item Throw
+lore:
+- Swiftly hurl the object in your
+- hand at your target with
+- dealy accuracy
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+damage:
+  base: 4
+  per-level: 1.1
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 3
+  per-level: 1.1
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 6
+  per-level: 0.5
+force:
+  base: 2
+  per-level: 1

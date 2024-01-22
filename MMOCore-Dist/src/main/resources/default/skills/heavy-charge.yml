@@ -1,0 +1,38 @@
+name: Heavy Charge
+lore:
+- Charge forward at lightning speeds
+- towards your target. Dealing devasting
+- damage upon impact
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+damage:
+  base: 5
+  per-level: 0.3
+delay:
+  base: 2
+  per-level: 0.5
+  min: 0
+  max: 0
+mana:
+  base: 10
+  per-level: -0.5
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 10
+  per-level: 1.5
+knockback:
+  base: 1
+  per-level: 0.5

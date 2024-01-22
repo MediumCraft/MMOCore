@@ -1,0 +1,41 @@
+name: Ignite
+lore:
+- Set your target aflame with
+- a fierce blaze using this
+- powerful ability
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+duration:
+  base: 2
+  per-level: 1
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 2.5
+  per-level: 1
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+max-ignite:
+  base: 4
+  per-level: 3
+cooldown:
+  base: 2
+  per-level: 1
+radius:
+  base: 3
+  per-level: 1

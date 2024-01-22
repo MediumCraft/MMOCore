@@ -1,0 +1,357 @@
+# DO NOT TOUCH
+config-version: 9
+
+# Auto-Save feature automatically saves playerdata
+# (class, level, etc.) and guild data
+# (guild names, members, etc.) at a set interval.
+auto-save:
+  enabled: true
+  interval: 1800 # In seconds (1800 = 30 minutes)
+  log: true
+
+# MySQL Support
+mysql:
+  enabled: false
+  host: localhost
+  port: 3306
+  database: minecraft
+  user: mmolover
+  pass: ILovePhoenixDev
+  properties:
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+# The default values for all playerdata
+# All new players will start with these values
+default-playerdata:
+  level: 1
+  class-points: 0
+  skill-points: 0
+  skill-realloc-points: 0
+  attribute-points: 0
+  attribute-realloc-points: 0
+  health: 20
+  mana: 0
+  stellium: 0
+  stamina: 0
+
+
+# The list of all conditions which must be met for the
+# BLOCK REGEN and BLOCK RESTRICTIONS to apply. Set to
+# 'custom-mine-conditions: []' to disable custom mining entirely.
+#
+# custom-mine-conditions:
+# - 'world{name="__global__"}'
+#
+# ^ will enable custom mining server wide
+custom-mine-conditions:
+  - 'world{name="world,world_nether,world_the_end"}'
+  - 'region{name="example_region,example_region2,__global__"}'
+
+# Set to true to prevent vanilla blocks from being
+# broken when custom mining conditions are met
+protect-custom-mine: false
+
+# Edit the plugin handling parties here.
+# Supported values (just copy and paste):
+# - mmocore
+# - dungeonsxl
+# - parties
+# - party_and_friends (Use this one if you are using Party and Friends Extended for Spigot)
+# - party_and_friends_bungeecord_velocity (Use this one if you are using Party and Friends For Bungeecord, Party and Friends For Velocity or Party and Friends Extended Edition for Bungeecord/Velocity. This one requires https://www.spigotmc.org/resources/spigot-party-api-for-party-and-friends.39751/ to be installed)
+# - mcmmo
+# - obteam (addon for DungeonMMO)
+# - mythicdungeons (only when using default party handler)
+party-plugin: mmocore
+
+# Edit the plugin handling guilds here.
+# Supported values (just copy and paste):
+# - mmocore
+# - guilds
+# - kingdomsx
+# - ultimate_clans
+guild-plugin: mmocore
+
+# MythicLib introduces a CHANCE stat that is used in
+# several different systems in MMOCore. By changing these
+# weights you can define how much the Chance stat impacts
+# the different features implemented by MMOCore
+#
+# e.g setting some weight to 2 will DOUBLE the effect of
+# the chance stat in one particular system. The weights are
+# all set to 1 by default, this option is really server specific
+chance-stat-weight:
+  loot-chests: 1
+  fishing-drops: 1
+  drop-items: 1
+
+#The steps made for x and y when scrolling in the skill tree UI.
+skill-tree-scroll-step-x: 1
+skill-tree-scroll-step-y: 1
+
+# Whether blocks generated with a "cobblegenerator" should
+# provide the player with experience points or not
+should-cobblestone-generators-give-exp: false
+
+# Edit how to cast skills here. This part of the config is
+# pretty tricky so it's best to read the wiki page before editing anything
+skill-casting:
+  mode: SKILL_BAR
+  open: SWAP_HANDS
+  disable-sneak: false
+
+loot-chests:
+
+  # Time in seconds it takes for a loot chest to
+  # expire after it was spawned. 600 is 10 minutes.
+  chest-expire-time: 600
+
+  # Interval in seconds before the same player
+  # spawns two loot chests in ANY region.
+  player-cooldown: 600
+
+# A global cooldown (in ticks) that applies for every skill
+# Set to 0 to disable this option. It is set to half
+# a second by default. This does not apply to passive skills
+global-skill-cooldown: 10
+
+# Settings for the default action bar
+action-bar:
+
+  # Whether or not to use the default action bar.
+  # (This doesn't change any other action bars provided by MMOCore.)
+  enabled: true
+
+  # The amount of ticks the bar will be
+  # faded out when displaying other action bars.
+  time-out: 60
+
+  # The amount of ticks before updating the info
+  ticks-to-update: 5
+
+  # How to display the data.
+  format: "&c❤ {health}/{max_health} &f| {mana_icon} {mana}/{max_mana} &f| &7⛨ {armor}"
+
+party:
+
+  # Edit party buffs here. You may
+  # add as many stats as you want.
+  buff:
+
+    # '3' -> increases health regen by a flat +3pts/s
+    # '3%' -> increases current health regen by 3%
+    health-regeneration: 3%
+
+    # '5' -> increases exp by 5% (this is how "additional-experience is defined")
+    # '5%' -> increases your current "% additional experience" stat by 5% (not the same behaviour !!!)
+    # !! Beware of this potential confusion !!
+    additional-experience: 5
+
+  # Prefix you need to put in the chat
+  # to talk in the party chat.
+  chat-prefix: '@'
+
+  # The max amount of players in a party
+  # Has to be higher than 2
+  max-players: 8
+
+  # If the difference between a player's level and the
+  # initial party owner's level is higher that this
+  # value, then that player can't join the party.
+  #
+  # This prevents low level players from joining
+  # high level players and earning tons of EXP.
+  #
+  # Set to the max level possible if you want to disable
+  # that feature.
+  max-level-difference: 3
+
+  # Exp won't be split if players are too far apart.
+  #
+  # Set to 0 to disable
+  max-exp-split-range: 48
+
+  # When enabled, being in a party splits class exp
+  main-exp-split: true
+
+  # When enabled, being in a party splits profession exp
+  profession-exp-split: false
+
+# Not relevant when not using MMOCore as quest plugin
+mmocore-quests:
+
+  # Disable boss bar indicating the current objective
+  disable-boss-bar: false
+
+# Redirects vanilla experience obtained to MMOCore
+# class experience. You can define the % of the vanilla
+# experience that is being transfered as MMOCore exp.
+# Requires a SERVER reload when changed.
+vanilla-exp-redirection:
+  enabled: false
+  ratio: 0.8
+
+# Enable this open to override vanilla EXP and display
+# level progress on the vanilla experience bar.
+# Requires a SERVER reload when changed.
+override-vanilla-exp: true
+
+# When enabled and when using a profile plugin, MMOCore will
+# force the user to choose a class. The profile will not be
+# created until they choose a class. Similarly, a player cannot
+# log into a profile with default class before choosing another class
+#
+# This option is useless unless you have installed a profile plugin.
+# This does NOT work with proxy-based profiles yet.
+force-class-selection: true
+
+# Check the target player's RPG profile on shift-right click.
+shift-click-player-profile-check: false
+
+# If main class experience holograms should be displayed
+# whenever a player earns main class exp
+display-main-class-exp-holograms: true
+
+#This is the GUI opened with /skilltrees. It enables to switch from 1 skill tree to another.
+enable-global-skill-tree-gui: true
+
+#This is the GUI opened with /skilltrees <skilltree_id>. It only displays this specific skill tree without allowing changes.
+enable-specific-skill-tree-gui: true
+
+# Requires a SERVER reload when changed.
+death-exp-loss:
+  enabled: false
+
+  # Percentage of current EXP you lose when dying.
+  percent: 30
+
+# Maximum number of skill slots. This means that you cannot unlock more than X skill slots.
+max-skill-slots: 8
+
+# When set to true, passive skills must be bound in order to take effect.
+# When set to false, unlocked skills will take effect right away.
+# This is only the default behavior for skills but can be overridden by specifying true/false to
+# the needs-bound field in the class skills section.
+passive-skill-need-bound: true
+
+# Set this to true to allow players in
+# creative mode to enter casting mode
+can-creative-cast: false
+
+# Prevents mobs spawned from spawners from giving  MMO XP points.
+prevent-spawner-xp: true
+
+combat-log:
+
+  # Timer for combat log to expire (in seconds)
+  timer: 10
+
+  # Damage causes that trigger combat when a player is hit
+  # List: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
+  causes:
+    - CRAMMING
+    - DRAGON_BREATH
+    - ENTITY_ATTACK
+    - ENTITY_EXPLOSION
+    - ENTITY_SWEEP_ATTACK
+    - MAGIC
+    - POISON
+    - PROJECTILE
+    - SONIC_BOOM
+    - THORNS
+    - WITHER
+
+# Whether or not the default class should save information (level,
+# skills, etc.) when selecting a new class
+save-default-class-info: false
+
+#Time taken in ticks to teleport using waypoints.
+waypoint-warp-time: 100
+
+# Change this to the name of the color you want for
+# the different resource bar placeholders
+resource-bar-colors:
+  stamina-whole: 'GREEN'
+  stamina-half: 'DARK_GREEN'
+  stamina-empty: 'WHITE'
+
+# Whether or not the admin commands should display
+# the result of the command when ran.
+# For Example: "Players Level is now 10."
+# Accepted Values:
+# true - Always verbose
+# player - Only verbose when ran from a player
+# console - Only verbose when ran from console
+# false - Never verbose
+command-verbose:
+  attribute: true
+  skill: true
+  class: true
+  experience: true
+  level: true
+  nocd: true
+  skill-tree-points: true
+  points: true
+  reset: true
+  resource: true
+  waypoint: true
+
+# Requires WorldGuard to work. Do NOT enable unless
+# you have WG to avoid weird interact rule issues!
+#
+# More info available on the wiki
+# https://gitlab.com/phoenix-dvpmt/mmocore/-/wikis/Combat#pvp-mode
+pvp_mode:
+
+  # Requires /reload when changed
+  enabled: false
+
+  # Minimum level in order to fight other players.
+  # Set to 0 to fully disable
+  min_level: 0
+
+  # Maximum level difference in order to fight other players.
+  # Set to 0 to fully disable
+  max_level_difference: 10
+
+  # Delay after any attack during which the player will stay in PvP Mode (seconds)
+  # Has to be lower than 'cooldown.combat'
+  combat_timeout: 30
+
+  # Invulnerability triggered when:
+  # - entering a PvP region with PvP mode turned on.
+  # - using the /pvpmode command inside of a PvP region.
+  invulnerability:
+    time:
+      region_change: 60
+      command: 30
+
+    # When enabled, players can damage other players
+    # to end this invulnerable time period.
+    can_damage: false
+
+    # When enabled, leaving a no-PVP zone and entering a
+    # PVP zone will apply the SAME invulnerability time.
+    # Requires /reload when changed
+    apply_to_pvp_flag: true
+
+  cooldown:
+
+    # Cooldown before being able to use the /pvpmode
+    # command when entering a PvP mode region.
+    region_enter: 20
+
+    # Cooldown before being able to use the /pvpmode
+    # command when entering a PvP mode region.
+    region_leave: 20
+
+    # Delay before being able to use /pvpmode after being in combat (seconds).
+    # Has to be greater than the 'combat_timeout'
+    combat: 45
+
+    # Cooldown when toggling on PvP mode, before being able to toggle it off (seconds)
+    toggle_on: 5
+
+    # Cooldown when toggling off PvP mode (seconds)
+    toggle_off: 3

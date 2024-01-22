@@ -1,0 +1,34 @@
+name: Heal
+lore:
+- Use this ability for a rapid
+- healing effect
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+delay:
+  base: 2
+  per-level: 0.1
+  min: 0
+  max: 0
+mana:
+  base: 4
+  per-level: 0.2
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 4
+  per-level: 0.5
+heal:
+  base: 4
+  per-level: 0.5

@@ -1,0 +1,36 @@
+name: Throw Up
+lore:
+- Hurl pieces of decaying
+- flesh at your target
+- dealing damage on impact
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+duration:
+  base: 3
+  per-level: 1.1
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+damage:
+  base: 2.4
+  per-level: 1.1
+delay:
+  base: 3
+  per-level: -0.5
+mana:
+  base: 8
+  per-level: 0.5
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 8
+  per-level: -1.5

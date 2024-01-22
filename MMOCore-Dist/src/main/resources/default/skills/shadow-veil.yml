@@ -1,0 +1,35 @@
+name: Shadow Veil
+lore:
+- Shroud yourself in a
+- veil of invisibility
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+duration:
+  base: 10
+  per-level: 1
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+timer:
+  base: 0
+  per-level: 0
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 10
+  per-level: 1.1
+deception:
+  base: 4
+  per-level: 0.3
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 10
+  per-level: 1.5

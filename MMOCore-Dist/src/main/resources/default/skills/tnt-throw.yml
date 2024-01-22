@@ -1,0 +1,36 @@
+name: Tnt Throw
+lore:
+- Hurl a powerful explosive
+- obliterating the target
+- and blocks around the
+- point of impact
+- ''
+- '&e{cooldown}s Cooldown'
+- '&9Costs {mana} {mana_name}'
+material: BOOK
+timer:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+  #Optional: The decimal format used for this skill parameter.
+  decimal-format: '0.#'
+delay:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+mana:
+  base: 4
+  per-level: 0.5
+stamina:
+  base: 0
+  per-level: 0
+  min: 0
+  max: 0
+cooldown:
+  base: 10
+  per-level: 0.5
+force:
+  base: 4
+  per-level: 0.5
