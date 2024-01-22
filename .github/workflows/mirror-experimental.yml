@@ -26,8 +26,10 @@ jobs:
     
      - name: Checkout GitLab repository
        run: |
-         git clone --depth 1 https://gitlab.com/${{ env.GITLAB_REPOSITORY_OWNER }}/${{ env.GITLAB_REPOSITORY }} .
-         cd MMOCore
+         mkdir temp_directory
+         git clone --depth 1 https://gitlab.com/${{ env.GITLAB_REPOSITORY_OWNER }}/${{ env.GITLAB_REPOSITORY }} temp_directory
+         cp -r temp_directory/* .
+         rm -rf temp_directory
 
      - name: Push Files
        run: |
