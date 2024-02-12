@@ -184,6 +184,9 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
      */
     @Override
     public void markAsSynchronized() {
+        setupSkillTree();
+        updateTemporaryTriggers();
+        getStats().updateStats(true);
 
         /*
          * If the player is not dead and the health is 0, this means that the data was
@@ -192,10 +195,6 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
          */
         if (isOnline() && !getPlayer().isDead())
             getPlayer().setHealth(MMOCoreUtils.fixResource(getHealth(), getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
-
-        setupSkillTree();
-        updateTemporaryTriggers();
-        getStats().updateStats(true);
 
         // Finally mark synchronized
         super.markAsSynchronized();

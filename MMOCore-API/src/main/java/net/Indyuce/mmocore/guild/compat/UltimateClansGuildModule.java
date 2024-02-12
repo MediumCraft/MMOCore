@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class UltimateClansGuildModule implements GuildModule {
@@ -19,17 +20,21 @@ public class UltimateClansGuildModule implements GuildModule {
 
     @Override
     public AbstractGuild getGuild(PlayerData playerData) {
-        return API.getPlayerAPI().hasClan(playerData.getUniqueId()) ? new CustomGuild(API.getClanAPI().getClan(API.getPlayerAPI().getClanID(playerData.getUniqueId()))) : null;
+        final Optional<ClanData> clan_ = API.getPlayerAPI().getPlayerClan(playerData.getUniqueId());
+        return clan_.isEmpty() ? null : new CustomGuild(clan_.get());
     }
 
     @Override
     public Relationship getRelationship(Player player, Player target) {
-        if (!API.getPlayerAPI().hasClan(player.getUniqueId()) || !API.getPlayerAPI().hasClan(target.getUniqueId()))
-            return Relationship.GUILD_NEUTRAL;
+        final Optional<ClanData> _clan1 = API.getPlayerAPI().getPlayerClan(player.getUniqueId());
+        if (_clan1.isEmpty()) return Relationship.GUILD_NEUTRAL;
 
-        final ClanRivalAlly clan1 = API.getClanAPI().getClan(API.getPlayerAPI().getClanID(player.getUniqueId())).getRivalAlly();
-        final UUID clanId2 = API.getPlayerAPI().getClanID(target.getUniqueId());
-        return clan1.getAlly().contains(clanId2) ? Relationship.GUILD_ALLY : clan1.getRival().contains(clanId2) ? Relationship.GUILD_ENEMY : Relationship.GUILD_NEUTRAL;
+        final Optional<ClanData> _clan2 = API.getPlayerAPI().getPlayerClan(target.getUniqueId());
+        if (_clan2.isEmpty()) return Relationship.GUILD_NEUTRAL;
+
+        final ClanRivalAlly allies1 = _clan1.get().getRivalAlly();
+        final UUID uuid2 = _clan2.get().getId();
+        return allies1.getAlly().contains(uuid2) ? Relationship.GUILD_ALLY : allies1.getRival().contains(uuid2) ? Relationship.GUILD_ENEMY : Relationship.GUILD_NEUTRAL;
     }
 
     class CustomGuild implements AbstractGuild {
@@ -43,7 +48,6 @@ public class UltimateClansGuildModule implements GuildModule {
 
         @Override
         public boolean hasMember(Player player) {
-            // List implementation. Pretty bad
             return clan.getMembers().contains(player);
         }
     }

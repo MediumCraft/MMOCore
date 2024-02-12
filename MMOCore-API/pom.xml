@@ -85,6 +85,11 @@
         </repository>
 
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+        <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
@@ -289,9 +294,9 @@
         </dependency>
 
         <dependency>
-            <groupId>me.ulrich</groupId>
-            <artifactId>UltimateClans</artifactId>
-            <version>6.0.2</version>
+            <groupId>com.github.UlrichBR</groupId>
+            <artifactId>UClansV7-API</artifactId>
+            <version>7.1.0</version>
             <scope>provided</scope>
         </dependency>
 
