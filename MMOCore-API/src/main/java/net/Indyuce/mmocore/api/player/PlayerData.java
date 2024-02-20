@@ -77,12 +77,11 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
     private PlayerClass profess;
     private int level, classPoints, skillPoints, attributePoints, attributeReallocationPoints, skillTreeReallocationPoints, skillReallocationPoints;
     private double experience;
-    private double mana, stamina, stellium;
 
     /**
-     * Health is stored in playerData because when saving the playerData we can't access the player health anymore as the payer is Offline.
+     * Saving resources (especially health) right in player data fixes TONS of issues.
      */
-    private double health;
+    private double health, mana, stamina, stellium;
     private Guild guild;
     private SkillCastingInstance skillCasting;
     private final PlayerQuests questData;
@@ -1005,7 +1004,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
     @Override
     public double getHealth() {
-        return isOnline() ? getPlayer().getHealth() : health;
+        return isSynchronized() && isOnline() ? getPlayer().getHealth() : health;
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.gui.api.item;
 
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -10,11 +11,17 @@ import java.util.Map;
 public class Placeholders {
     private final Map<String, String> placeholders = new HashMap<>();
 
-    public void register(String path, Object obj) {
-        placeholders.put(path, obj.toString());
+    public void register(@Nullable String path, @Nullable Object obj) {
+        placeholders.put(path, String.valueOf(obj));
     }
 
-    public String apply(OfflinePlayer player, String str) {
+    @Nullable
+    public String getPlaceholder(String placeholder) {
+        return placeholders.get(placeholder);
+    }
+
+    @NotNull
+    public String apply(@NotNull OfflinePlayer player, @NotNull String str) {
 
         // Remove conditions first
         str = removeCondition(str);
@@ -30,7 +37,7 @@ public class Placeholders {
         while (explored.contains("{") && explored.substring(explored.indexOf("{")).contains("}")) {
             final int begin = explored.indexOf("{"), end = explored.indexOf("}");
             final String holder = explored.substring(begin + 1, end);
-            @Nullable String found = placeholders.get(holder);
+            @Nullable String found = getPlaceholder(holder);
 
             /*
              * Do NOT replace the placeholder unless a corresponding value has
@@ -38,8 +45,7 @@ public class Placeholders {
              * math expansions which interferes with MMOCore placeholders since
              * it uses {....} as well.
              */
-            if (found != null)
-                str = str.replace("{" + holder + "}", found);
+            if (found != null) str = str.replace("{" + holder + "}", found);
 
             // Increase counter
             explored = explored.substring(end + 1);

@@ -78,7 +78,7 @@ public class EditableGuildAdmin extends EditableInventory {
 			meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, uuid.toString());
 
 			if (meta instanceof SkullMeta && offlinePlayer != null)
-				inv.dynamicallyUpdateItem(this, n, disp, current -> {
+				inv.asyncUpdate(this, n, disp, current -> {
 					((SkullMeta) meta).setOwningPlayer(offlinePlayer);
 					current.setItemMeta(meta);
 				});

@@ -22,10 +22,10 @@ import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.player.stats.StatInfo;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -123,36 +123,26 @@ public class PlayerStats extends EditableInventory {
                     return new Placeholders() {
                         final net.Indyuce.mmocore.api.player.stats.PlayerStats stats = inv.target.getStats();
 
+                        @Nullable
                         @Override
-                        public String apply(OfflinePlayer player, String str) {
-                            String explored = str;
-                            // Internal placeholders
-                            while (explored.contains("{") && explored.substring(explored.indexOf("{")).contains("}")) {
-                                final int begin = explored.indexOf("{"), end = explored.indexOf("}");
-                                final String holder = explored.substring(begin + 1, end);
-                                String replaced;
-                                if (holder.endsWith("_base")) {
-                                    final String stat = UtilityMethods.enumName(holder.substring(0, holder.length() - 5));
-                                    replaced = StatManager.format(stat, stats.getBase(stat));
-                                } else if (holder.endsWith("_extra")) {
-                                    final String stat = UtilityMethods.enumName(holder.substring(0, holder.length() - 6));
-                                    replaced = StatManager.format(stat, MythicLib.plugin.getStats().getTotalValue(stat, stats.getMap()) - stats.getBase(stat));
-                                } else if (holder.startsWith("attribute_")) {
-                                    final PlayerAttribute attr = MMOCore.plugin.attributeManager.get(holder.substring(10).replace("_", "-").toLowerCase());
-                                    replaced = String.valueOf(inv.target.getAttributes().getAttribute(attr));
-                                } else {
-                                    final String stat = UtilityMethods.enumName(holder);
-                                    replaced = StatManager.format(stat, MythicLib.plugin.getStats().getTotalValue(stat, stats.getMap()));
-                                }
-
-                                str = str.replace("{" + holder + "}", replaced);
-
-                                // Increase counter
-                                explored = explored.substring(end + 1);
+                        public String getPlaceholder(String holder) {
+                            if (holder.endsWith("_base")) {
+                                final String stat = UtilityMethods.enumName(holder.substring(0, holder.length() - 5));
+                                return StatManager.format(stat, stats.getBase(stat));
                             }
 
-                            // External placeholders
-                            return MMOCore.plugin.placeholderParser.parse(player, str);
+                            if (holder.endsWith("_extra")) {
+                                final String stat = UtilityMethods.enumName(holder.substring(0, holder.length() - 6));
+                                return StatManager.format(stat, stats.getStat(stat) - stats.getBase(stat));
+                            }
+
+                            if (holder.startsWith("attribute_")) {
+                                final PlayerAttribute attr = MMOCore.plugin.attributeManager.get(holder.substring(10).replace("_", "-").toLowerCase());
+                                return String.valueOf(inv.target.getAttributes().getAttribute(attr));
+                            }
+
+                            final String stat = UtilityMethods.enumName(holder);
+                            return StatManager.format(stat, stats.getStat(stat));
                         }
                     };
                 }
@@ -219,7 +209,7 @@ public class PlayerStats extends EditableInventory {
             Placeholders holders = new Placeholders();
 
             int count = inv.target.getParty().getOnlineMembers().size();
-            holders.register("count", "" + count);
+            holders.register("count", String.valueOf(count));
             for (StatModifier buff : MMOCore.plugin.partyManager.getBonuses())
                 holders.register("buff_" + buff.getStat().toLowerCase(), buff.multiply(count - 1).toString());
 
@@ -243,7 +233,7 @@ public class PlayerStats extends EditableInventory {
             ItemStack disp = super.display(inv, n);
             if (disp.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
                 SkullMeta meta = (SkullMeta) disp.getItemMeta();
-                inv.dynamicallyUpdateItem(this, n, disp, current -> {
+                inv.asyncUpdate(this, n, disp, current -> {
                     meta.setOwningPlayer(inv.target.getPlayer());
                     current.setItemMeta(meta);
                 });

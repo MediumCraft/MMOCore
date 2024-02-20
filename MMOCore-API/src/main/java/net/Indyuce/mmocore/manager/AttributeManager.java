@@ -50,8 +50,7 @@ public class AttributeManager implements MMOCoreManager {
         final ConfigurationSection statsConfig = new ConfigFile(MythicLib.plugin, "", "stats").getConfig();
         for (PlayerAttribute attr : getAll()) {
             final MMOCoreAttributeStatHandler handler = new MMOCoreAttributeStatHandler(statsConfig, attr);
-            MythicLib.plugin.getStats().registerStat(handler.getStat(), handler);
-            MythicLib.plugin.getStats().registerStat(handler.getStat() + "_PERCENT", handler);
+            MythicLib.plugin.getStats().registerStat(handler, handler.getStat() + "_PERCENT");
         }
     }
 }

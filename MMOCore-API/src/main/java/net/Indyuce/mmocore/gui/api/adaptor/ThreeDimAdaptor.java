@@ -10,7 +10,6 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
@@ -34,6 +33,8 @@ import org.bukkit.util.Vector;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class ThreeDimAdaptor extends Adaptor {
@@ -346,8 +347,13 @@ public class ThreeDimAdaptor extends Adaptor {
     }
 
     @Override
-    public void dynamicallyUpdateItem(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
+    public void asyncUpdate(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
+        // Not implemented
+    }
 
+    @Override
+    public <T> void asyncUpdate(CompletableFuture<T> future, InventoryItem<?> item, int n, ItemStack placed, BiConsumer<T, ItemStack> update) {
+        // Not implemented
     }
 
     private class SpawnPacketListener extends PacketAdapter {

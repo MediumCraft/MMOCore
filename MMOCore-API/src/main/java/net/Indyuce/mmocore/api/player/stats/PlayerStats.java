@@ -46,7 +46,7 @@ public class PlayerStats {
     }
 
     public double getStat(String stat) {
-        return getMap().getInstance(stat).getTotal();
+        return getMap().getStat(stat);
     }
 
     /**

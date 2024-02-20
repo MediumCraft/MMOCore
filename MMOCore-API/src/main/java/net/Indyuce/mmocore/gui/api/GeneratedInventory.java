@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public abstract class GeneratedInventory extends PluginInventory {
@@ -32,7 +34,6 @@ public abstract class GeneratedInventory extends PluginInventory {
     }
 
     public EditableInventory getEditable() {
-
         return editable;
     }
 
@@ -78,13 +79,12 @@ public abstract class GeneratedInventory extends PluginInventory {
         adaptor.open();
     }
 
-    /**
-     * @deprecated Not a fan of that implementation.
-     * Better work with {@link InventoryItem#setDisplayed(Inventory, GeneratedInventory)}
-     */
-    @Deprecated
-    public void dynamicallyUpdateItem(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
-        adaptor.dynamicallyUpdateItem(item, n, placed, update);
+    public void asyncUpdate(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
+        adaptor.asyncUpdate(item, n, placed, update);
+    }
+
+    public <T> void asyncUpdate(CompletableFuture<T> future, InventoryItem<?> item, int n, ItemStack placed, BiConsumer<T, ItemStack> update) {
+        adaptor.asyncUpdate(future, item, n, placed, update);
     }
 
     @Override

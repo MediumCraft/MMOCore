@@ -6,10 +6,7 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.hologram.Hologram;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -34,6 +31,20 @@ public class MMOCoreUtils {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName();
     }
 
+    /**
+     * If a given player is not in the server cache, no information
+     * cannot be retrieved from that player (without using requests
+     * to MC servers obviously). In that case, the instance of
+     * OfflinePlayer is pretty much useless and it only wraps its
+     * UUID which was already known beforehand.
+     *
+     * @param player Offline player instance to test
+     * @return Is the instance valid
+     */
+    public static boolean isInvalid(OfflinePlayer player) {
+        return player.getName() == null;
+    }
+
     public static String displayName(ItemStack item) {
         return item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName()
                 : caseOnWords(item.getType().name().replace("_", " "));
@@ -43,7 +54,7 @@ public class MMOCoreUtils {
      * @param current Current value of resource
      * @param maxStat Maximum value of resource
      * @return Clamped resource value. If the provided current value is 0,
-     *         this function will return the maximum resource value.
+     * this function will return the maximum resource value.
      */
     public static double fixResource(double current, double maxStat) {
         return current == 0 ? maxStat : Math.max(0, Math.min(current, maxStat));

@@ -9,6 +9,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class ClassicAdaptor extends Adaptor {
@@ -29,9 +31,17 @@ public class ClassicAdaptor extends Adaptor {
     }
 
     @Override
-    public void dynamicallyUpdateItem(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
+    public void asyncUpdate(InventoryItem<?> item, int n, ItemStack placed, Consumer<ItemStack> update) {
         Bukkit.getScheduler().runTaskAsynchronously(MMOCore.plugin, () -> {
             update.accept(placed);
+            open.setItem(item.getSlots().get(n), placed);
+        });
+    }
+
+    @Override
+    public <T> void asyncUpdate(CompletableFuture<T> future, InventoryItem<?> item, int n, ItemStack placed, BiConsumer<T, ItemStack> update) {
+        future.thenAccept(t -> {
+            update.accept(t, placed);
             open.setItem(item.getSlots().get(n), placed);
         });
     }

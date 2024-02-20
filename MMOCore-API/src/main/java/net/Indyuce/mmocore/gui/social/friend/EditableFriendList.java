@@ -4,12 +4,14 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.api.util.math.format.DelayFormat;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
+import net.Indyuce.mmocore.gui.api.item.ErrorPlaceholders;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
@@ -68,7 +70,7 @@ public class EditableFriendList extends EditableInventory {
         return new FriendListInventory(data, this);
     }
 
-    public static class OfflineFriendItem extends InventoryItem {
+    class OfflineFriendItem extends InventoryItem {
         public OfflineFriendItem(FriendItem parent, ConfigurationSection config) {
             super(parent, config);
         }
@@ -87,6 +89,7 @@ public class EditableFriendList extends EditableInventory {
         @Override
         public Placeholders getPlaceholders(GeneratedInventory inv, int n) {
             OfflinePlayer friend = getEffectivePlayer(inv, n);
+            if (MMOCoreUtils.isInvalid(friend)) return new ErrorPlaceholders();
 
             Placeholders holders = new Placeholders();
             holders.register("name", friend.getName());
@@ -95,7 +98,7 @@ public class EditableFriendList extends EditableInventory {
         }
     }
 
-    public static class OnlineFriendItem extends SimplePlaceholderItem {
+    class OnlineFriendItem extends SimplePlaceholderItem {
         public OnlineFriendItem(FriendItem parent, ConfigurationSection config) {
             super(parent, config);
         }
@@ -126,7 +129,7 @@ public class EditableFriendList extends EditableInventory {
         }
     }
 
-    public static class FriendItem extends SimplePlaceholderItem {
+    class FriendItem extends SimplePlaceholderItem {
         private final OnlineFriendItem online;
         private final OfflineFriendItem offline;
 
@@ -150,7 +153,7 @@ public class EditableFriendList extends EditableInventory {
             ItemMeta meta = disp.getItemMeta();
             meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, friend.getUniqueId().toString());
             if (meta instanceof SkullMeta)
-                inv.dynamicallyUpdateItem(this, n, disp, current -> {
+                inv.asyncUpdate(this, n, disp, current -> {
                     ((SkullMeta) meta).setOwningPlayer(friend);
                     current.setItemMeta(meta);
                 });
@@ -170,7 +173,7 @@ public class EditableFriendList extends EditableInventory {
         }
     }
 
-    public class FriendListInventory extends GeneratedInventory {
+    class FriendListInventory extends GeneratedInventory {
         private int page;
 
         public FriendListInventory(PlayerData playerData, EditableInventory editable) {

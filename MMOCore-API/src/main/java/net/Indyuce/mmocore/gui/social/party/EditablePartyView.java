@@ -57,7 +57,7 @@ public class EditablePartyView extends EditableInventory {
             if (member.isOnline())
                 holders.register("name", member.getPlayer().getName());
             holders.register("class", member.getProfess().getName());
-            holders.register("level", "" + member.getLevel());
+            holders.register("level", member.getLevel());
             holders.register("since", new DelayFormat(2).format(System.currentTimeMillis() - member.getLastLogin()));
             return holders;
         }
@@ -77,7 +77,7 @@ public class EditablePartyView extends EditableInventory {
             meta.getPersistentDataContainer().set(UUID_NAMESPACEDKEY, PersistentDataType.STRING, member.getUniqueId().toString());
 
             if (meta instanceof SkullMeta)
-                inv.dynamicallyUpdateItem(this, n, disp, current -> {
+                inv.asyncUpdate(this, n, disp, current -> {
                     ((SkullMeta) meta).setOwningPlayer(member);
                     current.setItemMeta(meta);
                 });
