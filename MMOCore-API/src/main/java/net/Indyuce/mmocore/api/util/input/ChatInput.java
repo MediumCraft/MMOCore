@@ -39,7 +39,6 @@ public class ChatInput extends PlayerInput {
 
         player.closeInventory();
         ConfigMessage.fromKey("player-input.chat." + inputType.getLowerCaseName()).send(player);
-        ConfigMessage.fromKey("player-input.chat.cancel").send(player);
     }
 
     @Override

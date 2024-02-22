@@ -71,12 +71,26 @@ player-input:
     guild-creation-tag: 'Guild tag..'
     guild-creation-name: 'Guild name..'
   chat:
-    friend-request: '&eWrite in the chat the player name.'
-    party-invite: '&eWrite in the chat the player you want to invite.'
-    guild-invite: '&eWrite in the chat the player you want to invite.'
-    guild-creation-tag: '&eWrite in the chat the TAG of the Guild you want to create.'
-    guild-creation-name: '&eWrite in the chat the name of the Guild you want to create.'
-    cancel: '&eWrite &c''cancel'' &eto cancel.'
+    friend-request:
+      - '&eWrite in the chat the player name.'
+      - '&eWrite &c''cancel'' &eto cancel.'
+    party-invite:
+      - '&eWrite in the chat the player you want to invite.'
+      - '&eWrite &c''cancel'' &eto cancel.'
+    guild-invite:
+      - '&eWrite in the chat the player you want to invite.'
+      - '&eWrite &c''cancel'' &eto cancel.'
+    guild-creation-tag:
+      - '&eWrite in the chat the TAG of the Guild you want to create.'
+      - '&eWrite &c''cancel'' &eto cancel.'
+    guild-creation-name:
+      - '&eWrite in the chat the name of the Guild you want to create.'
+      - '&eWrite &c''cancel'' &eto cancel.'
+    friend-request-cancel: ''
+    party-invite-cancel: ''
+    guild-invite-cancel: ''
+    guild-creation-tag-cancel: ''
+    guild-creation-name-cancel: ''
 
 # Spell Casting
 casting:

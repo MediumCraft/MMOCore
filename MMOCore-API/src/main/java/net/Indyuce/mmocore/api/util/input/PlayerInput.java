@@ -29,7 +29,6 @@ public abstract class PlayerInput implements Listener {
 
 	public enum InputType {
 		FRIEND_REQUEST,
-
 		PARTY_INVITE,
 		GUILD_INVITE,
 		GUILD_CREATION_TAG,

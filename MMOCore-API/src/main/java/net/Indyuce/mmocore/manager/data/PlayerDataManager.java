@@ -35,7 +35,9 @@ public class PlayerDataManager extends SynchronizedDataManager<PlayerData, Offli
     }
 
     @Override
-    public void whenAutoSaved() {
+    public void autosave() {
+        super.autosave();
+
         MMOCore.plugin.nativeGuildManager.saveAll();
     }
 }

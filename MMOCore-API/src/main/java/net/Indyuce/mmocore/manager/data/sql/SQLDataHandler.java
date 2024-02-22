@@ -101,7 +101,6 @@ public class SQLDataHandler extends SQLSynchronizedDataHandler<PlayerData, Offli
         updater.addData("skill_reallocation_points", data.getSkillReallocationPoints());
         updater.addData("attribute_points", data.getAttributePoints());
         updater.addData("attribute_realloc_points", data.getAttributeReallocationPoints());
-        updater.addJSONArray("waypoints", data.getWaypoints());
         updater.addData("skill_tree_reallocation_points", data.getSkillTreeReallocationPoints());
         updater.addData("health", data.getHealth());
         updater.addData("mana", data.getMana());
@@ -149,15 +148,18 @@ public class SQLDataHandler extends SQLSynchronizedDataHandler<PlayerData, Offli
             classinfo.addProperty("mana", info.getMana());
             classinfo.addProperty("stamina", info.getStamina());
             classinfo.addProperty("stellium", info.getStellium());
+
             JsonArray array = new JsonArray();
             for (String unlockedItem : playerData.getUnlockedItems()) {
                 array.add(unlockedItem);
             }
             classinfo.add("unlocked-items", array);
+
             JsonObject skillinfo = new JsonObject();
             for (String skill : info.getSkillKeys())
                 skillinfo.addProperty(skill, info.getSkillLevel(skill));
             classinfo.add("skill", skillinfo);
+
             JsonObject attributeInfo = new JsonObject();
             for (String attribute : info.getAttributeKeys())
                 attributeInfo.addProperty(attribute, info.getAttributeLevel(attribute));

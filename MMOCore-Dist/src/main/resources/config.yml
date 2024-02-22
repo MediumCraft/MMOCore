@@ -17,6 +17,10 @@ mysql:
   database: minecraft
   user: mmolover
   pass: ILovePhoenixDev
+  maxPoolSize: 10
+  maxLifeTime: 300000
+  connectionTimeOut: 10000
+  leakDetectionThreshold: 150000
   properties:
     cachePrepStmts: true
     prepStmtCacheSize: 250

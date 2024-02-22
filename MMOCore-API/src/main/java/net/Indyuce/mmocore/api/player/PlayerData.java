@@ -132,7 +132,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
     public long lastDropEvent;
 
     public PlayerData(MMOPlayerData mmoData) {
-        super(mmoData);
+        super(MMOCore.plugin, mmoData);
 
         questData = new PlayerQuests(this);
         playerStats = new PlayerStats(this);
@@ -192,8 +192,10 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
          * missing from the database and it gives full health to the player. If the
          * player is dead however, it must not account for that subtle edge case.
          */
-        if (isOnline() && !getPlayer().isDead())
-            getPlayer().setHealth(MMOCoreUtils.fixResource(getHealth(), getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        if (isOnline() && !getPlayer().isDead()) {
+            final double effectiveHealth = Math.max(getPlayer().getHealth(), getHealth());
+            getPlayer().setHealth(MMOCoreUtils.fixResource(effectiveHealth, getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        }
 
         // Finally mark synchronized
         super.markAsSynchronized();
