@@ -1219,7 +1219,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         updateTemporaryTriggers();
 
         // Update stats
-        if (isOnline() && isSynchronized()) getStats().updateStats();
+        if (isOnline()) getStats().updateStats();
     }
 
     public boolean hasSkillBound(int slot) {

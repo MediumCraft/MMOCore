@@ -12,16 +12,6 @@ import java.util.*;
 
 public class StatManager implements MMOCoreManager {
     private final Map<String, StatInfo> loaded = new HashMap<>();
-
-    /**
-     * Keeps track of all the item stats used so far in the plugin.
-     * It is not a constant since users can freely add or even create
-     * new stats.
-     * <p>
-     * These stats appear at least once:
-     * - in a class definition
-     * - in stats.yml which defines default stat formulas
-     */
     private final Set<String> usedStats = new HashSet<>();
 
     @Override
@@ -44,7 +34,7 @@ public class StatManager implements MMOCoreManager {
     /**
      * Keeps track of all the item stats used so far in the plugin.
      * It is not a constant since users can freely add or even create
-     * new stats.
+     * new stats. But this is a working approximation for MMOCore only.
      * <p>
      * These stats appear at least once:
      * - in a class definition
@@ -53,6 +43,7 @@ public class StatManager implements MMOCoreManager {
      * @return A list of stats that must be taken into account in MMOCore
      *         in the player stat calculation.
      */
+    @NotNull
     public Set<String> getRegistered() {
         return usedStats;
     }

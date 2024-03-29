@@ -5,13 +5,11 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.SavedClassInformation;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.OfflinePlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.apache.commons.lang.Validate;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +99,6 @@ public class YAMLPlayerDataHandler extends YAMLSynchronizedDataHandler<PlayerDat
                         if (section1 != null)
                             for (String key2 : config.getConfigurationSection("times-claimed." + key + "." + key1).getKeys(false)) {
                                 data.getItemClaims().put(key + "." + key1 + "." + key2, config.getInt("times-claimed." + key + "." + key1 + "." + key2));
-
                             }
                     }
             }
@@ -127,9 +124,9 @@ public class YAMLPlayerDataHandler extends YAMLSynchronizedDataHandler<PlayerDat
          * MAX_MANA, MAX_STAMINA & MAX_STELLIUM stats are already loaded.
          */
         data.setHealth(config.getDouble("health"));
-        data.setMana(config.contains("mana") ? config.getDouble("mana") : data.getStats().getStat("MAX_MANA"));
-        data.setStamina(config.contains("stamina") ? config.getDouble("stamina") : data.getStats().getStat("MAX_STAMINA"));
-        data.setStellium(config.contains("stellium") ? config.getDouble("stellium") : data.getStats().getStat("MAX_STELLIUM"));
+        data.setMana(config.getDouble("mana", data.getStats().getStat("MAX_MANA")));
+        data.setStamina(config.getDouble("stamina", data.getStats().getStat("MAX_STAMINA")));
+        data.setStellium(config.getDouble("stellium", data.getStats().getStat("MAX_STELLIUM")));
     }
 
     @Override
