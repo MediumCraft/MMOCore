@@ -24,6 +24,7 @@ import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.Indyuce.mmocore.api.quest.PlayerQuests;
 import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
+import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.*;
 import net.Indyuce.mmocore.experience.droptable.ExperienceItem;
@@ -173,7 +174,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
                 if (!nodeLevels.containsKey(node)) nodeLevels.put(node, 0);
 
         setupSkillTree();
-        updateTemporaryTriggers();
+        applyTemporaryTriggers();
         getStats().updateStats();
     }
 
@@ -184,7 +185,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
     @Override
     public void markAsSynchronized() {
         setupSkillTree();
-        updateTemporaryTriggers();
+        applyTemporaryTriggers();
         getStats().updateStats(true);
 
         /*
@@ -203,25 +204,19 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
     @Deprecated
     public void setupRemovableTrigger() {
-        updateTemporaryTriggers();
+        applyTemporaryTriggers();
     }
 
     /**
-     * Some triggers are marked with the Removable interface as
-     * they are non-permanent triggers and they need to be updated
-     * everytime their MMOPlayerData gets flushed from ML cache.
+     * Some triggers are marked with the {@link Removable} interface as
+     * they are non-permanent triggers, and they need to be re-applied
+     * everytime their MMOPlayerData gets flushed from the MythicLib cache
+     * (everytime the player logs out).
      * <p>
-     * This method should go through ALL {@link ExperienceTable}
-     * that the player has spent points into and register all
-     * non-permanent triggers.
-     * <p>
-     * For ease of implementation, these non-permanent triggers are
-     * refreshed everytime the player joins the server ie on every
-     * player data fetch.
-     *
-     * @see {@link net.Indyuce.mmocore.api.quest.trigger.api.Removable}
+     * This method goes through all the player's experience tables that
+     * they have spent points into and register all their non-permanent triggers.
      */
-    public void updateTemporaryTriggers() {
+    public void applyTemporaryTriggers() {
 
         // Remove all stats and buffs associated to triggers
         getMMOPlayerData().getStatMap().getInstances().forEach(statInstance -> statInstance.removeIf(Trigger.STAT_MODIFIER_KEY::equals));
@@ -229,17 +224,17 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
         // Experience tables from main class
         if (getProfess().hasExperienceTable())
-            getProfess().getExperienceTable().claimRemovableTrigger(this, getProfess());
+            getProfess().getExperienceTable().applyTemporaryTriggers(this, getProfess());
 
         // Experience tables from professions
         for (Profession profession : MMOCore.plugin.professionManager.getAll())
             if (profession.hasExperienceTable())
-                profession.getExperienceTable().claimRemovableTrigger(this, profession);
+                profession.getExperienceTable().applyTemporaryTriggers(this, profession);
 
         // Experience tables from skill tree nodes
         for (SkillTree skillTree : MMOCore.plugin.skillTreeManager.getAll())
             for (SkillTreeNode node : skillTree.getNodes())
-                node.getExperienceTable().claimRemovableTrigger(this, node);
+                node.getExperienceTable().applyTemporaryTriggers(this, node);
     }
 
     public void setupSkillTree() {
@@ -383,7 +378,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
     public void resetSkillTree(SkillTree skillTree) {
         for (SkillTreeNode node : skillTree.getNodes()) {
-            node.getExperienceTable().reset(this, node);
+            node.getExperienceTable().unclaim(this, node, true);
             setNodeLevel(node, 0);
             nodeStates.remove(node);
         }
@@ -1216,7 +1211,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         // Clear bound skills
         boundSkills.forEach((slot, info) -> info.close());
         boundSkills.clear();
-        updateTemporaryTriggers();
+        applyTemporaryTriggers();
 
         // Update stats
         if (isOnline()) getStats().updateStats();

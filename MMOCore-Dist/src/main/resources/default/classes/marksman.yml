@@ -92,6 +92,7 @@ skills:
     MINOR_HEALINGS:
         level: 10
         max-level: 30
+        upgradable: false # Player cannot upgrade this skill via the skill UI
 
 attributes:
     knockback-resistance:

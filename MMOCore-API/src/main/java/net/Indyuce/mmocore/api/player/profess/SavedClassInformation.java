@@ -297,9 +297,9 @@ public class SavedClassInformation implements ClassDataContainer {
         // Remove perm stats for nodes and class
         for (SkillTree skillTree : player.getProfess().getSkillTrees())
             for (SkillTreeNode node : skillTree.getNodes())
-                node.getExperienceTable().removePermStats(player, node);
+                node.getExperienceTable().unclaim(player, node, false);
         if (player.getProfess().hasExperienceTable())
-            player.getProfess().getExperienceTable().removePermStats(player, player.getProfess());
+            player.getProfess().getExperienceTable().unclaim(player, player.getProfess(), false);
 
         /*
          * Resets information which much be reset after everything is saved.
@@ -356,7 +356,7 @@ public class SavedClassInformation implements ClassDataContainer {
         player.setMana(mana);
         player.setStellium(stellium);
         player.setStamina(stamina);
-        player.updateTemporaryTriggers();
+        player.applyTemporaryTriggers();
         player.getStats().updateStats();
     }
 }

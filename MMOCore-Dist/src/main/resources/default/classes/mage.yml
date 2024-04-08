@@ -156,6 +156,7 @@ skills:
         max-level: 30
     ICE_SPIKES:
         level: 8
+        upgradable: false # Player cannot upgrade this skill via the skill UI
     AMBERS:
         level: 9
         max-level: 30

@@ -8,12 +8,13 @@ import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
+import net.Indyuce.mmocore.api.quest.trigger.api.Temporary;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SkillModifierTrigger extends Trigger implements Removable {
+public class SkillModifierTrigger extends Trigger implements Removable, Temporary {
     private final SkillModifier mod;
     private final double amount;
 

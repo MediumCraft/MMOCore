@@ -118,6 +118,7 @@ skills:
     WARP:
         level: 13
         max-level: 30
+        upgradable: false # Player cannot upgrade this skill via the skill UI
     GREATER_HEALINGS:
         level: 15
         max-level: 30

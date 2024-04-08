@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.skill;
 
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.cooldown.CooldownObject;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
@@ -20,8 +19,20 @@ import java.util.*;
 public class ClassSkill implements CooldownObject, Unlockable {
     private final RegisteredSkill skill;
     private final int unlockLevel, maxSkillLevel;
-    private final boolean unlockedByDefault, needsBound;
+    private final boolean unlockedByDefault, needsBinding, upgradable;
     private final Map<String, LinearValue> parameters = new HashMap<>();
+
+    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel) {
+        this(skill, unlockLevel, maxSkillLevel, true);
+    }
+
+    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel, boolean unlockedByDefault) {
+        this(skill, unlockLevel, maxSkillLevel, unlockedByDefault, MMOCore.plugin.configManager.passiveSkillsNeedBinding);
+    }
+
+    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel, boolean unlockedByDefault, boolean needsBinding) {
+        this(skill, unlockLevel, maxSkillLevel, unlockedByDefault, needsBinding, true);
+    }
 
     /**
      * Class used to save information about skills IN A CLASS CONTEXT
@@ -32,20 +43,13 @@ public class ClassSkill implements CooldownObject, Unlockable {
      * <p>
      * It is also used by the MMOCore API to force players to cast abilities.
      */
-    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel) {
-        this(skill, unlockLevel, maxSkillLevel, true);
-    }
-
-    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel, boolean unlockedByDefault) {
-        this(skill, unlockLevel, maxSkillLevel, unlockedByDefault, MMOCore.plugin.configManager.passiveSkillNeedBound);
-    }
-
-    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel, boolean unlockedByDefault, boolean needsBound) {
+    public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel, boolean unlockedByDefault, boolean needsBinding, boolean upgradable) {
         this.skill = skill;
         this.unlockLevel = unlockLevel;
         this.maxSkillLevel = maxSkillLevel;
         this.unlockedByDefault = unlockedByDefault;
-        this.needsBound = needsBound;
+        this.needsBinding = needsBinding;
+        this.upgradable = upgradable;
         for (String param : skill.getHandler().getParameters())
             this.parameters.put(param, skill.getParameterInfo(param));
     }
@@ -55,7 +59,8 @@ public class ClassSkill implements CooldownObject, Unlockable {
         unlockLevel = config.getInt("level");
         maxSkillLevel = config.getInt("max-level");
         unlockedByDefault = config.getBoolean("unlocked-by-default", true);
-        needsBound = config.getBoolean("needs-bound", MMOCore.plugin.configManager.passiveSkillNeedBound);
+        needsBinding = config.getBoolean("needs-bound", MMOCore.plugin.configManager.passiveSkillsNeedBinding);
+        upgradable = config.getBoolean("upgradable", true);
         for (String param : skill.getHandler().getParameters()) {
             LinearValue defaultValue = skill.getParameterInfo(param);
             this.parameters.put(param, config.isConfigurationSection(param) ? readLinearValue(defaultValue, config.getConfigurationSection(param)) : defaultValue);
@@ -79,13 +84,17 @@ public class ClassSkill implements CooldownObject, Unlockable {
         return maxSkillLevel;
     }
 
+    public boolean isUpgradable() {
+        return upgradable;
+    }
+
     @Override
     public boolean isUnlockedByDefault() {
         return unlockedByDefault;
     }
 
     public boolean needsBound() {
-        return needsBound;
+        return needsBinding;
     }
 
     @Override
@@ -99,14 +108,15 @@ public class ClassSkill implements CooldownObject, Unlockable {
             if (skill.equalsIgnoreCase(getUnlockNamespacedKey().split(":")[1]))
                 playerData.unbindSkill(slot);
         });
-        //Update the stats to remove the passive skill if it is locked
-        if (!needsBound && getSkill().getTrigger().isPassive())
+
+        // Update the stats to remove the passive skill if it is locked
+        if (!needsBinding && getSkill().getTrigger().isPassive())
             playerData.getStats().updateStats();
     }
 
     @Override
     public void whenUnlocked(PlayerData playerData) {
-        if (!needsBound && getSkill().getTrigger().isPassive())
+        if (!needsBinding && getSkill().getTrigger().isPassive())
             playerData.getStats().updateStats();
     }
 
@@ -183,7 +193,7 @@ public class ClassSkill implements CooldownObject, Unlockable {
     public PassiveSkill toPassive(PlayerData caster) {
         Validate.isTrue(skill.getTrigger().isPassive(), "Skill is active");
         //MMOCorePassiveSkillNotBound to identify passive skills that don't need to be bound
-        return new PassiveSkill("MMOCorePassiveSkill" + (!needsBound ? "NotBound" : ""), toCastable(caster), EquipmentSlot.OTHER, ModifierSource.OTHER);
+        return new PassiveSkill("MMOCorePassiveSkill" + (!needsBinding ? "NotBound" : ""), toCastable(caster), EquipmentSlot.OTHER, ModifierSource.OTHER);
     }
 
     @Override

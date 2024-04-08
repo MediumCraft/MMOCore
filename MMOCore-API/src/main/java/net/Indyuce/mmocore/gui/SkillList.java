@@ -515,6 +515,12 @@ public class SkillList extends EditableInventory {
                     return;
                 }
 
+                if (!selected.isUpgradable()) {
+                    ConfigMessage.fromKey("cannot-upgrade-skill").send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                    return;
+                }
+
                 if (playerData.getSkillPoints() < 1) {
                     ConfigMessage.fromKey("not-enough-skill-points").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);

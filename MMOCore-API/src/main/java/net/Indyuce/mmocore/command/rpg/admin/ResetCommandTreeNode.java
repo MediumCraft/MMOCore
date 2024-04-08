@@ -250,7 +250,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
             for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
                 data.getCollectionSkills().setExperience(profession, 0);
                 data.getCollectionSkills().setLevel(profession, 0);
-                profession.getExperienceTable().reset(data, profession);
+                profession.getExperienceTable().unclaim(data, profession, true);
             }
 
             CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,

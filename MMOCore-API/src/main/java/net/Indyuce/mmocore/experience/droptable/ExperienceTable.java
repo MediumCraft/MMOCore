@@ -55,42 +55,30 @@ public class ExperienceTable {
     }
 
     /**
-     * Called when a player changes its class.
-     * Removes the perm stat but keeps the item claims in memory.
+     * Called for example when a player changes its class. This takes
+     * off triggers which can be canceled.
      */
-    public void removePermStats(PlayerData playerData, ExperienceObject object) {
+    public void unclaim(PlayerData playerData, ExperienceObject object, boolean reset) {
         for (ExperienceItem item : items) {
-            int timesClaimed = playerData.getClaims(object, this, item);
+            final int timesClaimed = playerData.getClaims(object, this, item);
+            if (reset) playerData.setClaims(object, this, item, 0);
             for (int i = 0; i < timesClaimed; i++)
                 item.removeTriggers(playerData);
         }
     }
 
     /**
-     * Called when the progression is reset(e.g skill tree reallocation)
-     */
-    public void reset(PlayerData playerData, ExperienceObject object) {
-        for (ExperienceItem item : items) {
-            int timesClaimed = playerData.getClaims(object, this, item);
-            playerData.setClaims(object, this, item, 0);
-            for (int i = 0; i < timesClaimed; i++)
-                item.removeTriggers(playerData);
-        }
-    }
-
-
-    /**
-     * Called when a player joins and all the removable triggers get claimed back.
+     * Called when a player joins. All non-permanent/temporary triggers
+     * must be granted back to the player, including player modifiers.
      *
      * @param data   PlayerData
      * @param object Either profession, skillTreeNode or class leveling up
      */
-    public void claimRemovableTrigger(PlayerData data, ExperienceObject object) {
+    public void applyTemporaryTriggers(PlayerData data, ExperienceObject object) {
         for (ExperienceItem item : items) {
             int timesClaimed = data.getClaims(object, this, item);
             for (int i = 0; i < timesClaimed; i++)
-                item.applyRemovableTrigger(data);
-
+                item.applyTemporaryTriggers(data);
         }
     }
 }

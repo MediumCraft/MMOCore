@@ -68,7 +68,6 @@ public class SkillCommandTreeNode extends CommandTreeNode {
                 return CommandResult.FAILURE;
             }
 
-
             int amount;
             try {
                 amount = Integer.parseInt(args[5]);

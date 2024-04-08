@@ -3,19 +3,23 @@ package net.Indyuce.mmocore.player;
 import net.Indyuce.mmocore.api.player.PlayerData;
 
 /**
- * Some item that can be unlocked. All unlockables are saved in the
- * same list in the player data. This useful list can be used for:
+ * Some object that can be unlocked. All unlockables are saved in the
+ * same list in the player data, in the form of name-spaced keys. This
+ * tool is currently by:
+ * - skills
+ * - skill slots
  * - waypoints
- * - skill tree nodes
- * - skills using skill books?
- * - external plugins that implement other unlockable items
+ * <p>
+ * These objects are specific to the player's class and will not be
+ * transferred over to the new class if the player switches classes.
  *
- * @see {@link PlayerData#unlock(Unlockable)} and {@link PlayerData#hasUnlocked(Unlockable)}
+ * @see PlayerData#unlock(Unlockable)
+ * @see PlayerData#hasUnlocked(Unlockable)
  */
 public interface Unlockable {
 
     /**
-     * Format being used is the minecraft's default namespaced
+     * Format being used is the minecraft's default name-spaced
      * key format, e.g "skill_tree:strength_1_5" for readability
      */
     String getUnlockNamespacedKey();

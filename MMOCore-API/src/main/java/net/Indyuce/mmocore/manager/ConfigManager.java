@@ -27,7 +27,7 @@ import java.util.logging.Level;
 public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
-    public boolean overrideVanillaExp, canCreativeCast, passiveSkillNeedBound, cobbleGeneratorXP, saveDefaultClassInfo, splitMainExp, splitProfessionExp, disableQuestBossBar,
+    public boolean overrideVanillaExp, canCreativeCast, passiveSkillsNeedBinding, cobbleGeneratorXP, saveDefaultClassInfo, splitMainExp, splitProfessionExp, disableQuestBossBar,
             pvpModeEnabled, pvpModeInvulnerabilityCanDamage, forceClassSelection, enableGlobalSkillTreeGUI, enableSpecificSkillTreeGUI;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
@@ -156,7 +156,7 @@ public class ConfigManager {
         staminaHalf = getColorOrDefault("stamina-half", ChatColor.DARK_GRAY);
         staminaEmpty = getColorOrDefault("stamina-empty", ChatColor.WHITE);
 
-        passiveSkillNeedBound = MMOCore.plugin.getConfig().getBoolean("passive-skill-need-bound");
+        passiveSkillsNeedBinding = MMOCore.plugin.getConfig().getBoolean("passive-skill-need-bound");
         canCreativeCast = MMOCore.plugin.getConfig().getBoolean("can-creative-cast");
         cobbleGeneratorXP = MMOCore.plugin.getConfig().getBoolean("should-cobblestone-generators-give-exp");
         saveDefaultClassInfo = MMOCore.plugin.getConfig().getBoolean("save-default-class-info");

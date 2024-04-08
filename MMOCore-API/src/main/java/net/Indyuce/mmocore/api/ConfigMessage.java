@@ -49,16 +49,16 @@ public class ConfigMessage {
     }
 
     /**
-     * Useful for things like indicators or specific lore lines which are
-     * string tags not requiring more than one string object. If the
-     * message is empty, an error string is returned. Either way,
-     * the returned value is non null for better user feedback.
+     * Useful for things like indicators or specific lore lines
+     * which are string tags not requiring more than one string
+     * object. An empty return value is accepted as some features
+     * do require the ability to fully remove text.
      *
      * @return First line of message, if it exists.
      */
     @NotNull
     public String asLine() {
-        return lines.isEmpty() ? "<message_empty_" + key + ">" : lines.get(0);
+        return lines.isEmpty() ? "" : lines.get(0);
     }
 
     @NotNull

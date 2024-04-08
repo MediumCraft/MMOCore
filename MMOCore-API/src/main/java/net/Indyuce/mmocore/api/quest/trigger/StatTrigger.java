@@ -5,9 +5,10 @@ import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
+import net.Indyuce.mmocore.api.quest.trigger.api.Temporary;
 import org.apache.commons.lang.Validate;
 
-public class StatTrigger extends Trigger implements Removable {
+public class StatTrigger extends Trigger implements Removable, Temporary {
     private final StatModifier modifier;
     private final String stat;
     private final double amount;

@@ -3,9 +3,9 @@ package net.Indyuce.mmocore.experience.droptable;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.api.quest.trigger.StatTrigger;
 import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
+import net.Indyuce.mmocore.api.quest.trigger.api.Temporary;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -132,12 +132,11 @@ public class ExperienceItem {
     }
 
     /**
-     * Used when a player connects back to give back all the stats that he should have.
-     *
-     * @param playerData
+     * Used when a player logs back, in order to apply again
+     * all the temporary triggers.
      */
-    public void applyRemovableTrigger(PlayerData playerData) {
+    public void applyTemporaryTriggers(PlayerData playerData) {
         for (Trigger trigger : triggers)
-            if (trigger instanceof Removable) trigger.apply(playerData);
+            if (trigger instanceof Temporary) trigger.apply(playerData);
     }
 }
