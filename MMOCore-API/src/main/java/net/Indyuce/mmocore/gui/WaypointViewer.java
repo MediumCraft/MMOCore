@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
@@ -13,11 +14,12 @@ import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointPath;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
@@ -137,23 +139,39 @@ public class WaypointViewer extends EditableInventory {
 
         @Override
         public ItemStack display(WaypointViewerInventory inv, int n) {
-            ItemStack disp = super.display(inv, n);
+            // TODO refactor code
+            final Placeholders placeholders = getPlaceholders(inv, n);
+            final OfflinePlayer effectivePlayer = getEffectivePlayer(inv, n);
 
+            final ItemStack item = new ItemStack(getMaterial());
+            final ItemMeta meta = item.getItemMeta();
+            meta.setCustomModelData(getModelData());
+            // if (texture != null && meta instanceof SkullMeta)
+            //    UtilityMethods.setTextureValue((SkullMeta) meta, texture);
+
+            if (hasName()) meta.setDisplayName(placeholders.apply(effectivePlayer, getName()));
+
+            if (hideFlags()) meta.addItemFlags(ItemFlag.values());
             // If a player can teleport to another waypoint given his location
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
-            ItemMeta meta = disp.getItemMeta();
-            List<String> lore = new ArrayList<>();
-            meta.getLore().forEach(string -> {
-                if (string.contains("{lore}"))
-                    lore.addAll(waypoint.getLore());
-                else
-                    lore.add(string);
-            });
-            meta.setLore(lore);
+
+            if (hasLore()) {
+                List<String> lore = new ArrayList<>();
+                getLore().forEach(line -> {
+                    if (line.equals("{lore}")) for (String added : waypoint.getLore())
+                        lore.add(ChatColor.GRAY + placeholders.apply(effectivePlayer, added));
+                    else lore.add(ChatColor.GRAY + placeholders.apply(effectivePlayer, line));
+                });
+                meta.setLore(lore);
+            }
+
+            item.setItemMeta(meta);
+
+            // Extra code
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(new NamespacedKey(MMOCore.plugin, "waypointId"), PersistentDataType.STRING, waypoint.getId());
-            disp.setItemMeta(meta);
-            return disp;
+            item.setItemMeta(meta);
+            return item;
         }
 
         @Override

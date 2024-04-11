@@ -42,7 +42,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         this(null, material, config);
     }
 
-    public InventoryItem(InventoryItem parent, Material material, ConfigurationSection config) {
+    public InventoryItem(InventoryItem<?> parent, Material material, ConfigurationSection config) {
         this.id = config.getName();
         this.function = config.getString("function", "");
         this.parent = parent;
