@@ -1,15 +1,17 @@
-
 package net.Indyuce.mmocore.listener;
 
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.event.SynchronizedDataLoadEvent;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.resource.PlayerResource;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +23,35 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class PlayerListener implements Listener {
+
+    /**
+     * Script ran when the full MMO plugin data is synchronized. Player Health
+     * is only updated now otherwise other MMO plugins would not have the time
+     * to register their stats beforehand.
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void a(SynchronizedDataLoadEvent event) {
+        if (event.syncIsFull()) {
+            final PlayerData playerData = PlayerData.get(event.getHolder().getUniqueId());
+            final Player player = playerData.getPlayer();
+
+            playerData.setupSkillTree();
+            playerData.applyTemporaryTriggers();
+            playerData.getStats().updateStats(true); // TODO maybe duplicate?
+
+            /*
+             * If the player is not dead and the health is 0, this means that the data was
+             * missing from the database, and it should give full health to the player. It
+             * must account for the edge case where the player is dead.
+             */
+            if (playerData.isOnline() && !player.isDead()) {
+                final double cachedHealth = playerData.getCachedHealth(),
+                        maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(),
+                        fixedHealth = MMOCoreUtils.fixResource(cachedHealth, maxHealth);
+                player.setHealth(fixedHealth);
+            }
+        }
+    }
 
     /**
      * Register custom inventory clicks
@@ -54,7 +85,7 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void updateCombat(EntityDamageEvent event) {
-        if (UtilityMethods.isFakeEvent(event)) return;
+        if (UtilityMethods.isFake(event)) return;
         if (UtilityMethods.isRealPlayer(event.getEntity()) && MMOCore.plugin.configManager.combatLogDamageCauses.contains(event.getCause()))
             PlayerData.get((Player) event.getEntity()).getCombat().update();
     }

@@ -178,30 +178,6 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         getStats().updateStats();
     }
 
-    /**
-     * This script is called when the player data has been successfully
-     * loaded from the SQL/local text database.
-     */
-    @Override
-    public void markAsSynchronized() {
-        setupSkillTree();
-        applyTemporaryTriggers();
-        getStats().updateStats(true);
-
-        /*
-         * If the player is not dead and the health is 0, this means that the data was
-         * missing from the database and it gives full health to the player. If the
-         * player is dead however, it must not account for that subtle edge case.
-         */
-        if (isOnline() && !getPlayer().isDead()) {
-            final double effectiveHealth = Math.max(getPlayer().getHealth(), getHealth());
-            getPlayer().setHealth(MMOCoreUtils.fixResource(effectiveHealth, getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
-        }
-
-        // Finally mark synchronized
-        super.markAsSynchronized();
-    }
-
     @Deprecated
     public void setupRemovableTrigger() {
         applyTemporaryTriggers();
@@ -999,9 +975,10 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         stellium = Math.max(0, Math.min(stellium + event.getAmount(), max));
     }
 
+    @Deprecated
     @Override
     public double getHealth() {
-        return isSynchronized() && isOnline() ? getPlayer().getHealth() : health;
+        return isOnline() ? getPlayer().getHealth() : health;
     }
 
     @Override
@@ -1016,6 +993,10 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
     @Override
     public double getStellium() {
         return stellium;
+    }
+
+    public double getCachedHealth() {
+        return health;
     }
 
     public PlayerStats getStats() {

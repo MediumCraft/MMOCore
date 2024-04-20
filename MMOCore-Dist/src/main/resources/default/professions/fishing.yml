@@ -13,12 +13,16 @@ exp-curve: levels
 
 exp-sources: {}
 
-# Fishing drop tables which override MC default.
-# When fishing, the plugin reads through all the drop tables
-# and picks THE first one which all conditions are met!!
-# You must put at first place the drop tables which
-# have the most conditions/which are the most important.
+# Fishing drop tables which override MC default. When fishing, the plugin
+# reads through all the drop tables and picks THE first one where all
+# the conditions are met! You must first specify the drop tables which
+# have the highest number of conditions (the most restrictive).
+#
 # Number of tugs = number of times you need to click to fish.
+#
+# If you remove this section, the fishing stat placeholders in the player
+# stats GUI will stop working, as it is required for MMOCore to recognize
+# this profession as the "Fishing" profession.
 on-fish:
     overriding-drop-table:
         conditions:

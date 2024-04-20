@@ -207,7 +207,6 @@ override-vanilla-exp: true
 # log into a profile with default class before choosing another class
 #
 # This option is useless unless you have installed a profile plugin.
-# This does NOT work with proxy-based profiles yet.
 force-class-selection: true
 
 # Check the target player's RPG profile on shift-right click.
