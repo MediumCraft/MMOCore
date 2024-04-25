@@ -213,8 +213,8 @@ public class SkillList extends EditableInventory {
 
         @Override
         public ItemStack display(SkillViewerInventory inv, int n) {
-            final @NotNull SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
-            if (!inv.getPlayerData().hasUnlocked(skillSlot))
+            final @Nullable SkillSlot skillSlot = inv.getPlayerData().getProfess().getSkillSlot(n + 1);
+            if (skillSlot == null || !inv.getPlayerData().hasUnlocked(skillSlot))
                 return new ItemStack(Material.AIR);
 
             final @Nullable ClassSkill boundSkill = inv.getPlayerData().getBoundSkill(n + 1);

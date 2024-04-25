@@ -19,7 +19,7 @@ public class UnlockSlotTrigger extends Trigger implements Removable {
         }catch(NumberFormatException e){
             throw new IllegalArgumentException("The slot should be a number");
         }
-        Validate.isTrue(slot > 0 && slot <= MMOCore.plugin.configManager.maxSkillSlots, "The slot should be between 1 and " + MMOCore.plugin.configManager.maxSkillSlots);
+        Validate.isTrue(slot > 0, "Slot number must be positive");
     }
 
     @Override

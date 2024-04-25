@@ -32,6 +32,7 @@ import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.skill.cast.ComboMap;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import net.Indyuce.mmocore.util.ConfigUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -66,7 +67,7 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Nullable
     private final CastingParticle castParticle;
 
-    private final Map<Integer, SkillSlot> skillSlots = new HashMap<>();
+    private final List<SkillSlot> skillSlots = new ArrayList<>();
     private final List<SkillTree> skillTrees = new ArrayList<>();
     private final List<PassiveSkill> classScripts = new LinkedList();
     private final Map<String, LinearValue> stats = new HashMap<>();
@@ -174,15 +175,13 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
                 }
 
         // Skill slots
-        for (int i = 1; i < MMOCore.plugin.configManager.maxSkillSlots + 1; i++)
-            try {
-                if (config.contains("skill-slots." + i))
-                    skillSlots.put(i, new SkillSlot(config.getConfigurationSection("skill-slots." + i)));
-                else
-                    skillSlots.put(i, new SkillSlot(i, 0, "true", "&eSkill Slot " + MMOCoreUtils.intToRoman(i), new ArrayList<>(), false, true, new ArrayList<>()));
-            } catch (RuntimeException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill slot '" + String.valueOf(i) + "' from class '" + getId() + "': " + exception.getMessage());
-            }
+        if (config.isConfigurationSection("skill-slots"))
+            ConfigUtils.iterateConfigSectionList(
+                    config.getConfigurationSection("skill-slots"),
+                    skillSlots,
+                    SkillSlot::new,
+                    index -> new SkillSlot(index, 0, "true", "&eUnconfigured Skill Slot " + MMOCoreUtils.intToRoman(index), new ArrayList<>(), false, true, new ArrayList<>()),
+                    (key, exception) -> MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill slot '" + key + "' from class '" + getId() + "': " + exception.getMessage()));
 
         // Class skills
         for (RegisteredSkill registered : MMOCore.plugin.skillManager.getAll()) {
@@ -365,9 +364,9 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     /**
      * @return A list of passive skills which correspond to class
-     *         scripts wrapped in a format recognized by MythicLib.
-     *         Class scripts are handled just like
-     *         passive skills
+     * scripts wrapped in a format recognized by MythicLib.
+     * Class scripts are handled just like
+     * passive skills
      */
     @NotNull
     public List<PassiveSkill> getScripts() {
@@ -426,19 +425,21 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     }
 
     public boolean hasSlot(int slot) {
-        return skillSlots.containsKey(slot);
+        return 1 <= slot && slot <= skillSlots.size();
     }
 
     public List<SkillTree> getSkillTrees() {
         return skillTrees;
     }
 
+    @Nullable
     public SkillSlot getSkillSlot(int slot) {
-        return skillSlots.get(slot);
+        return hasSlot(slot) ? skillSlots.get(slot - 1) : null;
     }
 
-    public Collection<SkillSlot> getSlots() {
-        return skillSlots.values();
+    @NotNull
+    public List<SkillSlot> getSlots() {
+        return skillSlots;
     }
 
     @NotNull

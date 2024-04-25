@@ -53,10 +53,6 @@ public class SlotCommandTreeNode extends CommandTreeNode {
                 sender.sendMessage(ChatColor.RED + "The slot can't be negative.");
                 return CommandResult.FAILURE;
             }
-            if (slot > MMOCore.plugin.configManager.maxSkillSlots) {
-                sender.sendMessage(ChatColor.RED + "The slot can't be higher than " + MMOCore.plugin.configManager.maxSkillSlots + ".");
-                return CommandResult.FAILURE;
-            }
             SkillSlot skillSlot = playerData.getProfess().getSkillSlot(slot);
             if(skillSlot.isUnlockedByDefault()){
                 sender.sendMessage(ChatColor.RED + "You can't lock a skill that is unlocked by default.");

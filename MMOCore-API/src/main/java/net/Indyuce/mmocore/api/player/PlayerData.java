@@ -1220,7 +1220,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
      */
     public void bindSkill(int slot, @NotNull ClassSkill skill) {
         Validate.notNull(skill, "Skill cannot be null");
-        if (slot < 0) return;
+        if (slot <= 0) return;
 
         // Unbinds the previous skill (important for passive skills)
         unbindSkill(slot);
