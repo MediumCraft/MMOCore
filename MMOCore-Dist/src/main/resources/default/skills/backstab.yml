@@ -2,6 +2,7 @@ name: Backstab
 lore:
 - Backstabs deal &c{extra}%&7 damage.
 - ''
+- '&e{cooldown}s Cooldown'
 - '&9Costs {mana} {mana_name}'
 material: FLINT
 mana:
