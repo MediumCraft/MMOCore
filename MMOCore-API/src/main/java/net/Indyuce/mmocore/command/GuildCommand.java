@@ -49,7 +49,7 @@ public class GuildCommand extends RegisteredCommand {
                     final Request req = MMOCore.plugin.requestManager.getRequest(uuid);
                     Validate.isTrue(!req.isTimedOut() && req instanceof GuildInvite);
                     invite = (GuildInvite) req;
-                    Validate.isTrue(MMOCore.plugin.dataProvider.getGuildManager().isRegistered(invite.getGuild()));
+                    Validate.isTrue(MMOCore.plugin.nativeGuildManager.isRegistered(invite.getGuild()));
                 } catch (Exception exception) {
                     return true;
                 }

@@ -26,7 +26,7 @@ permissions:
     default: op
   mmocore.bypass-waypoint-wait:
     description: Bypass waypoint waiting time
-    default: op
+    default: false
   mmocore.class-select:
     description: Access to /class
     default: op

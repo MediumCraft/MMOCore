@@ -14,6 +14,10 @@ spawn:
 
   lore: {}
 
+  # Time it takes to warp to target location when using
+  # the waypoint through the GUI.
+  warp-time: 100
+
   # Cost for several specific actions
   cost:
 

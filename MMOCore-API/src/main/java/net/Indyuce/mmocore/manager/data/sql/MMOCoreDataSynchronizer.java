@@ -75,7 +75,7 @@ public class MMOCoreDataSynchronizer extends SQLDataSynchronizer<PlayerData> {
         }
         getData().setUnlockedItems(unlockedItems);
         if (!isEmpty(result.getString("guild"))) {
-            final Guild guild = MMOCore.plugin.dataProvider.getGuildManager().getGuild(result.getString("guild"));
+            final Guild guild = MMOCore.plugin.nativeGuildManager.getGuild(result.getString("guild"));
             if (guild != null) getData().setGuild(guild.hasMember(getData().getUniqueId()) ? guild : null);
         }
         if (!isEmpty(result.getString("attributes"))) getData().getAttributes().load(result.getString("attributes"));

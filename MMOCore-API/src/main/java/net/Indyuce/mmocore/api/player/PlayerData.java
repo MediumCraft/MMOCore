@@ -778,14 +778,15 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
             public void run() {
                 if (!isOnline() || getPlayer().getLocation().getBlockX() != x || getPlayer().getLocation().getBlockY() != y || getPlayer().getLocation().getBlockZ() != z) {
-                    MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CANCELLED).playTo(getPlayer());
-                    ConfigMessage.fromKey("warping-canceled").send(getPlayer());
+                    if (isOnline()) {
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CANCELLED).playTo(getPlayer());
+                        ConfigMessage.fromKey("warping-canceled").send(getPlayer());
+                    }
                     giveStellium(cost, PlayerResourceUpdateEvent.UpdateReason.USE_WAYPOINT);
                     cancel();
                     return;
                 }
 
-                ConfigMessage.fromKey("warping-comencing", "left", String.valueOf((warpTime - t) / 20)).send(getPlayer());
                 if (hasPerm || t++ >= warpTime) {
                     getPlayer().teleport(target.getLocation());
                     getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false));
@@ -794,6 +795,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
                     return;
                 }
 
+                ConfigMessage.fromKey("warping-comencing", "left", String.valueOf((warpTime - t) / 20)).send(getPlayer());
                 MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (.5 + t * 1.5 / warpTime));
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
@@ -1291,7 +1293,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
     }
 
     public static PlayerData get(@NotNull UUID uuid) {
-        return MMOCore.plugin.dataProvider.getDataManager().get(uuid);
+        return MMOCore.plugin.playerDataManager.get(uuid);
     }
 
     /**
@@ -1323,10 +1325,10 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
      * @return If player data for that player is loaded
      */
     public static boolean has(UUID uuid) {
-        return MMOCore.plugin.dataProvider.getDataManager().isLoaded(uuid);
+        return MMOCore.plugin.playerDataManager.isLoaded(uuid);
     }
 
     public static Collection<PlayerData> getAll() {
-        return MMOCore.plugin.dataProvider.getDataManager().getLoaded();
+        return MMOCore.plugin.playerDataManager.getLoaded();
     }
 }

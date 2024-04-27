@@ -50,7 +50,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
             }
 
             PlayerData data = PlayerData.get(player);
-            MMOCore.plugin.dataProvider.getDataManager().getDefaultData().apply(data);
+            MMOCore.plugin.playerDataManager.getDefaultData().apply(data);
             data.setExperience(0);
             for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
                 data.getCollectionSkills().setExperience(profession, 0);
@@ -245,7 +245,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
             }
 
             PlayerData data = PlayerData.get(player);
-            data.setLevel(MMOCore.plugin.dataProvider.getDataManager().getDefaultData().getLevel());
+            data.setLevel(MMOCore.plugin.playerDataManager.getDefaultData().getLevel());
             data.setExperience(0);
             for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
                 data.getCollectionSkills().setExperience(profession, 0);

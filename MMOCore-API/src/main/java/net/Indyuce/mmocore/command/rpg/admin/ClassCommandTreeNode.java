@@ -52,7 +52,7 @@ public class ClassCommandTreeNode extends CommandTreeNode {
 			return CommandResult.SUCCESS;
 
 		(data.hasSavedClass(profess) ? data.getClassInfo(profess)
-				: new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, data);
+				: new SavedClassInformation(MMOCore.plugin.playerDataManager.getDefaultData())).load(profess, data);
 		if (data.isOnline()) {
 			ConfigMessage.fromKey("class-select", "class", profess.getName()).send(data.getPlayer());
 			data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);

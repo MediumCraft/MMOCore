@@ -157,7 +157,7 @@ public class MMOCore extends MMOPlugin {
         }
 
         if (getConfig().isConfigurationSection("default-playerdata"))
-            dataProvider.getDataManager().loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
+            playerDataManager.loadDefaultData(getConfig().getConfigurationSection("default-playerdata"));
 
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) economy = new VaultEconomy();
 
@@ -262,7 +262,7 @@ public class MMOCore extends MMOPlugin {
         playerDataManager.initialize(EventPriority.LOW, EventPriority.NORMAL);
 
         // load guild data after loading player data
-        dataProvider.getGuildManager().load();
+        nativeGuildManager.load();
 
         // Toggleable Commands
         ToggleableCommand.register();
@@ -277,8 +277,8 @@ public class MMOCore extends MMOPlugin {
     public void onDisable() {
 
         // Save guild info
-        for (Guild guild : dataProvider.getGuildManager().getAll())
-            dataProvider.getGuildManager().save(guild);
+        for (Guild guild : nativeGuildManager.getAll())
+            nativeGuildManager.save(guild);
 
         // Close player data manager
         playerDataManager.close();

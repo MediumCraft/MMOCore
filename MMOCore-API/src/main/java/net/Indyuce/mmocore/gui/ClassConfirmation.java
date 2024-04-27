@@ -145,7 +145,7 @@ public class ClassConfirmation extends EditableInventory {
                     playerData.setClass(profess);
                 else
                     (playerData.hasSavedClass(profess) ? playerData.getClassInfo(profess)
-                            : new SavedClassInformation(MMOCore.plugin.dataProvider.getDataManager().getDefaultData())).load(profess, playerData);
+                            : new SavedClassInformation(MMOCore.plugin.playerDataManager.getDefaultData())).load(profess, playerData);
                 ConfigMessage.fromKey("class-select", "class", profess.getName()).send(player);
                 MMOCore.plugin.soundManager.getSound(SoundEvent.SELECT_CLASS).playTo(player);
                 player.closeInventory();

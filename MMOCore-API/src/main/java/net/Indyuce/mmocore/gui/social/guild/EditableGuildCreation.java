@@ -40,16 +40,16 @@ public class EditableGuildCreation extends EditableInventory {
 			
 			if (item.getFunction().equals("create")) {
 				new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_TAG, context.getInventoryHolder(), input -> {
-					if(MMOCore.plugin.dataProvider.getGuildManager().getConfig().shouldUppercaseTags())
+					if(MMOCore.plugin.nativeGuildManager.getConfig().shouldUppercaseTags())
 						input = input.toUpperCase();
 						
-					if(check(player, input, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getTagRules())) {
+					if(check(player, input, MMOCore.plugin.nativeGuildManager.getConfig().getTagRules())) {
 						String tag = input;
 
 						new ChatInput(player, PlayerInput.InputType.GUILD_CREATION_NAME, context.getInventoryHolder(), name -> {
-							if(check(player, name, MMOCore.plugin.dataProvider.getGuildManager().getConfig().getNameRules())) {
-								MMOCore.plugin.dataProvider.getGuildManager().newRegisteredGuild(playerData.getUniqueId(), name, tag);
-								MMOCore.plugin.dataProvider.getGuildManager().getGuild(tag.toLowerCase()).addMember(playerData.getUniqueId());
+							if(check(player, name, MMOCore.plugin.nativeGuildManager.getConfig().getNameRules())) {
+								MMOCore.plugin.nativeGuildManager.newRegisteredGuild(playerData.getUniqueId(), name, tag);
+								MMOCore.plugin.nativeGuildManager.getGuild(tag.toLowerCase()).addMember(playerData.getUniqueId());
 
 								InventoryManager.GUILD_VIEW.newInventory(playerData).open();
 								player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -76,7 +76,7 @@ public class EditableGuildCreation extends EditableInventory {
 		
 		if(input.length() <= rules.getMax() && input.length() >= rules.getMin())
 			if(input.matches(rules.getRegex()))
-				if(!MMOCore.plugin.dataProvider.getGuildManager().isRegistered(input))
+				if(!MMOCore.plugin.nativeGuildManager.isRegistered(input))
 					return true;
 				else
 					reason = ConfigMessage.fromKey("guild-creation.reasons.already-taken").asLine();

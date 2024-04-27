@@ -50,7 +50,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
 
         loc = readLocation(Objects.requireNonNull(config.getString("location"), "Could not read location"));
         radiusSquared = Math.pow(config.getDouble("radius"), 2);
-        warpTime = config.getInt("warp-time", 100);
+        warpTime = Math.max(0, config.getInt("warp-time", MMOCore.plugin.configManager.waypointWarpTime));
 
         dynamicCost = config.getDouble("cost.dynamic-use");
         normalCost = config.getDouble("cost.normal-use");
@@ -126,7 +126,7 @@ public class Waypoint extends PostLoadObject implements Unlockable {
 
     /**
      * @return Integer.POSITIVE_INFINITY if the way point is not linked
-     *         If it is, cost of the instant travel between the two waypoints.
+     * If it is, cost of the instant travel between the two waypoints.
      */
     public double getDirectCost(Waypoint waypoint) {
         return destinations.isEmpty() ? normalCost : destinations.getOrDefault(waypoint, Double.POSITIVE_INFINITY);

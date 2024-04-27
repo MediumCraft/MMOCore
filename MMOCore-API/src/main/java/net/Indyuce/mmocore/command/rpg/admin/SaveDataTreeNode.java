@@ -30,7 +30,7 @@ public class SaveDataTreeNode extends CommandTreeNode {
             return CommandResult.FAILURE;
         }
 
-        MMOCore.plugin.dataProvider.getDataManager().getDataHandler().saveData(PlayerData.get(player), false);
+        MMOCore.plugin.playerDataManager.getDataHandler().saveData(PlayerData.get(player), false);
 
         return CommandResult.SUCCESS;
     }

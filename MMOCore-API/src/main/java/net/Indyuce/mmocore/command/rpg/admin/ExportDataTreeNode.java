@@ -6,6 +6,7 @@ import io.lumine.mythic.lib.data.sql.SQLDataSource;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.data.sql.SQLDataHandler;
+import net.Indyuce.mmocore.manager.data.yaml.YAMLPlayerDataHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -42,21 +43,25 @@ public class ExportDataTreeNode extends CommandTreeNode {
     @Override
     public CommandResult execute(CommandSender sender, String[] strings) {
 
-        if (!MMOCore.plugin.dataProvider.getDataManager().getLoaded().isEmpty()) {
+        if (!MMOCore.plugin.playerDataManager.getLoaded().isEmpty()) {
             sender.sendMessage("Please make sure no players are logged in when using this command. " +
                     "If you are still seeing this message, restart your server and execute this command before any player logs in.");
             return CommandResult.FAILURE;
         }
 
         final List<UUID> playerIds = Arrays.stream(new File(MMOCore.plugin.getDataFolder() + "/userdata").listFiles())
-                .map(file -> UUID.fromString(file.getName().replace(".yml", ""))).collect(Collectors.toList());
+                .map(file -> UUID.fromString(file.getName().replace(".yml", "")))
+                .toList();
 
-        // Initialize fake SQL data provider
+        // Initialize fake SQL & YAML data provider
         final SQLDataHandler sqlHandler;
+        final YAMLPlayerDataHandler ymlHandler;
         try {
             sqlHandler = new SQLDataHandler(new SQLDataSource(MMOCore.plugin));
+            ymlHandler = new YAMLPlayerDataHandler(MMOCore.plugin);
         } catch (RuntimeException exception) {
-            sender.sendMessage("Could not initialize SQL provider (see console for stack trace): " + exception.getMessage());
+            sender.sendMessage("Could not initialize SQL/YAML provider (see console for stack trace): " + exception.getMessage());
+            exception.printStackTrace();
             return CommandResult.FAILURE;
         }
 
@@ -89,9 +94,7 @@ public class ExportDataTreeNode extends CommandTreeNode {
                     final UUID playerId = playerIds.get(index);
                     try {
                         final PlayerData offlinePlayerData = new PlayerData(new MMOPlayerData(playerId));
-                        MMOCore.plugin.dataProvider.getDataManager().getDataHandler().loadData(offlinePlayerData);
-
-                        // Player data is loaded, now it gets saved through SQL
+                        ymlHandler.loadData(offlinePlayerData);
                         sqlHandler.saveData(offlinePlayerData, false);
                     } catch (RuntimeException exception) {
                         errorCount++;

@@ -19,6 +19,6 @@ public interface OfflinePlayerData extends OfflineDataHolder {
     public abstract long getLastLogin();
 
     public static OfflinePlayerData get(UUID uuid) {
-        return MMOCore.plugin.dataProvider.getDataManager().getOffline(uuid);
+        return MMOCore.plugin.playerDataManager.getOffline(uuid);
     }
 }

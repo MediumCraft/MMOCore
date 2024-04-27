@@ -34,7 +34,7 @@ public class ConfigManager {
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
     public double lootChestsChanceWeight, dropItemsChanceWeight, fishingDropsChanceWeight, partyMaxExpSplitRange, pvpModeToggleOnCooldown, pvpModeToggleOffCooldown, pvpModeCombatCooldown,
             pvpModeCombatTimeout, pvpModeInvulnerabilityTimeRegionChange, pvpModeInvulnerabilityTimeCommand, pvpModeRegionEnterCooldown, pvpModeRegionLeaveCooldown;
-    public int maxPartyLevelDifference, maxPartyPlayers, minCombatLevel, maxCombatLevelDifference, skillTreeScrollStepX, skillTreeScrollStepY;
+    public int maxPartyLevelDifference, maxPartyPlayers, minCombatLevel, maxCombatLevelDifference, skillTreeScrollStepX, skillTreeScrollStepY, waypointWarpTime;
     public final List<EntityDamageEvent.DamageCause> combatLogDamageCauses = new ArrayList<>();
 
     private final FileConfiguration messages;
@@ -135,6 +135,7 @@ public class ConfigManager {
         splitProfessionExp = MMOCore.plugin.getConfig().getBoolean("party.profession-exp-split");
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
         forceClassSelection = MMOCore.plugin.getConfig().getBoolean("force-class-selection");
+        waypointWarpTime = MMOCore.plugin.getConfig().getInt("waypoints.default-warp-time");
 
         // Combat
         pvpModeEnabled = config.getBoolean("pvp_mode.enabled");

@@ -14,7 +14,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class GuildListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void a(AsyncPlayerChatEvent event) {
-		if (!event.getMessage().startsWith(MMOCore.plugin.dataProvider.getGuildManager().getConfig().getPrefix()))
+		if (!event.getMessage().startsWith(MMOCore.plugin.nativeGuildManager.getConfig().getPrefix()))
 			return;
 
 		PlayerData data = PlayerData.get(event.getPlayer());
@@ -25,7 +25,7 @@ public class GuildListener implements Listener {
 
 		// Run it sync
 		Bukkit.getScheduler().runTask(MMOCore.plugin, () -> {
-			ConfigMessage format = ConfigMessage.fromKey("guild-chat", "player", data.getPlayer().getName(), "tag", data.getGuild().getTag(), "message", event.getMessage().substring(MMOCore.plugin.dataProvider.getGuildManager().getConfig().getPrefix().length()));
+			ConfigMessage format = ConfigMessage.fromKey("guild-chat", "player", data.getPlayer().getName(), "tag", data.getGuild().getTag(), "message", event.getMessage().substring(MMOCore.plugin.nativeGuildManager.getConfig().getPrefix().length()));
 			GuildChatEvent called = new GuildChatEvent(data, format.asLine());
 			Bukkit.getPluginManager().callEvent(called);
 			if (!called.isCancelled())

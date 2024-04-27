@@ -74,7 +74,7 @@ public class Guild implements AbstractGuild {
 
         // Disband the guild if no member left
         if (members.size() < 1) {
-            MMOCore.plugin.dataProvider.getGuildManager().unregisterGuild(this);
+            MMOCore.plugin.nativeGuildManager.unregisterGuild(this);
             return;
         }
 
