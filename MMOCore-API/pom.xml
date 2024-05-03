@@ -109,6 +109,14 @@
             <id>simonsators Repo</id>
             <url>https://simonsator.de/repo</url>
         </repository>
+
+        <!-- MythicDungeons repository -->
+        <repository>
+            <id>aestrus-releases</id>
+            <name>Aestrus's Repository</name>
+            <url>https://maven.aestrus.io/releases</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -141,6 +149,13 @@
             <groupId>io.lumine</groupId>
             <artifactId>Mythic-Dist</artifactId>
             <version>5.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.playavalon</groupId>
+            <artifactId>MythicDungeons</artifactId>
+            <version>1.3.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -213,13 +228,6 @@
             <groupId>com.civious</groupId>
             <artifactId>OBTeam</artifactId>
             <version>1.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.playavalon</groupId>
-            <artifactId>DungeonParties</artifactId>
-            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
 

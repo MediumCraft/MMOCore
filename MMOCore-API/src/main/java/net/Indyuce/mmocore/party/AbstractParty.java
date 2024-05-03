@@ -17,6 +17,10 @@ public interface AbstractParty {
      */
     List<PlayerData> getOnlineMembers();
 
+    /**
+     * @deprecated Prefer using {@link #getOnlineMembers()}
+     */
+    @Deprecated
     default PlayerData getMember(int n) {
         return getOnlineMembers().get(n);
     }
