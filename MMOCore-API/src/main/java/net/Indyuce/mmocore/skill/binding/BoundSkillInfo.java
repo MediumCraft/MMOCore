@@ -33,7 +33,7 @@ public class BoundSkillInfo implements Closeable {
             if (skillModifierTrigger.getTargetSkills().contains(classSkill.getSkill().getHandler()))
                 skillModifierTrigger.apply(playerData, classSkill.getSkill().getHandler());
 
-        if (classSkill.getSkill().getTrigger().isPassive() && classSkill.needsBound()) {
+        if (classSkill.getSkill().getTrigger().isPassive() && !classSkill.isPermanent()) {
             registered = classSkill.toPassive(playerData);
             registered.register(playerData.getMMOPlayerData());
         } else registered = null;
@@ -64,7 +64,7 @@ public class BoundSkillInfo implements Closeable {
         open = false;
 
         // Unregister skill if passive
-        if (isPassive()&& classSkill.needsBound()) registered.unregister(playerData.getMMOPlayerData());
+        if (registered != null) registered.unregister(playerData.getMMOPlayerData());
 
         // Remove skill buffs associated to the slot
         skillSlot.getSkillModifierTriggers().forEach(skillBuffTrigger -> skillBuffTrigger.remove(playerData, classSkill.getSkill().getHandler()));

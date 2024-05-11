@@ -62,7 +62,6 @@ items:
       - '&7Current Skill: &6{skill}'
       - ''
       - '{slot-lore}'
-      - ''
       - '&7&oCast this spell by pressing [F] followed'
       - '&7&oby the keybind displayed on the action bar.'
       - ''

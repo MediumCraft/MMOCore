@@ -1,7 +1,9 @@
 package net.Indyuce.mmocore.skill.cast;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
@@ -9,11 +11,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public abstract class SkillCastingInstance extends BukkitRunnable implements Listener {
     private final PlayerData caster;
     private final SkillCastingHandler handler;
-    private final int runnablePeriod = 10; // Hard coded
 
+    private static final int RUNNABLE_PERIOD = 10;
+
+    /**
+     * This variable temporarily stores the active skills that the player
+     * can try to cast.
+     */
+    private List<BoundSkillInfo> activeSkills;
     private boolean open = true;
     private int j, sinceLastActivity;
 
@@ -45,11 +56,18 @@ public abstract class SkillCastingInstance extends BukkitRunnable implements Lis
         sinceLastActivity = 0;
     }
 
+    @NotNull
+    public List<BoundSkillInfo> getActiveSkills() {
+        if (activeSkills == null)
+            activeSkills = caster.getBoundSkills().values().stream().filter(bound -> !bound.isPassive()).collect(Collectors.toList());
+        return activeSkills;
+    }
+
     private static final int PARTICLES_PER_TICK = 2;
 
     @Override
     public void run() {
-        if (!caster.isOnline() || caster.getPlayer().isDead() || caster.getBoundSkills().isEmpty()) {
+        if (UtilityMethods.isInvalidated(caster.getMMOPlayerData()) || !caster.hasActiveSkillBound()) {
             caster.leaveSkillCasting(true);
             return;
         }
@@ -67,7 +85,10 @@ public abstract class SkillCastingInstance extends BukkitRunnable implements Lis
         }
 
         // Apply casting mode-specific effects
-        if (j++ % runnablePeriod == 0) onTick();
+        if (j++ % RUNNABLE_PERIOD == 0) {
+            activeSkills = null;
+            onTick();
+        }
     }
 
     public abstract void onTick();

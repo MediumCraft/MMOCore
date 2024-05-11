@@ -23,14 +23,12 @@ public class UnlockSkillTrigger extends Trigger implements Removable {
     @Override
     public void apply(PlayerData playerData) {
         final @Nullable ClassSkill found = playerData.getProfess().getSkill(skill);
-        if (found != null)
-            playerData.unlock(found);
+        if (found != null) playerData.unlock(found);
     }
 
     @Override
     public void remove(PlayerData playerData) {
         final @Nullable ClassSkill found = playerData.getProfess().getSkill(skill);
-        if (found != null)
-            playerData.lock(found);
+        if (found != null) playerData.lock(found);
     }
 }

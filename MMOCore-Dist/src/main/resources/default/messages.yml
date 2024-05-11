@@ -216,6 +216,7 @@ not-enough-skill-points-shift: '&cYou need {shift_points} skill points.'
 upgrade-skill: '&eYour &6{skill} &eis now Level &6{level}&e!'
 skill-level-not-met: '&cYou cannot use this skill yet.'
 no-skill-bound: '&cYou don''t have any skill bound to this slot.'
+skill-cannot-be-bound: '&cThis skill is always active and cannot be bound.'
 not-compatible-skill: '&cThe selected skill is not compatible with this slot.'
 cant-manually-bind: "&cYou can't manually bind/unbind a skill to this slot."
 skill-max-level-hit: '&cYou already hit the max level for that skill.'

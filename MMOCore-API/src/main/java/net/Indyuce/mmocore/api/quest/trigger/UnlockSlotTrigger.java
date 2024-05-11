@@ -13,26 +13,23 @@ public class UnlockSlotTrigger extends Trigger implements Removable {
 
     public UnlockSlotTrigger(MMOLineConfig config) {
         super(config);
+
         config.validateKeys("slot");
         try {
             slot = Integer.parseInt(config.getString("slot"));
-        }catch(NumberFormatException e){
-            throw new IllegalArgumentException("The slot should be a number");
+        } catch (NumberFormatException exception) {
+            throw new IllegalArgumentException("Slot should be a number");
         }
         Validate.isTrue(slot > 0, "Slot number must be positive");
     }
 
     @Override
     public void apply(PlayerData player) {
-        final SkillSlot skillSlot = player.getProfess().getSkillSlot(slot);
-        if (!player.hasUnlocked(skillSlot))
-            player.unlock(skillSlot);
+        player.unlock(player.getProfess().getSkillSlot(slot));
     }
 
     @Override
     public void remove(PlayerData player) {
-        final SkillSlot skillSlot = player.getProfess().getSkillSlot(slot);
-        if (player.hasUnlocked(skillSlot))
-            player.lock(skillSlot);
+        player.lock(player.getProfess().getSkillSlot(slot));
     }
 }

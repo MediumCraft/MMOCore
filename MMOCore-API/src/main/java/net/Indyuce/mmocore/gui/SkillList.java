@@ -481,6 +481,12 @@ public class SkillList extends EditableInventory {
                     return;
                 }
 
+                if (selected.isPermanent()) {
+                    ConfigMessage.fromKey("skill-cannot-be-bound").send(player);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+                    return;
+                }
+
                 if (!playerData.hasUnlockedLevel(selected)) {
                     ConfigMessage.fromKey("skill-level-not-met").send(player);
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);

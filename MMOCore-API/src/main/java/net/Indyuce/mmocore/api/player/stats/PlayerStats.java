@@ -103,10 +103,9 @@ public class PlayerStats {
 
         // Updates the player's unbindable CLASS passive skills
         final PassiveSkillMap skillMap = data.getMMOPlayerData().getPassiveSkillMap();
-        skillMap.removeModifiers("MMOCorePassiveSkillNotBound");
+        skillMap.removeModifiers("MMOCorePermanentSkill");
         for (ClassSkill skill : data.getProfess().getSkills())
-            if (!skill.needsBound()
-                    && skill.getSkill().getTrigger().isPassive()
+            if (skill.isPermanent()
                     && skill.getSkill().getTrigger() != TriggerType.LOGIN
                     && data.hasUnlocked(skill)
                     && data.hasUnlockedLevel(skill))

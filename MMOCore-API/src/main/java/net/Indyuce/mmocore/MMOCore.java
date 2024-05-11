@@ -207,8 +207,6 @@ public class MMOCore extends MMOPlugin {
         if (Bukkit.getPluginManager().getPlugin("MMOMana") != null) {
             getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "MMOCore is not meant to be used with MMOItems ManaAndStamina");
             getLogger().log(Level.SEVERE, ChatColor.DARK_RED + "Please read the installation guide!");
-            Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] MMOCore is not meant to be used with MMOItems ManaAndStamina");
-            Bukkit.broadcastMessage(ChatColor.DARK_RED + "[MMOCore] Please read the installation guide!");
             return;
         }
 

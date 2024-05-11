@@ -39,7 +39,7 @@ example_exp_table:
     period: 2
     triggers:
       - 'exp{amount=80}'
-      - 'command{format="broadcast Boy, %player_name% level up twice in one of his(her) professions!"}'
+      - 'command{format="broadcast Boy, %player_name% level up twice one of their professions!"}'
 
 # Exp table used by class to provide
 # one skill point every level up

@@ -83,7 +83,7 @@ public class SkillScroller extends SkillCastingHandler {
             }
 
             // Check if there are skills bound
-            if (playerData.getBoundSkills().isEmpty()) return;
+            if (!playerData.hasActiveSkillBound()) return;
 
             // Cancel event if necessary
             if (event.getPressed().shouldCancelEvent()) event.setCancelled(true);
@@ -120,7 +120,7 @@ public class SkillScroller extends SkillCastingHandler {
         }
 
         public ClassSkill getSelected() {
-            return getCaster().getBoundSkill(index + 1);
+            return getActiveSkills().get(index).getClassSkill();
         }
 
         @EventHandler
@@ -128,7 +128,7 @@ public class SkillScroller extends SkillCastingHandler {
             if (!event.getPlayer().equals(getCaster().getPlayer())) return;
 
             PlayerData playerData = PlayerData.get(event.getPlayer());
-            if (playerData.getBoundSkills().isEmpty()) {
+            if (!playerData.hasActiveSkillBound()) {
                 playerData.leaveSkillCasting(true);
                 return;
             }
@@ -139,9 +139,9 @@ public class SkillScroller extends SkillCastingHandler {
             final int dist1 = 9 + current - previous, dist2 = current - previous, dist3 = current - previous - 9;
             final int change = Math.abs(dist1) < Math.abs(dist2) ? (Math.abs(dist1) < Math.abs(dist3) ? dist1 : dist3) : (Math.abs(dist3) < Math.abs(dist2) ? dist3 : dist2);
 
-            // Scroll trough items
+            // Scroll through items
             final CustomSkillCastingInstance casting = (CustomSkillCastingInstance) playerData.getSkillCasting();
-            casting.index = mod(casting.index + change, playerData.getBoundSkills().size());
+            casting.index = mod(casting.index + change, getActiveSkills().size());
             casting.onTick();
             casting.refreshTimeOut();
 

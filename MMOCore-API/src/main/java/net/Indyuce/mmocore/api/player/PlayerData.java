@@ -393,11 +393,11 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
      */
     public boolean unlock(Unlockable unlockable) {
         Validate.isTrue(!unlockable.isUnlockedByDefault(), "Cannot unlock an item unlocked by default");
-        unlockable.whenUnlocked(this);
         final boolean wasLocked = unlockedItems.add(unlockable.getUnlockNamespacedKey());
-        // Call the event synchronously
-        if (wasLocked)
+        if (wasLocked) {
+            unlockable.whenUnlocked(this);
             Bukkit.getScheduler().runTask(MythicLib.plugin, () -> Bukkit.getPluginManager().callEvent(new ItemUnlockedEvent(this, unlockable.getUnlockNamespacedKey())));
+        }
         return wasLocked;
     }
 
@@ -409,11 +409,11 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
      */
     public boolean lock(Unlockable unlockable) {
         Validate.isTrue(!unlockable.isUnlockedByDefault(), "Cannot lock an item unlocked by default");
-        unlockable.whenLocked(this);
         boolean wasUnlocked = unlockedItems.remove(unlockable.getUnlockNamespacedKey());
-        if (wasUnlocked)
-            //Calls the event synchronously
+        if (wasUnlocked) {
+            unlockable.whenLocked(this);
             Bukkit.getScheduler().runTask(MythicLib.plugin, () -> Bukkit.getPluginManager().callEvent(new ItemLockedEvent(this, unlockable.getUnlockNamespacedKey())));
+        }
         return wasUnlocked;
     }
 
@@ -1224,19 +1224,37 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         Validate.notNull(skill, "Skill cannot be null");
         if (slot <= 0) return;
 
+        // Friendly error in case server owner makes a skill permanent while players have already bound it
+        if (skill.isPermanent()) {
+            MMOCore.plugin.getLogger().log(Level.WARNING, "Attempted to bind permanent skill " + skill.getSkill().getName() + " to player " + getUniqueId());
+            return;
+        }
+
         // Unbinds the previous skill (important for passive skills)
         unbindSkill(slot);
         final SkillSlot skillSlot = getProfess().getSkillSlot(slot);
         boundSkills.put(slot, new BoundSkillInfo(skillSlot, skill, this));
     }
 
-    public void unbindSkill(int slot) {
+    @Nullable
+    public BoundSkillInfo unbindSkill(int slot) {
         final @Nullable BoundSkillInfo boundSkillInfo = boundSkills.remove(slot);
         if (boundSkillInfo != null) boundSkillInfo.close();
+        return boundSkillInfo;
     }
 
-    public List<ClassSkill> getBoundSkills() {
-        return boundSkills.values().stream().map(BoundSkillInfo::getClassSkill).collect(Collectors.toList());
+    @NotNull
+    public Map<Integer, BoundSkillInfo> getBoundSkills() {
+        return boundSkills;
+    }
+
+    /**
+     * @return If the player has at least one active skill bound
+     */
+    public boolean hasActiveSkillBound() {
+        for (BoundSkillInfo bound : boundSkills.values())
+            if (!bound.isPassive()) return true;
+        return false;
     }
 
     @NotNull

@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
 import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.command.api.CommandVerbose;
 import net.Indyuce.mmocore.skill.ClassSkill;
@@ -54,7 +55,7 @@ public class SlotCommandTreeNode extends CommandTreeNode {
                 return CommandResult.FAILURE;
             }
             SkillSlot skillSlot = playerData.getProfess().getSkillSlot(slot);
-            if(skillSlot.isUnlockedByDefault()){
+            if (skillSlot.isUnlockedByDefault()) {
                 sender.sendMessage(ChatColor.RED + "You can't lock a skill that is unlocked by default.");
                 return CommandResult.FAILURE;
             }
@@ -72,7 +73,7 @@ public class SlotCommandTreeNode extends CommandTreeNode {
                 }
                 playerData.unlock(skillSlot);
             }
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD + "The skill slot " + skillSlot.getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.YELLOW + "The skill slot " + skillSlot.getName() + " is now " + (lock ? "locked" : "unlocked" + " for " + player.getName()));
             return CommandResult.SUCCESS;
         }
     }
@@ -113,7 +114,7 @@ public class SlotCommandTreeNode extends CommandTreeNode {
             }
             playerData.bindSkill(slot, skill);
 
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD + "The skill " + skill.getSkill().getHandler().getId() + " is now bound to the slot " + slot);
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.YELLOW + "Skill " + ChatColor.GOLD + skill.getSkill().getHandler().getId() + ChatColor.YELLOW + " now bound to slot " + ChatColor.GOLD + slot);
             return CommandResult.SUCCESS;
         }
     }
@@ -143,11 +144,10 @@ public class SlotCommandTreeNode extends CommandTreeNode {
                 sender.sendMessage(ChatColor.RED + args[4] + " is not a valid number.");
                 return CommandResult.FAILURE;
             }
-            String skill = playerData.hasSkillBound(slot) ? playerData.getBoundSkill(slot).getSkill().getHandler().getId() : "none";
-            if (playerData.hasSkillBound(slot))
-                playerData.unbindSkill(slot);
-
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.GOLD + "The skill " + skill + " has been unbounded from the slot " + slot);
+            final BoundSkillInfo found = playerData.unbindSkill(slot);
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.YELLOW + (found != null ?
+                    "Skill " + ChatColor.GOLD + found.getClassSkill().getSkill().getName() + ChatColor.YELLOW + " was taken off the slot " + ChatColor.GOLD + slot :
+                    "Could not find skill at slot " + ChatColor.GOLD + slot));
             return CommandResult.SUCCESS;
         }
     }

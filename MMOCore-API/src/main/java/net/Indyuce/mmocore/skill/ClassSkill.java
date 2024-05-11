@@ -19,7 +19,7 @@ import java.util.*;
 public class ClassSkill implements CooldownObject, Unlockable {
     private final RegisteredSkill skill;
     private final int unlockLevel, maxSkillLevel;
-    private final boolean unlockedByDefault, needsBinding, upgradable;
+    private final boolean unlockedByDefault, permanent, upgradable;
     private final Map<String, LinearValue> parameters = new HashMap<>();
 
     public ClassSkill(RegisteredSkill skill, int unlockLevel, int maxSkillLevel) {
@@ -48,7 +48,7 @@ public class ClassSkill implements CooldownObject, Unlockable {
         this.unlockLevel = unlockLevel;
         this.maxSkillLevel = maxSkillLevel;
         this.unlockedByDefault = unlockedByDefault;
-        this.needsBinding = needsBinding;
+        this.permanent = !needsBinding && skill.getTrigger().isPassive();
         this.upgradable = upgradable;
         for (String param : skill.getHandler().getParameters())
             this.parameters.put(param, skill.getParameterInfo(param));
@@ -59,7 +59,7 @@ public class ClassSkill implements CooldownObject, Unlockable {
         unlockLevel = config.getInt("level");
         maxSkillLevel = config.getInt("max-level");
         unlockedByDefault = config.getBoolean("unlocked-by-default", true);
-        needsBinding = config.getBoolean("needs-bound", MMOCore.plugin.configManager.passiveSkillsNeedBinding);
+        permanent = !config.getBoolean("needs-bound", MMOCore.plugin.configManager.passiveSkillsNeedBinding) && skill.getTrigger().isPassive();
         upgradable = config.getBoolean("upgradable", true);
         for (String param : skill.getHandler().getParameters()) {
             LinearValue defaultValue = skill.getParameterInfo(param);
@@ -93,8 +93,18 @@ public class ClassSkill implements CooldownObject, Unlockable {
         return unlockedByDefault;
     }
 
+    @Deprecated
     public boolean needsBound() {
-        return needsBinding;
+        return !isPermanent();
+    }
+
+    /**
+     * @return Permanent skills are passive skills which do
+     * not have to be bound in order to apply their effects.
+     * Permanent skills can only be passive skills.
+     */
+    public boolean isPermanent() {
+        return permanent;
     }
 
     @Override
@@ -104,20 +114,22 @@ public class ClassSkill implements CooldownObject, Unlockable {
 
     @Override
     public void whenLocked(PlayerData playerData) {
-        playerData.mapBoundSkills().forEach((slot, skill) -> {
-            if (skill.equalsIgnoreCase(getUnlockNamespacedKey().split(":")[1]))
+
+        // Unbind the skill if necessary
+        new HashMap<>(playerData.getBoundSkills()).forEach((slot, bound) -> {
+            if (this.equals(bound.getClassSkill()))
                 playerData.unbindSkill(slot);
         });
 
-        // Update the stats to remove the passive skill if it is locked
-        if (!needsBinding && getSkill().getTrigger().isPassive())
-            playerData.getStats().updateStats();
+        // Update stats to flush permanent skill
+        if (isPermanent()) playerData.getStats().updateStats();
     }
 
     @Override
     public void whenUnlocked(PlayerData playerData) {
-        if (!needsBinding && getSkill().getTrigger().isPassive())
-            playerData.getStats().updateStats();
+
+        // Update stats to register permanent skill
+        if (isPermanent()) playerData.getStats().updateStats();
     }
 
 
@@ -137,7 +149,6 @@ public class ClassSkill implements CooldownObject, Unlockable {
         Validate.isTrue(parameters.containsKey(parameter), "Could not find parameter '" + parameter + "'");
         parameters.put(parameter, linear);
     }
-
 
     /**
      * Skill modifiers are now called parameters.
@@ -190,10 +201,10 @@ public class ClassSkill implements CooldownObject, Unlockable {
      * is called. It needs to be saved somewhere when trying to
      * unregister the passive skill from the skill map later on.
      */
+    @NotNull
     public PassiveSkill toPassive(PlayerData caster) {
         Validate.isTrue(skill.getTrigger().isPassive(), "Skill is active");
-        //MMOCorePassiveSkillNotBound to identify passive skills that don't need to be bound
-        return new PassiveSkill("MMOCorePassiveSkill" + (!needsBinding ? "NotBound" : ""), toCastable(caster), EquipmentSlot.OTHER, ModifierSource.OTHER);
+        return new PassiveSkill("MMOCore" + (permanent ? "Permanent" : "Passive") + "Skill", toCastable(caster), EquipmentSlot.OTHER, ModifierSource.OTHER);
     }
 
     @Override

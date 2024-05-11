@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
 import net.Indyuce.mmocore.skill.cast.PlayerKey;
 import net.Indyuce.mmocore.skill.cast.SkillCastingHandler;
 import net.Indyuce.mmocore.skill.cast.SkillCastingInstance;
@@ -57,7 +58,10 @@ public class SkillBar extends SkillCastingHandler {
 
         // Enter spell casting
         final PlayerData playerData = event.getData();
-        if (player.getGameMode() != GameMode.SPECTATOR && (MMOCore.plugin.configManager.canCreativeCast || player.getGameMode() != GameMode.CREATIVE) && !playerData.isCasting() && !playerData.getBoundSkills().isEmpty())
+        if (player.getGameMode() != GameMode.SPECTATOR
+                && (MMOCore.plugin.configManager.canCreativeCast || player.getGameMode() != GameMode.CREATIVE)
+                && !playerData.isCasting()
+                && playerData.hasActiveSkillBound())
             if (playerData.setSkillCasting())
                 MMOCore.plugin.soundManager.getSound(SoundEvent.SPELL_CAST_BEGIN).playTo(player);
     }
@@ -92,16 +96,17 @@ public class SkillBar extends SkillCastingHandler {
 
             event.setCancelled(true);
             refreshTimeOut();
-            final int slot = event.getNewSlot() + 1 + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
+            final int activeSlot = event.getNewSlot() + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
 
             /*
              * The event is called again soon after the first since when
              * cancelling the first one, the player held item slot must go back
              * to the previous one.
              */
-            if (slot >= 1 && getCaster().hasSkillBound(slot)) {
+            if (activeSlot < getActiveSkills().size()) {
+                final ClassSkill classSkill = getActiveSkills().get(activeSlot).getClassSkill();
                 final PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                getCaster().getBoundSkill(slot).toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null));
+                classSkill.toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null));
             }
         }
 
@@ -121,18 +126,22 @@ public class SkillBar extends SkillCastingHandler {
             }
         }
 
+        @NotNull
         private String getFormat(PlayerData data) {
             final StringBuilder str = new StringBuilder();
             if (!data.isOnline()) return str.toString();
-            for (int slot : data.mapBoundSkills().keySet()) {
-                final ClassSkill skill = data.getBoundSkill(slot);
-                if (skill.getSkill().getTrigger().isPassive()) continue;
 
-                str.append(str.isEmpty() ? "" : split).append((onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
-                        String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000)) : noMana(data, skill) ? noMana : (noStamina(
-                        data, skill) ? noStamina : ready)).replace("{index}",
-                                String.valueOf(slot + (data.getPlayer().getInventory().getHeldItemSlot() < slot ? 1 : 0)))
-                        .replace("{skill}", data.getBoundSkill(slot).getSkill().getName()));
+            int slot = 1;
+            for (BoundSkillInfo active : getActiveSkills()) {
+                final ClassSkill skill = active.getClassSkill();
+
+                str.append(str.isEmpty() ? "" : split).append(
+                        (onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
+                                String.valueOf(data.getCooldownMap().getInfo(skill).getRemaining() / 1000)) :
+                                noMana(data, skill) ? noMana : (noStamina(data, skill) ? noStamina : ready))
+                                .replace("{index}", String.valueOf(slot + (data.getPlayer().getInventory().getHeldItemSlot() < slot ? 1 : 0)))
+                                .replace("{skill}", skill.getSkill().getName()));
+                slot++;
             }
             return MMOCore.plugin.placeholderParser.parse(data.getPlayer(), str.toString());
         }

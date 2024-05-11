@@ -4,6 +4,7 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.event.skill.PlayerCastSkillEvent;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.PlayerMetadata;
+import io.lumine.mythic.lib.skill.result.SkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.util.SoundObject;
@@ -33,28 +34,40 @@ public class KeyCombos extends SkillCastingHandler {
     private final PlayerKey initializerKey;
 
     /**
+     * Key players can press in order to cancel the current combo
+     * and prematurely leave skill casting.
+     */
+    @Nullable
+    private final PlayerKey quitKey;
+
+    /**
      * Handles the display of the action bar when casting a skill.
      * Set to null if disabled
      */
     @Nullable
     private final ActionBarOptions actionBarOptions;
 
+    private final boolean stayIn;
+
     @Nullable
-    private final SoundObject beginComboSound, comboClickSound, failComboSound;
+    private final SoundObject beginComboSound, comboClickSound, failComboSound, failSkillSound;
 
     public KeyCombos(@NotNull ConfigurationSection config) {
         super(config);
 
         comboMap = new ComboMap(config.getConfigurationSection("combos"));
         actionBarOptions = config.contains("action-bar") ? new ActionBarOptions(config.getConfigurationSection("action-bar")) : null;
+        stayIn = config.getBoolean("stay-in");
 
         // Load sounds
         beginComboSound = config.contains("sound.begin-combo") ? new SoundObject(config.getConfigurationSection("sound.begin-combo")) : null;
         comboClickSound = config.contains("sound.combo-key") ? new SoundObject(config.getConfigurationSection("sound.combo-key")) : null;
         failComboSound = config.contains("sound.fail-combo") ? new SoundObject(config.getConfigurationSection("sound.fail-combo")) : null;
+        failSkillSound = config.contains("sound.fail-skill") ? new SoundObject(config.getConfigurationSection("sound.fail-skill")) : null;
 
         // Find initializer key
-        initializerKey = config.contains("initializer-key") ? PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("initializer-key"), "Could not find initializer key"))) : null;
+        initializerKey = config.contains("initializer-key") ? PlayerKey.valueOf(UtilityMethods.enumName(config.get("initializer-key").toString())) : null;
+        quitKey = config.contains("quit-key") ? PlayerKey.valueOf(UtilityMethods.enumName(config.get("quit-key").toString())) : null;
     }
 
     @Override
@@ -74,7 +87,7 @@ public class KeyCombos extends SkillCastingHandler {
         if (player.getGameMode() == GameMode.CREATIVE && !MMOCore.plugin.configManager.canCreativeCast) return;
 
         // Don't start combos if no skills are bound
-        if (playerData.getBoundSkills().isEmpty()) return;
+        if (!playerData.hasActiveSkillBound()) return;
 
         // Start combo when there is an initializer key
         if (!event.getData().isCasting() && initializerKey != null) {
@@ -86,6 +99,17 @@ public class KeyCombos extends SkillCastingHandler {
                 // Start combo
                 if (playerData.setSkillCasting() && beginComboSound != null) beginComboSound.playTo(player);
             }
+            return;
+        }
+
+        // Cancel casting if possible
+        if (quitKey != null && event.getPressed() == quitKey && event.getData().isCasting()) {
+
+            // Cancel event is necessary
+            if (event.getPressed().shouldCancelEvent()) event.setCancelled(true);
+
+            event.getData().leaveSkillCasting(true);
+            if (failComboSound != null) failComboSound.playTo(player);
             return;
         }
 
@@ -118,19 +142,25 @@ public class KeyCombos extends SkillCastingHandler {
         // Hash current combo and check
         if (casting.combos.getCombos().containsKey(casting.current)) {
             final int spellSlot = casting.combos.getCombos().get(casting.current);
-            playerData.leaveSkillCasting(true);
+            if (stayIn) casting.resetCurrentCombo();
+            else playerData.leaveSkillCasting(true);
 
             // Cast spell
             if (playerData.hasSkillBound(spellSlot)) {
-                PlayerMetadata caster = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                playerData.getBoundSkill(spellSlot).toCastable(playerData).cast(new TriggerMetadata(caster, null, null));
+                final PlayerMetadata caster = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
+                final SkillResult result = playerData.getBoundSkill(spellSlot).toCastable(playerData).cast(new TriggerMetadata(caster, null, null));
+                if (!result.isSuccessful()) if (failSkillSound != null) failSkillSound.playTo(player);
+            } else if (stayIn) {
+                if (failComboSound != null) failComboSound.playTo(player);
             }
+
             return;
         }
 
         // Check if current combo is too large
         if (casting.current.countKeys() >= casting.combos.getLongest()) {
-            playerData.leaveSkillCasting(true);
+            if (stayIn) casting.resetCurrentCombo();
+            else playerData.leaveSkillCasting(true);
             if (failComboSound != null) failComboSound.playTo(player);
         }
     }
@@ -140,13 +170,18 @@ public class KeyCombos extends SkillCastingHandler {
      * (combos defined in its class or the default combos of the config.yml)
      */
     public class CustomSkillCastingInstance extends SkillCastingInstance {
-        private final KeyCombo current = new KeyCombo();
+        private KeyCombo current;
         private final ComboMap combos;
 
         CustomSkillCastingInstance(PlayerData caster) {
             super(KeyCombos.this, caster);
 
+            resetCurrentCombo();
             combos = Objects.requireNonNullElse(caster.getProfess().getComboMap(), comboMap);
+        }
+
+        public void resetCurrentCombo() {
+            current = new KeyCombo();
         }
 
         @Override

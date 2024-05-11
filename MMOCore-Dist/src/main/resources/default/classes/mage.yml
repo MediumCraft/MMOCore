@@ -43,9 +43,9 @@ skill-slots:
         name: "&aSkill Slot I"
         unlocked-by-default: true
         lore:
-            - ''
             - '&a-50% Cooldown &7for Active Skills'
             - '&a+30% Damage &7for Active Skills'
+            - ''
         formula: "<ACTIVE>"
         skill-buffs:
             - 'skill_buff{modifier="cooldown";amount=-50;type="RELATIVE"}'
