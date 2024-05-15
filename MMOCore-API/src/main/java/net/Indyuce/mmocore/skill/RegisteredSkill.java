@@ -1,10 +1,10 @@
 package net.Indyuce.mmocore.skill;
 
-import bsh.EvalError;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
+import io.lumine.mythic.lib.util.formula.BooleanExpression;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
@@ -158,11 +158,7 @@ public class RegisteredSkill {
         for (String category : categories)
             parsedExpression = parsedExpression.replace("<" + category + ">", "true");
         parsedExpression = parsedExpression.replaceAll("<.*?>", "false");
-        try {
-            return (boolean) MythicLib.plugin.getFormulaParser().eval(parsedExpression);
-        } catch (EvalError error) {
-            throw new RuntimeException(error);
-        }
+        return BooleanExpression.eval(parsedExpression);
     }
 
     @Override
