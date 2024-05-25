@@ -41,10 +41,10 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
 
     @Override
     public ExperienceSourceManager<RepairItemExperienceSource> newManager() {
-        return new CustomExperienceManager();
+        return new Manager();
     }
 
-    private class CustomExperienceManager extends ExperienceSourceManager<RepairItemExperienceSource> {
+    private static class Manager extends ExperienceSourceManager<RepairItemExperienceSource> {
 
         @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
         public void a(InventoryClickEvent event) {
@@ -80,7 +80,7 @@ public class RepairItemExperienceSource extends ExperienceSource<ItemStack> {
                      */
                     final double exp = MMOCore.plugin.smithingManager.getBaseExperience(item.getType())
                             * Math.max(0, ((Damageable) old.getItemMeta()).getDamage() - ((Damageable) item.getItemMeta()).getDamage()) / 100;
-                    getDispenser().giveExperience(data, exp, data.getPlayer().getLocation(), EXPSource.SOURCE);
+                    source.getDispenser().giveExperience(data, exp, data.getPlayer().getLocation(), EXPSource.SOURCE);
                 }
         }
     }

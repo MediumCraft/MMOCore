@@ -5,63 +5,63 @@ import net.Indyuce.mmocore.api.quest.objective.Objective;
 import io.lumine.mythic.lib.MythicLib;
 
 public class QuestProgress {
-	private final Quest quest;
-	private final PlayerData player;
+    private final Quest quest;
+    private final PlayerData player;
 
-	private int objective;
-	private ObjectiveProgress objectiveProgress;
+    private int objective;
+    private ObjectiveProgress objectiveProgress;
 
-	public QuestProgress(Quest quest, PlayerData player) {
-		this(quest, player, 0);
-	}
+    public QuestProgress(Quest quest, PlayerData player) {
+        this(quest, player, 0);
+    }
 
-	public QuestProgress(Quest quest, PlayerData player, int objective) {
-		this.quest = quest;
-		this.player = player;
-		
-		this.objective = objective;
-		objectiveProgress = nextObjective().newProgress(this);
-	}
+    public QuestProgress(Quest quest, PlayerData player, int objective) {
+        this.quest = quest;
+        this.player = player;
 
-	public Quest getQuest() {
-		return quest;
-	}
+        this.objective = objective;
+        objectiveProgress = nextObjective().newProgress(this);
+    }
 
-	public PlayerData getPlayer() {
-		return player;
-	}
+    public Quest getQuest() {
+        return quest;
+    }
 
-	public int getObjectiveNumber() {
-		return objective;
-	}
+    public PlayerData getPlayer() {
+        return player;
+    }
 
-	public ObjectiveProgress getProgress() {
-		return objectiveProgress;
-	}
+    public int getObjectiveNumber() {
+        return objective;
+    }
 
-	private Objective nextObjective() {
-		return quest.getObjectives().get(objective);
-	}
+    public ObjectiveProgress getProgress() {
+        return objectiveProgress;
+    }
 
-	public void completeObjective() {
-		objective++;
-		objectiveProgress.close();
+    private Objective nextObjective() {
+        return quest.getObjectives().get(objective);
+    }
 
+    public void completeObjective() {
+        objective++;
+        objectiveProgress.close();
+        final ObjectiveProgress finishedObjectiveProgress = objectiveProgress;
 
-		// end quest
-		if (objective >= quest.getObjectives().size())
-			player.getQuestData().finishCurrent();
-		else
-			objectiveProgress = nextObjective().newProgress(this);
+        // Start next objective, or end quest.
+        if (objective >= quest.getObjectives().size()) player.getQuestData().finishCurrent();
+        else objectiveProgress = nextObjective().newProgress(this);
 
-		player.getQuestData().updateBossBar();
+        player.getQuestData().updateBossBar();
 
+        /*
+         * Apply triggers only at the end! It comes handy when starting another
+         * quest in some storyline using triggers from the previous quest.
+         */
+        finishedObjectiveProgress.getObjective().getTriggers().forEach(trigger -> trigger.schedule(getPlayer()));
+    }
 
-		// apply triggers at the end so the quest is ended when a trigger quest start is launched.
-		objectiveProgress.getObjective().getTriggers().forEach(trigger -> trigger.schedule(getPlayer()));
-	}
-
-	public String getFormattedLore() {
-		return MythicLib.plugin.parseColors(objectiveProgress.formatLore(objectiveProgress.getObjective().getDefaultLore()));
-	}
+    public String getFormattedLore() {
+        return MythicLib.plugin.parseColors(objectiveProgress.formatLore(objectiveProgress.getObjective().getDefaultLore()));
+    }
 }

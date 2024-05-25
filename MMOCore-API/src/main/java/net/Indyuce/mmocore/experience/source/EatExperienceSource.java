@@ -33,19 +33,7 @@ public class EatExperienceSource extends SpecificExperienceSource<ItemStack> {
 
     @Override
     public ExperienceSourceManager<EatExperienceSource> newManager() {
-        return new ExperienceSourceManager<EatExperienceSource>() {
-
-            @EventHandler(priority = MONITOR,ignoreCancelled = true)
-            public void a(PlayerItemConsumeEvent e) {
-                if(!e.getPlayer().hasMetadata("NPC")) {
-                    PlayerData playerData = PlayerData.get(e.getPlayer());
-                    for (EatExperienceSource source : getSources()) {
-                        if (source.matchesParameter(playerData, e.getItem()))
-                            source.giveExperience(playerData, 1, null);
-                    }
-                }
-            }
-        };
+        return new Manager();
     }
 
     @Override
@@ -55,4 +43,18 @@ public class EatExperienceSource extends SpecificExperienceSource<ItemStack> {
         return type.equals(obj.getType());
     }
 
+
+    private static class Manager extends ExperienceSourceManager<EatExperienceSource> {
+
+        @EventHandler(priority = MONITOR,ignoreCancelled = true)
+        public void a(PlayerItemConsumeEvent e) {
+            if(!e.getPlayer().hasMetadata("NPC")) {
+                PlayerData playerData = PlayerData.get(e.getPlayer());
+                for (EatExperienceSource source : getSources()) {
+                    if (source.matchesParameter(playerData, e.getItem()))
+                        source.giveExperience(playerData, 1, null);
+                }
+            }
+        }
+    }
 }

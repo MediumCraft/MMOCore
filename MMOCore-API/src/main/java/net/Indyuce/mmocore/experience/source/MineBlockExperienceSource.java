@@ -4,8 +4,8 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -40,36 +40,36 @@ public class MineBlockExperienceSource extends SpecificExperienceSource<Material
 
     @Override
     public ExperienceSourceManager<MineBlockExperienceSource> newManager() {
-        return new ExperienceSourceManager<MineBlockExperienceSource>() {
-            @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-            public void a(BlockBreakEvent event) {
-                if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
-                if (UtilityMethods.isFake(event)) return;
-
-                PlayerData data = PlayerData.get(event.getPlayer());
-
-                for (MineBlockExperienceSource source : getSources()) {
-                    if (source.silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand()))
-                        continue;
-                    if (source.crop && !MythicLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
-                        continue;
-                    if (!source.playerPlaced && event.getBlock().hasMetadata("player_placed"))
-                        continue;
-
-                    if (source.matches(data, event.getBlock().getType()))
-                        source.giveExperience(data, 1, event.getBlock().getLocation());
-                }
-            }
-        };
-    }
-
-    private boolean hasSilkTouch(ItemStack item) {
-        return item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH);
+        return new Manager();
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, Material obj) {
-
         return material == obj;
+    }
+
+    private static class Manager extends ExperienceSourceManager<MineBlockExperienceSource> {
+
+        @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+        public void a(BlockBreakEvent event) {
+            if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
+            if (UtilityMethods.isFake(event)) return;
+
+            PlayerData data = PlayerData.get(event.getPlayer());
+
+            for (MineBlockExperienceSource source : getSources()) {
+                if (source.silkTouch && hasSilkTouch(event.getPlayer().getInventory().getItemInMainHand())) continue;
+                if (source.crop && !MythicLib.plugin.getVersion().getWrapper().isCropFullyGrown(event.getBlock()))
+                    continue;
+                if (!source.playerPlaced && event.getBlock().hasMetadata("player_placed")) continue;
+
+                if (source.matches(data, event.getBlock().getType()))
+                    source.giveExperience(data, 1, event.getBlock().getLocation());
+            }
+        }
+
+        private boolean hasSilkTouch(ItemStack item) {
+            return item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH);
+        }
     }
 }

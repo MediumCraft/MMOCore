@@ -33,20 +33,22 @@ public class FromExperienceSource extends ExperienceSource {
 
     @Override
     public ExperienceSourceManager<FromExperienceSource> newManager() {
-        return new ExperienceSourceManager<>() {
-
-            /**
-             * Used to register all the children experience sources.
-             */
-            @Override
-            public void registerSource(FromExperienceSource source) {
-                source.experienceSources.forEach(expSource -> MMOCore.plugin.experience.registerSource(expSource));
-            }
-        };
+        return new Manager();
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, Object obj) {
         return false;
+    }
+
+    private static class Manager extends ExperienceSourceManager<FromExperienceSource> {
+
+        /**
+         * Used to register all the children experience sources.
+         */
+        @Override
+        public void registerSource(FromExperienceSource source) {
+            source.experienceSources.forEach(expSource -> MMOCore.plugin.experience.registerSource(expSource));
+        }
     }
 }

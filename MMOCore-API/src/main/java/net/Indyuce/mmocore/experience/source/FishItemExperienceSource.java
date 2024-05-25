@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -25,26 +25,28 @@ public class FishItemExperienceSource extends SpecificExperienceSource<ItemStack
 
     @Override
     public ExperienceSourceManager<FishItemExperienceSource> newManager() {
-        return new ExperienceSourceManager<FishItemExperienceSource>() {
-
-            @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-            public void a(PlayerFishEvent event) {
-                if (event.getState() == State.CAUGHT_FISH) {
-                    ItemStack caught = ((Item) event.getCaught()).getItemStack();
-                    if (caught.hasItemMeta())
-                        return;
-
-                    PlayerData data = PlayerData.get(event.getPlayer());
-                    for (FishItemExperienceSource source : getSources())
-                        if (source.matches(data, caught))
-                            source.giveExperience(data, caught.getAmount(), event.getHook().getLocation().add(0, 1.0f, 0));
-                }
-            }
-        };
+        return new Manager();
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, ItemStack obj) {
         return obj.getType() == material;
+    }
+
+    private static class Manager extends ExperienceSourceManager<FishItemExperienceSource> {
+
+        @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+        public void a(PlayerFishEvent event) {
+            if (event.getState() == State.CAUGHT_FISH) {
+                ItemStack caught = ((Item) event.getCaught()).getItemStack();
+                if (caught.hasItemMeta())
+                    return;
+
+                PlayerData data = PlayerData.get(event.getPlayer());
+                for (FishItemExperienceSource source : getSources())
+                    if (source.matches(data, caught))
+                        source.giveExperience(data, caught.getAmount(), event.getHook().getLocation().add(0, 1.0f, 0));
+            }
+        }
     }
 }

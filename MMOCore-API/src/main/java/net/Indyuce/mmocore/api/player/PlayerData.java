@@ -1206,7 +1206,8 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
     @Nullable
     public ClassSkill getBoundSkill(int slot) {
-        return boundSkills.containsKey(slot) ? boundSkills.get(slot).getClassSkill() : null;
+        final BoundSkillInfo found = boundSkills.get(slot);
+        return found != null ? found.getClassSkill() : null;
     }
 
     @Deprecated

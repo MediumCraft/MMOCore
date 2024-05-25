@@ -3,13 +3,13 @@ package net.Indyuce.mmocore.experience.source;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
-import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static org.bukkit.event.EventPriority.MONITOR;
 
-public class DamageDealtExperienceSource extends SpecificExperienceSource<DamageType> {
+public class DamageDealtExperienceSource extends SpecificExperienceSource<Void> {
     private final DamageType type;
 
     /**
@@ -28,50 +28,40 @@ public class DamageDealtExperienceSource extends SpecificExperienceSource<Damage
 
     public DamageDealtExperienceSource(ExperienceDispenser dispenser, MMOLineConfig config) {
         super(dispenser, config);
-        if (!config.contains("type"))
-            type = null;
+        if (!config.contains("type")) type = null;
         else {
             String str = UtilityMethods.enumName(config.getString("type"));
             //Checks if the damage type correspond to a value of the damage type enum
-            Validate.isTrue(Arrays.stream(DamageType.values()).map(Objects::toString).collect(Collectors.toList()).contains(str),
-                    "Type value not allowed. Type value allowed: magic, physical, weapon, skill, projectile," +
-                            " unarmed, on-hit, minion, dot.");
+            Validate.isTrue(Arrays.stream(DamageType.values()).map(Objects::toString).collect(Collectors.toList()).contains(str), "Type value not allowed. Type value allowed: magic, physical, weapon, skill, projectile," + " unarmed, on-hit, minion, dot.");
             type = DamageType.valueOf(str);
         }
     }
 
     @Override
     public ExperienceSourceManager<DamageDealtExperienceSource> newManager() {
-        return new ExperienceSourceManager<DamageDealtExperienceSource>() {
-            //It isn't triggered when the PlayerAttackEvent gets cancelled
-            @EventHandler(priority = MONITOR,ignoreCancelled = true)
-            public void onDamageDealt(PlayerAttackEvent e) {
-                PlayerData playerData = PlayerData.get(e.getPlayer());
-                for (DamageDealtExperienceSource source : getSources()) {
-                    double value = 0;
-                    for (DamagePacket packet : e.getDamage().getPackets()) {
-                        for (DamageType damageType : packet.getTypes()) {
-                            if (source.matchesParameter(playerData, damageType))
-                                value += packet.getFinalValue();
-                        }
-
-                    }
-                    source.giveExperience(playerData, value, null);
-                }
-
-            }
-        };
+        return new Manager();
     }
 
     @Override
-    public boolean matchesParameter(PlayerData player, DamageType damageType) {
-        if (type == null) {
-            return true;
-        }
-        else {
-            return type.equals(damageType);
-
-        }
+    public boolean matchesParameter(PlayerData player, Void v) {
+        return true;
     }
 
+    private static class Manager extends ExperienceSourceManager<DamageDealtExperienceSource> {
+
+        @EventHandler(priority = MONITOR, ignoreCancelled = true)
+        public void onDamageDealt(PlayerAttackEvent event) {
+            final PlayerData playerData = PlayerData.get(event.getPlayer());
+            for (DamageDealtExperienceSource source : getSources())
+                if (source.matches(playerData, null)) {
+                    double value = source.type == null ? event.getDamage().getDamage() : event.getDamage().getDamage(source.type);
+                    if (value == 0) continue;
+
+                    // Cannot count more than the entity's max health
+                    final double enemyMaxHealth = event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                    value = Math.min(value, enemyMaxHealth);
+                    source.giveExperience(playerData, value, null);
+                }
+        }
+    }
 }

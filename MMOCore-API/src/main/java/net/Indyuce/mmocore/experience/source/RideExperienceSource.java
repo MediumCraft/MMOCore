@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.experience.source;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
@@ -40,29 +41,7 @@ public class RideExperienceSource extends SpecificExperienceSource<EntityType> {
 
     @Override
     public ExperienceSourceManager<RideExperienceSource> newManager() {
-        return new ExperienceSourceManager<RideExperienceSource>() {
-            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
-            public void onRide(PlayerMoveEvent e) {
-
-                if (e.getPlayer().isInsideVehicle()) {
-                    double deltax = e.getTo().getBlockX() - e.getFrom().getBlockX();
-                    double deltay = e.getTo().getBlockY() - e.getFrom().getBlockY();
-                    double deltaz = e.getTo().getBlockZ() - e.getFrom().getBlockZ();
-                    if (deltax != 0 && deltay != 0 && deltaz != 0) {
-                        double delta = Math.sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
-                        if (e.getPlayer().hasMetadata("NPC"))
-                            return;
-                        PlayerData playerData = PlayerData.get(e.getPlayer());
-                        Entity vehicle = e.getPlayer().getVehicle();
-                        for (RideExperienceSource source : getSources()) {
-                            if (source.matchesParameter(playerData, vehicle.getType()))
-                                giveExperience(playerData, e.getFrom().distance(e.getTo()), null);
-                        }
-                    }
-                }
-            }
-
-        };
+        return new Manager();
     }
 
     @Override
@@ -72,4 +51,25 @@ public class RideExperienceSource extends SpecificExperienceSource<EntityType> {
         return type.equals(obj);
     }
 
+    private static class Manager extends ExperienceSourceManager<RideExperienceSource> {
+
+        @EventHandler(priority = HIGHEST, ignoreCancelled = true)
+        public void onRide(PlayerMoveEvent event) {
+            if (!event.getPlayer().isInsideVehicle()) return;
+
+            double deltax = event.getTo().getBlockX() - event.getFrom().getBlockX();
+            double deltay = event.getTo().getBlockY() - event.getFrom().getBlockY();
+            double deltaz = event.getTo().getBlockZ() - event.getFrom().getBlockZ();
+            if (deltax != 0 || deltay != 0 || deltaz != 0) {
+                if (!UtilityMethods.isRealPlayer(event.getPlayer())) return;
+
+                PlayerData playerData = PlayerData.get(event.getPlayer());
+                Entity vehicle = event.getPlayer().getVehicle();
+                for (RideExperienceSource source : getSources()) {
+                    if (source.matchesParameter(playerData, vehicle.getType()))
+                        source.giveExperience(playerData, event.getFrom().distance(event.getTo()), null);
+                }
+            }
+        }
+    }
 }

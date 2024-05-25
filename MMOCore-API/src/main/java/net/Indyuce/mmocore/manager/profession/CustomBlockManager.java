@@ -69,7 +69,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 	 * @return       The new block behaviour or null if no new behaviour
 	 */
 	public @Nullable BlockInfo getInfo(Block block) {
-		return map.getOrDefault(findBlockType(block).generateKey(), null);
+		return map.get(findBlockType(block).generateKey());
 	}
 
 	public BlockType findBlockType(Block block) {

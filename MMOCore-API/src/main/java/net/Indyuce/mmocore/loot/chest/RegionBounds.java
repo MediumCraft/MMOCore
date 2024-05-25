@@ -19,7 +19,7 @@ public class RegionBounds {
 
 		String name = config.getString("world");
 		Validate.notNull(name, "Could not find world name");
-		Validate.notNull(world = Bukkit.getWorld(name), "Could not find world " + config.getString("world"));
+		Validate.notNull(world = Bukkit.getWorld(name), "Could not find world '" + config.getString("world") + "'");
 
 		x1 = Math.min(config.getInt("x1"), config.getInt("x2"));
 		x2 = Math.max(config.getInt("x1"), config.getInt("x2"));

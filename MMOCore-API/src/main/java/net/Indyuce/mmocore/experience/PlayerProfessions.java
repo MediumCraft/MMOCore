@@ -155,11 +155,11 @@ public class PlayerProfessions {
         return profession.hasMaxLevel() && getLevel(profession) >= profession.getMaxLevel();
     }
 
-    public void giveExperience(Profession profession, double value, EXPSource source) {
+    public void giveExperience(@NotNull Profession profession, double value, @NotNull EXPSource source) {
         giveExperience(profession, value, source, null, true);
     }
 
-    public void giveExperience(Profession profession, double value, EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
+    public void giveExperience(@NotNull Profession profession, double value, @NotNull EXPSource source, @Nullable Location hologramLocation, boolean splitExp) {
         Validate.isTrue(playerData.isOnline(), "Cannot give experience to offline player");
         if (value <= 0) {
             exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0d) + value));
@@ -190,7 +190,7 @@ public class PlayerProfessions {
             return;
 
         // Display hologram
-        if (hologramLocation != null)
+        if (hologramLocation != null && profession.getOption(Profession.ProfessionOption.EXP_HOLOGRAMS))
             MMOCoreUtils.displayIndicator(hologramLocation.add(.5, 1.5, .5), ConfigMessage.fromKey("exp-hologram", "exp", MythicLib.plugin.getMMOConfig().decimal.format(event.getExperience())).asLine());
 
         exp.put(profession.getId(), Math.max(0, exp.getOrDefault(profession.getId(), 0d) + event.getExperience()));
@@ -228,10 +228,10 @@ public class PlayerProfessions {
             playerData.getStats().updateStats();
         }
 
-        StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
+        StringBuilder bar = new StringBuilder(ChatColor.BOLD.toString());
         int chars = (int) (exp / needed * 20);
         for (int j = 0; j < 20; j++)
-            bar.append(j == chars ? "" + ChatColor.WHITE + ChatColor.BOLD : "").append("|");
+            bar.append(j == chars ? ChatColor.WHITE.toString() + ChatColor.BOLD : "").append("|");
         if (playerData.isOnline())
             ConfigMessage.fromKey("exp-notification", "profession", profession.getName(), "progress", bar.toString(), "ratio",
                     MythicLib.plugin.getMMOConfig().decimal.format(exp / needed * 100)).send(playerData.getPlayer());

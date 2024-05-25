@@ -15,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Objects;
 
 public class PlayExperienceSource extends SpecificExperienceSource {
-
     private final World world;
     private final double x1, x2, z1, z2;
     private final boolean inCombat;
@@ -48,7 +47,7 @@ public class PlayExperienceSource extends SpecificExperienceSource {
 
     @Override
     public ExperienceSourceManager<PlayExperienceSource> newManager() {
-        return new PlayingExperienceSourceManager();
+        return new Manager();
 
     }
 
@@ -65,9 +64,9 @@ public class PlayExperienceSource extends SpecificExperienceSource {
     }
 
 
-    private class PlayingExperienceSourceManager extends ExperienceSourceManager<PlayExperienceSource> {
+    private static class Manager extends ExperienceSourceManager<PlayExperienceSource> {
 
-        public PlayingExperienceSourceManager() {
+        public Manager() {
             new BukkitRunnable() {
 
                 @Override
@@ -77,7 +76,7 @@ public class PlayExperienceSource extends SpecificExperienceSource {
                             PlayerData playerData = PlayerData.get(player);
                             for (PlayExperienceSource source : getSources())
                                 if (source.matchesParameter(playerData, null))
-                                    giveExperience(playerData, 1, null);
+                                   source. giveExperience(playerData, 1, null);
                         }
                     });
                 }

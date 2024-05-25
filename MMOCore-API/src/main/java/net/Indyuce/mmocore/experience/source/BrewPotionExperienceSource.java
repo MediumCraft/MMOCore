@@ -3,9 +3,9 @@ package net.Indyuce.mmocore.experience.source;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,44 +44,46 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
 
     @Override
     public ExperienceSourceManager<BrewPotionExperienceSource> newManager() {
-        return new ExperienceSourceManager<BrewPotionExperienceSource>() {
-
-            @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-            public void a(BrewEvent event) {
-                Optional<Player> playerOpt = getNearbyPlayer(event.getBlock().getLocation());
-                if (!playerOpt.isPresent())
-                    return;
-
-                final ItemStack found = findPotion(event.getContents());
-                if (found != null)
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> {
-                        ItemStack brewn = findPotion(event.getContents());
-                        if (brewn == null)
-                            return;
-
-                        PlayerData data = PlayerData.get(playerOpt.get());
-                        for (BrewPotionExperienceSource source : getSources())
-                            if (source.matches(data, (PotionMeta) brewn.getItemMeta()))
-                                new PotionUpgrade(found, brewn).process(data.getPlayer());
-                    });
-            }
-        };
+        return new Manager();
     }
 
-    private ItemStack findPotion(BrewerInventory inv) {
-        for (int j = 0; j < 3; j++) {
-            ItemStack item = inv.getItem(j);
-            if (item != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta)
-                return item;
+    private static class Manager extends ExperienceSourceManager<BrewPotionExperienceSource> {
+
+        @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+        public void a(BrewEvent event) {
+            Optional<Player> playerOpt = getNearbyPlayer(event.getBlock().getLocation());
+            if (!playerOpt.isPresent())
+                return;
+
+            final ItemStack found = findPotion(event.getContents());
+            if (found != null)
+                Bukkit.getScheduler().scheduleSyncDelayedTask(MMOCore.plugin, () -> {
+                    ItemStack brewn = findPotion(event.getContents());
+                    if (brewn == null)
+                        return;
+
+                    PlayerData data = PlayerData.get(playerOpt.get());
+                    for (BrewPotionExperienceSource source : getSources())
+                        if (source.matches(data, (PotionMeta) brewn.getItemMeta()))
+                            new PotionUpgrade(found, brewn).process(source, data.getPlayer());
+                });
         }
-        return null;
+
+        private ItemStack findPotion(BrewerInventory inv) {
+            for (int j = 0; j < 3; j++) {
+                ItemStack item = inv.getItem(j);
+                if (item != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta)
+                    return item;
+            }
+            return null;
+        }
+
+        private Optional<Player> getNearbyPlayer(Location loc) {
+            return loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < 100).findAny();
+        }
     }
 
-    private Optional<Player> getNearbyPlayer(Location loc) {
-        return loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < 100).findAny();
-    }
-
-    public class PotionUpgrade {
+    private static class PotionUpgrade {
 
         /*
          * if the potion was extended using redstone or upgraded using
@@ -161,14 +163,14 @@ public class BrewPotionExperienceSource extends ExperienceSource<PotionMeta> {
         // effect.getType() == type).findFirst();
         // }
 
-        public void process(Player player) {
+        public void process(BrewPotionExperienceSource source, Player player) {
 
             /*
              * calculate extra exp due to extra effects
              */
             // exp += getTotal(mapEffectDurations());
 
-            getDispenser().giveExperience(PlayerData.get(player), exp * multiplier, player.getLocation(), EXPSource.SOURCE);
+            source.getDispenser().giveExperience(PlayerData.get(player), exp * source.multiplier, player.getLocation(), EXPSource.SOURCE);
         }
     }
 }

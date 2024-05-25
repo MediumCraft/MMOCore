@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import static org.bukkit.event.EventPriority.HIGHEST;
-import static org.bukkit.event.EventPriority.MONITOR;
 
 public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
     //Can be Ladder,Vines,Twisting Vines,Weeping Vines.
@@ -36,28 +35,11 @@ public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
 
             type = Material.valueOf(str);
         }
-
-
     }
-
 
     @Override
     public ExperienceSourceManager<ClimbExperienceSource> newManager() {
-        return new ExperienceSourceManager<ClimbExperienceSource>() {
-            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
-            public void onClimb(PlayerMoveEvent e) {
-                double delta=e.getTo().getBlockY()-e.getFrom().getBlockY();
-                if (delta > 0) {
-                    if (e.getPlayer().hasMetadata("NPC"))
-                        return;
-                    PlayerData playerData = PlayerData.get(e.getPlayer());
-                    for (ClimbExperienceSource source : getSources()) {
-                        if (source.matchesParameter(playerData, e.getFrom().getBlock().getType()))
-                            source.giveExperience(playerData, delta, null);
-                    }
-                }
-            }
-        };
+        return new Manager();
     }
 
     @Override
@@ -71,6 +53,22 @@ public class ClimbExperienceSource extends SpecificExperienceSource<Material> {
         if (type.equals(Material.TWISTING_VINES))
             return material.equals(Material.TWISTING_VINES) || material.equals(Material.TWISTING_VINES_PLANT);
         return material.equals(type);
+    }
 
+    private static class Manager extends ExperienceSourceManager<ClimbExperienceSource> {
+
+        @EventHandler(priority = HIGHEST, ignoreCancelled = true)
+        public void onClimb(PlayerMoveEvent e) {
+            double delta = e.getTo().getBlockY() - e.getFrom().getBlockY();
+            if (delta > 0) {
+                if (e.getPlayer().hasMetadata("NPC"))
+                    return;
+                PlayerData playerData = PlayerData.get(e.getPlayer());
+                for (ClimbExperienceSource source : getSources()) {
+                    if (source.matchesParameter(playerData, e.getFrom().getBlock().getType()))
+                        source.giveExperience(playerData, delta, null);
+                }
+            }
+        }
     }
 }

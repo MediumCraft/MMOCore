@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Used to differenciate between the main class experience and
+ * Used to differentiate between the main class experience and
  * experience given in a specific profession. Also being used to
  * monitor EXP holograms.
  *

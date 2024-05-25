@@ -38,44 +38,47 @@ public class KillMobExperienceSource extends SpecificExperienceSource<Entity> {
 
     @Override
     public ExperienceSourceManager<KillMobExperienceSource> newManager() {
-        return new ExperienceSourceManager<KillMobExperienceSource>() {
-
-            /**
-             * This map is used to keep track of the last player who
-             * hit some entity. It is flushed on entity death.
-             */
-            private final FlushableRegistry<UUID, UUID> registry = new FlushableRegistry<>((entity, attacker) -> Bukkit.getEntity(entity) == null, 20 * 60);
-
-            @Override
-            public void whenClosed() {
-                registry.close();
-            }
-
-            @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-            public void registerLastAttacker(PlayerAttackEvent event) {
-                registry.getRegistry().put(event.getEntity().getUniqueId(), event.getAttacker().getPlayer().getUniqueId());
-            }
-
-            @EventHandler(priority = EventPriority.MONITOR)
-            public void giveExp(EntityDeathEvent event) {
-
-                // Always remove entry from map
-                final @Nullable UUID lastAttacker = this.registry.getRegistry().remove(event.getEntity().getUniqueId());
-                if (lastAttacker == null) return;
-
-                if (event.getEntity().getPersistentDataContainer().has(new NamespacedKey(MMOCore.plugin, "spawner_spawned"), PersistentDataType.STRING))
-                    return;
-
-                final PlayerData data = PlayerData.get(lastAttacker);
-                for (KillMobExperienceSource source : getSources())
-                    if (source.matches(data, event.getEntity()))
-                        source.giveExperience(data, 1, MMOCoreUtils.getCenterLocation(event.getEntity()));
-            }
-        };
+        return new Manager();
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, Entity obj) {
         return obj.getType() == type && (displayName == null || displayName.equals(obj.getCustomName()));
+    }
+
+
+    private static class Manager extends ExperienceSourceManager<KillMobExperienceSource> {
+
+        /**
+         * This map is used to keep track of the last player who
+         * hit some entity. It is flushed on entity death.
+         */
+        private final FlushableRegistry<UUID, UUID> registry = new FlushableRegistry<>((entity, attacker) -> Bukkit.getEntity(entity) == null, 20 * 60);
+
+        @Override
+        public void whenClosed() {
+            registry.close();
+        }
+
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void registerLastAttacker(PlayerAttackEvent event) {
+            registry.getRegistry().put(event.getEntity().getUniqueId(), event.getAttacker().getPlayer().getUniqueId());
+        }
+
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void giveExp(EntityDeathEvent event) {
+
+            // Always remove entry from map
+            final @Nullable UUID lastAttacker = this.registry.getRegistry().remove(event.getEntity().getUniqueId());
+            if (lastAttacker == null) return;
+
+            if (event.getEntity().getPersistentDataContainer().has(new NamespacedKey(MMOCore.plugin, "spawner_spawned"), PersistentDataType.STRING))
+                return;
+
+            final PlayerData data = PlayerData.get(lastAttacker);
+            for (KillMobExperienceSource source : getSources())
+                if (source.matches(data, event.getEntity()))
+                    source.giveExperience(data, 1, MMOCoreUtils.getCenterLocation(event.getEntity()));
+        }
     }
 }

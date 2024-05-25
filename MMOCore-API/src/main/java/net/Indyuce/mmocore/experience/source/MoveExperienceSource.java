@@ -36,27 +36,7 @@ public class MoveExperienceSource extends SpecificExperienceSource {
 
     @Override
     public ExperienceSourceManager<MoveExperienceSource> newManager() {
-        return new ExperienceSourceManager<MoveExperienceSource>() {
-            @EventHandler(priority = MONITOR,ignoreCancelled = true)
-            public void onMove(PlayerMoveEvent e) {
-                double deltax = e.getTo().getBlockX() - e.getFrom().getBlockX();
-                double deltay = e.getTo().getBlockY() - e.getFrom().getBlockY();
-                double deltaz = e.getTo().getBlockZ() - e.getFrom().getBlockZ();
-                if (deltax != 0 || deltay != 0 || deltaz != 0) {
-
-                    double delta = Math.sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
-                    if (e.getPlayer().hasMetadata("NPC"))
-                        return;
-                    Player player = e.getPlayer();
-                    PlayerData playerData = PlayerData.get(player);
-                    for (MoveExperienceSource source : getSources()) {
-                        if (source.matchesParameter(playerData, null)) {
-                            giveExperience(playerData, delta, null);
-                        }
-                    }
-                }
-            }
-        };
+        return new Manager();
     }
 
     @Override
@@ -69,7 +49,7 @@ public class MoveExperienceSource extends SpecificExperienceSource {
         FLY((p) -> p.isFlying() || p.isGliding()),
         SWIM((p) -> p.getLocation().getBlock().isLiquid()),
         SPRINT(Player::isSprinting),
-        WALK((p) -> !p.isSneaking() && !p.isSprinting() &&((Entity)p).isOnGround()&& !p.isFlying() && !p.getLocation().getBlock().isLiquid());
+        WALK((p) -> !p.isSneaking() && !p.isSprinting() && ((Entity) p).isOnGround() && !p.isFlying() && !p.getLocation().getBlock().isLiquid());
 
         private final Function<Player, Boolean> matching;
 
@@ -81,5 +61,25 @@ public class MoveExperienceSource extends SpecificExperienceSource {
             return !player.isInsideVehicle() && matching.apply(player);
         }
 
+    }
+
+    private static class Manager extends ExperienceSourceManager<MoveExperienceSource> {
+        @EventHandler(priority = MONITOR, ignoreCancelled = true)
+        public void onMove(PlayerMoveEvent e) {
+            double deltax = e.getTo().getBlockX() - e.getFrom().getBlockX();
+            double deltay = e.getTo().getBlockY() - e.getFrom().getBlockY();
+            double deltaz = e.getTo().getBlockZ() - e.getFrom().getBlockZ();
+            if (deltax != 0 || deltay != 0 || deltaz != 0) {
+
+                double delta = Math.sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
+                if (e.getPlayer().hasMetadata("NPC"))
+                    return;
+                Player player = e.getPlayer();
+                PlayerData playerData = PlayerData.get(player);
+                for (MoveExperienceSource source : getSources())
+                    if (source.matchesParameter(playerData, null))
+                        source.giveExperience(playerData, delta, null);
+            }
+        }
     }
 }

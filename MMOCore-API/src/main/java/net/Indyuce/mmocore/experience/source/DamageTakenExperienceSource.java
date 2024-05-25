@@ -1,13 +1,15 @@
 package net.Indyuce.mmocore.experience.source;
 
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.util.Lazy;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -41,34 +43,40 @@ public class DamageTakenExperienceSource extends SpecificExperienceSource<Entity
 
     @Override
     public ExperienceSourceManager<DamageTakenExperienceSource> newManager() {
-        return new ExperienceSourceManager<DamageTakenExperienceSource>() {
-            @EventHandler(priority = HIGHEST,ignoreCancelled = true)
-
-            public void onDamageTaken(EntityDamageEvent e) {
-                if (e.getEntity() instanceof Player && !e.getEntity().hasMetadata("NPC")) {
-                    double amount = e.getDamage();
-                    PlayerData playerData = PlayerData.get((OfflinePlayer) e.getEntity());
-                    //We wait 2 tick to check if the player is Dead
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            for (DamageTakenExperienceSource source : getSources()) {
-                                if (source.matchesParameter(playerData, e.getCause()))
-                                    source.giveExperience(playerData, amount, null);
-                            }
-                        }
-                    }.runTaskLater(MMOCore.plugin, 2);
-                }
-            }
-        };
+        return new Manager();
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, EntityDamageEvent.DamageCause damageCause) {
-        if (player.getPlayer().isDead())
-            return false;
-        if (cause == null)
-            return true;
-        return damageCause.equals(cause);
+        if (player.getPlayer().isDead()) return false;
+        return cause == null || damageCause.equals(cause);
+    }
+
+    private static class Manager extends ExperienceSourceManager<DamageTakenExperienceSource> {
+
+        @EventHandler(priority = HIGHEST, ignoreCancelled = true)
+
+        public void onDamageTaken(EntityDamageEvent event) {
+            if (!UtilityMethods.isRealPlayer(event.getEntity())) return;
+
+            final PlayerData playerData = PlayerData.get((Player) event.getEntity());
+            final Lazy<Double> effectiveDamage = Lazy.of(() -> {
+                final double eventDamage = event.getDamage();
+                final double maxHealth = ((Player) event.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                return Math.min(eventDamage, maxHealth);
+            });
+
+            // Wait 2 tick to check if the player died
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (DamageTakenExperienceSource source : getSources())
+                        if (source.matchesParameter(playerData, event.getCause())) {
+                            //  System.out.println("-> " + effectiveDamage.get());
+                            source.giveExperience(playerData, effectiveDamage.get(), null);
+                        }
+                }
+            }.runTaskLater(MMOCore.plugin, 2);
+        }
     }
 }

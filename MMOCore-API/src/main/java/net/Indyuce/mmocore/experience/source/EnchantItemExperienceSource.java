@@ -4,9 +4,9 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -41,28 +41,30 @@ public class EnchantItemExperienceSource extends ExperienceSource<Void> {
 
     @Override
     public ExperienceSourceManager<EnchantItemExperienceSource> newManager() {
-        return new ExperienceSourceManager<EnchantItemExperienceSource>() {
+        return new Manager();
+    }
 
-            @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-            public void a(EnchantItemEvent event) {
-                PlayerData player = PlayerData.get(event.getEnchanter());
-                for (EnchantItemExperienceSource source : getSources())
-                    if (source.matches(player, null)) {
-                        Map<Enchantment, Integer> applicableEnchants = new HashMap<>(event.getEnchantsToAdd());
+    private static class Manager extends ExperienceSourceManager<EnchantItemExperienceSource> {
 
-                        // Filter out enchants if required
-                        if (!source.enchants.isEmpty())
-                            applicableEnchants.keySet().removeIf(enchantment -> !source.enchants.contains(enchantment));
+        @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+        public void a(EnchantItemEvent event) {
+            PlayerData player = PlayerData.get(event.getEnchanter());
+            for (EnchantItemExperienceSource source : getSources())
+                if (source.matches(player, null)) {
+                    Map<Enchantment, Integer> applicableEnchants = new HashMap<>(event.getEnchantsToAdd());
 
-                        if (applicableEnchants.isEmpty())
-                            continue;
+                    // Filter out enchants if required
+                    if (!source.enchants.isEmpty())
+                        applicableEnchants.keySet().removeIf(enchantment -> !source.enchants.contains(enchantment));
 
-                        double exp = 0;
-                        for (Entry<Enchantment, Integer> entry : applicableEnchants.entrySet())
-                            exp += MMOCore.plugin.enchantManager.getBaseExperience(entry.getKey()) * entry.getValue();
-                        getDispenser().giveExperience(player, exp, event.getEnchantBlock().getLocation(), EXPSource.SOURCE);
-                    }
-            }
-        };
+                    if (applicableEnchants.isEmpty())
+                        continue;
+
+                    double exp = 0;
+                    for (Entry<Enchantment, Integer> entry : applicableEnchants.entrySet())
+                        exp += MMOCore.plugin.enchantManager.getBaseExperience(entry.getKey()) * entry.getValue();
+                    source.getDispenser().giveExperience(player, exp, event.getEnchantBlock().getLocation(), EXPSource.SOURCE);
+                }
+        }
     }
 }

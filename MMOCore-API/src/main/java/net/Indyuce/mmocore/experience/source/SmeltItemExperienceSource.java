@@ -2,8 +2,8 @@ package net.Indyuce.mmocore.experience.source;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
+import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,43 +27,41 @@ public class SmeltItemExperienceSource extends SpecificExperienceSource<ItemStac
 
     @Override
     public ExperienceSourceManager<SmeltItemExperienceSource> newManager() {
-        return new ExperienceSourceManager<SmeltItemExperienceSource>() {
-
-            @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-            public void a(BlockCookEvent event) {
-                Optional<Player> player = getNearestPlayer(event.getBlock().getLocation());
-                if (!player.isPresent())
-                    return;
-
-                ItemStack caught = event.getResult();
-                if (caught.hasItemMeta())
-                    return;
-
-                PlayerData data = PlayerData.get(player.get());
-                for (SmeltItemExperienceSource source : getSources())
-                    if (source.matches(data, caught))
-                        source.giveExperience(data, 1, event.getBlock().getLocation());
-            }
-        };
-    }
-
-    private Optional<Player> getNearestPlayer(Location loc) {
-        final Player[] nearby = loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < 100)
-                .toArray(Player[]::new);
-        Player selected = null;
-        double lastDist = 100;
-        for (Player p : nearby) {
-            double currDist = p.getLocation().distance(loc);
-            if (currDist < lastDist) {
-                lastDist = currDist;
-                selected = p;
-            }
-        }
-        return Optional.ofNullable(selected);
+        return new Manager();
     }
 
     @Override
     public boolean matchesParameter(PlayerData player, ItemStack obj) {
         return obj.getType() == material;
+    }
+
+    private static class Manager extends ExperienceSourceManager<SmeltItemExperienceSource> {
+
+        @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+        public void a(BlockCookEvent event) {
+            Optional<Player> player = getNearestPlayer(event.getBlock().getLocation());
+            if (!player.isPresent()) return;
+
+            ItemStack caught = event.getResult();
+            if (caught.hasItemMeta()) return;
+
+            PlayerData data = PlayerData.get(player.get());
+            for (SmeltItemExperienceSource source : getSources())
+                if (source.matches(data, caught)) source.giveExperience(data, 1, event.getBlock().getLocation());
+        }
+
+        private Optional<Player> getNearestPlayer(Location loc) {
+            final Player[] nearby = loc.getWorld().getPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) < 100).toArray(Player[]::new);
+            Player selected = null;
+            double lastDist = 100;
+            for (Player p : nearby) {
+                double currDist = p.getLocation().distance(loc);
+                if (currDist < lastDist) {
+                    lastDist = currDist;
+                    selected = p;
+                }
+            }
+            return Optional.ofNullable(selected);
+        }
     }
 }
