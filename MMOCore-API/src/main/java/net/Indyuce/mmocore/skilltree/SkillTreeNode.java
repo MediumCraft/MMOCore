@@ -216,7 +216,7 @@ public class SkillTreeNode implements ExperienceObject {
     @Override
     @NotNull
     public ExperienceTable getExperienceTable() {
-        return Objects.requireNonNull(experienceTable);
+        return Objects.requireNonNull(experienceTable, "Skill tree has no exp table");
     }
 
     @Override

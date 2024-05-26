@@ -35,7 +35,7 @@ objectives:
         type: 'goto{world="world";x=56;y=68;z=115;range=5}'
         lore: 'Head to the camp.'
         triggers:
-        - 'message{format="&aBlacksmith> &fHello, %player%! I am currently looking for some help."}'
+        - 'message{format="&aBlacksmith> &fHello, %player_name%! I am currently looking for some help."}'
         - 'message{format="&aBlacksmith> &fCould you please get me 3 oak logs?"}'
         - 'sound{sound=ENTITY_EXPERIENCE_ORB_PICKUP}'
     2:

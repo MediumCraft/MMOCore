@@ -51,7 +51,7 @@ public class QuestManager implements MMOCoreManager {
 		load(new File(MMOCore.plugin.getDataFolder() + "/quests"));
 		for (Quest quest : quests.values())
 			try {
-				quest.postLoad();
+				quest.getPostLoadAction().performAction();
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not post-load quest '" + quest.getId() + "': " + exception.getMessage());
 			}

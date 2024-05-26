@@ -72,7 +72,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
 
         else if (identifier.startsWith("skill_level_")) {
             String id = identifier.substring(12);
-            RegisteredSkill skill = Objects.requireNonNull(MMOCore.plugin.skillManager.getSkill(id), "Could not find skill with ID '" + id + "'");
+            RegisteredSkill skill = MMOCore.plugin.skillManager.getSkillOrThrow(id);
             return String.valueOf(playerData.getSkillLevel(skill));
         }
 
@@ -92,9 +92,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
             return MythicLib.plugin.getMMOConfig().decimal.format(value);
         }
 
-        /*
-         * Returns a player's value of a skill parameter.
-         */
+        // Returns a player's value of a skill parameter.
         else if (identifier.startsWith("skill_modifier_") || identifier.startsWith("skill_parameter_")) {
             final String[] ids = identifier.substring(identifier.startsWith("skill_modifier_") ? 15 : 16).split(":");
             final String parameterId = ids[0];
@@ -152,14 +150,22 @@ public class RPGPlaceholders extends PlaceholderExpansion {
         else if (identifier.startsWith("since_last_hit"))
             return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getLastHit()) / 1000.) : "-1";
 
+        // Returns the bound skill ID
+        else if (identifier.startsWith("id_bound_")) {
+            final int slot = Math.max(1, Integer.parseInt(identifier.substring(9)));
+            final ClassSkill info = playerData.getBoundSkill(slot);
+            return info == null ? "" : info.getSkill().getHandler().getId();
+        }
+
+        // Returns the bound skill name
         else if (identifier.startsWith("bound_")) {
-            int slot = Math.max(0, Integer.parseInt(identifier.substring(6)));
-            if (playerData.hasSkillBound(slot)) {
-                ClassSkill skill = playerData.getBoundSkill(slot);
-                return (playerData.getCooldownMap().isOnCooldown(skill) ? ChatColor.RED : ChatColor.GREEN) + skill.getSkill().getName();
-            } else
-                return MMOCore.plugin.configManager.noSkillBoundPlaceholder;
-        } else if (identifier.startsWith("cooldown_bound_")) {
+            final int slot = Math.max(1, Integer.parseInt(identifier.substring(6)));
+            final ClassSkill skill = playerData.getBoundSkill(slot);
+            if (skill == null) return MMOCore.plugin.configManager.noSkillBoundPlaceholder;
+            return (playerData.getCooldownMap().isOnCooldown(skill) ? ChatColor.RED : ChatColor.GREEN) + skill.getSkill().getName();
+        }
+
+        else if (identifier.startsWith("cooldown_bound_")) {
             int slot = Math.max(0, Integer.parseInt(identifier.substring(15)));
             if (playerData.hasSkillBound(slot))
                 return Double.toString(playerData.getCooldownMap().getCooldown(playerData.getBoundSkill(slot)));

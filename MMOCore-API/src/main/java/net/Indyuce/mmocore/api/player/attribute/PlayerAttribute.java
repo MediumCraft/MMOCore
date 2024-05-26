@@ -85,7 +85,7 @@ public class PlayerAttribute implements ExperienceObject {
     @NotNull
     @Override
     public ExperienceTable getExperienceTable() {
-        return Objects.requireNonNull(expTable);
+        return Objects.requireNonNull(expTable, "Attribute has no exp table");
     }
 
     @Override

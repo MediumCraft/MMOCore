@@ -22,8 +22,8 @@ public class Icon {
     }
 
     public Icon(ConfigurationSection config) {
-        this(Material.valueOf(Objects.requireNonNull(UtilityMethods.enumName(
-                config.getString("item")))), config.contains("custom-model-data") ? config.getInt("custom-model-data") : 0);
+        this(Material.valueOf(UtilityMethods.enumName(
+                config.getString("item", "DIRT"))), config.contains("custom-model-data") ? config.getInt("custom-model-data") : 0);
     }
 
     public Icon(Material material, int customModelData) {

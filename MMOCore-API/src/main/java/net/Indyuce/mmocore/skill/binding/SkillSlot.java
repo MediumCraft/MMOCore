@@ -3,15 +3,18 @@ package net.Indyuce.mmocore.skill.binding;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.quest.trigger.Trigger;
 import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.api.quest.trigger.SkillModifierTrigger;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class SkillSlot implements Unlockable {
     private final int slot, modelData;
@@ -37,6 +40,8 @@ public class SkillSlot implements Unlockable {
         this.skillModifierTriggers.addAll(skillModifierTriggers);
     }
 
+    public static final String SKILL_MODIFIER_TRIGGER_KEY = "mmocoreSkillSlot";
+
     public SkillSlot(ConfigurationSection section) {
         this.slot = Integer.parseInt(section.getName());
         this.formula = section.contains("formula") ? section.getString("formula") : "true";
@@ -46,10 +51,19 @@ public class SkillSlot implements Unlockable {
         this.modelData = section.getInt("model-data", 0);
         this.isUnlockedByDefault = section.getBoolean("unlocked-by-default", true);
         this.canManuallyBind = section.getBoolean("can-manually-bind", true);
-        if (section.contains("skill-buffs"))
-            for (String skillBuff : section.getStringList("skill-buffs"))
-                if (skillBuff.startsWith("skill_buff"))
-                    skillModifierTriggers.add((SkillModifierTrigger) MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(skillBuff)));
+
+        // Load skill buffs
+        if (section.contains("skill-buffs")) for (String skillBuff : section.getStringList("skill-buffs"))
+            try {
+                Validate.isTrue(skillBuff.startsWith("skill_buff"), "Must be a skill_buff trigger");
+                final Trigger trigger = MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(skillBuff));
+                Validate.isTrue(trigger instanceof SkillModifierTrigger, "Not a skill_buff trigger");
+                final SkillModifierTrigger mod = (SkillModifierTrigger) trigger;
+                mod.updateKey(SKILL_MODIFIER_TRIGGER_KEY); // Fixes MMOCore issue #967
+                skillModifierTriggers.add(mod);
+            } catch (RuntimeException exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load skill buff '" + skillBuff + "' from skill slot '" + name + "': " + exception.getMessage());
+            }
     }
 
     public int getSlot() {

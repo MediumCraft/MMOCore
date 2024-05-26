@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.api.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.hologram.Hologram;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
@@ -48,7 +49,7 @@ public class MMOCoreUtils {
 
     public static String displayName(ItemStack item) {
         return item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName()
-                : caseOnWords(item.getType().name().replace("_", " "));
+                : UtilityMethods.caseOnWords(item.getType().name().replace("_", " "));
     }
 
     /**
@@ -61,6 +62,7 @@ public class MMOCoreUtils {
         return current == 0 ? maxStat : Math.max(0, Math.min(current, maxStat));
     }
 
+    @Deprecated
     public static String caseOnWords(String s) {
         StringBuilder builder = new StringBuilder(s);
         boolean isLastSpace = true;
@@ -311,5 +313,12 @@ public class MMOCoreUtils {
      */
     public static Location getCenterLocation(Entity entity) {
         return entity.getBoundingBox().getCenter().toLocation(entity.getWorld());
+    }
+
+    public static void debug(String message) {
+        message = ChatColor.YELLOW + "Debug> " + ChatColor.WHITE + message;
+        for (Player player : Bukkit.getOnlinePlayers())
+            player.sendMessage(message);
+        Bukkit.getConsoleSender().sendMessage(message);
     }
 }

@@ -3,14 +3,16 @@ package net.Indyuce.mmocore.manager;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.itemtype.ItemType;
-import io.lumine.mythic.lib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.util.PostLoadAction;
+import io.lumine.mythic.lib.util.PreloadedObject;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.block.BlockType;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.block.BlockType;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -49,7 +51,7 @@ public class RestrictionManager implements MMOCoreManager {
 
         for (ToolPermissions perms : map.values())
             try {
-                perms.postLoad();
+                perms.getPostLoadAction().performAction();
             } catch (IllegalArgumentException exception) {
                 MMOCore.log(Level.WARNING, "Could not post-load perm set '" + perms.getTool().display() + "': " + exception.getMessage());
             }
@@ -88,7 +90,7 @@ public class RestrictionManager implements MMOCoreManager {
         return perms != null && perms.canMine(block);
     }
 
-    public class ToolPermissions extends PostLoadObject {
+    public class ToolPermissions implements PreloadedObject {
 
         /**
          * Now saving string keys using {@link BlockType#generateKey()} instead
@@ -102,15 +104,8 @@ public class RestrictionManager implements MMOCoreManager {
 
         private ToolPermissions parent;
 
-        public ToolPermissions(ConfigurationSection config) {
-            super(config);
+        private final PostLoadAction postLoadAction = new PostLoadAction(config -> {
 
-            tool = ItemType.fromString(config.getName());
-            defaultSet = config.getBoolean("default");
-        }
-
-        @Override
-        protected void whenPostLoaded(ConfigurationSection config) {
             if (config.contains("parent")) {
                 String parentFormat = formatId(config.getString("parent"));
                 parent = Objects.requireNonNull(map.get(parentFormat), "Could not find parent with ID '" + parentFormat + "'");
@@ -118,6 +113,19 @@ public class RestrictionManager implements MMOCoreManager {
             if (config.contains("can-mine"))
                 for (String key : config.getStringList("can-mine"))
                     mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)).generateKey());
+        });
+
+        public ToolPermissions(ConfigurationSection config) {
+            postLoadAction.cacheConfig(config);
+
+            tool = ItemType.fromString(config.getName());
+            defaultSet = config.getBoolean("default");
+        }
+
+        @NotNull
+        @Override
+        public PostLoadAction getPostLoadAction() {
+            return postLoadAction;
         }
 
         /**

@@ -1,12 +1,8 @@
 package net.Indyuce.mmocore.api.quest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.util.PostLoadAction;
+import io.lumine.mythic.lib.util.PreloadedObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.objective.Objective;
@@ -14,26 +10,32 @@ import net.Indyuce.mmocore.experience.Profession;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
-import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.util.PostLoadObject;
+import java.util.*;
+import java.util.logging.Level;
 
-public class Quest extends PostLoadObject {
-	private final String id;
-
-	private final String name;
+public class Quest implements PreloadedObject {
+	private final String id, name;
 	private final List<Quest> parents = new ArrayList<>();
 	private final List<Objective> objectives = new ArrayList<>();
 	private final List<String> lore;
-
 	private final int mainLevelRestriction;
 	private final Map<Profession, Integer> levelRestrictions = new HashMap<>();
 
-	// cooldown in millis
+	// Cooldown in millis
 	private final long cooldown;
 
+	private final PostLoadAction postLoadAction = new PostLoadAction(config -> {
+
+		// Load parent quests
+		if (config.contains("parent"))
+			for (String parent : config.getStringList("parent"))
+				parents.add(MMOCore.plugin.questManager.getOrThrow(parent.toLowerCase().replace(" ", "-").replace("_", "-")));
+	});
+
 	public Quest(String id, FileConfiguration config) {
-		super(config);
+		postLoadAction.cacheConfig(config);
 
 		this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
 		cooldown = (long) (config.contains("delay") ? config.getDouble("delay") * 60 * 60 * 1000 : -1);
@@ -69,11 +71,10 @@ public class Quest extends PostLoadObject {
 			}
 	}
 
+	@NotNull
 	@Override
-	protected void whenPostLoaded(ConfigurationSection config) {
-		if (config.contains("parent"))
-			for (String parent : config.getStringList("parent"))
-				parents.add(MMOCore.plugin.questManager.getOrThrow(parent.toLowerCase().replace(" ", "-").replace("_", "-")));
+	public PostLoadAction getPostLoadAction() {
+		return postLoadAction;
 	}
 
 	public String getId() {

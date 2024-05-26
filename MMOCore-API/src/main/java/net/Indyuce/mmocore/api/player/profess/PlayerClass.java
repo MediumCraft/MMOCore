@@ -4,7 +4,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
-import io.lumine.mythic.lib.api.util.PostLoadObject;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import io.lumine.mythic.lib.script.Script;
@@ -12,6 +11,8 @@ import io.lumine.mythic.lib.skill.SimpleSkill;
 import io.lumine.mythic.lib.skill.Skill;
 import io.lumine.mythic.lib.skill.handler.MythicLibSkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
+import io.lumine.mythic.lib.util.PostLoadAction;
+import io.lumine.mythic.lib.util.PreloadedObject;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -37,7 +38,6 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -48,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.logging.Level;
 
-public class PlayerClass extends PostLoadObject implements ExperienceObject {
+public class PlayerClass implements ExperienceObject, PreloadedObject {
     private final String name, id, actionBarFormat;
     private final List<String> description = new ArrayList<>(), attrDescription = new ArrayList<>();
     private final ItemStack icon;
@@ -81,8 +81,22 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
     @Deprecated
     private final Map<String, EventTrigger> eventTriggers = new HashMap<>();
 
+    private final PostLoadAction postLoadAction = new PostLoadAction(config -> {
+        if (config.contains("subclasses"))
+            for (String key : config.getConfigurationSection("subclasses").getKeys(false))
+                try {
+                    subclasses.add(new Subclass(
+                            MMOCore.plugin.classManager
+                                    .getOrThrow(key.toUpperCase().replace("-", "_").replace(" ", "_")),
+                            config.getInt("subclasses." + key)));
+                } catch (IllegalArgumentException exception) {
+                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load subclass '" + key + "' from class '"
+                            + getId() + "': " + exception.getMessage());
+                }
+    });
+
     public PlayerClass(String id, FileConfiguration config) {
-        super(config);
+        postLoadAction.cacheConfig(config);
 
         this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
 
@@ -245,8 +259,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
      * option was not provided.
      */
     public PlayerClass(String id, String name, Material material) {
-        super(null);
-
         this.id = id;
         this.name = name;
         manaDisplay = ManaDisplayOptions.DEFAULT;
@@ -262,21 +274,6 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
         setOption(ClassOption.DEFAULT, false);
         for (PlayerResource resource : PlayerResource.values())
             resourceHandlers.put(resource, new ResourceRegeneration(resource));
-    }
-
-    @Override
-    protected void whenPostLoaded(ConfigurationSection config) {
-        if (config.contains("subclasses"))
-            for (String key : config.getConfigurationSection("subclasses").getKeys(false))
-                try {
-                    subclasses.add(new Subclass(
-                            MMOCore.plugin.classManager
-                                    .getOrThrow(key.toUpperCase().replace("-", "_").replace(" ", "_")),
-                            config.getInt("subclasses." + key)));
-                } catch (IllegalArgumentException exception) {
-                    MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load subclass '" + key + "' from class '"
-                            + getId() + "': " + exception.getMessage());
-                }
     }
 
     public String getId() {
@@ -308,6 +305,12 @@ public class PlayerClass extends PostLoadObject implements ExperienceObject {
 
     public int getDisplayOrder() {
         return displayOrder;
+    }
+
+    @NotNull
+    @Override
+    public PostLoadAction getPostLoadAction() {
+        return postLoadAction;
     }
 
     @Override

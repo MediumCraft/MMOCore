@@ -81,7 +81,7 @@ public class ProfessionManager implements MMOCoreManager {
 		// Load profession-specific configurations
 		for (Profession profession : professions.values())
 			try {
-				profession.postLoad();
+				profession.getPostLoadAction().performAction();
 			} catch (IllegalArgumentException exception) {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not postload profession " + profession.getId() + ": " + exception.getMessage());
 			}

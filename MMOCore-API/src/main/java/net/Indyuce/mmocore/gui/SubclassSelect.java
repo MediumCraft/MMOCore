@@ -3,17 +3,17 @@ package net.Indyuce.mmocore.gui;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.ConfigMessage;
+import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.manager.InventoryManager;
-import net.Indyuce.mmocore.api.player.profess.PlayerClass;
-import net.Indyuce.mmocore.api.ConfigMessage;
-import net.Indyuce.mmocore.api.SoundEvent;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -25,7 +25,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class SubclassSelect extends EditableInventory {
     public SubclassSelect() {
@@ -50,7 +49,7 @@ public class SubclassSelect extends EditableInventory {
             super(config.contains("item") ? Material.valueOf(UtilityMethods.enumName(config.getString("item"))) : Material.BARRIER, config);
             Validate.isTrue(config.getString("function").length() > 10, "Couldn't find the class associated to: " + config.getString("function"));
             String classId = UtilityMethods.enumName(config.getString("function").substring(10));
-            this.playerClass = Objects.requireNonNull(MMOCore.plugin.classManager.get(classId), classId + " does not correspond to any classId.");
+            this.playerClass = MMOCore.plugin.classManager.getOrThrow(classId);
             this.name = config.getString("name");
             this.lore = config.getStringList("lore");
         }

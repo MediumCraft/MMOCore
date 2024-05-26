@@ -10,13 +10,15 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
 import net.Indyuce.mmocore.api.quest.trigger.api.Temporary;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SkillModifierTrigger extends Trigger implements Removable, Temporary {
-    private final SkillModifier mod;
-    private final double amount;
+    private SkillModifier mod;
+    private boolean mutable = true;
 
     public SkillModifierTrigger(MMOLineConfig config) {
         super(config);
@@ -24,16 +26,18 @@ public class SkillModifierTrigger extends Trigger implements Removable, Temporar
         config.validateKeys("modifier");
         config.validateKeys("amount");
 
-        amount = config.getDouble("amount");
-        final String skillModifier = config.getString("modifier");
+        final double amount = config.getDouble("amount");
+        final String parameter = config.getString("modifier");
         final String formula = config.getString("formula", "true");
         final ModifierType type = config.contains("type") ? ModifierType.valueOf(UtilityMethods.enumName(config.getString("type"))) : ModifierType.FLAT;
-        List<SkillHandler<?>> targetSkills = new ArrayList<>();
-        for (RegisteredSkill skill : MMOCore.plugin.skillManager.getAll())
-            if (skill.matchesFormula(formula))
-                targetSkills.add(skill.getHandler());
+        final List<SkillHandler<?>> targetSkills = MMOCore.plugin.skillManager.getAll().stream().filter(skill -> skill.matchesFormula(formula)).map(RegisteredSkill::getHandler).collect(Collectors.toList());
 
-        mod = new SkillModifier(Trigger.STAT_MODIFIER_KEY, skillModifier, targetSkills, amount, type);
+        mod = new SkillModifier(Trigger.STAT_MODIFIER_KEY, parameter, targetSkills, amount, type);
+    }
+
+    public void updateKey(@NotNull String key) {
+        Validate.isTrue(mutable, "No longer mutable");
+        this.mod = new SkillModifier(key, mod.getParameter(), mod.getSkills(), mod.getValue(), mod.getType());
     }
 
     public List<SkillHandler<?>> getTargetSkills() {
@@ -55,6 +59,7 @@ public class SkillModifierTrigger extends Trigger implements Removable, Temporar
      * to a dynamically chosen skill handler.
      */
     public void apply(PlayerData playerData, SkillHandler<?> skill) {
+        mutable = false;
         mod.register(playerData.getMMOPlayerData(), skill);
     }
 

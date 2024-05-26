@@ -15,8 +15,8 @@ public class BoundSkillInfo implements Closeable {
     private final ClassSkill classSkill;
 
     /**
-     * PASSIVE skills must be registered inside of MythicLib when
-     * when bound. When set to null, the skill is not registered.
+     * PASSIVE skills must be registered inside MythicLib when
+     * bound. When set to null, the skill is not registered.
      */
     @Nullable
     private final PassiveSkill registered;

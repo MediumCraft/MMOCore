@@ -195,8 +195,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
     public void applyTemporaryTriggers() {
 
         // Remove all stats and buffs associated to triggers
-        getMMOPlayerData().getStatMap().getInstances().forEach(statInstance -> statInstance.removeIf(Trigger.STAT_MODIFIER_KEY::equals));
-        getMMOPlayerData().getSkillModifierMap().getInstances().forEach(skillModifierInstance -> skillModifierInstance.removeIf(Trigger.STAT_MODIFIER_KEY::equals));
+        resetTriggerStats();
 
         // Experience tables from main class
         if (getProfess().hasExperienceTable())
@@ -252,15 +251,6 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         return result;
     }
 
-    public void clearSkillTreePoints() {
-        skillTreePoints.clear();
-    }
-
-    public void clearNodeTimesClaimed() {
-        final Iterator<String> ite = tableItemClaims.keySet().iterator();
-        while (ite.hasNext()) if (ite.next().startsWith(SkillTreeNode.KEY_PREFIX)) ite.remove();
-    }
-
     public Set<Map.Entry<String, Integer>> getNodeLevelsEntrySet() {
         HashMap<String, Integer> nodeLevelsString = new HashMap<>();
         for (SkillTreeNode node : nodeLevels.keySet())
@@ -269,13 +259,8 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
     }
 
     public void resetTriggerStats() {
-        for (StatInstance instance : getMMOPlayerData().getStatMap().getInstances()) {
-            Iterator<StatModifier> iter = instance.getModifiers().iterator();
-            while (iter.hasNext()) {
-                StatModifier modifier = iter.next();
-                if (modifier.getKey().startsWith(StatTrigger.STAT_MODIFIER_KEY)) iter.remove();
-            }
-        }
+        getMMOPlayerData().getStatMap().getInstances().forEach(statInstance -> statInstance.removeIf(Trigger.STAT_MODIFIER_KEY::equals));
+        getMMOPlayerData().getSkillModifierMap().removeModifiers(Trigger.STAT_MODIFIER_KEY);
     }
 
     @Override
@@ -285,9 +270,19 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         return mapped;
     }
 
-    public void clearNodeLevels() {
+    public void clearSkillTrees() {
+
+        // Node levels, states and points spent
         nodeLevels.clear();
+        nodeStates.clear();
         pointSpent.clear();
+
+        // Skill tree points
+        skillTreePoints.clear();
+
+        // Clear node claim count
+        final Iterator<String> ite = tableItemClaims.keySet().iterator();
+        while (ite.hasNext()) if (ite.next().startsWith(SkillTreeNode.KEY_PREFIX)) ite.remove();
     }
 
     public boolean canIncrementNodeLevel(SkillTreeNode node) {
@@ -363,10 +358,6 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
     public Map<SkillTreeNode, SkillTreeStatus> getNodeStates() {
         return new HashMap<>(nodeStates);
-    }
-
-    public void clearNodeStates() {
-        nodeStates.clear();
     }
 
     @Override

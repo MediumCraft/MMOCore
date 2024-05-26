@@ -6,8 +6,6 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.quest.trigger.api.Removable;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 
-import java.util.Objects;
-
 public class LevelUpSkillTrigger extends Trigger implements Removable {
     private final RegisteredSkill skill;
     private final int amount;
@@ -17,7 +15,7 @@ public class LevelUpSkillTrigger extends Trigger implements Removable {
 
         config.validateKeys("skill", "amount");
         amount = config.getInt("amount");
-        skill = Objects.requireNonNull(MMOCore.plugin.skillManager.getSkill(config.getString("skill")));
+        skill = MMOCore.plugin.skillManager.getSkillOrThrow(config.getString("skill"));
     }
 
     @Override

@@ -29,7 +29,6 @@ import org.bukkit.persistence.PersistentDataType;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ClassSelect extends EditableInventory {
     public ClassSelect() {
@@ -59,7 +58,7 @@ public class ClassSelect extends EditableInventory {
 
             Validate.isTrue(config.getString("function").length() > 6, "Couldn't find the class associated to: " + config.getString("function"));
             String classId = UtilityMethods.enumName(config.getString("function").substring(6));
-            this.playerClass = Objects.requireNonNull(MMOCore.plugin.classManager.get(classId), classId + " does not correspond to any classId.");
+            this.playerClass = MMOCore.plugin.classManager.getOrThrow(classId);
             this.name = config.getString("name");
             this.lore = config.getStringList("lore");
         }

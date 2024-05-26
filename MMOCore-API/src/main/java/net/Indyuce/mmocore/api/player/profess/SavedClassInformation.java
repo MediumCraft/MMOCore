@@ -307,10 +307,7 @@ public class SavedClassInformation implements ClassDataContainer {
         player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
         for (PlayerAttribute attribute : MMOCore.plugin.attributeManager.getAll())
             player.getAttributes().getInstance(attribute).setBase(0);
-        player.clearSkillTreePoints();
-        player.clearNodeLevels();
-        player.clearNodeStates();
-        player.clearNodeTimesClaimed();
+        player.clearSkillTrees();
 
         /*
          * Reads this class info, applies it to the player. set class after

@@ -1,12 +1,13 @@
 package net.Indyuce.mmocore.waypoint;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.util.PostLoadAction;
+import io.lumine.mythic.lib.util.PreloadedObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.player.Unlockable;
 import net.Indyuce.mmocore.loot.chest.condition.Condition;
 import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
+import net.Indyuce.mmocore.player.Unlockable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.logging.Level;
 
-public class Waypoint extends PostLoadObject implements Unlockable {
+public class Waypoint implements Unlockable, PreloadedObject {
     private final String id, name;
     private final Location loc;
     private final List<String> lore;
@@ -41,8 +42,18 @@ public class Waypoint extends PostLoadObject implements Unlockable {
     private final double dynamicCost, setSpawnCost, normalCost;
     private final List<Condition> dynamicUseConditions = new ArrayList<>();
 
+    private final PostLoadAction postLoadAction = new PostLoadAction(config -> {
+
+        // Load waypoint network
+        if (config.contains("linked")) {
+            ConfigurationSection section = config.getConfigurationSection("linked");
+            for (String key : section.getKeys(false))
+                destinations.put(MMOCore.plugin.waypointManager.get(key), section.getDouble(key));
+        }
+    });
+
     public Waypoint(ConfigurationSection config) {
-        super(config);
+        postLoadAction.cacheConfig(config);
 
         id = Objects.requireNonNull(config, "Could not load config section").getName();
         name = Objects.requireNonNull(config.getString("name"), "Could not load waypoint name");
@@ -70,15 +81,10 @@ public class Waypoint extends PostLoadObject implements Unlockable {
         }
     }
 
+    @NotNull
     @Override
-    protected void whenPostLoaded(@NotNull ConfigurationSection config) {
-
-        // Load waypoint network
-        if (config.contains("linked")) {
-            ConfigurationSection section = config.getConfigurationSection("linked");
-            for (String key : section.getKeys(false))
-                destinations.put(MMOCore.plugin.waypointManager.get(key), section.getDouble(key));
-        }
+    public PostLoadAction getPostLoadAction() {
+        return postLoadAction;
     }
 
     public String getId() {

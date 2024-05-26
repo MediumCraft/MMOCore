@@ -1,21 +1,14 @@
 package net.Indyuce.mmocore.skilltree.tree;
 
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.util.PostLoadAction;
 import net.Indyuce.mmocore.skilltree.ParentType;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomSkillTree extends SkillTree {
-    public CustomSkillTree(ConfigurationSection config) {
-        super(config);
-
-        // Setup the coordinate map because coordinates are given in the yml for linked skill tree
-        super.coordinatesSetup();
-    }
-
-    @Override
-    protected void whenPostLoaded(@NotNull ConfigurationSection config) {
+    private final PostLoadAction postLoadAction = new PostLoadAction(config -> {
 
         // Setup the children and parents for each node.
         for (SkillTreeNode node : nodes.values()) {
@@ -31,6 +24,15 @@ public class CustomSkillTree extends SkillTree {
                 }
         }
         setupRoots();
+    });
+
+    public CustomSkillTree(ConfigurationSection config) {
+        super(config);
+
+        postLoadAction.cacheConfig(config);
+
+        // Setup the coordinate map because coordinates are given in the yml for linked skill tree
+        super.coordinatesSetup();
     }
 
     private void setupRoots() {
@@ -43,5 +45,11 @@ public class CustomSkillTree extends SkillTree {
                 node.setIsRoot();
             }
         }
+    }
+
+    @NotNull
+    @Override
+    public PostLoadAction getPostLoadAction() {
+        return postLoadAction;
     }
 }

@@ -8,7 +8,6 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public class UnlockSkillTrigger extends Trigger implements Removable {
     private final RegisteredSkill skill;
@@ -17,7 +16,7 @@ public class UnlockSkillTrigger extends Trigger implements Removable {
         super(config);
 
         config.validateKeys("skill");
-        skill = Objects.requireNonNull(MMOCore.plugin.skillManager.getSkill(config.getString("skill")));
+        skill = MMOCore.plugin.skillManager.getSkillOrThrow(config.getString("skill"));
     }
 
     @Override

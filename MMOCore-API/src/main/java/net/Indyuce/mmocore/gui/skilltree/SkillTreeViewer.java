@@ -519,7 +519,7 @@ public class SkillTreeViewer extends EditableInventory {
                     if (playerData.canIncrementNodeLevel(node)) {
                         playerData.incrementNodeLevel(node);
                         ConfigMessage.fromKey("upgrade-skill-node", "skill-node", node.getName(), "level", "" + playerData.getNodeLevel(node)).send(player);
-                        MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_SKILL_TREE_NODE).playTo(getPlayer());
                         open();
                     } else if (playerData.getNodeStatus(node) == SkillTreeStatus.LOCKED || playerData.getNodeStatus(node) == SkillTreeStatus.FULLY_LOCKED) {
                         ConfigMessage.fromKey("locked-node").send(player);

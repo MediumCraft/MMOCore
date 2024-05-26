@@ -95,7 +95,7 @@ public class ClassSkill implements CooldownObject, Unlockable {
 
     @Deprecated
     public boolean needsBound() {
-        return !isPermanent();
+        return getSkill().getTrigger().isPassive() && !isPermanent();
     }
 
     /**
@@ -171,13 +171,11 @@ public class ClassSkill implements CooldownObject, Unlockable {
         // Calculate placeholders
         Placeholders placeholders = new Placeholders();
         parameters.keySet()
-                .forEach(param -> {
-                    placeholders.register(param, skill.getDecimalFormat(param).format(data
-                            .getMMOPlayerData()
-                            .getSkillModifierMap()
-                            .getInstance(skill.getHandler(), param)
-                            .getTotal(parameters.get(param).calculate(x))));
-                });
+                .forEach(param -> placeholders.register(param, skill.getDecimalFormat(param).format(data
+                        .getMMOPlayerData()
+                        .getSkillModifierMap()
+                        .calculateValue(skill.getHandler(), parameters.get(param).calculate(x), param)))
+                );
         placeholders.register("mana_name", data.getProfess().getManaDisplay().getName());
         placeholders.register("mana_color", data.getProfess().getManaDisplay().getFull().toString());
 

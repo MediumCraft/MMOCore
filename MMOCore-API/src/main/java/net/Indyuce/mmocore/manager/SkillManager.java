@@ -1,10 +1,10 @@
 package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.list.Ambers;
 import net.Indyuce.mmocore.skill.list.Neptune_Gift;
@@ -71,7 +71,7 @@ public class SkillManager implements MMOCoreManager {
             // Check if config file exists
             ConfigFile config = new ConfigFile("/skills", handler.getLowerCaseId());
             if (!config.exists()) {
-                config.getConfig().set("name", MMOCoreUtils.caseOnWords(handler.getId().replace("_", " ").replace("-", " ").toLowerCase()));
+                config.getConfig().set("name", UtilityMethods.caseOnWords(handler.getId().replace("_", " ").replace("-", " ").toLowerCase()));
                 config.getConfig().set("lore", Arrays.asList("This is the default skill description", "", "&e{cooldown}s Cooldown", "&9Costs {mana} {mana_name}"));
                 config.getConfig().set("material", "BOOK");
                 for (Object param : handler.getParameters()) {

@@ -1,20 +1,18 @@
 package net.Indyuce.mmocore.manager;
 
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.loot.droptable.DropTable;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
-import io.lumine.mythic.lib.api.util.PostLoadObject;
-import net.Indyuce.mmocore.MMOCore;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import net.Indyuce.mmocore.loot.droptable.DropTable;
 
 public class DropTableManager implements MMOCoreManager {
 	private final Map<String, DropTable> map = new HashMap<>();
@@ -51,7 +49,7 @@ public class DropTableManager implements MMOCoreManager {
 
 		if (obj instanceof ConfigurationSection) {
 			DropTable table = new DropTable((ConfigurationSection) obj);
-			Bukkit.getScheduler().runTask(MMOCore.plugin, table::postLoad);
+			Bukkit.getScheduler().runTask(MMOCore.plugin, table.getPostLoadAction()::performAction);
 			return table;
 		}
 
@@ -78,6 +76,6 @@ public class DropTableManager implements MMOCoreManager {
 				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load drop table file '" + file.getName() + "': " + exception.getMessage());
 			}
 
-		Bukkit.getScheduler().runTask(MMOCore.plugin, () -> map.values().forEach(PostLoadObject::postLoad));
+		Bukkit.getScheduler().runTask(MMOCore.plugin, () -> map.values().forEach(table -> table.getPostLoadAction().performAction()));
 	}
 }

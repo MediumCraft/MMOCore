@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.experience;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.util.PostLoadObject;
+import io.lumine.mythic.lib.util.PostLoadAction;
+import io.lumine.mythic.lib.util.PreloadedObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class Profession extends PostLoadObject implements ExperienceObject {
+public class Profession implements ExperienceObject, PreloadedObject {
     private final String id, name;
     private final int maxLevel;
     private final Map<ProfessionOption, Boolean> options = new HashMap<>();
@@ -31,8 +31,14 @@ public class Profession extends PostLoadObject implements ExperienceObject {
      */
     private final LinearValue experience;
 
+    private final PostLoadAction postLoadAction = new PostLoadAction(config -> {
+
+        // Link profession to hardcoded profession manager
+        MMOCore.plugin.professionManager.loadProfessionConfigurations(this, config);
+    });
+
     public Profession(String id, FileConfiguration config) {
-        super(config);
+        postLoadAction.cacheConfig(config);
 
         this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");
         this.name = config.getString("name");
@@ -74,9 +80,10 @@ public class Profession extends PostLoadObject implements ExperienceObject {
                 }
     }
 
+    @NotNull
     @Override
-    protected void whenPostLoaded(ConfigurationSection configurationSection) {
-        MMOCore.plugin.professionManager.loadProfessionConfigurations(this, configurationSection);
+    public PostLoadAction getPostLoadAction() {
+        return postLoadAction;
     }
 
     public boolean getOption(ProfessionOption option) {

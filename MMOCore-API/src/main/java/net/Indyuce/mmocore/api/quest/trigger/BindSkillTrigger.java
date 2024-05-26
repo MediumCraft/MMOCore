@@ -8,7 +8,6 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public class BindSkillTrigger extends Trigger implements Removable {
     private final RegisteredSkill skill;
@@ -19,14 +18,13 @@ public class BindSkillTrigger extends Trigger implements Removable {
 
         config.validateKeys("skill", "slot");
         slot = config.getInt("slot");
-        skill = Objects.requireNonNull(MMOCore.plugin.skillManager.getSkill(config.getString("skill")));
+        skill = MMOCore.plugin.skillManager.getSkillOrThrow(config.getString("skill"));
     }
 
     @Override
     public void apply(PlayerData playerData) {
         final @Nullable ClassSkill found = playerData.getProfess().getSkill(skill);
-        if (found != null)
-            playerData.bindSkill(slot, found);
+        if (found != null) playerData.bindSkill(slot, found);
     }
 
     @Override

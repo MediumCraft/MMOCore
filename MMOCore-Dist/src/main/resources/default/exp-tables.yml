@@ -47,7 +47,7 @@ class_exp_table:
   skill_point:
     period: 1
     triggers:
-      - 'command{format="mmocore admin skill-points give %player% 1"}'
+      - 'command{format="mmocore admin skill-points give %player_name% 1"}'
 
 second_exp_table:
 

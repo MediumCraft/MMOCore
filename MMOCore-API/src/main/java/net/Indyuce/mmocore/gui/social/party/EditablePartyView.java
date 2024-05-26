@@ -193,12 +193,12 @@ public class EditablePartyView extends EditableInventory {
             }
 
             if (item.getFunction().equals("member") && context.getClickType() == ClickType.RIGHT) {
-                if (!party.getOwner().equals(playerData))
-                    return;
+                if (!party.getOwner().equals(playerData)) return;
 
-                OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(context.getClickedItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING)));
-                if (target.equals(player))
-                    return;
+                final String uuidTag = context.getClickedItem().getItemMeta().getPersistentDataContainer().get(UUID_NAMESPACEDKEY, PersistentDataType.STRING);
+                if (uuidTag == null || uuidTag.isEmpty()) return;
+                final OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(uuidTag));
+                if (target.equals(player)) return;
 
                 party.removeMember(PlayerData.get(target));
                 ConfigMessage.fromKey("kick-from-party", "player", target.getName()).send(player);
