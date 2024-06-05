@@ -94,6 +94,13 @@ public class ExperienceManager implements MMOCoreManager {
         return expTables.values();
     }
 
+    // TODO when required, define class-specific unlockable items.
+    // TODO - Skill, skill slots are class-specific
+    // TODO - Waypoints are not
+    public boolean isClassSpecific(@NotNull String namespacedKey) {
+        return true;
+    }
+
     @Override
     public void initialize(boolean clearBefore) {
         if (clearBefore) {

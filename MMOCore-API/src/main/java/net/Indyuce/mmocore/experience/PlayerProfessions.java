@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.experience;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
@@ -86,7 +85,7 @@ public class PlayerProfessions {
      * When loading data through SQL
      */
     public void load(String json) {
-        JsonObject obj = new Gson().fromJson(json, JsonObject.class);
+        JsonObject obj = MythicLib.plugin.getGson().fromJson(json, JsonObject.class);
 
         // Load profession exp and levels
         for (Entry<String, JsonElement> entry : obj.entrySet())
@@ -215,8 +214,7 @@ public class PlayerProfessions {
             playerData.giveExperience(profession.getExperience().calculate(level), null);
 
             // Apply profession experience table
-            if (profession.hasExperienceTable())
-                profession.getExperienceTable().claim(playerData, level, profession);
+            profession.updateAdvancement(playerData, level);
         }
 
         if (check) {

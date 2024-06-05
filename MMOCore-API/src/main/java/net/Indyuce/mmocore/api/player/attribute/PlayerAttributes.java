@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.api.player.attribute;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatInstance;
-import io.lumine.mythic.lib.player.modifier.Closeable;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
+import io.lumine.mythic.lib.util.Closeable;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
@@ -33,11 +33,9 @@ public class PlayerAttributes {
     public void load(ConfigurationSection config) {
         for (String key : config.getKeys(false))
             try {
-                String id = key.toLowerCase().replace("_", "-").replace(" ", "-");
-                Validate.isTrue(MMOCore.plugin.attributeManager.has(id), "Could not find attribute '" + id + "'");
-
-                PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
-                AttributeInstance ins = new AttributeInstance(attribute.getId());
+                final String id = key.toLowerCase().replace("_", "-").replace(" ", "-");
+                Validate.isTrue(MMOCore.plugin.attributeManager.has(id), "Could not find attribute called '" + id + "'");
+                final AttributeInstance ins = new AttributeInstance(id);
                 ins.setBase(config.getInt(key));
                 instances.put(id, ins);
             } catch (IllegalArgumentException exception) {
@@ -57,15 +55,12 @@ public class PlayerAttributes {
     }
 
     public void load(String json) {
-        Gson parser = new Gson();
-        JsonObject jo = parser.fromJson(json, JsonObject.class);
+        JsonObject jo = MythicLib.plugin.getGson().fromJson(json, JsonObject.class);
         for (Entry<String, JsonElement> entry : jo.entrySet()) {
             try {
-                String id = entry.getKey().toLowerCase().replace("_", "-").replace(" ", "-");
-                Validate.isTrue(MMOCore.plugin.attributeManager.has(id), "Could not find attribute '" + id + "'");
-
-                PlayerAttribute attribute = MMOCore.plugin.attributeManager.get(id);
-                AttributeInstance ins = new AttributeInstance(attribute.getId());
+                final String id = entry.getKey().toLowerCase().replace("_", "-").replace(" ", "-");
+                Validate.isTrue(MMOCore.plugin.attributeManager.has(id), "Could not find attribute called '" + id + "'");
+                final AttributeInstance ins = new AttributeInstance(id);
                 ins.setBase(entry.getValue().getAsInt());
                 instances.put(id, ins);
             } catch (IllegalArgumentException exception) {
@@ -121,7 +116,7 @@ public class PlayerAttributes {
         private final String id, enumName;
         private final Map<String, AttributeModifier> map = new HashMap<>();
 
-        public AttributeInstance(String id) {
+        public AttributeInstance(@NotNull String id) {
             this.id = id;
             this.enumName = UtilityMethods.enumName(this.id);
         }
@@ -143,7 +138,7 @@ public class PlayerAttributes {
         }
 
         public void addBase(int value) {
-            setBase(spent + value);
+            setBase(getBase() + value);
         }
 
         /*
@@ -183,8 +178,7 @@ public class PlayerAttributes {
         public AttributeModifier addModifier(AttributeModifier modifier) {
             final AttributeModifier current = map.put(modifier.getKey(), modifier);
 
-            if (current != null && current instanceof Closeable)
-                ((Closeable) current).close();
+            if (current instanceof Closeable) ((Closeable) current).close();
 
             updateStats();
             return current;

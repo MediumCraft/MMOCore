@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.api.quest;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.util.Closeable;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -99,8 +99,7 @@ public class PlayerQuests implements Closeable {
     }
 
     public void load(String json) {
-        Gson parser = new Gson();
-        JsonObject jo = parser.fromJson(json, JsonObject.class);
+        JsonObject jo = MythicLib.plugin.getGson().fromJson(json, JsonObject.class);
         if (jo.has("current")) {
             JsonObject cur = jo.getAsJsonObject("current");
             try {

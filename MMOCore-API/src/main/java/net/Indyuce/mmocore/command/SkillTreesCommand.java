@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 public class SkillTreesCommand extends RegisteredCommand {
     public SkillTreesCommand(ConfigurationSection config) {
         super(config, ToggleableCommand.SKILL_TREES);
-
-
     }
 
     @Override
@@ -74,7 +72,5 @@ public class SkillTreesCommand extends RegisteredCommand {
                 sender.sendMessage(ChatColor.RED + "Usage: /skilltrees");
             return false;
         }
-
     }
-
 }

@@ -27,7 +27,7 @@ public class SkillTreeNode implements ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
 
-    private String permissionRequired;
+    private final String permissionRequired;
 
     private final Map<SkillTreeStatus, Icon> icons = new HashMap<>();
 
@@ -56,11 +56,6 @@ public class SkillTreeNode implements ExperienceObject {
      * but you need to fulfill the requirements of all of your strong parents.
      **/
     private final Map<ParentInformation, Integer> parents = new HashMap<>();
-
-    /**
-     * Prefix used in node key
-     */
-    public static final String KEY_PREFIX = "node";
 
     public SkillTreeNode(SkillTree tree, ConfigurationSection config) {
         Validate.notNull(config, "Config cannot be null");
@@ -136,7 +131,6 @@ public class SkillTreeNode implements ExperienceObject {
         this.coordinates = coordinates;
     }
 
-
     public int getParentNeededLevel(SkillTreeNode parent) {
         for (Map.Entry<ParentInformation, Integer> entry : parents.entrySet())
             if (entry.getKey().node().equals(parent))
@@ -201,6 +195,8 @@ public class SkillTreeNode implements ExperienceObject {
     public IntegerCoordinates getCoordinates() {
         return coordinates;
     }
+
+    public static final String KEY_PREFIX = "node";
 
     @Override
     public String getKey() {

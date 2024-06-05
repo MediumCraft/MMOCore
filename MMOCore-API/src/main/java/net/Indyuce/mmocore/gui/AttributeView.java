@@ -147,9 +147,8 @@ public class AttributeView extends EditableInventory {
 				playerData.giveAttributePoints(-pointsSpent);
 
 				// Apply exp table as many times as required
-				if (attribute.hasExperienceTable())
-					while (pointsSpent-- > 0)
-						attribute.getExperienceTable().claim(playerData, ins.getBase(), attribute);
+				while (pointsSpent-- > 0)
+					attribute.updateAdvancement(playerData, ins.getBase());
 
 				ConfigMessage.fromKey("attribute-level-up", "attribute", attribute.getName(), "level", String.valueOf(ins.getBase())).send(player);
 				MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_ATTRIBUTE).playTo(getPlayer());

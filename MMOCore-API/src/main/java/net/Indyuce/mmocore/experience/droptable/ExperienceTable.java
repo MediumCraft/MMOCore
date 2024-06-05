@@ -5,6 +5,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,34 +37,34 @@ public class ExperienceTable {
     }
 
     /**
-     * Called when a player levels up one of his professions
+     * Called when a player levels up something.
      *
      * @param levelingUp      Player leveling up
      * @param professionLevel New profession level
-     * @param object          Either profession or class leveling up
+     * @param object          The object being level up. This MUST be the parent object
+     *                        owning the calling experience table! In other words,
+     *                        <code>object.getExperienceTable() == this</code> must remain true.
      */
-    public void claim(PlayerData levelingUp, int professionLevel, ExperienceObject object) {
+    public void claim(@NotNull PlayerData levelingUp, int professionLevel, @NotNull ExperienceObject object) {
 
         for (ExperienceItem item : items) {
-            int timesClaimed = levelingUp.getClaims(object, this, item);
-            if (!item.roll(professionLevel, timesClaimed))
-                continue;
+            final int timesClaimed = levelingUp.getClaims(object, item);
+            if (!item.roll(professionLevel, timesClaimed)) continue;
 
-            levelingUp.setClaims(object, this, item, timesClaimed + 1);
+            levelingUp.setClaims(object, item, timesClaimed + 1);
             item.applyTriggers(levelingUp);
         }
     }
 
-    /**
-     * Called for example when a player changes its class. This takes
-     * off triggers which can be canceled.
-     */
-    public void unclaim(PlayerData playerData, ExperienceObject object, boolean reset) {
+    public void unclaim(@NotNull PlayerData playerData, @NotNull ExperienceObject object, boolean reset) {
         for (ExperienceItem item : items) {
-            final int timesClaimed = playerData.getClaims(object, this, item);
-            if (reset) playerData.setClaims(object, this, item, 0);
-            for (int i = 0; i < timesClaimed; i++)
+
+            // Undo triggers
+            for (int i = 0; i < playerData.getClaims(object, item); i++)
                 item.removeTriggers(playerData);
+
+            // Reset levels
+            if (reset) playerData.setClaims(object, item, 0);
         }
     }
 
@@ -74,9 +75,9 @@ public class ExperienceTable {
      * @param data   PlayerData
      * @param object Either profession, skillTreeNode or class leveling up
      */
-    public void applyTemporaryTriggers(PlayerData data, ExperienceObject object) {
+    public void applyTemporaryTriggers(@NotNull PlayerData data, @NotNull ExperienceObject object) {
         for (ExperienceItem item : items) {
-            int timesClaimed = data.getClaims(object, this, item);
+            final int timesClaimed = data.getClaims(object, item);
             for (int i = 0; i < timesClaimed; i++)
                 item.applyTemporaryTriggers(data);
         }

@@ -294,20 +294,18 @@ public class SavedClassInformation implements ClassDataContainer {
         if (!player.getProfess().hasOption(ClassOption.DEFAULT) || MMOCore.plugin.configManager.saveDefaultClassInfo)
             player.applyClassInfo(player.getProfess(), new SavedClassInformation(player));
 
-        // Remove perm stats for nodes and class
-        for (SkillTree skillTree : player.getProfess().getSkillTrees())
-            for (SkillTreeNode node : skillTree.getNodes())
-                node.getExperienceTable().unclaim(player, node, false);
-        if (player.getProfess().hasExperienceTable())
-            player.getProfess().getExperienceTable().unclaim(player, player.getProfess(), false);
+        // Remove class permanent buffs
+        player.getProfess().resetAdvancement(player, false);
 
         /*
          * Resets information which much be reset after everything is saved.
          */
         player.mapSkillLevels().forEach((skill, level) -> player.resetSkillLevel(skill));
-        for (PlayerAttribute attribute : MMOCore.plugin.attributeManager.getAll())
+        for (PlayerAttribute attribute : MMOCore.plugin.attributeManager.getAll()) {
+            attribute.resetAdvancement(player, false);
             player.getAttributes().getInstance(attribute).setBase(0);
-        player.clearSkillTrees();
+        }
+        player.resetSkillTrees();
 
         /*
          * Reads this class info, applies it to the player. set class after

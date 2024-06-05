@@ -8,5 +8,5 @@ package net.Indyuce.mmocore.api.quest.trigger.api;
  *
  * @author jules
  */
-public interface Temporary {
+public interface Temporary extends Removable {
 }

@@ -1,29 +1,33 @@
 package net.Indyuce.mmocore.command.rpg.admin;
 
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.experience.Profession;
+import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
-import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import net.Indyuce.mmocore.command.api.CommandVerbose;
+import net.Indyuce.mmocore.experience.Profession;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import net.Indyuce.mmocore.command.api.CommandVerbose;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
-import io.lumine.mythic.lib.command.api.Parameter;
+import java.util.HashSet;
 
 public class ResetCommandTreeNode extends CommandTreeNode {
     public ResetCommandTreeNode(CommandTreeNode parent) {
         super(parent, "reset");
 
+        addChild(new ResetClassesCommandTreeNode(this));
         addChild(new ResetLevelsCommandTreeNode(this));
         addChild(new ResetSkillsCommandTreeNode(this));
-        addChild(new ResetAllCommandTreeNode(this));
+        addChild(new ResetQuestsCommandTreeNode(this));
         addChild(new ResetAttributesCommandTreeNode(this));
         addChild(new ResetWaypointsCommandTreeNode(this));
         addChild(new ResetSkillTreesCommandTreeNode(this));
+        addChild(new ResetAllCommandTreeNode(this));
     }
 
     @Override
@@ -40,8 +44,7 @@ public class ResetCommandTreeNode extends CommandTreeNode {
 
         @Override
         public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
-                return CommandResult.THROW_USAGE;
+            if (args.length < 4) return CommandResult.THROW_USAGE;
 
             Player player = Bukkit.getPlayer(args[3]);
             if (player == null) {
@@ -49,214 +52,243 @@ public class ResetCommandTreeNode extends CommandTreeNode {
                 return CommandResult.FAILURE;
             }
 
-            PlayerData data = PlayerData.get(player);
-            MMOCore.plugin.playerDataManager.getDefaultData().apply(data);
-            data.setExperience(0);
-            for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
-                data.getCollectionSkills().setExperience(profession, 0);
-                data.getCollectionSkills().setLevel(profession, 0);
-            }
-            MMOCore.plugin.classManager.getAll().forEach(data::unloadClassInfo);
-            data.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
-            data.mapSkillLevels().forEach((skill, level) -> data.resetSkillLevel(skill));
-            data.setSkillTreePoints("global", 0);
-            for (SkillTree skillTree : data.getProfess().getSkillTrees()) {
-                data.resetSkillTree(skillTree);
-                data.setSkillTreePoints(skillTree.getId(), 0);
-            }
+            final boolean givePoints = args.length > 4 && args[4].equalsIgnoreCase("-reallocate");
 
-            data.resetTimesClaimed();
-            for(int slot:data.mapBoundSkills().keySet())
-                data.unbindSkill(slot);
-            data.getQuestData().resetFinishedQuests();
-            data.getQuestData().start(null);
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
-                    ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s data was succesfully reset.");
+            PlayerData data = PlayerData.get(player);
+            ResetClassesCommandTreeNode.resetClasses(data);
+            ResetLevelsCommandTreeNode.resetLevels(data);
+            ResetSkillsCommandTreeNode.resetSkills(data);
+            ResetQuestsCommandTreeNode.resetQuests(data);
+            ResetAttributesCommandTreeNode.resetAttributes(data, givePoints);
+            ResetWaypointsCommandTreeNode.resetWaypoints(data);
+            ResetSkillTreesCommandTreeNode.resetSkillTrees(data);
+            CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s data was successfully reset.");
             return CommandResult.SUCCESS;
         }
     }
+}
 
-    public static class ResetWaypointsCommandTreeNode extends CommandTreeNode {
-        public ResetWaypointsCommandTreeNode(CommandTreeNode parent) {
-            super(parent, "waypoints");
+class ResetWaypointsCommandTreeNode extends CommandTreeNode {
+    public ResetWaypointsCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "waypoints");
 
-            addParameter(Parameter.PLAYER);
-        }
-
-        @Override
-        public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
-                return CommandResult.THROW_USAGE;
-
-            Player player = Bukkit.getPlayer(args[3]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
-                return CommandResult.FAILURE;
-            }
-
-            PlayerData data = PlayerData.get(player);
-            data.getWaypoints().clear();
-            return CommandResult.SUCCESS;
-        }
+        addParameter(Parameter.PLAYER);
     }
 
-    public static class ResetQuestsCommandTreeNode extends CommandTreeNode {
-        public ResetQuestsCommandTreeNode(CommandTreeNode parent) {
-            super(parent, "quests");
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 4) return CommandResult.THROW_USAGE;
 
-            addParameter(Parameter.PLAYER);
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+            return CommandResult.FAILURE;
         }
 
-        @Override
-        public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
-                return CommandResult.THROW_USAGE;
-
-            Player player = Bukkit.getPlayer(args[3]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
-                return CommandResult.FAILURE;
-            }
-
-            PlayerData data = PlayerData.get(player);
-            data.getQuestData().resetFinishedQuests();
-            data.getQuestData().start(null);
-            return CommandResult.SUCCESS;
-        }
+        resetWaypoints(PlayerData.get(player));
+        CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s waypoints were successfully reset.");
+        return CommandResult.SUCCESS;
     }
 
-    public static class ResetSkillsCommandTreeNode extends CommandTreeNode {
-        public ResetSkillsCommandTreeNode(CommandTreeNode parent) {
-            super(parent, "skills");
+    static void resetWaypoints(@NotNull PlayerData playerData) {
+        playerData.getWaypoints().clear();
+    }
+}
 
-            addParameter(Parameter.PLAYER);
-        }
+class ResetQuestsCommandTreeNode extends CommandTreeNode {
+    public ResetQuestsCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "quests");
 
-        @Override
-        public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
-                return CommandResult.THROW_USAGE;
-
-            Player player = Bukkit.getPlayer(args[3]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
-                return CommandResult.FAILURE;
-            }
-
-            PlayerData data = PlayerData.get(player);
-            data.mapSkillLevels().forEach((skill, level) -> data.resetSkillLevel(skill));
-            while (data.hasSkillBound(0))
-                data.unbindSkill(0);
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
-                    ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill data was succesfully reset.");
-            return CommandResult.SUCCESS;
-        }
+        addParameter(Parameter.PLAYER);
     }
 
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 4) return CommandResult.THROW_USAGE;
 
-    public static class ResetSkillTreesCommandTreeNode extends CommandTreeNode {
-        public ResetSkillTreesCommandTreeNode(CommandTreeNode parent) {
-            super(parent, "skill-trees");
-
-            addParameter(Parameter.PLAYER);
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+            return CommandResult.FAILURE;
         }
 
-        @Override
-        public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
-                return CommandResult.THROW_USAGE;
-
-            Player player = Bukkit.getPlayer(args[3]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
-                return CommandResult.FAILURE;
-            }
-
-            PlayerData data = PlayerData.get(player);
-            for (SkillTree skillTree : data.getProfess().getSkillTrees())
-                data.resetSkillTree(skillTree);
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
-                    ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill-tree data was succesfully reset.");
-            return CommandResult.SUCCESS;
-        }
+        resetQuests(PlayerData.get(player));
+        CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s quests were successfully reset.");
+        return CommandResult.SUCCESS;
     }
 
-    public class ResetAttributesCommandTreeNode extends CommandTreeNode {
-        public ResetAttributesCommandTreeNode(CommandTreeNode parent) {
-            super(parent, "attributes");
+    static void resetQuests(@NotNull PlayerData data) {
+        data.getQuestData().resetFinishedQuests();
+        data.getQuestData().start(null);
+    }
+}
 
-            addParameter(Parameter.PLAYER);
-            addParameter(new Parameter("(-reallocate)", (explore, list) -> list.add("-reallocate")));
-        }
+class ResetSkillsCommandTreeNode extends CommandTreeNode {
+    public ResetSkillsCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "skills");
 
-        @Override
-        public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
-                return CommandResult.THROW_USAGE;
-
-            Player player = Bukkit.getPlayer(args[3]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
-                return CommandResult.FAILURE;
-            }
-
-            PlayerData data = PlayerData.get(player);
-
-            /*
-             * force reallocating of player attribute points
-             */
-            if (args.length > 4 && args[4].equalsIgnoreCase("-reallocate")) {
-
-                int points = 0;
-                for (PlayerAttributes.AttributeInstance ins : data.getAttributes().getInstances()) {
-                    points += ins.getBase();
-                    ins.setBase(0);
-                }
-
-                data.giveAttributePoints(points);
-                CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
-                        ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attribute points spendings were successfully reset.");
-                return CommandResult.SUCCESS;
-            }
-
-            data.getAttributes().getInstances().forEach(ins -> ins.setBase(0));
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
-                    ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attributes were succesfully reset.");
-            return CommandResult.SUCCESS;
-        }
+        addParameter(Parameter.PLAYER);
     }
 
-    public static class ResetLevelsCommandTreeNode extends CommandTreeNode {
-        public ResetLevelsCommandTreeNode(CommandTreeNode parent) {
-            super(parent, "levels");
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 4) return CommandResult.THROW_USAGE;
 
-            addParameter(Parameter.PLAYER);
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+            return CommandResult.FAILURE;
         }
 
-        @Override
-        public CommandResult execute(CommandSender sender, String[] args) {
-            if (args.length < 4)
-                return CommandResult.THROW_USAGE;
+        resetSkills(PlayerData.get(player));
+        CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill data was successfully reset.");
+        return CommandResult.SUCCESS;
+    }
 
-            Player player = Bukkit.getPlayer(args[3]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
-                return CommandResult.FAILURE;
-            }
+    static void resetSkills(@NotNull PlayerData data) {
+        data.mapSkillLevels().forEach((skill, ignored) -> data.resetSkillLevel(skill));
+        while (data.hasSkillBound(0)) data.unbindSkill(0);
+        data.setUnlockedItems(new HashSet<>()); // TODO class-specific unlockables etc.
+    }
+}
 
-            PlayerData data = PlayerData.get(player);
-            data.setLevel(MMOCore.plugin.playerDataManager.getDefaultData().getLevel());
-            data.setExperience(0);
-            for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
-                data.getCollectionSkills().setExperience(profession, 0);
-                data.getCollectionSkills().setLevel(profession, 0);
-                profession.getExperienceTable().unclaim(data, profession, true);
-            }
+class ResetSkillTreesCommandTreeNode extends CommandTreeNode {
+    public ResetSkillTreesCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "skill-trees");
 
-            CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET,
-                    ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s levels were succesfully reset.");
+        addParameter(Parameter.PLAYER);
+    }
 
-            return CommandResult.SUCCESS;
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 4) return CommandResult.THROW_USAGE;
+
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+            return CommandResult.FAILURE;
         }
+
+        resetSkillTrees(PlayerData.get(player));
+        CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s skill-tree data was successfully reset.");
+        return CommandResult.SUCCESS;
+    }
+
+    // TODO option to reallocate skill tree points instead of not giving any back
+    static void resetSkillTrees(@NotNull PlayerData data) {
+        data.resetSkillTrees();
+    }
+}
+
+class ResetAttributesCommandTreeNode extends CommandTreeNode {
+    public ResetAttributesCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "attributes");
+
+        addParameter(Parameter.PLAYER);
+        addParameter(new Parameter("(-reallocate)", (explore, list) -> list.add("-reallocate")));
+    }
+
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 4) return CommandResult.THROW_USAGE;
+
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+            return CommandResult.FAILURE;
+        }
+
+        final boolean givePoints = args.length > 4 && args[4].equalsIgnoreCase("-reallocate");
+        resetAttributes(PlayerData.get(player), givePoints);
+        CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s attributes were successfully reset.");
+        return CommandResult.SUCCESS;
+    }
+
+    static void resetAttributes(@NotNull PlayerData data, boolean givePoints) {
+
+        // Give back attribute points
+        if (givePoints) {
+
+            int points = 0;
+            for (PlayerAttributes.AttributeInstance ins : data.getAttributes().getInstances()) {
+                points += ins.getBase();
+                ins.setBase(0);
+            }
+
+            data.giveAttributePoints(points);
+            return;
+        }
+
+        for (PlayerAttribute attribute : MMOCore.plugin.attributeManager.getAll()) {
+            attribute.resetAdvancement(data, true);
+            data.getAttributes().getInstance(attribute).setBase(0);
+        }
+    }
+}
+
+class ResetLevelsCommandTreeNode extends CommandTreeNode {
+    public ResetLevelsCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "levels");
+
+        addParameter(Parameter.PLAYER);
+    }
+
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 4) return CommandResult.THROW_USAGE;
+
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+            return CommandResult.FAILURE;
+        }
+
+        resetLevels(PlayerData.get(player));
+        CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s levels were successfully reset.");
+        return CommandResult.SUCCESS;
+    }
+
+    static void resetLevels(@NotNull PlayerData data) {
+
+        // Class
+        data.setLevel(MMOCore.plugin.playerDataManager.getDefaultData().getLevel());
+        data.setExperience(0);
+        data.getProfess().resetAdvancement(data, true);
+
+        // Professions
+        for (Profession profession : MMOCore.plugin.professionManager.getAll()) {
+            data.getCollectionSkills().setExperience(profession, 0);
+            data.getCollectionSkills().setLevel(profession, 0);
+            profession.resetAdvancement(data, true);
+        }
+    }
+}
+
+class ResetClassesCommandTreeNode extends CommandTreeNode {
+    public ResetClassesCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "classes");
+
+        addParameter(Parameter.PLAYER);
+    }
+
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 4) return CommandResult.THROW_USAGE;
+
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Could not find the player called " + args[3] + ".");
+            return CommandResult.FAILURE;
+        }
+
+        resetClasses(PlayerData.get(player));
+        CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s classes were successfully reset.");
+        return CommandResult.SUCCESS;
+    }
+
+    static void resetClasses(@NotNull PlayerData data) {
+        MMOCore.plugin.classManager.getAll().forEach(data::unloadClassInfo);
+        MMOCore.plugin.playerDataManager.getDefaultData().apply(data);
+        data.setClass(MMOCore.plugin.classManager.getDefaultClass());
     }
 }
