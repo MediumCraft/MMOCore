@@ -8,8 +8,8 @@ import io.lumine.mythic.lib.skill.SkillMetadata;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.result.def.SimpleSkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -31,7 +31,7 @@ public class Sneaky_Picky extends SkillHandler<SimpleSkillResult> implements Lis
     public void whenCast(SimpleSkillResult result, SkillMetadata skillMeta) {
         LivingEntity target = (LivingEntity) skillMeta.getTargetEntity();
         skillMeta.getAttack().getDamage().multiplicativeModifier(1 + skillMeta.getParameter("extra") / 100, DamageType.WEAPON);
-        target.getWorld().spawnParticle(Particle.SMOKE_NORMAL, target.getLocation().add(0, target.getHeight() / 2, 0), 64, 0, 0, 0, .05);
+        target.getWorld().spawnParticle(VParticle.SMOKE.get(), target.getLocation().add(0, target.getHeight() / 2, 0), 64, 0, 0, 0, .05);
         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 2);
     }
 

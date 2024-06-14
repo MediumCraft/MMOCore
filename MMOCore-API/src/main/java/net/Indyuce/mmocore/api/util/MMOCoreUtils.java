@@ -5,11 +5,10 @@ import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.hologram.Hologram;
-import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VEnchantment;
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -135,7 +134,7 @@ public class MMOCoreUtils {
     }
 
     public static boolean isPlayerHead(Material material) {
-        return material == VersionMaterial.PLAYER_HEAD.toMaterial() || material == VersionMaterial.PLAYER_WALL_HEAD.toMaterial();
+        return material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD;
     }
 
     public static ItemStack readIcon(String string) throws IllegalArgumentException {
@@ -284,13 +283,13 @@ public class MMOCoreUtils {
      */
     public static void decreaseDurability(Player player, EquipmentSlot slot, int damage) {
 
-        ItemStack item = player.getInventory().getItem(slot);
+        ItemStack item = UtilityMethods.getHandItem(player, slot);
         if (item == null || item.getType().getMaxDurability() == 0 || item.getItemMeta().isUnbreakable())
             return;
 
         // Check unbreakable, ignore if necessary
         final ItemMeta meta = item.getItemMeta();
-        final int unbreakingLevel = meta.getEnchantLevel(Enchantment.DURABILITY);
+        final int unbreakingLevel = meta.getEnchantLevel(VEnchantment.UNBREAKING.get());
         if (unbreakingLevel > 0 && RANDOM.nextInt(unbreakingLevel + 1) != 0) return;
 
         PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, item, damage);

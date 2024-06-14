@@ -2,6 +2,7 @@ package net.Indyuce.mmocore.loot.chest.particle;
 
 import java.util.function.Consumer;
 
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -23,7 +24,7 @@ public class ParabolicProjectile extends BukkitRunnable {
 	// private static final Random random = new Random();
 
 	public ParabolicProjectile(Location source, Location target, Color color) {
-		this(source, target, Particle.REDSTONE, () -> {
+		this(source, target, VParticle.REDSTONE.get(), () -> {
 		}, 1, color, 1);
 	}
 
@@ -34,7 +35,7 @@ public class ParabolicProjectile extends BukkitRunnable {
 
 	public ParabolicProjectile(Location source, Location target, Runnable end, Color color) {
 		this(source, target, target.clone().subtract(source).toVector().multiply(.1).setY(6).normalize().multiply(.3), end, 1,
-				(loc) -> loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(color, 1f)));
+				(loc) -> loc.getWorld().spawnParticle(VParticle.REDSTONE.get(), loc, 1, new Particle.DustOptions(color, 1f)));
 	}
 
 	public ParabolicProjectile(Location source, Location target, Particle particle) {

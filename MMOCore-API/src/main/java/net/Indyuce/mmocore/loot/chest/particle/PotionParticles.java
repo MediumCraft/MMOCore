@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.loot.chest.particle;
 
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.Color;
 import org.bukkit.Particle;
@@ -43,6 +44,6 @@ public class PotionParticles extends BukkitRunnable {
 			return;
 		}
 
-		potion.getWorld().spawnParticle(Particle.SPELL_MOB, potion.getLocation(), 0, r, g, b);
+		potion.getWorld().spawnParticle(VParticle.ENTITY_EFFECT.get(), potion.getLocation(), 0, r, g, b);
 	}
 }

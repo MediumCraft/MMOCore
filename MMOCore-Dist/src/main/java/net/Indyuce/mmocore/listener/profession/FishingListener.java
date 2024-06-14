@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.listener.profession;
 
-import io.lumine.mythic.lib.version.VersionSound;
+import io.lumine.mythic.lib.version.VParticle;
+import io.lumine.mythic.lib.version.VSound;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
@@ -141,7 +142,7 @@ public class FishingListener implements Listener {
                 event.setCancelled(true);
                 if (isTimedOut()) {
                     close();
-                    hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, hook.getLocation(), 16, 0, 0, 0, .1);
+                    hook.getWorld().spawnParticle(VParticle.SMOKE.get(), hook.getLocation(), 16, 0, 0, 0, .1);
                     return;
                 }
 
@@ -164,14 +165,14 @@ public class FishingListener implements Listener {
             // Critical fishing failure
             if (!isCriticalFish() && RANDOM.nextDouble() < PlayerData.get(player).getStats().getStat("CRITICAL_FISHING_FAILURE_CHANCE") / 100) {
                 player.setVelocity(hook.getLocation().subtract(player.getLocation()).toVector().setY(0).multiply(3).setY(.5));
-                hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
+                hook.getWorld().spawnParticle(VParticle.SMOKE.get(), location, 24, 0, 0, 0, .08);
                 return;
             }
 
             // Find looted item
             ItemStack collect = caught.collect(new LootBuilder(playerData, 0));
             if (collect == null) {
-                hook.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 24, 0, 0, 0, .08);
+                hook.getWorld().spawnParticle(VParticle.SMOKE.get(), location, 24, 0, 0, 0, .08);
                 return;
             }
 
@@ -193,9 +194,9 @@ public class FishingListener implements Listener {
             vec.setX(vec.getX() * .08);
             vec.setZ(vec.getZ() * .08);
             item.setVelocity(vec);
-            player.getWorld().playSound(player.getLocation(), VersionSound.BLOCK_NOTE_BLOCK_HAT.toSound(), 1, 0);
+            player.getWorld().playSound(player.getLocation(), VSound.BLOCK_NOTE_BLOCK_HAT.get(), 1, 0);
             for (int j = 0; j < 8; j++)
-                location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, 4 * (RANDOM.nextDouble() - .5), RANDOM.nextDouble() + 1, 4 * (RANDOM.nextDouble() - .5), .08);
+                location.getWorld().spawnParticle(VParticle.FIREWORK.get(), location, 0, 4 * (RANDOM.nextDouble() - .5), RANDOM.nextDouble() + 1, 4 * (RANDOM.nextDouble() - .5), .08);
             player.giveExp(vanillaExpDropped);
             if (MMOCore.plugin.fishingManager.hasLinkedProfession())
                 playerData.getCollectionSkills().giveExperience(MMOCore.plugin.fishingManager.getLinkedProfession(), experienceDropped, EXPSource.FISHING, location, true);

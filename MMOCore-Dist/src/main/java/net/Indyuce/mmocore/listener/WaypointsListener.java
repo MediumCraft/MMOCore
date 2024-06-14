@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -9,7 +10,6 @@ import net.Indyuce.mmocore.loot.chest.particle.SmallParticleEffect;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointOption;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +35,7 @@ public class WaypointsListener implements Listener {
         PlayerData data = PlayerData.get(player);
         if (waypoint.hasOption(WaypointOption.UNLOCKABLE) && !data.hasWaypoint(waypoint)) {
             data.unlockWaypoint(waypoint);
-            new SmallParticleEffect(player, Particle.SPELL_WITCH);
+            new SmallParticleEffect(player, VParticle.WITCH.get());
             ConfigMessage.fromKey("new-waypoint", "waypoint", waypoint.getName()).send(player);
             MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_UNLOCK).playTo(player);
             return;

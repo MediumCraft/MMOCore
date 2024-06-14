@@ -64,9 +64,9 @@ items:
         - '&7&ocan''t find anywhere else. The more you'
         - '&7&ofish, the easier it becomes to find these.'
         - ''
-        - '&7Fishing Strength: &c{fishing_strength}%'
-        - '&7Crit Fishing Rate: &c{critical_fishing_chance}%'
-        - '&7Crit Failure Rate: &c{critical_fishing_failure_chance}%'
+        - '&7Fishing Strength: &c%mmocore_stat_fishing_strength%%'
+        - '&7Crit Fishing Rate: &c%mmocore_stat_critical_fishing_chance%%'
+        - '&7Crit Failure Rate: &c%mmocore_stat_critical_fishing_failure_chance%%'
     alchemy-profession:
         slots: [20]
         function: profession_alchemy

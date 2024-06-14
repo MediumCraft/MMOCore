@@ -4,8 +4,8 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
-import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -41,7 +41,7 @@ public abstract class AbstractItemBuilder {
         ItemStack item = new ItemStack(configItem.getMaterial());
         ItemMeta meta = item.getItemMeta();
 
-        if (item.getType() == VersionMaterial.PLAYER_HEAD.toMaterial() && configItem.getTexture() != null)
+        if (item.getType() == Material.PLAYER_HEAD && configItem.getTexture() != null)
             UtilityMethods.setTextureValue((SkullMeta) meta, configItem.getTexture());
 
         meta.addItemFlags(ItemFlag.values());

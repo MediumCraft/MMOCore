@@ -42,7 +42,7 @@
             classes when building the same version again -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.3.2</version>
                 <executions>
                     <execution>
                         <id>auto-clean</id>
@@ -61,6 +61,11 @@
         <repository>
             <id>phoenix</id>
             <url>https://nexus.phoenixdevt.fr/repository/maven-public/</url>
+        </repository>
+
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
 
         <repository>

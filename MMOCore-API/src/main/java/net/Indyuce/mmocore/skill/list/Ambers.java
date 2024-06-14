@@ -11,6 +11,7 @@ import io.lumine.mythic.lib.skill.result.def.SimpleSkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import io.lumine.mythic.lib.util.EntityLocationType;
 import io.lumine.mythic.lib.util.ParabolicProjectile;
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Color;
@@ -69,7 +70,7 @@ public class Ambers extends SkillHandler<SimpleSkillResult> implements Listener 
             this.percent = percent / 100;
 
             final Amber amber = this;
-            new ParabolicProjectile(source, loc, Particle.REDSTONE, () -> amber.runTaskTimer(MythicLib.plugin, 0, 3), 1, Color.ORANGE, 1.3f);
+            new ParabolicProjectile(source, loc, VParticle.REDSTONE.get(), () -> amber.runTaskTimer(MythicLib.plugin, 0, 3), 1, Color.ORANGE, 1.3f);
         }
 
         @Override
@@ -94,8 +95,8 @@ public class Ambers extends SkillHandler<SimpleSkillResult> implements Listener 
             }
 
             for (int j = 0; j < 5; j++)
-                loc.getWorld().spawnParticle(Particle.SPELL_MOB, loc, 0, 1, 0.647, 0, 1);
-            loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.ORANGE, 1.3f));
+                loc.getWorld().spawnParticle(VParticle.ENTITY_EFFECT.get(), loc, 0, 1, 0.647, 0, 1);
+            loc.getWorld().spawnParticle(VParticle.REDSTONE.get(), loc, 1, new Particle.DustOptions(Color.ORANGE, 1.3f));
         }
     }
 }

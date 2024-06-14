@@ -1,13 +1,12 @@
 package net.Indyuce.mmocore.api.block;
 
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-
-import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.version.VersionMaterial;
+import net.Indyuce.mmocore.api.block.BlockInfo.RegeneratingBlock;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 public class SkullBlockType implements BlockType {
 	private final String value;
@@ -29,7 +28,7 @@ public class SkullBlockType implements BlockType {
 	@Override
 	public void place(RegeneratingBlock block) {
 		Location loc = block.getLocation();
-		loc.getBlock().setType(VersionMaterial.PLAYER_HEAD.toMaterial());
+		loc.getBlock().setType(Material.PLAYER_HEAD);
 
 		// save skull orientation if replaced block is a player head
 		if (MMOCoreUtils.isPlayerHead(block.getBlockData().getMaterial()))

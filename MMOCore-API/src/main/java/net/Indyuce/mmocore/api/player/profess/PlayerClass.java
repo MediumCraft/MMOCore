@@ -13,7 +13,7 @@ import io.lumine.mythic.lib.skill.handler.MythicLibSkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.util.PostLoadAction;
 import io.lumine.mythic.lib.util.PreloadedObject;
-import io.lumine.mythic.lib.version.VersionMaterial;
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.event.EventTrigger;
@@ -37,7 +37,6 @@ import net.Indyuce.mmocore.util.ConfigUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -103,7 +102,7 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
         name = MythicLib.plugin.parseColors(config.getString("display.name", "INVALID DISPLAY NAME"));
         icon = MMOCoreUtils.readIcon(config.getString("display.item", "BARRIER"));
 
-        if (config.contains("display.texture") && icon.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
+        if (config.contains("display.texture") && icon.getType() == Material.PLAYER_HEAD) {
             ItemMeta meta = icon.getItemMeta();
             UtilityMethods.setTextureValue((SkullMeta) meta, config.getString("display.texture"));
             icon.setItemMeta(meta);
@@ -267,7 +266,7 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
         expCurve = ExpCurve.DEFAULT;
         expTable = null;
         comboMap = null;
-        castParticle = new CastingParticle(Particle.SPELL_INSTANT);
+        castParticle = new CastingParticle(VParticle.INSTANT_EFFECT.get());
         actionBarFormat = "";
         this.icon = new ItemStack(material);
         setOption(ClassOption.DISPLAY, false);

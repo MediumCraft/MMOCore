@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.data.SynchronizedDataHolder;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.util.Closeable;
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -819,7 +820,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
                 MMOCore.plugin.soundManager.getSound(SoundEvent.WARP_CHARGE).playTo(getPlayer(), 1, (float) (.5 + t * 1.5 / warpTime));
                 final double r = Math.sin((double) t / warpTime * Math.PI);
                 for (double j = 0; j < Math.PI * 2; j += Math.PI / 4)
-                    getPlayer().getLocation().getWorld().spawnParticle(Particle.REDSTONE, getPlayer().getLocation().add(Math.cos((double) 5 * t / warpTime + j) * r, (double) 2 * t / warpTime, Math.sin((double) 5 * t / warpTime + j) * r), 1, new Particle.DustOptions(Color.PURPLE, 1.25f));
+                    getPlayer().getLocation().getWorld().spawnParticle(VParticle.REDSTONE.get(), getPlayer().getLocation().add(Math.cos((double) 5 * t / warpTime + j) * r, (double) 2 * t / warpTime, Math.sin((double) 5 * t / warpTime + j) * r), 1, new Particle.DustOptions(Color.PURPLE, 1.25f));
             }
         }.runTaskTimer(MMOCore.plugin, 0, 1);
     }
@@ -909,7 +910,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
             if (isOnline()) {
                 ConfigMessage.fromKey("level-up").addPlaceholders("level", String.valueOf(level)).send(getPlayer());
                 MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(getPlayer());
-                new SmallParticleEffect(getPlayer(), Particle.SPELL_INSTANT);
+                new SmallParticleEffect(getPlayer(), VParticle.INSTANT_EFFECT.get());
             }
             getStats().updateStats();
         }

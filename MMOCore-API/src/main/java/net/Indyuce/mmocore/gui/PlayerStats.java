@@ -4,7 +4,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.manager.StatManager;
-import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -19,15 +18,13 @@ import net.Indyuce.mmocore.gui.api.item.InventoryItem;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
 import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.party.AbstractParty;
-import net.Indyuce.mmocore.player.stats.StatInfo;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class PlayerStats extends EditableInventory {
     public PlayerStats() {
@@ -95,12 +92,9 @@ public class PlayerStats extends EditableInventory {
 
                     // holders.register("profession", type.getName());
                     holders.register("progress", bar);
-                    holders.register("level", "" + inv.target.getCollectionSkills().getLevel(profession));
+                    holders.register("level", String.valueOf(inv.target.getCollectionSkills().getLevel(profession)));
                     holders.register("xp", inv.target.getCollectionSkills().getExperience(profession));
                     holders.register("percent", decimal.format(ratio * 100));
-                    for (StatInfo stat : MMOCore.plugin.statManager.getLoaded())
-                        if (Objects.equals(stat.profession, profession))
-                            holders.register(stat.name.toLowerCase(), StatManager.format(stat.name, stats.getStat(stat.name)));
 
                     return holders;
                 }
@@ -231,7 +225,7 @@ public class PlayerStats extends EditableInventory {
         @Override
         public ItemStack display(PlayerStatsInventory inv, int n) {
             ItemStack disp = super.display(inv, n);
-            if (disp.getType() == VersionMaterial.PLAYER_HEAD.toMaterial()) {
+            if (disp.getType() == Material.PLAYER_HEAD) {
                 SkullMeta meta = (SkullMeta) disp.getItemMeta();
                 inv.asyncUpdate(this, n, disp, current -> {
                     meta.setOwningPlayer(inv.target.getPlayer());
@@ -247,7 +241,7 @@ public class PlayerStats extends EditableInventory {
             Placeholders holders = new Placeholders();
 
             int nextLevelExp = inv.target.getLevelUpExperience();
-            double ratio = (double) data.getExperience() / (double) nextLevelExp;
+            double ratio = data.getExperience() / (double) nextLevelExp;
 
             StringBuilder bar = new StringBuilder("" + ChatColor.BOLD);
             int chars = (int) (ratio * 20);

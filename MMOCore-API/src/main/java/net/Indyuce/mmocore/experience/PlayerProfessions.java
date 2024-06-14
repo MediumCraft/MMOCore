@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -17,7 +18,6 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
@@ -219,7 +219,7 @@ public class PlayerProfessions {
 
         if (check) {
             Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(playerData, profession, oldLevel, level));
-            new SmallParticleEffect(playerData.getPlayer(), Particle.SPELL_INSTANT);
+            new SmallParticleEffect(playerData.getPlayer(), VParticle.INSTANT_EFFECT.get());
             ConfigMessage.fromKey("profession-level-up").addPlaceholders("level", String.valueOf(level), "profession", profession.getName())
                     .send(playerData.getPlayer());
             MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_UP).playTo(playerData.getPlayer());

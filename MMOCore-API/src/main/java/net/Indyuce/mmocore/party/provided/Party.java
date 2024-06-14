@@ -8,7 +8,6 @@ import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.party.AbstractParty;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
