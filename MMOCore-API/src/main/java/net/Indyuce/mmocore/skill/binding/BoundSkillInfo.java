@@ -15,8 +15,11 @@ public class BoundSkillInfo implements Closeable {
     private final ClassSkill classSkill;
 
     /**
-     * PASSIVE skills must be registered inside MythicLib when
-     * bound. When set to null, the skill is not registered.
+     * Non-permanent passive skills must be registered inside
+     * MythicLib when bound. When set to null, the skill is either
+     * active or permanent passive.
+     * <p>
+     * This does NOT indicate the skill being passive!
      */
     @Nullable
     private final PassiveSkill registered;
@@ -55,7 +58,7 @@ public class BoundSkillInfo implements Closeable {
     }
 
     public boolean isPassive() {
-        return registered != null;
+        return classSkill.getSkill().getTrigger().isPassive();
     }
 
     @Override
@@ -63,7 +66,7 @@ public class BoundSkillInfo implements Closeable {
         Validate.isTrue(open, "BoundSkillInfo has already been closed");
         open = false;
 
-        // Unregister skill if passive
+        // Unregister skill if non-permanent passive
         if (registered != null) registered.unregister(playerData.getMMOPlayerData());
 
         // Remove skill buffs associated to the slot

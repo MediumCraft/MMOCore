@@ -12,6 +12,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerKeyPressEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
+import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.cast.*;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -146,9 +147,11 @@ public class KeyCombos extends SkillCastingHandler {
             else playerData.leaveSkillCasting(true);
 
             // Cast spell
-            if (playerData.hasSkillBound(spellSlot)) {
+            final ClassSkill boundSkill;
+            if (playerData.hasSkillBound(spellSlot) &&
+                    !(boundSkill = playerData.getBoundSkill(spellSlot)).getSkill().getTrigger().isPassive()) {
                 final PlayerMetadata caster = playerData.getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                final SkillResult result = playerData.getBoundSkill(spellSlot).toCastable(playerData).cast(new TriggerMetadata(caster, null, null));
+                final SkillResult result = boundSkill.toCastable(playerData).cast(new TriggerMetadata(caster, TriggerType.CAST, null, null));
                 if (!result.isSuccessful()) if (failSkillSound != null) failSkillSound.playTo(player);
             } else if (stayIn) {
                 if (failComboSound != null) failComboSound.playTo(player);
