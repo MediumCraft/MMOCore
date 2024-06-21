@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.api.util;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.gson.JsonArray;
+import io.lumine.mythic.lib.gson.JsonObject;
 import io.lumine.mythic.lib.hologram.Hologram;
 import io.lumine.mythic.lib.version.VEnchantment;
 import net.Indyuce.mmocore.MMOCore;

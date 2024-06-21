@@ -127,7 +127,11 @@ public class MMOCoreDataSynchronizer extends SQLDataSynchronizer<PlayerData> {
     }
 
     private boolean isEmpty(@Nullable String str) {
-        return str == null || str.equalsIgnoreCase("null") || str.equalsIgnoreCase("{}") || str.equalsIgnoreCase("[]") || str.equalsIgnoreCase("");
+        return str == null
+                || str.isEmpty()
+                || str.equalsIgnoreCase("null")
+                || str.equals("{}")
+                || str.equals("[]");
     }
 
     @Override

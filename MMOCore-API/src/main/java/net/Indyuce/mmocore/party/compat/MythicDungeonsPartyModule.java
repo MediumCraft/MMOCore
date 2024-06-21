@@ -5,7 +5,7 @@ import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.PartyModule;
 import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import net.playavalon.mythicdungeons.player.party.partysystem.MythicParty;
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;

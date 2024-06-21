@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
-import com.google.gson.JsonParseException;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.gson.JsonParseException;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.api.block.BlockType;
 import net.Indyuce.mmocore.api.load.DefaultMMOLoader;

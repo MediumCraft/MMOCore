@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.manager.data.sql;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.data.sql.SQLDataSource;
+import io.lumine.mythic.lib.gson.JsonArray;
+import io.lumine.mythic.lib.gson.JsonObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.data.yaml.YAMLPlayerDataHandler;
