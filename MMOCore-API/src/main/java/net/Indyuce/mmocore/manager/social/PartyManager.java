@@ -3,7 +3,9 @@ package net.Indyuce.mmocore.manager.social;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.manager.MMOCoreManager;
+import net.Indyuce.mmocore.party.AbstractParty;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashSet;
@@ -19,8 +21,11 @@ public class PartyManager implements MMOCoreManager {
 
     @Override
     public void initialize(boolean clearBefore) {
-        if (clearBefore)
+        if (clearBefore) {
+            // Fixes MMOCore#1035, first remove existing buffs of players.
+            PlayerData.getAll().forEach(MMOCore.plugin.partyModule::clearStatBonuses);
             buffs.clear();
+        }
 
         ConfigurationSection config = MMOCore.plugin.getConfig().getConfigurationSection("party.buff");
         if (config != null)
@@ -30,5 +35,12 @@ public class PartyManager implements MMOCoreManager {
                 } catch (IllegalArgumentException exception) {
                     MMOCore.log(Level.WARNING, "Could not load party buff '" + key + "': " + exception.getMessage());
                 }
+
+        // Re-apply buffs to online players (MMOCore#1035)
+        if (clearBefore)
+            for (PlayerData playerData : PlayerData.getAll()) {
+                AbstractParty party = MMOCore.plugin.partyModule.getParty(playerData);
+                if (party != null) MMOCore.plugin.partyModule.applyStatBonuses(playerData, party.countMembers());
+            }
     }
 }

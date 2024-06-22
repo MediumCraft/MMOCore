@@ -197,8 +197,8 @@ public class FishingListener implements Listener {
             player.getWorld().playSound(player.getLocation(), VSound.BLOCK_NOTE_BLOCK_HAT.get(), 1, 0);
             for (int j = 0; j < 8; j++)
                 location.getWorld().spawnParticle(VParticle.FIREWORK.get(), location, 0, 4 * (RANDOM.nextDouble() - .5), RANDOM.nextDouble() + 1, 4 * (RANDOM.nextDouble() - .5), .08);
-            player.giveExp(vanillaExpDropped);
-            if (MMOCore.plugin.fishingManager.hasLinkedProfession())
+            if (vanillaExpDropped > 0) player.giveExp(vanillaExpDropped);
+            if (experienceDropped > 0 && MMOCore.plugin.fishingManager.hasLinkedProfession())
                 playerData.getCollectionSkills().giveExperience(MMOCore.plugin.fishingManager.getLinkedProfession(), experienceDropped, EXPSource.FISHING, location, true);
         }
     }

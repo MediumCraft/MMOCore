@@ -2,11 +2,10 @@ package net.Indyuce.mmocore.loot.fishing;
 
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.loot.Weighted;
 import net.Indyuce.mmocore.api.util.math.formula.RandomAmount;
 import net.Indyuce.mmocore.loot.LootBuilder;
+import net.Indyuce.mmocore.loot.Weighted;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
-import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,11 +14,11 @@ public class FishingDropItem implements Weighted {
     private final DropItem dropItem;
 
     public FishingDropItem(MMOLineConfig config) {
-        config.validateKeys("tugs", "experience");
+        config.validateKeys("tugs");
 
         tugs = new RandomAmount(config.getString("tugs"));
-        experience = new RandomAmount(config.getString("experience"));
-        vanillaExp = config.contains("vanilla-exp") ? new RandomAmount(config.getString("vanilla-experience")) : new RandomAmount(0, 0);
+        experience = config.contains("experience") ? new RandomAmount(config.getString("experience")) : new RandomAmount(0, 0);
+        vanillaExp = config.contains("vanilla-exp") ? new RandomAmount(config.getString("vanilla-exp")) : new RandomAmount(0, 0);
         dropItem = MMOCore.plugin.loadManager.loadDropItem(config);
     }
 
