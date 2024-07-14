@@ -1111,11 +1111,15 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         return true;
     }
 
-    public void displayActionBar(String message) {
+    public void displayActionBar(@NotNull String message) {
         displayActionBar(message, false);
     }
 
-    public void displayActionBar(String message, boolean raw) {
+    public void displayActionBar(@NotNull String message, boolean raw) {
+
+        // TODO add an option to disable action-bar properly in all casting modes
+        if (ChatColor.stripColor(message).isEmpty()) return;
+
         setLastActivity(PlayerActivity.ACTION_BAR_MESSAGE);
         if (raw) MythicLib.plugin.getVersion().getWrapper().sendActionBarRaw(getPlayer(), message);
         else getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));

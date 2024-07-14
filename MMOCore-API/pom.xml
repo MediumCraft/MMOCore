@@ -105,13 +105,6 @@
             <url>https://simonsator.de/repo</url>
         </repository>
 
-        <!-- MythicDungeons repository -->
-        <repository>
-            <id>aestrus-releases</id>
-            <name>Aestrus's Repository</name>
-            <url>https://maven.aestrus.io/releases</url>
-        </repository>
-
     </repositories>
 
     <dependencies>
@@ -166,7 +159,7 @@
         <dependency>
             <groupId>net.playavalon</groupId>
             <artifactId>MythicDungeons</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
+            <version>1.4.1-SNAPSHOT-CUSTOM</version>
             <scope>provided</scope>
         </dependency>
 

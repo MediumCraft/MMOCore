@@ -63,7 +63,7 @@ public class RandomWeightedRoll<T extends Weighted> {
      * @return The real weight of an item considering the player's chance stat.
      */
     private double computeRealWeight(T item, double chance) {
-        return Math.pow(item.getWeight(), 1 / Math.pow(1 + CHANCE_COEFFICIENT * chance, 1 / 3));
+        return Math.pow(item.getWeight(), 1 / Math.pow(1 + CHANCE_COEFFICIENT * chance, 1. / 3.));
     }
 
     /*
