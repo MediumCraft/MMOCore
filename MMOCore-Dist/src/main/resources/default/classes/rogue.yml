@@ -102,6 +102,15 @@ attributes:
     movement-speed:
         base: .105
         per-level: 0
+    safe-fall-distance: # Can resist higher falls
+        base: 5.0
+        per-level: 0
+    sneaking-speed: # +66% base sneaking speed
+        base: 0.5
+        per-level: 0
+    JUMP_STRENGTH: # About +20% jump strength (default is 0.42)
+        base: 0.5
+        per-level: 0
 
 # Experience sources for main class experience.
 main-exp-sources:

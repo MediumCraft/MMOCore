@@ -9,6 +9,9 @@ default:
     MAX_HEALTH:
         base: 20
         per-level: 0
+    MAX_ABSORPTION:
+        base: 0.0
+        per-level: 0
     MOVEMENT_SPEED:
         base: .1
         per-level: 0
@@ -114,3 +117,62 @@ default:
         per-level: -.01
         min: 1
         max: 100
+
+    # 1.20+ vanilla attributes
+    SUBMERGED_MINING_SPEED:
+        base: 0.2
+        per-level: 0
+    FALL_DAMAGE_MULTIPLIER:
+        base: 1.0
+        per-level: 0
+    MOVEMENT_EFFICIENCY:
+        base: 0.0
+        per-level: 0
+    OXYGEN_BONUS:
+        base: 0.0
+        per-level: 0
+    LUCK:
+        base: 0.0
+        per-level: 0
+    WATER_MOVEMENT_EFFICIENCY:
+        base: 0.0
+        per-level: 0
+    BLOCK_INTERACTION_RANGE:
+        base: 4.5
+        per-level: 0
+    SAFE_FALL_DISTANCE:
+        base: 3.0
+        per-level: 0
+    JUMP_STRENGTH:
+        base: 0.42
+        per-level: 0
+    SCALE:
+        base: 1.0
+        per-level: 0
+    ENTITY_INTERACTION_RANGE:
+        base: 3.0
+        per-level: 0
+    EXPLOSION_KNOCKBACK_RESISTANCE:
+        base: 0.0
+        per-level: 0
+    GRAVITY:
+        base: 0.08
+        per-level: 0
+    SNEAKING_SPEED:
+        base: 0.3
+        per-level: 0
+    STEP_HEIGHT:
+        base: 0.6
+        per-level: 0
+    MINING_EFFICIENCY:
+        base: 0.0
+        per-level: 0
+    BURNING_TIME:
+        base: 1.0
+        per-level: 0
+    SWEEPING_DAMAGE_RATIO:
+        base: 0.0
+        per-level: 0
+    BLOCK_BREAK_SPEED:
+        base: 1.0
+        per-level: 0

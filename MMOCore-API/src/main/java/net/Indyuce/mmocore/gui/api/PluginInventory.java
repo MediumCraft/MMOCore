@@ -1,8 +1,10 @@
 package net.Indyuce.mmocore.gui.api;
 
+import io.lumine.mythic.lib.version.VersionUtils;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 public abstract class PluginInventory implements InventoryHolder {
@@ -11,8 +13,8 @@ public abstract class PluginInventory implements InventoryHolder {
 
     public PluginInventory(Player player) {
         this.player = player;
-        this.playerData = player.getOpenInventory() != null && player.getOpenInventory().getTopInventory().getHolder() instanceof PluginInventory ?
-                ((PluginInventory) player.getOpenInventory().getTopInventory().getHolder()).playerData : PlayerData.get(player);
+        final Inventory open = VersionUtils.getOpen(player).getTopInventory();
+        this.playerData = open.getHolder() instanceof PluginInventory ? ((PluginInventory) open.getHolder()).playerData : PlayerData.get(player);
     }
 
     public PluginInventory(PlayerData playerData) {

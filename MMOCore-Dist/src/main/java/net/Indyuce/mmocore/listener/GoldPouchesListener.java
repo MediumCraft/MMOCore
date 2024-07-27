@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.listener;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.version.VersionUtils;
 import net.Indyuce.mmocore.gui.eco.GoldPouch;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,11 +44,11 @@ public class GoldPouchesListener implements Listener {
 		if (!(event.getEntity() instanceof Player))
 			return;
 
-		Player player = (Player) event.getEntity();
-		if (player.getOpenInventory() == null || !(player.getOpenInventory().getTopInventory().getHolder() instanceof GoldPouch))
-			return;
+        final Player player = (Player) event.getEntity();
+        if (!(VersionUtils.getOpen(player).getTopInventory().getHolder() instanceof GoldPouch))
+            return;
 
-		ItemStack item = event.getItem().getItemStack();
+		final ItemStack item = event.getItem().getItemStack();
 		if (NBTItem.get(item).hasTag("RpgPouchInventory"))
 			event.setCancelled(true);
 	}

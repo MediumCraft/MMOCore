@@ -152,6 +152,7 @@ public class WaypointViewer extends EditableInventory {
             if (hasName()) meta.setDisplayName(placeholders.apply(effectivePlayer, getName()));
 
             if (hideFlags()) meta.addItemFlags(ItemFlag.values());
+            if (hideTooltip()) meta.setHideTooltip(true);
             // If a player can teleport to another waypoint given his location
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);
 

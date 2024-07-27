@@ -218,7 +218,7 @@ public class MMOCore extends MMOPlugin {
             PartyModuleType moduleType = PartyModuleType.valueOf(partyPluginName);
             Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
             partyModule = moduleType.provideModule();
-            getLogger().log(Level.WARNING, "Hooked parties onto " + moduleType.getPluginName());
+            getLogger().log(Level.INFO, "Hooked parties onto " + moduleType.getPluginName());
         } catch (RuntimeException exception) {
             getLogger().log(Level.WARNING, "Could not initialize party module: " + exception.getMessage());
             partyModule = new MMOCorePartyModule();
@@ -230,7 +230,7 @@ public class MMOCore extends MMOPlugin {
             GuildModuleType moduleType = GuildModuleType.valueOf(pluginName);
             Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
             guildModule = moduleType.provideModule();
-            getLogger().log(Level.WARNING, "Hooked guilds onto " + moduleType.getPluginName());
+            getLogger().log(Level.INFO, "Hooked guilds onto " + moduleType.getPluginName());
         } catch (RuntimeException exception) {
             getLogger().log(Level.WARNING, "Could not initialize guild module: " + exception.getMessage());
             guildModule = new MMOCoreGuildModule();

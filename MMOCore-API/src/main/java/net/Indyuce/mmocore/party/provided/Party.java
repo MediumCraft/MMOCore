@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.party.provided;
 
+import io.lumine.mythic.lib.version.VInventoryView;
+import io.lumine.mythic.lib.version.VersionUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -99,8 +101,7 @@ public class Party implements AbstractParty {
     }
 
     public void removeMember(PlayerData data, boolean notify) {
-        if (data.isOnline() && data.getPlayer().getOpenInventory() != null
-                && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof EditablePartyView.PartyViewInventory)
+        if (data.isOnline() && VersionUtils.getOpen(data.getPlayer()).getTopInventory().getHolder() instanceof EditablePartyView.PartyViewInventory)
             InventoryManager.PARTY_CREATION.newInventory(data).open();
 
         members.remove(data);
@@ -137,10 +138,11 @@ public class Party implements AbstractParty {
     }
 
     private void updateOpenInventories() {
-        for (PlayerData member : members)
-            if (member.isOnline() && member.getPlayer().getOpenInventory() != null
-                    && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof EditablePartyView.PartyViewInventory)
-                ((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
+        for (PlayerData member : members) {
+            final VInventoryView open = VersionUtils.getOpen(member.getPlayer());
+            if (member.isOnline() && open.getTopInventory().getHolder() instanceof EditablePartyView.PartyViewInventory)
+                ((PluginInventory) open.getTopInventory().getHolder()).open();
+        }
     }
 
     @Deprecated

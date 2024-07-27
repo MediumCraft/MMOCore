@@ -1,5 +1,7 @@
 package net.Indyuce.mmocore.guild.provided;
 
+import io.lumine.mythic.lib.version.VInventoryView;
+import io.lumine.mythic.lib.version.VersionUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -63,7 +65,7 @@ public class Guild implements AbstractGuild {
     // Disband boolean is to prevent co-modification exception when disbanding a guild
     public void removeMember(UUID uuid, boolean disband) {
         PlayerData data = PlayerData.get(uuid);
-        if (data != null && data.isOnline() && data.getPlayer().getOpenInventory() != null && data.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof EditableGuildView.GuildViewInventory)
+        if (data.isOnline() && VersionUtils.getOpen(data.getPlayer()).getTopInventory().getHolder() instanceof EditableGuildView.GuildViewInventory)
             InventoryManager.GUILD_CREATION.newInventory(data).open();
 
         if (!disband)
@@ -102,9 +104,10 @@ public class Guild implements AbstractGuild {
 
     public void reopenInventories() {
         for (UUID uuid : members) {
-            PlayerData member = PlayerData.get(uuid);
-            if (member != null && member.isOnline() && member.getPlayer().getOpenInventory() != null && member.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof EditableGuildView.GuildViewInventory)
-                ((PluginInventory) member.getPlayer().getOpenInventory().getTopInventory().getHolder()).open();
+            final PlayerData member = PlayerData.get(uuid);
+            final VInventoryView open = VersionUtils.getOpen(member.getPlayer());
+            if (member.isOnline() && open.getTopInventory().getHolder() instanceof EditableGuildView.GuildViewInventory)
+                ((PluginInventory) open.getTopInventory().getHolder()).open();
         }
     }
 

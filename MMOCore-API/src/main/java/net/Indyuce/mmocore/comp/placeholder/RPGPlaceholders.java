@@ -15,6 +15,7 @@ import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.skill.CastableSkill;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -107,10 +108,14 @@ public class RPGPlaceholders extends PlaceholderExpansion {
             final String attributeId = identifier.substring(23);
             final PlayerAttributes.AttributeInstance attributeInstance = Objects.requireNonNull(playerData.getAttributes().getInstance(attributeId), "Could not find attribute with ID '" + attributeId + "'");
             return String.valueOf(attributeInstance.getBase());
-        } else if (identifier.equals("level_percent")) {
+        }
+
+        else if (identifier.equals("level_percent")) {
             double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
             return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
-        } else if (identifier.equals("health"))
+        }
+
+        else if (identifier.equals("health"))
             return StatManager.format("MAX_HEALTH", player.getPlayer().getHealth());
 
         else if (identifier.equals("max_health"))
@@ -157,6 +162,21 @@ public class RPGPlaceholders extends PlaceholderExpansion {
             return info == null ? "" : info.getSkill().getHandler().getId();
         }
 
+        // Returns the casting slot taking into account the skill slot offset
+        else if (identifier.startsWith("cast_slot_offset_")) {
+            final Player online = player.getPlayer();
+            Validate.notNull(online, "Player is offline");
+            final int slot = Integer.parseInt(identifier.substring(17));
+            return String.valueOf(slot + (online.getInventory().getHeldItemSlot() < slot ? 1 : 0));
+        }
+
+        // Is there a passive skill bound to given slot
+        else if (identifier.startsWith("passive_bound_")) {
+            final int slot = Integer.parseInt(identifier.substring(14));
+            final ClassSkill skill = playerData.getBoundSkill(slot);
+            return String.valueOf(skill != null && skill.getSkill().getTrigger().isPassive());
+        }
+
         // Returns the bound skill name
         else if (identifier.startsWith("bound_")) {
             final int slot = Math.max(1, Integer.parseInt(identifier.substring(6)));
@@ -165,6 +185,7 @@ public class RPGPlaceholders extends PlaceholderExpansion {
             return (playerData.getCooldownMap().isOnCooldown(skill) ? ChatColor.RED : ChatColor.GREEN) + skill.getSkill().getName();
         }
 
+        // Returns cooldown of skill bound at given slot
         else if (identifier.startsWith("cooldown_bound_")) {
             int slot = Math.max(0, Integer.parseInt(identifier.substring(15)));
             if (playerData.hasSkillBound(slot))

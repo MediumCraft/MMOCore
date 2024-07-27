@@ -62,8 +62,8 @@ public class SubclassSelect extends EditableInventory {
         public ItemStack display(SubclassSelectionInventory inv, int n) {
             ItemStack item = n == 0 ? playerClass.getIcon() : super.display(inv, n);
             ItemMeta meta = item.getItemMeta();
-            if (hideFlags())
-                meta.addItemFlags(ItemFlag.values());
+            if (hideFlags()) meta.addItemFlags(ItemFlag.values());
+            if (hideTooltip()) meta.setHideTooltip(true);
             meta.setDisplayName(MythicLib.plugin.parseColors(name).replace("{name}", playerClass.getName()));
             List<String> lore = new ArrayList<>(this.lore);
 

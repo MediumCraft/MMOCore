@@ -107,6 +107,9 @@ attributes:
     movement-speed:
         base: .105
         per-level: 0
+    safe-fall-distance: # Can resist higher falls
+        base: 4.0
+        per-level: 0
 
 # Experience sources for main class experience.
 main-exp-sources:

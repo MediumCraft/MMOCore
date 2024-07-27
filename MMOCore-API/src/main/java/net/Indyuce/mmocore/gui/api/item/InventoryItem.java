@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.gui.api.item;
 
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import org.bukkit.ChatColor;
@@ -28,7 +29,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
     private final String name, texture;
     private final List<String> lore;
     private final int modelData;
-    private final boolean hideFlags;
+    private final boolean hideFlags, hideTooltip;
 
     public InventoryItem(ConfigurationSection config) {
         this((InventoryItem) null, config);
@@ -51,6 +52,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         this.name = config.getString("name");
         this.lore = config.getStringList("lore");
         this.hideFlags = config.getBoolean("hide-flags");
+        this.hideTooltip = config.getBoolean("hide-tooltip") && MythicLib.plugin.getVersion().isAbove(1, 20, 5);
         this.texture = config.getString("texture");
         this.modelData = config.getInt("custom-model-data");
 
@@ -81,6 +83,10 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
 
     public boolean hideFlags() {
         return hideFlags;
+    }
+
+    public boolean hideTooltip() {
+        return hideTooltip;
     }
 
     public boolean hasName() {
@@ -152,6 +158,7 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
         if (hasName()) meta.setDisplayName(placeholders.apply(effectivePlayer, getName()));
 
         if (hideFlags()) meta.addItemFlags(ItemFlag.values());
+        if (hideTooltip()) meta.setHideTooltip(true);
 
         if (hasLore()) {
             List<String> lore = new ArrayList<>();
@@ -167,9 +174,9 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
      * @param inv Inventory being generated
      * @param n   Index of item being generated
      * @return Player relative to which placeholders are computed when the item is
-     *         being displayed in the inventory. Most of the time, it's just
-     *         the player opening the inventory, but for friends or party members,
-     *         being able to parse placeholders based on other players is great too.
+     * being displayed in the inventory. Most of the time, it's just
+     * the player opening the inventory, but for friends or party members,
+     * being able to parse placeholders based on other players is great too.
      */
     @NotNull
     public OfflinePlayer getEffectivePlayer(T inv, int n) {
