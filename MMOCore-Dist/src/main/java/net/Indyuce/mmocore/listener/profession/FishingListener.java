@@ -170,7 +170,7 @@ public class FishingListener implements Listener {
             }
 
             // Find looted item
-            ItemStack collect = caught.collect(new LootBuilder(playerData, 0));
+            ItemStack collect = caught.collect(new LootBuilder(playerData));
             if (collect == null) {
                 hook.getWorld().spawnParticle(VParticle.SMOKE.get(), location, 24, 0, 0, 0, .08);
                 return;

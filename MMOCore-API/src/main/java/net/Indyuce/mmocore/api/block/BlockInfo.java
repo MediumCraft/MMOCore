@@ -43,7 +43,7 @@ public class BlockInfo {
 					options.put(option, config.getBoolean("options." + key));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING,
-							"Could not load option '" + key + "' from block info '" + block.generateKey() + "': " + exception.getMessage());
+							"Could not load option '" + key + "' from block info '" + block.display() + "': " + exception.getMessage());
 				}
 
 		if (config.contains("triggers")) {
@@ -55,7 +55,7 @@ public class BlockInfo {
 					triggers.add(MMOCore.plugin.loadManager.loadTrigger(new MMOLineConfig(key)));
 				} catch (IllegalArgumentException exception) {
 					MMOCore.plugin.getLogger().log(Level.WARNING,
-							"Could not load trigger '" + key + "' from block info '" + block.generateKey() + "': " + exception.getMessage());
+							"Could not load trigger '" + key + "' from block info '" + block.display() + "': " + exception.getMessage());
 				}
 		}
 
@@ -71,6 +71,7 @@ public class BlockInfo {
 		return options.getOrDefault(option, option.getDefault());
 	}
 
+	@NotNull
 	public BlockType getBlock() {
 		return block;
 	}
@@ -84,6 +85,7 @@ public class BlockInfo {
 		return table != null;
 	}
 
+	@Deprecated
 	public List<ItemStack> collectDrops(LootBuilder builder) {
 		return table != null ? table.collect(builder) : new ArrayList<>();
 	}

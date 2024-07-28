@@ -91,13 +91,7 @@ public class RestrictionManager implements MMOCoreManager {
     }
 
     public class ToolPermissions implements PreloadedObject {
-
-        /**
-         * Now saving string keys using {@link BlockType#generateKey()} instead
-         * of iterating through the set to take advantage of the O(1) time
-         * complexity of hash sets.
-         */
-        private final Set<String> mineable = new HashSet<>();
+        private final Set<BlockType> mineable = new HashSet<>();
 
         private final ItemType tool;
         private final boolean defaultSet;
@@ -112,7 +106,7 @@ public class RestrictionManager implements MMOCoreManager {
             }
             if (config.contains("can-mine"))
                 for (String key : config.getStringList("can-mine"))
-                    mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)).generateKey());
+                    mineable.add(MMOCore.plugin.loadManager.loadBlockType(new MMOLineConfig(key)));
         });
 
         public ToolPermissions(ConfigurationSection config) {
@@ -138,9 +132,9 @@ public class RestrictionManager implements MMOCoreManager {
          * @param type Block being broken
          * @return If the given block can be broken
          */
-        public boolean canMine(BlockType type) {
+        public boolean canMine(@NotNull BlockType type) {
             ToolPermissions parent;
-            return mineable.contains(type.generateKey()) || ((parent = getParent()) != null && parent.canMine(type));
+            return mineable.contains(type) || ((parent = getParent()) != null && parent.canMine(type));
         }
 
         /**

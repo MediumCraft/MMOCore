@@ -9,13 +9,14 @@ import org.bukkit.Bukkit;
 import java.util.*;
 
 public class MMOCorePartyModule implements PartyModule {
-    private final Set<Party> parties = new HashSet<>();
-    private final Map<UUID, Party> playerParties = new HashMap<>();
+    protected final Set<Party> parties = new HashSet<>();
+    protected final Map<UUID, Party> playerParties = new HashMap<>();
 
     public MMOCorePartyModule() {
         Bukkit.getPluginManager().registerEvents(new PartyListener(this), MMOCore.plugin);
     }
 
+    @Deprecated
     public void registerParty(Party party) {
         parties.add(party);
     }
@@ -24,8 +25,8 @@ public class MMOCorePartyModule implements PartyModule {
      * Creates and registers a new party with given owner
      */
     public Party newRegisteredParty(PlayerData owner) {
-        Party party = new Party(this, owner);
-        registerParty(party);
+        final Party party = new Party(this, owner);
+        parties.add(party);
         return party;
     }
 

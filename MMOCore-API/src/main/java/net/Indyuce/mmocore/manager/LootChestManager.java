@@ -1,12 +1,12 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.loot.chest.LootChestRegion;
-import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.chest.LootChest;
+import net.Indyuce.mmocore.loot.chest.LootChestRegion;
+import net.Indyuce.mmocore.util.FileUtils;
 import net.Indyuce.mmocore.util.HashableLocation;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class LootChestManager implements MMOCoreManager {
 
@@ -69,14 +68,9 @@ public class LootChestManager implements MMOCoreManager {
             regions.clear();
         }
 
-        FileConfiguration config = new ConfigFile("loot-chests").getConfig();
-        for (String key : config.getKeys(false))
-            try {
-                LootChestRegion region = new LootChestRegion(config.getConfigurationSection(key));
-                regions.put(region.getId(), region);
-            } catch (IllegalArgumentException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING,
-                        "An error occured while trying to load loot chest region '" + key + "': " + exception.getMessage());
-            }
+        FileUtils.loadObjectsFromFolder(MMOCore.plugin, "loot-chests", false, (key, config) -> {
+            LootChestRegion region = new LootChestRegion(config.getConfigurationSection(key));
+            regions.put(region.getId(), region);
+        }, "Could not load loot chest region '%s' from file '%s': %s");
     }
 }

@@ -34,7 +34,7 @@ public class Quest implements PreloadedObject {
 				parents.add(MMOCore.plugin.questManager.getOrThrow(parent.toLowerCase().replace(" ", "-").replace("_", "-")));
 	});
 
-	public Quest(String id, FileConfiguration config) {
+	public Quest(String id, ConfigurationSection config) {
 		postLoadAction.cacheConfig(config);
 
 		this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");

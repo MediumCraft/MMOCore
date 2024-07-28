@@ -192,8 +192,8 @@ public class ThreeDimAdaptor extends Adaptor {
 
     private void setItem(ItemStack item, int n, double percentage) {
         Location location = getLocation(n, percentage);
-        if(item.getType().toString().contains("SKULL")||item.getType().toString().contains("HEAD")) {
-            location.add(new Vector(0,4.9,0));
+        if (item.getType().toString().contains("SKULL") || item.getType().toString().contains("HEAD")) {
+            location.add(new Vector(0, 4.9, 0));
         }
         //We create the armorStand corresponding to display the item
         ArmorStand armorStand = (ArmorStand) generated.getPlayer().getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
@@ -372,18 +372,10 @@ public class ThreeDimAdaptor extends Adaptor {
             PacketContainer packet = event.getPacket();
             Entity entity = ProtocolLibrary.getProtocolManager()
                     .getEntityFromID(event.getPlayer().getWorld(), packet.getIntegers().read(0));
-            if (entity instanceof ArmorStand armorStand) {
-                if (true) {
-
-                    if (armorStands.values().contains(armorStand)) {
-                        event.setCancelled(true);
-                    }
-                }
-            }
+            if (entity instanceof ArmorStand && armorStands.values().contains(entity))
+                event.setCancelled(true);
         }
-
     }
-
 
     private class InteractListener extends TemporaryListener {
 
@@ -437,9 +429,8 @@ public class ThreeDimAdaptor extends Adaptor {
         @EventHandler
         public void onInteract(PlayerInteractAtEntityEvent event) {
             if (event.getPlayer().equals(generated.getPlayer()))
-                if (event.getRightClicked() instanceof ArmorStand armorStand)
+                if (event.getRightClicked() instanceof ArmorStand)
                     event.setCancelled(true);
-
 
         /*
                     if (armorStands.values().contains(armorStand)) {
@@ -493,11 +484,13 @@ public class ThreeDimAdaptor extends Adaptor {
 
         @EventHandler
         public void onDamage(EntityDamageByEntityEvent event) {
-            if (event.getDamager() instanceof Player player)
+            if (event.getDamager() instanceof Player) {
+                final Player player = (Player) event.getDamager();
                 if (player.equals(generated.getPlayer()))
-                    if (event.getEntity() instanceof ArmorStand armorStand)
-                        if (armorStands.values().contains(armorStand))
+                    if (event.getEntity() instanceof ArmorStand)
+                        if (armorStands.values().contains(event.getEntity()))
                             event.setCancelled(true);
+            }
         }
 
 

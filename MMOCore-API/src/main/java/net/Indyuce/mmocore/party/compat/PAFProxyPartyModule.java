@@ -22,7 +22,7 @@ public class PAFProxyPartyModule implements PartyModule {
 		return party == null ? null : new CustomParty(party);
 	}
 
-	class CustomParty implements AbstractParty {
+	private static class CustomParty implements AbstractParty {
 		private final PlayerParty party;
 
 		public CustomParty(PlayerParty party) {

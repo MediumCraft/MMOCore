@@ -2,17 +2,16 @@ package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.loot.droptable.DropTable;
+import net.Indyuce.mmocore.util.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 public class DropTableManager implements MMOCoreManager {
 	private final Map<String, DropTable> map = new HashMap<>();
@@ -21,6 +20,7 @@ public class DropTableManager implements MMOCoreManager {
 		map.put(table.getId(), table);
 	}
 
+	@Nullable
 	public DropTable get(String path) {
 		return map.get(path);
 	}
@@ -29,19 +29,22 @@ public class DropTableManager implements MMOCoreManager {
 		return map.containsKey(path);
 	}
 
+	@NotNull
 	public Collection<DropTable> getDropTables() {
 		return map.values();
 	}
 
+	@NotNull
 	public Set<String> getKeys() {
 		return map.keySet();
 	}
 
-	/*
-	 * can only be used once the plugin has been fully loaded (+ enabled). used
+	/**
+	 * Can only be used once the plugin has been fully loaded (+ enabled). used
 	 * to load extra drop tables from different config files e.g blocks, fishing
 	 * drop tables
 	 */
+	@NotNull
 	public DropTable loadDropTable(Object obj) throws IllegalArgumentException {
 
 		if (obj instanceof String)
@@ -58,23 +61,12 @@ public class DropTableManager implements MMOCoreManager {
 
 	@Override
 	public void initialize(boolean clearBefore) {
-		if (clearBefore)
-			map.clear();
+		if (clearBefore) map.clear();
 
-		for (File file : new File(MMOCore.plugin.getDataFolder() + "/drop-tables").listFiles())
-			try {
-
-				FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-				for (String key : config.getKeys(false))
-					try {
-						register(new DropTable(config.getConfigurationSection(key)));
-					} catch (IllegalArgumentException exception) {
-						MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load drop table '" + key + "': " + exception.getMessage());
-					}
-
-			} catch (IllegalArgumentException exception) {
-				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load drop table file '" + file.getName() + "': " + exception.getMessage());
-			}
+		// Load drop tables
+		FileUtils.loadObjectsFromFolder(MMOCore.plugin, "drop-tables", false, (name, config) -> {
+            register(new DropTable(config));
+        }, "Could not load drop table '%s' from file '%s': %s");
 
 		Bukkit.getScheduler().runTask(MMOCore.plugin, () -> map.values().forEach(table -> table.getPostLoadAction().performAction()));
 	}

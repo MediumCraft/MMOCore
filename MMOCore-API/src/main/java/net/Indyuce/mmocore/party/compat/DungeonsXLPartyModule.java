@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.PartyModule;
+import net.Indyuce.mmocore.party.PartyUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,25 +35,25 @@ public class DungeonsXLPartyModule implements PartyModule, Listener {
     public void onPlayerJoin(GroupPlayerJoinEvent event) {
         //We add 1 because this returns the members of the group excluding the player that just joined.
         int membersSize = event.getGroup().getMembers().size() + 1;
-        applyStatBonuses(PlayerData.get(event.getPlayer().getPlayer()), membersSize);
+        PartyUtils.applyStatBonuses(PlayerData.get(event.getPlayer().getPlayer()), membersSize);
         event.getGroup().getMembers().getOnlinePlayers()
-                .forEach(p -> applyStatBonuses(PlayerData.get(p), membersSize));
+                .forEach(p -> PartyUtils.applyStatBonuses(PlayerData.get(p), membersSize));
     }
 
     @EventHandler
     public void onPlayerLeave(GroupPlayerLeaveEvent event) {
         int membersSize = event.getGroup().getMembers().size();
-        clearStatBonuses(PlayerData.get(event.getPlayer().getPlayer()));
+        PartyUtils.clearStatBonuses(PlayerData.get(event.getPlayer().getPlayer()));
         event.getGroup().getMembers().getOnlinePlayers()
-                .forEach(p -> applyStatBonuses(PlayerData.get(p), membersSize));
+                .forEach(p -> PartyUtils.applyStatBonuses(PlayerData.get(p), membersSize));
     }
 
     @EventHandler
     public void onGroupDisband(GroupDisbandEvent event) {
-        event.getGroup().getMembers().getOnlinePlayers().forEach(p -> clearStatBonuses(PlayerData.get(p)));
+        event.getGroup().getMembers().getOnlinePlayers().forEach(p -> PartyUtils.clearStatBonuses(PlayerData.get(p)));
     }
 
-    class CustomParty implements AbstractParty {
+    private static class CustomParty implements AbstractParty {
         private final PlayerGroup group;
 
         public CustomParty(PlayerGroup group) {
@@ -81,6 +82,5 @@ public class DungeonsXLPartyModule implements PartyModule, Listener {
         public int countMembers() {
             return group.getMembers().getUniqueIds().size();
         }
-
     }
 }

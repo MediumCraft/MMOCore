@@ -1,54 +1,59 @@
 package net.Indyuce.mmocore.loot;
 
+import net.Indyuce.mmocore.api.player.PlayerData;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import org.bukkit.inventory.ItemStack;
-
 public class LootBuilder {
-	private final PlayerData player;
-	private final List<ItemStack> loot = new ArrayList<>();
+    private final PlayerData player;
+    private final List<ItemStack> loot = new ArrayList<>();
 
-	private double capacity;
+    private double capacity;
 
-	/**
-	 * Used to create loot from a drop table
-	 * 
-	 * @param player
-	 *            Player looting
-	 * @param capacity
-	 *            Capacity is the maximum amount of item weight generated using
-	 *            this table. If capacity is set to 10, this table cannot drop
-	 *            an item with 5 weight and another with 6 weight at the saeme
-	 *            time.
-	 */
-	public LootBuilder(PlayerData player, double capacity) {
-		this.player = player;
-		this.capacity = capacity;
-	}
+    public static double DEFAULT_CAPACITY = 100;
 
-	public PlayerData getEntity() {
-		return player;
-	}
+    public LootBuilder(PlayerData player) {
+        this(player, DEFAULT_CAPACITY);
+    }
 
-	public List<ItemStack> getLoot() {
-		return loot;
-	}
+    /**
+     * Used to create loot from a drop table
+     *
+     * @param player   Player looting
+     * @param capacity Capacity is the maximum amount of item weight generated using
+     *                 this table. If capacity is set to 10, this table cannot drop
+     *                 an item with 5 weight and another with 6 weight at the saeme
+     *                 time.
+     */
+    public LootBuilder(@NotNull PlayerData player, double capacity) {
+        this.player = player;
+        this.capacity = capacity;
+    }
 
-	public double getCapacity() {
-		return capacity;
-	}
+    public PlayerData getEntity() {
+        return player;
+    }
 
-	public void addLoot(ItemStack item) {
-		loot.add(item);
-	}
+    public List<ItemStack> getLoot() {
+        return loot;
+    }
 
-	public void addLoot(List<? extends ItemStack> items) {
-		loot.addAll(items);
-	}
+    public double getCapacity() {
+        return capacity;
+    }
 
-	public void reduceCapacity(double value) {
-		this.capacity = Math.max(0, capacity - value);
-	}
+    public void addLoot(ItemStack item) {
+        loot.add(item);
+    }
+
+    public void addLoot(List<? extends ItemStack> items) {
+        loot.addAll(items);
+    }
+
+    public void reduceCapacity(double value) {
+        this.capacity = Math.max(0, capacity - value);
+    }
 }

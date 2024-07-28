@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.command.api.CommandVerbose;
+import net.Indyuce.mmocore.util.FileUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,65 +44,81 @@ public class ConfigManager {
      * already loaded based on the config
      */
     public ConfigManager() {
-        // loadDefaultFile("recipes", "brewing.yml");
-        // loadDefaultFile("recipes", "furnace.yml");
 
-        if (!new File(MMOCore.plugin.getDataFolder() + "/drop-tables").exists())
-            loadDefaultFile("drop-tables", "example-drop-tables.yml");
-
-        if (!new File(MMOCore.plugin.getDataFolder() + "/professions").exists()) {
-            loadDefaultFile("professions", "alchemy.yml");
-            loadDefaultFile("professions", "farming.yml");
-            loadDefaultFile("professions", "fishing.yml");
-            loadDefaultFile("professions", "mining.yml");
-            loadDefaultFile("professions", "smelting.yml");
-            loadDefaultFile("professions", "smithing.yml");
-            loadDefaultFile("professions", "woodcutting.yml");
-            loadDefaultFile("professions", "enchanting.yml");
+        // Backwards compatibility for older configs
+        {
+            FileUtils.moveIfExists(MMOCore.plugin, "attributes.yml", "attributes");
+            FileUtils.moveIfExists(MMOCore.plugin, "exp-tables.yml", "exp-tables");
+            FileUtils.moveIfExists(MMOCore.plugin, "loot-chests.yml", "loot-chests");
+            FileUtils.moveIfExists(MMOCore.plugin, "waypoints.yml", "waypoints");
         }
 
-        if (!new File(MMOCore.plugin.getDataFolder() + "/quests").exists()) {
-            loadDefaultFile("quests", "adv-begins.yml");
-            loadDefaultFile("quests", "tutorial.yml");
-            loadDefaultFile("quests", "fetch-mango.yml");
+        if (!FileUtils.getFile(MMOCore.plugin, "attributes").exists()) {
+            copyDefaultFile("attributes/default_attributes.yml");
         }
 
-        if (!new File(MMOCore.plugin.getDataFolder() + "/classes").exists()) {
-            loadDefaultFile("classes", "arcane-mage.yml");
-            loadDefaultFile("classes", "human.yml");
-            loadDefaultFile("classes", "mage.yml");
-            loadDefaultFile("classes", "marksman.yml");
-            loadDefaultFile("classes", "paladin.yml");
-            loadDefaultFile("classes", "rogue.yml");
-            loadDefaultFile("classes", "warrior.yml");
+        if (!FileUtils.getFile(MMOCore.plugin, "classes").exists()) {
+            copyDefaultFile("classes/mage/arcane-mage.yml");
+            copyDefaultFile("classes/mage/mage.yml");
+            copyDefaultFile("classes/human.yml");
+            copyDefaultFile("classes/marksman.yml");
+            copyDefaultFile("classes/paladin.yml");
+            copyDefaultFile("classes/rogue.yml");
+            copyDefaultFile("classes/warrior.yml");
         }
 
-        if (!new File(MMOCore.plugin.getDataFolder() + "/expcurves").exists()) {
-            loadDefaultFile("expcurves", "levels.txt");
-            loadDefaultFile("expcurves", "mining.txt");
+        if (!FileUtils.getFile(MMOCore.plugin, "drop-tables").exists())
+            copyDefaultFile("drop-tables/example_drop_tables.yml");
+
+        if (!FileUtils.getFile(MMOCore.plugin, "exp-tables").exists())
+            copyDefaultFile("exp-tables/default_exp_tables.yml");
+
+        if (!FileUtils.getFile(MMOCore.plugin, "expcurves").exists()) {
+            copyDefaultFile("expcurves/levels.txt");
+            copyDefaultFile("expcurves/mining.txt");
+            copyDefaultFile("expcurves/skill-tree-node.txt");
         }
 
-        if (!new File(MMOCore.plugin.getDataFolder() + "/skill-trees").exists()) {
-            loadDefaultFile("skill-trees", "combat.yml");
-            loadDefaultFile("skill-trees", "mage-arcane-mage.yml");
-            loadDefaultFile("skill-trees", "rogue-marksman.yml");
-            loadDefaultFile("skill-trees", "warrior-paladin.yml");
-            loadDefaultFile("skill-trees", "general.yml");
+        if (!FileUtils.getFile(MMOCore.plugin, "loot-chests").exists())
+            copyDefaultFile("loot-chests/default_loot_chests.yml");
+
+        if (!FileUtils.getFile(MMOCore.plugin, "professions").exists()) {
+            copyDefaultFile("professions/alchemy.yml");
+            copyDefaultFile("professions/farming.yml");
+            copyDefaultFile("professions/fishing.yml");
+            copyDefaultFile("professions/mining.yml");
+            copyDefaultFile("professions/smelting.yml");
+            copyDefaultFile("professions/smithing.yml");
+            copyDefaultFile("professions/woodcutting.yml");
+            copyDefaultFile("professions/enchanting.yml");
         }
 
-        loadDefaultFile("attributes.yml");
-        loadDefaultFile("items.yml");
-        loadDefaultFile("messages.yml");
-        loadDefaultFile("stats.yml");
-        loadDefaultFile("waypoints.yml");
-        loadDefaultFile("restrictions.yml");
-        loadDefaultFile("sounds.yml");
-        loadDefaultFile("loot-chests.yml");
-        loadDefaultFile("exp-tables.yml");
-        loadDefaultFile("exp-sources.yml");
-        loadDefaultFile("triggers.yml");
-        loadDefaultFile("conditions.yml");
-        loadDefaultFile("guilds.yml");
+        if (!FileUtils.getFile(MMOCore.plugin, "quests").exists()) {
+            copyDefaultFile("quests/adv-begins.yml");
+            copyDefaultFile("quests/tutorial.yml");
+            copyDefaultFile("quests/fetch-mango.yml");
+        }
+
+        if (!FileUtils.getFile(MMOCore.plugin, "skill-trees").exists()) {
+            copyDefaultFile("skill-trees/combat.yml");
+            copyDefaultFile("skill-trees/mage-arcane-mage.yml");
+            copyDefaultFile("skill-trees/rogue-marksman.yml");
+            copyDefaultFile("skill-trees/warrior-paladin.yml");
+            copyDefaultFile("skill-trees/general.yml");
+        }
+
+        if (!FileUtils.getFile(MMOCore.plugin, "waypoints").exists()) {
+            copyDefaultFile("waypoints/default_waypoints.yml");
+        }
+
+        copyDefaultFile("conditions.yml");
+        copyDefaultFile("exp-sources.yml");
+        copyDefaultFile("guilds.yml");
+        copyDefaultFile("items.yml");
+        copyDefaultFile("messages.yml");
+        copyDefaultFile("restrictions.yml");
+        copyDefaultFile("sounds.yml");
+        copyDefaultFile("stats.yml");
 
         final ConfigurationSection config = MMOCore.plugin.getConfig();
         commandVerbose.reload(MMOCore.plugin.getConfig().getConfigurationSection("command-verbose"));
@@ -179,27 +194,19 @@ public class ConfigManager {
         return new ChatInput(player, type, null, output);
     }
 
-    public void loadDefaultFile(String name) {
-        loadDefaultFile("", name);
+    public void copyDefaultFile(String path) {
+        FileUtils.copyDefaultFile(MMOCore.plugin, path);
     }
 
-    public void loadDefaultFile(String path, String name) {
-        String newPath = "";
-        if (!path.isEmpty()) {
-            String[] subpaths = path.split("/");
-            for (String subpath : subpaths) {
-                newPath += "/" + subpath;
-                File folder = new File(MMOCore.plugin.getDataFolder() + (newPath));
-                if (!folder.exists()) folder.mkdir();
-            }
-        }
+    @Deprecated
+    public void loadDefaultFile(String name) {
+        copyDefaultFile(name);
+    }
 
-        File file = new File(MMOCore.plugin.getDataFolder() + (newPath), name);
-        if (!file.exists()) try {
-            Files.copy(MMOCore.plugin.getResource("default/" + (path.isEmpty() ? "" : path + "/") + name), file.getAbsoluteFile().toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Deprecated
+    public void copyDefaultFile(String path, String name) {
+        if (path.isEmpty()) copyDefaultFile(name);
+        else copyDefaultFile(path + "/" + name);
     }
 
     @Deprecated

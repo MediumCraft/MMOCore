@@ -10,7 +10,15 @@ public enum PartyModuleType {
     MMOCORE("MMOCore", MMOCorePartyModule::new),
     // DUNGEONS("Dungeons", DungeonsPartyModule::new),
     DUNGEONSXL("DungeonsXL", DungeonsXLPartyModule::new),
+    HEROES("Heroes", HeroesPartyModule::new),
     MCMMO("mcMMO", McMMOPartyModule::new),
+    MYTHICDUNGEONS_INJECT("MythicDungeons", () -> {
+        try {
+            return MythicDungeonsPartyInjector.class.getConstructor().newInstance();
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }),
     MYTHICDUNGEONS("MythicDungeons", MythicDungeonsPartyModule::new),
     OBTEAM("OBTeam", OBTeamPartyModule::new),
     PARTY_AND_FRIENDS("PartyAndFriends", PAFPartyModule::new),

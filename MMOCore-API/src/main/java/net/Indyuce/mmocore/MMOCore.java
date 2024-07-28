@@ -216,10 +216,10 @@ public class MMOCore extends MMOPlugin {
         try {
             String partyPluginName = UtilityMethods.enumName(getConfig().getString("party-plugin"));
             PartyModuleType moduleType = PartyModuleType.valueOf(partyPluginName);
-            Validate.isTrue(moduleType.isValid(), "Plugin '" + moduleType.name() + "' is not installed");
+            Validate.isTrue(moduleType.isValid(), "Plugin " + moduleType.getPluginName() + " is not installed");
             partyModule = moduleType.provideModule();
             getLogger().log(Level.INFO, "Hooked parties onto " + moduleType.getPluginName());
-        } catch (RuntimeException exception) {
+        } catch (Throwable exception) {
             getLogger().log(Level.WARNING, "Could not initialize party module: " + exception.getMessage());
             partyModule = new MMOCorePartyModule();
         }
@@ -303,8 +303,6 @@ public class MMOCore extends MMOPlugin {
 
         configManager = new ConfigManager();
 
-        if (clearBefore)
-            MythicLib.plugin.getSkills().initialize(true);
         skillManager.initialize(clearBefore);
         mineManager.initialize(clearBefore);
         partyManager.initialize(clearBefore);

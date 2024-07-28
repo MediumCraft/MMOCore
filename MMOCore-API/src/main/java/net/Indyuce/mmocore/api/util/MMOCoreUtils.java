@@ -46,6 +46,7 @@ public class MMOCoreUtils {
         return player.getName() == null;
     }
 
+    @Deprecated
     public static String displayName(ItemStack item) {
         return item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName()
                 : UtilityMethods.caseOnWords(item.getType().name().replace("_", " "));
@@ -80,32 +81,9 @@ public class MMOCoreUtils {
         return str.toLowerCase().replace("_", "-").replace(" ", "-");
     }
 
-    /**
-     * @param value an integer you want to convert
-     * @return the string representing the integer but with roman letters
-     */
+    @Deprecated
     public static String toRomanNumerals(int value) {
-        LinkedHashMap<String, Integer> roman_numerals = new LinkedHashMap<String, Integer>();
-        roman_numerals.put("M", 1000);
-        roman_numerals.put("CM", 900);
-        roman_numerals.put("D", 500);
-        roman_numerals.put("CD", 400);
-        roman_numerals.put("C", 100);
-        roman_numerals.put("XC", 90);
-        roman_numerals.put("L", 50);
-        roman_numerals.put("XL", 40);
-        roman_numerals.put("X", 10);
-        roman_numerals.put("IX", 9);
-        roman_numerals.put("V", 5);
-        roman_numerals.put("IV", 4);
-        roman_numerals.put("I", 1);
-        String res = "";
-        for (Map.Entry<String, Integer> entry : roman_numerals.entrySet()) {
-            int matches = value / entry.getValue();
-            res += repeat(entry.getKey(), matches);
-            value = value % entry.getValue();
-        }
-        return res;
+        return intToRoman(value);
     }
 
     private static String repeat(String s, int n) {
@@ -256,6 +234,7 @@ public class MMOCoreUtils {
         return entities;
     }
 
+    @Deprecated
     public static void heal(LivingEntity target, double value) {
         double max = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         double gain = Math.min(max, target.getHealth() + value) - target.getHealth();

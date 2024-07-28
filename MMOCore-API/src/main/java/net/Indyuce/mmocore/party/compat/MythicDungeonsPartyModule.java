@@ -29,8 +29,7 @@ public class MythicDungeonsPartyModule implements PartyModule, Listener {
         return party == null ? null : new CustomParty(party);
     }
 
-
-    static class CustomParty implements AbstractParty {
+    private static class CustomParty implements AbstractParty {
         private final MythicParty party;
 
         public CustomParty(MythicParty party) {

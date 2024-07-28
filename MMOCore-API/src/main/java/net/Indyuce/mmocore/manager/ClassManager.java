@@ -1,17 +1,17 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.player.profess.event.trigger.*;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.api.player.profess.event.EventTriggerHandler;
+import net.Indyuce.mmocore.api.player.profess.event.trigger.*;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.util.FileUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 
-import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -83,13 +83,9 @@ public class ClassManager implements MMOCoreManager {
             triggerHandlers.forEach(HandlerList::unregisterAll);
         }
 
-        for (File file : new File(MMOCore.plugin.getDataFolder() + "/classes").listFiles())
-            try {
-                String id = file.getName().substring(0, file.getName().length() - 4);
-                register(new PlayerClass(id, YamlConfiguration.loadConfiguration(file)));
-            } catch (IllegalArgumentException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load class '" + file.getName() + "': " + exception.getMessage());
-            }
+        FileUtils.loadObjectsFromFolder(MMOCore.plugin, "classes", true, (name, config) -> {
+            register(new PlayerClass(name, config));
+        }, "Could not load class from file '%s': %s");
 
         for (PlayerClass profess : map.values())
             try {

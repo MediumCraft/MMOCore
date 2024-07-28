@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.PartyModule;
+import net.Indyuce.mmocore.party.PartyUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,8 +44,8 @@ public class McMMOPartyModule implements PartyModule, Listener {
                 int membersSize = party.getMembers().size();
                 if(membersSize!=1 || party.getOnlineMembers().get(0)!=event.getPlayer()) {
                     party.getOnlineMembers()
-                            .forEach(p -> applyStatBonuses(PlayerData.get(p), membersSize+1));
-                    applyStatBonuses(PlayerData.get(event.getPlayer()), membersSize+1);
+                            .forEach(p -> PartyUtils.applyStatBonuses(PlayerData.get(p), membersSize+1));
+                    PartyUtils.applyStatBonuses(PlayerData.get(event.getPlayer()), membersSize+1);
                 }
             }
         }
@@ -54,13 +55,13 @@ public class McMMOPartyModule implements PartyModule, Listener {
                 //This is the size of the party before the player leaves=> we decrement it by 1.
                 int membersSize = party.getMembers().size() - 1;
                 party.getOnlineMembers()
-                        .forEach(p -> applyStatBonuses(PlayerData.get(p), membersSize));
-                clearStatBonuses(PlayerData.get(event.getPlayer().getPlayer()));
+                        .forEach(p -> PartyUtils.applyStatBonuses(PlayerData.get(p), membersSize));
+                PartyUtils.clearStatBonuses(PlayerData.get(event.getPlayer().getPlayer()));
             }
         }
     }
 
-    class CustomParty implements AbstractParty {
+    private static class CustomParty implements AbstractParty {
         private final Party party;
 
         public CustomParty(Party party) {

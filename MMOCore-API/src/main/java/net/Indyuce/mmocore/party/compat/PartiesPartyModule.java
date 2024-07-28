@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.party.PartyModule;
+import net.Indyuce.mmocore.party.PartyUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,18 +40,18 @@ public class PartiesPartyModule implements PartyModule, Listener {
     public void onPlayerJoin(BukkitPartiesPlayerPostJoinEvent event) {
         int membersSize = event.getParty().getMembers().size();
         event.getParty().getOnlineMembers()
-                .forEach(p -> applyStatBonuses(PlayerData.get(p.getPlayerUUID()), membersSize));
+                .forEach(p -> PartyUtils.applyStatBonuses(PlayerData.get(p.getPlayerUUID()), membersSize));
     }
 
     @EventHandler
     public void onPlayerLeave(BukkitPartiesPlayerPostLeaveEvent event) {
         int membersSize = event.getParty().getMembers().size();
-        clearStatBonuses(PlayerData.get(event.getPartyPlayer().getPlayerUUID()));
+        PartyUtils.clearStatBonuses(PlayerData.get(event.getPartyPlayer().getPlayerUUID()));
         event.getParty().getOnlineMembers()
-                .forEach(p -> applyStatBonuses(PlayerData.get(p.getPlayerUUID()), membersSize));
+                .forEach(p -> PartyUtils.applyStatBonuses(PlayerData.get(p.getPlayerUUID()), membersSize));
     }
 
-    class CustomParty implements AbstractParty {
+    private static class CustomParty implements AbstractParty {
         private final Party party;
 
         public CustomParty(Party party) {

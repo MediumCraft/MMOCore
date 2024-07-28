@@ -5,7 +5,18 @@ import net.Indyuce.mmocore.gui.skilltree.display.PathStatus;
 import net.Indyuce.mmocore.gui.skilltree.display.PathType;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 
-public record SkillTreePath(SkillTree tree, IntegerCoordinates coordinates, SkillTreeNode from, SkillTreeNode to) {
+public class SkillTreePath {
+    private final SkillTree tree;
+    private final IntegerCoordinates coordinates;
+    private final SkillTreeNode from;
+    private final SkillTreeNode to;
+
+    public SkillTreePath(SkillTree tree, IntegerCoordinates coordinates, SkillTreeNode from, SkillTreeNode skillTreeNode) {
+        this.tree = tree;
+        this.coordinates = coordinates;
+        this.from = from;
+        to = skillTreeNode;
+    }
 
     public PathStatus getStatus(PlayerData playerData) {
         SkillTreeStatus fromStatus = playerData.getNodeStatus(from);
@@ -44,6 +55,4 @@ public record SkillTreePath(SkillTree tree, IntegerCoordinates coordinates, Skil
         }
         return PathType.DEFAULT;
     }
-
-
 }

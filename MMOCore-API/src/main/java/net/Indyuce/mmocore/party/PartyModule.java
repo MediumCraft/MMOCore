@@ -1,26 +1,21 @@
 package net.Indyuce.mmocore.party;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface PartyModule {
 
     @Nullable
-    public AbstractParty getParty(PlayerData playerData);
+    public AbstractParty getParty(@NotNull PlayerData playerData);
 
-
-    /**
-     * Applies party stat bonuses to a specific player
-     */
+    @Deprecated
     default void applyStatBonuses(PlayerData player, int memberCount) {
-        MMOCore.plugin.partyManager.getBonuses().forEach(buff -> buff.multiply(memberCount - 1).register(player.getMMOPlayerData()));
+        PartyUtils.applyStatBonuses(player, memberCount);
     }
 
-    /**
-     * Clear party stat bonuses from a player
-     */
+    @Deprecated
     default void clearStatBonuses(PlayerData player) {
-        MMOCore.plugin.partyManager.getBonuses().forEach(buff -> buff.unregister(player.getMMOPlayerData()));
+        PartyUtils.clearStatBonuses(player);
     }
 }

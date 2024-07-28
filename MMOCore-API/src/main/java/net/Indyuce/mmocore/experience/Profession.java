@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +38,7 @@ public class Profession implements ExperienceObject, PreloadedObject {
         MMOCore.plugin.professionManager.loadProfessionConfigurations(this, config);
     });
 
-    public Profession(String id, FileConfiguration config) {
+    public Profession(String id, ConfigurationSection config) {
         postLoadAction.cacheConfig(config);
 
         this.id = id.toLowerCase().replace("_", "-").replace(" ", "-");

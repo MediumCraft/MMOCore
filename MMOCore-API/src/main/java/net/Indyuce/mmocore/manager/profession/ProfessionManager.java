@@ -1,14 +1,14 @@
 package net.Indyuce.mmocore.manager.profession;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.manager.MMOCoreManager;
+import net.Indyuce.mmocore.util.FileUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -69,14 +69,10 @@ public class ProfessionManager implements MMOCoreManager {
 
 		professionManagers.forEach(manager -> manager.initialize(clearBefore));
 
-		// Register professions
-		for (File file : new File(MMOCore.plugin.getDataFolder() + "/professions").listFiles())
-			try {
-				String id = file.getName().substring(0, file.getName().length() - 4);
-				register(new Profession(id, YamlConfiguration.loadConfiguration(file)));
-			} catch (IllegalArgumentException exception) {
-				MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load profession " + file.getName() + ": " + exception.getMessage());
-			}
+        // Register professions
+		FileUtils.loadObjectsFromFolder(MMOCore.plugin, "professions", true, (name, config) -> {
+            register(new Profession(name, config));
+        }, "Could not load profession from file '%s': %s");
 
 		// Load profession-specific configurations
 		for (Profession profession : professions.values())

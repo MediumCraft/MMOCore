@@ -133,7 +133,7 @@ public class SkillTreeNode implements ExperienceObject {
 
     public int getParentNeededLevel(SkillTreeNode parent) {
         for (Map.Entry<ParentInformation, Integer> entry : parents.entrySet())
-            if (entry.getKey().node().equals(parent))
+            if (entry.getKey().getNode().equals(parent))
                 return entry.getValue();
         throw new RuntimeException("Could not find parent " + parent.getId() + " for node " + id);
     }
@@ -144,7 +144,7 @@ public class SkillTreeNode implements ExperienceObject {
 
     public boolean hasParent(SkillTreeNode parent) {
         for (Map.Entry<ParentInformation, Integer> entry : parents.entrySet())
-            if (entry.getKey().node() == parent)
+            if (entry.getKey().getNode() == parent)
                 return true;
         return false;
     }
@@ -162,11 +162,11 @@ public class SkillTreeNode implements ExperienceObject {
     }
 
     public Set<SkillTreeNode> getParents() {
-        return parents.keySet().stream().map(ParentInformation::node).collect(Collectors.toSet());
+        return parents.keySet().stream().map(ParentInformation::getNode).collect(Collectors.toSet());
     }
 
     public Set<SkillTreeNode> getParents(ParentType parentType) {
-        return parents.entrySet().stream().filter(entry -> entry.getKey().type() == parentType).map((entry) -> entry.getKey().node()).collect(Collectors.toSet());
+        return parents.entrySet().stream().filter(entry -> entry.getKey().type() == parentType).map((entry) -> entry.getKey().getNode()).collect(Collectors.toSet());
     }
 
     public List<SkillTreeNode> getChildren() {

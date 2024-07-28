@@ -105,6 +105,12 @@
             <url>https://simonsator.de/repo</url>
         </repository>
 
+        <!-- Heroes Repository
+        <repository>
+            <id>herocraft</id>
+            <url>https://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository> -->
+
     </repositories>
 
     <dependencies>
@@ -146,6 +152,7 @@
             <artifactId>lombok</artifactId>
             <version>1.18.20</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Plugin dependencies -->
@@ -154,6 +161,7 @@
             <artifactId>Mythic-Dist</artifactId>
             <version>5.0.1</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -161,6 +169,7 @@
             <artifactId>MythicDungeons</artifactId>
             <version>1.4.1-SNAPSHOT-CUSTOM</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -176,6 +185,7 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.9.2</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -183,6 +193,7 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7.1</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -190,6 +201,7 @@
             <artifactId>worldguard-bukkit</artifactId>
             <version>7.0.2-SNAPSHOT</version>
             <scope>provided</scope>
+            <optional>true</optional>
 
             <exclusions>
                 <exclusion>
@@ -208,6 +220,7 @@
             <artifactId>ProtocolLib</artifactId>
             <version>4.8.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -215,6 +228,7 @@
             <artifactId>Citizens</artifactId>
             <version>2.0.30</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Party plugins -->
@@ -223,6 +237,7 @@
             <artifactId>DevelopmentPAFSpigot</artifactId>
             <version>1.0.65</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -230,6 +245,7 @@
             <artifactId>Party-and-Friends-MySQL-Edition-Spigot-API</artifactId>
             <version>1.5.4-RELEASE</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -237,6 +253,7 @@
             <artifactId>spigot-party-api-for-party-and-friends</artifactId>
             <version>1.0.4-RELEASE</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -244,6 +261,7 @@
             <artifactId>OBTeam</artifactId>
             <version>1.1</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -251,6 +269,7 @@
             <artifactId>Parties</artifactId>
             <version>3.1.14</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -258,6 +277,7 @@
             <artifactId>mcMMO</artifactId>
             <version>2.1.209</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -265,6 +285,15 @@
             <artifactId>DungeonsXL</artifactId>
             <version>0.18-SNAPSHOT-1149</version>
             <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.herocraftonline</groupId>
+            <artifactId>Heroes</artifactId>
+            <version>1.9.22</version>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -272,6 +301,7 @@
             <artifactId>Bedrock</artifactId>
             <version>1.2.5</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -279,6 +309,7 @@
             <artifactId>Dungeons</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Quest Plugins -->
@@ -287,24 +318,28 @@
             <artifactId>Quests</artifactId>
             <version>4.4.1-b340</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>fr.skytasul.quests</groupId>
             <artifactId>BeautyQuests</artifactId>
             <version>0.19.5</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.guillaumevdn</groupId>
             <artifactId>QuestCreator</artifactId>
             <version>6.39.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.guillaumevdn</groupId>
             <artifactId>GCore</artifactId>
             <version>8.39.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Guild plugins -->
@@ -321,6 +356,7 @@
             <artifactId>UClansV7-API</artifactId>
             <version>7.1.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -328,6 +364,7 @@
             <artifactId>Guilds</artifactId>
             <version>3.5.6.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -335,6 +372,7 @@
             <artifactId>Kingdoms</artifactId>
             <version>1.15.5</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

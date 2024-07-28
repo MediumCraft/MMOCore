@@ -168,6 +168,8 @@ public class KeyCombos extends SkillCastingHandler {
         }
     }
 
+    private static final List<TriggerType> IGNORED_WHEN_CASTING = Arrays.asList(TriggerType.RIGHT_CLICK, TriggerType.LEFT_CLICK, TriggerType.SHIFT_RIGHT_CLICK, TriggerType.SHIFT_LEFT_CLICK, TriggerType.SNEAK);
+
     /**
      * Loads the player current combos & the combos applicable to the player
      * (combos defined in its class or the default combos of the config.yml)
@@ -194,8 +196,6 @@ public class KeyCombos extends SkillCastingHandler {
             else getCaster().displayActionBar(actionBarOptions.format(this));
         }
 
-        private static final List<TriggerType> IGNORED_WHEN_CASTING = Arrays.asList(TriggerType.RIGHT_CLICK, TriggerType.LEFT_CLICK, TriggerType.SHIFT_RIGHT_CLICK, TriggerType.SHIFT_LEFT_CLICK, TriggerType.SNEAK);
-
         /**
          * This makes sure NO skills are cast when in casting mode so that
          * item abilities from MMOItems don't interfere with that.
@@ -205,8 +205,8 @@ public class KeyCombos extends SkillCastingHandler {
          */
         @EventHandler
         public void ignoreOtherSkills(PlayerCastSkillEvent event) {
-            if (!event.getPlayer().equals(getCaster().getPlayer())) return;
-            if (IGNORED_WHEN_CASTING.contains(event.getCast().getTrigger())) event.setCancelled(true);
+            if (event.getPlayer().equals(getCaster().getPlayer()) && IGNORED_WHEN_CASTING.contains(event.getCast().getTrigger()))
+                event.setCancelled(true);
         }
     }
 

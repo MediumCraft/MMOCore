@@ -1,10 +1,10 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.util.FileUtils;
 import net.Indyuce.mmocore.waypoint.Waypoint;
-import net.Indyuce.mmocore.api.ConfigFile;
 import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,13 +49,10 @@ public class WaypointManager implements MMOCoreManager {
         if (clearBefore)
             waypoints.clear();
 
-        FileConfiguration config = new ConfigFile("waypoints").getConfig();
-        for (String key : config.getKeys(false))
-            try {
-                register(new Waypoint(config.getConfigurationSection(key)));
-            } catch (RuntimeException exception) {
-                MMOCore.log(Level.WARNING, "Could not load waypoint '" + key + "': " + exception.getMessage());
-            }
+
+        FileUtils.loadObjectsFromFolder(MMOCore.plugin, "waypoints", false, (key, config) -> {
+            register(new Waypoint(config));
+        }, "Could not load waypoint '%s' from file '%s': %s");
 
         for (Waypoint waypoint : waypoints.values())
             try {

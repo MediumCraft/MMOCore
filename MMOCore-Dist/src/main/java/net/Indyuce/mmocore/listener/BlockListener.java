@@ -87,7 +87,7 @@ public class BlockListener implements Listener {
 
         // Find the block drops
         boolean conditionsMet = !info.hasDropTable() || info.getDropTable().areConditionsMet(new ConditionInstance(player));
-        List<ItemStack> drops = conditionsMet && info.hasDropTable() ? info.getDropTable().collect(new LootBuilder(PlayerData.get(player), 0)) : new ArrayList<>();
+        List<ItemStack> drops = conditionsMet && info.hasDropTable() ? info.getDropTable().collect(new LootBuilder(PlayerData.get(player), info.getDropTable().getCapacity())) : new ArrayList<>();
 
         /*
          * Calls the event and listen for cancel & for drops changes... also
@@ -157,6 +157,11 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void registerPlayerPlacedBlocksTag(BlockPlaceEvent event) {
+
+        // Ignore log stripping
+        if (event.getBlock().getType().name().startsWith("STRIPPED_") && event.getItemInHand().getType().name().endsWith("_AXE"))
+            return;
+
         event.getBlock().setMetadata("player_placed", new FixedMetadataValue(MMOCore.plugin, true));
     }
 

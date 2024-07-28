@@ -15,7 +15,7 @@ public class DungeonsPartyModule implements PartyModule {
         throw new RuntimeException("Not supported");
     }
 
-    class CustomParty implements AbstractParty {
+    private static class CustomParty implements AbstractParty {
 
         public CustomParty() {
         }

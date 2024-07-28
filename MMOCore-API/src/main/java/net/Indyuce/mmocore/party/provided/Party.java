@@ -10,6 +10,7 @@ import net.Indyuce.mmocore.gui.api.PluginInventory;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView;
 import net.Indyuce.mmocore.manager.InventoryManager;
 import net.Indyuce.mmocore.party.AbstractParty;
+import net.Indyuce.mmocore.party.PartyUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -107,8 +108,8 @@ public class Party implements AbstractParty {
         members.remove(data);
 
         module.setParty(data, null);
-        module.clearStatBonuses(data);
-        members.forEach(member -> module.applyStatBonuses(member, members.size()));
+        PartyUtils.clearStatBonuses(data);
+        members.forEach(member -> PartyUtils.applyStatBonuses(member, members.size()));
         updateOpenInventories();
 
         // Disband the party if no member left
@@ -132,7 +133,7 @@ public class Party implements AbstractParty {
 
         module.setParty(data, this);
         members.add(data);
-        members.forEach(member -> module.applyStatBonuses(member, members.size()));
+        members.forEach(member -> PartyUtils.applyStatBonuses(member, members.size()));
 
         updateOpenInventories();
     }

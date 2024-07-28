@@ -57,16 +57,18 @@ custom-mine-conditions:
 # broken when custom mining conditions are met
 protect-custom-mine: false
 
-# Edit the plugin handling parties here.
+# Choose the plugin handling parties here.
 # Supported values (just copy and paste):
-# - mmocore
+# - mmocore (Default built-in party system)
 # - dungeonsxl
-# - parties
-# - party_and_friends (Use this one if you are using Party and Friends Extended for Spigot)
-# - party_and_friends_bungeecord_velocity (Use this one if you are using Party and Friends For Bungeecord, Party and Friends For Velocity or Party and Friends Extended Edition for Bungeecord/Velocity. This one requires https://www.spigotmc.org/resources/spigot-party-api-for-party-and-friends.39751/ to be installed)
+# - heroes
 # - mcmmo
-# - obteam (addon for DungeonMMO)
-# - mythicdungeons (only when using default party handler)
+# - mythicdungeons (Make sure `PartyPlugin` is set to `Default` in MythicDungeons)
+# - mythicdungeons_inject (Make sure `PartyPlugin` is set to `MMOCore` in MythicDungeons)
+# - obteam (Addon for DungeonMMO)
+# - party_and_friends (When using Party and Friends (Extended) for Spigot)
+# - party_and_friends_bungeecord_velocity (When using Party and Friends (Extended) Edition for BungeeCord/Velocity. Requires https://www.spigotmc.org/resources/spigot-party-api-for-party-and-friends.39751/ to be installed)
+# - parties
 party-plugin: mmocore
 
 # Edit the plugin handling guilds here.

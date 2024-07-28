@@ -1,21 +1,18 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
+import net.Indyuce.mmocore.util.FileUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
 
 public class ExperienceManager implements MMOCoreManager {
     private final Map<String, ExpCurve> expCurves = new HashMap<>();
@@ -112,22 +109,15 @@ public class ExperienceManager implements MMOCoreManager {
         }
 
         // Exp curves
-        for (File file : new File(MMOCore.plugin.getDataFolder() + "/expcurves").listFiles())
-            try {
-                ExpCurve curve = new ExpCurve(file);
-                expCurves.put(curve.getId(), curve);
-            } catch (IllegalArgumentException | IOException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp curve '" + file.getName() + "': " + exception.getMessage());
-            }
+        FileUtils.loadObjectsFromFolderRaw(MMOCore.plugin, "expcurves", file -> {
+            final ExpCurve curve = new ExpCurve(file);
+            expCurves.put(curve.getId(), curve);
+        }, "Could not load exp curve from file '%s': %s");
 
         // Exp tables
-        FileConfiguration expTablesConfig = new ConfigFile("exp-tables").getConfig();
-        for (String key : expTablesConfig.getKeys(false))
-            try {
-                ExperienceTable table = new ExperienceTable(expTablesConfig.getConfigurationSection(key));
-                expTables.put(table.getId(), table);
-            } catch (RuntimeException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table '" + key + "': " + exception.getMessage());
-            }
+        FileUtils.loadObjectsFromFolder(MMOCore.plugin ,"exp-tables", false, (key, config) -> {
+            final ExperienceTable table = new ExperienceTable(config);
+            expTables.put(table.getId(), table);
+        }, "Could not load exp table '%s' from file '%s': %s");
     }
 }

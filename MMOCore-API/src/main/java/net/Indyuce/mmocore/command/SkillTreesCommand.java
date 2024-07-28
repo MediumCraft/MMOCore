@@ -26,8 +26,9 @@ public class SkillTreesCommand extends RegisteredCommand {
     public boolean execute(@NotNull CommandSender sender, String s, String[] args) {
         if (!sender.hasPermission("mmocore.skilltrees"))
             return false;
-        if (!(sender instanceof Player player))
+        if (!(sender instanceof Player))
             return false;
+        final Player player = (Player) sender;
         PlayerData data = PlayerData.get(player);
         MMOCommandEvent event = new MMOCommandEvent(data, "skilltrees");
         Bukkit.getServer().getPluginManager().callEvent(event);

@@ -12,7 +12,6 @@ import net.Indyuce.mmocore.gui.social.guild.EditableGuildCreation;
 import net.Indyuce.mmocore.gui.social.guild.EditableGuildView;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyCreation;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView;
-import org.bukkit.Bukkit;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -44,7 +43,7 @@ public class InventoryManager {
         //Loads the specific inventories
         for (SpecificInventoryLoader loader : SpecificInventoryLoader.values()) {
             try {
-                MMOCore.plugin.configManager.loadDefaultFile("gui/" + loader.name, loader.name + "-default.yml");
+                MMOCore.plugin.configManager.copyDefaultFile("gui/" + loader.name + "/" + loader.name + "-default.yml");
             } catch (Exception exception) {
                 MMOCore.log(Level.WARNING, "Could not load inventory 'gui/" + loader.name + "/" + loader.name + "-default" + "': " + exception.getMessage());
             }
@@ -59,7 +58,7 @@ public class InventoryManager {
         list.forEach(inv ->
         {
             try {
-                MMOCore.plugin.configManager.loadDefaultFile("gui", inv.getId() + ".yml");
+                MMOCore.plugin.configManager.copyDefaultFile("gui/" + inv.getId() + ".yml");
                 inv.reload(new ConfigFile("/gui", inv.getId()).getConfig());
             } catch (Exception exception) {
                 MMOCore.log(Level.WARNING, "Could not load inventory '" + (inv instanceof ClassConfirmation ? "class-confirm/" : "") + inv.getId() + "': " + exception.getMessage());

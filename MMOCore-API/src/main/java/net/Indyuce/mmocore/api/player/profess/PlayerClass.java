@@ -33,11 +33,11 @@ import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.skill.cast.ComboMap;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
-import net.Indyuce.mmocore.util.ConfigUtils;
+import net.Indyuce.mmocore.util.FileUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -94,7 +94,7 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
                 }
     });
 
-    public PlayerClass(String id, FileConfiguration config) {
+    public PlayerClass(String id, ConfigurationSection config) {
         postLoadAction.cacheConfig(config);
 
         this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
@@ -189,7 +189,7 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
 
         // Skill slots
         if (config.isConfigurationSection("skill-slots"))
-            ConfigUtils.iterateConfigSectionList(
+            FileUtils.iterateConfigSectionList(
                     config.getConfigurationSection("skill-slots"),
                     skillSlots,
                     SkillSlot::new,

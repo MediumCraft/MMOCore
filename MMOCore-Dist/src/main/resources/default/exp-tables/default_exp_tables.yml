@@ -1,0 +1,65 @@
+
+# Experience tables are separated into multiple items.
+
+example_exp_table:
+
+  # Every item is fully independent and has its own chance
+  # of dropping every time a player passes a level! When an
+  # item drops, all its triggers are called.
+  first_table_item:
+
+    # This item will drop every 3 level ups
+    period: 3
+
+    # This item has a 80% chance to drop every 3 level ups
+    chance: 80
+
+    # Every successive drop failure the item will reduce the
+    # future risk by X%. With a 80% failure reduction rate,
+    # risks become:
+    # - 80%
+    # - 96% (almost guaranteed)
+    # - 99.2% (almost guaranteed+)
+    # - 99.84% (almost guaranteed++)
+    # so on forever..
+    #
+    # This is better than just increasing the claim chance by a
+    # certain amount each time because otherwise the claim chance
+    # just becomes/surpasses 100% at some point.
+    fail-reduction: 80
+
+    # What happens when that item is claimed. Does it give exp?
+    # Does it perform a command, unlocks a skill? etc
+    # You can find the list of available triggers on the wiki
+    triggers:
+      - 'exp{amount=20}'
+
+  # This is a second item, fully independent of the previous one.
+  second_table_item:
+    period: 2
+    triggers:
+      - 'exp{amount=80}'
+      - 'command{format="broadcast Boy, %player_name% level up twice one of their professions!"}'
+
+# Exp table used by class to provide
+# one skill point every level up
+class_exp_table:
+  skill_point:
+    period: 1
+    triggers:
+      - 'command{format="mmocore admin skill-points give %player_name% 1"}'
+
+second_exp_table:
+
+  # Base exp every level up, sweet.
+  some_item:
+    period: 1
+    triggers:
+      - 'exp{amount=100}'
+
+    # Extra exp every 3 levels
+    some_other_item:
+      period: 3
+      triggers:
+        - 'exp{amount=100}'
+

@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -26,7 +27,7 @@ public class CustomBlockManager extends SpecificProfessionManager {
 	/**
 	 * Registered block infos
 	 */
-	private final Map<String, BlockInfo> map = new HashMap<>();
+	private final Map<BlockType, BlockInfo> map = new HashMap<>();
 
 	/**
 	 * Blocks that are regenerating and that must be refreshed whenever the
@@ -57,8 +58,8 @@ public class CustomBlockManager extends SpecificProfessionManager {
 		blockTypes.add(function);
 	}
 
-	public void register(BlockInfo regen) {
-		map.put(regen.getBlock().generateKey(), regen);
+	public void register(@NotNull BlockInfo regen) {
+		map.put(regen.getBlock(), regen);
 	}
 
 	/**
@@ -68,10 +69,11 @@ public class CustomBlockManager extends SpecificProfessionManager {
 	 * @param  block Block to check
 	 * @return       The new block behaviour or null if no new behaviour
 	 */
-	public @Nullable BlockInfo getInfo(Block block) {
-		return map.get(findBlockType(block).generateKey());
+	public @Nullable BlockInfo getInfo(@NotNull Block block) {
+		return map.get(findBlockType(block));
 	}
 
+	@NotNull
 	public BlockType findBlockType(Block block) {
 		for (Function<Block, Optional<BlockType>> blockType : blockTypes) {
 			Optional<BlockType> type = blockType.apply(block);

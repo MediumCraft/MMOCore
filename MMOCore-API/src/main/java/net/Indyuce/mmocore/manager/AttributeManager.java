@@ -5,6 +5,8 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.attribute.MMOCoreAttributeStatHandler;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
+import net.Indyuce.mmocore.util.FileUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,14 +40,10 @@ public class AttributeManager implements MMOCoreManager {
             MythicLib.plugin.getStats().clearRegisteredStats(handler -> handler instanceof MMOCoreAttributeStatHandler);
         }
 
-        final ConfigFile config = new ConfigFile("attributes");
-        for (String key : config.getConfig().getKeys(false))
-            try {
-                String path = key.toLowerCase().replace("_", "-").replace(" ", "-");
-                map.put(path, new PlayerAttribute(config.getConfig().getConfigurationSection(key)));
-            } catch (IllegalArgumentException exception) {
-                MMOCore.log(Level.WARNING, "Could not load attribute '" + key + "': " + exception.getMessage());
-            }
+        FileUtils.loadObjectsFromFolder(MMOCore.plugin, "attributes", false, (key, config) -> {
+            final String path = key.toLowerCase().replace("_", "-").replace(" ", "-");
+            map.put(path, new PlayerAttribute(config));
+        }, "Could not load attribute '%s' from file '%s': %s");
 
         final ConfigurationSection statsConfig = new ConfigFile(MythicLib.plugin, "", "stats").getConfig();
         for (PlayerAttribute attr : getAll()) {

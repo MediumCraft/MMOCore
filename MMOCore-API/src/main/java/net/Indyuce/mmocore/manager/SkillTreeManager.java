@@ -1,14 +1,15 @@
 package net.Indyuce.mmocore.manager;
 
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.skilltree.ParentType;
-import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.Indyuce.mmocore.manager.registry.MMOCoreRegister;
+import net.Indyuce.mmocore.skilltree.ParentType;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
-import org.bukkit.configuration.file.YamlConfiguration;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
+import net.Indyuce.mmocore.util.FileUtils;
 
-import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -24,7 +25,6 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
     public boolean has(int index) {
         return index >= 0 && index < registered.values().stream().collect(Collectors.toList()).size();
     }
-
 
     public SkillTreeNode getNode(String fullId) {
         return skillTreeNodes.get(fullId);
@@ -56,25 +56,11 @@ public class SkillTreeManager extends MMOCoreRegister<SkillTree> {
 
     @Override
     public void initialize(boolean clearBefore) {
-        if (clearBefore)
-            registered.clear();
-        File file = new File(MMOCore.plugin.getDataFolder() + "/skill-trees");
-        if (!file.exists())
-            file.mkdirs();
-        load(file);
-    }
+        if (clearBefore) registered.clear();
 
-
-    public void load(File file) {
-        if (file.isDirectory()) {
-            List<File> fileList = Arrays.asList(file.listFiles()).stream().sorted().collect(Collectors.toList());
-            for (File child : fileList) {
-                load(child);
-            }
-        } else {
-            SkillTree skillTree = SkillTree.loadSkillTree(YamlConfiguration.loadConfiguration(file));
-            if (skillTree != null)
-                register(skillTree);
-        }
+        FileUtils.loadObjectsFromFolder(MMOCore.plugin, "skill-trees", true, (key, config) -> {
+            SkillTree skillTree = SkillTree.loadSkillTree(config);
+            if (skillTree != null) register(skillTree);
+        }, "Could not load skill tree from file '%s': %s");
     }
 }

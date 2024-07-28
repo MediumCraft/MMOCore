@@ -13,15 +13,17 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 
 public class DropTable implements PreloadedObject {
     private final String id;
-    private final Set<DropItem> drops = new LinkedHashSet<>();
-    private final Set<Condition> conditions = new LinkedHashSet<>();
+    private final double capacity;
+    private final boolean shuffle;
+    private final List<DropItem> drops = new ArrayList<>();
+    private final List<Condition> conditions = new ArrayList<>();
 
     private final PostLoadAction postLoadAction;
 
@@ -30,11 +32,16 @@ public class DropTable implements PreloadedObject {
         this.postLoadAction.cacheConfig(config);
 
         this.id = config.getName();
+        this.shuffle = config.getBoolean("shuffle");
+        this.capacity = config.getDouble("capacity", LootBuilder.DEFAULT_CAPACITY);
+        Validate.isTrue(capacity >= 0, "Capacity must be positive");
     }
 
     public DropTable(String id) {
         this.postLoadAction = generatePostLoadAction();
         this.id = id;
+        this.capacity = 100;
+        this.shuffle = false;
     }
 
     private PostLoadAction generatePostLoadAction() {
@@ -76,13 +83,27 @@ public class DropTable implements PreloadedObject {
         drops.add(item);
     }
 
-    public Set<DropItem> getDrops() {
+    public double getCapacity() {
+        return capacity;
+    }
+
+    @NotNull
+    public List<DropItem> getDrops() {
         return drops;
     }
 
+    @NotNull
     public List<ItemStack> collect(LootBuilder builder) {
 
-        for (DropItem item : drops)
+        // Shuffle items?
+        final List<DropItem> items;
+        if (shuffle) {
+            items = new ArrayList<>(drops);
+            Collections.shuffle(items);
+        } else items = drops;
+
+        // Collect items
+        for (DropItem item : items)
             if (item.rollChance(builder.getEntity()) && builder.getCapacity() >= item.getWeight()) {
                 item.collect(builder);
                 builder.reduceCapacity(item.getWeight());
@@ -91,7 +112,8 @@ public class DropTable implements PreloadedObject {
         return builder.getLoot();
     }
 
-    public Set<Condition> getConditions() {
+    @NotNull
+    public List<Condition> getConditions() {
         return conditions;
     }
 

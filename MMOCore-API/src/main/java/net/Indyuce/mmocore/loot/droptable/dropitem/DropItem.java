@@ -14,8 +14,6 @@ public abstract class DropItem {
     private final double chance, weight;
     private final RandomAmount amount;
 
-    private static final double CHANCE_COEFFICIENT = 7. / 100;
-
     public DropItem(MMOLineConfig config) {
         chance = config.args().length > 0 ? Double.parseDouble(config.args()[0]) : 1;
         amount = config.args().length > 1 ? new RandomAmount(config.args()[1]) : new RandomAmount(1, 1);
@@ -38,16 +36,14 @@ public abstract class DropItem {
         return amount.calculateInt();
     }
 
-    /**
-     * CHANCE stat = 0    | tier chances are unchanged
-     * CHANCE stat = +inf | uniform law for any drop item
-     * CHANCE stat = 100  | all tier chances are taken their square root
-     *
-     * @return The real weight of an item considering the player's CHANCE stat.
-     */
+    /// TODO make it configurable
+    @Deprecated
+    public static final double CHANCE_FACTOR = 7. / 100, CHANCE_POWER = 0.33333333333;
+
     public boolean rollChance(PlayerData player) {
-        double value = random.nextDouble();
-        return value < Math.pow(chance, 1 / Math.pow(1 + CHANCE_COEFFICIENT * MMOCore.plugin.configManager.dropItemsChanceWeight* player.getStats().getStat("CHANCE"), 1.0 / 3.0));
+        final double effectiveLuck = CHANCE_FACTOR * MMOCore.plugin.configManager.dropItemsChanceWeight * player.getStats().getStat("CHANCE");
+        final double randomValue = random.nextDouble();
+        return randomValue < Math.pow(chance, Math.pow(1 + effectiveLuck, CHANCE_POWER));
     }
 
     public abstract void collect(LootBuilder builder);

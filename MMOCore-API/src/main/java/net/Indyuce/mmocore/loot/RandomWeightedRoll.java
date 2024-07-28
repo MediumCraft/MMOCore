@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.loot;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -17,23 +18,24 @@ public class RandomWeightedRoll<T extends Weighted> {
     private final T rolled;
 
     private static final Random RANDOM = new Random();
-    private static final double CHANCE_COEFFICIENT = 7. / 100;
 
     public RandomWeightedRoll(PlayerData player, Collection<T> collection, double chanceWeight) {
         this.collection = collection;
 
         double partialSum = 0;
-        final double randomCoefficient = RANDOM.nextDouble(), chance = chanceWeight * player.getStats().getStat("CHANCE"), sum = weightedSum(chance);
+        final double randomCoefficient = RANDOM.nextDouble(),
+                effectiveLuck = DropItem.CHANCE_FACTOR * chanceWeight * player.getStats().getStat("CHANCE"),
+                sum = weightedSum(effectiveLuck);
 
         for (T item : collection) {
-            partialSum += computeRealWeight(item, chance);
+            partialSum += computeRealWeight(item, effectiveLuck);
             if (partialSum >= randomCoefficient * sum) {
                 rolled = item;
                 return;
             }
         }
 
-        throw new RuntimeException("Could not roll item, the chance is :"+chance);
+        throw new RuntimeException("Could not roll item, effective luck is " + effectiveLuck);
     }
 
     /**
@@ -47,10 +49,10 @@ public class RandomWeightedRoll<T extends Weighted> {
         return rolled;
     }
 
-    private double weightedSum(double chance) {
+    private double weightedSum(double effectiveLuck) {
         double sum = 0;
         for (T item : collection)
-            sum += computeRealWeight(item, chance);
+            sum += computeRealWeight(item, effectiveLuck);
         return sum;
     }
 
@@ -62,8 +64,8 @@ public class RandomWeightedRoll<T extends Weighted> {
      *
      * @return The real weight of an item considering the player's chance stat.
      */
-    private double computeRealWeight(T item, double chance) {
-        return Math.pow(item.getWeight(), 1 / Math.pow(1 + CHANCE_COEFFICIENT * chance, 1. / 3.));
+    private double computeRealWeight(T item, double effectiveLuck) {
+        return Math.pow(item.getWeight(), Math.pow(1 + effectiveLuck, -DropItem.CHANCE_POWER));
     }
 
     /*

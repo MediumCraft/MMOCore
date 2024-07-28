@@ -31,25 +31,29 @@ public class ExpCurve {
 	/**
 	 * Reads an exp curve from a text file, one line after the other. Each exp
 	 * value has to be the only thing written on every line
-	 * 
+	 *
 	 * @param  file        Text file to read data from
 	 * @throws IOException IO exception when reading file
 	 */
-	public ExpCurve(File file) throws IOException {
-		this.id = file.getName().replace(".txt", "").toLowerCase().replace("_", "-").replace(" ", "-");
+	public ExpCurve(File file) {
+        this.id = file.getName().replace(".txt", "").toLowerCase().replace("_", "-").replace(" ", "-");
 
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String readLine;
-		while ((readLine = reader.readLine()) != null)
-			experience.add(Integer.valueOf(readLine));
-		reader.close();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String readLine;
+            while ((readLine = reader.readLine()) != null)
+                experience.add(Integer.valueOf(readLine));
+            reader.close();
 
-		Validate.isTrue(!experience.isEmpty(), "There must be at least one exp value in your exp curve");
-	}
+            Validate.isTrue(!experience.isEmpty(), "There must be at least one exp value in your exp curve");
+        } catch(Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
 
 	/**
 	 * Public constructor for external plugins
-	 * 
+	 *
 	 * @param id     Some unique identifier to let other plugin features refer
 	 *               to your exp curve.
 	 * @param values The exp values, at to be at least one or the constructor
