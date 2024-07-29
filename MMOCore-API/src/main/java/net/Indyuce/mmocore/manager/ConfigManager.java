@@ -1,6 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.UtilityMethods;
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.ConfigMessage;
@@ -8,7 +9,6 @@ import net.Indyuce.mmocore.api.util.input.ChatInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput;
 import net.Indyuce.mmocore.api.util.input.PlayerInput.InputType;
 import net.Indyuce.mmocore.command.api.CommandVerbose;
-import net.Indyuce.mmocore.util.FileUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,6 @@ import org.bukkit.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;

@@ -1,9 +1,8 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.quest.Quest;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.util.FileUtils;
 import org.apache.commons.lang.Validate;
 
 import java.util.Collection;

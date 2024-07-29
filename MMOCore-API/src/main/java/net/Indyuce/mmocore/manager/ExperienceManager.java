@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.source.type.ExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
-import net.Indyuce.mmocore.util.FileUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

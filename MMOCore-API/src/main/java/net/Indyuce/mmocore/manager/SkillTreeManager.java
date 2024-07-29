@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.manager.registry.MMOCoreRegister;
 import net.Indyuce.mmocore.skilltree.ParentType;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
-import net.Indyuce.mmocore.util.FileUtils;
 
 import java.util.Collection;
 import java.util.HashMap;

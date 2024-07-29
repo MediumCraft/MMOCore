@@ -1,8 +1,8 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.loot.droptable.DropTable;
-import net.Indyuce.mmocore.util.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

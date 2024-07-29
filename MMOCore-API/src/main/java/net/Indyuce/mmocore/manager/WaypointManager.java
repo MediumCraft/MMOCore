@@ -1,8 +1,7 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.util.FileUtils;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;

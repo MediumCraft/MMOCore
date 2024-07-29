@@ -1,10 +1,9 @@
 package net.Indyuce.mmocore.manager;
 
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.chest.LootChest;
 import net.Indyuce.mmocore.loot.chest.LootChestRegion;
-import net.Indyuce.mmocore.util.FileUtils;
 import net.Indyuce.mmocore.util.HashableLocation;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +68,7 @@ public class LootChestManager implements MMOCoreManager {
         }
 
         FileUtils.loadObjectsFromFolder(MMOCore.plugin, "loot-chests", false, (key, config) -> {
-            LootChestRegion region = new LootChestRegion(config.getConfigurationSection(key));
+            LootChestRegion region = new LootChestRegion(config);
             regions.put(region.getId(), region);
         }, "Could not load loot chest region '%s' from file '%s': %s");
     }

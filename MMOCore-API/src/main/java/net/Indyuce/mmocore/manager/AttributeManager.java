@@ -1,12 +1,11 @@
 package net.Indyuce.mmocore.manager;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
 import net.Indyuce.mmocore.api.player.attribute.MMOCoreAttributeStatHandler;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.util.FileUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class AttributeManager implements MMOCoreManager {
     private final Map<String, PlayerAttribute> map = new HashMap<>();

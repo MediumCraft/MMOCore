@@ -1,10 +1,9 @@
 package net.Indyuce.mmocore.manager.profession;
 
+import io.lumine.mythic.lib.util.FileUtils;
 import net.Indyuce.mmocore.MMOCore;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.experience.Profession;
 import net.Indyuce.mmocore.manager.MMOCoreManager;
-import net.Indyuce.mmocore.util.FileUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
