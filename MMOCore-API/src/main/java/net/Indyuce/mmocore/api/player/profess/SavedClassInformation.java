@@ -125,13 +125,13 @@ public class SavedClassInformation implements ClassDataContainer {
         this.stellium = data.getStellium();
         this.stamina = data.getStamina();
 
-        data.mapAttributeLevels().forEach((key, val) -> this.attributeLevels.put(key, val));
-        data.mapSkillLevels().forEach((key, val) -> skillLevels.put(key, val));
-        data.mapSkillTreePoints().forEach((key, val) -> skillTreePoints.put(key, val));
-        data.getNodeLevels().forEach((node, level) -> nodeLevels.put(node, level));
-        data.getNodeTimesClaimed().forEach((key, val) -> nodeTimesClaimed.put(key, val));
-        data.mapBoundSkills().forEach((slot, skill) -> boundSkills.put(slot, skill));
-        data.getUnlockedItems().forEach(item -> unlockedItems.add(item));
+        attributeLevels.putAll(data.mapAttributeLevels());
+        skillLevels.putAll(data.mapSkillLevels());
+        skillTreePoints.putAll(data.mapSkillTreePoints());
+        nodeLevels.putAll(data.getNodeLevels());
+        nodeTimesClaimed.putAll(data.getNodeTimesClaimed());
+        boundSkills.putAll(data.mapBoundSkills());
+        unlockedItems.addAll(data.getUnlockedItems());
     }
 
     @Override
@@ -324,10 +324,7 @@ public class SavedClassInformation implements ClassDataContainer {
             player.bindSkill(slot, profess.getSkill(boundSkills.get(slot)));
 
         skillLevels.forEach(player::setSkillLevel);
-        attributeLevels.forEach((id, pts) -> {
-            final PlayerAttributes.AttributeInstance ins = player.getAttributes().getInstance(id);
-            if (ins != null) ins.setBase(pts);
-        });
+        attributeLevels.forEach((id, pts) -> player.getAttributes().getInstance(id).setBase(pts));
 
         // Careful, the global points must not be forgotten.
         player.setSkillTreePoints("global", skillTreePoints.getOrDefault("global", 0));

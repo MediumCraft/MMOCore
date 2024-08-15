@@ -108,7 +108,7 @@ public class SkillTreeViewer extends EditableInventory {
                     holders.register("realloc-points", inv.getPlayerData().getSkillTreeReallocationPoints());
                     int maxPointSpent = inv.getSkillTree().getMaxPointSpent();
                     holders.register("max-point-spent", maxPointSpent == Integer.MAX_VALUE ? "∞" : maxPointSpent);
-                    holders.register("point-spent", inv.getPlayerData().getPointSpent(inv.getSkillTree()));
+                    holders.register("point-spent", inv.getPlayerData().getPointsSpent(inv.getSkillTree()));
 
                     return holders;
                 }
@@ -167,8 +167,7 @@ public class SkillTreeViewer extends EditableInventory {
                     lore.add(holders.apply(inv.getPlayer(), string));
             });
             meta.setLore(lore);
-            if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13))
-                meta.setCustomModelData(skillTree.getCustomModelData());
+            meta.setCustomModelData(skillTree.getCustomModelData());
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(new NamespacedKey(MMOCore.plugin, "skill-tree-id"), PersistentDataType.STRING, skillTree.getId());
             item.setItemMeta(meta);
@@ -184,7 +183,7 @@ public class SkillTreeViewer extends EditableInventory {
             holders.register("id", skillTree.getId());
             int maxPointSpent = inv.getSkillTree().getMaxPointSpent();
             holders.register("max-point-spent", maxPointSpent == Integer.MAX_VALUE ? "∞" : maxPointSpent);
-            holders.register("point-spent", inv.getPlayerData().getPointSpent(inv.getSkillTree()));
+            holders.register("point-spent", inv.getPlayerData().getPointsSpent(inv.getSkillTree()));
             holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoints(inv.getSkillTree().getId()));
             holders.register("global-points", inv.getPlayerData().getSkillTreePoints("global"));
             return holders;
@@ -315,7 +314,7 @@ public class SkillTreeViewer extends EditableInventory {
             }
             int maxPointSpent = inv.getSkillTree().getMaxPointSpent();
             holders.register("max-point-spent", maxPointSpent == Integer.MAX_VALUE ? "∞" : maxPointSpent);
-            holders.register("point-spent", inv.getPlayerData().getPointSpent(inv.getSkillTree()));
+            holders.register("point-spent", inv.getPlayerData().getPointsSpent(inv.getSkillTree()));
             holders.register("skill-tree-points", inv.getPlayerData().getSkillTreePoints(inv.getSkillTree().getId()));
             holders.register("global-points", inv.getPlayerData().getSkillTreePoints("global"));
 
@@ -466,7 +465,7 @@ public class SkillTreeViewer extends EditableInventory {
                 open();
             }
             if (item.getFunction().equals("reallocation")) {
-                int spent = playerData.getPointSpent(skillTree);
+                int spent = playerData.getPointsSpent(skillTree);
                 if (spent < 1) {
                     ConfigMessage.fromKey("no-skill-tree-points-spent").send(player);
                     MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
@@ -478,7 +477,7 @@ public class SkillTreeViewer extends EditableInventory {
                     MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
                     return;
                 } else {
-                    int reallocated = playerData.getPointSpent(skillTree);
+                    int reallocated = playerData.getPointsSpent(skillTree);
                     //We remove all the nodeStates progress
                     playerData.giveSkillTreePoints(skillTree.getId(), reallocated);
                     playerData.giveSkillTreeReallocationPoints(-1);
@@ -501,47 +500,55 @@ public class SkillTreeViewer extends EditableInventory {
                 return;
             }
 
-            if (item.getFunction().equals("skill-tree-node")) {
-                if (event.getClickType() == ClickType.LEFT) {
-                    PersistentDataContainer container = event.getClickedItem().getItemMeta().getPersistentDataContainer();
-                    int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
-                    int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
-                    if (!skillTree.isNode(new IntegerCoordinates(x, y))) {
-                        return;
-                    }
-                    SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));
-                    if (playerData.getPointSpent(skillTree) >= skillTree.getMaxPointSpent()) {
-                        ConfigMessage.fromKey("max-points-reached").send(player);
-                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                        return;
-                    }
+            if (item.getFunction().equals("skill-tree-node") && event.getClickType() == ClickType.LEFT) {
 
-                    if (playerData.canIncrementNodeLevel(node)) {
+                final PersistentDataContainer container = event.getClickedItem().getItemMeta().getPersistentDataContainer();
+                final int x = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.x"), PersistentDataType.INTEGER);
+                final int y = container.get(new NamespacedKey(MMOCore.plugin, "coordinates.y"), PersistentDataType.INTEGER);
+                if (!skillTree.isNode(new IntegerCoordinates(x, y))) return;
+
+                // Maximum amount of skill points spent in node
+                final SkillTreeNode node = skillTree.getNode(new IntegerCoordinates(x, y));
+                if (playerData.getPointsSpent(skillTree) >= skillTree.getMaxPointSpent()) {
+                    ConfigMessage.fromKey("max-points-reached").send(player);
+                    MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                    return;
+                }
+
+                switch (playerData.canIncrementNodeLevel(node)) {
+                    case SUCCESS: {
                         playerData.incrementNodeLevel(node);
                         ConfigMessage.fromKey("upgrade-skill-node", "skill-node", node.getName(), "level", "" + playerData.getNodeLevel(node)).send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.LEVEL_SKILL_TREE_NODE).playTo(getPlayer());
                         open();
-                    } else if (playerData.getNodeStatus(node) == SkillTreeStatus.LOCKED || playerData.getNodeStatus(node) == SkillTreeStatus.FULLY_LOCKED) {
-                        ConfigMessage.fromKey("locked-node").send(player);
-                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        break;
+                    }
 
-                    } else if (playerData.getNodeLevel(node) >= node.getMaxLevel()) {
-                        ConfigMessage.fromKey("skill-node-max-level-hit").send(player);
-                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
-                    } else if (!node.hasPermissionRequirement(playerData)) {
+                    case PERMISSION_DENIED: {
                         ConfigMessage.fromKey("missing-skill-node-permission").send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        break;
                     }
 
-                    //Else the player doesn't doesn't have the skill tree points
-                    else {
+                    case LOCKED_NODE: {
+                        ConfigMessage.fromKey("locked-node").send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        break;
+                    }
+
+                    case MAX_LEVEL_REACHED: {
+                        ConfigMessage.fromKey("skill-node-max-level-hit").send(player);
+                        MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        break;
+                    }
+
+                    case NOT_ENOUGH_POINTS: {
                         ConfigMessage.fromKey("not-enough-skill-tree-points", "point", "" + node.getSkillTreePointsConsumed()).send(player);
                         MMOCore.plugin.soundManager.getSound(SoundEvent.NOT_ENOUGH_POINTS).playTo(getPlayer());
+                        break;
                     }
-
                 }
             }
-
         }
     }
 }

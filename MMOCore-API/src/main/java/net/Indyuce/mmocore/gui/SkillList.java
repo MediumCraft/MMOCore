@@ -218,22 +218,23 @@ public class SkillList extends EditableInventory {
                 return new ItemStack(Material.AIR);
 
             final @Nullable ClassSkill boundSkill = inv.getPlayerData().getBoundSkill(n + 1);
-            ItemStack item;
-            if (boundSkill == null)
+            final ItemStack item;
+            final ItemMeta meta;
+            if (boundSkill == null) {
                 item = super.display(inv, n);
-            else if (filledItem == null)
+                meta = item.getItemMeta();
+            } else if (filledItem == null) {
                 item = boundSkill.getSkill().getIcon();
-            else {
+                meta = item.getItemMeta();
+            } else {
                 item = new ItemStack(filledItem);
-                if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13)) {
-                    ItemMeta meta = item.getItemMeta();
-                    meta.setCustomModelData(filledCMD);
-                    item.setItemMeta(meta);
-                }
-            }
-            Placeholders holders = getPlaceholders(inv, n);
+                meta = item.getItemMeta();
 
-            final ItemMeta meta = item.getItemMeta();
+                meta.setCustomModelData(filledCMD);
+            }
+
+            final Placeholders holders = getPlaceholders(inv, n);
+
             meta.setDisplayName(MMOCore.plugin.placeholderParser.parse(inv.getPlayerData().getPlayer(), skillSlot.getName()));
 
             List<String> lore = new ArrayList<>(getLore());

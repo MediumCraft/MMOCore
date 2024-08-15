@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayInputStream;
@@ -115,10 +116,18 @@ public class MMOCoreUtils {
         return material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD;
     }
 
-    public static ItemStack readIcon(String string) throws IllegalArgumentException {
-        String[] split = string.split(":");
-        Material material = Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_"));
-        return split.length > 1 ? MythicLib.plugin.getVersion().getWrapper().textureItem(material, Integer.parseInt(split[1])) : new ItemStack(material);
+    @NotNull
+    public static ItemStack readIcon(String string) {
+        final String[] split = string.split(":");
+
+        final ItemStack item = new ItemStack(Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_")));
+        if (split.length > 1) {
+            final ItemMeta meta = item.getItemMeta();
+            meta.setCustomModelData(Integer.parseInt(split[1]));
+            item.setItemMeta(meta);
+        }
+
+        return item;
     }
 
     public static int getWorth(ItemStack[] items) {

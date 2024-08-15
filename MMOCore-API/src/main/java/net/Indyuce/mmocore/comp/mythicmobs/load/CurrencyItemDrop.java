@@ -4,7 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractItemStack;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.drops.DropMetadata;
 import io.lumine.mythic.api.drops.IItemDrop;
-import io.lumine.mythic.bukkit.adapters.BukkitItemStack;
+import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.drops.Drop;
 import net.Indyuce.mmocore.util.item.CurrencyItemBuilder;
 
@@ -27,7 +27,8 @@ public class CurrencyItemDrop extends Drop implements IItemDrop {
 
     @Override
     public AbstractItemStack getDrop(DropMetadata dropMetadata, double v) {
-        return new BukkitItemStack(new CurrencyItemBuilder(key, random(minw, maxw)).build());
+        // Not great wrt to performance. Should build the item like MM does
+        return BukkitAdapter.adapt(new CurrencyItemBuilder(key, random(minw, maxw)).build());
     }
 
     private int random(int a, int b) {

@@ -4,7 +4,7 @@ import io.lumine.mythic.api.adapters.AbstractItemStack;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.drops.DropMetadata;
 import io.lumine.mythic.api.drops.IItemDrop;
-import io.lumine.mythic.bukkit.adapters.BukkitItemStack;
+import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.drops.Drop;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
@@ -49,7 +49,8 @@ public class GoldPouchDrop extends Drop implements IItemDrop {
         }
 
         nbt.addTag(new ItemTag("RpgPouchSize", 18), new ItemTag("RpgPouchMob", true), new ItemTag("RpgPouchInventory", MMOCoreUtils.toBase64(content)));
-        return new BukkitItemStack(nbt.toItem());
+        // Not great wrt to performance. Should build the item like MM does
+        return BukkitAdapter.adapt(nbt.toItem());
     }
 
     private ItemStack setAmount(ItemStack item, int amount) {

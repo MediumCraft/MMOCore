@@ -9,6 +9,7 @@ import net.Indyuce.mmocore.guild.provided.Guild;
 import net.Indyuce.mmocore.manager.data.OfflinePlayerData;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -82,11 +83,8 @@ public class YAMLPlayerDataHandler extends YAMLSynchronizedDataHandler<PlayerDat
                     data.bindSkill(Integer.parseInt(key), skill);
             }
 
-        for (String key : MMOCore.plugin.skillTreeManager.getAll().
-                stream().
-                map(skillTree -> skillTree.getId()).
-                toList()) {
-            data.setSkillTreePoints(key, config.getInt("skill-tree-points." + key, 0));
+        for (SkillTree tree : MMOCore.plugin.skillTreeManager.getAll()) {
+            data.setSkillTreePoints(tree.getId(), config.getInt("skill-tree-points." + tree.getId()));
         }
         data.setSkillTreePoints("global", config.getInt("skill-tree-points.global", 0));
 
@@ -145,6 +143,7 @@ public class YAMLPlayerDataHandler extends YAMLSynchronizedDataHandler<PlayerDat
         config.set("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
         config.set("last-login", data.getLastLogin());
         config.set("guild", data.hasGuild() ? data.getGuild().getId() : null);
+        config.set("skill-tree-points", null); // Fixes skill tree points leftovers
         data.mapSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
