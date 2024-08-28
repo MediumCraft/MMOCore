@@ -58,8 +58,8 @@ public class YAMLPlayerDataHandler extends YAMLSynchronizedDataHandler<PlayerDat
         if (config.contains("class")) data.setClass(MMOCore.plugin.classManager.get(config.getString("class")));
 
         if (config.contains("guild")) {
-            Guild guild = MMOCore.plugin.nativeGuildManager.getGuild(config.getString("guild"));
-            data.setGuild(guild.hasMember(data.getUniqueId()) ? guild : null);
+            final Guild guild = MMOCore.plugin.nativeGuildManager.getGuild(config.getString("guild"));
+            if (guild != null && guild.hasMember(data.getUniqueId())) data.setGuild(guild);
         }
         if (config.contains("attribute"))
             data.getAttributes().load(config.getConfigurationSection("attribute"));
