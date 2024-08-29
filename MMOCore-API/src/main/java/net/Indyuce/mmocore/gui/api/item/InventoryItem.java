@@ -2,13 +2,13 @@ package net.Indyuce.mmocore.gui.api.item;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -157,8 +157,8 @@ public abstract class InventoryItem<T extends GeneratedInventory> {
 
         if (hasName()) meta.setDisplayName(placeholders.apply(effectivePlayer, getName()));
 
-        if (hideFlags()) meta.addItemFlags(ItemFlag.values());
         if (hideTooltip()) meta.setHideTooltip(true);
+        if (hideFlags()) MMOCoreUtils.addAllItemFlags(meta);
 
         if (hasLore()) {
             List<String> lore = new ArrayList<>();

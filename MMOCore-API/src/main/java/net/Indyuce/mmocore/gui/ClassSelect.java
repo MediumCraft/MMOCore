@@ -21,7 +21,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -71,7 +70,7 @@ public class ClassSelect extends EditableInventory {
         public ItemStack display(ProfessSelectionInventory inv, int n) {
             ItemStack item = n == 0 ? playerClass.getIcon() : super.display(inv, n);
             ItemMeta meta = item.getItemMeta();
-            if (hideFlags()) meta.addItemFlags(ItemFlag.values());
+            if (hideFlags()) MMOCoreUtils.addAllItemFlags(meta);
             if (hideTooltip()) meta.setHideTooltip(true);
             meta.setDisplayName(MythicLib.plugin.parseColors(name).replace("{name}", playerClass.getName()));
             List<String> lore = new ArrayList<>(this.lore);

@@ -8,6 +8,7 @@ import net.Indyuce.mmocore.api.SoundEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
 import net.Indyuce.mmocore.api.player.profess.PlayerClass;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
@@ -62,7 +63,7 @@ public class SubclassSelect extends EditableInventory {
         public ItemStack display(SubclassSelectionInventory inv, int n) {
             ItemStack item = n == 0 ? playerClass.getIcon() : super.display(inv, n);
             ItemMeta meta = item.getItemMeta();
-            if (hideFlags()) meta.addItemFlags(ItemFlag.values());
+            if (hideFlags()) MMOCoreUtils.addAllItemFlags(meta);
             if (hideTooltip()) meta.setHideTooltip(true);
             meta.setDisplayName(MythicLib.plugin.parseColors(name).replace("{name}", playerClass.getName()));
             List<String> lore = new ArrayList<>(this.lore);

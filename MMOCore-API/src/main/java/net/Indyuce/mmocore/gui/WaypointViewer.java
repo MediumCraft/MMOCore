@@ -1,10 +1,10 @@
 package net.Indyuce.mmocore.gui;
 
-import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.player.PlayerActivity;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.api.GeneratedInventory;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
@@ -14,12 +14,13 @@ import net.Indyuce.mmocore.gui.api.item.SimplePlaceholderItem;
 import net.Indyuce.mmocore.waypoint.Waypoint;
 import net.Indyuce.mmocore.waypoint.WaypointPath;
 import org.apache.commons.lang.Validate;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
@@ -151,7 +152,7 @@ public class WaypointViewer extends EditableInventory {
 
             if (hasName()) meta.setDisplayName(placeholders.apply(effectivePlayer, getName()));
 
-            if (hideFlags()) meta.addItemFlags(ItemFlag.values());
+            if (hideFlags()) MMOCoreUtils.addAllItemFlags(meta);
             if (hideTooltip()) meta.setHideTooltip(true);
             // If a player can teleport to another waypoint given his location
             Waypoint waypoint = inv.waypoints.get(inv.page * inv.getEditable().getByFunction("waypoint").getSlots().size() + n);

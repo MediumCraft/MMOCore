@@ -1,5 +1,6 @@
 package net.Indyuce.mmocore.api.util;
 
+import com.google.common.collect.MultimapBuilder;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.gson.JsonArray;
@@ -16,6 +17,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -114,6 +116,18 @@ public class MMOCoreUtils {
 
     public static boolean isPlayerHead(Material material) {
         return material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD;
+    }
+
+    public static void addAllItemFlags(@NotNull ItemMeta meta) {
+        meta.addItemFlags(ItemFlag.values());
+
+        // Fix 1.20.6+ Paper bug that sucks. HIDE_ATTRIBUTES no longer works when item attribute list is empty
+        // TODO refactor with GUI update.
+        try {
+            meta.setAttributeModifiers(MultimapBuilder.hashKeys(0).hashSetValues(0).build());
+        } catch (Exception exception) {
+            // Not needed
+        }
     }
 
     @NotNull
