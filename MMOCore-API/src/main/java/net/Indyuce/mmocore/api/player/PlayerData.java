@@ -127,7 +127,8 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
 
     /**
      * Saves the amount of times the player has claimed some
-     * exp item in exp tables, for both exp tables used
+     * item in any experience table. The key used in the map
+     * is the identifier of the exp table item.
      */
     private final Map<String, Integer> tableItemClaims = new HashMap<>();
 
@@ -595,7 +596,12 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         return getClaims(object.getKey() + "." + table.getId() + "." + item.getId());
     }
 
-    public int getClaims(String key) {
+    /**
+     * @param key The identifier of an exp table item.
+     * @return Amount of times an item has been claimed
+     * inside an experience table.
+     */
+    public int getClaims(@NotNull String key) {
         return tableItemClaims.getOrDefault(key, 0);
     }
 

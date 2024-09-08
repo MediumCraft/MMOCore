@@ -143,22 +143,33 @@ public class YAMLPlayerDataHandler extends YAMLSynchronizedDataHandler<PlayerDat
         config.set("friends", data.getFriends().stream().map(UUID::toString).collect(Collectors.toList()));
         config.set("last-login", data.getLastLogin());
         config.set("guild", data.hasGuild() ? data.getGuild().getId() : null);
-        config.set("skill-tree-points", null); // Fixes skill tree points leftovers
-        data.mapSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
         config.set("skill-tree-reallocation-points", data.getSkillTreeReallocationPoints());
         config.set("skill", null);
         config.set("health", data.getHealth());
         config.set("mana", data.getMana());
         config.set("stellium", data.getStellium());
         config.set("stamina", data.getStamina());
+        config.set("unlocked-items", new ArrayList<>(data.getUnlockedItems()));
+
+        // Skill tree points
+        config.set("skill-tree-points", null); // Fixes skill tree points leftovers
+        data.mapSkillTreePoints().forEach((key1, value) -> config.set("skill-tree-points." + key1, value));
+
         // Saves the nodes levels
+        config.set("skill-tree-level", null);
         MMOCore.plugin.skillTreeManager.getAllNodes().forEach(node -> config.set("skill-tree-level." + node.getFullId(), data.getNodeLevel(node)));
+
+        // Skill levels
+        config.set("skill", null);
         data.mapSkillLevels().forEach((key1, value) -> config.set("skill." + key1, value));
+
+        // Times claimed
+        config.set("times-claimed", null);
         data.getItemClaims().forEach((key, times) -> config.set("times-claimed." + key, times));
 
         config.set("bound-skills", null);
         data.mapBoundSkills().forEach((slot, skill) -> config.set("bound-skills." + slot, skill));
-        config.set("unlocked-items", data.getUnlockedItems().stream().collect(Collectors.toList()));
+
         config.set("attribute", null);
         config.createSection("attribute");
         data.getAttributes().save(config.getConfigurationSection("attribute"));

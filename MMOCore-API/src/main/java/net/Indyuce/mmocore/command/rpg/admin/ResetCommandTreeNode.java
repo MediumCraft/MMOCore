@@ -62,6 +62,8 @@ public class ResetCommandTreeNode extends CommandTreeNode {
             ResetAttributesCommandTreeNode.resetAttributes(data, givePoints);
             ResetWaypointsCommandTreeNode.resetWaypoints(data);
             ResetSkillTreesCommandTreeNode.resetSkillTrees(data);
+            // Reset times-claimed not being properly emptied otherwise
+            data.getItemClaims().clear();
             CommandVerbose.verbose(sender, CommandVerbose.CommandType.RESET, ChatColor.GOLD + player.getName() + ChatColor.YELLOW + "'s data was successfully reset.");
             return CommandResult.SUCCESS;
         }

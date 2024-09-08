@@ -2,7 +2,7 @@ package net.Indyuce.mmocore.party.compat;
 
 import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostJoinEvent;
-import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostLeaveEvent;
+import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPreLeaveEvent;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
@@ -44,7 +44,7 @@ public class PartiesPartyModule implements PartyModule, Listener {
     }
 
     @EventHandler
-    public void onPlayerLeave(BukkitPartiesPlayerPostLeaveEvent event) {
+    public void onPlayerLeave(BukkitPartiesPlayerPreLeaveEvent event) {
         int membersSize = event.getParty().getMembers().size();
         PartyUtils.clearStatBonuses(PlayerData.get(event.getPartyPlayer().getPlayerUUID()));
         event.getParty().getOnlineMembers()
