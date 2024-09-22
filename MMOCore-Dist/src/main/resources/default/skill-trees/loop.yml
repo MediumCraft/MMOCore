@@ -1,0 +1,185 @@
+id: 'example_loop'
+name: '&4Loop Skill Tree'
+lore:
+  - '&6This skill tree demonstrates how to'
+  - '&6do loops with node parents'
+type: CUSTOM
+item: DIAMOND_AXE
+max-point-spent: 20
+nodes:
+
+
+  a1:
+    name: 'Loop I'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a2: 1
+        e1: 1
+
+    coordinates: 0,1
+
+
+  a2:
+    name: 'Loop II'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a3: 1
+
+    coordinates: -1,1
+
+
+  a3:
+    name: 'Loop III'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a4: 1
+        e4: 1
+
+    coordinates: -1,0
+
+
+  a4:
+    name: 'Loop IV'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a5: 1
+
+    coordinates: -1,-1
+
+
+  a5:
+    name: 'Loop V'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a6: 1
+        e2: 1
+
+    coordinates: 0,-1
+
+
+  a6:
+    name: 'Loop VI'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a7: 1
+
+    coordinates: 1,-1
+
+
+  a7:
+    name: 'Loop VII'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a8: 1
+        e3: 1
+
+    coordinates: 1,0
+
+
+  a8:
+    name: 'Loop VIII'
+
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    parents:
+      soft:
+        a1: 1
+
+    coordinates: 1,1
+
+
+
+  e1:
+    name: 'Entry I'
+
+    root: true
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    coordinates: 0,2
+
+
+
+  e2:
+    name: 'Entry II'
+
+    root: true
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    coordinates: 0,-2
+
+
+
+  e3:
+    name: 'Entry III'
+
+    root: true
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    coordinates: 2,0
+
+
+
+  e4:
+    name: 'Entry IV'
+
+    root: true
+    experience-table: {}
+    lores:
+      0:
+        - "&eLorem ipsum dolor sit amet"
+
+    coordinates: -2,0

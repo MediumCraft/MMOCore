@@ -33,6 +33,7 @@ import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.skill.cast.ComboMap;
+import net.Indyuce.mmocore.util.Icon;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
@@ -68,7 +69,7 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
 
     private final List<SkillSlot> skillSlots = new ArrayList<>();
     private final List<SkillTree> skillTrees = new ArrayList<>();
-    private final List<PassiveSkill> classScripts = new LinkedList();
+    private final List<PassiveSkill> classScripts = new ArrayList<>();
     private final Map<String, LinearValue> stats = new HashMap<>();
     private final Map<String, ClassSkill> skills = new LinkedHashMap<>();
     private final List<Subclass> subclasses = new ArrayList<>();
@@ -100,7 +101,7 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
         this.id = id.toUpperCase().replace("-", "_").replace(" ", "_");
 
         name = MythicLib.plugin.parseColors(config.getString("display.name", "INVALID DISPLAY NAME"));
-        icon = MMOCoreUtils.readIcon(config.getString("display.item", "BARRIER"));
+        icon = Icon.from(config.get("display.item", "BARRIER")).toItem();
 
         if (config.contains("display.texture") && icon.getType() == Material.PLAYER_HEAD) {
             ItemMeta meta = icon.getItemMeta();
@@ -206,7 +207,14 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
         }
 
         // Casting particle
-        castParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
+        CastingParticle castingParticle;
+        try {
+            castingParticle = config.contains("cast-particle") ? new CastingParticle(config.getConfigurationSection("cast-particle")) : null;
+        } catch (RuntimeException exception) {
+            MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load casting mode particle of class '" + getId() + "': " + exception.getMessage());
+            castingParticle = null;
+        }
+        this.castParticle = castingParticle;
 
         // Other class options
         if (config.contains("options"))
@@ -216,7 +224,7 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
                             config.getBoolean("options." + key));
                 } catch (IllegalArgumentException exception) {
                     MMOCore.plugin.getLogger().log(Level.WARNING,
-                            "Could not load option '" + key + "' from class '" + key + "': " + exception.getMessage());
+                            "Could not load option '" + key + "' from class '" + getId() + "': " + exception.getMessage());
                 }
 
         // Experience sources
@@ -366,9 +374,9 @@ public class PlayerClass implements ExperienceObject, PreloadedObject {
 
     /**
      * @return A list of passive skills which correspond to class
-     * scripts wrapped in a format recognized by MythicLib.
-     * Class scripts are handled just like
-     * passive skills
+     *         scripts wrapped in a format recognized by MythicLib.
+     *         Class scripts are handled just like
+     *         passive skills
      */
     @NotNull
     public List<PassiveSkill> getScripts() {

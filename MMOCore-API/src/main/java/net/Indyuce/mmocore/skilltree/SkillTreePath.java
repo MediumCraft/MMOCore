@@ -1,8 +1,6 @@
 package net.Indyuce.mmocore.skilltree;
 
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.gui.skilltree.display.PathStatus;
-import net.Indyuce.mmocore.gui.skilltree.display.PathType;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 
 public class SkillTreePath {
@@ -18,16 +16,16 @@ public class SkillTreePath {
         to = skillTreeNode;
     }
 
-    public PathStatus getStatus(PlayerData playerData) {
-        SkillTreeStatus fromStatus = playerData.getNodeStatus(from);
-        SkillTreeStatus toStatus = playerData.getNodeStatus(to);
-        if (fromStatus == SkillTreeStatus.UNLOCKED && toStatus == SkillTreeStatus.UNLOCKED)
-            return PathStatus.UNLOCKED;
-        if ((fromStatus == SkillTreeStatus.UNLOCKABLE && toStatus == SkillTreeStatus.UNLOCKED) || (fromStatus == SkillTreeStatus.UNLOCKED && toStatus == SkillTreeStatus.UNLOCKABLE))
-            return PathStatus.UNLOCKABLE;
-        if (fromStatus == SkillTreeStatus.FULLY_LOCKED || toStatus == SkillTreeStatus.FULLY_LOCKED)
-            return PathStatus.FULLY_LOCKED;
-        return PathStatus.LOCKED;
+    public NodeState getStatus(PlayerData playerData) {
+        NodeState fromStatus = playerData.getNodeState(from);
+        NodeState toStatus = playerData.getNodeState(to);
+        if (fromStatus == NodeState.UNLOCKED && toStatus == NodeState.UNLOCKED)
+            return NodeState.UNLOCKED;
+        if ((fromStatus == NodeState.UNLOCKABLE && toStatus == NodeState.UNLOCKED) || (fromStatus == NodeState.UNLOCKED && toStatus == NodeState.UNLOCKABLE))
+            return NodeState.UNLOCKABLE;
+        if (fromStatus == NodeState.FULLY_LOCKED || toStatus == NodeState.FULLY_LOCKED)
+            return NodeState.FULLY_LOCKED;
+        return NodeState.LOCKED;
     }
 
     public PathType getPathType() {

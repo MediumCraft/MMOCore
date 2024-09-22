@@ -4,10 +4,10 @@ import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
-import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import net.Indyuce.mmocore.command.api.CommandVerbose;
 import net.Indyuce.mmocore.skill.ClassSkill;
+import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
+import net.Indyuce.mmocore.skill.binding.SkillSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -55,13 +55,18 @@ public class SlotCommandTreeNode extends CommandTreeNode {
                 return CommandResult.FAILURE;
             }
             SkillSlot skillSlot = playerData.getProfess().getSkillSlot(slot);
+            if (skillSlot == null) {
+                sender.sendMessage(ChatColor.RED + "Skill slot with index " + slot + " was not found for player " + player.getName() + " with class " + playerData.getProfess().getId());
+                return CommandResult.FAILURE;
+            }
+
             if (skillSlot.isUnlockedByDefault()) {
                 sender.sendMessage(ChatColor.RED + "You can't lock a skill that is unlocked by default.");
                 return CommandResult.FAILURE;
             }
             if (lock) {
                 if (!playerData.hasUnlocked(skillSlot)) {
-                    CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill slot " + skillSlot.getName() + " is already locked" + " for " + player.getName());
+                    CommandVerbose.verbose(sender, CommandVerbose.CommandType.SKILL, ChatColor.RED + "The skill slot " + skillSlot.getName() + " is already locked for " + player.getName());
                     return CommandResult.SUCCESS;
                 }
                 playerData.lock(skillSlot);

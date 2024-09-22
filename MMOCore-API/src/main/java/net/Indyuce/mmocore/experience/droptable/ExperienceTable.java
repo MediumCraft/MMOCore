@@ -1,6 +1,5 @@
 package net.Indyuce.mmocore.experience.droptable;
 
-import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import org.apache.commons.lang.Validate;
@@ -9,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class ExperienceTable {
     private final String id;
@@ -24,7 +22,7 @@ public class ExperienceTable {
                 Validate.isTrue(config.isConfigurationSection(str), "Key '" + str + "' is not a configuration section");
                 items.add(new ExperienceItem(config.getConfigurationSection(str)));
             } catch (RuntimeException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load item '" + str + "' from experience table '" + id + "': " + exception.getMessage());
+                throw new RuntimeException("Could not load item '" + str + "': " + exception.getMessage());
             }
     }
 

@@ -55,7 +55,7 @@ public class WithdrawCommand extends RegisteredCommand {
 		}
 
 		MMOCore.plugin.economy.getEconomy().withdrawPlayer(player, amount);
-		request.withdrawAlgorythm(amount);
+		request.withdrawAlgorithm(amount);
 		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 		ConfigMessage.fromKey("withdrew", "worth", amount).send(player);
 		return true;

@@ -6,5 +6,4 @@ public enum ParentType {
     STRONG,
 
     INCOMPATIBLE;
-
 }

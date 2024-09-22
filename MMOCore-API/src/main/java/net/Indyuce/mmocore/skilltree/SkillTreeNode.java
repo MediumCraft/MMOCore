@@ -9,9 +9,7 @@ import net.Indyuce.mmocore.experience.ExpCurve;
 import net.Indyuce.mmocore.experience.ExperienceObject;
 import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.gui.api.item.Placeholders;
-import net.Indyuce.mmocore.gui.skilltree.display.Icon;
-import net.Indyuce.mmocore.gui.skilltree.display.NodeType;
-import net.Indyuce.mmocore.skilltree.tree.ParentInformation;
+import net.Indyuce.mmocore.util.Icon;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -26,56 +24,37 @@ import java.util.stream.Collectors;
 public class SkillTreeNode implements ExperienceObject {
     private final SkillTree tree;
     private final String name, id;
-
     private final String permissionRequired;
-
-    private final Map<SkillTreeStatus, Icon> icons = new HashMap<>();
-
-    private IntegerCoordinates coordinates;
-    /**
-     * The number of skill tree points this node requires.
-     */
-    private final int skillTreePointsConsumed;
-    private boolean isRoot;
-
-    /**
-     * The lore corresponding to each level
-     */
+    private final int pointConsumption;
+    private final Map<NodeState, Icon> icons = new HashMap<>();
+    private final IntegerCoordinates coordinates;
+    private final int maxLevel, maxChildren;
+    private final ExperienceTable experienceTable;
+    private final List<ParentInformation> children = new ArrayList<>();
+    private final List<ParentInformation> parents = new ArrayList<>();
     private final Map<Integer, List<String>> lores = new HashMap<>();
 
-    private final ExperienceTable experienceTable;
-
-    // The max level the skill tree node can have and the max amount of children it can have.
-    private final int maxLevel, maxChildren;
-    private final List<SkillTreeNode> children = new ArrayList<>();
-
-    /**
-     * Associates the required level to each parent.
-     * <p>
-     * You only need to have the requirement for one of your softParents
-     * but you need to fulfill the requirements of all of your strong parents.
-     **/
-    private final Map<ParentInformation, Integer> parents = new HashMap<>();
+    private boolean root;
 
     public SkillTreeNode(SkillTree tree, ConfigurationSection config) {
         Validate.notNull(config, "Config cannot be null");
         this.id = config.getName();
         this.tree = tree;
-        if (config.isConfigurationSection("display")) {
-            for (SkillTreeStatus status : SkillTreeStatus.values()) {
-                String ymlStatus = MMOCoreUtils.ymlName(status.name());
-                if (!config.isConfigurationSection("display." + ymlStatus)) {
-                    MMOCore.log("Could not find node display for status " + ymlStatus + " for node " + id + " in tree " + tree.getId() + ". Using default display.");
-                    continue;
-                }
-                icons.put(status, new Icon(config.getConfigurationSection("display." + MMOCoreUtils.ymlName(status.name()))));
-            }
+
+        // Load icons for node states
+        if (config.isConfigurationSection("display")) for (NodeState state : NodeState.values()) {
+            final String ymlStatus = MMOCoreUtils.ymlName(state.name());
+            if (config.isConfigurationSection("display." + ymlStatus))
+                icons.put(state, Icon.from(config.get("display." + MMOCoreUtils.ymlName(state.name()))));
+            else
+                MMOCore.log("Could not find node display for state " + ymlStatus + " of node " + id + " in tree " + tree.getId() + ". Using default display.");
         }
+
         name = Objects.requireNonNull(config.getString("name"), "Could not find node name");
-        isRoot = config.getBoolean("is-root", false);
-        skillTreePointsConsumed = config.getInt("point-consumed", 1);
+        root = config.getBoolean("root", config.getBoolean("is-root")); // backwards compatibility
+        pointConsumption = config.getInt("point-consumed", 1);
         permissionRequired = config.getString("permission-required");
-        Validate.isTrue(skillTreePointsConsumed > 0, "The skill tree points consumed by a node must be greater than 0.");
+        Validate.isTrue(pointConsumption > 0, "The skill tree points consumed by a node must be greater than 0.");
         if (config.contains("lores"))
             for (String key : config.getConfigurationSection("lores").getKeys(false))
                 try {
@@ -84,68 +63,70 @@ public class SkillTreeNode implements ExperienceObject {
                     throw new RuntimeException("You shall only specify integers in the 'lores' config section");
                 }
 
-        Validate.isTrue(config.contains("experience-table"), "You must specify an exp table");
-        this.experienceTable = MMOCore.plugin.experience.loadExperienceTable(config.get("experience-table"));
+        try {
+            Validate.isTrue(config.contains("experience-table"), "You must specify an exp table");
+            this.experienceTable = MMOCore.plugin.experience.loadExperienceTable(config.get("experience-table"));
+        } catch (RuntimeException exception) {
+            throw new RuntimeException("Could not load experience table: " + exception.getMessage());
+        }
 
-        maxLevel = config.contains("max-level") ? config.getInt("max-level") : 1;
-        maxChildren = config.contains("max-children") ? config.getInt("max-children") : 1;
-        // If coordinates are precised and we are not with an automaticTree we set them up
-        Validate.isTrue(config.contains("coordinates.x") && config.contains("coordinates.y"), "No coordinates specified");
-        coordinates = new IntegerCoordinates(config.getInt("coordinates.x"), config.getInt("coordinates.y"));
+        maxLevel = config.getInt("max-level", 1);
+        Validate.isTrue(maxLevel > 0, "Max level must be positive");
+        maxChildren = config.getInt("max-children", 0);
+        Validate.isTrue(maxChildren >= 0, "Max children must positive or zero");
+        coordinates = IntegerCoordinates.from(config.get("coordinates"));
     }
 
     public SkillTree getTree() {
         return tree;
     }
 
-    public boolean hasIcon(SkillTreeStatus status) {
+    public boolean hasIcon(NodeState status) {
         return icons.containsKey(status);
     }
 
-    public Icon getIcon(SkillTreeStatus status) {
+    public Icon getIcon(NodeState status) {
         return icons.get(status);
     }
 
-    public void setIsRoot() {
-        isRoot = true;
-    }
-
     public boolean isRoot() {
-        return isRoot;
+        return root;
     }
 
-    // Used when postLoaded
-    public void addParent(SkillTreeNode parent, int requiredLevel, ParentType parentType) {
-        parents.put(new ParentInformation(parent, parentType), requiredLevel);
+    public void addParent(@NotNull SkillTreeNode parent, @NotNull ParentType parentType, int requiredLevel) {
+        parents.add(new ParentInformation(parent, parentType, requiredLevel));
     }
 
-    public void addChild(SkillTreeNode child) {
-        children.add(child);
+    public void addChild(@NotNull SkillTreeNode child, @NotNull ParentType parentType, int requiredLevel) {
+        children.add(new ParentInformation(child, parentType, requiredLevel));
     }
 
-    public int getSkillTreePointsConsumed() {
-        return skillTreePointsConsumed;
+    public void setRoot() {
+        root = true;
     }
 
-    public void setCoordinates(IntegerCoordinates coordinates) {
-        this.coordinates = coordinates;
+    public int getPointConsumption() {
+        return pointConsumption;
     }
 
     public int getParentNeededLevel(SkillTreeNode parent) {
-        for (Map.Entry<ParentInformation, Integer> entry : parents.entrySet())
-            if (entry.getKey().getNode().equals(parent))
-                return entry.getValue();
+        for (ParentInformation entry : parents)
+            if (entry.getNode().equals(parent))
+                return entry.getLevel();
         throw new RuntimeException("Could not find parent " + parent.getId() + " for node " + id);
     }
 
+    @Deprecated
     public int getParentNeededLevel(SkillTreeNode parent, ParentType parentType) {
-        return parents.get(new ParentInformation(parent, parentType));
+        for (ParentInformation entry : parents)
+            if (entry.getNode().equals(parent) && entry.getType() == parentType)
+                return entry.getLevel();
+        return 0;
     }
 
     public boolean hasParent(SkillTreeNode parent) {
-        for (Map.Entry<ParentInformation, Integer> entry : parents.entrySet())
-            if (entry.getKey().getNode() == parent)
-                return true;
+        for (ParentInformation entry : parents)
+            if (entry.getNode() == parent) return true;
         return false;
     }
 
@@ -157,19 +138,23 @@ public class SkillTreeNode implements ExperienceObject {
         return maxChildren;
     }
 
-    public boolean hasPermissionRequirement(PlayerData playerData) {
+    public boolean hasPermissionRequirement(@NotNull PlayerData playerData) {
         return permissionRequired == null || playerData.getPlayer().hasPermission(permissionRequired);
     }
 
-    public Set<SkillTreeNode> getParents() {
-        return parents.keySet().stream().map(ParentInformation::getNode).collect(Collectors.toSet());
+    @NotNull
+    public List<ParentInformation> getParents() {
+        return parents;
     }
 
-    public Set<SkillTreeNode> getParents(ParentType parentType) {
-        return parents.entrySet().stream().filter(entry -> entry.getKey().type() == parentType).map((entry) -> entry.getKey().getNode()).collect(Collectors.toSet());
+    @NotNull
+    @Deprecated
+    public List<SkillTreeNode> getParents(ParentType parentType) {
+        return parents.stream().filter(integer -> integer.getType() == parentType).map(ParentInformation::getNode).collect(Collectors.toList());
     }
 
-    public List<SkillTreeNode> getChildren() {
+    @NotNull
+    public List<ParentInformation> getChildren() {
         return children;
     }
 
@@ -182,16 +167,19 @@ public class SkillTreeNode implements ExperienceObject {
 
     /**
      * @return Full node identifier, containing both the node identifier AND
-     * the skill tree identifier, like "combat_extra_strength"
+     *         the skill tree identifier, like "combat_extra_strength"
      */
+    @NotNull
     public String getFullId() {
         return tree.getId() + "_" + id;
     }
 
+    @NotNull
     public String getName() {
         return MythicLib.plugin.parseColors(name);
     }
 
+    @NotNull
     public IntegerCoordinates getCoordinates() {
         return coordinates;
     }
@@ -201,12 +189,6 @@ public class SkillTreeNode implements ExperienceObject {
     @Override
     public String getKey() {
         return KEY_PREFIX + ":" + getFullId().replace("-", "_");
-    }
-
-    @Nullable
-    @Override
-    public ExpCurve getExpCurve() {
-        throw new RuntimeException("Attributes don't have experience");
     }
 
     @Override
@@ -221,11 +203,27 @@ public class SkillTreeNode implements ExperienceObject {
     }
 
     public NodeType getNodeType() {
-        boolean hasUpPathOrNode = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX(), coordinates.getY() - 1));
-        boolean hasDownPathOrNode = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX(), coordinates.getY() + 1));
-        boolean hasRightPathOrNode = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX() + 1, coordinates.getY()));
-        boolean hasLeftPathOrNode = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX() - 1, coordinates.getY()));
-        return NodeType.getNodeType(hasUpPathOrNode, hasRightPathOrNode, hasDownPathOrNode, hasLeftPathOrNode);
+        boolean up = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX(), coordinates.getY() - 1));
+        boolean down = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX(), coordinates.getY() + 1));
+        boolean right = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX() + 1, coordinates.getY()));
+        boolean left = tree.isPathOrNode(new IntegerCoordinates(coordinates.getX() - 1, coordinates.getY()));
+
+        if (up && right && down && left) return NodeType.UP_RIGHT_DOWN_LEFT;
+        else if (up && right && down) return NodeType.UP_RIGHT_DOWN;
+        else if (up && right && left) return NodeType.UP_RIGHT_LEFT;
+        else if (up && down && left) return NodeType.UP_DOWN_LEFT;
+        else if (down && right && left) return NodeType.DOWN_RIGHT_LEFT;
+        else if (up && right) return NodeType.UP_RIGHT;
+        else if (up && down) return NodeType.UP_DOWN;
+        else if (up && left) return NodeType.UP_LEFT;
+        else if (down && right) return NodeType.DOWN_RIGHT;
+        else if (down && left) return NodeType.DOWN_LEFT;
+        else if (right && left) return NodeType.RIGHT_LEFT;
+        else if (up) return NodeType.UP;
+        else if (down) return NodeType.DOWN;
+        else if (right) return NodeType.RIGHT;
+        else if (left) return NodeType.LEFT;
+        return NodeType.NO_PATH;
     }
 
     @Override
@@ -239,16 +237,6 @@ public class SkillTreeNode implements ExperienceObject {
     @Override
     public int hashCode() {
         return Objects.hash(tree, id);
-    }
-
-    public Placeholders getPlaceholders(PlayerData playerData) {
-        Placeholders holders = new Placeholders();
-        holders.register("name", getName());
-        holders.register("node-state", playerData.getNodeStatus(this));
-        holders.register("level", playerData.getNodeLevel(this));
-        holders.register("max-level", getMaxLevel());
-        holders.register("max-children", getMaxChildren());
-        return holders;
     }
 
     public List<String> getLore(PlayerData playerData) {
@@ -267,14 +255,30 @@ public class SkillTreeNode implements ExperienceObject {
         return parsedLore;
     }
 
+    private Placeholders getPlaceholders(@NotNull PlayerData playerData) {
+        Placeholders holders = new Placeholders();
+        holders.register("name", getName());
+        holders.register("node-state", playerData.getNodeState(this));
+        holders.register("level", playerData.getNodeLevel(this));
+        holders.register("max-level", getMaxLevel());
+        holders.register("max-children", getMaxChildren());
+        return holders;
+    }
+
     @Override
     public void giveExperience(PlayerData playerData, double experience, @Nullable Location hologramLocation,
                                @NotNull EXPSource source) {
-        throw new RuntimeException("Attributes don't have experience");
+        throw new RuntimeException("Skill trees don't have experience");
     }
 
     @Override
     public boolean shouldHandle(PlayerData playerData) {
-        throw new RuntimeException("Attributes don't have experience");
+        throw new RuntimeException("Skill trees don't have experience");
+    }
+
+    @Nullable
+    @Override
+    public ExpCurve getExpCurve() {
+        throw new RuntimeException("Skill trees don't have experience");
     }
 }

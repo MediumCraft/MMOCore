@@ -2,13 +2,15 @@ package net.Indyuce.mmocore.skilltree.tree;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.util.PreloadedObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
-import net.Indyuce.mmocore.gui.skilltree.display.*;
 import net.Indyuce.mmocore.manager.registry.RegisteredObject;
 import net.Indyuce.mmocore.skilltree.*;
+import net.Indyuce.mmocore.skilltree.display.DisplayInfo;
+import net.Indyuce.mmocore.skilltree.display.NodeDisplayInfo;
+import net.Indyuce.mmocore.skilltree.display.PathDisplayInfo;
+import net.Indyuce.mmocore.util.Icon;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * A passive skill tree that features nodes, or passive skills.
@@ -30,34 +33,22 @@ import java.util.*;
  * - particle or potion effects
  *
  * @author Ka0rX
- * @see {@link SkillTreeNode}
+ * @see SkillTreeNode
  */
-public abstract class SkillTree implements RegisteredObject, PreloadedObject {
+public abstract class SkillTree implements RegisteredObject {
     private final String id, name;
     private final List<String> lore = new ArrayList<>();
     private final Material item;
     private final int customModelData;
-
-    //2 different maps to get the nodes
-    /**
-     * Represents all the nodes
-     * Key: the coordinates of the node
-     * Value: the node
-     */
-    protected final Map<IntegerCoordinates, SkillTreeNode> coordinatesNodes = new HashMap<>();
-    /**
-     * Represents all the paths between nodes.
-     */
-    protected final Map<IntegerCoordinates, SkillTreePath> coordinatesPaths = new HashMap<>();
-
     protected final Map<String, SkillTreeNode> nodes = new HashMap<>();
     protected final int maxPointSpent;
-    //Caches the height of the skill tree
     protected final List<SkillTreeNode> roots = new ArrayList<>();
-
     protected final Map<DisplayInfo, Icon> icons = new HashMap<>();
 
-    public SkillTree(ConfigurationSection config) {
+    protected final Map<IntegerCoordinates, SkillTreeNode> coordNodes = new HashMap<>();
+    protected final Map<IntegerCoordinates, SkillTreePath> coordPaths = new HashMap<>();
+
+    public SkillTree(@NotNull ConfigurationSection config) {
         this.id = Objects.requireNonNull(config.getString("id"), "Could not find skill tree id");
         this.name = MythicLib.plugin.parseColors(Objects.requireNonNull(config.getString("name"), "Could not find skill tree name"));
         Objects.requireNonNull(config.getStringList("lore"), "Could not find skill tree lore").forEach(str -> lore.add(MythicLib.plugin.parseColors(str)));
@@ -65,15 +56,21 @@ public abstract class SkillTree implements RegisteredObject, PreloadedObject {
         this.customModelData = config.getInt("custom-model-data", 0);
         Validate.isTrue(config.isConfigurationSection("nodes"), "Could not find any nodes in the tree");
         this.maxPointSpent = config.getInt("max-point-spent", Integer.MAX_VALUE);
-        for (String key : config.getConfigurationSection("nodes").getKeys(false)) {
+
+        // Load nodes
+        for (String key : config.getConfigurationSection("nodes").getKeys(false))
             try {
                 ConfigurationSection section = config.getConfigurationSection("nodes." + key);
                 SkillTreeNode node = new SkillTreeNode(this, section);
                 nodes.put(node.getId(), node);
+                coordNodes.put(node.getCoordinates(), node);
+
+                if (node.isRoot()) roots.add(node);
             } catch (Exception e) {
                 MMOCore.log("Couldn't load skill tree node " + id + "." + key + ": " + e.getMessage());
             }
-        }
+
+        // Load paths
         for (String from : config.getConfigurationSection("nodes").getKeys(false)) {
             ConfigurationSection section = config.getConfigurationSection("nodes." + from);
             if (section.contains("paths")) {
@@ -84,40 +81,53 @@ public abstract class SkillTree implements RegisteredObject, PreloadedObject {
                         continue;
                     }
                     for (String pathKey : section.getConfigurationSection("paths." + to).getKeys(false)) {
-                        IntegerCoordinates coordinates = new IntegerCoordinates(section.getInt("paths." + to + "." + pathKey + ".x"), section.getInt("paths." + to + "." + pathKey + ".y"));
-                        coordinatesPaths.put(coordinates, new SkillTreePath(this, coordinates, nodes.get(from), node1));
+                        IntegerCoordinates coordinates = IntegerCoordinates.from(section.get("paths." + to + "." + pathKey));
+                        coordPaths.put(coordinates, new SkillTreePath(this, coordinates, nodes.get(from), node1));
                     }
                 }
             }
         }
-        //Loads all the pathDisplayInfo
-        for (PathStatus status : PathStatus.values())
-            for (PathType pathType : PathType.values()) {
-                ConfigurationSection section = config.getConfigurationSection("display.paths." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(pathType.name()));
-                if (section != null)
-                    icons.put(new PathDisplayInfo(pathType, status), new Icon(section));
+
+        // Loads all the pathDisplayInfo
+        for (NodeState status : NodeState.values())
+            for (PathType pathType : PathType.values())
+                try {
+                    final String configPath = "display.paths." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(pathType.name());
+                    icons.put(new PathDisplayInfo(pathType, status), Icon.from(config.get(configPath)));
+                } catch (Exception exception) {
+                    // Ignore
+                }
+
+        // Loads all the nodeDisplayInfo
+        for (NodeState status : NodeState.values())
+            for (NodeType nodeType : NodeType.values())
+                try {
+                    final String configPath = "display.nodes." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(nodeType.name());
+                    icons.put(new NodeDisplayInfo(nodeType, status), Icon.from(config.get(configPath)));
+                } catch (Exception exception) {
+                    // Ignore
+                }
+
+        // Setup children and parents for each node
+        for (SkillTreeNode node : nodes.values())
+            try {
+                if (config.isConfigurationSection("nodes." + node.getId() + ".parents"))
+                    for (String key : config.getConfigurationSection("nodes." + node.getId() + ".parents").getKeys(false)) {
+                        final ConfigurationSection section = config.getConfigurationSection("nodes." + node.getId() + ".parents." + key);
+                        if (section != null) {
+                            final ParentType parentType = ParentType.valueOf(UtilityMethods.enumName(key));
+
+                            for (String parentId : section.getKeys(false)) {
+                                final SkillTreeNode parent = getNode(parentId);
+                                final int level = section.getInt(parentId);
+                                node.addParent(parent, parentType, level);
+                                parent.addChild(node, parentType, level);
+                            }
+                        }
+                    }
+            } catch (RuntimeException exception) {
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load parents of skill tree node '" + node.getId() + "': " + exception.getMessage());
             }
-
-        //Loads all the nodeDisplayInfo
-        for (SkillTreeStatus status : SkillTreeStatus.values())
-            for (NodeType nodeType : NodeType.values()) {
-                ConfigurationSection section = config.getConfigurationSection("display.nodes." + MMOCoreUtils.ymlName(status.name()) + "." + MMOCoreUtils.ymlName(nodeType.name()));
-                if (section != null)
-                    icons.put(new NodeDisplayInfo(nodeType, status), new Icon(section));
-            }
-
-
-    }
-
-    /**
-     * Used to setup everything related to coordinates when each node has its coordinates loaded.
-     */
-    public void coordinatesSetup() {
-        for (SkillTreeNode node : nodes.values()) {
-            coordinatesNodes.put(node.getCoordinates(), node);
-            if (node.isRoot())
-                roots.add(node);
-        }
     }
 
     public List<String> getLore() {
@@ -132,119 +142,170 @@ public abstract class SkillTree implements RegisteredObject, PreloadedObject {
         return customModelData;
     }
 
+    @Deprecated
     public static SkillTree loadSkillTree(ConfigurationSection config) {
-        SkillTree skillTree = null;
-
-        try {
-            skillTree = new CustomSkillTree(config);
-            skillTree.getPostLoadAction().performAction();
-        } catch (Exception e) {
-            MMOCore.log("Couldn't load skill tree " + config.getString("id") + ": " + e.getMessage());
-        }
-        return skillTree;
+        return MMOCore.plugin.skillTreeManager.loadSkillTree(config);
     }
 
-    public void addRoot(SkillTreeNode node) {
+    public void addRoot(@NotNull SkillTreeNode node) {
         roots.add(node);
     }
 
-    /**
-     * Recursively go through the skill trees to update the the node states
-     */
-    public void setupNodeStates(PlayerData playerData) {
-        for (SkillTreeNode root : roots)
-            setupNodeStateFrom(root, playerData);
-    }
-
+    @NotNull
     public List<SkillTreeNode> getRoots() {
         return roots;
     }
 
     /**
-     * Update recursively the state of all the nodes that are
-     * children of this node (Used when we change the state of a node)
+     * TODO Write documentation
+     * TODO Use some collection and progressively filter out the nodes to avoid useless iterations
+     * <p>
+     * Let:
+     * - V denote the number of nodes in the skill tree
+     * - P the number of parents any node, has at most
+     * - C the number of children any node has, at most
+     * <p>
+     * This algorithm runs in O(V * P * C)
      */
-    private void setupNodeStateFrom(SkillTreeNode node, PlayerData playerData) {
-        if (playerData.getNodeLevel(node) > 0) {
-            playerData.setNodeState(node, SkillTreeStatus.UNLOCKED);
-        } else if (playerData.getNodeLevel(node) == 0 && node.isRoot()) {
-            playerData.setNodeState(node, SkillTreeStatus.UNLOCKABLE);
-        } else {
-            Set<SkillTreeNode> strongParents = node.getParents(ParentType.STRONG);
-            Set<SkillTreeNode> softParents = node.getParents(ParentType.SOFT);
-            Set<SkillTreeNode> incompatibleParents = node.getParents(ParentType.INCOMPATIBLE);
+    public void setupNodeStates(@NotNull PlayerData playerData) {
 
+        // Reinitialization
+        playerData.clearNodeStates(this);
 
-            boolean isUnlockableFromStrongParent = true;
-            boolean isUnlockableFromSoftParent = softParents.size() == 0;
-            boolean isFullyLockedFromStrongParent = false;
-            boolean isFullyLockedFromSoftParent = softParents.size() != 0;
-            boolean isFullyLockedFromIncompatibleParent = false;
+        // If the player has already spent the maximum amount of points in this skill tree.
+        final boolean skillTreeLocked = playerData.getPointsSpent(this) >= this.maxPointSpent;
+        final NodeState lockState = skillTreeLocked ? NodeState.FULLY_LOCKED : NodeState.LOCKED;
 
-            for (SkillTreeNode strongParent : strongParents) {
-                if (playerData.getNodeLevel(strongParent) < node.getParentNeededLevel(strongParent, ParentType.STRONG)) {
-                    isUnlockableFromStrongParent = false;
-                }
-                //We count the number of children the parent
-                int numberChildren = 0;
-                for (SkillTreeNode child : strongParent.getChildren())
-                    if (playerData.getNodeLevel(child) > 0)
-                        numberChildren++;
+        // PASS 1
+        //
+        // Initialization. Mark all nodes either locked or unlocked
+        for (SkillTreeNode node : nodes.values())
+            playerData.setNodeState(node, playerData.getNodeLevel(node) > 0 ? NodeState.UNLOCKED : lockState);
 
-                //We must check if the parent is Fully Locked or not and if it can unlock a new node(with its max children constraint)
-                if (numberChildren >= strongParent.getMaxChildren() || playerData.getNodeStatus(strongParent) == SkillTreeStatus.FULLY_LOCKED)
-                    isFullyLockedFromStrongParent = true;
-            }
+        if (skillTreeLocked) return;
 
+        // PASS 2
+        //
+        // Apply basic unreachability rules in O(V * [C + P])
+        // It has to differ from pass 1 because it uses results from pass 1.
+        final Stack<SkillTreeNode> unreachable = new Stack<>();
+        final Set<SkillTreeNode> updated = new HashSet<>();
 
-            for (SkillTreeNode softParent : softParents) {
-                if (playerData.getNodeLevel(softParent) >= node.getParentNeededLevel(softParent, ParentType.SOFT)) {
-                    isUnlockableFromSoftParent = true;
-                }
-                //We count the number of children the parent has
-                int numberChildren = 0;
-                for (SkillTreeNode child : softParent.getChildren())
-                    if (playerData.getNodeLevel(child) > 0)
-                        numberChildren++;
-                if (numberChildren < softParent.getMaxChildren() && playerData.getNodeStatus(softParent) != SkillTreeStatus.FULLY_LOCKED)
-                    isFullyLockedFromSoftParent = false;
-            }
-            for (SkillTreeNode incompatibleParent : incompatibleParents) {
-                if (playerData.getNodeLevel(incompatibleParent) >= node.getParentNeededLevel(incompatibleParent, ParentType.INCOMPATIBLE)) {
-                    isFullyLockedFromIncompatibleParent = true;
+        for (SkillTreeNode node : nodes.values()) {
+
+            // INCOMPATIBILITY RULES
+            //
+            // Any node with an unlocked incompatible parent is made unreachable.
+            for (ParentInformation parent : node.getParents())
+                if (parent.getType() == ParentType.INCOMPATIBLE && playerData.getNodeState(parent.getNode()) == NodeState.UNLOCKED) {
+                    unreachable.add(node);
                     break;
                 }
+
+            // MAX CHILDREN RULE
+            //
+            // If a node has N total children and M <= N are already unlocked,
+            // the remaining N - M are made unreachable.
+            final int maxChildren = node.getMaxChildren();
+            if (maxChildren > 0) {
+
+                int unlocked = 0;
+                final List<SkillTreeNode> locked = new ArrayList<>();
+
+                for (ParentInformation child : node.getChildren())
+                    switch (playerData.getNodeState(child.getNode())) {
+                        case LOCKED:
+                            locked.add(child.getNode());
+                            break;
+                        case UNLOCKED:
+                            unlocked++;
+                            break;
+                    }
+
+                if (unlocked >= maxChildren) unreachable.addAll(locked);
+            }
+        }
+
+        // PASS 3
+        //
+        // Propagate unreachability in O(V * C * P)
+        while (!unreachable.empty()) {
+            final SkillTreeNode node = unreachable.pop();
+
+            updated.add(node);
+            playerData.setNodeState(node, NodeState.FULLY_LOCKED);
+            for (ParentInformation child : node.getChildren()) // Propagate
+                if (!updated.contains(child.getNode()) && isUnreachable(child.getNode(), playerData))
+                    unreachable.push(child.getNode());
+        }
+
+        // PASS 4
+        //
+        // Mark unlockable nodes, in O(V * P). This rule does not need propagation
+        // because the distance between the set of all unlocked nodes and the set
+        // of all unlockable nodes is at most 1 (unlockability is not "transitive")
+        pass4:
+        for (SkillTreeNode node : nodes.values()) {
+            if (playerData.getNodeState(node) != NodeState.LOCKED) continue;
+
+            // ROOT NODES
+            //
+            // Roots are either unlockable or unlocked.
+            if (node.isRoot()) {
+                playerData.setNodeState(node, NodeState.UNLOCKABLE);
+                continue;
             }
 
-            boolean isFullyLocked = isFullyLockedFromSoftParent || isFullyLockedFromStrongParent || isFullyLockedFromIncompatibleParent;
-            boolean isUnlockable = isUnlockableFromSoftParent && isUnlockableFromStrongParent;
-            if (isFullyLocked)
-                playerData.setNodeState(node, SkillTreeStatus.FULLY_LOCKED);
-            else if (isUnlockable)
-                playerData.setNodeState(node, SkillTreeStatus.UNLOCKABLE);
-            else
-                playerData.setNodeState(node, SkillTreeStatus.LOCKED);
-        }
-        //We recursively call the algorithm for all the children of the current node
-        for (SkillTreeNode child : node.getChildren())
-            setupNodeStateFrom(child, playerData);
+            // STRONG & SOFT PARENTS
+            //
+            // For nodes with no strong/soft parents, the rule is nulled.
+            // All strong parents of any node must be unlocked for the node to be unlockable.
+            // One soft parent of any node must be unlocked for the node to be unlockable.
+            boolean soft = false, hasSoft = false;
 
+            for (ParentInformation parent : node.getParents()) {
+                if (parent.getType() == ParentType.STRONG && playerData.getNodeState(parent.getNode()) != NodeState.UNLOCKED)
+                    continue pass4; // Keep the node locked
+                else if (!soft && parent.getType() == ParentType.SOFT) {
+                    hasSoft = true;
+                    if (playerData.getNodeState(parent.getNode()) == NodeState.UNLOCKED)
+                        soft = true; // Cannot continue, must check for other strong parents
+                }
+            }
+
+            // At least one soft parent!
+            if (!hasSoft || soft) playerData.setNodeState(node, NodeState.UNLOCKABLE);
+        }
     }
 
-    /**
-     * Returns null if it is not a node and returns the node type if it a node
-     */
-    @Nullable
-    public boolean isNode(IntegerCoordinates coordinates) {
-        for (SkillTreeNode node : nodes.values()) {
-            if (node.getCoordinates().equals(coordinates))
+    private boolean isUnreachable(@NotNull SkillTreeNode node, @NotNull PlayerData playerData) {
+
+        // UNREACHABILITY RULES
+        //
+        // If at least one strong parent is unreachable, the node is unreachable too.
+        // If all soft parents are unreachable, the node is unreachable.
+        // This rule is the logical opposite of the reachability rule.
+        boolean soft = false, hasSoft = false;
+
+        for (ParentInformation parent : node.getParents()) {
+            if (parent.getType() == ParentType.STRONG && playerData.getNodeState(parent.getNode()) == NodeState.FULLY_LOCKED)
                 return true;
+            else if (!soft && parent.getType() == ParentType.SOFT) {
+                hasSoft = true;
+                if (playerData.getNodeState(parent.getNode()) != NodeState.FULLY_LOCKED)
+                    soft = true; // Cannot continue, must check for other strong parents
+            }
         }
-        return false;
+
+        return hasSoft && !soft;
     }
 
-    public boolean isPath(IntegerCoordinates coordinates) {
-        return coordinatesPaths.keySet().contains(coordinates);
+    public boolean isNode(@NotNull IntegerCoordinates coordinates) {
+        return coordNodes.containsKey(coordinates);
+    }
+
+    public boolean isPath(@NotNull IntegerCoordinates coordinates) {
+        return coordPaths.containsKey(coordinates);
     }
 
     public boolean isPathOrNode(IntegerCoordinates coordinates) {
@@ -269,17 +330,22 @@ public abstract class SkillTree implements RegisteredObject, PreloadedObject {
     }
 
     @NotNull
-    public SkillTreeNode getNode(IntegerCoordinates coords) {
-        return Objects.requireNonNull(coordinatesNodes.get(coords), "Could not find node in tree '" + id + "' with coordinates '" + coords.toString() + "'");
+    public SkillTreeNode getNode(@NotNull IntegerCoordinates coords) {
+        return Objects.requireNonNull(coordNodes.get(coords), "Could not find node in tree '" + id + "' with coordinates '" + coords + "'");
+    }
+
+    @Nullable
+    public SkillTreeNode getNodeOrNull(@NotNull IntegerCoordinates coords) {
+        return coordNodes.get(coords);
     }
 
     @NotNull
-    public SkillTreePath getPath(IntegerCoordinates coords) {
-        return Objects.requireNonNull(coordinatesPaths.get(coords), "Could not find path in tree '" + id + "' with coordinates '" + coords.toString() + "'");
+    public SkillTreePath getPath(@NotNull IntegerCoordinates coords) {
+        return Objects.requireNonNull(coordPaths.get(coords), "Could not find path in tree '" + id + "' with coordinates '" + coords + "'");
     }
 
     @NotNull
-    public SkillTreeNode getNode(String name) {
+    public SkillTreeNode getNode(@NotNull String name) {
         return Objects.requireNonNull(nodes.get(name), "Could not find node in tree '" + id + "' with name '" + name + "'");
     }
 
@@ -290,7 +356,6 @@ public abstract class SkillTree implements RegisteredObject, PreloadedObject {
     public Icon getIcon(DisplayInfo displayInfo) {
         return icons.get(displayInfo);
     }
-
 
     public boolean isNode(String name) {
         return nodes.containsKey(name);

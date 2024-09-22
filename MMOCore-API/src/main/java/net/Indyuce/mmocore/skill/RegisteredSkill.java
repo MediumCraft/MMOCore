@@ -5,9 +5,9 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.util.formula.BooleanExpression;
-import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.api.util.math.formula.IntegerLinearValue;
 import net.Indyuce.mmocore.api.util.math.formula.LinearValue;
+import net.Indyuce.mmocore.util.Icon;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class RegisteredSkill {
         this.handler = handler;
 
         name = Objects.requireNonNull(config.getString("name"), "Could not find skill name");
-        icon = MMOCoreUtils.readIcon(Objects.requireNonNull(config.getString("material"), "Could not find skill icon"));
+        icon = Icon.from(config.get("material")).toItem();
         lore = Objects.requireNonNull(config.getStringList("lore"), "Could not find skill lore");
 
         // Trigger type
@@ -142,7 +142,7 @@ public class RegisteredSkill {
 
     /**
      * @return Modifier formula.
-     * Not null as long as the modifier is well defined
+     *         Not null as long as the modifier is well defined
      */
     @NotNull
     public LinearValue getParameterInfo(String parameter) {

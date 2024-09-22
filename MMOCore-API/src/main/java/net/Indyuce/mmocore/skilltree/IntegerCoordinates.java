@@ -1,7 +1,11 @@
 package net.Indyuce.mmocore.skilltree;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class IntegerCoordinates {
@@ -23,8 +27,14 @@ public class IntegerCoordinates {
     public int getX() {
         return x;
     }
+
     public int getY() {
         return y;
+    }
+
+    @NotNull
+    public IntegerCoordinates add(@NotNull IntegerCoordinates other) {
+        return new IntegerCoordinates(x + other.x, y + other.y);
     }
 
     @Override
@@ -42,6 +52,24 @@ public class IntegerCoordinates {
 
     @Override
     public String toString() {
-        return x + "." + y;
+        return new StringBuilder("(").append(x).append(", ").append(y).append(")").toString();
+    }
+
+    @NotNull
+    public static IntegerCoordinates from(@Nullable Object object) {
+        Validate.notNull(object, "Could not read coordinates");
+
+        if (object instanceof ConfigurationSection) {
+            final ConfigurationSection config = (ConfigurationSection) object;
+            return new IntegerCoordinates(config.getInt("x"), config.getInt("y"));
+        }
+
+        if (object instanceof String) {
+            final String[] split = ((String) object).split("[:.,]");
+            Validate.isTrue(split.length > 1, "Must provide two coordinates, X and Y, got " + Arrays.asList(split));
+            return new IntegerCoordinates(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+        }
+
+        throw new RuntimeException("Needs either a string or configuration section");
     }
 }

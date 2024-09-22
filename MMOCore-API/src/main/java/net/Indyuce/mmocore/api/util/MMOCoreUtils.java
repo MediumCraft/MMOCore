@@ -8,6 +8,7 @@ import io.lumine.mythic.lib.gson.JsonObject;
 import io.lumine.mythic.lib.hologram.Hologram;
 import io.lumine.mythic.lib.version.VEnchantment;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.util.Icon;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -130,18 +131,9 @@ public class MMOCoreUtils {
         }
     }
 
-    @NotNull
+    @Deprecated
     public static ItemStack readIcon(String string) {
-        final String[] split = string.split(":");
-
-        final ItemStack item = new ItemStack(Material.valueOf(split[0].toUpperCase().replace("-", "_").replace(" ", "_")));
-        if (split.length > 1) {
-            final ItemMeta meta = item.getItemMeta();
-            meta.setCustomModelData(Integer.parseInt(split[1]));
-            item.setItemMeta(meta);
-        }
-
-        return item;
+        return Icon.from(string).toItem();
     }
 
     public static int getWorth(ItemStack[] items) {

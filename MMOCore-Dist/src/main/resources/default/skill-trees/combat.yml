@@ -1,21 +1,18 @@
 id: 'combat'
 name: '&4Combat'
-lore: 
+lore:
   - '&6This skill tree is used for combat abilities!'
-type: 'linked'
-item: 'DIAMOND_AXE'
+type: PROXIMITY
+item: DIAMOND_AXE
 max-point-spent: 20
 nodes:
   a1:
-    name: 'Cooldown Reduction'
+    name: 'Cooldown Reduction I'
     coordinates:
       x: -3
       y: -2
-    
-    max-level: 1
-    is-root: true
-    size: 1
-    point-consumed: 1
+
+    root: true
     experience-table:
       first_table_item:
         triggers:
@@ -25,14 +22,9 @@ nodes:
         - "&eReduces item/class skill cooldowns (5%)"
       1:
         - "&eReduces item/class skill cooldowns (5%)"
-    
-
 
   a2:
-    name: 'Cooldown Reduction'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Cooldown Reduction II'
     experience-table:
       first_table_item:
         triggers:
@@ -47,10 +39,7 @@ nodes:
         - "&eReduces item/class skill cooldowns (20%)"
 
   a3:
-    name: 'Cooldown Reduction'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Cooldown Reduction III'
     experience-table:
       first_table_item:
         triggers:
@@ -64,13 +53,10 @@ nodes:
       1:
         - "&eReduces item/class skill cooldowns (30%)"
 
-### B
+  ### B
 
   b1:
-    name: 'Critical Strike Chance'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Crit Chance I'
     experience-table:
       first_table_item:
         triggers:
@@ -85,10 +71,7 @@ nodes:
         - "&eCritical Strikes deal more damage in +%1 chance"
 
   b2:
-    name: 'Critical Strike Chance'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Crit Chance II'
     experience-table:
       first_table_item:
         triggers:
@@ -103,10 +86,7 @@ nodes:
         - "&eCritical Strikes deal more damage in +%3 chance"
 
   b3:
-    name: 'Critical Strike Chance'
-    size: 1
-    point-consumed: 1
-    max-children: 2
+    name: 'Crit Chance III'
     experience-table:
       first_table_item:
         triggers:
@@ -120,13 +100,10 @@ nodes:
       1:
         - "&eCritical Strikes deal more damage in +%5 chance"
 
-## C
+  ## C
 
   c1:
-    name: 'Life Steal'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Life Steal I'
     experience-table:
       first_table_item:
         triggers:
@@ -141,10 +118,7 @@ nodes:
         - "&ePercentage of damage you gain back as health when inflicting weapon damage +%1"
 
   c2:
-    name: 'Life Steal'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Life Steal II'
     experience-table:
       first_table_item:
         triggers:
@@ -159,10 +133,7 @@ nodes:
         - "&ePercentage of damage you gain back as health when inflicting weapon damage +%2"
 
   c3:
-    name: 'Life Steal'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Life Steal III'
     experience-table:
       first_table_item:
         triggers:
@@ -176,13 +147,10 @@ nodes:
       1:
         - "&ePercentage of damage you gain back as health when inflicting weapon damage +%3"
 
-## D
+  ## D
 
   d1:
-    name: 'Damage Reduction'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Resistance I'
     experience-table:
       first_table_item:
         triggers:
@@ -197,9 +165,7 @@ nodes:
         - "&eReduces damage from any source in +%1"
 
   d2:
-    name: 'Damage Reduction'
-    size: 1
-    point-consumed: 1
+    name: 'Resistance II'
     max-children: 2
     experience-table:
       first_table_item:
@@ -215,10 +181,7 @@ nodes:
         - "&eReduces damage from any source in +%2"
 
   d3:
-    name: 'Damage Reduction'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Resistance III'
     experience-table:
       first_table_item:
         triggers:
@@ -232,13 +195,10 @@ nodes:
       1:
         - "&eReduces damage from any source in +%2"
 
-## E
+  ## E
 
   e1:
-    name: 'Health Regeneration'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Health Regen I'
     experience-table:
       first_table_item:
         triggers:
@@ -253,10 +213,7 @@ nodes:
         - "&eHealth regen in pts/sec +1"
 
   e2:
-    name: 'Health Regeneration'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Health Regen II'
     experience-table:
       first_table_item:
         triggers:
@@ -271,10 +228,7 @@ nodes:
         - "&eHealth regen in pts/sec +2"
 
   e3:
-    name: 'Health Regeneration'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Health Regen III'
     experience-table:
       first_table_item:
         triggers:
@@ -288,13 +242,10 @@ nodes:
       1:
         - "&eHealth regen in pts/sec +2"
 
-## F
+  ## F
 
   f1:
-    name: 'Mana Regeneration'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Mana Regen I'
     experience-table:
       first_table_item:
         triggers:
@@ -309,10 +260,7 @@ nodes:
         - "&eMana regen in pts/sec +1"
 
   f2:
-    name: 'Mana Regeneration'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Mana Regen II'
     experience-table:
       first_table_item:
         triggers:
@@ -327,10 +275,7 @@ nodes:
         - "&eMana regen in pts/sec +2"
 
   f3:
-    name: 'Mana Regeneration'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Mana Regen III'
     experience-table:
       first_table_item:
         triggers:
@@ -344,13 +289,10 @@ nodes:
       1:
         - "&eMana regen in pts/sec +2"
 
-## G
+  ## G
 
   g1:
-    name: 'Magic Damage'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Magic Damage I'
     experience-table:
       first_table_item:
         triggers:
@@ -365,10 +307,7 @@ nodes:
         - "&eAdditional magic skill damage in +%1"
 
   g2:
-    name: 'Magic Damage'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Magic Damage II'
     experience-table:
       first_table_item:
         triggers:
@@ -383,10 +322,7 @@ nodes:
         - "&eAdditional magic skill damage in +%2"
 
   g3:
-    name: 'Magic Damage'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Magic Damage III'
     experience-table:
       first_table_item:
         triggers:
@@ -400,13 +336,10 @@ nodes:
       1:
         - "&eAdditional magic skill damage in +%2"
 
-## H
+  ## H
 
   h1:
-    name: 'Max Health'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Max Health I'
     experience-table:
       first_table_item:
         triggers:
@@ -421,10 +354,7 @@ nodes:
         - "&eAdditional amount of health in +%2"
 
   h2:
-    name: 'Max Health'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Max Health II'
     experience-table:
       first_table_item:
         triggers:
@@ -439,10 +369,7 @@ nodes:
         - "&eAdditional amount of health in +%4"
 
   h3:
-    name: 'Max Health'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Max Health III'
     experience-table:
       first_table_item:
         triggers:
@@ -456,13 +383,10 @@ nodes:
       1:
         - "&eAdditional amount of health in +%4"
 
-## J
+  ## J
 
   j1:
-    name: 'Weapon Damage'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Weapon Damage I'
     experience-table:
       first_table_item:
         triggers:
@@ -477,10 +401,7 @@ nodes:
         - "&eAdditional on-hit weapon damage in +%2."
 
   j2:
-    name: 'Weapon Damage'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Weapon Damage II'
     experience-table:
       first_table_item:
         triggers:
@@ -495,10 +416,7 @@ nodes:
         - "&eAdditional on-hit weapon damage in +%4"
 
   j3:
-    name: 'Weapon Damage'
-    size: 1
-    point-consumed: 1
-    max-children: 1
+    name: 'Weapon Damage III'
     experience-table:
       first_table_item:
         triggers:
@@ -512,16 +430,6 @@ nodes:
       1:
         - "&eAdditional on-hit weapon damage in +%4"
 
-
-paths:
-  path1:
-    x: 2
-    y: 2
-  path2: 
-    x: 2
-    y: 3
-
-
 # This section is to have a specific display for the skill tree in the GUI.
 # It is optional as if you don't fill it the config in gui/skill-tree.yml will be used.
 # For each node it will first look if the node has a specific display, if not it will look if
@@ -530,287 +438,103 @@ paths:
 #display:
 #  paths:
 #    unlocked:
-#      up:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
+#      up: 'WHITE_DYE:0'
+#      up-right: 'WHITE_DYE:0'
+#      up-left: 'WHITE_DYE:0'
+#      down-right: 'WHITE_DYE:0'
+#      down-left: 'WHITE_DYE:0'
+#      right: 'WHITE_DYE:0'
+#      default: 'WHITE_DYE:0'
 #    unlockable:
-#      up:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
+#      up: 'BLUE_DYE:0'
+#      up-right: 'BLUE_DYE:0'
+#      up-left: 'BLUE_DYE:0'
+#      down-right: 'BLUE_DYE:0'
+#      down-left: 'BLUE_DYE:0'
+#      right: 'BLUE_DYE:0'
+#      default: 'BLUE_DYE:0'
 #    locked:
-#      up:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
+#      up: 'GRAY_DYE:0'
+#      up-right: 'GRAY_DYE:0'
+#      up-left: 'GRAY_DYE:0'
+#      down-right: 'GRAY_DYE:0'
+#      down-left: 'GRAY_DYE:0'
+#      right: 'GRAY_DYE:0'
+#      default: 'GRAY_DYE:0'
 #    fully-locked:
-#      up:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
+#      up: 'BLACK_DYE:0'
+#      up-right: 'BLACK_DYE:0'
+#      up-left: 'BLACK_DYE:0'
+#      down-right: 'BLACK_DYE:0'
+#      down-left: 'BLACK_DYE:0'
+#      right: 'BLACK_DYE:0'
+#      default: 'BLACK_DYE:0'
 #  nodes:
 #    unlocked:
-#      up-right-down-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
+#      up-right-down-left: 'WHITE_CONCRETE:0'
+#      up-right-down: 'WHITE_CONCRETE:0'
+#      up-right-left: 'WHITE_CONCRETE:0'
+#      up-down-left: 'WHITE_CONCRETE:0'
+#      down-right-left: 'WHITE_CONCRETE:0'
+#      up-right: 'WHITE_CONCRETE:0'
+#      up-down: 'WHITE_CONCRETE:0'
+#      up-left: 'WHITE_CONCRETE:0'
+#      down-right: 'WHITE_CONCRETE:0'
+#      down-left: 'WHITE_CONCRETE:0'
+#      right-left: 'WHITE_CONCRETE:0'
+#      right: 'WHITE_CONCRETE:0'
+#      left: 'WHITE_CONCRETE:0'
+#      up: 'WHITE_CONCRETE:0'
+#      down: 'WHITE_CONCRETE:0'
+#      no-path: 'WHITE_CONCRETE:0'
 #    locked:
-#      up-right-down-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
+#      up-right-down-left: 'GRAY_CONCRETE:0'
+#      up-right-down: 'GRAY_CONCRETE:0'
+#      up-right-left: 'GRAY_CONCRETE:0'
+#      up-down-left: 'GRAY_CONCRETE:0'
+#      down-right-left: 'GRAY_CONCRETE:0'
+#      up-right: 'GRAY_CONCRETE:0'
+#      up-down: 'GRAY_CONCRETE:0'
+#      up-left: 'GRAY_CONCRETE:0'
+#      down-right: 'GRAY_CONCRETE:0'
+#      down-left: 'GRAY_CONCRETE:0'
+#      right-left: 'GRAY_CONCRETE:0'
+#      right: 'GRAY_CONCRETE:0'
+#      left: 'GRAY_CONCRETE:0'
+#      up: 'GRAY_CONCRETE:0'
+#      down: 'GRAY_CONCRETE:0'
+#      no-path: 'GRAY_CONCRETE:0'
 #    unlockable:
-#      up-right-down-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
+#      up-right-down-left: 'BLUE_CONCRETE:0'
+#      up-right-down: 'BLUE_CONCRETE:0'
+#      up-right-left: 'BLUE_CONCRETE:0'
+#      up-down-left: 'BLUE_CONCRETE:0'
+#      down-right-left: 'BLUE_CONCRETE:0'
+#      up-right: 'BLUE_CONCRETE:0'
+#      up-down: 'BLUE_CONCRETE:0'
+#      up-left: 'BLUE_CONCRETE:0'
+#      down-right: 'BLUE_CONCRETE:0'
+#      down-left: 'BLUE_CONCRETE:0'
+#      right-left: 'BLUE_CONCRETE:0'
+#      right: 'BLUE_CONCRETE:0'
+#      left: 'BLUE_CONCRETE:0'
+#      up: 'BLUE_CONCRETE:0'
+#      down: 'BLUE_CONCRETE:0'
+#      no-path: 'BLUE_CONCRETE:0'
 #    fully-locked:
-#      up-right-down-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
+#      up-right-down-left: 'BLACK_CONCRETE:0'
+#      up-right-down: 'BLACK_CONCRETE:0'
+#      up-right-left: 'BLACK_CONCRETE:0'
+#      up-down-left: 'BLACK_CONCRETE:0'
+#      down-right-left: 'BLACK_CONCRETE:0'
+#      up-right: 'BLACK_CONCRETE:0'
+#      up-down: 'BLACK_CONCRETE:0'
+#      up-left: 'BLACK_CONCRETE:0'
+#      down-right: 'BLACK_CONCRETE:0'
+#      down-left: 'BLACK_CONCRETE:0'
+#      right-left: 'BLACK_CONCRETE:0'
+#      right: 'BLACK_CONCRETE:0'
+#      left: 'BLACK_CONCRETE:0'
+#      up: 'BLACK_CONCRETE:0'
+#      down: 'BLACK_CONCRETE:0'
+#      no-path: 'BLACK_CONCRETE:0'

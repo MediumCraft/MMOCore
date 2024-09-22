@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.manager;
 import io.lumine.mythic.lib.UtilityMethods;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigFile;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import net.Indyuce.mmocore.gui.*;
 import net.Indyuce.mmocore.gui.api.EditableInventory;
 import net.Indyuce.mmocore.gui.skilltree.SkillTreeViewer;
@@ -12,13 +13,19 @@ import net.Indyuce.mmocore.gui.social.guild.EditableGuildCreation;
 import net.Indyuce.mmocore.gui.social.guild.EditableGuildView;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyCreation;
 import net.Indyuce.mmocore.gui.social.party.EditablePartyView;
+import net.Indyuce.mmocore.skilltree.tree.SkillTree;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class InventoryManager {
+
+    // GUIs
     public static final PlayerStats PLAYER_STATS = new PlayerStats();
     public static final SkillList SKILL_LIST = new SkillList();
     public static final ClassSelect CLASS_SELECT = new ClassSelect();
@@ -33,11 +40,14 @@ public class InventoryManager {
     public static final QuestViewer QUEST_LIST = new QuestViewer();
     public static final AttributeView ATTRIBUTE_VIEW = new AttributeView();
     public static final SkillTreeViewer TREE_VIEW = new SkillTreeViewer();
-    public static Map<String, SkillTreeViewer> SPECIFIC_TREE_VIEW = new HashMap<>();
+
+    // Specific GUIs
+    public static final Map<String, SkillTreeViewer> SPECIFIC_TREE_VIEW = new HashMap<>();
     public static final Map<String, ClassConfirmation> CLASS_CONFIRM = new HashMap<>();
 
-
-    public static final List<EditableInventory> list = new ArrayList(Arrays.asList(PLAYER_STATS, ATTRIBUTE_VIEW, TREE_VIEW, SKILL_LIST, CLASS_SELECT, SUBCLASS_SELECT, QUEST_LIST, WAYPOINTS, FRIEND_LIST, FRIEND_REMOVAL, PARTY_VIEW, PARTY_CREATION, GUILD_VIEW, GUILD_CREATION));
+    public static final List<EditableInventory> LIST = Arrays.asList(PLAYER_STATS, ATTRIBUTE_VIEW, TREE_VIEW, SKILL_LIST, CLASS_SELECT, SUBCLASS_SELECT, QUEST_LIST, WAYPOINTS, FRIEND_LIST, FRIEND_REMOVAL, PARTY_VIEW, PARTY_CREATION, GUILD_VIEW, GUILD_CREATION);
+    @Deprecated
+    public static final List<EditableInventory> list = LIST;
 
     public static void load() {
         //Loads the specific inventories
@@ -55,8 +65,8 @@ public class InventoryManager {
                 GUI.reload(new ConfigFile("/gui/" + loader.name, GUI.getId()).getConfig());
             }
         }
-        list.forEach(inv ->
-        {
+
+        LIST.forEach(inv -> {
             try {
                 MMOCore.plugin.configManager.copyDefaultFile("gui/" + inv.getId() + ".yml");
                 inv.reload(new ConfigFile("/gui", inv.getId()).getConfig());
@@ -71,7 +81,7 @@ public class InventoryManager {
                 InventoryManager.CLASS_CONFIRM,
                 MMOCore.plugin.classManager.getAll().
                         stream().
-                        map(playerClass -> playerClass.getId()).
+                        map(PlayerClass::getId).
                         collect(Collectors.toList()),
                 (id, isDefault) -> new ClassConfirmation(MMOCore.plugin.classManager.get(id), isDefault)
         ),
@@ -80,7 +90,7 @@ public class InventoryManager {
                 InventoryManager.SPECIFIC_TREE_VIEW,
                 MMOCore.plugin.skillTreeManager.getAll().
                         stream().
-                        map(skillTree -> skillTree.getId()).
+                        map(SkillTree::getId).
                         collect(Collectors.toList()),
                 (id, isDefault) -> new SkillTreeViewer(MMOCore.plugin.skillTreeManager.get(id), isDefault));
 

@@ -35,7 +35,7 @@ public class PlayerListener implements Listener {
             final PlayerData playerData = PlayerData.get(event.getHolder().getUniqueId());
             final Player player = playerData.getPlayer();
 
-            playerData.setupSkillTree();
+            playerData.setupSkillTrees();
             playerData.applyTemporaryTriggers();
             playerData.getStats().updateStats(true); // TODO maybe duplicate?
 

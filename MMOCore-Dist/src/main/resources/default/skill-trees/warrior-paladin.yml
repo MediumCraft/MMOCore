@@ -1,24 +1,20 @@
 id: 'warrior-paladin'
-name: '&4Warrior&Paladin'
+name: '&4Warrior & Paladin'
 type: 'custom'
 item: 'DIAMOND_AXE'
 lore: 
-- '&6This skill tree is used for Warrior and Paladin class only!'
+- '&6Available to strong bois, Warriors and Paladins only'
 max-point-spent: 21
 
 nodes:
 
 #### A
   a1:
-    name: 'Attack Speed'
+    name: 'Attack Speed I'
     coordinates:
       x: -1
       y: 2
 
-    max-level: 1
-    is-root: true
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -29,7 +25,7 @@ nodes:
       1:
         - "&eThe speed at which your weapon strikes. +%5"
   a2:
-    name: 'Attack Speed'
+    name: 'Attack Speed II'
     coordinates:
       x: -2
       y: 1
@@ -38,9 +34,6 @@ nodes:
       strong: 
         a1: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -51,7 +44,7 @@ nodes:
       1:
         - "&eThe speed at which your weapon strikes. +%10"
   a3:
-    name: 'Attack Speed'
+    name: 'Attack Speed III'
     coordinates:
       x: -3
       y: 0
@@ -59,10 +52,7 @@ nodes:
     parents: 
       strong: 
         a2: 1
-        
-    max-level: 1
-    size: 1
-    point-consumed: 1
+
     experience-table:
       first_table_item:
         triggers:
@@ -76,7 +66,7 @@ nodes:
 ## B
 
   b1:
-    name: 'Health Regeneration'
+    name: 'Health Regen I'
     coordinates:
       x: -2
       y: -1
@@ -85,9 +75,6 @@ nodes:
       strong: 
         a3: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -98,7 +85,7 @@ nodes:
       1:
         - "&eIncreases health regeneration by 1%"
   b2:
-    name: 'Health Regeneration'
+    name: 'Health Regen II'
     coordinates:
       x: -1
       y: -2
@@ -107,9 +94,6 @@ nodes:
       strong: 
         b1: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -120,7 +104,7 @@ nodes:
       1:
         - "&eIncreases health regeneration by 1%"
   b3:
-    name: 'Health Regeneration'
+    name: 'Health Regen III'
     coordinates:
       x: 0
       y: -2
@@ -128,10 +112,7 @@ nodes:
     parents: 
       strong: 
         b2: 1
-        
-    max-level: 1
-    size: 1
-    point-consumed: 1
+
     experience-table:
       first_table_item:
         triggers:
@@ -145,7 +126,7 @@ nodes:
 ## C
 
   c1:
-    name: 'Physical Damage Reduction'
+    name: 'Resistance I'
     coordinates:
       x: 0
       y: -1
@@ -154,9 +135,6 @@ nodes:
       strong: 
         b3: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -167,7 +145,7 @@ nodes:
       1:
         - "&eReduces physical damage In -%5"
   c2:
-    name: 'Physical Damage Reduction'
+    name: 'Resistance II'
     coordinates:
       x: -1
       y: 0
@@ -176,9 +154,6 @@ nodes:
       strong: 
         c1: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -189,7 +164,7 @@ nodes:
       1:
         - "&eReduces physical damage In -%10"
   c3:
-    name: 'Physical Damage Reduction'
+    name: 'Resistance III'
     coordinates:
       x: 0
       y: 1
@@ -197,10 +172,7 @@ nodes:
     parents: 
       strong: 
         c2: 1
-        
-    max-level: 1
-    size: 1
-    point-consumed: 1
+
     experience-table:
       first_table_item:
         triggers:
@@ -214,7 +186,7 @@ nodes:
 ## D
 
   d1:
-    name: 'Parry Rating'
+    name: 'Parrying I'
     coordinates:
       x: 1
       y: 1
@@ -223,9 +195,6 @@ nodes:
       strong: 
         c3: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -236,7 +205,7 @@ nodes:
       1:
         - "&eThe chance to parry an attack. Parrying negates the damage and knocks the attacker back +%5"
   d2:
-    name: 'Parry Rating'
+    name: 'Parrying II'
     coordinates:
       x: 2
       y: 1
@@ -245,9 +214,6 @@ nodes:
       strong: 
         d1: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -258,7 +224,7 @@ nodes:
       1:
         - "&eThe chance to parry an attack. Parrying negates the damage and knocks the attacker back +%5"
   d3:
-    name: 'Parry Rating'
+    name: 'Parrying III'
     coordinates:
       x: 2
       y: 2
@@ -266,10 +232,7 @@ nodes:
     parents: 
       strong: 
         d2: 1
-        
-    max-level: 1
-    size: 1
-    point-consumed: 1
+
     experience-table:
       first_table_item:
         triggers:
@@ -283,7 +246,7 @@ nodes:
 ## E
 
   e1:
-    name: 'Knockback Resistance'
+    name: 'Toughness I'
     coordinates:
       x: 3
       y: 2
@@ -292,9 +255,6 @@ nodes:
       strong: 
         d3: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -305,7 +265,7 @@ nodes:
       1:
         - "&eThe chance of you to block the knockback +%5"
   e2:
-    name: 'Knockback Resistance'
+    name: 'Toughness II'
     coordinates:
       x: 4
       y: 2
@@ -314,9 +274,6 @@ nodes:
       strong: 
         e1: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -327,7 +284,7 @@ nodes:
       1:
         - "&eThe chance of you to block the knockback +%5"
   e3:
-    name: 'Knockback Resistance'
+    name: 'Toughness III'
     coordinates:
       x: 4
       y: 1
@@ -335,10 +292,7 @@ nodes:
     parents: 
       strong: 
         e2: 1
-        
-    max-level: 1
-    size: 1
-    point-consumed: 1
+
     experience-table:
       first_table_item:
         triggers:
@@ -352,7 +306,7 @@ nodes:
 ## F
 
   f1:
-    name: 'Dodge Rating'
+    name: 'Dodging I'
     coordinates:
       x: 4
       y: 0
@@ -361,9 +315,6 @@ nodes:
       strong: 
         e3: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -374,7 +325,7 @@ nodes:
       1:
         - "&eThe change to dodge an attack. Dodging completely negates the attack damage. +%2"
   f2:
-    name: 'Dodge Rating'
+    name: 'Dodging II'
     coordinates:
       x: 4
       y: -1
@@ -383,9 +334,6 @@ nodes:
       strong: 
         f1: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -396,7 +344,7 @@ nodes:
       1:
         - "&eThe change to dodge an attack. Dodging completely negates the attack damage. +%3"
   f3:
-    name: 'Dodge Rating'
+    name: 'Dodging III'
     coordinates:
       x: 4
       y: -2
@@ -404,10 +352,7 @@ nodes:
     parents: 
       strong: 
         f2: 1
-        
-    max-level: 1
-    size: 1
-    point-consumed: 1
+
     experience-table:
       first_table_item:
         triggers:
@@ -421,7 +366,7 @@ nodes:
 ## G
 
   g1:
-    name: 'Weapon Damage'
+    name: 'Weapon Damage I'
     coordinates:
       x: 3
       y: -2
@@ -430,9 +375,6 @@ nodes:
       strong: 
         f3: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -443,7 +385,7 @@ nodes:
       1:
         - "&eAdditional on-hit weapon damage in +%1."
   g2:
-    name: 'Weapon Damage'
+    name: 'Weapon Damage II'
     coordinates:
       x: 2
       y: -2
@@ -452,9 +394,6 @@ nodes:
       strong: 
         g1: 1
 
-    max-level: 1
-    size: 1
-    point-consumed: 1
     experience-table:
       first_table_item:
         triggers:
@@ -465,7 +404,7 @@ nodes:
       1:
         - "&eAdditional on-hit weapon damage in +%2."
   g3:
-    name: 'Weapon Damage'
+    name: 'Weapon Damage III'
     coordinates:
       x: 2
       y: -1
@@ -473,10 +412,7 @@ nodes:
     parents: 
       strong: 
         g2: 1
-        
-    max-level: 1
-    size: 1
-    point-consumed: 1
+
     experience-table:
       first_table_item:
         triggers:
@@ -486,297 +422,3 @@ nodes:
         - "&eAdditional on-hit weapon damage in +%2."
       1:
         - "&eAdditional on-hit weapon damage in +%2."
-
-
-# This section is to have a specific display for the skill tree in the GUI.
-# It is optional as if you don't fill it the config in gui/skill-tree.yml will be used.
-# For each node it will first look if the node has a specific display, if not it will look if
-# the display is defined in this section. If not it will use the default display in gui/skill-tree.yml.
-#
-#display:
-#  paths:
-#    unlocked:
-#      up:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "WHITE_DYE"
-#        custom-model-data: 0
-#    unlockable:
-#      up:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "BLUE_DYE"
-#        custom-model-data: 0
-#    locked:
-#      up:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "GRAY_DYE"
-#        custom-model-data: 0
-#    fully-locked:
-#      up:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#      default:
-#        item: "BLACK_DYE"
-#        custom-model-data: 0
-#  nodes:
-#    unlocked:
-#      up-right-down-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "WHITE_CONCRETE"
-#        custom-model-data: 0
-#    locked:
-#      up-right-down-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "GRAY_CONCRETE"
-#        custom-model-data: 0
-#    unlockable:
-#      up-right-down-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "BLUE_CONCRETE"
-#        custom-model-data: 0
-#    fully-locked:
-#      up-right-down-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-right-down:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-right-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-down-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down-right-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-right:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-down:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down-right:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      right-left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      right:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      left:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      up:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      down:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0
-#      no-path:
-#        item: "BLACK_CONCRETE"
-#        custom-model-data: 0

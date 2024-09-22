@@ -104,6 +104,7 @@ public class ConfigManager {
             copyDefaultFile("skill-trees/rogue-marksman.yml");
             copyDefaultFile("skill-trees/warrior-paladin.yml");
             copyDefaultFile("skill-trees/general.yml");
+            copyDefaultFile("skill-trees/loop.yml");
         }
 
         if (!FileUtils.getFile(MMOCore.plugin, "waypoints").exists()) {

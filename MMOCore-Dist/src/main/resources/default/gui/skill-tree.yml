@@ -91,7 +91,7 @@ items:
       #- '&fSoft Parents: '
       #- '{soft-parents}'
       - ''
-      - '{node-lore}'
+      - '&7{node-lore}'
       - ''
       - '&e◆ Points Spent:&6 {point-spent}&e/&6{max-point-spent}'
       - '&e◆ Current {skill-tree} &ePoints: &6{skill-tree-points} &e+ &6{global-points} &eGlobal'

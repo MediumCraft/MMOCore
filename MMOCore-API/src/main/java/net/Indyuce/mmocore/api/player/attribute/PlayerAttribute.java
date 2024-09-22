@@ -52,7 +52,7 @@ public class PlayerAttribute implements ExperienceObject {
             try {
                 expTable = MMOCore.plugin.experience.loadExperienceTable(config.get("exp-table"));
             } catch (RuntimeException exception) {
-                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from class '" + id + "': " + exception.getMessage());
+                MMOCore.plugin.getLogger().log(Level.WARNING, "Could not load exp table from attribute '" + id + "': " + exception.getMessage());
             }
         this.expTable = expTable;
     }

@@ -45,7 +45,6 @@ public class PartyListener implements Listener {
     public void leavePartyOnQuit(PlayerQuitEvent event) {
         final PlayerData playerData = PlayerData.get(event.getPlayer());
         final AbstractParty party = playerData.getParty();
-        if (party != null)
-            ((Party) party).removeMember(playerData);
+        if (party != null) ((Party) party).removeMember(playerData);
     }
 }
