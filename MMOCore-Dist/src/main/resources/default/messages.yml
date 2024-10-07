@@ -115,11 +115,10 @@ new-waypoint-book: '%&eYou unlocked the &6{waypoint} &ewaypoint!'
 not-enough-stellium: '&cYou don''t have enough stellium: you need {more} more.'
 waypoint-cooldown: '&cPlease wait {cooldown} before using a waypoint again.'
 not-unlocked-waypoint: '&cYou have not unlocked that waypoint yet.'
-not-dynamic-waypoint: '&cYou many only teleport to a non-dynamic waypoint while standing on another waypoint.'
 standing-on-waypoint: '&cYou are already standing on this waypoint.'
 warping-canceled: '%&cWaypoint warping canceled.'
-warping-comencing: '%&cDO NOT MOVE!&e You will be warped in {left}sec.'
-cannot-teleport-to: '&cThe two waypoints are not linked.'
+warping-comencing: '%&cDO NOT MOVE!&e You will be teleported in {left}sec.'
+cannot-teleport-to: '&cYou do not have access to this waypoint.'
 
 # Cash
 deposit: '&eYou successfully deposited &6{worth}g&e.'

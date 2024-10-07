@@ -264,11 +264,11 @@ public abstract class SkillTree implements RegisteredObject {
             boolean soft = false, hasSoft = false;
 
             for (ParentInformation parent : node.getParents()) {
-                if (parent.getType() == ParentType.STRONG && playerData.getNodeState(parent.getNode()) != NodeState.UNLOCKED)
+                if (parent.getType() == ParentType.STRONG && playerData.getNodeLevel(parent.getNode()) < parent.getLevel())
                     continue pass4; // Keep the node locked
                 else if (!soft && parent.getType() == ParentType.SOFT) {
                     hasSoft = true;
-                    if (playerData.getNodeState(parent.getNode()) == NodeState.UNLOCKED)
+                    if (playerData.getNodeLevel(parent.getNode()) >= parent.getLevel())
                         soft = true; // Cannot continue, must check for other strong parents
                 }
             }

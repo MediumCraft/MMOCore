@@ -34,18 +34,7 @@ items:
 
       lore:
         - '{lore}'
-        - '&7You cannot teleport as the two waypoints are not linked.'
-
-
-    # When you cannot teleport to a non dynamic waypoint
-    not-dynamic:
-      name: '&a{name}'
-      item: ENDER_PEARL
-
-      lore:
-        - '{lore}'
-        - '&7You cannot teleport as you are not standing on a waypoint.'
-
+        - '&7You do not have access to this waypoint.'
 
     current-waypoint:
       name: '&a{name}'
@@ -53,7 +42,7 @@ items:
 
       lore:
         - '{lore}'
-        - '&7The waypoint you are standing at.'
+        - '&7You are here.'
 
     # When you don't have enough stellium
     not-enough-stellium:
@@ -69,6 +58,9 @@ items:
     display:
       name: '&a{name}'
       item: ENDER_EYE
+      path:
+        splitter: ', '
+        none: 'None'
       lore:
         - '{lore}'
         - '&7You can teleport to this waypoint.'

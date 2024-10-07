@@ -48,7 +48,6 @@ public class WaypointManager implements MMOCoreManager {
         if (clearBefore)
             waypoints.clear();
 
-
         FileUtils.loadObjectsFromFolder(MMOCore.plugin, "waypoints", false, (key, config) -> {
             register(new Waypoint(config));
         }, "Could not load waypoint '%s' from file '%s': %s");

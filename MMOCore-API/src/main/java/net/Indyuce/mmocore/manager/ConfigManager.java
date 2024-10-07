@@ -26,7 +26,7 @@ public class ConfigManager {
     public final CommandVerbose commandVerbose = new CommandVerbose();
 
     public boolean overrideVanillaExp, canCreativeCast, passiveSkillsNeedBinding, cobbleGeneratorXP, saveDefaultClassInfo, splitMainExp, splitProfessionExp, disableQuestBossBar,
-            pvpModeEnabled, pvpModeInvulnerabilityCanDamage, forceClassSelection, enableGlobalSkillTreeGUI, enableSpecificSkillTreeGUI;
+            pvpModeEnabled, pvpModeInvulnerabilityCanDamage, forceClassSelection, enableGlobalSkillTreeGUI, enableSpecificSkillTreeGUI, waypointAutoPathCalculation, waypointLinkReciprocity;
     public String partyChatPrefix, noSkillBoundPlaceholder;
     public ChatColor staminaFull, staminaHalf, staminaEmpty;
     public long combatLogTimer, lootChestExpireTime, lootChestPlayerCooldown, globalSkillCooldown;
@@ -151,6 +151,8 @@ public class ConfigManager {
         disableQuestBossBar = MMOCore.plugin.getConfig().getBoolean("mmocore-quests.disable-boss-bar");
         forceClassSelection = MMOCore.plugin.getConfig().getBoolean("force-class-selection");
         waypointWarpTime = MMOCore.plugin.getConfig().getInt("waypoints.default-warp-time");
+        waypointAutoPathCalculation = MMOCore.plugin.getConfig().getBoolean("waypoints.auto_path_calculation");
+        waypointLinkReciprocity = MMOCore.plugin.getConfig().getBoolean("waypoints.link_reciprocity");
 
         // Combat
         pvpModeEnabled = config.getBoolean("pvp_mode.enabled");

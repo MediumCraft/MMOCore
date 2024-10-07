@@ -5,17 +5,14 @@ import io.lumine.mythic.lib.util.PostLoadAction;
 import io.lumine.mythic.lib.util.PreloadedObject;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.loot.chest.condition.Condition;
 import net.Indyuce.mmocore.loot.chest.condition.ConditionInstance;
 import net.Indyuce.mmocore.player.Unlockable;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -50,6 +47,10 @@ public class Waypoint implements Unlockable, PreloadedObject {
             for (String key : section.getKeys(false))
                 destinations.put(MMOCore.plugin.waypointManager.get(key), section.getDouble(key));
         }
+
+        // Link reciprocity
+        if (MMOCore.plugin.configManager.waypointLinkReciprocity)
+            destinations.forEach((neighbor, cost) -> neighbor.destinations.put(this, cost));
     });
 
     public Waypoint(ConfigurationSection config) {
@@ -59,7 +60,7 @@ public class Waypoint implements Unlockable, PreloadedObject {
         name = Objects.requireNonNull(config.getString("name"), "Could not load waypoint name");
         lore = Objects.requireNonNullElse(config.getStringList("lore"), new ArrayList<>());
 
-        loc = readLocation(Objects.requireNonNull(config.getString("location"), "Could not read location"));
+        loc = MMOCoreUtils.readLocation(Objects.requireNonNull(config.getString("location"), "Could not read location"));
         radiusSquared = Math.pow(config.getDouble("radius"), 2);
         warpTime = Math.max(0, config.getInt("warp-time", MMOCore.plugin.configManager.waypointWarpTime));
 
@@ -131,73 +132,11 @@ public class Waypoint implements Unlockable, PreloadedObject {
     }
 
     /**
-     * @return Integer.POSITIVE_INFINITY if the way point is not linked
-     * If it is, cost of the instant travel between the two waypoints.
+     * @return Double.POSITIVE_INFINITY if the way point is not linked
+     *         If it is, cost of the instant travel between the two waypoints.
      */
-    public double getDirectCost(Waypoint waypoint) {
+    public double getDirectCost(@NotNull Waypoint waypoint) {
         return destinations.isEmpty() ? normalCost : destinations.getOrDefault(waypoint, Double.POSITIVE_INFINITY);
-    }
-
-    public List<WaypointPath> getAllPath() {
-        //All the WayPoints that have been registered
-        List<Waypoint> checkedPoints = new ArrayList<>();
-        //All the path
-        List<WaypointPath> paths = new ArrayList();
-        List<WaypointPath> pointsToCheck = new ArrayList<>();
-        pointsToCheck.add(new WaypointPath(this));
-
-        while (pointsToCheck.size() != 0) {
-            WaypointPath checked = pointsToCheck.get(0);
-            pointsToCheck.remove(0);
-            // If the point has already been checked, pass
-            if (checkedPoints.contains(checked.getFinalWaypoint()))
-                continue;
-
-            paths.add(checked);
-            checkedPoints.add(checked.getFinalWaypoint());
-
-            for (Waypoint toCheck : checked.getFinalWaypoint().destinations.keySet())
-                if (!checkedPoints.contains(toCheck)) {
-                    WaypointPath toCheckInfo = checked.addWayPoint(toCheck);
-                    // We keep pointsToCheck ordered
-                    pointsToCheck = toCheckInfo.addInOrder(pointsToCheck);
-                }
-        }
-        return paths;
-    }
-
-    @Nullable
-    public WaypointPath getPath(Waypoint targetWaypoint) {
-        //All the WayPoints that have been registered
-        List<Waypoint> checkedPoints = new ArrayList<>();
-        //All the path
-        List<WaypointPath> paths = new ArrayList();
-        List<WaypointPath> pointsToCheck = new ArrayList<>();
-        pointsToCheck.add(new WaypointPath(this));
-
-        while (pointsToCheck.size() != 0) {
-            WaypointPath checked = pointsToCheck.get(0);
-            pointsToCheck.remove(0);
-            // If the point has already been checked, pass
-            if (checkedPoints.contains(checked.getFinalWaypoint()))
-                continue;
-
-            paths.add(checked);
-            checkedPoints.add(checked.getFinalWaypoint());
-
-            if (checked.getFinalWaypoint().equals(targetWaypoint))
-                return checked;
-
-            for (Waypoint toCheck : checked.getFinalWaypoint().destinations.keySet())
-                if (!checkedPoints.contains(toCheck)) {
-                    WaypointPath toCheckInfo = checked.addWayPoint(toCheck);
-                    // We keep pointsToCheck ordered
-                    pointsToCheck = toCheckInfo.addInOrder(pointsToCheck);
-                }
-        }
-
-        //If no path has been found we return null
-        return null;
     }
 
     public boolean hasOption(WaypointOption option) {
@@ -206,6 +145,11 @@ public class Waypoint implements Unlockable, PreloadedObject {
 
     public boolean isOnWaypoint(Player player) {
         return player.getWorld().equals(loc.getWorld()) && player.getLocation().distanceSquared(loc) < radiusSquared;
+    }
+
+    @NotNull
+    public Map<Waypoint, Double> getDestinations() {
+        return destinations;
     }
 
     @Override
@@ -244,20 +188,5 @@ public class Waypoint implements Unlockable, PreloadedObject {
         if (o == null || getClass() != o.getClass()) return false;
         Waypoint waypoint = (Waypoint) o;
         return id.equals(waypoint.id);
-    }
-
-    private Location readLocation(String string) {
-        String[] split = string.split(" ");
-
-        World world = Bukkit.getWorld(split[0]);
-        Validate.notNull(world, "Could not find world with name '" + split[0] + "'");
-
-        double x = Double.parseDouble(split[1]);
-        double y = Double.parseDouble(split[2]);
-        double z = Double.parseDouble(split[3]);
-        float yaw = split.length > 4 ? (float) Double.parseDouble(split[4]) : 0;
-        float pitch = split.length > 5 ? (float) Double.parseDouble(split[5]) : 0;
-
-        return new Location(world, x, y, z, yaw, pitch);
     }
 }

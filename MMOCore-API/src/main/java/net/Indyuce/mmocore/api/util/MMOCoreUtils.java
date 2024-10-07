@@ -9,6 +9,7 @@ import io.lumine.mythic.lib.hologram.Hologram;
 import io.lumine.mythic.lib.version.VEnchantment;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.util.Icon;
+import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -60,7 +61,7 @@ public class MMOCoreUtils {
      * @param current Current value of resource
      * @param maxStat Maximum value of resource
      * @return Clamped resource value. If the provided current value is 0,
-     * this function will return the maximum resource value.
+     *         this function will return the maximum resource value.
      */
     public static double fixResource(double current, double maxStat) {
         return current == 0 ? maxStat : Math.max(0, Math.min(current, maxStat));
@@ -218,12 +219,7 @@ public class MMOCoreUtils {
         return object.toString();
     }
 
-    /**
-     * Method to get all entities surrounding a location. This method does not
-     * take every entity in the world but rather takes all the entities from the
-     * 9 chunks around the entity, so even if the location is at the border of a
-     * chunk (worst case border of 4 chunks), the entity will still be included
-     */
+    @Deprecated
     public static List<Entity> getNearbyChunkEntities(Location loc) {
 
         /*
@@ -299,6 +295,22 @@ public class MMOCoreUtils {
             ((Damageable) meta).setDamage(newDamage);
             item.setItemMeta(meta);
         }
+    }
+
+    @NotNull
+    public static Location readLocation(String string) {
+        String[] split = string.split(" ");
+
+        World world = Bukkit.getWorld(split[0]);
+        Validate.notNull(world, "Could not find world with name '" + split[0] + "'");
+
+        double x = Double.parseDouble(split[1]);
+        double y = Double.parseDouble(split[2]);
+        double z = Double.parseDouble(split[3]);
+        float yaw = split.length > 4 ? (float) Double.parseDouble(split[4]) : 0;
+        float pitch = split.length > 5 ? (float) Double.parseDouble(split[5]) : 0;
+
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**

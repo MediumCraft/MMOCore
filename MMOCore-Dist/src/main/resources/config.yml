@@ -274,6 +274,20 @@ waypoints:
   # takes to use the waypoint and teleport to target location.
   default-warp-time: 100
 
+  link_reciprocity: false
+
+  # By default, MMOCore runs path calculation to enable players
+  # to take shortcuts and directly teleport across distant waypoints.
+  #
+  # Example:
+  # - Player is standing at waypoint A. They want to go to waypoint C.
+  # - Waypoint A is linked to waypoint B, waypoint B is linked to waypoint C
+  # With this option toggled on, since A -> B -> C is a valid connection,
+  # MMOCore tells the player they can directly go to C without having to
+  # first teleport to B. The stellium cost is the sum of the individual
+  # stelium costs. MMOCore always finds the shortest path between two waypoints.
+  auto_path_calculation: true
+
 # Change this to the name of the color you want for
 # the different resource bar placeholders
 resource-bar-colors:
