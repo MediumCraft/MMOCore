@@ -15,6 +15,7 @@ import net.Indyuce.mmocore.party.AbstractParty;
 import net.Indyuce.mmocore.skill.CastableSkill;
 import net.Indyuce.mmocore.skill.ClassSkill;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
+import net.Indyuce.mmocore.skill.binding.BoundSkillInfo;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,6 +26,7 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class RPGPlaceholders extends PlaceholderExpansion {
@@ -102,20 +104,14 @@ public class RPGPlaceholders extends PlaceholderExpansion {
             final CastableSkill castable = playerData.getProfess().getSkill(skill).toCastable(playerData);
             final double value = playerData.getMMOPlayerData().getSkillModifierMap().calculateValue(castable, parameterId);
             return MythicLib.plugin.getMMOConfig().decimal.format(value);
-        }
-
-        else if (identifier.startsWith("attribute_points_spent_")) {
+        } else if (identifier.startsWith("attribute_points_spent_")) {
             final String attributeId = identifier.substring(23);
             final PlayerAttributes.AttributeInstance attributeInstance = Objects.requireNonNull(playerData.getAttributes().getInstance(attributeId), "Could not find attribute with ID '" + attributeId + "'");
             return String.valueOf(attributeInstance.getBase());
-        }
-
-        else if (identifier.equals("level_percent")) {
+        } else if (identifier.equals("level_percent")) {
             double current = playerData.getExperience(), next = playerData.getLevelUpExperience();
             return MythicLib.plugin.getMMOConfig().decimal.format(current / next * 100);
-        }
-
-        else if (identifier.equals("health"))
+        } else if (identifier.equals("health"))
             return StatManager.format("MAX_HEALTH", player.getPlayer().getHealth());
 
         else if (identifier.equals("max_health"))
@@ -155,19 +151,31 @@ public class RPGPlaceholders extends PlaceholderExpansion {
         else if (identifier.startsWith("since_last_hit"))
             return playerData.isInCombat() ? MythicLib.plugin.getMMOConfig().decimal.format((System.currentTimeMillis() - playerData.getCombat().getLastHit()) / 1000.) : "-1";
 
-        // Returns the bound skill ID
+            // Returns the bound skill ID
         else if (identifier.startsWith("id_bound_")) {
             final int slot = Math.max(1, Integer.parseInt(identifier.substring(9)));
             final ClassSkill info = playerData.getBoundSkill(slot);
             return info == null ? "" : info.getSkill().getHandler().getId();
         }
 
-        // Returns the casting slot taking into account the skill slot offset
+        // Returns the key that needs to be pressed to cast slot in slot N
         else if (identifier.startsWith("cast_slot_offset_")) {
             final Player online = player.getPlayer();
             Validate.notNull(online, "Player is offline");
-            final int slot = Integer.parseInt(identifier.substring(17));
-            return String.valueOf(slot + (online.getInventory().getHeldItemSlot() < slot ? 1 : 0));
+            final AtomicInteger query = new AtomicInteger(Integer.parseInt(identifier.substring(17)));
+
+            BoundSkillInfo bound = playerData.getBoundSkills().get(query.get());
+            if (bound == null || bound.isPassive()) return String.valueOf(0);
+
+            // Offset due to passive skills
+            playerData.getBoundSkills().forEach((slot, skill) -> {
+                if (skill.isPassive() && slot < query.get())
+                    query.addAndGet(-1);
+            });
+
+            // Offset due to player's hotbar location
+            if (online.getInventory().getHeldItemSlot() < query.get()) query.addAndGet(1);
+            return String.valueOf(query.get());
         }
 
         // Is there a passive skill bound to given slot
