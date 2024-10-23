@@ -14,6 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 public class Sneaky_Picky extends SkillHandler<SimpleSkillResult> implements Listener {
     public Sneaky_Picky() {
@@ -22,15 +23,16 @@ public class Sneaky_Picky extends SkillHandler<SimpleSkillResult> implements Lis
         registerModifiers("extra");
     }
 
+    @NotNull
     @Override
     public SimpleSkillResult getResult(SkillMetadata meta) {
-        return new SimpleSkillResult(meta.hasAttackBound() && meta.hasTargetEntity() && meta.getTargetEntityOrNull() instanceof LivingEntity);
+        return new SimpleSkillResult(meta.hasAttackSource() && meta.hasTargetEntity() && meta.getTargetEntityOrNull() instanceof LivingEntity);
     }
 
     @Override
     public void whenCast(SimpleSkillResult result, SkillMetadata skillMeta) {
         LivingEntity target = (LivingEntity) skillMeta.getTargetEntity();
-        skillMeta.getAttack().getDamage().multiplicativeModifier(1 + skillMeta.getParameter("extra") / 100, DamageType.WEAPON);
+        skillMeta.getAttackSource().getDamage().multiplicativeModifier(1 + skillMeta.getParameter("extra") / 100, DamageType.WEAPON);
         target.getWorld().spawnParticle(VParticle.SMOKE.get(), target.getLocation().add(0, target.getHeight() / 2, 0), 64, 0, 0, 0, .05);
         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 2);
     }

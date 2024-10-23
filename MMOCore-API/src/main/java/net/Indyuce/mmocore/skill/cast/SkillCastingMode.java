@@ -78,7 +78,16 @@ public enum SkillCastingMode {
     }
 
     @NotNull
-    public static SkillCastingHandler getCurrent() {
+    public static SkillCastingHandler getInstance() {
         return Objects.requireNonNull(current, "Skill casting mode hasn't been initialized yet");
+    }
+
+    /**
+     * @see #getInstance()
+     * @deprecated
+     */
+    @Deprecated
+    public static SkillCastingHandler getCurrent() {
+        return getInstance();
     }
 }

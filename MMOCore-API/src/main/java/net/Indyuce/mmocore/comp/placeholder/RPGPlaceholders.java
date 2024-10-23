@@ -162,20 +162,15 @@ public class RPGPlaceholders extends PlaceholderExpansion {
         else if (identifier.startsWith("cast_slot_offset_")) {
             final Player online = player.getPlayer();
             Validate.notNull(online, "Player is offline");
-            final AtomicInteger query = new AtomicInteger(Integer.parseInt(identifier.substring(17)));
+            final int query = Integer.parseInt(identifier.substring(17));
 
-            BoundSkillInfo bound = playerData.getBoundSkills().get(query.get());
+            BoundSkillInfo bound = playerData.getBoundSkills().get(query);
             if (bound == null || bound.isPassive()) return String.valueOf(0);
 
-            // Offset due to passive skills
-            playerData.getBoundSkills().forEach((slot, skill) -> {
-                if (skill.isPassive() && slot < query.get())
-                    query.addAndGet(-1);
-            });
-
+            int slot = bound.skillBarCastSlot;
             // Offset due to player's hotbar location
-            if (online.getInventory().getHeldItemSlot() < query.get()) query.addAndGet(1);
-            return String.valueOf(query.get());
+            if (online.getInventory().getHeldItemSlot() < slot) slot++;
+            return String.valueOf(slot);
         }
 
         // Is there a passive skill bound to given slot

@@ -1136,7 +1136,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        this.skillCasting = SkillCastingMode.getCurrent().newInstance(this);
+        this.skillCasting = SkillCastingMode.getInstance().newInstance(this);
         return true;
     }
 
@@ -1321,6 +1321,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         unbindSkill(slot);
         final SkillSlot skillSlot = getProfess().getSkillSlot(slot);
         boundSkills.put(slot, new BoundSkillInfo(skillSlot, skill, this));
+        SkillCastingMode.getInstance().onSkillBound(this);
     }
 
     @Nullable

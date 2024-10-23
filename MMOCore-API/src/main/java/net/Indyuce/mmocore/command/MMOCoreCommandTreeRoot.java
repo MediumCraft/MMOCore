@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.command;
 import io.lumine.mythic.lib.command.api.CommandTreeRoot;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.command.rpg.CastCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.CoinsCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.NoteCommandTreeNode;
 import net.Indyuce.mmocore.command.rpg.ReloadCommandTreeNode;
@@ -26,6 +27,7 @@ public class MMOCoreCommandTreeRoot extends CommandTreeRoot implements CommandEx
 		super("mmocore", "mmocore.admin");
 
 		addChild(new ReloadCommandTreeNode(this));
+		addChild(new CastCommandTreeNode(this));
 		addChild(new CoinsCommandTreeNode(this));
 		addChild(new NoteCommandTreeNode(this));
 		addChild(new AdminCommandTreeNode(this));

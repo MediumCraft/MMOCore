@@ -15,6 +15,16 @@ public class BoundSkillInfo implements Closeable {
     private final ClassSkill classSkill;
 
     /**
+     * If the skill casting mode is set to skill bar, then
+     * this corresponds to the slot the player needs to click
+     * (not taking into account casting slot offset) in order
+     * to cast this skill.
+     * <p>
+     * If it is a passive skill, this value has no meaning.
+     */
+    public int skillBarCastSlot;
+
+    /**
      * Non-permanent passive skills must be registered inside
      * MythicLib when bound. When set to null, the skill is either
      * active or permanent passive.

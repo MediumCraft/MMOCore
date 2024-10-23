@@ -4,12 +4,11 @@ import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import io.lumine.mythic.lib.skill.SkillMetadata;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.result.def.SimpleSkillResult;
-import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
-import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 public class Neptune_Gift extends SkillHandler<SimpleSkillResult> implements Listener {
     public Neptune_Gift() {
@@ -18,6 +17,7 @@ public class Neptune_Gift extends SkillHandler<SimpleSkillResult> implements Lis
         registerModifiers("extra");
     }
 
+    @NotNull
     @Override
     public SimpleSkillResult getResult(SkillMetadata meta) {
         throw new RuntimeException("Not supported");

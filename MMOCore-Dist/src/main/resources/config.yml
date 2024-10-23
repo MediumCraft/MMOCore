@@ -106,6 +106,7 @@ skill-casting:
   mode: SKILL_BAR
   open: SWAP_HANDS
   disable-sneak: false
+  use-lowest-keybinds: true
 
 loot-chests:
 

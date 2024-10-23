@@ -1,9 +1,6 @@
 package net.Indyuce.mmocore.skill.cast.handler;
 
 import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.api.player.EquipmentSlot;
-import io.lumine.mythic.lib.player.PlayerMetadata;
-import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.SoundEvent;
@@ -21,18 +18,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public class SkillBar extends SkillCastingHandler {
     private final PlayerKey mainKey;
-    private final boolean disableSneak;
+    private final boolean disableSneak, lowestKeybinds;
 
     public SkillBar(@NotNull ConfigurationSection config) {
         super(config);
 
         mainKey = PlayerKey.valueOf(UtilityMethods.enumName(Objects.requireNonNull(config.getString("open"), "Could not find open key")));
         disableSneak = config.getBoolean("disable-sneak");
+        lowestKeybinds = config.getBoolean("use-lowest-keybinds");
     }
 
     @Override
@@ -43,6 +42,23 @@ public class SkillBar extends SkillCastingHandler {
     @Override
     public SkillCastingMode getCastingMode() {
         return SkillCastingMode.SKILL_BAR;
+    }
+
+    @Override
+    public void onSkillBound(@NotNull PlayerData player) {
+
+        // Lowest indices = start at slot 1 and increase
+        if (lowestKeybinds) {
+
+            int slot = 1;
+
+            for (BoundSkillInfo bound : player.getBoundSkills().values())
+                // Set cast slot and increment slot
+                if (!bound.isPassive()) bound.skillBarCastSlot = slot++;
+        }
+
+        // Otherwise, direct correspondance
+        else player.getBoundSkills().forEach((slot, bound) -> bound.skillBarCastSlot = slot);
     }
 
     @EventHandler
@@ -80,7 +96,7 @@ public class SkillBar extends SkillCastingHandler {
         }
 
         @EventHandler
-        public void onSkillCast(PlayerItemHeldEvent event) {
+        public void onItemHeld(PlayerItemHeldEvent event) {
             if (!event.getPlayer().equals(getCaster().getPlayer())) return;
 
             // Extra option to improve support with other plugins
@@ -96,18 +112,18 @@ public class SkillBar extends SkillCastingHandler {
 
             event.setCancelled(true);
             refreshTimeOut();
-            final int activeSlot = event.getNewSlot() + (event.getNewSlot() >= player.getInventory().getHeldItemSlot() ? -1 : 0);
 
-            /*
-             * The event is called again soon after the first since when
-             * cancelling the first one, the player held item slot must go back
-             * to the previous one.
-             */
-            if (activeSlot < getActiveSkills().size()) {
-                final ClassSkill classSkill = getActiveSkills().get(activeSlot).getClassSkill();
-                final PlayerMetadata caster = getCaster().getMMOPlayerData().getStatMap().cache(EquipmentSlot.MAIN_HAND);
-                classSkill.toCastable(getCaster()).cast(new TriggerMetadata(caster, null, null));
-            }
+            // Look for skill with given slot
+            ClassSkill classSkill = findSkillToCast(player.getInventory().getHeldItemSlot(), event.getNewSlot());
+            if (classSkill != null) classSkill.toCastable(getCaster()).cast(getCaster().getMMOPlayerData());
+        }
+
+        @Nullable
+        private ClassSkill findSkillToCast(int currentSlot, int clickedSlot) {
+            for (BoundSkillInfo info : this.getActiveSkills())
+                if (info.skillBarCastSlot + (currentSlot < info.skillBarCastSlot ? 1 : 0) == 1 + clickedSlot)
+                    return info.getClassSkill();
+            return null;
         }
 
         @EventHandler
@@ -128,12 +144,12 @@ public class SkillBar extends SkillCastingHandler {
 
         @NotNull
         private String getFormat(PlayerData data) {
-            final StringBuilder str = new StringBuilder();
-            if (!data.isOnline()) return str.toString();
+            if (!data.isOnline()) return "";
 
-            int slot = 1;
+            final StringBuilder str = new StringBuilder();
             for (BoundSkillInfo active : getActiveSkills()) {
                 final ClassSkill skill = active.getClassSkill();
+                final int slot = active.skillBarCastSlot;
 
                 str.append(str.isEmpty() ? "" : split).append(
                         (onCooldown(data, skill) ? onCooldown.replace("{cooldown}",
@@ -141,8 +157,8 @@ public class SkillBar extends SkillCastingHandler {
                                 noMana(data, skill) ? noMana : (noStamina(data, skill) ? noStamina : ready))
                                 .replace("{index}", String.valueOf(slot + (data.getPlayer().getInventory().getHeldItemSlot() < slot ? 1 : 0)))
                                 .replace("{skill}", skill.getSkill().getName()));
-                slot++;
             }
+
             return MMOCore.plugin.placeholderParser.parse(data.getPlayer(), str.toString());
         }
 
