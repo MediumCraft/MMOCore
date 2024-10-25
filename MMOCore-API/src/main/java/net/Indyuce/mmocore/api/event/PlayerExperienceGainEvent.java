@@ -1,72 +1,76 @@
 package net.Indyuce.mmocore.api.event;
 
-import javax.annotation.Nullable;
-
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
+import net.Indyuce.mmocore.experience.Profession;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-import net.Indyuce.mmocore.experience.Profession;
+import javax.annotation.Nullable;
 
 public class PlayerExperienceGainEvent extends PlayerDataEvent implements Cancellable {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	// if null, this is main experience
-	private final Profession profession;
-	private final EXPSource source;
+    // if null, this is main experience
+    private final Profession profession;
+    private final EXPSource source;
 
-	private double experience;
-	private boolean cancelled;
+    private double experience;
+    private boolean cancelled;
 
-	public PlayerExperienceGainEvent(PlayerData player, double experience, EXPSource source) {
-		this(player, null, experience, source);
-	}
+    public PlayerExperienceGainEvent(PlayerData player, double experience, EXPSource source) {
+        this(player, null, experience, source);
+    }
 
-	public PlayerExperienceGainEvent(PlayerData player, @Nullable Profession profession, double experience, EXPSource source) {
-		super(player);
+    public PlayerExperienceGainEvent(PlayerData player, @Nullable Profession profession, double experience, EXPSource source) {
+        super(player);
 
-		this.profession = profession;
-		this.experience = experience;
-		this.source = source;
-	}
+        this.profession = profession;
+        this.experience = experience;
+        this.source = source;
+    }
 
-	public double getExperience() {
-		return experience;
-	}
+    public double getExperience() {
+        return experience;
+    }
 
-	public void setExperience(int experience) {
-		this.experience = experience;
-	}
+    @Deprecated
+    public void setExperience(int experience) {
+        setExperience((double) experience);
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
+    public void setExperience(double experience) {
+        this.experience = experience;
+    }
 
-	@Override
-	public void setCancelled(boolean cancelled) {
-		this.cancelled = cancelled;
-	}
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-	public boolean hasProfession() {
-		return profession != null;
-	}
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
 
-	public Profession getProfession() {
-		return profession;
-	}
+    public boolean hasProfession() {
+        return profession != null;
+    }
 
-	public EXPSource getSource() {
-		return source;
-	}
+    public Profession getProfession() {
+        return profession;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public EXPSource getSource() {
+        return source;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }

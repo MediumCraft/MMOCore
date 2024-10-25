@@ -5,7 +5,7 @@
     <parent>
         <artifactId>MMOCore</artifactId>
         <groupId>net.Indyuce</groupId>
-        <version>1.12.1-SNAPSHOT</version>
+        <version>1.13.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -67,7 +67,7 @@
         <dependency>
             <groupId>net.Indyuce</groupId>
             <artifactId>MMOCore-API</artifactId>
-            <version>1.12.1-SNAPSHOT</version>
+            <version>1.13.1-SNAPSHOT</version>
             <optional>true</optional>
         </dependency>
 
