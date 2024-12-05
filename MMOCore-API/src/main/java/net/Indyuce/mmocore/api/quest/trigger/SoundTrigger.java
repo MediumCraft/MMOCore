@@ -1,9 +1,9 @@
 package net.Indyuce.mmocore.api.quest.trigger;
 
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.version.Sounds;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Sound;
-
-import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class SoundTrigger extends Trigger {
 	private final Sound sound;
@@ -14,7 +14,7 @@ public class SoundTrigger extends Trigger {
 
 		config.validate("sound");
 
-		sound = Sound.valueOf(config.getString("sound").toUpperCase().replace("-", "_"));
+		sound = Sounds.fromName(config.getString("sound").toUpperCase().replace("-", "_"));
 		vol = config.contains("volume") ? (float) config.getDouble("volume") : 1f;
 		pitch = config.contains("pitch") ? (float) config.getDouble("pitch") : 1f;
 	}

@@ -2,16 +2,15 @@ package net.Indyuce.mmocore.api.player.profess;
 
 import io.lumine.mythic.lib.gson.JsonElement;
 import io.lumine.mythic.lib.gson.JsonObject;
+import io.lumine.mythic.lib.version.Attributes;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
-import net.Indyuce.mmocore.api.player.attribute.PlayerAttributes;
 import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.player.ClassDataContainer;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.Indyuce.mmocore.skilltree.SkillTreeNode;
 import net.Indyuce.mmocore.skilltree.tree.SkillTree;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -343,7 +342,7 @@ public class SavedClassInformation implements ClassDataContainer {
         player.unloadClassInfo(profess);
 
         // This needs to be done at the end to make sure the MAX_HEALTH/MAX_MANA/... stats are loaded.
-        player.getPlayer().setHealth(MMOCoreUtils.fixResource(health, player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        player.getPlayer().setHealth(MMOCoreUtils.fixResource(health, player.getPlayer().getAttribute(Attributes.MAX_HEALTH).getValue()));
         player.setHealth(health);
         player.setMana(mana);
         player.setStellium(stellium);

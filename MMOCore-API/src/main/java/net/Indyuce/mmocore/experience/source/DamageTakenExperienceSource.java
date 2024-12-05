@@ -3,13 +3,13 @@ package net.Indyuce.mmocore.experience.source;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.util.Lazy;
+import io.lumine.mythic.lib.version.Attributes;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -62,7 +62,7 @@ public class DamageTakenExperienceSource extends SpecificExperienceSource<Entity
             final PlayerData playerData = PlayerData.get((Player) event.getEntity());
             final Lazy<Double> effectiveDamage = Lazy.of(() -> {
                 final double eventDamage = event.getDamage();
-                final double maxHealth = ((Player) event.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                final double maxHealth = ((Player) event.getEntity()).getAttribute(Attributes.MAX_HEALTH).getValue();
                 return Math.min(eventDamage, maxHealth);
             });
 

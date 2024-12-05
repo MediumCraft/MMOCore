@@ -1,7 +1,7 @@
 package net.Indyuce.mmocore.listener.profession;
 
+import io.lumine.mythic.lib.version.Sounds;
 import io.lumine.mythic.lib.version.VParticle;
-import io.lumine.mythic.lib.version.VSound;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
 import net.Indyuce.mmocore.api.event.CustomPlayerFishEvent;
@@ -194,7 +194,7 @@ public class FishingListener implements Listener {
             vec.setX(vec.getX() * .08);
             vec.setZ(vec.getZ() * .08);
             item.setVelocity(vec);
-            player.getWorld().playSound(player.getLocation(), VSound.BLOCK_NOTE_BLOCK_HAT.get(), 1, 0);
+            player.getWorld().playSound(player.getLocation(), Sounds.BLOCK_NOTE_BLOCK_HAT, 1, 0);
             for (int j = 0; j < 8; j++)
                 location.getWorld().spawnParticle(VParticle.FIREWORK.get(), location, 0, 4 * (RANDOM.nextDouble() - .5), RANDOM.nextDouble() + 1, 4 * (RANDOM.nextDouble() - .5), .08);
             if (vanillaExpDropped > 0) player.giveExp(vanillaExpDropped);

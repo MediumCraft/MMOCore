@@ -6,12 +6,12 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.gson.JsonArray;
 import io.lumine.mythic.lib.gson.JsonObject;
 import io.lumine.mythic.lib.hologram.Hologram;
+import io.lumine.mythic.lib.version.Attributes;
 import io.lumine.mythic.lib.version.VEnchantment;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.util.Icon;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -247,7 +247,7 @@ public class MMOCoreUtils {
 
     @Deprecated
     public static void heal(LivingEntity target, double value) {
-        double max = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double max = target.getAttribute(Attributes.MAX_HEALTH).getValue();
         double gain = Math.min(max, target.getHealth() + value) - target.getHealth();
 
         EntityRegainHealthEvent event = new EntityRegainHealthEvent(target, gain, RegainReason.CUSTOM);

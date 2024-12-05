@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.data.SynchronizedDataHolder;
 import io.lumine.mythic.lib.player.cooldown.CooldownMap;
 import io.lumine.mythic.lib.util.Closeable;
+import io.lumine.mythic.lib.version.Attributes;
 import io.lumine.mythic.lib.version.VParticle;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.ConfigMessage;
@@ -55,7 +56,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -792,7 +792,7 @@ public class PlayerData extends SynchronizedDataHolder implements OfflinePlayerD
         if (!isOnline()) return;
 
         // Avoid calling an useless event
-        double max = getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double max = getPlayer().getAttribute(Attributes.MAX_HEALTH).getValue();
         double newest = Math.max(0, Math.min(getPlayer().getHealth() + heal, max));
         if (getPlayer().getHealth() == newest) return;
 

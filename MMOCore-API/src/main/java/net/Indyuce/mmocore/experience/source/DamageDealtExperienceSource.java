@@ -4,12 +4,12 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import io.lumine.mythic.lib.damage.DamageType;
+import io.lumine.mythic.lib.version.Attributes;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.dispenser.ExperienceDispenser;
 import net.Indyuce.mmocore.experience.source.type.SpecificExperienceSource;
 import net.Indyuce.mmocore.manager.profession.ExperienceSourceManager;
 import org.apache.commons.lang.Validate;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
 
 import java.util.Arrays;
@@ -58,7 +58,7 @@ public class DamageDealtExperienceSource extends SpecificExperienceSource<Void> 
                     if (value == 0) continue;
 
                     // Cannot count more than the entity's max health
-                    final double enemyMaxHealth = event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                    final double enemyMaxHealth = event.getEntity().getAttribute(Attributes.MAX_HEALTH).getValue();
                     value = Math.min(value, enemyMaxHealth);
                     source.giveExperience(playerData, value, null);
                 }

@@ -1,11 +1,11 @@
 package net.Indyuce.mmocore.api.player.profess.resource;
 
-import net.Indyuce.mmocore.api.player.PlayerData;
-import net.Indyuce.mmocore.command.rpg.admin.ResourceCommandTreeNode;
+import io.lumine.mythic.lib.version.Attributes;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
-import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.profess.ClassOption;
-import org.bukkit.attribute.Attribute;
+import net.Indyuce.mmocore.api.quest.trigger.ManaTrigger;
+import net.Indyuce.mmocore.command.rpg.admin.ResourceCommandTreeNode;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 public enum PlayerResource {
 
     HEALTH(data -> data.getPlayer().getHealth(),
-            data -> data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(),
+            data -> data.getPlayer().getAttribute(Attributes.MAX_HEALTH).getValue(),
             (data, amount) -> data.heal(amount, PlayerResourceUpdateEvent.UpdateReason.REGENERATION),
             (data, amount) -> data.heal(amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),
             (data, amount) -> data.heal(-amount, PlayerResourceUpdateEvent.UpdateReason.COMMAND),

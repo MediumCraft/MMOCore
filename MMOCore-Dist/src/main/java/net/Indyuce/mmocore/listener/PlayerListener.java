@@ -3,6 +3,7 @@ package net.Indyuce.mmocore.listener;
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import io.lumine.mythic.lib.api.event.SynchronizedDataLoadEvent;
+import io.lumine.mythic.lib.version.Attributes;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.event.PlayerResourceUpdateEvent;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -11,7 +12,6 @@ import net.Indyuce.mmocore.api.util.MMOCoreUtils;
 import net.Indyuce.mmocore.gui.api.InventoryClickContext;
 import net.Indyuce.mmocore.gui.api.PluginInventory;
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,7 +46,7 @@ public class PlayerListener implements Listener {
              */
             if (playerData.isOnline() && !player.isDead()) {
                 final double cachedHealth = playerData.getCachedHealth(),
-                        maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(),
+                        maxHealth = player.getAttribute(Attributes.MAX_HEALTH).getValue(),
                         fixedHealth = MMOCoreUtils.fixResource(cachedHealth, maxHealth);
                 player.setHealth(fixedHealth);
             }

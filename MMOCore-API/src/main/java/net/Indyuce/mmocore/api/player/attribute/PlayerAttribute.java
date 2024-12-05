@@ -6,8 +6,8 @@ import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
 import net.Indyuce.mmocore.experience.ExpCurve;
-import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import net.Indyuce.mmocore.experience.ExperienceObject;
+import net.Indyuce.mmocore.experience.droptable.ExperienceTable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,7 +34,7 @@ public class PlayerAttribute implements ExperienceObject {
         Validate.notNull(config, "Could not load config");
         id = config.getName().toLowerCase().replace("_", "-").replace(" ", "-");
 
-        name = MythicLib.plugin.parseColors(config.getString("name", "Attribute"));
+        name = MythicLib.plugin.parseColors(config.getString("name", "MyAttribute"));
         max = config.contains("max-points") ? Math.max(1, config.getInt("max-points")) : 0;
 
         if (config.contains("buff"))
